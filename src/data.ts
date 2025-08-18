@@ -1,0 +1,197 @@
+import { Character, Skill, Item } from './types';
+
+export const skills: Record<string, Skill> = {
+  attack: {
+    id: 'attack',
+    name: 'たたかう',
+    mpCost: 0,
+    type: 'physical',
+    power: 1.0,
+    targetType: 'single',
+  },
+  heal: {
+    id: 'heal',
+    name: 'ヒール',
+    mpCost: 6,
+    type: 'heal',
+    power: 1.0,
+    targetType: 'single',
+  },
+  doubleShot: {
+    id: 'doubleShot',
+    name: '二連射',
+    mpCost: 8,
+    type: 'physical',
+    power: 0.7,
+    targetType: 'single',
+    hitCount: 2,
+  },
+  slash: {
+    id: 'slash',
+    name: '斬り上げ',
+    mpCost: 4,
+    type: 'physical',
+    power: 1.2,
+    targetType: 'single',
+  },
+  fire: {
+    id: 'fire',
+    name: 'ファイア',
+    mpCost: 6,
+    type: 'magical',
+    power: 1.0,
+    targetType: 'single',
+  },
+};
+
+export function createCharacter(data: Partial<Character> & { name: string }): Character {
+  return {
+    id: data.id || Math.random().toString(36).substr(2, 9),
+    name: data.name,
+    hp: data.hp || 50,
+    maxHp: data.maxHp || data.hp || 50,
+    mp: data.mp || 10,
+    maxMp: data.maxMp || data.mp || 10,
+    atk: data.atk || 10,
+    def: data.def || 10,
+    mag: data.mag || 10,
+    res: data.res || 10,
+    agi: data.agi || 10,
+    skills: data.skills || [skills.attack],
+    isDefending: false,
+    isPlayer: data.isPlayer ?? true,
+  };
+}
+
+export function createPlayerParty(): Character[] {
+  return [
+    createCharacter({
+      id: 'goblin1',
+      name: 'ゴブリンA',
+      hp: 60,
+      maxHp: 60,
+      mp: 10,
+      maxMp: 10,
+      atk: 22,
+      def: 14,
+      mag: 6,
+      res: 8,
+      agi: 12,
+      skills: [skills.attack],
+      isPlayer: true,
+    }),
+    createCharacter({
+      id: 'goblin2',
+      name: 'ゴブリンB',
+      hp: 60,
+      maxHp: 60,
+      mp: 10,
+      maxMp: 10,
+      atk: 22,
+      def: 14,
+      mag: 6,
+      res: 8,
+      agi: 11,
+      skills: [skills.attack],
+      isPlayer: true,
+    }),
+    createCharacter({
+      id: 'shaman',
+      name: 'シャーマンゴブリン',
+      hp: 48,
+      maxHp: 48,
+      mp: 32,
+      maxMp: 32,
+      atk: 10,
+      def: 10,
+      mag: 24,
+      res: 16,
+      agi: 10,
+      skills: [skills.attack, skills.heal],
+      isPlayer: true,
+    }),
+    createCharacter({
+      id: 'ranger',
+      name: 'レンジャーゴブリン',
+      hp: 52,
+      maxHp: 52,
+      mp: 16,
+      maxMp: 16,
+      atk: 18,
+      def: 12,
+      mag: 10,
+      res: 10,
+      agi: 18,
+      skills: [skills.attack, skills.doubleShot],
+      isPlayer: true,
+    }),
+  ];
+}
+
+export function createEnemyParty(): Character[] {
+  return [
+    createCharacter({
+      id: 'warrior_m',
+      name: '人間戦士(男)',
+      hp: 70,
+      maxHp: 70,
+      mp: 10,
+      maxMp: 10,
+      atk: 24,
+      def: 16,
+      mag: 6,
+      res: 10,
+      agi: 10,
+      skills: [skills.attack, skills.slash],
+      isPlayer: false,
+    }),
+    createCharacter({
+      id: 'warrior_f',
+      name: '人間戦士(女)',
+      hp: 62,
+      maxHp: 62,
+      mp: 12,
+      maxMp: 12,
+      atk: 22,
+      def: 14,
+      mag: 6,
+      res: 10,
+      agi: 13,
+      skills: [skills.attack, skills.slash],
+      isPlayer: false,
+    }),
+    createCharacter({
+      id: 'mage_f',
+      name: '人間魔法使い(女)',
+      hp: 50,
+      maxHp: 50,
+      mp: 36,
+      maxMp: 36,
+      atk: 8,
+      def: 10,
+      mag: 26,
+      res: 18,
+      agi: 12,
+      skills: [skills.attack, skills.fire],
+      isPlayer: false,
+    }),
+  ];
+}
+
+export const items: Item[] = [
+  {
+    id: 'potion_small',
+    name: '回復薬(小)',
+    type: 'heal',
+    value: 30,
+    quantity: 5,
+  },
+];
+
+export const battleRewards = {
+  exp: 54,
+  goldMin: 30,
+  goldMax: 45,
+  dropRate: 0.2,
+  dropItem: items[0],
+};
