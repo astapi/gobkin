@@ -2,9 +2,10 @@ import type { Dungeon } from '../types/index.ts'
 
 interface DungeonScreenProps {
   dungeons: Dungeon[]
+  onStartExplore: (dungeon: Dungeon) => void
 }
 
-export const DungeonScreen = ({ dungeons }: DungeonScreenProps) => (
+export const DungeonScreen = ({ dungeons, onStartExplore }: DungeonScreenProps) => (
   <div className="h-full overflow-y-auto">
     <div className="text-lg font-bold text-gray-800 mb-4 pb-2 border-b-2 border-gray-200">
       ダンジョン選択
@@ -30,7 +31,7 @@ export const DungeonScreen = ({ dungeons }: DungeonScreenProps) => (
                   : 'bg-gray-600 text-white hover:bg-gray-700'
               }`}
               disabled={dungeon.disabled}
-              onClick={() => !dungeon.disabled && alert(`${dungeon.name}への探索を開始します！`)}
+              onClick={() => !dungeon.disabled && onStartExplore(dungeon)}
             >
               {dungeon.disabled ? 'パーティが不足' : '探索開始'}
             </button>

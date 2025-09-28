@@ -1,11 +1,13 @@
 import { useState, useMemo } from 'react'
-import type { Goblin } from './types/index.ts'
+import type { Goblin, Dungeon } from './types/index.ts'
 import { goblinsData, dungeonsData } from './data/index.ts'
 import { GoblinListScreen } from './components/GoblinListScreen.tsx'
 import { FormationScreen } from './components/FormationScreen.tsx'
 import { PartyEditScreen } from './components/PartyEditScreen.tsx'
 import { DungeonScreen } from './components/DungeonScreen.tsx'
+import { PartySelectScreen } from './components/PartySelectScreen.tsx'
 import { GoblinDetailModal } from './components/GoblinDetailModal.tsx'
+import { DungeonConfirmModal } from './components/DungeonConfirmModal.tsx'
 import { TabMenu } from './components/TabMenu.tsx'
 import { JsonPartyRepositoryImpl } from './repositories/JsonPartyRepositoryImpl.ts'
 
@@ -13,6 +15,8 @@ function App() {
   const [activeTab, setActiveTab] = useState('list')
   const [selectedGoblin, setSelectedGoblin] = useState<Goblin | null>(null)
   const [editingPartyId, setEditingPartyId] = useState<number | null>(null)
+  const [selectedDungeon, setSelectedDungeon] = useState<Dungeon | null>(null)
+  const [selectedPartyId, setSelectedPartyId] = useState<number | null>(null)
 
   const partyRepository = useMemo(() => new JsonPartyRepositoryImpl(), [])
 
@@ -31,6 +35,33 @@ function App() {
   const handleBackToFormation = () => {
     setEditingPartyId(null)
   }
+
+  const handleStartExplore = (dungeon: Dungeon) => {
+    setSelectedDungeon(dungeon)
+  }
+
+  const handleSelectParty = (partyId: number) => {
+    setSelectedPartyId(partyId)
+  }
+
+  const handleBackToDungeon = () => {
+    setSelectedDungeon(null)
+    setSelectedPartyId(null)
+  }
+
+  const handleConfirm = () => {
+    if (selectedDungeon && selectedPartyId) {
+      alert(`${selectedDungeon.name}への探索を開始します！`)
+      setSelectedDungeon(null)
+      setSelectedPartyId(null)
+    }
+  }
+
+  const handleCancel = () => {
+    setSelectedPartyId(null)
+  }
+
+  const selectedParty = selectedPartyId ? partyRepository.getParty(selectedPartyId) : null
 
   return (
     <div className="h-screen flex flex-col max-w-[414px] mx-auto border-2 border-gray-300 overflow-hidden bg-gray-50 relative">
@@ -61,7 +92,20 @@ function App() {
           )
         )}
         {activeTab === 'cave' && (
-          <DungeonScreen dungeons={dungeonsData} />
+          selectedDungeon && !selectedPartyId ? (
+            <PartySelectScreen
+              parties={partyRepository.getParties()}
+              goblins={goblinsData}
+              dungeon={selectedDungeon}
+              onSelectParty={handleSelectParty}
+              onBack={handleBackToDungeon}
+            />
+          ) : (
+            <DungeonScreen
+              dungeons={dungeonsData}
+              onStartExplore={handleStartExplore}
+            />
+          )
         )}
       </div>
 
@@ -71,6 +115,17 @@ function App() {
       {/* Detail Modal */}
       {selectedGoblin && (
         <GoblinDetailModal goblin={selectedGoblin} onClose={closeDetail} />
+      )}
+
+      {/* Dungeon Confirm Modal */}
+      {selectedDungeon && selectedPartyId && selectedParty && (
+        <DungeonConfirmModal
+          dungeon={selectedDungeon}
+          party={selectedParty}
+          goblins={goblinsData}
+          onConfirm={handleConfirm}
+          onCancel={handleCancel}
+        />
       )}
     </div>
   )
