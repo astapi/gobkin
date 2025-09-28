@@ -1,0 +1,92 @@
+{
+  "dungeons": [
+    {
+      "id": 1,
+      "name": "周辺の森",
+      "floors": 3,
+      "exploration_time_sec_first": 60,
+      "exploration_time_sec": 30,
+      "description": "明るい森、弱い獣や小鬼が出現"
+    },
+    {
+      "id": 2,
+      "name": "苔むした洞窟",
+      "floors": 5,
+      "exploration_time_sec_first": 120,
+      "exploration_time_sec": 60,
+      "description": "スライムやコウモリが出現、初めてのボス"
+    },
+    {
+      "id": 3,
+      "name": "古びた採掘跡",
+      "floors": 7,
+      "exploration_time_sec_first": 240,
+      "exploration_time_sec": 120,
+      "description": "放棄された鉱山跡、鉱石ゴーレムが出現"
+    },
+    {
+      "id": 4,
+      "name": "黒樹の森",
+      "floors": 10,
+      "exploration_time_sec_first": 360,
+      "exploration_time_sec": 180,
+      "description": "巨木が立ち並ぶ薄暗い森、木の精霊登場"
+    },
+    {
+      "id": 5,
+      "name": "地底湖の洞窟",
+      "floors": 12,
+      "exploration_time_sec_first": 480,
+      "exploration_time_sec": 240,
+      "description": "水棲モンスターが出現、視界が悪い"
+    },
+    {
+      "id": 6,
+      "name": "廃れた神殿",
+      "floors": 15,
+      "exploration_time_sec_first": 600,
+      "exploration_time_sec": 300,
+      "description": "古代遺跡、魔法系の敵が増加"
+    },
+    {
+      "id": 7,
+      "name": "毒霧の湿地",
+      "floors": 18,
+      "exploration_time_sec_first": 720,
+      "exploration_time_sec": 360,
+      "description": "毒状態ギミックあり"
+    },
+    {
+      "id": 8,
+      "name": "氷結の洞窟",
+      "floors": 20,
+      "exploration_time_sec_first": 960,
+      "exploration_time_sec": 480,
+      "description": "氷のギミック、行動遅延"
+    },
+    {
+      "id": 9,
+      "name": "火山の坑道",
+      "floors": 25,
+      "exploration_time_sec_first": 1200,
+      "exploration_time_sec": 600,
+      "description": "熔岩地帯、炎属性多数"
+    },
+    {
+      "id": 10,
+      "name": "堕落の大樹",
+      "floors": 30,
+      "exploration_time_sec_first": 1440,
+      "exploration_time_sec": 720,
+      "description": "巨大樹内部、腐敗した植物・虫型モンスター"
+    },
+    {
+      "id": 11,
+      "name": "魔王の城塞",
+      "floors": 40,
+      "exploration_time_sec_first": 1800,
+      "exploration_time_sec": 900,
+      "description": "最終決戦、ボスラッシュ"
+    }
+  ]
+}

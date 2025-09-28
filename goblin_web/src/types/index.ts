@@ -18,14 +18,11 @@ export type Goblin = {
 export type Dungeon = {
   id: number
   name: string
-  icon: string
-  difficulty: string
-  difficultyLevel: number
-  rewards: {
-    gold: string
-    item: string
-  }
-  disabled?: boolean
+  floors: number
+  exploration_time_sec_first: number
+  exploration_time_sec: number
+  description: string
+  cleared?: boolean
 }
 
 export type Party = {

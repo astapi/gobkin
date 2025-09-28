@@ -1,4 +1,5 @@
 import type { Goblin, Dungeon } from '../types/index.ts'
+import dungeonJson from './dungeon.json'
 
 export const goblinsData: Goblin[] = [
   {
@@ -43,39 +44,4 @@ export const goblinsData: Goblin[] = [
   }
 ]
 
-export const dungeonsData: Dungeon[] = [
-  {
-    id: 1,
-    name: '森の洞窟',
-    icon: '🌲',
-    difficulty: '★☆☆',
-    difficultyLevel: 1,
-    rewards: {
-      gold: '50-100',
-      item: '⚔️ 装備ドロップ'
-    }
-  },
-  {
-    id: 2,
-    name: '岩山の遺跡',
-    icon: '🗻',
-    difficulty: '★★☆',
-    difficultyLevel: 2,
-    rewards: {
-      gold: '100-200',
-      item: '💎 宝石ドロップ'
-    }
-  },
-  {
-    id: 3,
-    name: '火山の神殿',
-    icon: '🌋',
-    difficulty: '★★★',
-    difficultyLevel: 3,
-    rewards: {
-      gold: '200-500',
-      item: '🏆 レア装備'
-    },
-    disabled: true
-  }
-]
+export const dungeonsData: Dungeon[] = dungeonJson.dungeons
