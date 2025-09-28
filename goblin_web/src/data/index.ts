@@ -7,7 +7,7 @@ export const goblinsData: Goblin[] = [
     name: 'グラッシュ',
     job: '戦士',
     level: 15,
-    avatar: '👹',
+    avatar: '/src/assets/goblin/goblin.png',
     stats: { hp: 120, atk: 85, sp: 45, spd: 60, def: 75 }
   },
   {
@@ -15,7 +15,7 @@ export const goblinsData: Goblin[] = [
     name: 'ズィーク',
     job: '魔法使い',
     level: 12,
-    avatar: '🧙',
+    avatar: '/src/assets/goblin/goblin.png',
     stats: { hp: 80, atk: 95, sp: 90, spd: 70, def: 45 }
   },
   {
@@ -23,7 +23,7 @@ export const goblinsData: Goblin[] = [
     name: 'シャープ',
     job: '弓使い',
     level: 13,
-    avatar: '🏹',
+    avatar: '/src/assets/goblin/goblin.png',
     stats: { hp: 90, atk: 80, sp: 65, spd: 85, def: 55 }
   },
   {
@@ -31,7 +31,7 @@ export const goblinsData: Goblin[] = [
     name: 'ガード',
     job: '盾使い',
     level: 11,
-    avatar: '🛡️',
+    avatar: '/src/assets/goblin/goblin.png',
     stats: { hp: 130, atk: 50, sp: 40, spd: 45, def: 95 }
   },
   {
@@ -39,7 +39,7 @@ export const goblinsData: Goblin[] = [
     name: 'スピード',
     job: '盗賊',
     level: 14,
-    avatar: '⚡',
+    avatar: '/src/assets/goblin/goblin.png',
     stats: { hp: 85, atk: 75, sp: 70, spd: 95, def: 50 }
   }
 ]

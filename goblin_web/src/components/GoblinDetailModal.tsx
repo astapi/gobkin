@@ -23,8 +23,8 @@ export const GoblinDetailModal = ({ goblin, onClose }: GoblinDetailModalProps) =
       <div className="flex-1 p-6 overflow-y-auto">
         <div className="bg-white border-2 border-gray-200 rounded-xl p-6 shadow-md">
           <div className="flex items-center gap-4 mb-6 pb-4 border-b-2 border-gray-100">
-            <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center text-[40px] border-[3px] border-gray-400">
-              {goblin.avatar}
+            <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center border-[3px] border-gray-400 overflow-hidden">
+              <img src={goblin.avatar} alt={goblin.name} className="w-full h-full object-cover" />
             </div>
             <div>
               <h3 className="text-2xl font-bold text-gray-800">{goblin.name}</h3>

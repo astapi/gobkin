@@ -88,8 +88,8 @@ export const PartyEditScreen = ({ partyId, goblins, partyRepository, onBack }: P
             >
               {member ? (
                 <>
-                  <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center text-base mb-1 border border-gray-400">
-                    {member.avatar}
+                  <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center mb-1 border border-gray-400 overflow-hidden">
+                    <img src={member.avatar} alt={member.name} className="w-full h-full object-cover" />
                   </div>
                   <div className="text-[10px] text-gray-600 text-center">{member.name}</div>
                 </>

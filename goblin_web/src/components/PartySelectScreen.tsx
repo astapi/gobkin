@@ -53,8 +53,8 @@ export const PartySelectScreen = ({ parties, goblins, dungeon, onSelectParty, on
               <div className="flex gap-2 flex-wrap">
                 {members.map(member => (
                   <div key={member.id} className="flex items-center gap-1 text-xs bg-gray-50 rounded px-2 py-1 border border-gray-300">
-                    <div className="w-6 h-6 bg-gray-100 rounded-full flex items-center justify-center border border-gray-400">
-                      {member.avatar}
+                    <div className="w-6 h-6 bg-gray-100 rounded-full flex items-center justify-center border border-gray-400 overflow-hidden">
+                      <img src={member.avatar} alt={member.name} className="w-full h-full object-cover" />
                     </div>
                     <span className="text-gray-600">{member.name}</span>
                   </div>

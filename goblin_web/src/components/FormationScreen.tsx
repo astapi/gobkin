@@ -37,8 +37,8 @@ export const FormationScreen = ({ partyRepository, goblins, onPartySelect }: For
                       {member ? (
                         <>
                           <div className="text-xs text-gray-600">Lv{member.level}</div>
-                          <div className="text-2xl">
-                            {member.avatar}
+                          <div className="w-8 h-8 rounded-full overflow-hidden">
+                            <img src={member.avatar} alt={member.name} className="w-full h-full object-cover" />
                           </div>
                           <div className="text-xs text-gray-600">HP{member.stats.hp}</div>
                         </>
