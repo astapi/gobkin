@@ -26,21 +26,21 @@ export const FormationScreen = ({ partyRepository, goblins, onPartySelect }: For
             <div
               key={party.id}
               onClick={() => onPartySelect(party.id)}
-              className="border-2 border-gray-300 rounded-lg p-4 bg-white cursor-pointer transition-all hover:border-gray-500 hover:bg-gray-50 shadow-sm"
+              className="border-2 border-gray-300 rounded-lg p-2 bg-white cursor-pointer transition-all hover:border-gray-500 hover:bg-gray-50 shadow-sm"
             >
               <div className="text-lg font-bold text-gray-800 mb-3">{party.name}</div>
               <div className="grid grid-cols-6 gap-2">
                 {[...Array(6)].map((_, i) => {
                   const member = partyMembers[i]
                   return (
-                    <div key={i} className={`aspect-square border-2 rounded-lg flex flex-col items-center justify-center ${
-                      member ? 'border-gray-600 bg-gray-50' : 'border-dashed border-gray-300 bg-gray-50'
-                    }`}>
+                    <div key={i} className="flex flex-col items-center justify-center gap-1">
                       {member ? (
                         <>
-                          <div className="w-6 h-6 bg-gray-100 rounded-full flex items-center justify-center text-xs border border-gray-400">
+                          <div className="text-xs text-gray-600">Lv{member.level}</div>
+                          <div className="text-2xl">
                             {member.avatar}
                           </div>
+                          <div className="text-xs text-gray-600">HP{member.stats.hp}</div>
                         </>
                       ) : (
                         <div className="text-xl text-gray-300">+</div>
@@ -48,9 +48,6 @@ export const FormationScreen = ({ partyRepository, goblins, onPartySelect }: For
                     </div>
                   )
                 })}
-              </div>
-              <div className="text-xs text-gray-500 mt-2 text-center">
-                {partyMembers.length === 0 ? '空のパーティ' : `${partyMembers.length}人編成中`}
               </div>
             </div>
           )
