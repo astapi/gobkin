@@ -1,24 +1,25 @@
 import { useState, useMemo } from 'react'
-import type { Goblin, Dungeon } from './types/index.ts'
+import type { Goblin, Dungeon, ExpeditionRequest } from './types/index.ts'
 import { goblinsData, dungeonsData } from './data/index.ts'
 import { GoblinListScreen } from './components/GoblinListScreen.tsx'
 import { FormationScreen } from './components/FormationScreen.tsx'
 import { PartyEditScreen } from './components/PartyEditScreen.tsx'
 import { DungeonScreen } from './components/DungeonScreen.tsx'
-import { PartySelectScreen } from './components/PartySelectScreen.tsx'
+import { ExpeditionSetupScreen } from './components/ExpeditionSetupScreen.tsx'
 import { GoblinDetailModal } from './components/GoblinDetailModal.tsx'
-import { DungeonConfirmModal } from './components/DungeonConfirmModal.tsx'
 import { TabMenu } from './components/TabMenu.tsx'
 import { JsonPartyRepositoryImpl } from './repositories/JsonPartyRepositoryImpl.ts'
+import { ExpeditionEngine } from './services/ExpeditionEngine.ts'
 
 function App() {
   const [activeTab, setActiveTab] = useState('list')
   const [selectedGoblin, setSelectedGoblin] = useState<Goblin | null>(null)
   const [editingPartyId, setEditingPartyId] = useState<number | null>(null)
   const [selectedDungeon, setSelectedDungeon] = useState<Dungeon | null>(null)
-  const [selectedPartyId, setSelectedPartyId] = useState<number | null>(null)
+  const [isExpeditionSetup, setIsExpeditionSetup] = useState(false)
 
   const partyRepository = useMemo(() => new JsonPartyRepositoryImpl(), [])
+  const expeditionEngine = useMemo(() => new ExpeditionEngine(), [])
 
   const handleGoblinClick = (goblin: Goblin) => {
     setSelectedGoblin(goblin)
@@ -38,30 +39,46 @@ function App() {
 
   const handleStartExplore = (dungeon: Dungeon) => {
     setSelectedDungeon(dungeon)
-  }
-
-  const handleSelectParty = (partyId: number) => {
-    setSelectedPartyId(partyId)
+    setIsExpeditionSetup(true)
   }
 
   const handleBackToDungeon = () => {
     setSelectedDungeon(null)
-    setSelectedPartyId(null)
+    setIsExpeditionSetup(false)
   }
 
-  const handleConfirm = () => {
-    if (selectedDungeon && selectedPartyId) {
-      alert(`${selectedDungeon.name}への探索を開始します！`)
+  const handleStartExpedition = (request: ExpeditionRequest) => {
+    try {
+      // パーティメンバーを取得
+      const party = partyRepository.getParty(parseInt(request.partyId))
+      if (!party) {
+        alert('パーティが見つかりません')
+        return
+      }
+
+      const partyMembers = party.memberIds
+        .map(id => goblinsData.find(g => g.id === id))
+        .filter((g): g is Goblin => g !== undefined)
+
+      if (partyMembers.length === 0) {
+        alert('有効なパーティメンバーがいません')
+        return
+      }
+
+      // 遠征を実行
+      const result = expeditionEngine.generateExpedition(request, partyMembers)
+
+      // 結果を表示（簡易版）
+      alert(`遠征完了！\n成功: ${result.summary.success ? 'はい' : 'いいえ'}\n到達階層: ${result.summary.maxFloorReached}\n獲得XP: ${result.summary.xpGained}\n戦利品: ${result.summary.loot.length}個`)
+
+      // 画面をリセット
       setSelectedDungeon(null)
-      setSelectedPartyId(null)
+      setIsExpeditionSetup(false)
+    } catch (error) {
+      console.error('遠征エラー:', error)
+      alert('遠征中にエラーが発生しました')
     }
   }
-
-  const handleCancel = () => {
-    setSelectedPartyId(null)
-  }
-
-  const selectedParty = selectedPartyId ? partyRepository.getParty(selectedPartyId) : null
 
   return (
     <div className="h-screen flex flex-col max-w-[414px] mx-auto border-2 border-gray-300 overflow-hidden bg-gray-50 relative">
@@ -92,12 +109,12 @@ function App() {
           )
         )}
         {activeTab === 'cave' && (
-          selectedDungeon && !selectedPartyId ? (
-            <PartySelectScreen
+          selectedDungeon && isExpeditionSetup ? (
+            <ExpeditionSetupScreen
               parties={partyRepository.getParties()}
               goblins={goblinsData}
               dungeon={selectedDungeon}
-              onSelectParty={handleSelectParty}
+              onStartExpedition={handleStartExpedition}
               onBack={handleBackToDungeon}
             />
           ) : (
@@ -117,16 +134,6 @@ function App() {
         <GoblinDetailModal goblin={selectedGoblin} onClose={closeDetail} />
       )}
 
-      {/* Dungeon Confirm Modal */}
-      {selectedDungeon && selectedPartyId && selectedParty && (
-        <DungeonConfirmModal
-          dungeon={selectedDungeon}
-          party={selectedParty}
-          goblins={goblinsData}
-          onConfirm={handleConfirm}
-          onCancel={handleCancel}
-        />
-      )}
     </div>
   )
 }
