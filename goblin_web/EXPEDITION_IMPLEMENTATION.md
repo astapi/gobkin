@@ -79,20 +79,31 @@ WinProb = 1 / (1 + exp(-(partyPower - enemyPower) / 15))
 
 1. **ダンジョン選択**: 既存のダンジョン一覧から選択
 2. **遠征設定**: パーティと帰還条件を選択
-3. **遠征実行**: 即座に結果を計算して表示
-4. **結果表示**: 成功/失敗、到達階層、獲得XP、戦利品数
+3. **遠征実行**: プリコンピュート方式で即座に結果を計算
+4. **タイムライン再生**: リアルタイムでイベントを再生表示
+   - 進行バーと経過時間表示
+   - イベントログの逐次表示
+   - パーティHP管理
+   - 速度制御（×1/×2/×4/スキップ）
+   - 緊急帰還機能
+5. **結果表示**: 成功/失敗、到達階層、獲得XP、戦利品数
 
 ## 未実装項目（残作業）⏳
 
 ### 段階4: 遠征実行とタイムライン再生
 
-**必要な実装:**
-- [ ] `ExpeditionPlaybackScreen.tsx` - タイムライン再生画面
-- [ ] 進行バーとリアルタイム進行表示
-- [ ] イベントログの逐次表示
-- [ ] 速度制御（×1/×2/×4/スキップ）
-- [ ] 緊急帰還（Abort）機能
-- [ ] バックグラウンド復帰対応
+**実装ファイル:**
+- `src/components/ExpeditionPlaybackScreen.tsx` - タイムライン再生画面
+- `src/App.tsx` - 画面遷移統合完了
+
+**実装済み機能:**
+- ✅ タイムライン再生システム（requestAnimationFrame使用）
+- ✅ 進行バーとリアルタイム進行表示
+- ✅ イベントログの逐次表示と自動スクロール
+- ✅ 速度制御（×1/×2/×4/スキップ）
+- ✅ 緊急帰還（Abort）機能
+- ✅ パーティHPのリアルタイム更新
+- ✅ 戦闘不能状態の視覚的表示
 
 **技術仕様:**
 ```typescript
@@ -129,13 +140,14 @@ interface PlaybackState {
 ### ファイル構成
 ```
 src/
-├── types/index.ts                 # 型定義（拡張済み）
-├── data/areas.ts                  # ゲームデータ
+├── types/index.ts                     # 型定義（拡張済み）
+├── data/areas.ts                      # ゲームデータ
 ├── services/
-│   ├── ExpeditionEngine.ts        # 遠征エンジン
-│   └── ExpeditionEngine.test.ts   # テスト
+│   ├── ExpeditionEngine.ts            # 遠征エンジン
+│   └── ExpeditionEngine.test.ts       # テスト
 └── components/
-    └── ExpeditionSetupScreen.tsx  # 遠征設定UI
+    ├── ExpeditionSetupScreen.tsx      # 遠征設定UI
+    └── ExpeditionPlaybackScreen.tsx   # タイムライン再生UI
 ```
 
 ### 依存関係

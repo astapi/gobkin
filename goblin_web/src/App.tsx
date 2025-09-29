@@ -1,11 +1,12 @@
 import { useState, useMemo } from 'react'
-import type { Goblin, Dungeon, ExpeditionRequest } from './types/index.ts'
+import type { Goblin, Dungeon, ExpeditionRequest, ExpeditionReplay } from './types/index.ts'
 import { goblinsData, dungeonsData } from './data/index.ts'
 import { GoblinListScreen } from './components/GoblinListScreen.tsx'
 import { FormationScreen } from './components/FormationScreen.tsx'
 import { PartyEditScreen } from './components/PartyEditScreen.tsx'
 import { DungeonScreen } from './components/DungeonScreen.tsx'
 import { ExpeditionSetupScreen } from './components/ExpeditionSetupScreen.tsx'
+import { ExpeditionPlaybackScreen } from './components/ExpeditionPlaybackScreen.tsx'
 import { GoblinDetailModal } from './components/GoblinDetailModal.tsx'
 import { TabMenu } from './components/TabMenu.tsx'
 import { JsonPartyRepositoryImpl } from './repositories/JsonPartyRepositoryImpl.ts'
@@ -17,6 +18,7 @@ function App() {
   const [editingPartyId, setEditingPartyId] = useState<number | null>(null)
   const [selectedDungeon, setSelectedDungeon] = useState<Dungeon | null>(null)
   const [isExpeditionSetup, setIsExpeditionSetup] = useState(false)
+  const [currentExpeditionReplay, setCurrentExpeditionReplay] = useState<ExpeditionReplay | null>(null)
 
   const partyRepository = useMemo(() => new JsonPartyRepositoryImpl(), [])
   const expeditionEngine = useMemo(() => new ExpeditionEngine(), [])
@@ -65,19 +67,29 @@ function App() {
         return
       }
 
-      // 遠征を実行
+      // 遠征を実行してリプレイデータを生成
       const result = expeditionEngine.generateExpedition(request, partyMembers)
 
-      // 結果を表示（簡易版）
-      alert(`遠征完了！\n成功: ${result.summary.success ? 'はい' : 'いいえ'}\n到達階層: ${result.summary.maxFloorReached}\n獲得XP: ${result.summary.xpGained}\n戦利品: ${result.summary.loot.length}個`)
-
-      // 画面をリセット
-      setSelectedDungeon(null)
+      // 再生画面へ遷移
+      setCurrentExpeditionReplay(result)
       setIsExpeditionSetup(false)
     } catch (error) {
       console.error('遠征エラー:', error)
       alert('遠征中にエラーが発生しました')
     }
+  }
+
+  const handleExpeditionComplete = () => {
+    // 結果を表示
+    if (currentExpeditionReplay) {
+      const summary = currentExpeditionReplay.summary
+      alert(`遠征完了！\n成功: ${summary.success ? 'はい' : 'いいえ'}\n到達階層: ${summary.maxFloorReached}\n獲得XP: ${summary.xpGained}\n戦利品: ${summary.loot.length}個`)
+    }
+
+    // 画面をリセット
+    setCurrentExpeditionReplay(null)
+    setSelectedDungeon(null)
+    setIsExpeditionSetup(false)
   }
 
   return (
@@ -109,7 +121,13 @@ function App() {
           )
         )}
         {activeTab === 'cave' && (
-          selectedDungeon && isExpeditionSetup ? (
+          selectedDungeon && currentExpeditionReplay ? (
+            <ExpeditionPlaybackScreen
+              expeditionReplay={currentExpeditionReplay}
+              goblins={goblinsData}
+              onComplete={handleExpeditionComplete}
+            />
+          ) : selectedDungeon && isExpeditionSetup ? (
             <ExpeditionSetupScreen
               parties={partyRepository.getParties()}
               goblins={goblinsData}
