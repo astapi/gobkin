@@ -15,7 +15,7 @@ export const GoblinCard = ({ goblin, onClick }: GoblinCardProps) => (
     </div>
     <div className="flex-1">
       <div className="font-bold text-gray-800 text-sm">{goblin.name}</div>
-      <div className="text-gray-600 text-xs mt-0.5">{goblin.job}</div>
+      <div className="text-gray-600 text-xs mt-0.5">{goblin.race}</div>
       <div className="text-gray-600 text-xs font-bold">Lv.{goblin.level}</div>
     </div>
   </div>

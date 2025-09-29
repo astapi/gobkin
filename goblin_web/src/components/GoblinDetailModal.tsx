@@ -28,7 +28,7 @@ export const GoblinDetailModal = ({ goblin, onClose }: GoblinDetailModalProps) =
             </div>
             <div>
               <h3 className="text-2xl font-bold text-gray-800">{goblin.name}</h3>
-              <div className="text-gray-600 text-base mt-1">{goblin.job}</div>
+              <div className="text-gray-600 text-base mt-1">{goblin.race}</div>
               <div className="text-gray-800 text-lg font-bold">Lv.{goblin.level}</div>
             </div>
           </div>

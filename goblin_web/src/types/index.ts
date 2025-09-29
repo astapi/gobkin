@@ -9,7 +9,7 @@ export type GoblinStats = {
 export type Goblin = {
   id: number
   name: string
-  job: string
+  race: string
   level: number
   avatar: string
   stats: GoblinStats
