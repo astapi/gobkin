@@ -1,4 +1,4 @@
-import type { Party } from '../types/index.ts'
+import type { Party, PartyStatus } from '../types/index.ts'
 import type { PartyRepository } from './PartyRepository.ts'
 import { db, auth } from '../config/firebase.ts'
 import {
@@ -35,9 +35,9 @@ const getUserPartyDoc = (partyId: number) => {
 export class FirestorePartyRepositoryImpl {
   private getDefaultParties(): Party[] {
     return [
-      { id: 1, name: 'PT1', memberIds: [] },
-      { id: 2, name: 'PT2', memberIds: [] },
-      { id: 3, name: 'PT3', memberIds: [] }
+      { id: 1, name: 'PT1', memberIds: [], status: 'idle' },
+      { id: 2, name: 'PT2', memberIds: [], status: 'idle' },
+      { id: 3, name: 'PT3', memberIds: [], status: 'idle' }
     ]
   }
 
@@ -148,5 +148,17 @@ export class FirestorePartyRepositoryAdapter implements PartyRepository {
     }).catch(error => {
       console.error('パーティ削除エラー:', error)
     })
+  }
+
+  updatePartyStatus(id: number, status: PartyStatus): void {
+    const party = this.getParty(id)
+    if (party) {
+      party.status = status
+      this.saveParty(party)
+    }
+  }
+
+  getPartiesByStatus(status: PartyStatus): Party[] {
+    return this.cache.filter(party => party.status === status)
   }
 }

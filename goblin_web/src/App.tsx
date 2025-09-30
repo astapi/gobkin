@@ -14,9 +14,11 @@ import { JsonPartyRepositoryImpl } from './repositories/JsonPartyRepositoryImpl.
 import { FirestorePartyRepositoryAdapter } from './repositories/FirestorePartyRepositoryImpl.ts'
 import { ExpeditionEngine } from './services/ExpeditionEngine.ts'
 import { AuthProvider, useAuth } from './contexts/AuthContext.tsx'
+import { ExpeditionStateProvider, useExpeditionState } from './contexts/ExpeditionStateContext.tsx'
 
 function AppContent() {
   const { loading } = useAuth()
+  const { setPartyExpeditionStatus, isPartyInExpedition, clearExpedition } = useExpeditionState()
   const [activeTab, setActiveTab] = useState('list')
   const [selectedGoblin, setSelectedGoblin] = useState<Goblin | null>(null)
   const [editingPartyId, setEditingPartyId] = useState<number | null>(null)
@@ -25,6 +27,7 @@ function AppContent() {
   const [currentExpeditionReplay, setCurrentExpeditionReplay] = useState<ExpeditionReplay | null>(null)
   const [showExpeditionResult, setShowExpeditionResult] = useState(false)
   const [repositoryInitialized, setRepositoryInitialized] = useState(false)
+  const [currentExpeditionPartyId, setCurrentExpeditionPartyId] = useState<number | null>(null)
 
   // 環境変数でFirestoreの使用を制御
   const useFirestore = import.meta.env.VITE_USE_FIRESTORE === 'true'
@@ -88,7 +91,8 @@ function AppContent() {
   const handleStartExpedition = (request: ExpeditionRequest) => {
     try {
       // パーティメンバーを取得
-      const party = partyRepository.getParty(parseInt(request.partyId))
+      const partyId = parseInt(request.partyId)
+      const party = partyRepository.getParty(partyId)
       if (!party) {
         alert('パーティが見つかりません')
         return
@@ -103,6 +107,11 @@ function AppContent() {
         return
       }
 
+      // パーティの状態を遠征中に更新
+      setPartyExpeditionStatus(partyId, 'expedition')
+      partyRepository.updatePartyStatus(partyId, 'expedition')
+      setCurrentExpeditionPartyId(partyId) // パーティIDを保存
+
       // 遠征を実行してリプレイデータを生成
       const result = expeditionEngine.generateExpedition(request, partyMembers)
 
@@ -116,16 +125,24 @@ function AppContent() {
   }
 
   const handleExpeditionComplete = () => {
+    // 遠征中のパーティの状態を戻す
+    if (currentExpeditionPartyId !== null) {
+      clearExpedition(currentExpeditionPartyId)
+      partyRepository.updatePartyStatus(currentExpeditionPartyId, 'idle')
+    }
+
     // 結果画面を表示
     setShowExpeditionResult(true)
   }
 
   const handleBackToMenu = () => {
+    // パーティの状態はすでにhandleExpeditionCompleteで処理済み
     // 画面をリセット
     setCurrentExpeditionReplay(null)
     setSelectedDungeon(null)
     setIsExpeditionSetup(false)
     setShowExpeditionResult(false)
+    setCurrentExpeditionPartyId(null)
   }
 
   return (
@@ -154,6 +171,7 @@ function AppContent() {
               goblins={goblinsData}
               onPartySelect={handlePartySelect}
               isLoading={useFirestore && !repositoryInitialized}
+              isPartyInExpedition={isPartyInExpedition}
             />
           )
         )}
@@ -202,7 +220,9 @@ function AppContent() {
 function App() {
   return (
     <AuthProvider>
-      <AppContent />
+      <ExpeditionStateProvider>
+        <AppContent />
+      </ExpeditionStateProvider>
     </AuthProvider>
   )
 }

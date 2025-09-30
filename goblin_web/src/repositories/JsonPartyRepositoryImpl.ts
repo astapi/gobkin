@@ -1,4 +1,4 @@
-import type { Party } from '../types/index.ts'
+import type { Party, PartyStatus } from '../types/index.ts'
 import type { PartyRepository } from './PartyRepository.ts'
 
 const STORAGE_KEY = 'goblin_kingdom_parties'
@@ -37,11 +37,24 @@ export class JsonPartyRepositoryImpl implements PartyRepository {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(parties))
   }
 
+  updatePartyStatus(id: number, status: PartyStatus): void {
+    const parties = this.getParties()
+    const party = parties.find(p => p.id === id)
+    if (party) {
+      party.status = status
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(parties))
+    }
+  }
+
+  getPartiesByStatus(status: PartyStatus): Party[] {
+    return this.getParties().filter(party => party.status === status)
+  }
+
   private getDefaultParties(): Party[] {
     return [
-      { id: 1, name: 'PT1', memberIds: [] },
-      { id: 2, name: 'PT2', memberIds: [] },
-      { id: 3, name: 'PT3', memberIds: [] }
+      { id: 1, name: 'PT1', memberIds: [], status: 'idle' },
+      { id: 2, name: 'PT2', memberIds: [], status: 'idle' },
+      { id: 3, name: 'PT3', memberIds: [], status: 'idle' }
     ]
   }
 }

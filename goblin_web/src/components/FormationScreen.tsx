@@ -6,9 +6,10 @@ interface FormationScreenProps {
   goblins: Goblin[]
   onPartySelect: (partyId: number) => void
   isLoading?: boolean
+  isPartyInExpedition: (partyId: number) => boolean
 }
 
-export const FormationScreen = ({ partyRepository, goblins, onPartySelect, isLoading = false }: FormationScreenProps) => {
+export const FormationScreen = ({ partyRepository, goblins, onPartySelect, isLoading = false, isPartyInExpedition }: FormationScreenProps) => {
   const parties = partyRepository.getParties()
 
   return (
@@ -31,13 +32,26 @@ export const FormationScreen = ({ partyRepository, goblins, onPartySelect, isLoa
             .map(id => goblins.find(g => g.id === id))
             .filter((g): g is Goblin => g !== undefined)
 
+          const isExpedition = party.status === 'expedition' || isPartyInExpedition(party.id)
+
           return (
             <div
               key={party.id}
-              onClick={() => onPartySelect(party.id)}
-              className="border-2 border-gray-300 rounded-lg p-2 bg-white cursor-pointer transition-all hover:border-gray-500 hover:bg-gray-50 shadow-sm"
+              onClick={() => !isExpedition && onPartySelect(party.id)}
+              className={`border-2 rounded-lg p-2 transition-all shadow-sm ${
+                isExpedition
+                  ? 'border-orange-300 bg-orange-50 cursor-not-allowed opacity-75'
+                  : 'border-gray-300 bg-white cursor-pointer hover:border-gray-500 hover:bg-gray-50'
+              }`}
             >
-              <div className="text-lg font-bold text-gray-800 mb-3">{party.name}</div>
+              <div className="flex justify-between items-center mb-3">
+                <div className="text-lg font-bold text-gray-800">{party.name}</div>
+                {isExpedition && (
+                  <span className="text-xs bg-orange-500 text-white px-2 py-1 rounded-full font-bold">
+                    🏚️ 遠征中
+                  </span>
+                )}
+              </div>
               <div className="grid grid-cols-6 gap-2">
                 {[...Array(6)].map((_, i) => {
                   const member = partyMembers[i]

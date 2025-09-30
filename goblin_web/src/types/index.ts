@@ -27,10 +27,13 @@ export type Dungeon = {
   difficulty?: string
 }
 
+export type PartyStatus = "idle" | "expedition"
+
 export type Party = {
   id: number
   name: string
   memberIds: number[]
+  status?: PartyStatus
 }
 
 // 遠征システム関連の型定義

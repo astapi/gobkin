@@ -19,7 +19,9 @@ export const ExpeditionSetupScreen = ({
   const [selectedPartyId, setSelectedPartyId] = useState<number | null>(null)
   const [returnPolicy, setReturnPolicy] = useState<ExpeditionRequest["returnPolicy"]>("never")
 
-  const validParties = parties.filter(party => party.memberIds.length > 0)
+  const validParties = parties.filter(party =>
+    party.memberIds.length > 0 && party.status !== 'expedition'
+  )
   const selectedParty = selectedPartyId ? parties.find(p => p.id === selectedPartyId) : null
 
   const handleStart = () => {
@@ -136,6 +138,13 @@ export const ExpeditionSetupScreen = ({
         <div className="text-sm font-bold text-gray-700 mb-3">
           1. パーティを選択
         </div>
+        {validParties.length === 0 ? (
+          <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 text-center text-gray-600">
+            <div className="text-xl mb-2">📝</div>
+            <div className="text-sm">利用可能なパーティがありません</div>
+            <div className="text-xs mt-1">編成済みで遠征中でないパーティが必要です</div>
+          </div>
+        ) : (
         <div className="grid gap-2">
           {validParties.map(party => {
             const members = party.memberIds
@@ -169,6 +178,7 @@ export const ExpeditionSetupScreen = ({
             )
           })}
         </div>
+        )}
       </div>
 
       {/* 帰還条件設定 */}

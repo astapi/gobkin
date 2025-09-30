@@ -13,11 +13,13 @@ interface PartyEditScreenProps {
 export const PartyEditScreen = ({ partyId, goblins, partyRepository, onBack }: PartyEditScreenProps) => {
   const [partyMemberIds, setPartyMemberIds] = useState<number[]>([])
   const [selectedSlot, setSelectedSlot] = useState<number | null>(null)
+  const [isExpedition, setIsExpedition] = useState(false)
 
   useEffect(() => {
     const party = partyRepository.getParty(partyId)
     if (party) {
       setPartyMemberIds(party.memberIds)
+      setIsExpedition(party.status === 'expedition')
     }
   }, [partyId, partyRepository])
 
@@ -26,12 +28,14 @@ export const PartyEditScreen = ({ partyId, goblins, partyRepository, onBack }: P
     .filter((g): g is Goblin => g !== undefined)
 
   const handleSlotClick = (index: number) => {
-    if (index >= partyMembers.length) {
+    if (!isExpedition && index >= partyMembers.length) {
       setSelectedSlot(index)
     }
   }
 
   const handleMemberRemove = (index: number) => {
+    if (isExpedition) return
+
     const newMemberIds = partyMemberIds.filter((_, i) => i !== index)
     setPartyMemberIds(newMemberIds)
 
@@ -44,6 +48,8 @@ export const PartyEditScreen = ({ partyId, goblins, partyRepository, onBack }: P
   }
 
   const handleGoblinSelect = (goblin: Goblin) => {
+    if (isExpedition || selectedSlot === null) return
+
     if (selectedSlot !== null) {
       const newMemberIds = [...partyMemberIds]
       if (selectedSlot < newMemberIds.length) {
@@ -77,10 +83,23 @@ export const PartyEditScreen = ({ partyId, goblins, partyRepository, onBack }: P
         >
           ←
         </button>
-        <div className="text-lg font-bold text-gray-800">
-          PT{partyId} 編成
+        <div className="flex items-center gap-2">
+          <div className="text-lg font-bold text-gray-800">
+            PT{partyId} 編成
+          </div>
+          {isExpedition && (
+            <span className="text-xs bg-orange-500 text-white px-2 py-1 rounded-full font-bold">
+              🏚️ 遠征中
+            </span>
+          )}
         </div>
       </div>
+
+      {isExpedition && (
+        <div className="bg-orange-50 border border-orange-200 rounded-lg p-3 mb-4 text-sm text-orange-800">
+          ⚠️ 遠征中のパーティは編成できません
+        </div>
+      )}
 
       <div className="text-sm font-bold text-gray-700 mb-2">
         パーティメンバー (最大6人)
@@ -106,15 +125,17 @@ export const PartyEditScreen = ({ partyId, goblins, partyRepository, onBack }: P
                     <img src={member.avatar} alt={member.name} className="w-full h-full object-cover" />
                   </div>
                   <div className="text-[10px] text-gray-600 text-center">{member.name}</div>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      handleMemberRemove(i)
-                    }}
-                    className="absolute top-0 right-0 w-4 h-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center hover:bg-red-600"
-                  >
-                    ×
-                  </button>
+                  {!isExpedition && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        handleMemberRemove(i)
+                      }}
+                      className="absolute top-0 right-0 w-4 h-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center hover:bg-red-600"
+                    >
+                      ×
+                    </button>
+                  )}
                 </>
               ) : (
                 <>
@@ -129,23 +150,27 @@ export const PartyEditScreen = ({ partyId, goblins, partyRepository, onBack }: P
         })}
       </div>
 
-      <div className="text-sm font-bold text-gray-700 mb-2 pb-2 border-b-2 border-gray-200">
-        利用可能なゴブリン
-        {selectedSlot !== null && <span className="text-blue-600 ml-2">（選択してください）</span>}
-      </div>
-      <div className="flex-1 overflow-y-auto">
-        <div className="flex flex-col gap-3">
-          {availableGoblins.map(goblin => (
-            <div
-              key={goblin.id}
-              onClick={() => handleGoblinSelect(goblin)}
-              className={selectedSlot !== null ? 'cursor-pointer' : ''}
-            >
-              <GoblinCard goblin={goblin} />
+      {!isExpedition && (
+        <>
+          <div className="text-sm font-bold text-gray-700 mb-2 pb-2 border-b-2 border-gray-200">
+            利用可能なゴブリン
+            {selectedSlot !== null && <span className="text-blue-600 ml-2">（選択してください）</span>}
+          </div>
+          <div className="flex-1 overflow-y-auto">
+            <div className="flex flex-col gap-3">
+              {availableGoblins.map(goblin => (
+                <div
+                  key={goblin.id}
+                  onClick={() => handleGoblinSelect(goblin)}
+                  className={selectedSlot !== null ? 'cursor-pointer' : ''}
+                >
+                  <GoblinCard goblin={goblin} />
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-      </div>
+          </div>
+        </>
+      )}
     </div>
   )
 }
