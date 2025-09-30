@@ -31,6 +31,18 @@ export const PartyEditScreen = ({ partyId, goblins, partyRepository, onBack }: P
     }
   }
 
+  const handleMemberRemove = (index: number) => {
+    const newMemberIds = partyMemberIds.filter((_, i) => i !== index)
+    setPartyMemberIds(newMemberIds)
+
+    if (newMemberIds.length > 0) {
+      const party = partyRepository.getParty(partyId)
+      if (party) {
+        partyRepository.saveParty({ ...party, memberIds: newMemberIds })
+      }
+    }
+  }
+
   const handleGoblinSelect = (goblin: Goblin) => {
     if (selectedSlot !== null) {
       const newMemberIds = [...partyMemberIds]
@@ -41,9 +53,11 @@ export const PartyEditScreen = ({ partyId, goblins, partyRepository, onBack }: P
       }
       setPartyMemberIds(newMemberIds)
 
-      const party = partyRepository.getParty(partyId)
-      if (party) {
-        partyRepository.saveParty({ ...party, memberIds: newMemberIds })
+      if (newMemberIds.length > 0) {
+        const party = partyRepository.getParty(partyId)
+        if (party) {
+          partyRepository.saveParty({ ...party, memberIds: newMemberIds })
+        }
       }
 
       setSelectedSlot(null)
@@ -78,7 +92,7 @@ export const PartyEditScreen = ({ partyId, goblins, partyRepository, onBack }: P
             <div
               key={`slot-${i}`}
               onClick={() => handleSlotClick(i)}
-              className={`aspect-square border-2 rounded-lg flex flex-col items-center justify-center transition-all ${
+              className={`aspect-square border-2 rounded-lg flex flex-col items-center justify-center transition-all relative ${
                 member
                   ? 'border-gray-600 bg-gray-50'
                   : selectedSlot === i
@@ -92,6 +106,15 @@ export const PartyEditScreen = ({ partyId, goblins, partyRepository, onBack }: P
                     <img src={member.avatar} alt={member.name} className="w-full h-full object-cover" />
                   </div>
                   <div className="text-[10px] text-gray-600 text-center">{member.name}</div>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      handleMemberRemove(i)
+                    }}
+                    className="absolute top-0 right-0 w-4 h-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center hover:bg-red-600"
+                  >
+                    ×
+                  </button>
                 </>
               ) : (
                 <>

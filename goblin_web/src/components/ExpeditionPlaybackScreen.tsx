@@ -33,7 +33,7 @@ export const ExpeditionPlaybackScreen = ({
       return goblin?.stats.hp || 100
     })
   })
-  const animationFrameRef = useRef<number>()
+  const animationFrameRef = useRef<number>(0)
   const lastTimeRef = useRef<number>(performance.now())
   const logContainerRef = useRef<HTMLDivElement>(null)
   const isCompletedRef = useRef<boolean>(false)
