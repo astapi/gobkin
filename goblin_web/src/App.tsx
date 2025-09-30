@@ -7,21 +7,57 @@ import { PartyEditScreen } from './components/PartyEditScreen.tsx'
 import { DungeonScreen } from './components/DungeonScreen.tsx'
 import { ExpeditionSetupScreen } from './components/ExpeditionSetupScreen.tsx'
 import { ExpeditionPlaybackScreen } from './components/ExpeditionPlaybackScreen.tsx'
+import { ExpeditionResultScreen } from './components/ExpeditionResultScreen.tsx'
 import { GoblinDetailModal } from './components/GoblinDetailModal.tsx'
 import { TabMenu } from './components/TabMenu.tsx'
 import { JsonPartyRepositoryImpl } from './repositories/JsonPartyRepositoryImpl.ts'
+import { FirestorePartyRepositoryAdapter } from './repositories/FirestorePartyRepositoryImpl.ts'
 import { ExpeditionEngine } from './services/ExpeditionEngine.ts'
+import { AuthProvider, useAuth } from './contexts/AuthContext.tsx'
 
-function App() {
+function AppContent() {
+  const { loading } = useAuth()
   const [activeTab, setActiveTab] = useState('list')
   const [selectedGoblin, setSelectedGoblin] = useState<Goblin | null>(null)
   const [editingPartyId, setEditingPartyId] = useState<number | null>(null)
   const [selectedDungeon, setSelectedDungeon] = useState<Dungeon | null>(null)
   const [isExpeditionSetup, setIsExpeditionSetup] = useState(false)
   const [currentExpeditionReplay, setCurrentExpeditionReplay] = useState<ExpeditionReplay | null>(null)
+  const [showExpeditionResult, setShowExpeditionResult] = useState(false)
+  const [repositoryInitialized, setRepositoryInitialized] = useState(false)
 
-  const partyRepository = useMemo(() => new JsonPartyRepositoryImpl(), [])
+  // 環境変数でFirestoreの使用を制御
+  const useFirestore = import.meta.env.VITE_USE_FIRESTORE === 'true'
+  const partyRepository = useMemo(() => {
+    const repo = useFirestore ? new FirestorePartyRepositoryAdapter() : new JsonPartyRepositoryImpl()
+
+    if (useFirestore && repo instanceof FirestorePartyRepositoryAdapter) {
+      repo.setOnDataChange(() => {
+        setRepositoryInitialized(true)
+      })
+    } else {
+      setRepositoryInitialized(true)
+    }
+
+    return repo
+  }, [useFirestore])
   const expeditionEngine = useMemo(() => new ExpeditionEngine(), [])
+
+  if (loading) {
+    return (
+      <div className="h-screen flex flex-col max-w-[414px] mx-auto border-2 border-gray-300 overflow-hidden bg-gray-50 relative">
+        <div className="bg-gray-800 text-white p-5 text-center shadow-lg">
+          <h1 className="text-lg font-bold tracking-wide">🏰 ゴブリン王国</h1>
+        </div>
+        <div className="flex-1 flex items-center justify-center">
+          <div className="text-center">
+            <div className="text-xl mb-2">⚡</div>
+            <div className="text-gray-600">認証中...</div>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   const handleGoblinClick = (goblin: Goblin) => {
     setSelectedGoblin(goblin)
@@ -80,16 +116,16 @@ function App() {
   }
 
   const handleExpeditionComplete = () => {
-    // 結果を表示
-    if (currentExpeditionReplay) {
-      const summary = currentExpeditionReplay.summary
-      alert(`遠征完了！\n成功: ${summary.success ? 'はい' : 'いいえ'}\n到達階層: ${summary.maxFloorReached}\n獲得XP: ${summary.xpGained}\n戦利品: ${summary.loot.length}個`)
-    }
+    // 結果画面を表示
+    setShowExpeditionResult(true)
+  }
 
+  const handleBackToMenu = () => {
     // 画面をリセット
     setCurrentExpeditionReplay(null)
     setSelectedDungeon(null)
     setIsExpeditionSetup(false)
+    setShowExpeditionResult(false)
   }
 
   return (
@@ -117,11 +153,18 @@ function App() {
               partyRepository={partyRepository}
               goblins={goblinsData}
               onPartySelect={handlePartySelect}
+              isLoading={useFirestore && !repositoryInitialized}
             />
           )
         )}
         {activeTab === 'cave' && (
-          selectedDungeon && currentExpeditionReplay ? (
+          selectedDungeon && currentExpeditionReplay && showExpeditionResult ? (
+            <ExpeditionResultScreen
+              expeditionReplay={currentExpeditionReplay}
+              goblins={goblinsData}
+              onBackToMenu={handleBackToMenu}
+            />
+          ) : selectedDungeon && currentExpeditionReplay ? (
             <ExpeditionPlaybackScreen
               expeditionReplay={currentExpeditionReplay}
               goblins={goblinsData}
@@ -153,6 +196,14 @@ function App() {
       )}
 
     </div>
+  )
+}
+
+function App() {
+  return (
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
   )
 }
 

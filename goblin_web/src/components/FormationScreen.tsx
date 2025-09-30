@@ -5,9 +5,10 @@ interface FormationScreenProps {
   partyRepository: PartyRepository
   goblins: Goblin[]
   onPartySelect: (partyId: number) => void
+  isLoading?: boolean
 }
 
-export const FormationScreen = ({ partyRepository, goblins, onPartySelect }: FormationScreenProps) => {
+export const FormationScreen = ({ partyRepository, goblins, onPartySelect, isLoading = false }: FormationScreenProps) => {
   const parties = partyRepository.getParties()
 
   return (
@@ -16,8 +17,16 @@ export const FormationScreen = ({ partyRepository, goblins, onPartySelect }: For
         パーティ選択
       </div>
 
-      <div className="flex flex-col gap-4">
-        {parties.map(party => {
+      {isLoading ? (
+        <div className="flex items-center justify-center h-32">
+          <div className="text-center">
+            <div className="text-xl mb-2">⚡</div>
+            <div className="text-gray-600">パーティデータを読み込み中...</div>
+          </div>
+        </div>
+      ) : (
+        <div className="flex flex-col gap-4">
+          {parties.map(party => {
           const partyMembers = party.memberIds
             .map(id => goblins.find(g => g.id === id))
             .filter((g): g is Goblin => g !== undefined)
@@ -51,8 +60,9 @@ export const FormationScreen = ({ partyRepository, goblins, onPartySelect }: For
               </div>
             </div>
           )
-        })}
-      </div>
+          })}
+        </div>
+      )}
     </div>
   )
 }
