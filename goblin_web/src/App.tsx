@@ -7,7 +7,6 @@ import { DungeonScreen } from './components/DungeonScreen.tsx'
 import { ExpeditionSetupScreen } from './components/ExpeditionSetupScreen.tsx'
 import { ExpeditionPlaybackScreen } from './components/ExpeditionPlaybackScreen.tsx'
 import { ExpeditionResultScreen } from './components/ExpeditionResultScreen.tsx'
-import { GoblinDetailModal } from './components/GoblinDetailModal.tsx'
 import { TabMenu } from './components/TabMenu.tsx'
 import { FirestoreExpeditionRepositoryAdapter } from './repositories/FirestoreExpeditionRepositoryImpl.ts'
 import { ExpeditionEngine } from './services/ExpeditionEngine.ts'
@@ -19,7 +18,6 @@ function AppContent() {
   const { loading } = useAuth()
   const { setPartyExpeditionStatus, clearExpedition } = useExpeditionState()
   const [activeTab, setActiveTab] = useState('list')
-  const [selectedGoblin, setSelectedGoblin] = useState<Goblin | null>(null)
   const [selectedDungeon, setSelectedDungeon] = useState<Dungeon | null>(null)
   const [isExpeditionSetup, setIsExpeditionSetup] = useState(false)
   const [currentExpeditionReplay, setCurrentExpeditionReplay] = useState<ExpeditionReplay | null>(null)
@@ -50,14 +48,6 @@ function AppContent() {
         </div>
       </div>
     )
-  }
-
-  const handleGoblinClick = (goblin: Goblin) => {
-    setSelectedGoblin(goblin)
-  }
-
-  const closeDetail = () => {
-    setSelectedGoblin(null)
   }
 
 
@@ -187,7 +177,7 @@ function AppContent() {
       {/* Main Content */}
       <div className="overflow-hidden flex-1 p-4 bg-gray-50">
         {activeTab === 'list' && (
-          <GoblinListScreen goblins={goblinsData} onGoblinClick={handleGoblinClick} />
+          <GoblinListScreen />
         )}
         {activeTab === 'formation' && (
           <FormationTabScreen />
@@ -225,10 +215,6 @@ function AppContent() {
       {/* Tab Menu */}
       <TabMenu activeTab={activeTab} onTabChange={setActiveTab} />
 
-      {/* Detail Modal */}
-      {selectedGoblin && (
-        <GoblinDetailModal goblin={selectedGoblin} onClose={closeDetail} />
-      )}
 
     </div>
   )
