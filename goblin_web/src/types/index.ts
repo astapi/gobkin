@@ -96,6 +96,22 @@ export interface CombatReplay {
   }
 }
 
+export interface ExpeditionRecord {
+  id: string
+  userId: string
+  partyId: number
+  partyName: string
+  dungeonId: number
+  dungeonName: string
+  startTime: Date
+  returnTime: Date
+  status: 'ongoing' | 'completed' | 'failed'
+  returnPolicy: ExpeditionRequest["returnPolicy"]
+  replay?: ExpeditionReplay
+  createdAt: Date
+  updatedAt: Date
+}
+
 export interface RewardSummary {
   success: boolean
   maxFloorReached: number
