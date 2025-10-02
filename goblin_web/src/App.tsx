@@ -1,50 +1,36 @@
 import { useState, useMemo } from 'react'
-import type { Goblin, Dungeon, ExpeditionRequest, ExpeditionReplay, ExpeditionRecord } from './types/index.ts'
+import type { Goblin, Dungeon, ExpeditionRequest, ExpeditionReplay } from './types/index.ts'
 import { goblinsData, dungeonsData } from './data/index.ts'
 import { GoblinListScreen } from './components/GoblinListScreen.tsx'
-import { FormationScreen } from './components/FormationScreen.tsx'
-import { PartyEditScreen } from './components/PartyEditScreen.tsx'
+import { FormationTabScreen } from './components/FormationTabScreen.tsx'
 import { DungeonScreen } from './components/DungeonScreen.tsx'
 import { ExpeditionSetupScreen } from './components/ExpeditionSetupScreen.tsx'
 import { ExpeditionPlaybackScreen } from './components/ExpeditionPlaybackScreen.tsx'
 import { ExpeditionResultScreen } from './components/ExpeditionResultScreen.tsx'
 import { GoblinDetailModal } from './components/GoblinDetailModal.tsx'
 import { TabMenu } from './components/TabMenu.tsx'
-import { JsonPartyRepositoryImpl } from './repositories/JsonPartyRepositoryImpl.ts'
-import { FirestorePartyRepositoryAdapter } from './repositories/FirestorePartyRepositoryImpl.ts'
 import { FirestoreExpeditionRepositoryAdapter } from './repositories/FirestoreExpeditionRepositoryImpl.ts'
 import { ExpeditionEngine } from './services/ExpeditionEngine.ts'
 import { AuthProvider, useAuth } from './contexts/AuthContext.tsx'
 import { ExpeditionStateProvider, useExpeditionState } from './contexts/ExpeditionStateContext.tsx'
+import { usePartyRepository } from './hooks/usePartyRepository.ts'
 
 function AppContent() {
   const { loading } = useAuth()
-  const { setPartyExpeditionStatus, isPartyInExpedition, clearExpedition, getExpeditionByPartyId } = useExpeditionState()
+  const { setPartyExpeditionStatus, clearExpedition } = useExpeditionState()
   const [activeTab, setActiveTab] = useState('list')
   const [selectedGoblin, setSelectedGoblin] = useState<Goblin | null>(null)
-  const [editingPartyId, setEditingPartyId] = useState<number | null>(null)
   const [selectedDungeon, setSelectedDungeon] = useState<Dungeon | null>(null)
   const [isExpeditionSetup, setIsExpeditionSetup] = useState(false)
   const [currentExpeditionReplay, setCurrentExpeditionReplay] = useState<ExpeditionReplay | null>(null)
   const [showExpeditionResult, setShowExpeditionResult] = useState(false)
-  const [repositoryInitialized, setRepositoryInitialized] = useState(false)
   const [currentExpeditionPartyId, setCurrentExpeditionPartyId] = useState<number | null>(null)
+
+  // partyRepositoryの初期化をカスタムフックで管理
+  const { partyRepository } = usePartyRepository()
 
   // 環境変数でFirestoreの使用を制御
   const useFirestore = import.meta.env.VITE_USE_FIRESTORE === 'true'
-  const partyRepository = useMemo(() => {
-    const repo = useFirestore ? new FirestorePartyRepositoryAdapter() : new JsonPartyRepositoryImpl()
-
-    if (useFirestore && repo instanceof FirestorePartyRepositoryAdapter) {
-      repo.setOnDataChange(() => {
-        setRepositoryInitialized(true)
-      })
-    } else {
-      setRepositoryInitialized(true)
-    }
-
-    return repo
-  }, [useFirestore])
   const expeditionEngine = useMemo(() => new ExpeditionEngine(), [])
   const expeditionRepository = useMemo(() =>
     useFirestore ? new FirestoreExpeditionRepositoryAdapter() : null, [useFirestore]
@@ -74,13 +60,6 @@ function AppContent() {
     setSelectedGoblin(null)
   }
 
-  const handlePartySelect = (partyId: number) => {
-    setEditingPartyId(partyId)
-  }
-
-  const handleBackToFormation = () => {
-    setEditingPartyId(null)
-  }
 
   const handleStartExplore = (dungeon: Dungeon) => {
     setSelectedDungeon(dungeon)
@@ -196,43 +175,7 @@ function AppContent() {
     setCurrentExpeditionPartyId(null)
   }
 
-  const handleExpeditionPartyClick = async (partyId: number) => {
-    try {
-      // 遠征データを取得
-      const expeditionRecord = await getExpeditionByPartyId(partyId)
-      console.log('expeditionRecord', expeditionRecord, partyId)
-
-      if (expeditionRecord && expeditionRecord.replay) {
-        // リプレイデータがある場合は再生画面へ遷移
-        setCurrentExpeditionReplay(expeditionRecord.replay)
-        setCurrentExpeditionPartyId(partyId)
-      } else {
-        // リプレイデータがない場合は情報を表示
-        alert(`${expeditionRecord?.partyName || 'PT'}は現在遠征中です。\n帰還予定時刻: ${expeditionRecord?.returnTime.toLocaleString() || '不明'}`)
-      }
-    } catch (error) {
-      console.error('遠征データ取得エラー:', error)
-      alert('遠征データの取得に失敗しました')
-    }
-  }
-
-  const handleExpeditionHistoryClick = (expeditionRecord: ExpeditionRecord) => {
-    if (expeditionRecord.replay) {
-      // 履歴のリプレイを再生するため、ダンジョン情報を設定
-      const dungeon = dungeonsData.find(d => d.id === expeditionRecord.dungeonId)
-      if (dungeon) {
-        setSelectedDungeon(dungeon)
-      }
-
-      // リプレイ関連の状態をリセット
-      setShowExpeditionResult(false)
-      setIsExpeditionSetup(false)
-
-      // リプレイデータを設定
-      setCurrentExpeditionReplay(expeditionRecord.replay)
-      setActiveTab('cave') // caveタブに切り替えてリプレイを表示
-    }
-  }
+  // FormationTabScreenは内部で遠征とリプレイを処理するため、これらのハンドラーは不要になりました
 
   return (
     <div className="h-screen flex flex-col max-w-[414px] mx-auto border-2 border-gray-300 overflow-hidden bg-gray-50 relative">
@@ -246,25 +189,8 @@ function AppContent() {
         {activeTab === 'list' && (
           <GoblinListScreen goblins={goblinsData} onGoblinClick={handleGoblinClick} />
         )}
-        {activeTab === 'hensei' && (
-          editingPartyId !== null ? (
-            <PartyEditScreen
-              partyId={editingPartyId}
-              goblins={goblinsData}
-              partyRepository={partyRepository}
-              onBack={handleBackToFormation}
-            />
-          ) : (
-            <FormationScreen
-              partyRepository={partyRepository}
-              goblins={goblinsData}
-              onPartySelect={handlePartySelect}
-              onExpeditionPartyClick={handleExpeditionPartyClick}
-              onHistoryClick={handleExpeditionHistoryClick}
-              isLoading={useFirestore && !repositoryInitialized}
-              isPartyInExpedition={isPartyInExpedition}
-            />
-          )
+        {activeTab === 'formation' && (
+          <FormationTabScreen />
         )}
         {activeTab === 'cave' && (
           selectedDungeon && currentExpeditionReplay && showExpeditionResult ? (
