@@ -33,12 +33,12 @@ export const TabMenu = ({ activeTab, onTabChange }: TabMenuProps) => (
 
     <button
       className={`flex-1 flex flex-col items-center justify-center p-2.5 transition-all border-t-[3px] ${
-        activeTab === 'cave' ? 'bg-gray-100 border-gray-600' : 'hover:bg-gray-50 border-transparent'
+        activeTab === 'expedition' ? 'bg-gray-100 border-gray-600' : 'hover:bg-gray-50 border-transparent'
       }`}
-      onClick={() => onTabChange('cave')}
+      onClick={() => onTabChange('expedition')}
     >
       <img src="/src/assets/expedition.svg" alt="遠征" className="w-8 h-8 mb-1" />
-      <span className={`text-[11px] tracking-wider ${activeTab === 'cave' ? 'text-gray-600 font-semibold' : 'text-gray-600 font-medium'}`}>
+      <span className={`text-[11px] tracking-wider ${activeTab === 'expedition' ? 'text-gray-600 font-semibold' : 'text-gray-600 font-medium'}`}>
         遠征
       </span>
     </button>

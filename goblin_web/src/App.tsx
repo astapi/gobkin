@@ -182,7 +182,7 @@ function AppContent() {
         {activeTab === 'formation' && (
           <FormationTabScreen />
         )}
-        {activeTab === 'cave' && (
+        {activeTab === 'expedition' && (
           selectedDungeon && currentExpeditionReplay && showExpeditionResult ? (
             <ExpeditionResultScreen
               expeditionReplay={currentExpeditionReplay}
