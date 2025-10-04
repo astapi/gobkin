@@ -133,6 +133,7 @@ export function ExpeditionTabScreen() {
       <ExpeditionResultScreen
         expeditionReplay={currentExpeditionReplay}
         goblins={goblinsData}
+        dungeonName={selectedDungeon.name}
         onBackToMenu={handleBackToMenu}
       />
     )

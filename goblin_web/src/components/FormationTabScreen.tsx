@@ -87,6 +87,7 @@ export const FormationTabScreen = () => {
           <ExpeditionResultScreen
             expeditionReplay={selectedHistoryReplay.replay}
             goblins={goblinsData}
+            dungeonName={selectedHistoryReplay.dungeonName}
             onBackToMenu={handleBackToFormationList}
           />
         </div>
