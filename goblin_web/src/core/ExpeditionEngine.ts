@@ -278,6 +278,7 @@ export class ExpeditionEngine {
   private initializePartyState(party: Goblin[]) {
     return party.map(goblin => ({
       id: goblin.id.toString(),
+      name: goblin.name,
       currentHP: goblin.stats.hp,
       maxHP: goblin.stats.hp,
       atk: goblin.stats.atk,
@@ -358,7 +359,7 @@ export class ExpeditionEngine {
     // partyStateから全ゴブリンを再構築（死亡メンバーも含む）
     const allGoblins: Goblin[] = partyState.map(member => ({
       id: parseInt(member.id),
-      name: `ゴブリン${member.id}`,
+      name: member.name,
       race: 'ゴブリン' as const,
       level: 1,
       avatar: '/default.png',
