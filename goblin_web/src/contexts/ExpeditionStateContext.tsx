@@ -11,6 +11,7 @@ interface ExpeditionState {
   getOngoingExpeditions: () => ExpeditionRecord[]
   getPartyExpeditionHistory: (partyId: number) => Promise<ExpeditionRecord[]>
   expeditionRecords: ExpeditionRecord[]
+  expeditionRepository: FirestoreExpeditionRepositoryAdapter | null
 }
 
 const ExpeditionStateContext = createContext<ExpeditionState | undefined>(undefined)
@@ -81,7 +82,8 @@ export const ExpeditionStateProvider = ({ children }: { children: ReactNode }) =
       getExpeditionByPartyId,
       getOngoingExpeditions,
       getPartyExpeditionHistory,
-      expeditionRecords
+      expeditionRecords,
+      expeditionRepository
     }}>
       {children}
     </ExpeditionStateContext.Provider>

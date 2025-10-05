@@ -4,6 +4,7 @@ import type { PartyRepository } from '../repositories/PartyRepository.ts'
 import { DungeonSelectionModal } from './DungeonSelectionModal.tsx'
 import { FloorTargetSelectionModal } from './FloorTargetSelectionModal.tsx'
 import { ReturnPolicySelectionModal } from './ReturnPolicySelectionModal.tsx'
+import { ExpeditionConfirmModal } from './ExpeditionConfirmModal.tsx'
 
 interface ExpeditionPreparationScreenProps {
   partyId: number
@@ -12,6 +13,7 @@ interface ExpeditionPreparationScreenProps {
   dungeons: Dungeon[]
   onBack: () => void
   onEditParty: () => void
+  onStartExpedition: (request: ExpeditionRequest) => void
 }
 
 export const ExpeditionPreparationScreen = ({
@@ -20,11 +22,13 @@ export const ExpeditionPreparationScreen = ({
   goblins,
   dungeons,
   onBack,
-  onEditParty
+  onEditParty,
+  onStartExpedition
 }: ExpeditionPreparationScreenProps) => {
   const [showDungeonModal, setShowDungeonModal] = useState(false)
   const [showFloorModal, setShowFloorModal] = useState(false)
   const [showReturnPolicyModal, setShowReturnPolicyModal] = useState(false)
+  const [showConfirmModal, setShowConfirmModal] = useState(false)
   const party = partyRepository.getParty(partyId)
   const selectedDungeon = party?.dungeonId ? dungeons.find(d => d.id === party.dungeonId) : null
 
@@ -56,6 +60,25 @@ export const ExpeditionPreparationScreen = ({
       default:
         return "帰還しない"
     }
+  }
+
+  const handleStartButtonClick = () => {
+    if (!party?.dungeonId) return
+    setShowConfirmModal(true)
+  }
+
+  const handleConfirmExpedition = () => {
+    if (!party?.dungeonId) return
+
+    const request: ExpeditionRequest = {
+      partyId: partyId.toString(),
+      areaId: party.dungeonId.toString(),
+      returnPolicy: party.returnPolicy || "never",
+      clientVersion: "1.0.0"
+    }
+
+    setShowConfirmModal(false)
+    onStartExpedition(request)
   }
 
   if (!party) {
@@ -93,7 +116,17 @@ export const ExpeditionPreparationScreen = ({
         <span className="text-sm font-medium text-gray-700">
           冒険準備
         </span>
-        <div className="w-12"></div>
+        <button
+          onClick={handleStartButtonClick}
+          disabled={!selectedDungeon}
+          className={`px-4 py-1 text-sm font-medium rounded transition-colors ${
+            selectedDungeon
+              ? 'bg-blue-600 text-white hover:bg-blue-700'
+              : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+          }`}
+        >
+          出撃
+        </button>
       </div>
 
       {/* Content */}
@@ -217,6 +250,19 @@ export const ExpeditionPreparationScreen = ({
         <ReturnPolicySelectionModal
           onSelect={handleReturnPolicySelect}
           onClose={() => setShowReturnPolicyModal(false)}
+        />
+      )}
+
+      {/* 出撃確認モーダル */}
+      {showConfirmModal && selectedDungeon && (
+        <ExpeditionConfirmModal
+          dungeon={selectedDungeon}
+          partyName={party.name}
+          members={partyMembers}
+          targetFloor={party.targetFloor || null}
+          returnPolicyLabel={getReturnPolicyLabel(party.returnPolicy)}
+          onConfirm={handleConfirmExpedition}
+          onClose={() => setShowConfirmModal(false)}
         />
       )}
     </div>

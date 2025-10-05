@@ -23,7 +23,7 @@ export const FormationScreen = ({
   isLoading = false
 }: FormationScreenProps) => {
   const parties = partyRepository.getParties()
-  const { getPartyExpeditionHistory } = useExpeditionState()
+  const { getPartyExpeditionHistory, expeditionRecords } = useExpeditionState()
   const [partyHistories, setPartyHistories] = useState<Record<number, ExpeditionRecord[]>>({})
 
   // 各パーティの履歴を取得
@@ -39,7 +39,7 @@ export const FormationScreen = ({
       setPartyHistories(histories)
     }
     loadHistories()
-  }, [parties.length]) // parties.lengthを依存配列に使用
+  }, [parties.length, expeditionRecords]) // expeditionRecordsを依存配列に追加
 
   const formatFullDateTime = (date: Date) => {
     const year = date.getFullYear()
