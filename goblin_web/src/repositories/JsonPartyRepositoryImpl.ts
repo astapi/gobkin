@@ -50,6 +50,15 @@ export class JsonPartyRepositoryImpl implements PartyRepository {
     return this.getParties().filter(party => party.status === status)
   }
 
+  updateDungeonSettings(id: number, dungeonId: number): void {
+    const parties = this.getParties()
+    const party = parties.find(p => p.id === id)
+    if (party) {
+      party.dungeonId = dungeonId
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(parties))
+    }
+  }
+
   private getDefaultParties(): Party[] {
     return [
       { id: 1, name: 'PT1', memberIds: [], status: 'idle' },

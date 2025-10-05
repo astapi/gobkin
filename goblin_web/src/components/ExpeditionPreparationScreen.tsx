@@ -1,10 +1,13 @@
-import type { Goblin } from '../types/index.ts'
+import { useState } from 'react'
+import type { Goblin, Dungeon } from '../types/index.ts'
 import type { PartyRepository } from '../repositories/PartyRepository.ts'
+import { DungeonSelectionModal } from './DungeonSelectionModal.tsx'
 
 interface ExpeditionPreparationScreenProps {
   partyId: number
   partyRepository: PartyRepository
   goblins: Goblin[]
+  dungeons: Dungeon[]
   onBack: () => void
   onEditParty: () => void
 }
@@ -13,10 +16,18 @@ export const ExpeditionPreparationScreen = ({
   partyId,
   partyRepository,
   goblins,
+  dungeons,
   onBack,
   onEditParty
 }: ExpeditionPreparationScreenProps) => {
+  const [showDungeonModal, setShowDungeonModal] = useState(false)
   const party = partyRepository.getParty(partyId)
+  const selectedDungeon = party?.dungeonId ? dungeons.find(d => d.id === party.dungeonId) : null
+
+  const handleDungeonSelect = (dungeon: Dungeon) => {
+    partyRepository.updateDungeonSettings(partyId, dungeon.id)
+    setShowDungeonModal(false)
+  }
 
   if (!party) {
     return (
@@ -104,9 +115,19 @@ export const ExpeditionPreparationScreen = ({
               {/* 遠征先 */}
               <div>
                 <div className="text-sm font-semibold text-gray-700 mb-2">遠征先</div>
-                <div className="px-3 py-2 bg-gray-100 rounded text-sm text-gray-600">
-                  遠征先が未設定です
-                </div>
+                <button
+                  onClick={() => setShowDungeonModal(true)}
+                  className="w-full px-3 py-2 bg-gray-100 hover:bg-gray-200 rounded text-sm transition-colors text-left"
+                >
+                  {selectedDungeon ? (
+                    <div>
+                      <div className="font-semibold text-gray-800">{selectedDungeon.name}</div>
+                      <div className="text-xs text-gray-600 mt-1">{selectedDungeon.description}</div>
+                    </div>
+                  ) : (
+                    <div className="text-gray-600">遠征先が未設定です</div>
+                  )}
+                </button>
               </div>
 
               {/* 目標階数 */}
@@ -128,6 +149,15 @@ export const ExpeditionPreparationScreen = ({
           </div>
         </div>
       </div>
+
+      {/* ダンジョン選択モーダル */}
+      {showDungeonModal && (
+        <DungeonSelectionModal
+          dungeons={dungeons}
+          onSelect={handleDungeonSelect}
+          onClose={() => setShowDungeonModal(false)}
+        />
+      )}
     </div>
   )
 }

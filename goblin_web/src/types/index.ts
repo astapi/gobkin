@@ -34,6 +34,9 @@ export type Party = {
   name: string
   memberIds: number[]
   status?: PartyStatus
+  dungeonId?: number
+  targetFloor?: number
+  returnPolicy?: ExpeditionRequest["returnPolicy"]
 }
 
 // 遠征システム関連の型定義

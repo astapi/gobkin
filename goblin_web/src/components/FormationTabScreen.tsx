@@ -7,7 +7,7 @@ import { ExpeditionResultScreen } from './ExpeditionResultScreen.tsx'
 import { ExpeditionPreparationScreen } from './ExpeditionPreparationScreen.tsx'
 import { usePartyRepository } from '../hooks/usePartyRepository.ts'
 import { useExpeditionState } from '../contexts/ExpeditionStateContext.tsx'
-import { goblinsData, dungeonsData } from '../data/index.ts'
+import { goblinsData, areasData } from '../data/index.ts'
 
 type ViewMode = 'list' | 'preparation' | 'edit' | 'log' | 'result'
 
@@ -148,6 +148,7 @@ export const FormationTabScreen = () => {
         partyId={editingPartyId}
         partyRepository={partyRepository}
         goblins={goblinsData}
+        dungeons={areasData}
         onBack={handleBackToFormation}
         onEditParty={handleEditParty}
       />

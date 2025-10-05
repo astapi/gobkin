@@ -7,4 +7,5 @@ export interface PartyRepository {
   deleteParty(id: number): void
   updatePartyStatus(id: number, status: PartyStatus): void
   getPartiesByStatus(status: PartyStatus): Party[]
+  updateDungeonSettings(id: number, dungeonId: number): void
 }
