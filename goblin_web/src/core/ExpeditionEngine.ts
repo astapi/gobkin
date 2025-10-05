@@ -8,9 +8,11 @@ import type {
   CombatReplay,
   Drop,
   RewardSummary,
-  Goblin
+  Goblin,
+  EnemyDatabase,
+  Enemy,
+  EnemyPattern
 } from '../types/index.ts'
-import { areasConfig, enemyDatabase } from '../data/areas.ts'
 
 export class ExpeditionEngine {
   private rng: () => number
@@ -34,7 +36,7 @@ export class ExpeditionEngine {
     }
   }
 
-  public generateExpedition(request: ExpeditionRequest, party: Goblin[]): ExpeditionReplay {
+  public async generateExpedition(request: ExpeditionRequest, party: Goblin[]): Promise<ExpeditionReplay> {
     console.log('ExpeditionEngine: Starting generateExpedition', { request, partySize: party.length })
     // ダンジョンIDからエリアIDにマッピング
     const dungeonToAreaMap: Record<string, string> = {
@@ -44,9 +46,21 @@ export class ExpeditionEngine {
     }
 
     const areaId = dungeonToAreaMap[request.areaId] || request.areaId
-    const area = areasConfig.find(a => a.id === areaId)
+
+    // JSONファイルからエリアデータを読み込む
+    const areaData = await import(`../data/expeditionArea/${areaId}.json`)
+    const area: AreaConfig = areaData.default || areaData
+
     if (!area) {
       throw new Error(`Area not found: ${request.areaId} (mapped to: ${areaId})`)
+    }
+
+    // 敵データを読み込む
+    const enemyData = await import(`../data/enemy/${areaId}.json`)
+    const enemyDatabase: EnemyDatabase = enemyData.default || enemyData
+
+    if (!enemyDatabase) {
+      throw new Error(`Enemy data not found: ${areaId}`)
     }
 
     const partySnapshot = this.createPartySnapshot(party, request.returnPolicy)
@@ -89,8 +103,9 @@ export class ExpeditionEngine {
 
         switch (eventType) {
           case "battle": {
-            const enemy = this.selectEnemy(area.enemyTable, currentFloor)
-            const combat = this.resolveCombat(partyState, enemy, area)
+            const pattern = this.selectEnemyPattern(enemyDatabase.patterns, currentFloor, false)
+            const enemies = this.getEnemiesFromPattern(pattern, enemyDatabase.enemies)
+            const combat = this.resolveCombat(partyState, enemies, area)
             const xp = area.rewards.xpFloor[currentFloor - 1] || 10
             const drops = this.generateDrops(area.rewards.lootPool, partySnapshot.luckMod)
 
@@ -98,7 +113,7 @@ export class ExpeditionEngine {
               type: "battle",
               at: currentTime,
               floor: currentFloor,
-              enemy,
+              enemy: this.createEnemySnap(enemies),
               combat,
               xp,
               drops
@@ -127,27 +142,11 @@ export class ExpeditionEngine {
             break
           }
 
-          case "trap": {
-            const trapEffect = this.generateTrapEffect(partyState)
+          case "exploring": {
             events.push({
-              type: "trap",
+              type: "exploring",
               at: currentTime,
-              floor: currentFloor,
-              trapId: "basic_trap",
-              effect: trapEffect
-            })
-            this.applyTrapEffect(partyState, trapEffect)
-            break
-          }
-
-          case "npc": {
-            // NPCイベント（現在は簡易実装）
-            // 将来的にNPCとの遭遇・取引・情報収集を実装予定
-            events.push({
-              type: "resource",  // 現在はリソースイベントとして処理
-              at: currentTime,
-              floor: currentFloor,
-              loot: []  // 空の戦利品（将来的にNPC固有の報酬を実装）
+              floor: currentFloor
             })
             break
           }
@@ -156,8 +155,9 @@ export class ExpeditionEngine {
             // 未知のイベントタイプの処理
             console.warn(`Unknown event type: ${eventType}, treating as battle`)
             // battleとして処理
-            const enemy = this.selectEnemy(area.enemyTable, currentFloor)
-            const combat = this.resolveCombat(partyState, enemy, area)
+            const pattern = this.selectEnemyPattern(enemyDatabase.patterns, currentFloor, false)
+            const enemies = this.getEnemiesFromPattern(pattern, enemyDatabase.enemies)
+            const combat = this.resolveCombat(partyState, enemies, area)
             const xp = area.rewards.xpFloor[currentFloor - 1] || 10
             const drops = this.generateDrops(area.rewards.lootPool, partySnapshot.luckMod)
 
@@ -165,7 +165,7 @@ export class ExpeditionEngine {
               type: "battle",
               at: currentTime,
               floor: currentFloor,
-              enemy,
+              enemy: this.createEnemySnap(enemies),
               combat,
               xp,
               drops
@@ -186,7 +186,6 @@ export class ExpeditionEngine {
       // 階層移動
       if (currentFloor < area.floors && !shouldReturn) {
         currentFloor++
-        currentTime += 2 // 階層移動時間
         events.push({
           type: "floor_up",
           at: currentTime,
@@ -202,14 +201,10 @@ export class ExpeditionEngine {
 
     // ボス戦（最上階到達時）
     if (currentFloor > area.floors && !shouldReturn) {
-      const boss = {
-        id: area.boss.id,
-        name: enemyDatabase[area.boss.id as keyof typeof enemyDatabase]?.name || "Unknown Boss",
-        lvl: area.boss.lvl,
-        count: 1
-      }
+      const bossPattern = this.selectEnemyPattern(enemyDatabase.patterns, area.floors, true)
+      const bossEnemies = this.getEnemiesFromPattern(bossPattern, enemyDatabase.enemies)
 
-      const bossCombat = this.resolveCombat(partyState, boss, area, true)
+      const bossCombat = this.resolveCombat(partyState, bossEnemies, area, true)
       const bossXp = area.rewards.xpBoss
       const bossDrops = this.generateDrops(area.rewards.lootPool, partySnapshot.luckMod * 1.5)
 
@@ -217,7 +212,7 @@ export class ExpeditionEngine {
         type: "boss",
         at: currentTime,
         floor: area.floors,
-        enemy: boss,
+        enemy: this.createEnemySnap(bossEnemies),
         combat: bossCombat,
         xp: bossXp,
         drops: bossDrops
@@ -284,6 +279,8 @@ export class ExpeditionEngine {
       id: goblin.id.toString(),
       currentHP: goblin.stats.hp,
       maxHP: goblin.stats.hp,
+      atk: goblin.stats.atk,
+      def: goblin.stats.def,
       isKO: false,
       isDead: false
     }))
@@ -317,46 +314,57 @@ export class ExpeditionEngine {
     return "battle"
   }
 
-  private selectEnemy(enemyTable: AreaConfig["enemyTable"], floor: number): EnemySnap {
-    const adjustedTable = enemyTable.map(enemy => ({
-      ...enemy,
-      weight: enemy.weight * (1 + 0.1 * floor)
-    }))
-
-    const totalWeight = adjustedTable.reduce((sum, enemy) => sum + enemy.weight, 0)
-    const roll = this.rng() * totalWeight
-
-    let current = 0
-    for (const enemy of adjustedTable) {
-      current += enemy.weight
-      if (roll <= current) {
-        const enemyData = enemyDatabase[enemy.id as keyof typeof enemyDatabase]
-        return {
-          id: enemy.id,
-          name: enemyData?.name || enemy.id,
-          lvl: enemy.lvl,
-          count: Math.floor(this.rng() * 3) + 1
-        }
+  private selectEnemyPattern(patterns: EnemyPattern[], floor: number, isBoss: boolean): EnemyPattern {
+    // ボス戦の場合はボスパターンを選択
+    if (isBoss) {
+      const bossPatterns = patterns.filter(p => p.isBoss && p.floors.includes(floor))
+      if (bossPatterns.length === 0) {
+        throw new Error(`No boss pattern found for floor ${floor}`)
       }
+      return bossPatterns[Math.floor(this.rng() * bossPatterns.length)]
     }
 
-    const fallback = adjustedTable[0]
-    const enemyData = enemyDatabase[fallback.id as keyof typeof enemyDatabase]
+    // 通常戦闘の場合
+    const availablePatterns = patterns.filter(p => !p.isBoss && p.floors.includes(floor))
+    if (availablePatterns.length === 0) {
+      throw new Error(`No enemy pattern found for floor ${floor}`)
+    }
+    return availablePatterns[Math.floor(this.rng() * availablePatterns.length)]
+  }
+
+  private getEnemiesFromPattern(pattern: EnemyPattern, enemyList: Enemy[]): Enemy[] {
+    return pattern.enemies.map(enemyId => {
+      const enemy = enemyList.find(e => e.id === enemyId)
+      if (!enemy) {
+        throw new Error(`Enemy not found: ${enemyId}`)
+      }
+      return enemy
+    })
+  }
+
+  private createEnemySnap(enemies: Enemy[]): EnemySnap {
+    // 代表的な敵（最初の敵）の情報を使用
+    const representative = enemies[0]
     return {
-      id: fallback.id,
-      name: enemyData?.name || fallback.id,
-      lvl: fallback.lvl,
-      count: 1
+      id: representative.id,
+      name: representative.name,
+      lvl: representative.level,
+      count: enemies.length
     }
   }
 
-  private resolveCombat(partyState: any[], enemy: EnemySnap, area: AreaConfig, isBoss = false): CombatReplay {
+  private resolveCombat(partyState: any[], enemies: Enemy[], area: AreaConfig, isBoss = false): CombatReplay {
+    // パーティの戦力計算（HP + ATK + DEF）
     const partyPower = partyState
       .filter(m => !m.isKO)
-      .reduce((sum) => sum + 50, 0) // 簡易戦力計算
+      .reduce((sum, member) => sum + (member.maxHP + member.atk + member.def), 0)
 
-    const enemyPower = enemy.count * enemy.lvl * (isBoss ? 80 : 30)
-    const difficulty = 15
+    // 敵の戦力計算（各敵のHP + ATK + DEF の合計）
+    const enemyPower = enemies.reduce((sum, enemy) =>
+      sum + (enemy.hp + enemy.atk + enemy.def), 0
+    )
+
+    const difficulty = isBoss ? 20 : 15
 
     const winProb = 1 / (1 + Math.exp(-(partyPower - enemyPower) / difficulty))
     const isWin = this.rng() < winProb
@@ -365,33 +373,40 @@ export class ExpeditionEngine {
 
     let allyHPDelta: number[] = []
     if (isWin) {
-      const damageRate = Math.min(0.8, Math.max(0.1, (enemyPower / partyPower) * (0.6 + this.rng() * 0.4)))
+      // 勝利時のダメージ計算（敵の攻撃力ベース）
+      const totalEnemyAtk = enemies.reduce((sum, enemy) => sum + enemy.atk, 0)
       allyHPDelta = partyState.map(member => {
         if (member.isKO) return 0
-        const damage = Math.floor(member.maxHP * damageRate * (0.5 + this.rng() * 0.5))
+        const defense = member.def || 1
+        const rawDamage = totalEnemyAtk / partyState.filter(m => !m.isKO).length
+        const damage = Math.max(1, Math.floor(rawDamage * (1 - defense / (defense + 100)) * (0.5 + this.rng() * 0.5)))
         return -damage
       })
     } else {
       // 敗北時は大ダメージ
+      const totalEnemyAtk = enemies.reduce((sum, enemy) => sum + enemy.atk, 0)
       allyHPDelta = partyState.map(member => {
         if (member.isKO) return 0
-        const damage = Math.floor(member.maxHP * (0.7 + this.rng() * 0.3))
+        const defense = member.def || 1
+        const rawDamage = totalEnemyAtk / partyState.filter(m => !m.isKO).length
+        const damage = Math.floor(rawDamage * (1 - defense / (defense + 100)) * (1.5 + this.rng() * 0.5))
         return -damage
       })
     }
 
     const captureCheck = isWin && !isBoss && this.rng() < (area.rewards.captureBonus + 0.1)
+    const representative = enemies[0]
 
     return {
       rounds,
       outcome: isWin ? "win" : "lose",
       allyHPDelta,
-      enemyDefeated: isWin ? enemy.count : 0,
+      enemyDefeated: isWin ? enemies.length : 0,
       capture: captureCheck ? {
         eligible: true,
         success: this.rng() < 0.3,
         rate: 0.3,
-        captured: { id: enemy.id, qty: 1 }
+        captured: { id: representative.id, qty: 1 }
       } : { eligible: false }
     }
   }
@@ -431,27 +446,6 @@ export class ExpeditionEngine {
     }
 
     return drops
-  }
-
-  private generateTrapEffect(partyState: any[]): Record<string, unknown> {
-    const activeMember = partyState.find(m => !m.isKO)
-    if (activeMember) {
-      const damage = Math.floor(activeMember.maxHP * 0.1)
-      return { damage, targetId: activeMember.id }
-    }
-    return {}
-  }
-
-  private applyTrapEffect(partyState: any[], effect: Record<string, unknown>): void {
-    if (effect.targetId && effect.damage) {
-      const target = partyState.find(member => member.id === effect.targetId)
-      if (target) {
-        target.currentHP = Math.max(0, target.currentHP - (effect.damage as number))
-        if (target.currentHP <= 0) {
-          target.isKO = true
-        }
-      }
-    }
   }
 
   private checkReturnConditions(partyState: any[], returnPolicy: ExpeditionRequest["returnPolicy"], currentFloor: number): { shouldReturn: boolean; reason: string } {

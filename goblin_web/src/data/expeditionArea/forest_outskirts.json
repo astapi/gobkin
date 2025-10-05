@@ -1,0 +1,47 @@
+{
+  "id": "forest_outskirts",
+  "name": "周辺の森",
+  "floors": 3,
+  "baseDurationSec": 60,
+  "description": "明るい森、弱い獣や小鬼が出現",
+  "encounter": {
+    "perFloorEvents": 3,
+    "eventWeights": {
+      "battle": 40,
+      "resource": 20,
+      "exploring": 30
+    }
+  },
+  "rewards": {
+    "xpFloor": [8, 10, 12],
+    "xpBoss": 30,
+    "lootPool": [
+      {
+        "id": "meat_small",
+        "name": "小さな肉",
+        "w": 40,
+        "rarity": 1
+      },
+      {
+        "id": "healing_herb",
+        "name": "回復草",
+        "w": 30,
+        "rarity": 1
+      },
+      {
+        "id": "wood_stick",
+        "name": "木の枝",
+        "w": 20,
+        "rarity": 1
+      },
+      {
+        "id": "forest_gem",
+        "name": "森の宝石",
+        "w": 10,
+        "rarity": 2
+      }
+    ],
+    "captureBonus": 0.05
+  },
+  "unlockNext": "mossy_cave"
+}

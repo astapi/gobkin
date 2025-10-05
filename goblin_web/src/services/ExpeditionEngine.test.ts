@@ -29,12 +29,12 @@ const testRequest: ExpeditionRequest = {
 }
 
 // 基本的な動作確認
-export function testExpeditionEngine(): void {
+export async function testExpeditionEngine(): Promise<void> {
   console.log("=== 遠征エンジンのテスト開始 ===")
 
   try {
     const engine = new ExpeditionEngine(12345) // 固定シードでテスト
-    const result = engine.generateExpedition(testRequest, testParty)
+    const result = await engine.generateExpedition(testRequest, testParty)
 
     console.log("✅ 遠征の生成に成功")
     console.log(`📍 エリア: ${result.meta.areaName}`)
@@ -68,15 +68,15 @@ export function testExpeditionEngine(): void {
 }
 
 // 決定性テスト（同じシードで同じ結果になるか）
-export function testDeterminism(): void {
+export async function testDeterminism(): Promise<void> {
   console.log("\n=== 決定性テスト ===")
 
   const seed = 54321
   const engine1 = new ExpeditionEngine(seed)
   const engine2 = new ExpeditionEngine(seed)
 
-  const result1 = engine1.generateExpedition(testRequest, testParty)
-  const result2 = engine2.generateExpedition(testRequest, testParty)
+  const result1 = await engine1.generateExpedition(testRequest, testParty)
+  const result2 = await engine2.generateExpedition(testRequest, testParty)
 
   const eventsMatch = result1.events.length === result2.events.length &&
     result1.events.every((event, index) => {
@@ -92,26 +92,26 @@ export function testDeterminism(): void {
 }
 
 // 帰還条件テスト
-export function testReturnPolicies(): void {
+export async function testReturnPolicies(): Promise<void> {
   console.log("\n=== 帰還条件テスト ===")
 
   const policies: ExpeditionRequest["returnPolicy"][] = ["until_floor2", "if_any_ko", "never"]
 
-  policies.forEach(policy => {
+  for (const policy of policies) {
     const request = { ...testRequest, returnPolicy: policy }
     const engine = new ExpeditionEngine()
-    const result = engine.generateExpedition(request, testParty)
+    const result = await engine.generateExpedition(request, testParty)
 
     const returnEvent = result.events.find(e => e.type === "return")
     console.log(`${policy}: ${returnEvent ? `理由=${returnEvent.reason}` : '帰還なし'}`)
-  })
+  }
 }
 
 // ブラウザ環境でのテスト実行
 if (typeof window !== 'undefined') {
-  (window as any).runExpeditionTests = () => {
-    testExpeditionEngine()
-    testDeterminism()
-    testReturnPolicies()
+  (window as any).runExpeditionTests = async () => {
+    await testExpeditionEngine()
+    await testDeterminism()
+    await testReturnPolicies()
   }
 }

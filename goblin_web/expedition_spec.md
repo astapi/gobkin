@@ -162,11 +162,9 @@ export interface AreaConfig {
   name: string;
   floors: number;              // 例: 3
   baseDurationSec: number;     // 例: 30
-  moveSpeedScale: number;      // 例: 1.0
   encounter: {
     perFloorEvents: number;    // 例: 2（各階のイベント数）
     eventWeights: { battle: number; resource: number; trap: number; npc: number };
-    pityTimerSec: number;      // 例: 4（無イベント時間の上限）
   };
   enemyTable: { id: string; weight: number; lvl: number }[];
   boss: { id: string; lvl: number };
@@ -316,7 +314,6 @@ export interface PartySnapshot {
 | ---------------- | --------: | ---------- |
 | `σ`(勝率スケール)      |        15 | 勝敗の鋭さ/難度曲線 |
 | `perFloorEvents` |       2〜3 | 遭遇密度とテンポ   |
-| `pityTimerSec`   |       3〜5 | 無イベント時間の上限 |
 | `captureBonus`   | 0.05〜0.10 | 捕獲の体感頻度    |
 | `luckMod` 範囲     |   0.8〜1.2 | ドロップと捕獲の上下 |
 | `speedMod` 範囲    |   0.8〜1.3 | 所要時間の短縮/延長 |

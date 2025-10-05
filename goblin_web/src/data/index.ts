@@ -1,5 +1,6 @@
 import type { Goblin, Dungeon } from '../types/index.ts'
 import dungeonJson from './dungeon.json'
+import allAreaJson from './expeditionArea/allArea.json'
 
 export const goblinsData: Goblin[] = [
   {
@@ -45,3 +46,5 @@ export const goblinsData: Goblin[] = [
 ]
 
 export const dungeonsData: Dungeon[] = dungeonJson.dungeons
+
+export const areasData: Dungeon[] = allAreaJson.areas

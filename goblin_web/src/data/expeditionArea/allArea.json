@@ -1,7 +1,7 @@
 {
-  "dungeons": [
+  "areas": [
     {
-      "id": 1,
+      "id": "forest_outskirts",
       "name": "周辺の森",
       "floors": 3,
       "exploration_time_sec_first": 60,

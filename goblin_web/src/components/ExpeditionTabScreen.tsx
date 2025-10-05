@@ -1,12 +1,12 @@
 import { useState, useMemo } from 'react'
 import type { Dungeon, ExpeditionRequest, ExpeditionReplay, Goblin } from '../types/index.ts'
-import { goblinsData, dungeonsData } from '../data/index.ts'
+import { goblinsData, areasData } from '../data/index.ts'
 import { DungeonScreen } from './DungeonScreen.tsx'
 import { ExpeditionSetupScreen } from './ExpeditionSetupScreen.tsx'
 import { ExpeditionPlaybackScreen } from './ExpeditionPlaybackScreen.tsx'
 import { ExpeditionResultScreen } from './ExpeditionResultScreen.tsx'
 import { FirestoreExpeditionRepositoryAdapter } from '../repositories/FirestoreExpeditionRepositoryImpl.ts'
-import { ExpeditionEngine } from '../services/ExpeditionEngine.ts'
+import { ExpeditionEngine } from '../core/ExpeditionEngine.ts'
 import { useExpeditionState } from '../contexts/ExpeditionStateContext.tsx'
 import { usePartyRepository } from '../hooks/usePartyRepository.ts'
 
@@ -97,7 +97,7 @@ export function ExpeditionTabScreen() {
       partyRepository.updatePartyStatus(partyId, 'expedition')
       setCurrentExpeditionPartyId(partyId)
 
-      const result = expeditionEngine.generateExpedition(request, partyMembers)
+      const result = await expeditionEngine.generateExpedition(request, partyMembers)
 
       if (expeditionRecord && expeditionRepository) {
         await expeditionRepository.updateExpeditionReplay(expeditionRecord.id, result)
@@ -163,7 +163,7 @@ export function ExpeditionTabScreen() {
 
   return (
     <DungeonScreen
-      dungeons={dungeonsData}
+      dungeons={areasData}
       onStartExplore={handleStartExplore}
     />
   )

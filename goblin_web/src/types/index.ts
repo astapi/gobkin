@@ -127,7 +127,6 @@ export interface AreaConfig {
   name: string
   floors: number
   baseDurationSec: number
-  moveSpeedScale: number
   encounter: {
     perFloorEvents: number
     eventWeights: {
@@ -136,10 +135,7 @@ export interface AreaConfig {
       trap: number
       npc: number
     }
-    pityTimerSec: number
   }
-  enemyTable: { id: string; weight: number; lvl: number }[]
-  boss: { id: string; lvl: number }
   rewards: {
     xpFloor: number[]
     xpBoss: number
@@ -158,4 +154,31 @@ export interface PartySnapshot {
   captureSlots: number
   carryWeight: number
   powerRating: number
+}
+
+// 敵関連の型定義
+export interface Enemy {
+  id: string
+  name: string
+  raceTags: string[]
+  level: number
+  hp: number
+  atk: number
+  def: number
+  spd: number
+  sp: number
+  exp: number
+  gold: number
+}
+
+export interface EnemyPattern {
+  id: string
+  floors: number[]
+  enemies: string[]
+  isBoss?: boolean
+}
+
+export interface EnemyDatabase {
+  enemies: Enemy[]
+  patterns: EnemyPattern[]
 }

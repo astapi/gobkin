@@ -1,10 +1,9 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import type { ExpeditionReplay, TimelineEvent, Goblin } from '../types/index.ts'
 
-interface ExpeditionPlaybackScreenProps {
+interface ExpeditionLogScreenProps {
   expeditionReplay: ExpeditionReplay
   goblins: Goblin[]
-  onComplete: () => void
   startTime?: Date
 }
 
@@ -15,20 +14,19 @@ interface ProcessedEvent {
   processed: boolean
 }
 
-export const ExpeditionPlaybackScreen = ({
+export const ExpeditionLogScreen = ({
   expeditionReplay,
   goblins,
-  onComplete,
   startTime
-}: ExpeditionPlaybackScreenProps) => {
+}: ExpeditionLogScreenProps) => {
   // 初期currentTimeを計算（startTimeがある場合は経過時間を算出）
   const initialTime = startTime
     ? Math.min((Date.now() - startTime.getTime()) / 1000, expeditionReplay.durationSec)
     : 0
 
   const [currentTime, setCurrentTime] = useState(initialTime)
-  const [isPlaying, setIsPlaying] = useState(true)
-  const [speed, setSpeed] = useState<PlaybackSpeed>(1)
+  const [isPlaying] = useState(true)
+  const [speed] = useState<PlaybackSpeed>(1)
   const [processedEvents, setProcessedEvents] = useState<ProcessedEvent[]>(() =>
     expeditionReplay.events.map(event => ({ event, processed: event.at <= initialTime }))
   )
@@ -43,7 +41,6 @@ export const ExpeditionPlaybackScreen = ({
   const animationFrameRef = useRef<number>(0)
   const lastTimeRef = useRef<number>(performance.now())
   const logContainerRef = useRef<HTMLDivElement>(null)
-  const isCompletedRef = useRef<boolean>(false)
   const processedEventIdsRef = useRef<Set<string>>(new Set())
   const isInitializedRef = useRef<boolean>(false)
 
@@ -139,7 +136,6 @@ export const ExpeditionPlaybackScreen = ({
   useEffect(() => {
     if (!isInitializedRef.current) {
       isInitializedRef.current = true
-      isCompletedRef.current = false
       processedEventIdsRef.current.clear()
 
       // initialTime以前のイベントを即座に処理
@@ -259,13 +255,6 @@ export const ExpeditionPlaybackScreen = ({
           return hasChanges ? updated : prevEvents
         })
 
-        // 完了判定
-        if (newTime >= expeditionReplay.durationSec && !isCompletedRef.current) {
-          isCompletedRef.current = true
-          setIsPlaying(false)
-          setTimeout(() => onComplete(), 1000)
-        }
-
         return newTime
       })
 
@@ -279,38 +268,7 @@ export const ExpeditionPlaybackScreen = ({
         cancelAnimationFrame(animationFrameRef.current)
       }
     }
-  }, [isPlaying, speed, processEvent, onComplete, expeditionReplay.durationSec])
-
-  const handleSpeedChange = (newSpeed: PlaybackSpeed) => {
-    setSpeed(newSpeed)
-  }
-
-  const handleSkip = () => {
-    setCurrentTime(expeditionReplay.durationSec)
-    setIsPlaying(false)
-
-    processedEvents.forEach(({ event, processed }, index) => {
-      if (!processed) {
-        const eventId = `${index}-${event.type}-${event.at}`
-        processEvent(event, eventId)
-      }
-    })
-
-    setProcessedEvents(prev => prev.map(item => ({ ...item, processed: true })))
-    setTimeout(() => onComplete(), 500)
-  }
-
-  const handleAbort = () => {
-    setIsPlaying(false)
-    const abortEvent: TimelineEvent = {
-      type: 'return',
-      at: currentTime,
-      reason: 'abort'
-    }
-    const eventId = `abort-${currentTime}`
-    processEvent(abortEvent, eventId)
-    setTimeout(() => onComplete(), 500)
-  }
+  }, [isPlaying, speed, processEvent, expeditionReplay.durationSec])
 
   const progress = (currentTime / expeditionReplay.durationSec) * 100
 
@@ -385,70 +343,6 @@ export const ExpeditionPlaybackScreen = ({
               {log}
             </div>
           ))}
-        </div>
-      </div>
-
-      {/* コントロールボタン */}
-      <div className="bg-gray-100 border-t-2 border-gray-300 p-3">
-        <div className="flex justify-between items-center mb-2">
-          <div className="flex gap-2">
-            {([1, 2, 4] as const).map(s => (
-              <button
-                key={s}
-                onClick={() => handleSpeedChange(s)}
-                disabled={!isPlaying}
-                className={`px-3 py-1 rounded text-sm font-bold transition-colors ${
-                  speed === s && isPlaying
-                    ? 'bg-blue-600 text-white'
-                    : isPlaying
-                    ? 'bg-gray-300 text-gray-700 hover:bg-gray-400'
-                    : 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                }`}
-              >
-                ×{s}
-              </button>
-            ))}
-          </div>
-
-          <button
-            onClick={handleSkip}
-            disabled={!isPlaying}
-            className={`px-4 py-1 rounded text-sm font-bold transition-colors ${
-              isPlaying
-                ? 'bg-gray-600 text-white hover:bg-gray-700'
-                : 'bg-gray-200 text-gray-400 cursor-not-allowed'
-            }`}
-          >
-            スキップ ≫
-          </button>
-        </div>
-
-        <div className="flex gap-2">
-          <button
-            onClick={() => setIsPlaying(!isPlaying)}
-            disabled={currentTime >= expeditionReplay.durationSec}
-            className={`flex-1 py-2 rounded font-bold transition-colors ${
-              currentTime >= expeditionReplay.durationSec
-                ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                : isPlaying
-                ? 'bg-yellow-500 text-white hover:bg-yellow-600'
-                : 'bg-green-500 text-white hover:bg-green-600'
-            }`}
-          >
-            {isPlaying ? '⏸ 一時停止' : '▶ 再開'}
-          </button>
-
-          <button
-            onClick={handleAbort}
-            disabled={!isPlaying}
-            className={`px-6 py-2 rounded font-bold transition-colors ${
-              isPlaying
-                ? 'bg-red-500 text-white hover:bg-red-600'
-                : 'bg-gray-200 text-gray-400 cursor-not-allowed'
-            }`}
-          >
-            🚨 緊急帰還
-          </button>
         </div>
       </div>
     </div>

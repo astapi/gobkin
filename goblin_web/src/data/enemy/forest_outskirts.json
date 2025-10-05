@@ -1,0 +1,97 @@
+{
+  "enemies": [
+    {
+      "id": "E001",
+      "name": "スライム",
+      "raceTags": ["beast"],
+      "level": 1,
+      "hp": 10,
+      "atk": 2,
+      "def": 2,
+      "spd": 2,
+      "sp": 0,
+      "exp": 4,
+      "gold": 5
+    },
+    {
+      "id": "E002",
+      "name": "森ネズミ",
+      "raceTags": ["beast"],
+      "level": 2,
+      "hp": 10,
+      "atk": 4,
+      "def": 2,
+      "spd": 8,
+      "sp": 0,
+      "exp": 6,
+      "gold": 6
+    },
+    {
+      "id": "E003",
+      "name": "ウルフ",
+      "raceTags": ["beast"],
+      "level": 3,
+      "hp": 20,
+      "atk": 5,
+      "def": 4,
+      "spd": 8,
+      "sp": 0,
+      "exp": 10,
+      "gold": 9
+    },
+    {
+      "id": "E004",
+      "name": "トゲリス",
+      "raceTags": ["beast"],
+      "level": 4,
+      "hp": 20,
+      "atk": 7,
+      "def": 6,
+      "spd": 8,
+      "sp": 0,
+      "exp": 12,
+      "gold": 10
+    },
+    {
+      "id": "B001",
+      "name": "グレイウルフ",
+      "raceTags": ["beast"],
+      "level": 8,
+      "hp": 100,
+      "atk": 15,
+      "def": 10,
+      "spd": 15,
+      "sp": 0,
+      "exp": 50,
+      "gold": 50
+    }
+  ],
+  "patterns": [
+    {
+      "id": "P001",
+      "floors": [1, 2, 3],
+      "enemies": ["E001", "E001", "E001"]
+    },
+    {
+      "id": "P002",
+      "floors": [1, 2, 3],
+      "enemies": ["E001", "E001", "E002", "E002"]
+    },
+    {
+      "id": "P003",
+      "floors": [1, 2, 3],
+      "enemies": ["E003", "E003", "E003", "E003"]
+    },
+    {
+      "id": "P004",
+      "floors": [1, 2, 3],
+      "enemies": ["E003", "E003", "E004", "E004", "E004"]
+    },
+    {
+      "id": "BOSS",
+      "floors": [3],
+      "enemies": ["B001"],
+      "isBoss": true
+    }
+  ]
+}
