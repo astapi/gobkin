@@ -82,6 +82,7 @@ export function ExpeditionTabScreen() {
       const explorationTimeSec = Math.floor(baseTime * timeMultiplier)
 
       let expeditionRecord = null
+      console.log('expeditionRepository', expeditionRepository)
       if (expeditionRepository) {
         expeditionRecord = await expeditionRepository.createExpedition(
           partyId,

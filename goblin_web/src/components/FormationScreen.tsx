@@ -11,7 +11,6 @@ interface FormationScreenProps {
   onHistoryClick?: (expeditionRecord: ExpeditionRecord) => void
   onLogClick?: (expeditionRecord: ExpeditionRecord) => void
   isLoading?: boolean
-  isPartyInExpedition: (partyId: number) => boolean
 }
 
 export const FormationScreen = ({
@@ -21,8 +20,7 @@ export const FormationScreen = ({
   onExpeditionPartyClick,
   onHistoryClick,
   onLogClick,
-  isLoading = false,
-  isPartyInExpedition
+  isLoading = false
 }: FormationScreenProps) => {
   const parties = partyRepository.getParties()
   const { getPartyExpeditionHistory } = useExpeditionState()
@@ -72,15 +70,15 @@ export const FormationScreen = ({
   }
 
   return (
-    <div className="h-full overflow-y-auto">
-      <div className="text-lg font-bold text-gray-800 mb-4 pb-2 border-b-2 border-gray-200">
+    <div className="overflow-y-auto h-full">
+      <div className="pb-2 mb-4 text-lg font-bold text-gray-800 border-b-2 border-gray-200">
         パーティ選択
       </div>
 
       {isLoading ? (
-        <div className="flex items-center justify-center h-32">
+        <div className="flex justify-center items-center h-32">
           <div className="text-center">
-            <div className="text-xl mb-2">⚡</div>
+            <div className="mb-2 text-xl">⚡</div>
             <div className="text-gray-600">パーティデータを読み込み中...</div>
           </div>
         </div>
@@ -91,11 +89,13 @@ export const FormationScreen = ({
             .map(id => goblins.find(g => g.id === id))
             .filter((g): g is Goblin => g !== undefined)
 
-          const isExpedition = party.status === 'expedition' || isPartyInExpedition(party.id)
           const history = partyHistories[party.id] || []
+          // 最新の遠征レコードのreturnTimeで遠征中かどうかを判定
+          const latestExpedition = history[0]
+          const isExpedition = latestExpedition ? isExpeditionOngoing(latestExpedition) : false
 
           return (
-            <div key={party.id} className="border-2 rounded-lg transition-all shadow-sm border-gray-300 bg-white">
+            <div key={party.id} className="bg-white rounded-lg border-2 border-gray-300 shadow-sm transition-all">
               {/* パーティ本体 */}
               <div
                 onClick={() => {
@@ -114,8 +114,8 @@ export const FormationScreen = ({
                 <div className="flex justify-between items-center mb-3">
                   <div className="text-lg font-bold text-gray-800">{party.name}</div>
                   {isExpedition && (
-                    <span className="text-xs bg-orange-500 text-white px-2 py-1 rounded-full font-bold">
-                      🏚️ 遠征中
+                    <span className="px-2 py-1 text-xs font-bold text-white bg-orange-500 rounded-full">
+                      遠征中
                     </span>
                   )}
                 </div>
@@ -123,12 +123,12 @@ export const FormationScreen = ({
                   {[...Array(6)].map((_, i) => {
                     const member = partyMembers[i]
                     return (
-                      <div key={i} className="flex flex-col items-center justify-center gap-1">
+                      <div key={i} className="flex flex-col gap-1 justify-center items-center">
                         {member ? (
                           <>
                             <div className="text-xs text-gray-600">Lv{member.level}</div>
-                            <div className="w-8 h-8 rounded-full overflow-hidden">
-                              <img src={member.avatar} alt={member.name} className="w-full h-full object-cover" />
+                            <div className="overflow-hidden w-8 h-8 rounded-full">
+                              <img src={member.avatar} alt={member.name} className="object-cover w-full h-full" />
                             </div>
                             <div className="text-xs text-gray-600">HP{member.stats.hp}</div>
                           </>
@@ -143,8 +143,8 @@ export const FormationScreen = ({
 
               {/* 遠征履歴 */}
               {history.length > 0 && (
-                <div className="border-t border-gray-200 bg-gray-50 p-2">
-                  <div className="text-xs text-gray-600 mb-1">遠征履歴</div>
+                <div className="p-2 bg-gray-50 border-t border-gray-200">
+                  <div className="mb-1 text-xs text-gray-600">遠征履歴</div>
                   <div className="space-y-1">
                     {history.map(record => {
                       const ongoing = isExpeditionOngoing(record)
@@ -156,11 +156,11 @@ export const FormationScreen = ({
                           key={record.id}
                           className={`px-2 py-1 rounded text-xs transition-colors ${
                             ongoing
-                              ? 'bg-orange-100 hover:bg-orange-200 text-orange-800'
-                              : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
+                              ? 'text-orange-800 bg-orange-100 hover:bg-orange-200'
+                              : 'text-gray-700 bg-gray-100 hover:bg-gray-200'
                           }`}
                         >
-                          <div className="flex items-center justify-between">
+                          <div className="flex justify-between items-center">
                             <div
                               className="flex-1 cursor-pointer"
                               onClick={() => {
@@ -187,7 +187,7 @@ export const FormationScreen = ({
                               </div>
                             </div>
                             <div
-                              className="ml-2 flex-shrink-0 cursor-pointer p-1 hover:bg-gray-300 rounded"
+                              className="flex-shrink-0 p-1 ml-2 rounded cursor-pointer hover:bg-gray-300"
                               onClick={(e) => {
                                 e.stopPropagation()
                                 if (ongoing && onExpeditionPartyClick) {

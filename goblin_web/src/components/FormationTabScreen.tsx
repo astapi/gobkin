@@ -12,7 +12,7 @@ type ViewMode = 'list' | 'edit' | 'log' | 'result'
 
 export const FormationTabScreen = () => {
   const { partyRepository, isLoading } = usePartyRepository()
-  const { isPartyInExpedition, getExpeditionByPartyId } = useExpeditionState()
+  const { getExpeditionByPartyId } = useExpeditionState()
   const [editingPartyId, setEditingPartyId] = useState<number | null>(null)
   const [selectedHistoryReplay, setSelectedHistoryReplay] = useState<ExpeditionRecord | null>(null)
   const [viewMode, setViewMode] = useState<ViewMode>('list')
@@ -31,13 +31,21 @@ export const FormationTabScreen = () => {
     try {
       const expeditionRecord = await getExpeditionByPartyId(partyId)
 
-      if (expeditionRecord && expeditionRecord.replay) {
-        // リプレイデータがある場合はFormationタブ内で再生
+      if (!expeditionRecord) {
+        return
+      }
+
+      // returnTimeで遠征中かどうかを判定
+      const now = new Date()
+      const isStillOngoing = expeditionRecord.returnTime > now
+
+      if (isStillOngoing) {
+        // まだ帰還時刻前なら情報を表示
+        alert(`${expeditionRecord.partyName}は現在遠征中です。\n帰還予定時刻: ${expeditionRecord.returnTime.toLocaleString()}`)
+      } else if (expeditionRecord.replay) {
+        // 帰還済みでリプレイデータがある場合はログ画面へ
         setSelectedHistoryReplay(expeditionRecord)
         setViewMode('log')
-      } else {
-        // リプレイデータがない場合は情報を表示
-        alert(`${expeditionRecord?.partyName || 'PT'}は現在遠征中です。\n帰還予定時刻: ${expeditionRecord?.returnTime.toLocaleString() || '不明'}`)
       }
     } catch (error) {
       console.error('遠征データ取得エラー:', error)
@@ -146,7 +154,6 @@ export const FormationTabScreen = () => {
       onHistoryClick={handleHistoryClick}
       onLogClick={handleLogClick}
       isLoading={isLoading}
-      isPartyInExpedition={isPartyInExpedition}
     />
   )
 }
