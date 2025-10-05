@@ -387,7 +387,7 @@ export const ExpeditionLogScreen = ({
           onClick={() => setSelectedBattleLog(null)}
         >
           <div
-            className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[80vh] overflow-hidden"
+            className="bg-white max-w-[414px] w-full h-full overflow-hidden flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex justify-between items-center p-4 text-white bg-gray-800">
@@ -399,7 +399,7 @@ export const ExpeditionLogScreen = ({
                 ✕
               </button>
             </div>
-            <div className="overflow-y-auto max-h-[calc(80vh-4rem)] p-4 space-y-2">
+            <div className="overflow-y-auto flex-1 p-4 space-y-2">
               {selectedBattleLog.map((entry, idx) => (
                 <div
                   key={idx}
