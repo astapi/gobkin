@@ -4,11 +4,12 @@ import { PartyEditScreen } from './PartyEditScreen.tsx'
 import { FormationScreen } from './FormationScreen.tsx'
 import { ExpeditionLogScreen } from './ExpeditionLogScreen.tsx'
 import { ExpeditionResultScreen } from './ExpeditionResultScreen.tsx'
+import { ExpeditionPreparationScreen } from './ExpeditionPreparationScreen.tsx'
 import { usePartyRepository } from '../hooks/usePartyRepository.ts'
 import { useExpeditionState } from '../contexts/ExpeditionStateContext.tsx'
 import { goblinsData, dungeonsData } from '../data/index.ts'
 
-type ViewMode = 'list' | 'edit' | 'log' | 'result'
+type ViewMode = 'list' | 'preparation' | 'edit' | 'log' | 'result'
 
 export const FormationTabScreen = () => {
   const { partyRepository, isLoading } = usePartyRepository()
@@ -19,7 +20,7 @@ export const FormationTabScreen = () => {
 
   const handlePartySelect = (partyId: number) => {
     setEditingPartyId(partyId)
-    setViewMode('edit')
+    setViewMode('preparation')
   }
 
   const handleBackToFormation = () => {
@@ -72,6 +73,14 @@ export const FormationTabScreen = () => {
   const handleBackToFormationList = () => {
     setSelectedHistoryReplay(null)
     setViewMode('list')
+  }
+
+  const handleEditParty = () => {
+    setViewMode('edit')
+  }
+
+  const handleBackToPreparation = () => {
+    setViewMode('preparation')
   }
 
   // 結果画面表示中
@@ -132,6 +141,19 @@ export const FormationTabScreen = () => {
     )
   }
 
+  // 冒険準備画面
+  if (viewMode === 'preparation' && editingPartyId !== null) {
+    return (
+      <ExpeditionPreparationScreen
+        partyId={editingPartyId}
+        partyRepository={partyRepository}
+        goblins={goblinsData}
+        onBack={handleBackToFormation}
+        onEditParty={handleEditParty}
+      />
+    )
+  }
+
   // パーティ編集画面
   if (viewMode === 'edit' && editingPartyId !== null) {
     return (
@@ -139,7 +161,7 @@ export const FormationTabScreen = () => {
         partyId={editingPartyId}
         goblins={goblinsData}
         partyRepository={partyRepository}
-        onBack={handleBackToFormation}
+        onBack={handleBackToPreparation}
       />
     )
   }
