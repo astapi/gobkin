@@ -96,6 +96,10 @@ export interface BattleLogEntry {
   targetDefeated?: boolean
   actorHP?: number
   targetHP?: number
+  turnState?: {
+    allies: Array<{ id: string; name: string; currentHP: number; maxHP: number }>
+    enemies: Array<{ id: string; name: string; currentHP: number; maxHP: number }>
+  }
 }
 
 export interface CombatReplay {

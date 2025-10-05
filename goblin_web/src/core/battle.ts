@@ -92,6 +92,36 @@ export function executeBattle(
   while (currentTurn < maxTurns) {
     currentTurn++;
 
+    // ターン開始時の状態をログに記録
+    const turnStartLog: BattleLogEntry = {
+      turn: currentTurn,
+      actorId: 'system',
+      actorName: 'ターン開始',
+      action: 'turn_start',
+      targetId: '',
+      targetName: '',
+      damage: 0,
+      isAlly: true,
+      targetDefeated: false,
+      actorHP: 0,
+      targetHP: 0,
+      turnState: {
+        allies: allyUnits.map(u => ({
+          id: u.combatant.id,
+          name: u.combatant.name,
+          currentHP: u.currentHP,
+          maxHP: u.maxHP,
+        })),
+        enemies: enemyUnits.map(u => ({
+          id: u.combatant.id,
+          name: u.combatant.name,
+          currentHP: u.currentHP,
+          maxHP: u.maxHP,
+        })),
+      },
+    };
+    detailedLog.push(turnStartLog);
+
     // 行動順の決定（spd順、敵味方混合）
     const allUnits = [...allyUnits, ...enemyUnits].filter(u => u.currentHP > 0);
     allUnits.sort((a, b) => b.spd - a.spd);

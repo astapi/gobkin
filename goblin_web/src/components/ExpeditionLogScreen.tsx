@@ -400,36 +400,72 @@ export const ExpeditionLogScreen = ({
               </button>
             </div>
             <div className="overflow-y-auto flex-1 p-4 space-y-2">
-              {selectedBattleLog.map((entry, idx) => (
-                <div
-                  key={idx}
-                  className={`text-sm p-2 rounded ${
-                    entry.isAlly ? 'bg-blue-50' : 'bg-red-50'
-                  }`}
-                >
-                  <div className="font-mono">
-                    <span className="font-bold text-gray-600">Turn {entry.turn}:</span>
-                    {' '}
-                    <span className={entry.isAlly ? 'text-blue-700' : 'text-red-700'}>
-                      {entry.actorName}
-                    </span>
-                    {' → '}
-                    <span className={entry.isAlly ? 'text-red-700' : 'text-blue-700'}>
-                      {entry.targetName}
-                    </span>
+              {selectedBattleLog.map((entry, idx) => {
+                // ターン開始ログの場合
+                if (entry.action === 'turn_start' && entry.turnState) {
+                  return (
+                    <div key={idx} className="p-3 bg-gray-100 rounded border border-gray-300">
+                      <div className="mb-2 font-bold text-gray-700">
+                        Turn {entry.turn} 開始
+                      </div>
+                      <div className="space-y-2">
+                        <div>
+                          <div className="mb-1 text-xs font-semibold text-blue-700">味方:</div>
+                          <div className="space-y-1">
+                            {entry.turnState.allies.map((ally, i) => (
+                              <div key={i} className="flex justify-between items-center text-xs">
+                                <span className="text-gray-700">{ally.name}</span>
+                                <span className={`font-mono ${ally.currentHP <= 0 ? 'text-red-600' : 'text-gray-600'}`}>
+                                  {ally.currentHP}/{ally.maxHP} HP
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                        <div>
+                          <div className="mb-1 text-xs font-semibold text-red-700">敵:</div>
+                          <div className="space-y-1">
+                            {entry.turnState.enemies.map((enemy, i) => (
+                              <div key={i} className="flex justify-between items-center text-xs">
+                                <span className="text-gray-700">{enemy.name}</span>
+                                <span className={`font-mono ${enemy.currentHP <= 0 ? 'text-red-600' : 'text-gray-600'}`}>
+                                  {enemy.currentHP}/{enemy.maxHP} HP
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )
+                }
+
+                // 通常の戦闘ログ
+                return (
+                  <div
+                    key={idx}
+                    className={`text-sm p-2 rounded ${
+                      entry.isAlly ? 'bg-blue-50' : 'bg-red-50'
+                    }`}
+                  >
+                    <div className="font-mono text-xs">
+                      <span className={entry.isAlly ? 'text-blue-700 font-semibold' : 'text-red-700 font-semibold'}>
+                        {entry.actorName}の攻撃
+                      </span>
+                      <span className="text-gray-500">
+                        ({entry.actorHP}HP)
+                      </span>
+                    </div>
+                    <div className="mt-1 text-xs text-gray-700">
+                      {entry.actorName}の{entry.action}!
+                    </div>
+                    <div className="mt-1 text-xs text-gray-700">
+                      {entry.targetName}に{entry.damage}ダメージ{entry.targetDefeated ? 'を与えて倒した！' : ''}
+                      {entry.healing && `${entry.healing}回復`}
+                    </div>
                   </div>
-                  <div className="mt-1 text-xs text-gray-600">
-                    {entry.action}
-                    {entry.damage && ` | ${entry.damage}ダメージ`}
-                    {entry.healing && ` | ${entry.healing}回復`}
-                    {entry.targetDefeated && ' | 撃破！'}
-                  </div>
-                  <div className="mt-1 text-xs text-gray-500">
-                    {entry.actorName}: {entry.actorHP}HP
-                    {entry.targetHP !== undefined && ` | ${entry.targetName}: ${entry.targetHP}HP`}
-                  </div>
-                </div>
-              ))}
+                )
+              })}
             </div>
           </div>
         </div>
