@@ -83,11 +83,27 @@ export interface Drop {
   qty: number
 }
 
+export interface BattleLogEntry {
+  turn: number
+  actorId: string
+  actorName: string
+  action: string
+  targetId?: string
+  targetName?: string
+  damage?: number
+  healing?: number
+  isAlly: boolean
+  targetDefeated?: boolean
+  actorHP?: number
+  targetHP?: number
+}
+
 export interface CombatReplay {
   rounds: number
   outcome: "win" | "lose" | "escape"
   allyHPDelta: number[]
   enemyDefeated: number
+  detailedLog?: BattleLogEntry[] // 戦闘の詳細ログ
   capture?: {
     eligible: boolean
     success?: boolean

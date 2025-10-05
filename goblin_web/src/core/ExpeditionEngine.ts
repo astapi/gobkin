@@ -13,6 +13,7 @@ import type {
   Enemy,
   EnemyPattern
 } from '../types/index.ts'
+import { executeBattle } from './battle.ts'
 
 export class ExpeditionEngine {
   private rng: () => number
@@ -354,54 +355,41 @@ export class ExpeditionEngine {
   }
 
   private resolveCombat(partyState: any[], enemies: Enemy[], area: AreaConfig, isBoss = false): CombatReplay {
-    // パーティの戦力計算（HP + ATK + DEF）
-    const partyPower = partyState
-      .filter(m => !m.isKO)
-      .reduce((sum, member) => sum + (member.maxHP + member.atk + member.def), 0)
+    // partyStateから全ゴブリンを再構築（死亡メンバーも含む）
+    const allGoblins: Goblin[] = partyState.map(member => ({
+      id: parseInt(member.id),
+      name: `ゴブリン${member.id}`,
+      race: 'ゴブリン' as const,
+      level: 1,
+      avatar: '/default.png',
+      stats: {
+        hp: member.maxHP,
+        atk: member.atk,
+        sp: 0,
+        spd: 40,
+        def: member.def
+      }
+    }))
 
-    // 敵の戦力計算（各敵のHP + ATK + DEF の合計）
-    const enemyPower = enemies.reduce((sum, enemy) =>
-      sum + (enemy.hp + enemy.atk + enemy.def), 0
-    )
+    // 各メンバーの現在HPを配列で渡す
+    const currentHP = partyState.map(member => member.currentHP)
 
-    const difficulty = isBoss ? 20 : 15
+    // 新しい戦闘システムを実行
+    const battleResult = executeBattle(allGoblins, currentHP, enemies, this.rng)
 
-    const winProb = 1 / (1 + Math.exp(-(partyPower - enemyPower) / difficulty))
-    const isWin = this.rng() < winProb
+    // CombatReplayに変換
+    const outcome = battleResult.outcome === 'retreat' ? 'lose' : battleResult.outcome
 
-    const rounds = Math.max(1, Math.floor(this.rng() * 5) + 1)
-
-    let allyHPDelta: number[] = []
-    if (isWin) {
-      // 勝利時のダメージ計算（敵の攻撃力ベース）
-      const totalEnemyAtk = enemies.reduce((sum, enemy) => sum + enemy.atk, 0)
-      allyHPDelta = partyState.map(member => {
-        if (member.isKO) return 0
-        const defense = member.def || 1
-        const rawDamage = totalEnemyAtk / partyState.filter(m => !m.isKO).length
-        const damage = Math.max(1, Math.floor(rawDamage * (1 - defense / (defense + 100)) * (0.5 + this.rng() * 0.5)))
-        return -damage
-      })
-    } else {
-      // 敗北時は大ダメージ
-      const totalEnemyAtk = enemies.reduce((sum, enemy) => sum + enemy.atk, 0)
-      allyHPDelta = partyState.map(member => {
-        if (member.isKO) return 0
-        const defense = member.def || 1
-        const rawDamage = totalEnemyAtk / partyState.filter(m => !m.isKO).length
-        const damage = Math.floor(rawDamage * (1 - defense / (defense + 100)) * (1.5 + this.rng() * 0.5))
-        return -damage
-      })
-    }
-
-    const captureCheck = isWin && !isBoss && this.rng() < (area.rewards.captureBonus + 0.1)
+    // 捕獲判定
+    const captureCheck = outcome === 'win' && !isBoss && this.rng() < (area.rewards.captureBonus + 0.1)
     const representative = enemies[0]
 
     return {
-      rounds,
-      outcome: isWin ? "win" : "lose",
-      allyHPDelta,
-      enemyDefeated: isWin ? enemies.length : 0,
+      rounds: battleResult.rounds,
+      outcome,
+      allyHPDelta: battleResult.allyHPDelta,
+      enemyDefeated: battleResult.enemyDefeated,
+      detailedLog: battleResult.detailedLog,
       capture: captureCheck ? {
         eligible: true,
         success: this.rng() < 0.3,

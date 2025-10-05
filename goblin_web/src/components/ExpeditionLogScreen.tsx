@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
-import type { ExpeditionReplay, TimelineEvent, Goblin } from '../types/index.ts'
+import type { ExpeditionReplay, TimelineEvent, Goblin, BattleLogEntry } from '../types/index.ts'
 
 interface ExpeditionLogScreenProps {
   expeditionReplay: ExpeditionReplay
@@ -12,6 +12,12 @@ type PlaybackSpeed = 1 | 2 | 4
 interface ProcessedEvent {
   event: TimelineEvent
   processed: boolean
+}
+
+interface LogEntry {
+  message: string
+  battleLog?: BattleLogEntry[]
+  eventType?: string
 }
 
 export const ExpeditionLogScreen = ({
@@ -31,7 +37,8 @@ export const ExpeditionLogScreen = ({
     expeditionReplay.events.map(event => ({ event, processed: event.at <= initialTime }))
   )
   const [currentFloor, setCurrentFloor] = useState(1)
-  const [eventLog, setEventLog] = useState<string[]>([])
+  const [eventLog, setEventLog] = useState<LogEntry[]>([])
+  const [selectedBattleLog, setSelectedBattleLog] = useState<BattleLogEntry[] | null>(null)
   const [partyHp, setPartyHp] = useState<number[]>(() => {
     return expeditionReplay.meta.party.map(memberId => {
       const goblin = goblins.find(g => g.id === parseInt(memberId))
@@ -50,8 +57,12 @@ export const ExpeditionLogScreen = ({
     return `${mins}:${secs.toString().padStart(2, '0')}`
   }
 
-  const addLog = useCallback((message: string) => {
-    setEventLog(prev => [...prev, `[${formatTime(currentTime)}] ${message}`])
+  const addLog = useCallback((message: string, battleLog?: BattleLogEntry[], eventType?: string) => {
+    setEventLog(prev => [...prev, {
+      message: `[${formatTime(currentTime)}] ${message}`,
+      battleLog,
+      eventType
+    }])
     setTimeout(() => {
       if (logContainerRef.current) {
         logContainerRef.current.scrollTop = logContainerRef.current.scrollHeight
@@ -78,7 +89,11 @@ export const ExpeditionLogScreen = ({
       case 'boss':
         const battleType = event.type === 'boss' ? '👹 ボス' : '⚔️'
         const result = event.combat.outcome === 'win' ? '勝利' : '敗北'
-        addLog(`${battleType} ${event.enemy.name} Lv${event.enemy.lvl} ×${event.enemy.count}体と遭遇 → ${result}`)
+        addLog(
+          `${battleType} ${event.enemy.name} Lv${event.enemy.lvl} ×${event.enemy.count}体と遭遇 → ${result}`,
+          event.combat.detailedLog,
+          'battle'
+        )
 
         if (event.combat.allyHPDelta) {
           const newHp = [...partyHp]
@@ -143,7 +158,7 @@ export const ExpeditionLogScreen = ({
 
       let tempPartyHp = [...partyHp]
       let tempFloor = 1
-      const tempLogs: string[] = []
+      const tempLogs: LogEntry[] = []
 
       pastEvents.forEach((event, index) => {
         const eventId = `${index}-${event.type}-${event.at}`
@@ -157,17 +172,21 @@ export const ExpeditionLogScreen = ({
 
         switch (event.type) {
           case 'move_start':
-            tempLogs.push(`[${formatTimeLocal(event.at)}] 🚶 ${event.floor}階の探索を開始`)
+            tempLogs.push({ message: `[${formatTimeLocal(event.at)}] 🚶 ${event.floor}階の探索を開始` })
             break
           case 'floor_up':
             tempFloor = event.to
-            tempLogs.push(`[${formatTimeLocal(event.at)}] ⬆️ ${event.from}階から${event.to}階へ移動`)
+            tempLogs.push({ message: `[${formatTimeLocal(event.at)}] ⬆️ ${event.from}階から${event.to}階へ移動` })
             break
           case 'battle':
           case 'boss':
             const battleType = event.type === 'boss' ? '👹 ボス' : '⚔️'
             const result = event.combat.outcome === 'win' ? '勝利' : '敗北'
-            tempLogs.push(`[${formatTimeLocal(event.at)}] ${battleType} ${event.enemy.name} Lv${event.enemy.lvl} ×${event.enemy.count}体と遭遇 → ${result}`)
+            tempLogs.push({
+              message: `[${formatTimeLocal(event.at)}] ${battleType} ${event.enemy.name} Lv${event.enemy.lvl} ×${event.enemy.count}体と遭遇 → ${result}`,
+              battleLog: event.combat.detailedLog,
+              eventType: 'battle'
+            })
 
             if (event.combat.allyHPDelta) {
               event.combat.allyHPDelta.forEach((delta, idx) => {
@@ -176,21 +195,21 @@ export const ExpeditionLogScreen = ({
             }
 
             if (event.xp > 0) {
-              tempLogs.push(`[${formatTimeLocal(event.at)}] ✨ ${event.xp}XP獲得`)
+              tempLogs.push({ message: `[${formatTimeLocal(event.at)}] ✨ ${event.xp}XP獲得` })
             }
 
             if (event.combat.capture?.success) {
-              tempLogs.push(`[${formatTimeLocal(event.at)}] 🎯 ${event.combat.capture.captured?.id}を捕獲！`)
+              tempLogs.push({ message: `[${formatTimeLocal(event.at)}] 🎯 ${event.combat.capture.captured?.id}を捕獲！` })
             }
             break
           case 'resource':
             if (event.loot && event.loot.length > 0) {
               const items = event.loot.map(drop => `${drop.id} x${drop.qty}`).join(', ')
-              tempLogs.push(`[${formatTimeLocal(event.at)}] 📦 資源発見: ${items}`)
+              tempLogs.push({ message: `[${formatTimeLocal(event.at)}] 📦 資源発見: ${items}` })
             }
             break
           case 'trap':
-            tempLogs.push(`[${formatTimeLocal(event.at)}] ⚠️ 罠にかかった: ${event.trapId}`)
+            tempLogs.push({ message: `[${formatTimeLocal(event.at)}] ⚠️ 罠にかかった: ${event.trapId}` })
             break
           case 'return':
             let reason = '探索完了'
@@ -214,7 +233,7 @@ export const ExpeditionLogScreen = ({
                 reason = '緊急帰還'
                 break
             }
-            tempLogs.push(`[${formatTimeLocal(event.at)}] 🏠 ${reason}`)
+            tempLogs.push({ message: `[${formatTimeLocal(event.at)}] 🏠 ${reason}` })
             break
         }
       })
@@ -273,9 +292,9 @@ export const ExpeditionLogScreen = ({
   const progress = (currentTime / expeditionReplay.durationSec) * 100
 
   return (
-    <div className="h-full flex flex-col">
+    <div className="flex flex-col h-full">
       {/* ヘッダー */}
-      <div className="bg-gray-800 text-white p-3 shadow-lg">
+      <div className="p-3 text-white bg-gray-800 shadow-lg">
         <div className="flex justify-between items-center">
           <div className="text-sm font-bold">
             🏰 {expeditionReplay.meta.areaName} - {currentFloor}階
@@ -286,7 +305,7 @@ export const ExpeditionLogScreen = ({
         </div>
 
         {/* プログレスバー */}
-        <div className="mt-2 bg-gray-700 rounded-full h-2 overflow-hidden">
+        <div className="overflow-hidden mt-2 h-2 bg-gray-700 rounded-full">
           <div
             className="h-full bg-green-500 transition-all duration-100 ease-linear"
             style={{ width: `${progress}%` }}
@@ -295,7 +314,7 @@ export const ExpeditionLogScreen = ({
       </div>
 
       {/* パーティ状態 */}
-      <div className="bg-gray-100 border-b-2 border-gray-300 p-3">
+      <div className="p-3 bg-gray-100 border-b-2 border-gray-300">
         <div className="grid grid-cols-3 gap-2">
           {expeditionReplay.meta.party.map((memberId, idx) => {
             const goblin = goblins.find(g => g.id === parseInt(memberId))
@@ -309,21 +328,21 @@ export const ExpeditionLogScreen = ({
                 key={memberId}
                 className={`bg-white rounded-lg p-2 border ${isKO ? 'border-red-400 opacity-50' : 'border-gray-300'}`}
               >
-                <div className="flex items-center gap-1 mb-1">
-                  <div className="w-6 h-6 bg-gray-200 rounded-full flex items-center justify-center overflow-hidden">
-                    <img src={goblin?.avatar} alt={goblin?.name} className="w-full h-full object-cover" />
+                <div className="flex gap-1 items-center mb-1">
+                  <div className="flex overflow-hidden justify-center items-center w-6 h-6 bg-gray-200 rounded-full">
+                    <img src={goblin?.avatar} alt={goblin?.name} className="object-cover w-full h-full" />
                   </div>
-                  <div className="text-xs font-medium truncate flex-1">
+                  <div className="flex-1 text-xs font-medium truncate">
                     {goblin?.name || `ID:${memberId}`}
                   </div>
                 </div>
-                <div className="h-1 bg-gray-200 rounded-full overflow-hidden">
+                <div className="overflow-hidden h-1 bg-gray-200 rounded-full">
                   <div
                     className={`h-full transition-all duration-300 ${isKO ? 'bg-red-500' : hpPercent > 50 ? 'bg-green-500' : hpPercent > 25 ? 'bg-yellow-500' : 'bg-red-500'}`}
                     style={{ width: `${hpPercent}%` }}
                   />
                 </div>
-                <div className="text-xs text-gray-600 mt-1">
+                <div className="mt-1 text-xs text-gray-600">
                   HP: {currentHp}/{maxHp}
                 </div>
               </div>
@@ -333,18 +352,88 @@ export const ExpeditionLogScreen = ({
       </div>
 
       {/* イベントログ */}
-      <div className="flex-1 overflow-hidden bg-white">
+      <div className="overflow-hidden flex-1 bg-white">
         <div
           ref={logContainerRef}
-          className="h-full overflow-y-auto p-4 space-y-1"
+          className="overflow-y-auto p-4 space-y-1 h-full"
         >
           {eventLog.map((log, idx) => (
-            <div key={idx} className="text-sm text-gray-700 font-mono">
-              {log}
+            <div
+              key={idx}
+              className={`text-sm text-gray-700 font-mono ${
+                log.battleLog && log.battleLog.length > 0
+                  ? 'cursor-pointer hover:bg-blue-50 py-1 rounded'
+                  : ''
+              }`}
+              onClick={() => {
+                if (log.battleLog && log.battleLog.length > 0) {
+                  setSelectedBattleLog(log.battleLog)
+                }
+              }}
+            >
+              {log.message}
+              {log.battleLog && log.battleLog.length > 0 && (
+                <span className="ml-2 text-xs text-blue-500">📋 詳細</span>
+              )}
             </div>
           ))}
         </div>
       </div>
+
+      {/* 戦闘詳細ログモーダル */}
+      {selectedBattleLog && (
+        <div
+          className="flex fixed inset-0 z-50 justify-center items-center bg-black bg-opacity-50"
+          onClick={() => setSelectedBattleLog(null)}
+        >
+          <div
+            className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[80vh] overflow-hidden"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex justify-between items-center p-4 text-white bg-gray-800">
+              <h3 className="font-bold">⚔️ 戦闘ログ</h3>
+              <button
+                onClick={() => setSelectedBattleLog(null)}
+                className="text-white hover:text-gray-300"
+              >
+                ✕
+              </button>
+            </div>
+            <div className="overflow-y-auto max-h-[calc(80vh-4rem)] p-4 space-y-2">
+              {selectedBattleLog.map((entry, idx) => (
+                <div
+                  key={idx}
+                  className={`text-sm p-2 rounded ${
+                    entry.isAlly ? 'bg-blue-50' : 'bg-red-50'
+                  }`}
+                >
+                  <div className="font-mono">
+                    <span className="font-bold text-gray-600">Turn {entry.turn}:</span>
+                    {' '}
+                    <span className={entry.isAlly ? 'text-blue-700' : 'text-red-700'}>
+                      {entry.actorName}
+                    </span>
+                    {' → '}
+                    <span className={entry.isAlly ? 'text-red-700' : 'text-blue-700'}>
+                      {entry.targetName}
+                    </span>
+                  </div>
+                  <div className="mt-1 text-xs text-gray-600">
+                    {entry.action}
+                    {entry.damage && ` | ${entry.damage}ダメージ`}
+                    {entry.healing && ` | ${entry.healing}回復`}
+                    {entry.targetDefeated && ' | 撃破！'}
+                  </div>
+                  <div className="mt-1 text-xs text-gray-500">
+                    {entry.actorName}: {entry.actorHP}HP
+                    {entry.targetHP !== undefined && ` | ${entry.targetName}: ${entry.targetHP}HP`}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
