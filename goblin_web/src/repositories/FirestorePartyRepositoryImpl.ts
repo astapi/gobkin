@@ -1,4 +1,4 @@
-import type { Party, PartyStatus } from '../types/index.ts'
+import type { Party, PartyStatus, ExpeditionRequest } from '../types/index.ts'
 import type { PartyRepository } from './PartyRepository.ts'
 import { db, auth } from '../config/firebase.ts'
 import {
@@ -166,6 +166,22 @@ export class FirestorePartyRepositoryAdapter implements PartyRepository {
     const party = this.getParty(id)
     if (party) {
       party.dungeonId = dungeonId
+      this.saveParty(party)
+    }
+  }
+
+  updateFloorTarget(id: number, targetFloor: number | null): void {
+    const party = this.getParty(id)
+    if (party) {
+      party.targetFloor = targetFloor
+      this.saveParty(party)
+    }
+  }
+
+  updateReturnPolicy(id: number, returnPolicy: ExpeditionRequest["returnPolicy"]): void {
+    const party = this.getParty(id)
+    if (party) {
+      party.returnPolicy = returnPolicy
       this.saveParty(party)
     }
   }

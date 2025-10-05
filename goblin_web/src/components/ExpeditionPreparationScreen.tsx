@@ -1,7 +1,9 @@
 import { useState } from 'react'
-import type { Goblin, Dungeon } from '../types/index.ts'
+import type { Goblin, Dungeon, ExpeditionRequest } from '../types/index.ts'
 import type { PartyRepository } from '../repositories/PartyRepository.ts'
 import { DungeonSelectionModal } from './DungeonSelectionModal.tsx'
+import { FloorTargetSelectionModal } from './FloorTargetSelectionModal.tsx'
+import { ReturnPolicySelectionModal } from './ReturnPolicySelectionModal.tsx'
 
 interface ExpeditionPreparationScreenProps {
   partyId: number
@@ -21,12 +23,39 @@ export const ExpeditionPreparationScreen = ({
   onEditParty
 }: ExpeditionPreparationScreenProps) => {
   const [showDungeonModal, setShowDungeonModal] = useState(false)
+  const [showFloorModal, setShowFloorModal] = useState(false)
+  const [showReturnPolicyModal, setShowReturnPolicyModal] = useState(false)
   const party = partyRepository.getParty(partyId)
   const selectedDungeon = party?.dungeonId ? dungeons.find(d => d.id === party.dungeonId) : null
 
   const handleDungeonSelect = (dungeon: Dungeon) => {
     partyRepository.updateDungeonSettings(partyId, dungeon.id)
     setShowDungeonModal(false)
+  }
+
+  const handleFloorTargetSelect = (floor: number | null) => {
+    partyRepository.updateFloorTarget(partyId, floor)
+    setShowFloorModal(false)
+  }
+
+  const handleReturnPolicySelect = (policy: ExpeditionRequest["returnPolicy"]) => {
+    partyRepository.updateReturnPolicy(partyId, policy)
+    setShowReturnPolicyModal(false)
+  }
+
+  const getReturnPolicyLabel = (policy?: ExpeditionRequest["returnPolicy"]): string => {
+    switch (policy) {
+      case "if_any_ko":
+        return "1人でも死亡したら帰還"
+      case "if_two_ko":
+        return "2人が死亡したら帰還"
+      case "last_one":
+        return "最後の1人になったら帰還"
+      case "never":
+        return "帰還しない"
+      default:
+        return "帰還しない"
+    }
   }
 
   if (!party) {
@@ -133,16 +162,31 @@ export const ExpeditionPreparationScreen = ({
               {/* 目標階数 */}
               <div>
                 <div className="text-sm font-semibold text-gray-700 mb-2">目標階数</div>
-                <button className="w-full px-3 py-2 bg-gray-100 hover:bg-gray-200 rounded text-sm text-gray-700 transition-colors text-left">
-                  X階まで挑戦
+                <button
+                  onClick={() => setShowFloorModal(true)}
+                  disabled={!selectedDungeon}
+                  className="w-full px-3 py-2 bg-gray-100 hover:bg-gray-200 rounded text-sm transition-colors text-left disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {!selectedDungeon ? (
+                    <div className="text-gray-600">遠征先を選択してください</div>
+                  ) : party.targetFloor ? (
+                    <div className="text-gray-800">{party.targetFloor}階まで</div>
+                  ) : (
+                    <div className="text-gray-800">どこまでも進む</div>
+                  )}
                 </button>
               </div>
 
               {/* 帰還条件 */}
               <div>
                 <div className="text-sm font-semibold text-gray-700 mb-2">帰還条件</div>
-                <button className="w-full px-3 py-2 bg-gray-100 hover:bg-gray-200 rounded text-sm text-gray-700 transition-colors text-left">
-                  帰還条件を選択
+                <button
+                  onClick={() => setShowReturnPolicyModal(true)}
+                  className="w-full px-3 py-2 bg-gray-100 hover:bg-gray-200 rounded text-sm transition-colors text-left"
+                >
+                  <div className="text-gray-800">
+                    {getReturnPolicyLabel(party.returnPolicy)}
+                  </div>
                 </button>
               </div>
             </div>
@@ -156,6 +200,23 @@ export const ExpeditionPreparationScreen = ({
           dungeons={dungeons}
           onSelect={handleDungeonSelect}
           onClose={() => setShowDungeonModal(false)}
+        />
+      )}
+
+      {/* 目標階数選択モーダル */}
+      {showFloorModal && selectedDungeon && (
+        <FloorTargetSelectionModal
+          maxFloor={selectedDungeon.floors}
+          onSelect={handleFloorTargetSelect}
+          onClose={() => setShowFloorModal(false)}
+        />
+      )}
+
+      {/* 帰還条件選択モーダル */}
+      {showReturnPolicyModal && (
+        <ReturnPolicySelectionModal
+          onSelect={handleReturnPolicySelect}
+          onClose={() => setShowReturnPolicyModal(false)}
         />
       )}
     </div>

@@ -1,4 +1,4 @@
-import type { Party, PartyStatus } from '../types/index.ts'
+import type { Party, PartyStatus, ExpeditionRequest } from '../types/index.ts'
 import type { PartyRepository } from './PartyRepository.ts'
 
 const STORAGE_KEY = 'goblin_kingdom_parties'
@@ -55,6 +55,24 @@ export class JsonPartyRepositoryImpl implements PartyRepository {
     const party = parties.find(p => p.id === id)
     if (party) {
       party.dungeonId = dungeonId
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(parties))
+    }
+  }
+
+  updateFloorTarget(id: number, targetFloor: number | null): void {
+    const parties = this.getParties()
+    const party = parties.find(p => p.id === id)
+    if (party) {
+      party.targetFloor = targetFloor
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(parties))
+    }
+  }
+
+  updateReturnPolicy(id: number, returnPolicy: ExpeditionRequest["returnPolicy"]): void {
+    const parties = this.getParties()
+    const party = parties.find(p => p.id === id)
+    if (party) {
+      party.returnPolicy = returnPolicy
       localStorage.setItem(STORAGE_KEY, JSON.stringify(parties))
     }
   }

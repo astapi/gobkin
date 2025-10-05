@@ -1,4 +1,4 @@
-import type { Party, PartyStatus } from '../types/index.ts'
+import type { Party, PartyStatus, ExpeditionRequest } from '../types/index.ts'
 
 export interface PartyRepository {
   getParties(): Party[]
@@ -8,4 +8,6 @@ export interface PartyRepository {
   updatePartyStatus(id: number, status: PartyStatus): void
   getPartiesByStatus(status: PartyStatus): Party[]
   updateDungeonSettings(id: number, dungeonId: number): void
+  updateFloorTarget(id: number, targetFloor: number | null): void
+  updateReturnPolicy(id: number, returnPolicy: ExpeditionRequest["returnPolicy"]): void
 }

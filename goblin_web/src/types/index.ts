@@ -35,7 +35,7 @@ export type Party = {
   memberIds: number[]
   status?: PartyStatus
   dungeonId?: number
-  targetFloor?: number
+  targetFloor?: number | null  // null = どこまでも進む
   returnPolicy?: ExpeditionRequest["returnPolicy"]
 }
 
@@ -44,7 +44,7 @@ export type Party = {
 export interface ExpeditionRequest {
   partyId: string
   areaId: string
-  returnPolicy: "until_floor2" | "until_floor3" | "if_any_ko" | "last_one" | "never"
+  returnPolicy: "until_floor2" | "until_floor3" | "if_any_ko" | "if_two_ko" | "last_one" | "never"
   clientVersion: string
 }
 
