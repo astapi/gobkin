@@ -506,7 +506,9 @@ export class ExpeditionEngine {
 
     const casualties = partyState.filter(member => member.isDead).map(member => member.id)
     const injuries = partyState.filter(member => member.isKO && !member.isDead).map(member => member.id)
-    const success = events.some(event => event.type === "return" && event.reason === "boss_clear")
+    const success = events.some(event =>
+      event.type === "return" && (event.reason === "boss_clear" || event.reason === "until_floorN")
+    )
 
     return {
       success,
