@@ -11,7 +11,8 @@ import type {
   Goblin,
   EnemyDatabase,
   Enemy,
-  EnemyPattern
+  EnemyPattern,
+  PartyState
 } from '../types/index.ts'
 import { executeBattle } from './battle.ts'
 
@@ -70,7 +71,7 @@ export class ExpeditionEngine {
     const events: TimelineEvent[] = []
     let currentFloor = 1
     let currentTime = 0
-    let partyState = this.initializePartyState(party)
+    const partyState = this.initializePartyState(party)
     let shouldReturn = false
     let returnReason: string | null = null
 
@@ -229,7 +230,7 @@ export class ExpeditionEngine {
       events.push({
         type: "return",
         at: Math.min(currentTime + 1, adjustedDuration),
-        reason: returnReason as any
+        reason: returnReason as ExpeditionRequest["returnPolicy"]
       })
     }
 
@@ -275,7 +276,7 @@ export class ExpeditionEngine {
     }
   }
 
-  private initializePartyState(party: Goblin[]) {
+  private initializePartyState(party: Goblin[]): PartyState[] {
     return party.map(goblin => ({
       id: goblin.id.toString(),
       name: goblin.name,
@@ -355,7 +356,7 @@ export class ExpeditionEngine {
     }
   }
 
-  private resolveCombat(partyState: any[], enemies: Enemy[], area: AreaConfig, isBoss = false): CombatReplay {
+  private resolveCombat(partyState: PartyState[], enemies: Enemy[], area: AreaConfig, isBoss = false): CombatReplay {
     // partyStateから全ゴブリンを再構築（死亡メンバーも含む）
     const allGoblins: Goblin[] = partyState.map(member => ({
       id: parseInt(member.id),
@@ -400,7 +401,7 @@ export class ExpeditionEngine {
     }
   }
 
-  private applyBattleResults(partyState: any[], combat: CombatReplay): void {
+  private applyBattleResults(partyState: PartyState[], combat: CombatReplay): void {
     combat.allyHPDelta.forEach((delta, index) => {
       if (partyState[index]) {
         partyState[index].currentHP = Math.max(0, partyState[index].currentHP + delta)
@@ -437,7 +438,7 @@ export class ExpeditionEngine {
     return drops
   }
 
-  private checkReturnConditions(partyState: any[], returnPolicy: ExpeditionRequest["returnPolicy"], currentFloor: number): { shouldReturn: boolean; reason: string } {
+  private checkReturnConditions(partyState: PartyState[], returnPolicy: ExpeditionRequest["returnPolicy"], currentFloor: number): { shouldReturn: boolean; reason: string } {
     const aliveMembers = partyState.filter(member => !member.isKO).length
 
     switch (returnPolicy) {
@@ -466,7 +467,7 @@ export class ExpeditionEngine {
     return { shouldReturn: false, reason: "" }
   }
 
-  private calculateRewardSummary(events: TimelineEvent[], partyState: any[]): RewardSummary {
+  private calculateRewardSummary(events: TimelineEvent[], partyState: PartyState[]): RewardSummary {
     let xpGained = 0
     const loot: Drop[] = []
     const captures: Drop[] = []
@@ -490,7 +491,7 @@ export class ExpeditionEngine {
     const casualties = partyState.filter(member => member.isDead).map(member => member.id)
     const injuries = partyState.filter(member => member.isKO && !member.isDead).map(member => member.id)
     const success = events.some(event =>
-      event.type === "return" && (event.reason === "boss_clear" || event.reason === "until_floorN")
+      event.type === "return" && (event.reason in ["boss_clear", "until_floorN"])
     )
 
     return {

@@ -71,8 +71,8 @@ export type TimelineEvent =
   | { type: "battle"; at: number; floor: number; enemy: EnemySnap; combat: CombatReplay; xp: number; drops: Drop[] }
   | { type: "boss"; at: number; floor: number; enemy: EnemySnap; combat: CombatReplay; xp: number; drops: Drop[] }
   | { type: "resource"; at: number; floor: number; loot: Drop[] }
-  | { type: "trap"; at: number; floor: number; trapId: string; effect: Record<string, unknown> }
-  | { type: "return"; at: number; reason: "until_floorN"|"if_any_ko"|"last_one"|"boss_clear"|"abort"|"lose" }
+  | { type: "exploring"; at: number; floor: number }
+  | { type: "return"; at: number; reason: ExpeditionRequest["returnPolicy"] }
 
 export interface EnemySnap {
   id: string
@@ -166,6 +166,17 @@ export interface AreaConfig {
     captureBonus: number
   }
   unlockNext?: string
+}
+
+export interface PartyState {
+  id: string
+  name: string
+  currentHP: number
+  maxHP: number
+  atk: number
+  def: number
+  isKO: boolean
+  isDead: boolean
 }
 
 export interface PartySnapshot {
