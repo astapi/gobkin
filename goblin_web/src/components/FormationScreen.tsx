@@ -164,8 +164,8 @@ export const FormationScreen = ({
                             <div
                               className="flex-1 cursor-pointer"
                               onClick={() => {
-                                if (ongoing && onExpeditionPartyClick) {
-                                  onExpeditionPartyClick(party.id)
+                                if (ongoing && record.replay && onLogClick) {
+                                  onLogClick(record)
                                 } else if (record.replay && onHistoryClick) {
                                   onHistoryClick(record)
                                 }
@@ -190,9 +190,7 @@ export const FormationScreen = ({
                               className="flex-shrink-0 p-1 ml-2 rounded cursor-pointer hover:bg-gray-300"
                               onClick={(e) => {
                                 e.stopPropagation()
-                                if (ongoing && onExpeditionPartyClick) {
-                                  onExpeditionPartyClick(party.id)
-                                } else if (record.replay && onLogClick) {
+                                if (record.replay && onLogClick) {
                                   onLogClick(record)
                                 }
                               }}
