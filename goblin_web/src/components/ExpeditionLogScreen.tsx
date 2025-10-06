@@ -79,15 +79,15 @@ export const ExpeditionLogScreen = ({
 
     switch (event.type) {
       case 'move_start':
-        addLog(`🚶 ${event.floor}階の探索を開始`)
+        addLog(`${event.floor}階の探索を開始`)
         break
       case 'floor_up':
         setCurrentFloor(event.to)
-        addLog(`⬆️ ${event.from}階から${event.to}階へ移動`)
+        addLog(`${event.from}階から${event.to}階へ移動`)
         break
       case 'battle':
       case 'boss':
-        const battleType = event.type === 'boss' ? '👹 ボス' : '⚔️'
+        const battleType = event.type === 'boss' ? 'ボス' : '戦闘'
         const result = event.combat.outcome === 'win' ? '勝利' : '敗北'
         addLog(
           `${battleType} ${event.enemy.name} Lv${event.enemy.lvl} ×${event.enemy.count}体と遭遇 → ${result}`,
@@ -104,21 +104,21 @@ export const ExpeditionLogScreen = ({
         }
 
         if (event.xp > 0) {
-          addLog(`✨ ${event.xp}XP獲得`)
+          addLog(`${event.xp}XP獲得`)
         }
 
         if (event.combat.capture?.success) {
-          addLog(`🎯 ${event.combat.capture.captured?.id}を捕獲！`)
+          addLog(`${event.combat.capture.captured?.id}を捕獲！`)
         }
         break
       case 'resource':
         if (event.loot && event.loot.length > 0) {
           const items = event.loot.map(drop => `${drop.id} x${drop.qty}`).join(', ')
-          addLog(`📦 資源発見: ${items}`)
+          addLog(`資源発見: ${items}`)
         }
         break
       case 'trap':
-        addLog(`⚠️ 罠にかかった: ${event.trapId}`)
+        addLog(`罠にかかった: ${event.trapId}`)
         break
       case 'return':
         let reason = '探索完了'
@@ -142,7 +142,7 @@ export const ExpeditionLogScreen = ({
             reason = '緊急帰還'
             break
         }
-        addLog(`🏠 ${reason}`)
+        addLog(`${reason}`)
         break
     }
   }, [addLog, partyHp])
@@ -172,15 +172,15 @@ export const ExpeditionLogScreen = ({
 
         switch (event.type) {
           case 'move_start':
-            tempLogs.push({ message: `[${formatTimeLocal(event.at)}] 🚶 ${event.floor}階の探索を開始` })
+            tempLogs.push({ message: `[${formatTimeLocal(event.at)}] ${event.floor}階の探索を開始` })
             break
           case 'floor_up':
             tempFloor = event.to
-            tempLogs.push({ message: `[${formatTimeLocal(event.at)}] ⬆️ ${event.from}階から${event.to}階へ移動` })
+            tempLogs.push({ message: `[${formatTimeLocal(event.at)}] ${event.from}階から${event.to}階へ移動` })
             break
           case 'battle':
           case 'boss':
-            const battleType = event.type === 'boss' ? '👹 ボス' : '⚔️'
+            const battleType = event.type === 'boss' ? 'ボス' : '戦闘'
             const result = event.combat.outcome === 'win' ? '勝利' : '敗北'
             tempLogs.push({
               message: `[${formatTimeLocal(event.at)}] ${battleType} ${event.enemy.name} Lv${event.enemy.lvl} ×${event.enemy.count}体と遭遇 → ${result}`,
@@ -195,21 +195,21 @@ export const ExpeditionLogScreen = ({
             }
 
             if (event.xp > 0) {
-              tempLogs.push({ message: `[${formatTimeLocal(event.at)}] ✨ ${event.xp}XP獲得` })
+              tempLogs.push({ message: `[${formatTimeLocal(event.at)}] ${event.xp}XP獲得` })
             }
 
             if (event.combat.capture?.success) {
-              tempLogs.push({ message: `[${formatTimeLocal(event.at)}] 🎯 ${event.combat.capture.captured?.id}を捕獲！` })
+              tempLogs.push({ message: `[${formatTimeLocal(event.at)}] ${event.combat.capture.captured?.id}を捕獲！` })
             }
             break
           case 'resource':
             if (event.loot && event.loot.length > 0) {
               const items = event.loot.map(drop => `${drop.id} x${drop.qty}`).join(', ')
-              tempLogs.push({ message: `[${formatTimeLocal(event.at)}] 📦 資源発見: ${items}` })
+              tempLogs.push({ message: `[${formatTimeLocal(event.at)}] 資源発見: ${items}` })
             }
             break
           case 'trap':
-            tempLogs.push({ message: `[${formatTimeLocal(event.at)}] ⚠️ 罠にかかった: ${event.trapId}` })
+            tempLogs.push({ message: `[${formatTimeLocal(event.at)}] 罠にかかった: ${event.trapId}` })
             break
           case 'return':
             let reason = '探索完了'
@@ -233,7 +233,7 @@ export const ExpeditionLogScreen = ({
                 reason = '緊急帰還'
                 break
             }
-            tempLogs.push({ message: `[${formatTimeLocal(event.at)}] 🏠 ${reason}` })
+            tempLogs.push({ message: `[${formatTimeLocal(event.at)}] ${reason}` })
             break
         }
       })
@@ -297,7 +297,7 @@ export const ExpeditionLogScreen = ({
       <div className="p-3 text-white bg-gray-800 shadow-lg">
         <div className="flex justify-between items-center">
           <div className="text-sm font-bold">
-            🏰 {expeditionReplay.meta.areaName} - {currentFloor}階
+            {expeditionReplay.meta.areaName} - {currentFloor}階
           </div>
           <div className="text-xs">
             {formatTime(currentTime)} / {formatTime(expeditionReplay.durationSec)}
@@ -373,7 +373,7 @@ export const ExpeditionLogScreen = ({
             >
               {log.message}
               {log.battleLog && log.battleLog.length > 0 && (
-                <span className="ml-2 text-xs text-blue-500">📋 詳細</span>
+                <span className="ml-2 text-xs text-blue-500">詳細</span>
               )}
             </div>
           ))}
@@ -391,12 +391,12 @@ export const ExpeditionLogScreen = ({
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex justify-between items-center p-4 text-white bg-gray-800">
-              <h3 className="font-bold">⚔️ 戦闘ログ</h3>
+              <h3 className="font-bold">戦闘ログ</h3>
               <button
                 onClick={() => setSelectedBattleLog(null)}
                 className="text-white hover:text-gray-300"
               >
-                ✕
+                ×
               </button>
             </div>
             <div className="overflow-y-auto overflow-x-hidden flex-1 p-4 space-y-2" style={{ WebkitOverflowScrolling: 'touch' }}>
