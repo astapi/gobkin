@@ -11,6 +11,7 @@ interface BattleUnit {
   combatant: Combatant;
   currentHP: number;
   maxHP: number;
+  initialHP: number; // 戦闘開始時のHP
   spd: number;
   isAlly: boolean;
   originalIndex: number; // パーティまたは敵グループでの元のインデックス
@@ -67,19 +68,24 @@ export function executeBattle(
   maxTurns: number = 20
 ): BattleResult {
   // 戦闘ユニットの初期化
-  const allyUnits: BattleUnit[] = allies.map((goblin, index) => ({
-    combatant: goblinToCombatant(goblin),
-    currentHP: initialAllyHP[index] ?? goblin.stats.hp,
-    maxHP: goblin.stats.hp,
-    spd: goblin.stats.spd,
-    isAlly: true,
-    originalIndex: index,
-  }));
+  const allyUnits: BattleUnit[] = allies.map((goblin, index) => {
+    const initialHP = initialAllyHP[index] ?? goblin.stats.hp;
+    return {
+      combatant: goblinToCombatant(goblin),
+      currentHP: initialHP,
+      maxHP: goblin.stats.hp,
+      initialHP: initialHP,
+      spd: goblin.stats.spd,
+      isAlly: true,
+      originalIndex: index,
+    };
+  });
 
   const enemyUnits: BattleUnit[] = enemies.map((enemy, index) => ({
     combatant: enemyToCombatant(enemy),
     currentHP: enemy.hp,
     maxHP: enemy.hp,
+    initialHP: enemy.hp,
     spd: enemy.spd,
     isAlly: false,
     originalIndex: index,
@@ -220,8 +226,8 @@ function createBattleResult(
   enemyUnits: BattleUnit[],
   detailedLog: BattleLogEntry[]
 ): BattleResult {
-  // 各味方のHP変化量を計算
-  const allyHPDelta = allyUnits.map(unit => unit.currentHP - unit.maxHP);
+  // 各味方のHP変化量を計算（戦闘開始時からの変化）
+  const allyHPDelta = allyUnits.map(unit => unit.currentHP - unit.initialHP);
 
   // 倒した敵の数
   const enemyDefeated = enemyUnits.filter(u => u.currentHP <= 0).length;

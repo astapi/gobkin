@@ -399,7 +399,7 @@ export const ExpeditionLogScreen = ({
                 ✕
               </button>
             </div>
-            <div className="overflow-y-auto flex-1 p-4 space-y-2">
+            <div className="overflow-y-auto overflow-x-hidden flex-1 p-4 space-y-2" style={{ WebkitOverflowScrolling: 'touch' }}>
               {selectedBattleLog.map((entry, idx) => {
                 // ターン開始ログの場合
                 if (entry.action === 'turn_start' && entry.turnState) {
