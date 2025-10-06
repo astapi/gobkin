@@ -16,7 +16,7 @@ export type Goblin = {
 }
 
 export type Dungeon = {
-  id: number
+  id: string
   name: string
   floors: number
   exploration_time_sec_first: number
@@ -34,7 +34,7 @@ export type Party = {
   name: string
   memberIds: number[]
   status?: PartyStatus
-  dungeonId?: number
+  dungeonId?: string
   targetFloor?: number | null  // null = どこまでも進む
   returnPolicy?: ExpeditionRequest["returnPolicy"]
 }
@@ -124,7 +124,7 @@ export interface ExpeditionRecord {
   userId: string
   partyId: number
   partyName: string
-  dungeonId: number
+  dungeonId: string
   dungeonName: string
   startTime: Date
   returnTime: Date

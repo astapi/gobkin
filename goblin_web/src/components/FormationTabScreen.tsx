@@ -7,7 +7,7 @@ import { ExpeditionResultScreen } from './ExpeditionResultScreen.tsx'
 import { ExpeditionPreparationScreen } from './ExpeditionPreparationScreen.tsx'
 import { usePartyRepository } from '../hooks/usePartyRepository.ts'
 import { useExpeditionState } from '../contexts/ExpeditionStateContext.tsx'
-import { goblinsData, areasData, dungeonsData } from '../data/index.ts'
+import { goblinsData, areasData } from '../data/index.ts'
 import { ExpeditionEngine } from '../core/ExpeditionEngine.ts'
 
 type ViewMode = 'list' | 'preparation' | 'edit' | 'log' | 'result'
@@ -104,7 +104,7 @@ export const FormationTabScreen = () => {
         return
       }
 
-      const dungeon = [...areasData, ...dungeonsData].find(d => d.id === party.dungeonId)
+      const dungeon = areasData.find(d => d.id === party.dungeonId)
       if (!dungeon) {
         alert('ダンジョン情報が取得できません')
         return
@@ -166,12 +166,12 @@ export const FormationTabScreen = () => {
   // 結果画面表示中
   if (viewMode === 'result' && selectedHistoryReplay?.replay) {
     return (
-      <div className="h-full flex flex-col">
-        <div className="bg-gray-100 px-4 py-2 border-b border-gray-300 flex items-center justify-between">
-          <div className="flex items-center gap-2">
+      <div className="flex flex-col h-full">
+        <div className="flex justify-between items-center px-4 py-2 bg-gray-100 border-b border-gray-300">
+          <div className="flex gap-2 items-center">
             <button
               onClick={handleBackToFormationList}
-              className="text-gray-600 hover:text-gray-800 transition-colors"
+              className="text-gray-600 transition-colors hover:text-gray-800"
             >
               ← 戻る
             </button>
@@ -180,7 +180,7 @@ export const FormationTabScreen = () => {
             </span>
           </div>
         </div>
-        <div className="flex-1 overflow-hidden">
+        <div className="overflow-hidden flex-1">
           <ExpeditionResultScreen
             expeditionReplay={selectedHistoryReplay.replay}
             goblins={goblinsData}
@@ -194,14 +194,14 @@ export const FormationTabScreen = () => {
 
   // ログ画面表示中
   if (viewMode === 'log' && selectedHistoryReplay?.replay) {
-    const dungeon = dungeonsData.find(d => d.id === selectedHistoryReplay.dungeonId)
+    const dungeon = areasData.find(d => d.id === selectedHistoryReplay.dungeonId)
     return (
-      <div className="h-full flex flex-col">
-        <div className="bg-gray-100 px-4 py-2 border-b border-gray-300 flex items-center justify-between">
-          <div className="flex items-center gap-2">
+      <div className="flex flex-col h-full">
+        <div className="flex justify-between items-center px-4 py-2 bg-gray-100 border-b border-gray-300">
+          <div className="flex gap-2 items-center">
             <button
               onClick={handleBackToFormationList}
-              className="text-gray-600 hover:text-gray-800 transition-colors"
+              className="text-gray-600 transition-colors hover:text-gray-800"
             >
               ← 戻る
             </button>
@@ -210,7 +210,7 @@ export const FormationTabScreen = () => {
             </span>
           </div>
         </div>
-        <div className="flex-1 overflow-hidden">
+        <div className="overflow-hidden flex-1">
           <ExpeditionLogScreen
             expeditionReplay={selectedHistoryReplay.replay}
             goblins={goblinsData}

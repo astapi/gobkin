@@ -1,5 +1,5 @@
 import type { ExpeditionReplay, Goblin } from '../types/index.ts'
-import { areasConfig } from '../data/areas.ts'
+import { areasData } from '../data/index.ts'
 
 interface ExpeditionResultScreenProps {
   expeditionReplay: ExpeditionReplay
@@ -16,7 +16,7 @@ export const ExpeditionResultScreen = ({
 }: ExpeditionResultScreenProps) => {
   const { summary, meta } = expeditionReplay
   const isSuccess = summary.success
-  const area = areasConfig.find(a => a.id === meta.areaId)
+  const area = areasData.find(a => a.id === meta.areaId)
 
   const getPartyMember = (memberId: string) => {
     return goblins.find(g => g.id === parseInt(memberId))
@@ -29,7 +29,7 @@ export const ExpeditionResultScreen = ({
     if (summary.casualties.length === meta.party.length) {
       return '全滅しました。'
     }
-    if (isSuccess && summary.maxFloorReached === area?.maxFloor) {
+    if (isSuccess && summary.maxFloorReached === area?.floors) {
       return 'ダンジョンを踏破しました。'
     }
     if (isSuccess) {
@@ -55,16 +55,16 @@ export const ExpeditionResultScreen = ({
   }
 
   return (
-    <div className="h-full flex flex-col bg-white overflow-y-auto">
+    <div className="flex overflow-y-auto flex-col h-full bg-white">
       {/* 結果ヘッダー */}
-      <div className="border-b border-gray-300 p-6">
-        <h2 className="text-xl font-bold text-gray-900 mb-2">
+      <div className="p-6 border-b border-gray-300">
+        <h2 className="mb-2 text-xl font-bold text-gray-900">
           {dungeonName}: {getResultText()}
         </h2>
       </div>
 
       {/* パーティ状態 */}
-      <div className="border-b border-gray-300 p-6">
+      <div className="p-6 border-b border-gray-300">
         <div className="space-y-3">
           {meta.party.map((memberId) => {
             const goblin = getPartyMember(memberId)
@@ -74,9 +74,9 @@ export const ExpeditionResultScreen = ({
             return (
               <div
                 key={memberId}
-                className="flex items-center gap-3"
+                className="flex gap-3 items-center"
               >
-                <div className="w-10 h-10 bg-gray-200 rounded flex items-center justify-center overflow-hidden flex-shrink-0">
+                <div className="flex overflow-hidden flex-shrink-0 justify-center items-center w-10 h-10 bg-gray-200 rounded">
                   <img
                     src={goblin?.avatar}
                     alt={goblin?.name}
@@ -98,7 +98,7 @@ export const ExpeditionResultScreen = ({
       </div>
 
       {/* 経験値・ゴールド */}
-      <div className="border-b border-gray-300 p-6">
+      <div className="p-6 border-b border-gray-300">
         <div className="space-y-2">
           <div className="text-sm text-gray-900">
             経験値 {summary.xpGained.toLocaleString()} XP
@@ -111,8 +111,8 @@ export const ExpeditionResultScreen = ({
 
       {/* 獲得アイテム */}
       {summary.loot.length > 0 && (
-        <div className="border-b border-gray-300 p-6">
-          <h3 className="font-medium text-sm text-gray-900 mb-3">
+        <div className="p-6 border-b border-gray-300">
+          <h3 className="mb-3 text-sm font-medium text-gray-900">
             獲得アイテム
           </h3>
           <div className="space-y-2">
@@ -130,8 +130,8 @@ export const ExpeditionResultScreen = ({
 
       {/* 捕獲 */}
       {summary.captures.length > 0 && (
-        <div className="border-b border-gray-300 p-6">
-          <h3 className="font-medium text-sm text-gray-900 mb-3">
+        <div className="p-6 border-b border-gray-300">
+          <h3 className="mb-3 text-sm font-medium text-gray-900">
             捕獲
           </h3>
           <div className="space-y-2">
@@ -149,9 +149,9 @@ export const ExpeditionResultScreen = ({
 
       {/* 次回解放エリア */}
       {isSuccess && area?.unlockNext && (
-        <div className="border-b border-gray-300 p-6">
+        <div className="p-6 border-b border-gray-300">
           <div className="text-sm text-gray-900">
-            次のエリア「{areasConfig.find(a => a.id === area.unlockNext)?.name || area.unlockNext}」が解放されました
+            次のエリア「{areasData.find(a => a.id === area.unlockNext)?.name || area.unlockNext}」が解放されました
           </div>
         </div>
       )}
@@ -160,7 +160,7 @@ export const ExpeditionResultScreen = ({
       <div className="p-6 mt-auto">
         <button
           onClick={onBackToMenu}
-          className="w-full bg-gray-800 text-white py-3 rounded font-medium hover:bg-gray-700 transition-colors"
+          className="py-3 w-full font-medium text-white bg-gray-800 rounded transition-colors hover:bg-gray-700"
         >
           メニューに戻る
         </button>

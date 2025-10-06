@@ -38,7 +38,7 @@ export class FirestoreExpeditionRepositoryImpl {
   async createExpedition(
     partyId: number,
     partyName: string,
-    dungeonId: number,
+    dungeonId: string,
     dungeonName: string,
     returnPolicy: ExpeditionRequest["returnPolicy"],
     explorationTimeSec: number
@@ -293,7 +293,7 @@ export class FirestoreExpeditionRepositoryAdapter {
   async createExpedition(
     partyId: number,
     partyName: string,
-    dungeonId: number,
+    dungeonId: string,
     dungeonName: string,
     returnPolicy: ExpeditionRequest["returnPolicy"],
     explorationTimeSec: number
