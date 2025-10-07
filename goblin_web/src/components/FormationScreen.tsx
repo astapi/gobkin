@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import type { Goblin, ExpeditionRecord } from '../types/index.ts'
 import type { PartyRepository } from '../repositories/PartyRepository.ts'
 import { useExpeditionState } from '../contexts/ExpeditionStateContext.tsx'
+import { useCurrentTime } from '../hooks/useCurrentTime.ts'
 
 interface FormationScreenProps {
   partyRepository: PartyRepository
@@ -41,6 +42,17 @@ export const FormationScreen = ({
     loadHistories()
   }, [parties.length, expeditionRecords]) // expeditionRecordsを依存配列に追加
 
+  // 遠征中のパーティがあるかチェック
+  const hasOngoingExpedition = useMemo(() => {
+    const now = new Date()
+    return Object.values(partyHistories).some(history =>
+      history.some(record => record.returnTime > now)
+    )
+  }, [partyHistories])
+
+  // 遠征中のパーティがある場合、毎秒現在時刻を更新
+  const currentTime = useCurrentTime({ enabled: hasOngoingExpedition })
+
   const formatFullDateTime = (date: Date) => {
     const year = date.getFullYear()
     const month = String(date.getMonth() + 1).padStart(2, '0')
@@ -58,15 +70,14 @@ export const FormationScreen = ({
     return `${hours}:${minutes}:${seconds}`
   }
 
-  const getRemainingMinutes = (returnTime: Date) => {
-    const now = new Date()
+  const getRemainingMinutes = (returnTime: Date, now: Date) => {
     const diff = returnTime.getTime() - now.getTime()
     const minutes = Math.floor(diff / (1000 * 60))
     return Math.max(0, minutes)
   }
 
-  const isExpeditionOngoing = (record: ExpeditionRecord) => {
-    return record.returnTime > new Date()
+  const isExpeditionOngoing = (record: ExpeditionRecord, now: Date) => {
+    return record.returnTime > now
   }
 
   return (
@@ -92,7 +103,7 @@ export const FormationScreen = ({
           const history = partyHistories[party.id] || []
           // 最新の遠征レコードのreturnTimeで遠征中かどうかを判定
           const latestExpedition = history[0]
-          const isExpedition = latestExpedition ? isExpeditionOngoing(latestExpedition) : false
+          const isExpedition = latestExpedition ? isExpeditionOngoing(latestExpedition, currentTime) : false
 
           return (
             <div key={party.id} className="bg-white rounded-lg border-2 border-gray-300 shadow-sm transition-all">
@@ -147,9 +158,9 @@ export const FormationScreen = ({
                   <div className="mb-1 text-xs text-gray-600">遠征履歴</div>
                   <div className="space-y-1">
                     {history.map(record => {
-                      const ongoing = isExpeditionOngoing(record)
+                      const ongoing = isExpeditionOngoing(record, currentTime)
                       const floorReached = record.replay?.summary.maxFloorReached || 0
-                      const remainingMinutes = ongoing ? getRemainingMinutes(record.returnTime) : 0
+                      const remainingMinutes = ongoing ? getRemainingMinutes(record.returnTime, currentTime) : 0
 
                       return (
                         <div
