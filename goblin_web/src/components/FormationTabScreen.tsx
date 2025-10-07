@@ -6,20 +6,24 @@ import { ExpeditionLogScreen } from './ExpeditionLogScreen.tsx'
 import { ExpeditionResultScreen } from './ExpeditionResultScreen.tsx'
 import { ExpeditionPreparationScreen } from './ExpeditionPreparationScreen.tsx'
 import { usePartyRepository } from '../hooks/usePartyRepository.ts'
+import { useGoblinRepository } from '../hooks/useGoblinRepository.ts'
 import { useExpeditionState } from '../contexts/ExpeditionStateContext.tsx'
-import { goblinsData, areasData } from '../data/index.ts'
+import { areasData } from '../data/index.ts'
 import { ExpeditionEngine } from '../core/ExpeditionEngine.ts'
 
 type ViewMode = 'list' | 'preparation' | 'edit' | 'log' | 'result'
 
 export const FormationTabScreen = () => {
-  const { partyRepository, isLoading } = usePartyRepository()
+  const { partyRepository, isLoading: isPartyLoading } = usePartyRepository()
+  const { goblinRepository, isLoading: isGoblinLoading } = useGoblinRepository()
   const { getExpeditionByPartyId, setPartyExpeditionStatus, expeditionRepository } = useExpeditionState()
   const [editingPartyId, setEditingPartyId] = useState<number | null>(null)
   const [selectedHistoryReplay, setSelectedHistoryReplay] = useState<ExpeditionRecord | null>(null)
   const [viewMode, setViewMode] = useState<ViewMode>('list')
 
   const expeditionEngine = useMemo(() => new ExpeditionEngine(), [])
+  const goblins = goblinRepository.getGoblins()
+  const isLoading = isPartyLoading || isGoblinLoading
 
   const handlePartySelect = (partyId: number) => {
     setEditingPartyId(partyId)
@@ -96,7 +100,7 @@ export const FormationTabScreen = () => {
       }
 
       const partyMembers = party.memberIds
-        .map(id => goblinsData.find(g => g.id === id))
+        .map(id => goblins.find(g => g.id === id))
         .filter((g): g is Goblin => g !== undefined)
 
       if (partyMembers.length === 0) {
@@ -183,7 +187,7 @@ export const FormationTabScreen = () => {
         <div className="overflow-hidden flex-1">
           <ExpeditionResultScreen
             expeditionReplay={selectedHistoryReplay.replay}
-            goblins={goblinsData}
+            goblins={goblins}
             dungeonName={selectedHistoryReplay.dungeonName}
             onBackToMenu={handleBackToFormationList}
           />
@@ -213,7 +217,7 @@ export const FormationTabScreen = () => {
         <div className="overflow-hidden flex-1">
           <ExpeditionLogScreen
             expeditionReplay={selectedHistoryReplay.replay}
-            goblins={goblinsData}
+            goblins={goblins}
             startTime={selectedHistoryReplay.startTime}
           />
         </div>
@@ -227,7 +231,7 @@ export const FormationTabScreen = () => {
       <ExpeditionPreparationScreen
         partyId={editingPartyId}
         partyRepository={partyRepository}
-        goblins={goblinsData}
+        goblins={goblins}
         dungeons={areasData}
         onBack={handleBackToFormation}
         onEditParty={handleEditParty}
@@ -241,7 +245,7 @@ export const FormationTabScreen = () => {
     return (
       <PartyEditScreen
         partyId={editingPartyId}
-        goblins={goblinsData}
+        goblins={goblins}
         partyRepository={partyRepository}
         onBack={handleBackToPreparation}
       />
@@ -252,7 +256,7 @@ export const FormationTabScreen = () => {
   return (
     <FormationScreen
       partyRepository={partyRepository}
-      goblins={goblinsData}
+      goblins={goblins}
       onPartySelect={handlePartySelect}
       onExpeditionPartyClick={handleExpeditionPartyClick}
       onHistoryClick={handleHistoryClick}

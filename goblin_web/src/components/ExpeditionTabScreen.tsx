@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react'
 import type { Dungeon, ExpeditionRequest, ExpeditionReplay, Goblin } from '../types/index.ts'
-import { goblinsData, areasData } from '../data/index.ts'
+import { areasData } from '../data/index.ts'
 import { DungeonScreen } from './DungeonScreen.tsx'
 import { ExpeditionSetupScreen } from './ExpeditionSetupScreen.tsx'
 import { ExpeditionPlaybackScreen } from './ExpeditionPlaybackScreen.tsx'
@@ -9,6 +9,7 @@ import { FirestoreExpeditionRepositoryAdapter } from '../repositories/FirestoreE
 import { ExpeditionEngine } from '../core/ExpeditionEngine.ts'
 import { useExpeditionState } from '../contexts/ExpeditionStateContext.tsx'
 import { usePartyRepository } from '../hooks/usePartyRepository.ts'
+import { useGoblinRepository } from '../hooks/useGoblinRepository.ts'
 
 export function ExpeditionTabScreen() {
   const { setPartyExpeditionStatus, clearExpedition } = useExpeditionState()
@@ -19,12 +20,15 @@ export function ExpeditionTabScreen() {
   const [currentExpeditionPartyId, setCurrentExpeditionPartyId] = useState<number | null>(null)
 
   const { partyRepository } = usePartyRepository()
+  const { goblinRepository } = useGoblinRepository()
 
   const useFirestore = import.meta.env.VITE_USE_FIRESTORE === 'true'
   const expeditionEngine = useMemo(() => new ExpeditionEngine(), [])
   const expeditionRepository = useMemo(() =>
     useFirestore ? new FirestoreExpeditionRepositoryAdapter() : null, [useFirestore]
   )
+
+  const goblins = goblinRepository.getGoblins()
 
   const handleStartExplore = (dungeon: Dungeon) => {
     setSelectedDungeon(dungeon)
@@ -46,7 +50,7 @@ export function ExpeditionTabScreen() {
       }
 
       const partyMembers = party.memberIds
-        .map(id => goblinsData.find(g => g.id === id))
+        .map(id => goblins.find(g => g.id === id))
         .filter((g): g is Goblin => g !== undefined)
 
       if (partyMembers.length === 0) {
@@ -133,7 +137,7 @@ export function ExpeditionTabScreen() {
     return (
       <ExpeditionResultScreen
         expeditionReplay={currentExpeditionReplay}
-        goblins={goblinsData}
+        goblins={goblins}
         dungeonName={selectedDungeon.name}
         onBackToMenu={handleBackToMenu}
       />
@@ -144,7 +148,7 @@ export function ExpeditionTabScreen() {
     return (
       <ExpeditionPlaybackScreen
         expeditionReplay={currentExpeditionReplay}
-        goblins={goblinsData}
+        goblins={goblins}
         onComplete={handleExpeditionComplete}
       />
     )
@@ -154,7 +158,7 @@ export function ExpeditionTabScreen() {
     return (
       <ExpeditionSetupScreen
         parties={partyRepository.getParties()}
-        goblins={goblinsData}
+        goblins={goblins}
         dungeon={selectedDungeon}
         onStartExpedition={handleStartExpedition}
         onBack={handleBackToDungeon}
