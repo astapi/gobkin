@@ -45,7 +45,11 @@ export const GoblinListScreen = ({}: GoblinListScreenProps) => {
 
     {/* Detail Modal */}
     {selectedGoblin && (
-      <GoblinDetailModal goblin={selectedGoblin} onClose={closeDetail} />
+      <GoblinDetailModal
+        goblin={selectedGoblin}
+        onClose={closeDetail}
+        goblinRepository={goblinRepository}
+      />
     )}
   </div>
   )

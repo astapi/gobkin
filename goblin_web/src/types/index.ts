@@ -6,6 +6,27 @@ export type GoblinStats = {
   def: number
 }
 
+export type ItemEffect = {
+  hp?: number
+  atk?: number
+  sp?: number
+  spd?: number
+  def?: number
+}
+
+export type Item = {
+  id: string
+  name: string
+  description: string
+  effect: ItemEffect
+  icon?: string
+}
+
+export type EquipmentSlot = {
+  slotIndex: number
+  itemId: string | null
+}
+
 export type Goblin = {
   id: number
   name: string
@@ -13,6 +34,7 @@ export type Goblin = {
   level: number
   avatar: string
   stats: GoblinStats
+  equipment: EquipmentSlot[]
 }
 
 export type Dungeon = {
