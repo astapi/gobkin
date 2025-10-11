@@ -84,7 +84,7 @@ export const FormationScreen = ({
     return () => {
       isActive = false
     }
-  }, [partyRepository, expeditionRecords, getPartyExpeditionHistory])
+  }, [partyRepository, isLoading, expeditionRecords, getPartyExpeditionHistory])
 
   // 遠征中のパーティがあるかチェック
   const hasOngoingExpedition = useMemo(() => {
