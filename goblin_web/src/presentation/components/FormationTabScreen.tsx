@@ -7,9 +7,10 @@ import { ExpeditionResultScreen } from './ExpeditionResultScreen.tsx'
 import { ExpeditionPreparationScreen } from './ExpeditionPreparationScreen.tsx'
 import { usePartyRepository } from '../hooks/usePartyRepository.ts'
 import { useGoblinRepository } from '../hooks/useGoblinRepository.ts'
-import { useExpeditionState } from '../contexts/ExpeditionStateContext.tsx'
+import { useExpeditionState } from '../contexts/ExpeditionStateContextValue.ts'
 import { areasData } from '../../shared/data'
-import { ExpeditionEngine } from '../../core/ExpeditionEngine.ts'
+import { ExpeditionEngine } from '../../core/services'
+import { StartExpeditionUseCase } from '../../core/usecases'
 
 type ViewMode = 'list' | 'preparation' | 'edit' | 'log' | 'result'
 
@@ -22,6 +23,10 @@ export const FormationTabScreen = () => {
   const [viewMode, setViewMode] = useState<ViewMode>('list')
 
   const expeditionEngine = useMemo(() => new ExpeditionEngine(), [])
+  const startExpeditionUseCase = useMemo(
+    () => new StartExpeditionUseCase(partyRepository, goblinRepository, expeditionEngine),
+    [partyRepository, goblinRepository, expeditionEngine]
+  )
   const goblins = goblinRepository.getGoblins()
   const isLoading = isPartyLoading || isGoblinLoading
 
@@ -150,16 +155,14 @@ export const FormationTabScreen = () => {
         )
       }
 
-      setPartyExpeditionStatus(partyId, 'expedition')
-      partyRepository.updatePartyStatus(partyId, 'expedition')
+      const result = await startExpeditionUseCase.execute(request)
 
-      const result = await expeditionEngine.generateExpedition(request, partyMembers)
+      setPartyExpeditionStatus(partyId, 'expedition')
 
       if (expeditionRecord && expeditionRepository) {
         await expeditionRepository.updateExpeditionReplay(expeditionRecord.id, result)
       }
 
-      // 遠征開始後、一覧画面に戻る
       handleBackToFormation()
     } catch (error) {
       console.error('遠征エラー:', error)

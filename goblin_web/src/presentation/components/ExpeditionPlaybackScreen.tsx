@@ -10,11 +10,6 @@ interface ExpeditionPlaybackScreenProps {
 
 type PlaybackSpeed = 1 | 2 | 4
 
-interface ProcessedEvent {
-  event: TimelineEvent
-  processed: boolean
-}
-
 export const ExpeditionPlaybackScreen = ({
   expeditionReplay,
   goblins,
@@ -29,9 +24,6 @@ export const ExpeditionPlaybackScreen = ({
   const [currentTime, setCurrentTime] = useState(initialTime)
   const [isPlaying, setIsPlaying] = useState(true)
   const [speed, setSpeed] = useState<PlaybackSpeed>(1)
-  const [processedEvents, setProcessedEvents] = useState<ProcessedEvent[]>(() =>
-    expeditionReplay.events.map(event => ({ event, processed: event.at <= initialTime }))
-  )
   const [currentFloor, setCurrentFloor] = useState(1)
   const [eventLog, setEventLog] = useState<string[]>([])
   const [partyHp, setPartyHp] = useState<number[]>(() => {
@@ -53,6 +45,9 @@ export const ExpeditionPlaybackScreen = ({
     return `${mins}:${secs.toString().padStart(2, '0')}`
   }
 
+  const getEventId = (index: number, event: TimelineEvent): string =>
+    `${index}-${event.type}-${event.at}`
+
   const addLog = useCallback((message: string) => {
     setEventLog(prev => [...prev, `[${formatTime(currentTime)}] ${message}`])
     setTimeout(() => {
@@ -70,25 +65,29 @@ export const ExpeditionPlaybackScreen = ({
     processedEventIdsRef.current.add(eventId)
 
     switch (event.type) {
-      case 'move_start':
+      case 'move_start': {
         addLog(`🚶 ${event.floor}階の探索を開始`)
         break
-      case 'floor_up':
+      }
+      case 'floor_up': {
         setCurrentFloor(event.to)
         addLog(`⬆️ ${event.from}階から${event.to}階へ移動`)
         break
+      }
       case 'battle':
-      case 'boss':
+      case 'boss': {
         const battleType = event.type === 'boss' ? '👹 ボス' : '⚔️'
         const result = event.combat.outcome === 'win' ? '勝利' : '敗北'
         addLog(`${battleType} ${event.enemy.name} Lv${event.enemy.lvl} ×${event.enemy.count}体と遭遇 → ${result}`)
 
         if (event.combat.allyHPDelta) {
-          const newHp = [...partyHp]
-          event.combat.allyHPDelta.forEach((delta, idx) => {
-            newHp[idx] = Math.max(0, newHp[idx] + delta)
+          setPartyHp(prevHp => {
+            const updated = [...prevHp]
+            event.combat.allyHPDelta.forEach((delta, idx) => {
+              updated[idx] = Math.max(0, (updated[idx] ?? 0) + delta)
+            })
+            return updated
           })
-          setPartyHp(newHp)
         }
 
         if (event.xp > 0) {
@@ -99,13 +98,15 @@ export const ExpeditionPlaybackScreen = ({
           addLog(`🎯 ${event.combat.capture.captured?.id}を捕獲！`)
         }
         break
-      case 'resource':
+      }
+      case 'resource': {
         if (event.loot && event.loot.length > 0) {
           const items = event.loot.map(drop => `${drop.id} x${drop.qty}`).join(', ')
           addLog(`📦 資源発見: ${items}`)
         }
         break
-      case 'return':
+      }
+      case 'return': {
         let reason = '探索完了'
         switch (event.reason) {
           case 'completed':
@@ -123,93 +124,104 @@ export const ExpeditionPlaybackScreen = ({
         }
         addLog(`🏠 ${reason}`)
         break
+      }
     }
-  }, [addLog, partyHp])
+  }, [addLog])
 
   // 初期化時に経過済みイベントを即座に処理
   useEffect(() => {
-    if (!isInitializedRef.current) {
-      isInitializedRef.current = true
-      isCompletedRef.current = false
-      processedEventIdsRef.current.clear()
-
-      // initialTime以前のイベントを即座に処理
-      const pastEvents = expeditionReplay.events.filter(event => event.at <= initialTime)
-
-      let tempPartyHp = [...partyHp]
-      let tempFloor = 1
-      const tempLogs: string[] = []
-
-      pastEvents.forEach((event, index) => {
-        const eventId = `${index}-${event.type}-${event.at}`
-        processedEventIdsRef.current.add(eventId)
-
-        const formatTimeLocal = (seconds: number): string => {
-          const mins = Math.floor(seconds / 60)
-          const secs = Math.floor(seconds % 60)
-          return `${mins}:${secs.toString().padStart(2, '0')}`
-        }
-
-        switch (event.type) {
-          case 'move_start':
-            tempLogs.push(`[${formatTimeLocal(event.at)}] 🚶 ${event.floor}階の探索を開始`)
-            break
-          case 'floor_up':
-            tempFloor = event.to
-            tempLogs.push(`[${formatTimeLocal(event.at)}] ⬆️ ${event.from}階から${event.to}階へ移動`)
-            break
-          case 'battle':
-          case 'boss':
-            const battleType = event.type === 'boss' ? '👹 ボス' : '⚔️'
-            const result = event.combat.outcome === 'win' ? '勝利' : '敗北'
-            tempLogs.push(`[${formatTimeLocal(event.at)}] ${battleType} ${event.enemy.name} Lv${event.enemy.lvl} ×${event.enemy.count}体と遭遇 → ${result}`)
-
-            if (event.combat.allyHPDelta) {
-              event.combat.allyHPDelta.forEach((delta, idx) => {
-                tempPartyHp[idx] = Math.max(0, tempPartyHp[idx] + delta)
-              })
-            }
-
-            if (event.xp > 0) {
-              tempLogs.push(`[${formatTimeLocal(event.at)}] ✨ ${event.xp}XP獲得`)
-            }
-
-            if (event.combat.capture?.success) {
-              tempLogs.push(`[${formatTimeLocal(event.at)}] 🎯 ${event.combat.capture.captured?.id}を捕獲！`)
-            }
-            break
-          case 'resource':
-            if (event.loot && event.loot.length > 0) {
-              const items = event.loot.map(drop => `${drop.id} x${drop.qty}`).join(', ')
-              tempLogs.push(`[${formatTimeLocal(event.at)}] 📦 資源発見: ${items}`)
-            }
-            break
-          case 'return':
-            let reason = '探索完了'
-            switch (event.reason) {
-              case 'completed':
-                reason = 'ダンジョン踏破！'
-                break
-              case 'defeated':
-                reason = '全滅により撤退'
-                break
-              case 'policy_return':
-                reason = '設定した条件により帰還'
-                break
-              case 'abort':
-                reason = '緊急帰還'
-                break
-            }
-            tempLogs.push(`[${formatTimeLocal(event.at)}] 🏠 ${reason}`)
-            break
-        }
-      })
-
-      setPartyHp(tempPartyHp)
-      setCurrentFloor(tempFloor)
-      setEventLog(tempLogs)
+    if (isInitializedRef.current) {
+      return
     }
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+    isInitializedRef.current = true
+    isCompletedRef.current = false
+    processedEventIdsRef.current.clear()
+
+    const tempLogs: string[] = []
+    const tempPartyHp = expeditionReplay.meta.party.map(memberId => {
+      const goblin = goblins.find(g => g.id === parseInt(memberId))
+      return goblin?.stats.hp ?? 100
+    })
+    let tempFloor = 1
+
+    const formatTimeLocal = (seconds: number): string => {
+      const mins = Math.floor(seconds / 60)
+      const secs = Math.floor(seconds % 60)
+      return `${mins}:${secs.toString().padStart(2, '0')}`
+    }
+
+    expeditionReplay.events.forEach((event, index) => {
+      if (event.at > initialTime) {
+        return
+      }
+
+      processedEventIdsRef.current.add(getEventId(index, event))
+
+      switch (event.type) {
+        case 'move_start': {
+          tempLogs.push(`[${formatTimeLocal(event.at)}] 🚶 ${event.floor}階の探索を開始`)
+          break
+        }
+        case 'floor_up': {
+          tempFloor = event.to
+          tempLogs.push(`[${formatTimeLocal(event.at)}] ⬆️ ${event.from}階から${event.to}階へ移動`)
+          break
+        }
+        case 'battle':
+        case 'boss': {
+          const battleType = event.type === 'boss' ? '👹 ボス' : '⚔️'
+          const result = event.combat.outcome === 'win' ? '勝利' : '敗北'
+          tempLogs.push(`[${formatTimeLocal(event.at)}] ${battleType} ${event.enemy.name} Lv${event.enemy.lvl} ×${event.enemy.count}体と遭遇 → ${result}`)
+
+          if (event.combat.allyHPDelta) {
+            event.combat.allyHPDelta.forEach((delta, idx) => {
+              tempPartyHp[idx] = Math.max(0, tempPartyHp[idx] + delta)
+            })
+          }
+
+          if (event.xp > 0) {
+            tempLogs.push(`[${formatTimeLocal(event.at)}] ✨ ${event.xp}XP獲得`)
+          }
+
+          if (event.combat.capture?.success) {
+            tempLogs.push(`[${formatTimeLocal(event.at)}] 🎯 ${event.combat.capture.captured?.id}を捕獲！`)
+          }
+          break
+        }
+        case 'resource': {
+          if (event.loot && event.loot.length > 0) {
+            const items = event.loot.map(drop => `${drop.id} x${drop.qty}`).join(', ')
+            tempLogs.push(`[${formatTimeLocal(event.at)}] 📦 資源発見: ${items}`)
+          }
+          break
+        }
+        case 'return': {
+          let reason = '探索完了'
+          switch (event.reason) {
+            case 'completed':
+              reason = 'ダンジョン踏破！'
+              break
+            case 'defeated':
+              reason = '全滅により撤退'
+              break
+            case 'policy_return':
+              reason = '設定した条件により帰還'
+              break
+            case 'abort':
+              reason = '緊急帰還'
+              break
+          }
+          tempLogs.push(`[${formatTimeLocal(event.at)}] 🏠 ${reason}`)
+          break
+        }
+      }
+    })
+
+    setPartyHp(tempPartyHp)
+    setCurrentFloor(tempFloor)
+    setEventLog(tempLogs)
+  }, [expeditionReplay.events, expeditionReplay.meta.party, goblins, initialTime])
 
   useEffect(() => {
     // アニメーションループ（初期化後に実行）
@@ -224,21 +236,11 @@ export const ExpeditionPlaybackScreen = ({
       setCurrentTime(prevTime => {
         const newTime = Math.min(prevTime + deltaTime * speed, expeditionReplay.durationSec)
 
-        // イベント処理
-        setProcessedEvents(prevEvents => {
-          const updated = [...prevEvents]
-          let hasChanges = false
-
-          for (let i = 0; i < updated.length; i++) {
-            if (!updated[i].processed && updated[i].event.at <= newTime) {
-              const eventId = `${i}-${updated[i].event.type}-${updated[i].event.at}`
-              processEvent(updated[i].event, eventId)
-              updated[i] = { ...updated[i], processed: true }
-              hasChanges = true
-            }
+        expeditionReplay.events.forEach((event, index) => {
+          const eventId = getEventId(index, event)
+          if (!processedEventIdsRef.current.has(eventId) && event.at <= newTime) {
+            processEvent(event, eventId)
           }
-
-          return hasChanges ? updated : prevEvents
         })
 
         // 完了判定
@@ -261,7 +263,7 @@ export const ExpeditionPlaybackScreen = ({
         cancelAnimationFrame(animationFrameRef.current)
       }
     }
-  }, [isPlaying, speed, processEvent, onComplete, expeditionReplay.durationSec])
+  }, [isPlaying, speed, processEvent, onComplete, expeditionReplay.durationSec, expeditionReplay.events])
 
   const handleSpeedChange = (newSpeed: PlaybackSpeed) => {
     setSpeed(newSpeed)
@@ -271,14 +273,13 @@ export const ExpeditionPlaybackScreen = ({
     setCurrentTime(expeditionReplay.durationSec)
     setIsPlaying(false)
 
-    processedEvents.forEach(({ event, processed }, index) => {
-      if (!processed) {
-        const eventId = `${index}-${event.type}-${event.at}`
+    expeditionReplay.events.forEach((event, index) => {
+      const eventId = getEventId(index, event)
+      if (!processedEventIdsRef.current.has(eventId)) {
         processEvent(event, eventId)
       }
     })
 
-    setProcessedEvents(prev => prev.map(item => ({ ...item, processed: true })))
     setTimeout(() => onComplete(), 500)
   }
 

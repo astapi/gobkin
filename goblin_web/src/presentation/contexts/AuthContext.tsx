@@ -1,23 +1,8 @@
-import { createContext, useContext, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import type { ReactNode } from 'react'
 import { type User, signInAnonymously, onAuthStateChanged } from 'firebase/auth'
 import { auth } from '../../config/firebase'
-
-interface AuthContextType {
-  user: User | null
-  loading: boolean
-  signInAnonymous: () => Promise<void>
-}
-
-const AuthContext = createContext<AuthContextType | undefined>(undefined)
-
-export const useAuth = () => {
-  const context = useContext(AuthContext)
-  if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider')
-  }
-  return context
-}
+import { AuthContext } from './AuthContextValue'
 
 interface AuthProviderProps {
   children: ReactNode

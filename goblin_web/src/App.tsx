@@ -3,7 +3,8 @@ import { GoblinListScreen } from './presentation/components/GoblinListScreen.tsx
 import { FormationTabScreen } from './presentation/components/FormationTabScreen.tsx'
 import { ExpeditionTabScreen } from './presentation/components/ExpeditionTabScreen.tsx'
 import { TabMenu } from './presentation/components/TabMenu.tsx'
-import { AuthProvider, useAuth } from './presentation/contexts/AuthContext.tsx'
+import { AuthProvider } from './presentation/contexts/AuthContext.tsx'
+import { useAuth } from './presentation/contexts/AuthContextValue.ts'
 import { ExpeditionStateProvider } from './presentation/contexts/ExpeditionStateContext.tsx'
 
 function AppContent() {

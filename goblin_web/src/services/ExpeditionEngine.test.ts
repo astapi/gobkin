@@ -1,5 +1,11 @@
-import { ExpeditionEngine } from '../core/ExpeditionEngine'
+import { ExpeditionEngine } from '../core/services'
 import type { ExpeditionRequest, Goblin } from '../shared/types'
+
+declare global {
+  interface Window {
+    runExpeditionTests?: () => Promise<void>
+  }
+}
 
 // テスト用のダミーパーティ
 const testParty: Goblin[] = [
@@ -119,7 +125,7 @@ export async function testReturnPolicies(): Promise<void> {
 
 // ブラウザ環境でのテスト実行
 if (typeof window !== 'undefined') {
-  (window as any).runExpeditionTests = async () => {
+  window.runExpeditionTests = async () => {
     await testExpeditionEngine()
     await testDeterminism()
     await testReturnPolicies()

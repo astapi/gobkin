@@ -6,8 +6,9 @@ import { ExpeditionSetupScreen } from './ExpeditionSetupScreen.tsx'
 import { ExpeditionPlaybackScreen } from './ExpeditionPlaybackScreen.tsx'
 import { ExpeditionResultScreen } from './ExpeditionResultScreen.tsx'
 import { FirestoreExpeditionRepositoryAdapter } from '../../infrastructure/repositories/FirestoreExpeditionRepositoryImpl'
-import { ExpeditionEngine } from '../../core/ExpeditionEngine.ts'
-import { useExpeditionState } from '../contexts/ExpeditionStateContext.tsx'
+import { ExpeditionEngine } from '../../core/services'
+import { ManagePartyUseCase, StartExpeditionUseCase } from '../../core/usecases'
+import { useExpeditionState } from '../contexts/ExpeditionStateContextValue.ts'
 import { usePartyRepository } from '../hooks/usePartyRepository.ts'
 import { useGoblinRepository } from '../hooks/useGoblinRepository.ts'
 
@@ -24,6 +25,14 @@ export function ExpeditionTabScreen() {
 
   const useFirestore = import.meta.env.VITE_USE_FIRESTORE === 'true'
   const expeditionEngine = useMemo(() => new ExpeditionEngine(), [])
+  const startExpeditionUseCase = useMemo(
+    () => new StartExpeditionUseCase(partyRepository, goblinRepository, expeditionEngine),
+    [partyRepository, goblinRepository, expeditionEngine]
+  )
+  const managePartyUseCase = useMemo(
+    () => new ManagePartyUseCase(partyRepository),
+    [partyRepository]
+  )
   const expeditionRepository = useMemo(() =>
     useFirestore ? new FirestoreExpeditionRepositoryAdapter() : null, [useFirestore]
   )
@@ -86,7 +95,6 @@ export function ExpeditionTabScreen() {
       const explorationTimeSec = Math.floor(baseTime * timeMultiplier)
 
       let expeditionRecord = null
-      console.log('expeditionRepository', expeditionRepository)
       if (expeditionRepository) {
         expeditionRecord = await expeditionRepository.createExpedition(
           partyId,
@@ -99,10 +107,9 @@ export function ExpeditionTabScreen() {
       }
 
       setPartyExpeditionStatus(partyId, 'expedition')
-      partyRepository.updatePartyStatus(partyId, 'expedition')
       setCurrentExpeditionPartyId(partyId)
 
-      const result = await expeditionEngine.generateExpedition(request, partyMembers)
+      const result = await startExpeditionUseCase.execute(request)
 
       if (expeditionRecord && expeditionRepository) {
         await expeditionRepository.updateExpeditionReplay(expeditionRecord.id, result)
@@ -119,7 +126,7 @@ export function ExpeditionTabScreen() {
   const handleExpeditionComplete = () => {
     if (currentExpeditionPartyId !== null) {
       clearExpedition(currentExpeditionPartyId)
-      partyRepository.updatePartyStatus(currentExpeditionPartyId, 'idle')
+      managePartyUseCase.markIdle(currentExpeditionPartyId)
     }
 
     setShowExpeditionResult(true)

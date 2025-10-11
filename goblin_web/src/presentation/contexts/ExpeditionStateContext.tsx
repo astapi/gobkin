@@ -1,22 +1,12 @@
-import { createContext, useContext, useState, type ReactNode, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo, useCallback } from 'react'
 import type { PartyStatus, ExpeditionRecord } from '../../shared/types'
 import { FirestoreExpeditionRepositoryAdapter } from '../../infrastructure/repositories/FirestoreExpeditionRepositoryImpl'
+import {
+  ExpeditionStateContext,
+  type ExpeditionStateProviderProps,
+} from './ExpeditionStateContextValue'
 
-interface ExpeditionState {
-  activeExpeditionPartyIds: number[]
-  setPartyExpeditionStatus: (partyId: number, status: PartyStatus) => void
-  isPartyInExpedition: (partyId: number) => boolean
-  clearExpedition: (partyId: number) => void
-  getExpeditionByPartyId: (partyId: number) => Promise<ExpeditionRecord | null>
-  getOngoingExpeditions: () => ExpeditionRecord[]
-  getPartyExpeditionHistory: (partyId: number) => Promise<ExpeditionRecord[]>
-  expeditionRecords: ExpeditionRecord[]
-  expeditionRepository: FirestoreExpeditionRepositoryAdapter | null
-}
-
-const ExpeditionStateContext = createContext<ExpeditionState | undefined>(undefined)
-
-export const ExpeditionStateProvider = ({ children }: { children: ReactNode }) => {
+export const ExpeditionStateProvider = ({ children }: ExpeditionStateProviderProps) => {
   const [activeExpeditionPartyIds, setActiveExpeditionPartyIds] = useState<number[]>([])
   const [expeditionRecords, setExpeditionRecords] = useState<ExpeditionRecord[]>([])
 
@@ -37,63 +27,67 @@ export const ExpeditionStateProvider = ({ children }: { children: ReactNode }) =
     }
   }, [expeditionRepository])
 
-  const setPartyExpeditionStatus = (partyId: number, status: PartyStatus) => {
+  const setPartyExpeditionStatus = useCallback((partyId: number, status: PartyStatus) => {
     if (status === 'expedition') {
       setActiveExpeditionPartyIds(prev => [...prev.filter(id => id !== partyId), partyId])
     } else {
       setActiveExpeditionPartyIds(prev => prev.filter(id => id !== partyId))
     }
-  }
+  }, [])
 
-  const isPartyInExpedition = (partyId: number): boolean => {
+  const isPartyInExpedition = useCallback((partyId: number): boolean => {
     return activeExpeditionPartyIds.includes(partyId)
-  }
+  }, [activeExpeditionPartyIds])
 
-  const clearExpedition = (partyId: number) => {
+  const clearExpedition = useCallback((partyId: number) => {
     setActiveExpeditionPartyIds(prev => prev.filter(id => id !== partyId))
     setExpeditionRecords(prev => prev.filter(record => record.partyId !== partyId))
-  }
+  }, [])
 
-  const getExpeditionByPartyId = async (partyId: number): Promise<ExpeditionRecord | null> => {
+  const getExpeditionByPartyId = useCallback(async (partyId: number): Promise<ExpeditionRecord | null> => {
     console.log('expeditionRepository', expeditionRepository)
     if (expeditionRepository) {
       return await expeditionRepository.getExpeditionByPartyId(partyId)
     }
     return null
-  }
+  }, [expeditionRepository])
 
-  const getOngoingExpeditions = (): ExpeditionRecord[] => {
+  const getOngoingExpeditions = useCallback((): ExpeditionRecord[] => {
     return expeditionRecords
-  }
+  }, [expeditionRecords])
 
-  const getPartyExpeditionHistory = async (partyId: number): Promise<ExpeditionRecord[]> => {
+  const getPartyExpeditionHistory = useCallback(async (partyId: number): Promise<ExpeditionRecord[]> => {
     if (expeditionRepository) {
       return await expeditionRepository.getPartyExpeditionHistory(partyId, 2)
     }
     return []
-  }
+  }, [expeditionRepository])
+
+  const contextValue = useMemo(() => ({
+    activeExpeditionPartyIds,
+    setPartyExpeditionStatus,
+    isPartyInExpedition,
+    clearExpedition,
+    getExpeditionByPartyId,
+    getOngoingExpeditions,
+    getPartyExpeditionHistory,
+    expeditionRecords,
+    expeditionRepository
+  }), [
+    activeExpeditionPartyIds,
+    setPartyExpeditionStatus,
+    isPartyInExpedition,
+    clearExpedition,
+    getExpeditionByPartyId,
+    getOngoingExpeditions,
+    getPartyExpeditionHistory,
+    expeditionRecords,
+    expeditionRepository
+  ])
 
   return (
-    <ExpeditionStateContext.Provider value={{
-      activeExpeditionPartyIds,
-      setPartyExpeditionStatus,
-      isPartyInExpedition,
-      clearExpedition,
-      getExpeditionByPartyId,
-      getOngoingExpeditions,
-      getPartyExpeditionHistory,
-      expeditionRecords,
-      expeditionRepository
-    }}>
+    <ExpeditionStateContext.Provider value={contextValue}>
       {children}
     </ExpeditionStateContext.Provider>
   )
-}
-
-export const useExpeditionState = () => {
-  const context = useContext(ExpeditionStateContext)
-  if (!context) {
-    throw new Error('useExpeditionState must be used within ExpeditionStateProvider')
-  }
-  return context
 }

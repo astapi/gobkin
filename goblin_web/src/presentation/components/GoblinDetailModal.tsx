@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import type { Goblin, Item, GoblinStats } from '../../shared/types'
 import type { IGoblinRepository, IItemRepository } from '../../core/repositories'
 import { FirestoreItemRepositoryAdapter } from '../../infrastructure/repositories/FirestoreItemRepositoryImpl'
+import { EquipItemUseCase } from '../../core/usecases'
 
 interface GoblinDetailModalProps {
   goblin: Goblin | null
@@ -20,6 +21,10 @@ export const GoblinDetailModal = ({
 }: GoblinDetailModalProps) => {
   const [items, setItems] = useState<Item[]>([])
   const [currentGoblin, setCurrentGoblin] = useState<Goblin | null>(goblin)
+  const equipItemUseCase = useMemo(
+    () => new EquipItemUseCase(goblinRepository, itemRepository),
+    [goblinRepository, itemRepository]
+  )
 
   const initializeEquipment = (goblin: Goblin | null): Goblin | null => {
     if (!goblin) return null
@@ -52,12 +57,12 @@ export const GoblinDetailModal = ({
   }, [goblin])
 
   const handleEquipItem = (slotIndex: number, itemId: string) => {
-    console.log(slotIndex, itemId);
-    console.log(currentGoblin);
-    if (currentGoblin) {
-      goblinRepository.equipItem(currentGoblin.id, slotIndex, itemId)
-      const updatedGoblin = goblinRepository.getGoblin(currentGoblin.id)
+    if (!currentGoblin) return
+    try {
+      const updatedGoblin = equipItemUseCase.execute(currentGoblin.id, slotIndex, itemId)
       setCurrentGoblin(initializeEquipment(updatedGoblin))
+    } catch (error) {
+      console.error('装備エラー:', error)
     }
   }
 
