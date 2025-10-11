@@ -117,26 +117,17 @@ export const ExpeditionLogScreen = ({
           addLog(`資源発見: ${items}`)
         }
         break
-      case 'trap':
-        addLog(`罠にかかった: ${event.trapId}`)
-        break
       case 'return':
         let reason = '探索完了'
         switch (event.reason) {
-          case 'boss_clear':
-            reason = 'ボス撃破により帰還'
+          case 'completed':
+            reason = 'ダンジョン踏破！'
             break
-          case 'if_any_ko':
-            reason = '仲間が倒れたため帰還'
-            break
-          case 'last_one':
-            reason = '最後の1人になったため帰還'
-            break
-          case 'until_floorN':
-            reason = '目標階層到達により帰還'
-            break
-          case 'lose':
+          case 'defeated':
             reason = '全滅により撤退'
+            break
+          case 'policy_return':
+            reason = '設定した条件により帰還'
             break
           case 'abort':
             reason = '緊急帰還'
@@ -208,26 +199,17 @@ export const ExpeditionLogScreen = ({
               tempLogs.push({ message: `[${formatTimeLocal(event.at)}] 資源発見: ${items}` })
             }
             break
-          case 'trap':
-            tempLogs.push({ message: `[${formatTimeLocal(event.at)}] 罠にかかった: ${event.trapId}` })
-            break
           case 'return':
             let reason = '探索完了'
             switch (event.reason) {
-              case 'boss_clear':
-                reason = 'ボス撃破により帰還'
+              case 'completed':
+                reason = 'ダンジョン踏破！'
                 break
-              case 'if_any_ko':
-                reason = '仲間が倒れたため帰還'
-                break
-              case 'last_one':
-                reason = '最後の1人になったため帰還'
-                break
-              case 'until_floorN':
-                reason = '目標階層到達により帰還'
-                break
-              case 'lose':
+              case 'defeated':
                 reason = '全滅により撤退'
+                break
+              case 'policy_return':
+                reason = '設定した条件により帰還'
                 break
               case 'abort':
                 reason = '緊急帰還'

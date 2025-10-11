@@ -20,7 +20,8 @@ export type {
   TimelineEvent,
   ExpeditionRecord,
   RewardSummary,
-  AreaConfig
+  AreaConfig,
+  ExpeditionEndReason
 } from "./Expedition"
 
 // Dungeon related types

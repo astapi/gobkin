@@ -9,6 +9,16 @@ export interface ExpeditionRequest {
   clientVersion: string
 }
 
+/**
+ * 遠征の終了理由（実行結果）
+ * returnPolicyは事前設定、ExpeditionEndReasonは実際の終了理由
+ */
+export type ExpeditionEndReason =
+  | "completed"      // ダンジョン踏破（ボスクリア）
+  | "defeated"       // 全滅
+  | "policy_return"  // リターンポリシーによる帰還
+  | "abort"          // 緊急帰還（ユーザー操作）
+
 export interface ExpeditionReplay {
   meta: {
     expeditionId: string
@@ -33,7 +43,7 @@ export type TimelineEvent =
   | { type: "boss"; at: number; floor: number; enemy: EnemySnap; combat: CombatReplay; xp: number; drops: Drop[] }
   | { type: "resource"; at: number; floor: number; loot: Drop[] }
   | { type: "exploring"; at: number; floor: number }
-  | { type: "return"; at: number; reason: ExpeditionRequest["returnPolicy"] }
+  | { type: "return"; at: number; reason: ExpeditionEndReason }
 
 export interface ExpeditionRecord {
   id: string
