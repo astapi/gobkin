@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react'
-import { JsonGoblinRepositoryImpl } from '../../repositories/JsonGoblinRepositoryImpl'
-import { FirestoreGoblinRepositoryAdapter } from '../../repositories/FirestoreGoblinRepositoryImpl'
-import type { GoblinRepository } from '../../repositories/GoblinRepository'
+import { JsonGoblinRepositoryImpl } from '../../infrastructure/repositories/JsonGoblinRepositoryImpl'
+import { FirestoreGoblinRepositoryAdapter } from '../../infrastructure/repositories/FirestoreGoblinRepositoryImpl'
+import type { IGoblinRepository } from '../../core/repositories'
 
 export function useGoblinRepository() {
   const [repositoryInitialized, setRepositoryInitialized] = useState(false)
@@ -9,7 +9,7 @@ export function useGoblinRepository() {
   const useFirestore = import.meta.env.VITE_USE_FIRESTORE === 'true'
 
   const goblinRepository = useMemo(() => {
-    const repo: GoblinRepository = useFirestore
+    const repo: IGoblinRepository = useFirestore
       ? new FirestoreGoblinRepositoryAdapter()
       : new JsonGoblinRepositoryImpl()
 

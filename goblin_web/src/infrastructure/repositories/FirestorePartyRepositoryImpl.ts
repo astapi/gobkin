@@ -1,6 +1,6 @@
-import type { Party, PartyStatus, ExpeditionRequest } from '../shared/types'
-import type { PartyRepository } from './PartyRepository.ts'
-import { db, auth } from '../config/firebase.ts'
+import type { Party, PartyStatus, ExpeditionRequest } from '../../shared/types'
+import type { IPartyRepository } from '../../core/repositories'
+import { db, auth } from '../../config/firebase'
 import {
   collection,
   doc,
@@ -99,7 +99,7 @@ export class FirestorePartyRepositoryImpl {
 }
 
 // 同期版インターフェースとの互換性のためのアダプター
-export class FirestorePartyRepositoryAdapter implements PartyRepository {
+export class FirestorePartyRepositoryAdapter implements IPartyRepository {
   private firestoreRepo = new FirestorePartyRepositoryImpl()
   private cache: Party[] = []
   private isInitialized = false
@@ -178,7 +178,7 @@ export class FirestorePartyRepositoryAdapter implements PartyRepository {
     }
   }
 
-  updateReturnPolicy(id: number, returnPolicy: ExpeditionRequest["returnPolicy"]): void {
+  updateReturnPolicy(id: number, returnPolicy: ExpeditionRequest['returnPolicy']): void {
     const party = this.getParty(id)
     if (party) {
       party.returnPolicy = returnPolicy

@@ -1,6 +1,6 @@
-import type { Goblin } from '../shared/types'
+import type { Goblin } from '../../shared/types'
 
-export interface GoblinRepository {
+export interface IGoblinRepository {
   getGoblins(): Goblin[]
   getGoblin(id: number): Goblin | null
   saveGoblin(goblin: Goblin): void

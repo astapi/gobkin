@@ -1,5 +1,5 @@
-import type { ExpeditionRecord, ExpeditionReplay, ExpeditionRequest } from '../shared/types'
-import { db, auth } from '../config/firebase.ts'
+import type { ExpeditionRecord, ExpeditionReplay, ExpeditionRequest } from '../../shared/types'
+import { db, auth } from '../../config/firebase'
 import {
   collection,
   doc,
@@ -40,7 +40,7 @@ export class FirestoreExpeditionRepositoryImpl {
     partyName: string,
     dungeonId: string,
     dungeonName: string,
-    returnPolicy: ExpeditionRequest["returnPolicy"],
+    returnPolicy: ExpeditionRequest['returnPolicy'],
     explorationTimeSec: number
   ): Promise<ExpeditionRecord> {
     try {
@@ -291,7 +291,7 @@ export class FirestoreExpeditionRepositoryAdapter {
     partyName: string,
     dungeonId: string,
     dungeonName: string,
-    returnPolicy: ExpeditionRequest["returnPolicy"],
+    returnPolicy: ExpeditionRequest['returnPolicy'],
     explorationTimeSec: number
   ): Promise<ExpeditionRecord> {
     const record = await this.firestoreRepo.createExpedition(

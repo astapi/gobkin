@@ -1,9 +1,9 @@
-import type { Party, PartyStatus, ExpeditionRequest } from '../shared/types'
-import type { PartyRepository } from './PartyRepository.ts'
+import type { Party, PartyStatus, ExpeditionRequest } from '../../shared/types'
+import type { IPartyRepository } from '../../core/repositories'
 
 const STORAGE_KEY = 'goblin_kingdom_parties'
 
-export class JsonPartyRepositoryImpl implements PartyRepository {
+export class JsonPartyRepositoryImpl implements IPartyRepository {
   getParties(): Party[] {
     const data = localStorage.getItem(STORAGE_KEY)
     if (!data) {
@@ -68,7 +68,7 @@ export class JsonPartyRepositoryImpl implements PartyRepository {
     }
   }
 
-  updateReturnPolicy(id: number, returnPolicy: ExpeditionRequest["returnPolicy"]): void {
+  updateReturnPolicy(id: number, returnPolicy: ExpeditionRequest['returnPolicy']): void {
     const parties = this.getParties()
     const party = parties.find(p => p.id === id)
     if (party) {

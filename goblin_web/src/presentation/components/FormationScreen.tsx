@@ -1,11 +1,11 @@
 import { useState, useEffect, useMemo } from 'react'
 import type { Goblin, ExpeditionRecord } from '../../shared/types'
-import type { PartyRepository } from '../../repositories/PartyRepository.ts'
+import type { IPartyRepository } from '../../core/repositories'
 import { useExpeditionState } from '../contexts/ExpeditionStateContext.tsx'
 import { useCurrentTime } from '../hooks/useCurrentTime.ts'
 
 interface FormationScreenProps {
-  partyRepository: PartyRepository
+  partyRepository: IPartyRepository
   goblins: Goblin[]
   onPartySelect: (partyId: number) => void
   onExpeditionPartyClick?: (partyId: number) => void

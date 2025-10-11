@@ -1,6 +1,6 @@
-import type { Party, PartyStatus, ExpeditionRequest } from '../shared/types'
+import type { Party, PartyStatus, ExpeditionRequest } from '../../shared/types'
 
-export interface PartyRepository {
+export interface IPartyRepository {
   getParties(): Party[]
   getParty(id: number): Party | null
   saveParty(party: Party): void
@@ -9,5 +9,5 @@ export interface PartyRepository {
   getPartiesByStatus(status: PartyStatus): Party[]
   updateDungeonSettings(id: number, dungeonId: string): void
   updateFloorTarget(id: number, targetFloor: number | null): void
-  updateReturnPolicy(id: number, returnPolicy: ExpeditionRequest["returnPolicy"]): void
+  updateReturnPolicy(id: number, returnPolicy: ExpeditionRequest['returnPolicy']): void
 }

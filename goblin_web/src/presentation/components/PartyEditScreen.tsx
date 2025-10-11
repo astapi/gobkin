@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react'
 import type { Goblin } from '../../shared/types'
-import type { PartyRepository } from '../../repositories/PartyRepository.ts'
+import type { IPartyRepository } from '../../core/repositories'
 import { GoblinCard } from './GoblinCard.tsx'
 
 interface PartyEditScreenProps {
   partyId: number
   goblins: Goblin[]
-  partyRepository: PartyRepository
+  partyRepository: IPartyRepository
   onBack: () => void
 }
 

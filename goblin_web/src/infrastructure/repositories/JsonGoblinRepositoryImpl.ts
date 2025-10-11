@@ -1,7 +1,7 @@
-import type { Goblin } from '../shared/types'
-import type { GoblinRepository } from './GoblinRepository.ts'
+import type { Goblin } from '../../shared/types'
+import type { IGoblinRepository } from '../../core/repositories'
 
-export class JsonGoblinRepositoryImpl implements GoblinRepository {
+export class JsonGoblinRepositoryImpl implements IGoblinRepository {
   private goblins: Goblin[] = [
     {
       id: 0,

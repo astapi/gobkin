@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import type { Goblin, Dungeon, ExpeditionRequest } from '../../shared/types'
-import type { PartyRepository } from '../../repositories/PartyRepository.ts'
+import type { IPartyRepository } from '../../core/repositories'
 import { DungeonSelectionModal } from './DungeonSelectionModal.tsx'
 import { FloorTargetSelectionModal } from './FloorTargetSelectionModal.tsx'
 import { ReturnPolicySelectionModal } from './ReturnPolicySelectionModal.tsx'
@@ -8,7 +8,7 @@ import { ExpeditionConfirmModal } from './ExpeditionConfirmModal.tsx'
 
 interface ExpeditionPreparationScreenProps {
   partyId: number
-  partyRepository: PartyRepository
+  partyRepository: IPartyRepository
   goblins: Goblin[]
   dungeons: Dungeon[]
   onBack: () => void

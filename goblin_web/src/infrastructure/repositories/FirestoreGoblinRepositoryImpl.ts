@@ -1,6 +1,6 @@
-import type { Goblin } from '../shared/types'
-import type { GoblinRepository } from './GoblinRepository.ts'
-import { db, auth } from '../config/firebase.ts'
+import type { Goblin } from '../../shared/types'
+import type { IGoblinRepository } from '../../core/repositories'
+import { db, auth } from '../../config/firebase'
 import {
   collection,
   doc,
@@ -171,7 +171,7 @@ export class FirestoreGoblinRepositoryImpl {
 }
 
 // 同期版インターフェースとの互換性のためのアダプター
-export class FirestoreGoblinRepositoryAdapter implements GoblinRepository {
+export class FirestoreGoblinRepositoryAdapter implements IGoblinRepository {
   private firestoreRepo = new FirestoreGoblinRepositoryImpl()
   private cache: Goblin[] = []
   private isInitialized = false

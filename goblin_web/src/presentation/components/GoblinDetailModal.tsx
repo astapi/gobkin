@@ -1,14 +1,13 @@
 import { useState, useEffect } from 'react'
 import type { Goblin, Item, GoblinStats } from '../../shared/types'
-import type { GoblinRepository } from '../../repositories/GoblinRepository.ts'
-import type { ItemRepository } from '../../repositories/ItemRepository.ts'
-import { FirestoreItemRepositoryAdapter } from '../../repositories/FirestoreItemRepositoryImpl.ts'
+import type { IGoblinRepository, IItemRepository } from '../../core/repositories'
+import { FirestoreItemRepositoryAdapter } from '../../infrastructure/repositories/FirestoreItemRepositoryImpl'
 
 interface GoblinDetailModalProps {
   goblin: Goblin | null
   onClose: () => void
-  goblinRepository: GoblinRepository
-  itemRepository?: ItemRepository
+  goblinRepository: IGoblinRepository
+  itemRepository?: IItemRepository
 }
 
 const defaultItemRepository = new FirestoreItemRepositoryAdapter()

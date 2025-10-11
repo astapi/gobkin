@@ -1,6 +1,6 @@
-import type { Item } from '../shared/types'
-import type { ItemRepository } from './ItemRepository.ts'
-import { db, auth } from '../config/firebase.ts'
+import type { Item } from '../../shared/types'
+import type { IItemRepository } from '../../core/repositories'
+import { db, auth } from '../../config/firebase'
 import {
   collection,
   doc,
@@ -102,7 +102,7 @@ export class FirestoreItemRepositoryImpl {
 }
 
 // 同期版インターフェースとの互換性のためのアダプター
-export class FirestoreItemRepositoryAdapter implements ItemRepository {
+export class FirestoreItemRepositoryAdapter implements IItemRepository {
   private firestoreRepo = new FirestoreItemRepositoryImpl()
   private cache: Item[] = []
   private isInitialized = false
