@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Text, useInput } from 'ink';
+import { Box, Text, useInput, type Key } from 'ink';
 import { Character } from '../types';
 
 interface TargetSelectorProps {
@@ -11,7 +11,7 @@ interface TargetSelectorProps {
 export function TargetSelector({ targets, onTargetSelected, title }: TargetSelectorProps) {
   const [selectedIndex, setSelectedIndex] = useState(0);
 
-  useInput((input, key) => {
+  useInput((input: string, key: Key) => {
     if (key.upArrow && selectedIndex > 0) {
       setSelectedIndex(selectedIndex - 1);
     } else if (key.downArrow && selectedIndex < targets.length) {

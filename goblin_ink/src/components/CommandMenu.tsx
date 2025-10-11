@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Text, useInput } from 'ink';
+import { Box, Text, useInput, type Key } from 'ink';
 import { Character, BattleState, BattleCommand, CommandType, Skill } from '../types';
 import { skills } from '../data';
 import { TargetSelector } from './TargetSelector';
@@ -35,7 +35,7 @@ export function CommandMenu({ character, battleState, onCommandSelected }: Comma
     setSelectedIndex(0);
   }, [character.id]);
 
-  useInput((input, key) => {
+  useInput((input: string, key: Key) => {
     if (menuState.type === 'main') {
       if (key.upArrow && selectedIndex > 0) {
         setSelectedIndex(selectedIndex - 1);

@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from 'react'
-import type { Goblin, ExpeditionRecord } from '../../shared/types'
+import type { Goblin, ExpeditionRecord, Party } from '../../shared/types'
 import type { IPartyRepository } from '../../core/repositories'
-import { useExpeditionState } from '../contexts/ExpeditionStateContext.tsx'
+import { useExpeditionState } from '../contexts/ExpeditionStateContextValue.ts'
 import { useCurrentTime } from '../hooks/useCurrentTime.ts'
 
 interface FormationScreenProps {
@@ -23,24 +23,68 @@ export const FormationScreen = ({
   onLogClick,
   isLoading = false
 }: FormationScreenProps) => {
-  const parties = partyRepository.getParties()
   const { getPartyExpeditionHistory, expeditionRecords } = useExpeditionState()
   const [partyHistories, setPartyHistories] = useState<Record<number, ExpeditionRecord[]>>({})
+  const [parties, setParties] = useState<Party[]>(() => partyRepository.getParties())
+
+  const arePartiesSame = (a: Party[], b: Party[]): boolean => {
+    if (a.length !== b.length) return false
+    return a.every((party, index) => {
+      const other = b[index]
+      if (!other) return false
+      if (party.id !== other.id) return false
+      if (party.memberIds.length !== other.memberIds.length) return false
+      for (let i = 0; i < party.memberIds.length; i++) {
+        if (party.memberIds[i] !== other.memberIds[i]) return false
+      }
+      return party.name === other.name && party.status === other.status
+    })
+  }
+
+  const areHistoriesSame = (
+    a: Record<number, ExpeditionRecord[]>,
+    b: Record<number, ExpeditionRecord[]>
+  ): boolean => {
+    const aKeys = Object.keys(a)
+    const bKeys = Object.keys(b)
+    if (aKeys.length !== bKeys.length) return false
+
+    return aKeys.every(key => {
+      const partyId = Number(key)
+      const historyA = a[partyId] ?? []
+      const historyB = b[partyId] ?? []
+      if (historyA.length !== historyB.length) return false
+      return historyA.every((record, index) => {
+        const other = historyB[index]
+        if (!other) return false
+        return record.id === other.id && record.updatedAt.getTime() === other.updatedAt.getTime()
+      })
+    })
+  }
 
   // 各パーティの履歴を取得
   useEffect(() => {
+    let isActive = true
+    const currentParties = partyRepository.getParties()
+    setParties(prev => (arePartiesSame(prev, currentParties) ? prev : currentParties))
     const loadHistories = async () => {
       const histories: Record<number, ExpeditionRecord[]> = {}
-      for (const party of parties) {
+      for (const party of currentParties) {
         const history = await getPartyExpeditionHistory(party.id)
         if (history.length > 0) {
           histories[party.id] = history
         }
       }
-      setPartyHistories(histories)
+      if (isActive) {
+        setPartyHistories(prev => (areHistoriesSame(prev, histories) ? prev : histories))
+      }
     }
     loadHistories()
-  }, [parties.length, expeditionRecords]) // expeditionRecordsを依存配列に追加
+
+    return () => {
+      isActive = false
+    }
+  }, [partyRepository, expeditionRecords, getPartyExpeditionHistory])
 
   // 遠征中のパーティがあるかチェック
   const hasOngoingExpedition = useMemo(() => {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Text, useInput } from 'ink';
+import { Box, Text, useInput, type Key } from 'ink';
 import { BattleState, BattleCommand, Character, CommandType } from '../types';
 import { createPlayerParty, createEnemyParty } from '../data';
 import {
@@ -109,7 +109,7 @@ export function BattleScreen() {
     }
   };
 
-  useInput((input, key) => {
+  useInput((input: string, key: Key) => {
     if (gamePhase.type === 'action_execution' && key.return) {
       executeNextAction();
     }

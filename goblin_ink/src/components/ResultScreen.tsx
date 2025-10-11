@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Text, useInput } from 'ink';
+import { Box, Text, useInput, type Key } from 'ink';
 import { BattleState } from '../types';
 
 interface ResultScreenProps {
@@ -8,7 +8,7 @@ interface ResultScreenProps {
 }
 
 export function ResultScreen({ battleState, onExit }: ResultScreenProps) {
-  useInput((input, key) => {
+  useInput((input: string, key: Key) => {
     if (key.return || input === 'q' || input === 'Q') {
       if (onExit) {
         onExit();
