@@ -159,7 +159,6 @@ export function executeBattle(
       );
 
       // ダメージ適用
-      const previousTargetHP = target.currentHP;
       target.currentHP = Math.max(0, target.currentHP - damage);
       const targetDefeated = target.currentHP <= 0;
 

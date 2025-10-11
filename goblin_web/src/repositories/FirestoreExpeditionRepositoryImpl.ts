@@ -286,10 +286,6 @@ export class FirestoreExpeditionRepositoryAdapter {
     }
   }
 
-  private isExpeditionOngoing(record: ExpeditionRecord): boolean {
-    return record.returnTime > new Date()
-  }
-
   async createExpedition(
     partyId: number,
     partyName: string,

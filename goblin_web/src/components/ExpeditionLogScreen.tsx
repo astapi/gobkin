@@ -33,7 +33,7 @@ export const ExpeditionLogScreen = ({
   const [currentTime, setCurrentTime] = useState(initialTime)
   const [isPlaying] = useState(true)
   const [speed] = useState<PlaybackSpeed>(1)
-  const [processedEvents, setProcessedEvents] = useState<ProcessedEvent[]>(() =>
+  const [_processedEvents, setProcessedEvents] = useState<ProcessedEvent[]>(() =>
     expeditionReplay.events.map(event => ({ event, processed: event.at <= initialTime }))
   )
   const [currentFloor, setCurrentFloor] = useState(1)
