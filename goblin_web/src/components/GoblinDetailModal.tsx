@@ -42,19 +42,10 @@ export const GoblinDetailModal = ({
   useEffect(() => {
     setItems(itemRepository.getItems())
 
-    const handleItemChange = () => {
-      setItems([...itemRepository.getItems()])
+    if (goblin) {
+      const updatedGoblin = goblinRepository.getGoblin(goblin.id)
+      setCurrentGoblin(initializeEquipment(updatedGoblin))
     }
-
-    const handleGoblinChange = () => {
-      if (goblin) {
-        const updatedGoblin = goblinRepository.getGoblin(goblin.id)
-        setCurrentGoblin(initializeEquipment(updatedGoblin))
-      }
-    }
-
-    itemRepository.setOnDataChange(handleItemChange)
-    goblinRepository.setOnDataChange(handleGoblinChange)
   }, [goblin, goblinRepository, itemRepository])
 
   useEffect(() => {
@@ -66,12 +57,16 @@ export const GoblinDetailModal = ({
     console.log(currentGoblin);
     if (currentGoblin) {
       goblinRepository.equipItem(currentGoblin.id, slotIndex, itemId)
+      const updatedGoblin = goblinRepository.getGoblin(currentGoblin.id)
+      setCurrentGoblin(initializeEquipment(updatedGoblin))
     }
   }
 
   const handleUnequipItem = (slotIndex: number) => {
     if (currentGoblin) {
       goblinRepository.unequipItem(currentGoblin.id, slotIndex)
+      const updatedGoblin = goblinRepository.getGoblin(currentGoblin.id)
+      setCurrentGoblin(initializeEquipment(updatedGoblin))
     }
   }
 
