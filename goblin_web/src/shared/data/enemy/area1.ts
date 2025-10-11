@@ -1,4 +1,4 @@
-import type { Enemy, EnemyPattern } from "../../types/enemy";
+import type { Enemy, EnemyPattern } from "../../types";
 
 export const forestOutskirtsEnemies: Enemy[] = [
   { id: "E001", name: "スライム", "raceTags": ["beast"], level: 1, hp: 10, atk: 2, def: 2, spd: 2, sp: 0, exp: 4, gold: 5 },

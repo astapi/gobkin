@@ -1,4 +1,4 @@
-import type { Dungeon } from '../types/index.ts'
+import type { Dungeon } from '../shared/types'
 
 interface DungeonSelectionModalProps {
   dungeons: Dungeon[]

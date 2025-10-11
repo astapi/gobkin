@@ -13,7 +13,7 @@ import type {
   Enemy,
   EnemyPattern,
   PartyState
-} from '../types/index.ts'
+} from '../shared/types'
 import { executeBattle } from './battle.ts'
 
 export class ExpeditionEngine {

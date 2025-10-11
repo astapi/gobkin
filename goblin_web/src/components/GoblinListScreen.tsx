@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import type { Goblin } from '../types/index.ts'
+import type { Goblin } from '../shared/types'
 import { useGoblinRepository } from '../hooks/useGoblinRepository.ts'
 import { GoblinCard } from './GoblinCard.tsx'
 import { GoblinDetailModal } from './GoblinDetailModal.tsx'

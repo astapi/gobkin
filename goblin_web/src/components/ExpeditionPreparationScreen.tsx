@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import type { Goblin, Dungeon, ExpeditionRequest } from '../types/index.ts'
+import type { Goblin, Dungeon, ExpeditionRequest } from '../shared/types'
 import type { PartyRepository } from '../repositories/PartyRepository.ts'
 import { DungeonSelectionModal } from './DungeonSelectionModal.tsx'
 import { FloorTargetSelectionModal } from './FloorTargetSelectionModal.tsx'

@@ -1,5 +1,5 @@
-import type { Goblin, BattleLogEntry } from '../types/index.ts';
-import type { Enemy } from '../types/enemy.ts';
+import type { Goblin, BattleLogEntry } from '../shared/types';
+import type { Enemy } from '../shared/types';
 import type { Combatant, Skill } from './damage.ts';
 import { calcDamage } from './damage.ts';
 import { goblinToCombatant, enemyToCombatant } from './combatant.ts';

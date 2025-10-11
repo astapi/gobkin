@@ -1,4 +1,4 @@
-import type { ExpeditionRecord, ExpeditionReplay, ExpeditionRequest } from '../types/index.ts'
+import type { ExpeditionRecord, ExpeditionReplay, ExpeditionRequest } from '../shared/types'
 import { db, auth } from '../config/firebase.ts'
 import {
   collection,

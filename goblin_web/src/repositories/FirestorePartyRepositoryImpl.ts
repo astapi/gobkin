@@ -1,4 +1,4 @@
-import type { Party, PartyStatus, ExpeditionRequest } from '../types/index.ts'
+import type { Party, PartyStatus, ExpeditionRequest } from '../shared/types'
 import type { PartyRepository } from './PartyRepository.ts'
 import { db, auth } from '../config/firebase.ts'
 import {

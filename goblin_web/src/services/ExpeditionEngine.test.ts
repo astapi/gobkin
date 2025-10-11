@@ -1,5 +1,5 @@
 import { ExpeditionEngine } from './ExpeditionEngine.ts'
-import type { ExpeditionRequest, Goblin } from '../types/index.ts'
+import type { ExpeditionRequest, Goblin } from '../shared/types'
 
 // テスト用のダミーパーティ
 const testParty: Goblin[] = [

@@ -1,4 +1,4 @@
-import type { Item } from '../types/index.ts'
+import type { Item } from '../shared/types'
 import type { ItemRepository } from './ItemRepository.ts'
 import { db, auth } from '../config/firebase.ts'
 import {

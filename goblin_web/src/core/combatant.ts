@@ -1,5 +1,4 @@
-import type { Goblin } from '../types';
-import type { Enemy } from '../types/enemy';
+import type { Goblin, Enemy } from '../shared/types';
 import type { Combatant } from './damage';
 
 /**

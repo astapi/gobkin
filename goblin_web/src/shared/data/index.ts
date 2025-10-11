@@ -1,4 +1,4 @@
-import type { Goblin, Dungeon } from '../types/index.ts'
+import type { Goblin, Dungeon } from '../types'
 import allAreaJson from './expeditionArea/allArea.json'
 
 export const goblinsData: Goblin[] = [
@@ -8,7 +8,8 @@ export const goblinsData: Goblin[] = [
     race: 'ゴブリン',
     level: 15,
     avatar: '/src/assets/goblin/goblin.png',
-    stats: { hp: 120, atk: 85, sp: 45, spd: 60, def: 75 }
+    stats: { hp: 120, atk: 85, sp: 45, spd: 60, def: 75 },
+    equipment: []
   },
   {
     id: 1,
@@ -16,7 +17,8 @@ export const goblinsData: Goblin[] = [
     race: 'ゴブリン',
     level: 12,
     avatar: '/src/assets/goblin/goblin.png',
-    stats: { hp: 80, atk: 95, sp: 90, spd: 70, def: 45 }
+    stats: { hp: 80, atk: 95, sp: 90, spd: 70, def: 45 },
+    equipment: []
   },
   {
     id: 2,
@@ -24,7 +26,8 @@ export const goblinsData: Goblin[] = [
     race: 'ゴブリン',
     level: 13,
     avatar: '/src/assets/goblin/goblin.png',
-    stats: { hp: 90, atk: 80, sp: 65, spd: 85, def: 55 }
+    stats: { hp: 90, atk: 80, sp: 65, spd: 85, def: 55 },
+    equipment: []
   },
   {
     id: 3,
@@ -32,7 +35,8 @@ export const goblinsData: Goblin[] = [
     race: 'ゴブリン',
     level: 11,
     avatar: '/src/assets/goblin/goblin.png',
-    stats: { hp: 130, atk: 50, sp: 40, spd: 45, def: 95 }
+    stats: { hp: 130, atk: 50, sp: 40, spd: 45, def: 95 },
+    equipment: []
   },
   {
     id: 4,
@@ -40,7 +44,8 @@ export const goblinsData: Goblin[] = [
     race: 'ゴブリン',
     level: 14,
     avatar: '/src/assets/goblin/goblin.png',
-    stats: { hp: 85, atk: 75, sp: 70, spd: 95, def: 50 }
+    stats: { hp: 85, atk: 75, sp: 70, spd: 95, def: 50 },
+    equipment: []
   }
 ]
 

@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react'
-import type { Dungeon, ExpeditionRequest, ExpeditionReplay, Goblin } from '../types/index.ts'
-import { areasData } from '../data/index.ts'
+import type { Dungeon, ExpeditionRequest, ExpeditionReplay, Goblin } from '../shared/types'
+import { areasData } from '../shared/data'
 import { DungeonScreen } from './DungeonScreen.tsx'
 import { ExpeditionSetupScreen } from './ExpeditionSetupScreen.tsx'
 import { ExpeditionPlaybackScreen } from './ExpeditionPlaybackScreen.tsx'

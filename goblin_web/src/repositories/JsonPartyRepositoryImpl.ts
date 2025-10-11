@@ -1,4 +1,4 @@
-import type { Party, PartyStatus, ExpeditionRequest } from '../types/index.ts'
+import type { Party, PartyStatus, ExpeditionRequest } from '../shared/types'
 import type { PartyRepository } from './PartyRepository.ts'
 
 const STORAGE_KEY = 'goblin_kingdom_parties'

@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react'
-import type { Goblin, ExpeditionRecord } from '../types/index.ts'
+import type { Goblin, ExpeditionRecord } from '../shared/types'
 import type { PartyRepository } from '../repositories/PartyRepository.ts'
 import { useExpeditionState } from '../contexts/ExpeditionStateContext.tsx'
 import { useCurrentTime } from '../hooks/useCurrentTime.ts'

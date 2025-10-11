@@ -1,4 +1,4 @@
-import type { ExpeditionRequest } from '../types/index.ts'
+import type { ExpeditionRequest } from '../shared/types'
 
 interface ReturnPolicySelectionModalProps {
   onSelect: (policy: ExpeditionRequest["returnPolicy"]) => void

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import type { Party, Goblin, Dungeon, ExpeditionRequest } from '../types/index.ts'
+import type { Party, Goblin, Dungeon, ExpeditionRequest } from '../shared/types'
 
 interface ExpeditionSetupScreenProps {
   parties: Party[]

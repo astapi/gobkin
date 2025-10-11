@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
-import type { ExpeditionReplay, TimelineEvent, Goblin } from '../types/index.ts'
+import type { ExpeditionReplay, TimelineEvent, Goblin } from '../shared/types'
 
 interface ExpeditionPlaybackScreenProps {
   expeditionReplay: ExpeditionReplay

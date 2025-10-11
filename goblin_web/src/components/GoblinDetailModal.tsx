@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import type { Goblin, Item, GoblinStats } from '../types/index.ts'
+import type { Goblin, Item, GoblinStats } from '../shared/types'
 import type { GoblinRepository } from '../repositories/GoblinRepository.ts'
 import type { ItemRepository } from '../repositories/ItemRepository.ts'
 import { FirestoreItemRepositoryAdapter } from '../repositories/FirestoreItemRepositoryImpl.ts'

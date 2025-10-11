@@ -1,4 +1,4 @@
-import type { Skill } from '../core/damage';
+import type { Skill } from '../../core/damage';
 
 export const normalAttack: Skill = {
   id: 'normal',

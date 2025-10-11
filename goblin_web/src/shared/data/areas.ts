@@ -1,4 +1,4 @@
-import type { AreaConfig } from '../types/index.ts'
+import type { AreaConfig } from '../types'
 
 export const areasConfig: AreaConfig[] = [
   {

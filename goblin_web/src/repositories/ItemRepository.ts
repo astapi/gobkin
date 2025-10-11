@@ -1,4 +1,4 @@
-import type { Item } from '../types/index.ts'
+import type { Item } from '../shared/types'
 
 export interface ItemRepository {
   getItems(): Item[]

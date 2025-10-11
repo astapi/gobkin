@@ -1,4 +1,4 @@
-import type { Party, PartyStatus, ExpeditionRequest } from '../types/index.ts'
+import type { Party, PartyStatus, ExpeditionRequest } from '../shared/types'
 
 export interface PartyRepository {
   getParties(): Party[]

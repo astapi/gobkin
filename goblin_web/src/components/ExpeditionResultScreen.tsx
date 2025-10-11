@@ -1,5 +1,5 @@
-import type { ExpeditionReplay, Goblin } from '../types/index.ts'
-import { areasData } from '../data/index.ts'
+import type { ExpeditionReplay, Goblin } from '../shared/types'
+import { areasData } from '../shared/data'
 
 interface ExpeditionResultScreenProps {
   expeditionReplay: ExpeditionReplay

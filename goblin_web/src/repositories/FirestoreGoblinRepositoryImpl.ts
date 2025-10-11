@@ -1,4 +1,4 @@
-import type { Goblin } from '../types/index.ts'
+import type { Goblin } from '../shared/types'
 import type { GoblinRepository } from './GoblinRepository.ts'
 import { db, auth } from '../config/firebase.ts'
 import {
