@@ -12,7 +12,8 @@ import type {
   EnemyDatabase,
   Enemy,
   EnemyPattern,
-  PartyState
+  PartyState,
+  ExpeditionEndReason
 } from '../shared/types'
 import { executeBattle } from './battle.ts'
 
@@ -230,7 +231,7 @@ export class ExpeditionEngine {
       events.push({
         type: "return",
         at: Math.min(currentTime + 1, adjustedDuration),
-        reason: returnReason as ExpeditionRequest["returnPolicy"]
+        reason: returnReason as ExpeditionEndReason
       })
     }
 
@@ -373,7 +374,12 @@ export class ExpeditionEngine {
         sp: 0,
         spd: 40,
         def: member.def
-      }
+      },
+      equipment: [
+        { slotIndex: 0, itemId: null },
+        { slotIndex: 1, itemId: null },
+        { slotIndex: 2, itemId: null }
+      ]
     }))
 
     // 各メンバーの現在HPを配列で渡す

@@ -2,22 +2,23 @@
 
 **作成日**: 2025-10-11
 **最終更新**: 2025-10-11
-**ステータス**: 修正中（29件残存）
-**総エラー数**: 55件 → 29件
+**ステータス**: 修正中（17件残存）
+**総エラー数**: 55件 → 29件 → 17件
 
 ## エラー概要
 
 goblin_webプロジェクトのビルドで当初55件のTypeScriptエラーが発生していました。
 一部修正済みで、現在29件のエラーが残存しています。
 
-### 現在の残存エラー（29件）
-1. **装備システム未実装**: 8件（JsonGoblinRepositoryImpl）
-2. **equipmentフィールド未初期化**: 8件（複数ファイル）
+### 現在の残存エラー（17件）
+1. ✅ ~~装備システム未実装~~ → 修正完了
+2. ✅ ~~equipmentフィールド未初期化~~ → 修正完了
 3. **Repository問題**: 2件（setOnDataChangeメソッド）
-4. **型不整合**: 2件（ExpeditionEndReason、Party ID）
+4. **型不整合**: 3件（ExpeditionEndReason、Party ID、ExpeditionPreparationScreen）
 5. **テストコード**: 7件（importパスと型注釈）
 6. **未使用変数**: 3件
 7. **verbatimModuleSyntax違反**: 1件（AuthContext）
+8. **ExpeditionEndReason型**: 1件（ExpeditionEngine.ts）
 
 以下、エラーの詳細をカテゴリ別に説明します：
 
@@ -77,23 +78,21 @@ unequipItem(goblinId: number, slotIndex: number): void {
 
 ---
 
-#### 2.2 Goblin型のequipmentフィールドが未初期化
-**影響ファイル**:
-- `src/repositories/JsonGoblinRepositoryImpl.ts` (5件)
-- `src/core/ExpeditionEngine.ts` (1件)
-- `src/services/ExpeditionEngine.test.ts` (2件)
-
-**エラー内容**:
+#### 2.2 Goblin型のequipmentフィールドが未初期化（✅ 修正済み）
+**修正内容**:
+全てのゴブリンデータに`equipment`フィールドを追加しました：
+```typescript
+equipment: [
+  { slotIndex: 0, itemId: null },
+  { slotIndex: 1, itemId: null },
+  { slotIndex: 2, itemId: null }
+]
 ```
-error TS2741: Property 'equipment' is missing in type '{ id: number; name: string; ... }' but required in type 'Goblin'.
-```
 
-**原因**: 既存のゴブリンデータオブジェクトに`equipment`フィールドが含まれていない。
-
-**修正方法**:
-1. `JsonGoblinRepositoryImpl.ts`のゴブリンデータに`equipment`フィールドを追加
-2. `ExpeditionEngine.ts`のテストデータにも追加
-3. デフォルト値として`[null, null, null]`を設定
+**修正ファイル**:
+- `src/repositories/JsonGoblinRepositoryImpl.ts` (5体のゴブリン)
+- `src/core/ExpeditionEngine.ts` (戦闘時の一時ゴブリン)
+- `src/services/ExpeditionEngine.test.ts` (テスト用ゴブリン2体)
 
 ---
 
@@ -205,10 +204,8 @@ error TS7006: Parameter 'xxx' implicitly has an 'any' type.
 ## 修正優先順位
 
 ### 最優先（ビルドを通すために必須）
-4. ⚠️ Goblin型の`equipment`フィールド初期化（8件残存）
-   - `src/repositories/JsonGoblinRepositoryImpl.ts` (5件)
-   - `src/core/ExpeditionEngine.ts` (1件)
-   - `src/services/ExpeditionEngine.test.ts` (2件)
+4. ✅ Goblin型の`equipment`フィールド初期化
+   - 全てのゴブリンデータに`equipment`フィールドを追加完了
 5. ✅ JsonGoblinRepositoryImplに装備メソッド実装
    - `equipItem`と`unequipItem`メソッドを実装完了
 

@@ -9,7 +9,12 @@ const testParty: Goblin[] = [
     race: 'ゴブリン',
     level: 5,
     avatar: '/test.png',
-    stats: { hp: 100, atk: 50, sp: 30, spd: 40, def: 35 }
+    stats: { hp: 100, atk: 50, sp: 30, spd: 40, def: 35 },
+    equipment: [
+      { slotIndex: 0, itemId: null },
+      { slotIndex: 1, itemId: null },
+      { slotIndex: 2, itemId: null }
+    ]
   },
   {
     id: 2,
@@ -17,7 +22,12 @@ const testParty: Goblin[] = [
     race: 'ゴブリン',
     level: 4,
     avatar: '/test.png',
-    stats: { hp: 80, atk: 60, sp: 40, spd: 45, def: 25 }
+    stats: { hp: 80, atk: 60, sp: 40, spd: 45, def: 25 },
+    equipment: [
+      { slotIndex: 0, itemId: null },
+      { slotIndex: 1, itemId: null },
+      { slotIndex: 2, itemId: null }
+    ]
   }
 ]
 
