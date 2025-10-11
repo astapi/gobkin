@@ -1,119 +1,79 @@
 # ビルドエラー分析と修正計画
 
 **作成日**: 2025-10-11
-**ステータス**: 未修正
-**総エラー数**: 55件
+**最終更新**: 2025-10-11
+**ステータス**: 修正中（29件残存）
+**総エラー数**: 55件 → 29件
 
 ## エラー概要
 
-goblin_webプロジェクトのビルドで55件のTypeScriptエラーが発生しています。これらは以下のカテゴリに分類されます：
+goblin_webプロジェクトのビルドで当初55件のTypeScriptエラーが発生していました。
+一部修正済みで、現在29件のエラーが残存しています。
+
+### 現在の残存エラー（29件）
+1. **装備システム未実装**: 8件（JsonGoblinRepositoryImpl）
+2. **equipmentフィールド未初期化**: 8件（複数ファイル）
+3. **Repository問題**: 2件（setOnDataChangeメソッド）
+4. **型不整合**: 2件（ExpeditionEndReason、Party ID）
+5. **テストコード**: 7件（importパスと型注釈）
+6. **未使用変数**: 3件
+7. **verbatimModuleSyntax違反**: 1件（AuthContext）
+
+以下、エラーの詳細をカテゴリ別に説明します：
 
 ### 1. 型定義の不整合（最も重大）
 
-#### 1.1 TimelineEvent型に`trap`イベントが不足
-**影響ファイル**:
-- `src/components/ExpeditionLogScreen.tsx` (8件)
-- `src/components/ExpeditionPlaybackScreen.tsx` (8件)
-
-**エラー内容**:
-```
-error TS2678: Type '"trap"' is not comparable to type '"move_start" | "floor_up" | "battle" | "boss" | "resource" | "exploring" | "return"'.
-```
-
-**原因**: `src/shared/types/Expedition.ts`の`TimelineEvent`型に`trap`イベントタイプが定義されていないが、実装コードでは使用されている。
-
-**修正方法**:
-`TimelineEvent`型に以下を追加：
-```typescript
-| { type: "trap"; at: number; floor: number; trapId: string }
-```
+#### 1.1 TimelineEvent型のtrapイベント（✅ 修正済み）
+**修正内容**: `trap`イベントは型定義から削除され、実装コードからも除去されました。
 
 ---
 
-#### 1.2 ExpeditionRequest["returnPolicy"]型に終了理由が不足
+#### 1.2 ExpeditionEndReason型の定義問題（⚠️ 一部残存）
 **影響ファイル**:
-- `src/components/ExpeditionLogScreen.tsx` (4件)
-- `src/components/ExpeditionPlaybackScreen.tsx` (5件)
+- `src/core/ExpeditionEngine.ts` (1件) ← **残存**
 
 **エラー内容**:
 ```
-error TS2678: Type '"boss_clear"' is not comparable to type '"until_floor2" | "until_floor3" | "if_any_ko" | "if_two_ko" | "last_one" | "never"'.
-error TS2678: Type '"until_floorN"' is not comparable to type ...
-error TS2678: Type '"lose"' is not comparable to type ...
-error TS2678: Type '"abort"' is not comparable to type ...
+error TS2322: Type '"until_floor2" | "until_floor3" | "if_any_ko" | "if_two_ko" | "last_one" | "never"'
+  is not assignable to type 'ExpeditionEndReason'.
 ```
 
-**原因**: `returnPolicy`は遠征開始時の設定値であり、遠征終了理由（`boss_clear`, `lose`, `abort`等）とは別の概念。`TimelineEvent`の`return`イベントの`reason`フィールドで混同されている。
+**原因**: `ExpeditionEndReason`型は定義されているが、`returnPolicy`の値を直接`ExpeditionEndReason`として代入しようとしている箇所がある。
 
 **修正方法**:
-1. 新しい型`ExpeditionEndReason`を定義：
-```typescript
-export type ExpeditionEndReason =
-  | "boss_clear"      // ボスクリア
-  | "until_floor2"    // 2階到達
-  | "until_floor3"    // 3階到達
-  | "until_floorN"    // N階到達（汎用）
-  | "if_any_ko"       // 1人でも倒れた
-  | "if_two_ko"       // 2人倒れた
-  | "last_one"        // 最後の1人
-  | "lose"            // 全滅
-  | "abort"           // 中断
-  | "never"           // 最後まで探索
-```
-
-2. `TimelineEvent`の`return`イベントを修正：
-```typescript
-| { type: "return"; at: number; reason: ExpeditionEndReason }
-```
+`ExpeditionEngine.ts:233`付近で、returnPolicyを適切にExpeditionEndReasonに変換するロジックを追加する必要がある。
 
 ---
 
-#### 1.3 Dungeon型に`unlockNext`プロパティが不足
-**影響ファイル**:
-- `src/components/ExpeditionResultScreen.tsx` (2件)
-
-**エラー内容**:
-```
-error TS2339: Property 'unlockNext' does not exist on type 'Dungeon'.
-```
-
-**原因**: `src/shared/types/Dungeon.ts`の`Dungeon`型に`unlockNext`フィールドがない。`AreaConfig`には存在するが、`Dungeon`とは別の型として扱われている。
-
-**修正方法**:
-`Dungeon`型に以下を追加：
-```typescript
-unlockNext?: string
-```
+#### 1.3 Dungeon型のunlockNextプロパティ（✅ 修正済み）
+**修正内容**: `Dungeon`型に`unlockNext?: string`フィールドが追加されました。
 
 ---
 
 ### 2. 装備機能の実装不足（重大）
 
-#### 2.1 JsonGoblinRepositoryImplに装備メソッドが未実装
-**影響ファイル**:
-- `src/repositories/JsonGoblinRepositoryImpl.ts` (1件 + 実装エラー7件)
-- `src/hooks/useGoblinRepository.ts` (1件)
-- `src/components/GoblinDetailModal.tsx` (2件)
-
-**エラー内容**:
-```
-error TS2420: Class 'JsonGoblinRepositoryImpl' incorrectly implements interface 'GoblinRepository'.
-  Type 'JsonGoblinRepositoryImpl' is missing the following properties from type 'GoblinRepository': equipItem, unequipItem
-```
-
-**原因**: `GoblinRepository`インターフェースに`equipItem`と`unequipItem`メソッドが追加されたが、`JsonGoblinRepositoryImpl`に実装されていない。
-
-**修正方法**:
-`JsonGoblinRepositoryImpl`に以下のメソッドを追加実装：
+#### 2.1 JsonGoblinRepositoryImplに装備メソッドが未実装（✅ 修正済み）
+**修正内容**:
+`JsonGoblinRepositoryImpl`に`equipItem`と`unequipItem`メソッドを実装しました：
 ```typescript
 equipItem(goblinId: number, slotIndex: number, itemId: string): void {
-  // 実装
+  const goblin = this.getGoblin(goblinId)
+  if (goblin) {
+    goblin.equipment[slotIndex] = { slotIndex, itemId }
+    this.saveGoblin(goblin)
+  }
 }
 
 unequipItem(goblinId: number, slotIndex: number): void {
-  // 実装
+  const goblin = this.getGoblin(goblinId)
+  if (goblin) {
+    goblin.equipment[slotIndex] = { slotIndex, itemId: null }
+    this.saveGoblin(goblin)
+  }
 }
 ```
+
+**注**: `GoblinDetailModal.tsx`の`setOnDataChange`エラーは別途対応が必要（2.3参照）
 
 ---
 
@@ -245,34 +205,58 @@ error TS7006: Parameter 'xxx' implicitly has an 'any' type.
 ## 修正優先順位
 
 ### 最優先（ビルドを通すために必須）
-1. ✅ TimelineEvent型に`trap`イベント追加
-2. ✅ ExpeditionEndReason型の導入とTimelineEvent修正
-3. ✅ Dungeon型に`unlockNext`追加
-4. ✅ Goblin型の`equipment`フィールド初期化
+4. ⚠️ Goblin型の`equipment`フィールド初期化（8件残存）
+   - `src/repositories/JsonGoblinRepositoryImpl.ts` (5件)
+   - `src/core/ExpeditionEngine.ts` (1件)
+   - `src/services/ExpeditionEngine.test.ts` (2件)
 5. ✅ JsonGoblinRepositoryImplに装備メソッド実装
+   - `equipItem`と`unequipItem`メソッドを実装完了
 
 ### 高優先（機能動作に影響）
-6. ✅ ItemRepository/GoblinRepositoryの`setOnDataChange`問題解決
-7. ✅ Party IDの型統一
-8. ✅ ExpeditionPreparationScreenの型エラー修正
+6. ❌ ItemRepository/GoblinRepositoryの`setOnDataChange`問題解決（2件残存）
+   - `src/components/GoblinDetailModal.tsx`
+7. ⚠️ Party IDの型統一（2件残存）
+   - `src/repositories/FirestorePartyRepositoryImpl.ts` (1件)
+   - `src/repositories/JsonPartyRepositoryImpl.ts` (1件)
+8. ❌ ExpeditionPreparationScreenの型エラー修正（1件残存）
+   - 引数の型不一致（string vs number）
 
 ### 中優先（品質向上）
-9. ✅ verbatimModuleSyntax違反の修正（AuthContext）
-10. ✅ テストコードのimportパス修正
+9. ❌ verbatimModuleSyntax違反の修正（AuthContext）（1件残存）
+10. ❌ テストコードのimportパス修正（7件残存）
+    - `src/services/ExpeditionEngine.test.ts`
+    - importパス変更 + 型注釈追加が必要
 
 ### 低優先（コード品質）
-11. ✅ 未使用変数の削除またはリネーム
+11. ❌ 未使用変数の削除またはリネーム（3件残存）
+    - `processedEvents` (ExpeditionLogScreen.tsx)
+    - `previousTargetHP` (battle.ts)
+    - `isExpeditionOngoing` (FirestoreExpeditionRepositoryImpl.ts)
 
 ---
 
 ## 修正作業の推定時間
 
-- **最優先タスク（1-5）**: 約2-3時間
-- **高優先タスク（6-8）**: 約1-2時間
-- **中優先タスク（9-10）**: 約30分
-- **低優先タスク（11）**: 約15分
+### 完了済み
+- TimelineEvent型の修正（trap削除）
+- ExpeditionEndReason型の導入
+- Dungeon型へのunlockNext追加
 
-**合計**: 約4-6時間
+### 残作業の推定時間
+- **最優先タスク（4-5）**: 約1-2時間
+  - equipmentフィールド初期化（機械的作業）
+  - 装備メソッド実装（ロジック実装）
+- **高優先タスク（6-8）**: 約1-2時間
+  - setOnDataChange削除または実装
+  - Party ID型統一
+  - ExpeditionPreparationScreen修正
+- **中優先タスク（9-10）**: 約30分
+  - import文修正（機械的作業）
+  - テストコード修正
+- **低優先タスク（11）**: 約15分
+  - 未使用変数削除
+
+**残作業合計**: 約3-4時間
 
 ---
 

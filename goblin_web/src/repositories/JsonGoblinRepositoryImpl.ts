@@ -81,4 +81,20 @@ export class JsonGoblinRepositoryImpl implements GoblinRepository {
       this.saveGoblin(goblin)
     }
   }
+
+  equipItem(goblinId: number, slotIndex: number, itemId: string): void {
+    const goblin = this.getGoblin(goblinId)
+    if (goblin) {
+      goblin.equipment[slotIndex] = { slotIndex, itemId }
+      this.saveGoblin(goblin)
+    }
+  }
+
+  unequipItem(goblinId: number, slotIndex: number): void {
+    const goblin = this.getGoblin(goblinId)
+    if (goblin) {
+      goblin.equipment[slotIndex] = { slotIndex, itemId: null }
+      this.saveGoblin(goblin)
+    }
+  }
 }
