@@ -1,4 +1,4 @@
-import { ExpeditionEngine } from './ExpeditionEngine.ts'
+import { ExpeditionEngine } from '../core/ExpeditionEngine'
 import type { ExpeditionRequest, Goblin } from '../shared/types'
 
 // テスト用のダミーパーティ
@@ -57,18 +57,18 @@ export async function testExpeditionEngine(): Promise<void> {
     console.log(`🐾 捕獲: ${result.summary.captures.length}個`)
 
     // イベントタイプの確認
-    const eventTypes = result.events.reduce((acc, event) => {
+    const eventTypes = result.events.reduce((acc: Record<string, number>, event) => {
       acc[event.type] = (acc[event.type] || 0) + 1
       return acc
     }, {} as Record<string, number>)
 
     console.log("📋 イベント種別:")
-    Object.entries(eventTypes).forEach(([type, count]) => {
+    Object.entries(eventTypes).forEach(([type, count]: [string, number]) => {
       console.log(`  ${type}: ${count}回`)
     })
 
     console.log("\n=== 最初の5イベント ===")
-    result.events.slice(0, 5).forEach((event, index) => {
+    result.events.slice(0, 5).forEach((event, index: number) => {
       console.log(`${index + 1}. [${event.at.toFixed(1)}s] ${event.type}`)
     })
 
@@ -89,7 +89,7 @@ export async function testDeterminism(): Promise<void> {
   const result2 = await engine2.generateExpedition(testRequest, testParty)
 
   const eventsMatch = result1.events.length === result2.events.length &&
-    result1.events.every((event, index) => {
+    result1.events.every((event, index: number) => {
       const other = result2.events[index]
       return event.type === other.type && Math.abs(event.at - other.at) < 0.001
     })
@@ -112,7 +112,7 @@ export async function testReturnPolicies(): Promise<void> {
     const engine = new ExpeditionEngine()
     const result = await engine.generateExpedition(request, testParty)
 
-    const returnEvent = result.events.find(e => e.type === "return")
+    const returnEvent = result.events.find((e) => e.type === "return")
     console.log(`${policy}: ${returnEvent ? `理由=${returnEvent.reason}` : '帰還なし'}`)
   }
 }
