@@ -65,6 +65,7 @@ export interface RewardSummary {
   success: boolean
   maxFloorReached: number
   xpGained: number
+  goldGained: number
   loot: Drop[]
   captures: Drop[]
   casualties: string[]

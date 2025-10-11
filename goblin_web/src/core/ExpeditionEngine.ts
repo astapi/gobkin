@@ -348,11 +348,14 @@ export class ExpeditionEngine {
   private createEnemySnap(enemies: Enemy[]): EnemySnap {
     // 代表的な敵（最初の敵）の情報を使用
     const representative = enemies[0]
+    // 全ての敵のゴールドを合計
+    const totalGold = enemies.reduce((sum, enemy) => sum + enemy.gold, 0)
     return {
       id: representative.id,
       name: representative.name,
       lvl: representative.level,
-      count: enemies.length
+      count: enemies.length,
+      gold: totalGold
     }
   }
 
@@ -469,6 +472,7 @@ export class ExpeditionEngine {
 
   private calculateRewardSummary(events: TimelineEvent[], partyState: PartyState[]): RewardSummary {
     let xpGained = 0
+    let goldGained = 0
     const loot: Drop[] = []
     const captures: Drop[] = []
     let maxFloorReached = 1
@@ -476,6 +480,7 @@ export class ExpeditionEngine {
     for (const event of events) {
       if (event.type === "battle" || event.type === "boss") {
         xpGained += event.xp
+        goldGained += event.enemy.gold
         loot.push(...event.drops)
         if (event.combat.capture?.success && event.combat.capture.captured) {
           captures.push(event.combat.capture.captured)
@@ -498,6 +503,7 @@ export class ExpeditionEngine {
       success,
       maxFloorReached,
       xpGained,
+      goldGained,
       loot,
       captures,
       casualties,

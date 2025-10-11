@@ -29,4 +29,5 @@ export interface EnemySnap {
   name: string
   lvl: number
   count: number
+  gold: number
 }

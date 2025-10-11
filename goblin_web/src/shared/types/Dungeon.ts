@@ -8,4 +8,5 @@ export type Dungeon = {
   cleared?: boolean
   icon?: string
   difficulty?: string
+  unlockNext?: string
 }
