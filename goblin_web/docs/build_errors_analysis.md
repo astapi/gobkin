@@ -2,23 +2,23 @@
 
 **作成日**: 2025-10-11
 **最終更新**: 2025-10-11
-**ステータス**: 修正中（17件残存）
-**総エラー数**: 55件 → 29件 → 17件
+**ステータス**: 修正中（12件残存）
+**総エラー数**: 55件 → 29件 → 17件 → 12件
 
 ## エラー概要
 
 goblin_webプロジェクトのビルドで当初55件のTypeScriptエラーが発生していました。
 一部修正済みで、現在29件のエラーが残存しています。
 
-### 現在の残存エラー（17件）
+### 現在の残存エラー（12件）
 1. ✅ ~~装備システム未実装~~ → 修正完了
 2. ✅ ~~equipmentフィールド未初期化~~ → 修正完了
-3. **Repository問題**: 2件（setOnDataChangeメソッド）
-4. **型不整合**: 3件（ExpeditionEndReason、Party ID、ExpeditionPreparationScreen）
+3. ✅ ~~**Repository問題**: 2件（setOnDataChangeメソッド）~~ → 修正完了（エラーなし）
+4. ✅ ~~**型不整合**: 3件（Party ID、ExpeditionPreparationScreen）~~ → 修正完了
 5. **テストコード**: 7件（importパスと型注釈）
 6. **未使用変数**: 3件
 7. **verbatimModuleSyntax違反**: 1件（AuthContext）
-8. **ExpeditionEndReason型**: 1件（ExpeditionEngine.ts）
+8. **ExpeditionEndReason型**: 1件（ExpeditionEngine.ts）← カテゴリ4に含まれていたが未修正
 
 以下、エラーの詳細をカテゴリ別に説明します：
 
@@ -96,21 +96,8 @@ equipment: [
 
 ---
 
-#### 2.3 ItemRepositoryに存在しないメソッドを呼び出し
-**影響ファイル**:
-- `src/components/GoblinDetailModal.tsx` (2件)
-
-**エラー内容**:
-```
-error TS2339: Property 'setOnDataChange' does not exist on type 'ItemRepository'.
-error TS2339: Property 'setOnDataChange' does not exist on type 'GoblinRepository'.
-```
-
-**原因**: `setOnDataChange`メソッドが`ItemRepository`および`GoblinRepository`インターフェースに定義されていない。
-
-**修正方法**:
-1. 該当のコードを削除（不要な場合）
-2. または、必要な場合はリポジトリインターフェースにメソッドを追加
+#### 2.3 ItemRepositoryに存在しないメソッドを呼び出し（✅ 修正済み）
+**修正内容**: 実際にはこのエラーは発生していませんでした。`GoblinDetailModal.tsx`には`setOnDataChange`の呼び出しは存在しません。
 
 ---
 
@@ -154,29 +141,21 @@ error TS6133: 'xxx' is declared but its value is never read.
 
 ---
 
-### 5. 型アサーションエラー（中程度）
+### 5. 型アサーションエラー（中程度）（✅ 修正済み）
 
-#### 5.1 Party IDの型不一致
-**影響ファイル**:
-- `src/repositories/FirestorePartyRepositoryImpl.ts` (1件)
-- `src/repositories/JsonPartyRepositoryImpl.ts` (1件)
+#### 5.1 Party IDの型不一致（✅ 修正済み）
+**修正内容**:
+`PartyRepository.updateDungeonSettings`メソッドの引数`dungeonId`の型を`number`から`string`に変更しました。
+- `PartyRepository.ts`: `updateDungeonSettings(id: number, dungeonId: string)`
+- `FirestorePartyRepositoryImpl.ts`: 同様に修正
+- `JsonPartyRepositoryImpl.ts`: 同様に修正
 
-**エラー内容**:
-```
-error TS2322: Type 'number' is not assignable to type 'string'.
-```
-
-**原因**: `partyId`の型が`number`と`string`で不一致。
-
-**修正方法**: `Party`型の`id`フィールドの型を確認し、統一する。
+**原因**: `Dungeon.id`と`Party.dungeonId`は`string`型でしたが、メソッドは`number`を受け取っていました。
 
 ---
 
-#### 5.2 ExpeditionPreparationScreenの型エラー
-**影響ファイル**:
-- `src/components/ExpeditionPreparationScreen.tsx` (1件)
-
-**エラー内容**: エラーメッセージが切れているため、ファイルを確認する必要あり。
+#### 5.2 ExpeditionPreparationScreenの型エラー（✅ 修正済み）
+**修正内容**: 上記5.1の修正により、`ExpeditionPreparationScreen.tsx:36`の`dungeon.id`（`string`型）を`updateDungeonSettings`に渡す際のエラーも解消されました。
 
 ---
 
@@ -210,13 +189,13 @@ error TS7006: Parameter 'xxx' implicitly has an 'any' type.
    - `equipItem`と`unequipItem`メソッドを実装完了
 
 ### 高優先（機能動作に影響）
-6. ❌ ItemRepository/GoblinRepositoryの`setOnDataChange`問題解決（2件残存）
-   - `src/components/GoblinDetailModal.tsx`
-7. ⚠️ Party IDの型統一（2件残存）
-   - `src/repositories/FirestorePartyRepositoryImpl.ts` (1件)
-   - `src/repositories/JsonPartyRepositoryImpl.ts` (1件)
-8. ❌ ExpeditionPreparationScreenの型エラー修正（1件残存）
-   - 引数の型不一致（string vs number）
+6. ✅ ItemRepository/GoblinRepositoryの`setOnDataChange`問題解決 → エラーなし
+7. ✅ Party IDの型統一 → 修正完了
+   - `PartyRepository.updateDungeonSettings`の引数型を`string`に変更
+   - `src/repositories/FirestorePartyRepositoryImpl.ts` 修正完了
+   - `src/repositories/JsonPartyRepositoryImpl.ts` 修正完了
+8. ✅ ExpeditionPreparationScreenの型エラー修正 → 修正完了
+   - `dungeon.id`（string）を`updateDungeonSettings`に渡す際のエラーを解消
 
 ### 中優先（品質向上）
 9. ❌ verbatimModuleSyntax違反の修正（AuthContext）（1件残存）

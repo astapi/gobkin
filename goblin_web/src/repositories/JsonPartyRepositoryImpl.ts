@@ -50,7 +50,7 @@ export class JsonPartyRepositoryImpl implements PartyRepository {
     return this.getParties().filter(party => party.status === status)
   }
 
-  updateDungeonSettings(id: number, dungeonId: number): void {
+  updateDungeonSettings(id: number, dungeonId: string): void {
     const parties = this.getParties()
     const party = parties.find(p => p.id === id)
     if (party) {

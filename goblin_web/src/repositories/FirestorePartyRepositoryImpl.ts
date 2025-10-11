@@ -162,7 +162,7 @@ export class FirestorePartyRepositoryAdapter implements PartyRepository {
     return this.cache.filter(party => party.status === status)
   }
 
-  updateDungeonSettings(id: number, dungeonId: number): void {
+  updateDungeonSettings(id: number, dungeonId: string): void {
     const party = this.getParty(id)
     if (party) {
       party.dungeonId = dungeonId

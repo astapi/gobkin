@@ -7,7 +7,7 @@ export interface PartyRepository {
   deleteParty(id: number): void
   updatePartyStatus(id: number, status: PartyStatus): void
   getPartiesByStatus(status: PartyStatus): Party[]
-  updateDungeonSettings(id: number, dungeonId: number): void
+  updateDungeonSettings(id: number, dungeonId: string): void
   updateFloorTarget(id: number, targetFloor: number | null): void
   updateReturnPolicy(id: number, returnPolicy: ExpeditionRequest["returnPolicy"]): void
 }
