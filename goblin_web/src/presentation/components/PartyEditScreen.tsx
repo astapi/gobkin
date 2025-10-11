@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
-import type { Goblin } from '../shared/types'
-import type { PartyRepository } from '../repositories/PartyRepository.ts'
+import type { Goblin } from '../../shared/types'
+import type { PartyRepository } from '../../repositories/PartyRepository.ts'
 import { GoblinCard } from './GoblinCard.tsx'
 
 interface PartyEditScreenProps {

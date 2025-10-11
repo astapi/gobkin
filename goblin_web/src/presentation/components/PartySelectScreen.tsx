@@ -1,4 +1,4 @@
-import type { Party, Goblin, Dungeon } from '../shared/types'
+import type { Party, Goblin, Dungeon } from '../../shared/types'
 
 interface PartySelectScreenProps {
   parties: Party[]

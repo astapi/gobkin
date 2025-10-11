@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, type ReactNode, useEffect, useMemo } from 'react'
-import type { PartyStatus, ExpeditionRecord } from '../shared/types'
-import { FirestoreExpeditionRepositoryAdapter } from '../repositories/FirestoreExpeditionRepositoryImpl.ts'
+import type { PartyStatus, ExpeditionRecord } from '../../shared/types'
+import { FirestoreExpeditionRepositoryAdapter } from '../../repositories/FirestoreExpeditionRepositoryImpl.ts'
 
 interface ExpeditionState {
   activeExpeditionPartyIds: number[]

@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react'
-import type { ExpeditionRecord, ExpeditionRequest, Goblin } from '../shared/types'
+import type { ExpeditionRecord, ExpeditionRequest, Goblin } from '../../shared/types'
 import { PartyEditScreen } from './PartyEditScreen.tsx'
 import { FormationScreen } from './FormationScreen.tsx'
 import { ExpeditionLogScreen } from './ExpeditionLogScreen.tsx'
@@ -8,8 +8,8 @@ import { ExpeditionPreparationScreen } from './ExpeditionPreparationScreen.tsx'
 import { usePartyRepository } from '../hooks/usePartyRepository.ts'
 import { useGoblinRepository } from '../hooks/useGoblinRepository.ts'
 import { useExpeditionState } from '../contexts/ExpeditionStateContext.tsx'
-import { areasData } from '../shared/data'
-import { ExpeditionEngine } from '../core/ExpeditionEngine.ts'
+import { areasData } from '../../shared/data'
+import { ExpeditionEngine } from '../../core/ExpeditionEngine.ts'
 
 type ViewMode = 'list' | 'preparation' | 'edit' | 'log' | 'result'
 

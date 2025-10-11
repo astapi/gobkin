@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react'
-import { JsonGoblinRepositoryImpl } from '../repositories/JsonGoblinRepositoryImpl'
-import { FirestoreGoblinRepositoryAdapter } from '../repositories/FirestoreGoblinRepositoryImpl'
-import type { GoblinRepository } from '../repositories/GoblinRepository'
+import { JsonGoblinRepositoryImpl } from '../../repositories/JsonGoblinRepositoryImpl'
+import { FirestoreGoblinRepositoryAdapter } from '../../repositories/FirestoreGoblinRepositoryImpl'
+import type { GoblinRepository } from '../../repositories/GoblinRepository'
 
 export function useGoblinRepository() {
   const [repositoryInitialized, setRepositoryInitialized] = useState(false)

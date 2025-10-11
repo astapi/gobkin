@@ -51,7 +51,7 @@ export class ExpeditionEngine {
     const areaId = dungeonToAreaMap[request.areaId] || request.areaId
 
     // JSONファイルからエリアデータを読み込む
-    const areaData = await import(`../data/expeditionArea/${areaId}.json`)
+    const areaData = await import(`../shared/data/expeditionArea/${areaId}.json`)
     const area: AreaConfig = areaData.default || areaData
 
     if (!area) {
@@ -59,7 +59,7 @@ export class ExpeditionEngine {
     }
 
     // 敵データを読み込む
-    const enemyData = await import(`../data/enemy/${areaId}.json`)
+    const enemyData = await import(`../shared/data/enemy/${areaId}.json`)
     const enemyDatabase: EnemyDatabase = enemyData.default || enemyData
 
     if (!enemyDatabase) {

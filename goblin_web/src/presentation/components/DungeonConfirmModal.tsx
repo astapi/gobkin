@@ -1,4 +1,4 @@
-import type { Dungeon, Party, Goblin } from '../shared/types'
+import type { Dungeon, Party, Goblin } from '../../shared/types'
 
 interface DungeonConfirmModalProps {
   dungeon: Dungeon

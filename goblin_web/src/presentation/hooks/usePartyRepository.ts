@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react'
-import { JsonPartyRepositoryImpl } from '../repositories/JsonPartyRepositoryImpl'
-import { FirestorePartyRepositoryAdapter } from '../repositories/FirestorePartyRepositoryImpl'
-import type { PartyRepository } from '../repositories/PartyRepository'
+import { JsonPartyRepositoryImpl } from '../../repositories/JsonPartyRepositoryImpl'
+import { FirestorePartyRepositoryAdapter } from '../../repositories/FirestorePartyRepositoryImpl'
+import type { PartyRepository } from '../../repositories/PartyRepository'
 
 export function usePartyRepository() {
   const [repositoryInitialized, setRepositoryInitialized] = useState(false)

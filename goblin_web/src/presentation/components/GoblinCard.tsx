@@ -1,4 +1,4 @@
-import type { Goblin } from '../shared/types'
+import type { Goblin } from '../../shared/types'
 
 interface GoblinCardProps {
   goblin: Goblin

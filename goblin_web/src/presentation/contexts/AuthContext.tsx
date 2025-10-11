@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 import type { ReactNode } from 'react'
 import { type User, signInAnonymously, onAuthStateChanged } from 'firebase/auth'
-import { auth } from '../config/firebase'
+import { auth } from '../../config/firebase'
 
 interface AuthContextType {
   user: User | null

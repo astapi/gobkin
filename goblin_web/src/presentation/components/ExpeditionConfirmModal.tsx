@@ -1,4 +1,4 @@
-import type { Dungeon, Goblin } from '../shared/types'
+import type { Dungeon, Goblin } from '../../shared/types'
 
 interface ExpeditionConfirmModalProps {
   dungeon: Dungeon

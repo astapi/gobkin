@@ -1,4 +1,4 @@
-import type { Dungeon } from '../shared/types'
+import type { Dungeon } from '../../shared/types'
 
 interface DungeonScreenProps {
   dungeons: Dungeon[]
