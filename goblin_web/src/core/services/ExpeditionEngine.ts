@@ -69,7 +69,7 @@ export class ExpeditionEngine {
     }
 
     const partySnapshot = this.createPartySnapshot(party, request.returnPolicy)
-    const adjustedDuration = Math.floor(area.baseDurationSec / partySnapshot.speedMod)
+    const adjustedDuration = area.baseDurationSec
 
     const events: TimelineEvent[] = []
     let currentFloor = 1
@@ -271,7 +271,7 @@ export class ExpeditionEngine {
       members: party.map(g => g.id.toString()),
       returnPolicy,
       foodSupply: 1.0,
-      speedMod: Math.min(1.0 + (totalStats.spd / 1000), 1.3),
+      speedMod: 1.0,
       luckMod: Math.min(1.0 + (totalStats.sp / 1000), 1.2),
       captureSlots: Math.min(party.length, 6),
       carryWeight: party.length * 10,
