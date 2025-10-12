@@ -3,6 +3,7 @@ import type { Goblin, ExpeditionRecord, Party } from '../../shared/types'
 import type { IPartyRepository } from '../../core/repositories'
 import { useExpeditionState } from '../contexts/ExpeditionStateContextValue.ts'
 import { useCurrentTime } from '../hooks/useCurrentTime.ts'
+import { ManagePartyUseCase } from '../../core/usecases'
 
 interface FormationScreenProps {
   partyRepository: IPartyRepository
@@ -23,9 +24,10 @@ export const FormationScreen = ({
   onLogClick,
   isLoading = false
 }: FormationScreenProps) => {
-  const { getPartyExpeditionHistory, expeditionRecords } = useExpeditionState()
+  const { getPartyExpeditionHistory, expeditionRecords, clearExpedition } = useExpeditionState()
   const [partyHistories, setPartyHistories] = useState<Record<number, ExpeditionRecord[]>>({})
   const [parties, setParties] = useState<Party[]>(() => partyRepository.getParties())
+  const managePartyUseCase = useMemo(() => new ManagePartyUseCase(partyRepository), [partyRepository])
 
   const arePartiesSame = (a: Party[], b: Party[]): boolean => {
     if (a.length !== b.length) return false
@@ -96,6 +98,22 @@ export const FormationScreen = ({
 
   // 遠征中のパーティがある場合、毎秒現在時刻を更新
   const currentTime = useCurrentTime({ enabled: hasOngoingExpedition })
+
+  // 遠征終了を検知してステータスを自動更新
+  useEffect(() => {
+    const now = new Date()
+    for (const party of parties) {
+      if (party.status === 'expedition') {
+        const history = partyHistories[party.id]
+        const latestExpedition = history?.[0]
+        // 最新の遠征が存在し、かつ帰還時刻を過ぎている場合
+        if (latestExpedition && latestExpedition.returnTime <= now) {
+          clearExpedition(party.id)
+          managePartyUseCase.markIdle(party.id)
+        }
+      }
+    }
+  }, [parties, partyHistories, currentTime, clearExpedition, managePartyUseCase])
 
   const formatFullDateTime = (date: Date) => {
     const year = date.getFullYear()
