@@ -21,20 +21,20 @@ const formatTime = (seconds: number): string => {
 export const DungeonSelectionModal = ({ dungeons, onSelect, onClose }: DungeonSelectionModalProps) => {
   return (
     <div
-      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+      className="flex fixed inset-0 z-50 justify-center items-center bg-black bg-opacity-50"
       onClick={onClose}
     >
       <div
-        className="bg-white rounded-lg max-w-[414px] w-full mx-4 max-h-[80vh] overflow-hidden flex flex-col"
+        className="bg-white rounded-lg max-w-[414px] h-full w-full mx-4 max-h-[80vh] overflow-hidden flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
         <div className="p-4 border-b border-gray-200">
-          <div className="flex items-center justify-between">
+          <div className="flex justify-between items-center">
             <h2 className="text-lg font-bold text-gray-800">遠征先を選択</h2>
             <button
               onClick={onClose}
-              className="text-gray-500 hover:text-gray-700 text-2xl leading-none"
+              className="text-2xl leading-none text-gray-500 hover:text-gray-700"
             >
               ×
             </button>
@@ -42,27 +42,27 @@ export const DungeonSelectionModal = ({ dungeons, onSelect, onClose }: DungeonSe
         </div>
 
         {/* Content */}
-        <div className="flex-1 overflow-y-auto p-4">
+        <div className="overflow-y-auto flex-1 p-4">
           <div className="flex flex-col gap-3">
             {dungeons.map(dungeon => (
               <div
                 key={dungeon.id}
-                className="bg-white border-2 border-gray-200 rounded-xl overflow-hidden shadow-md cursor-pointer hover:border-gray-400 hover:shadow-lg transition-all"
+                className="overflow-hidden bg-white rounded-xl border-2 border-gray-200 shadow-md transition-all cursor-pointer hover:border-gray-400 hover:shadow-lg"
                 onClick={() => onSelect(dungeon)}
               >
-                <div className="bg-gray-700 text-white p-3">
-                  <div className="font-bold text-sm mb-1">
+                <div className="p-3 text-white bg-gray-700">
+                  <div className="mb-1 text-sm font-bold">
                     {dungeon.name}
                   </div>
                   <div className="text-xs opacity-90">{dungeon.description}</div>
                 </div>
                 <div className="p-3">
-                  <div className="flex justify-between text-xs text-gray-600 mb-1">
+                  <div className="flex justify-between mb-1 text-xs text-gray-600">
                     <span>🏰 階層数: {dungeon.floors}階</span>
                   </div>
                   <div className="flex justify-between text-xs text-gray-600">
                     <span>⏱️ 探索時間: {formatTime(dungeon.cleared ? dungeon.exploration_time_sec : dungeon.exploration_time_sec_first)}</span>
-                    {dungeon.cleared && <span className="text-green-600 font-bold">✓ 攻略済み</span>}
+                    {dungeon.cleared && <span className="font-bold text-green-600">✓ 攻略済み</span>}
                   </div>
                 </div>
               </div>
