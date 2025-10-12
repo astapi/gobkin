@@ -83,16 +83,16 @@ export const ExpeditionPreparationScreen = ({
 
   if (!party) {
     return (
-      <div className="h-full flex flex-col">
-        <div className="bg-gray-100 px-4 py-2 border-b border-gray-300 flex items-center justify-between">
+      <div className="flex flex-col h-full">
+        <div className="flex justify-between items-center px-4 py-2 bg-gray-100 border-b border-gray-300">
           <button
             onClick={onBack}
-            className="text-gray-600 hover:text-gray-800 transition-colors"
+            className="text-gray-600 transition-colors hover:text-gray-800"
           >
             ← 戻る
           </button>
         </div>
-        <div className="flex-1 flex items-center justify-center">
+        <div className="flex flex-1 justify-center items-center">
           <div className="text-gray-600">パーティが見つかりません</div>
         </div>
       </div>
@@ -104,12 +104,12 @@ export const ExpeditionPreparationScreen = ({
     .filter((g): g is Goblin => g !== undefined)
 
   return (
-    <div className="h-full flex flex-col">
+    <div className="flex flex-col h-full">
       {/* Header */}
-      <div className="bg-gray-100 px-4 py-2 border-b border-gray-300 flex items-center justify-between">
+      <div className="flex justify-between items-center px-4 py-2 border-b border-gray-300">
         <button
           onClick={onBack}
-          className="text-gray-600 hover:text-gray-800 transition-colors"
+          className="text-gray-600 transition-colors hover:text-gray-800"
         >
           ← 戻る
         </button>
@@ -121,8 +121,8 @@ export const ExpeditionPreparationScreen = ({
           disabled={!selectedDungeon}
           className={`px-4 py-1 text-sm font-medium rounded transition-colors ${
             selectedDungeon
-              ? 'bg-blue-600 text-white hover:bg-blue-700'
-              : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+              ? 'text-white bg-blue-600 hover:bg-blue-700'
+              : 'text-gray-500 bg-gray-300 cursor-not-allowed'
           }`}
         >
           出撃
@@ -130,15 +130,15 @@ export const ExpeditionPreparationScreen = ({
       </div>
 
       {/* Content */}
-      <div className="flex-1 overflow-y-auto p-4">
+      <div className="overflow-y-auto flex-1 py-4">
         <div className="space-y-6">
           {/* パーティ表示 */}
           <div>
             <div className="pb-2 mb-3 text-base font-bold text-gray-800 border-b-2 border-gray-200">
               パーティ
             </div>
-            <div className="bg-white rounded-lg border-2 border-gray-300 shadow-sm p-3">
-              <div className="text-lg font-bold text-gray-800 mb-3">{party.name}</div>
+            <div className="p-3 bg-white rounded-lg border-2 border-gray-300 shadow-sm">
+              <div className="mb-3 text-lg font-bold text-gray-800">{party.name}</div>
               <div className="grid grid-cols-6 gap-2 mb-3">
                 {[...Array(6)].map((_, i) => {
                   const member = partyMembers[i]
@@ -161,7 +161,7 @@ export const ExpeditionPreparationScreen = ({
               </div>
               <button
                 onClick={onEditParty}
-                className="w-full py-2 text-sm text-blue-600 bg-blue-50 hover:bg-blue-100 rounded transition-colors"
+                className="py-2 w-full text-sm text-blue-600 bg-blue-50 rounded transition-colors hover:bg-blue-100"
               >
                 メンバーを変更する
               </button>
@@ -173,18 +173,18 @@ export const ExpeditionPreparationScreen = ({
             <div className="pb-2 mb-3 text-base font-bold text-gray-800 border-b-2 border-gray-200">
               遠征
             </div>
-            <div className="bg-white rounded-lg border-2 border-gray-300 shadow-sm p-3 space-y-3">
+            <div className="p-3 space-y-3 bg-white rounded-lg border-2 border-gray-300 shadow-sm">
               {/* 遠征先 */}
               <div>
-                <div className="text-sm font-semibold text-gray-700 mb-2">遠征先</div>
+                <div className="mb-2 text-sm font-semibold text-gray-700">遠征先</div>
                 <button
                   onClick={() => setShowDungeonModal(true)}
-                  className="w-full px-3 py-2 bg-gray-100 hover:bg-gray-200 rounded text-sm transition-colors text-left"
+                  className="px-3 py-2 w-full text-sm text-left bg-gray-100 rounded transition-colors hover:bg-gray-200"
                 >
                   {selectedDungeon ? (
                     <div>
                       <div className="font-semibold text-gray-800">{selectedDungeon.name}</div>
-                      <div className="text-xs text-gray-600 mt-1">{selectedDungeon.description}</div>
+                      <div className="mt-1 text-xs text-gray-600">{selectedDungeon.description}</div>
                     </div>
                   ) : (
                     <div className="text-gray-600">遠征先が未設定です</div>
@@ -194,11 +194,11 @@ export const ExpeditionPreparationScreen = ({
 
               {/* 目標階数 */}
               <div>
-                <div className="text-sm font-semibold text-gray-700 mb-2">目標階数</div>
+                <div className="mb-2 text-sm font-semibold text-gray-700">目標階数</div>
                 <button
                   onClick={() => setShowFloorModal(true)}
                   disabled={!selectedDungeon}
-                  className="w-full px-3 py-2 bg-gray-100 hover:bg-gray-200 rounded text-sm transition-colors text-left disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-3 py-2 w-full text-sm text-left bg-gray-100 rounded transition-colors hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {!selectedDungeon ? (
                     <div className="text-gray-600">遠征先を選択してください</div>
@@ -212,10 +212,10 @@ export const ExpeditionPreparationScreen = ({
 
               {/* 帰還条件 */}
               <div>
-                <div className="text-sm font-semibold text-gray-700 mb-2">帰還条件</div>
+                <div className="mb-2 text-sm font-semibold text-gray-700">帰還条件</div>
                 <button
                   onClick={() => setShowReturnPolicyModal(true)}
-                  className="w-full px-3 py-2 bg-gray-100 hover:bg-gray-200 rounded text-sm transition-colors text-left"
+                  className="px-3 py-2 w-full text-sm text-left bg-gray-100 rounded transition-colors hover:bg-gray-200"
                 >
                   <div className="text-gray-800">
                     {getReturnPolicyLabel(party.returnPolicy)}
@@ -229,11 +229,13 @@ export const ExpeditionPreparationScreen = ({
 
       {/* ダンジョン選択モーダル */}
       {showDungeonModal && (
-        <DungeonSelectionModal
-          dungeons={dungeons}
-          onSelect={handleDungeonSelect}
-          onClose={() => setShowDungeonModal(false)}
-        />
+        <div className="fixed inset-0 z-50">
+          <DungeonSelectionModal
+            dungeons={dungeons}
+            onSelect={handleDungeonSelect}
+            onClose={() => setShowDungeonModal(false)}
+          />
+        </div>
       )}
 
       {/* 目標階数選択モーダル */}
