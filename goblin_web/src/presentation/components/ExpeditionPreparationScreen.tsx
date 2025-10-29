@@ -1,6 +1,5 @@
-import { useState } from 'react'
-import type { Goblin, Dungeon, ExpeditionRequest } from '../../shared/types'
-import type { IPartyRepository } from '../../core/repositories'
+import { useMemo, useState } from 'react'
+import type { Dungeon, ExpeditionRequest, Goblin, Party } from '../../shared/types'
 import { DungeonSelectionModal } from './DungeonSelectionModal.tsx'
 import { FloorTargetSelectionModal } from './FloorTargetSelectionModal.tsx'
 import { ReturnPolicySelectionModal } from './ReturnPolicySelectionModal.tsx'
@@ -8,57 +7,79 @@ import { ExpeditionConfirmModal } from './ExpeditionConfirmModal.tsx'
 
 interface ExpeditionPreparationScreenProps {
   partyId: number
-  partyRepository: IPartyRepository
+  getPartyById: (partyId: number) => Party
   goblins: Goblin[]
   dungeons: Dungeon[]
+  onSetDungeon: (partyId: number, dungeonId: string) => void
+  onSetTargetFloor: (partyId: number, floor: number | null) => void
+  onSetReturnPolicy: (partyId: number, policy: ExpeditionRequest['returnPolicy']) => void
   onBack: () => void
   onEditParty: () => void
   onStartExpedition: (request: ExpeditionRequest) => void
+  estimateExplorationTime?: (
+    dungeon: Dungeon,
+    returnPolicy: ExpeditionRequest['returnPolicy']
+  ) => number
 }
 
 export const ExpeditionPreparationScreen = ({
   partyId,
-  partyRepository,
+  getPartyById,
   goblins,
   dungeons,
+  onSetDungeon,
+  onSetTargetFloor,
+  onSetReturnPolicy,
   onBack,
   onEditParty,
-  onStartExpedition
+  onStartExpedition,
+  estimateExplorationTime,
 }: ExpeditionPreparationScreenProps) => {
   const [showDungeonModal, setShowDungeonModal] = useState(false)
   const [showFloorModal, setShowFloorModal] = useState(false)
   const [showReturnPolicyModal, setShowReturnPolicyModal] = useState(false)
   const [showConfirmModal, setShowConfirmModal] = useState(false)
-  const party = partyRepository.getParty(partyId)
-  const selectedDungeon = party?.dungeonId ? dungeons.find(d => d.id === party.dungeonId) : null
+
+  const party = useMemo(() => {
+    try {
+      return getPartyById(partyId)
+    } catch {
+      return null
+    }
+  }, [getPartyById, partyId])
+
+  const selectedDungeon = useMemo(() => {
+    if (!party?.dungeonId) return null
+    return dungeons.find(d => d.id.toString() === party.dungeonId) ?? null
+  }, [party, dungeons])
 
   const handleDungeonSelect = (dungeon: Dungeon) => {
-    partyRepository.updateDungeonSettings(partyId, dungeon.id)
+    onSetDungeon(partyId, dungeon.id.toString())
     setShowDungeonModal(false)
   }
 
   const handleFloorTargetSelect = (floor: number | null) => {
-    partyRepository.updateFloorTarget(partyId, floor)
+    onSetTargetFloor(partyId, floor)
     setShowFloorModal(false)
   }
 
-  const handleReturnPolicySelect = (policy: ExpeditionRequest["returnPolicy"]) => {
-    partyRepository.updateReturnPolicy(partyId, policy)
+  const handleReturnPolicySelect = (policy: ExpeditionRequest['returnPolicy']) => {
+    onSetReturnPolicy(partyId, policy)
     setShowReturnPolicyModal(false)
   }
 
-  const getReturnPolicyLabel = (policy?: ExpeditionRequest["returnPolicy"]): string => {
+  const getReturnPolicyLabel = (policy?: ExpeditionRequest['returnPolicy']): string => {
     switch (policy) {
-      case "if_any_ko":
-        return "1人でも死亡したら帰還"
-      case "if_two_ko":
-        return "2人が死亡したら帰還"
-      case "last_one":
-        return "最後の1人になったら帰還"
-      case "never":
-        return "帰還しない"
+      case 'if_any_ko':
+        return '1人でも死亡したら帰還'
+      case 'if_two_ko':
+        return '2人が死亡したら帰還'
+      case 'last_one':
+        return '最後の1人になったら帰還'
+      case 'never':
+        return '帰還しない'
       default:
-        return "帰還しない"
+        return '帰還しない'
     }
   }
 
@@ -73,8 +94,8 @@ export const ExpeditionPreparationScreen = ({
     const request: ExpeditionRequest = {
       partyId: partyId.toString(),
       areaId: party.dungeonId.toString(),
-      returnPolicy: party.returnPolicy || "never",
-      clientVersion: "1.0.0"
+      returnPolicy: party.returnPolicy || 'never',
+      clientVersion: '1.0.0',
     }
 
     setShowConfirmModal(false)
@@ -102,6 +123,34 @@ export const ExpeditionPreparationScreen = ({
   const partyMembers = party.memberIds
     .map(id => goblins.find(g => g.id === id))
     .filter((g): g is Goblin => g !== undefined)
+
+  const estimatedTimeLabel = selectedDungeon
+    ? (() => {
+        const seconds = estimateExplorationTime
+          ? estimateExplorationTime(selectedDungeon, party.returnPolicy || 'never')
+          : (() => {
+              const baseTime =
+                selectedDungeon.exploration_time_sec_first || selectedDungeon.exploration_time_sec
+              const multiplierMap: Record<ExpeditionRequest['returnPolicy'], number> = {
+                never: 1,
+                until_floor2: 0.4,
+                until_floor3: 0.6,
+                if_any_ko: 0.7,
+                if_two_ko: 0.75,
+                last_one: 0.9,
+              }
+              const multiplier = multiplierMap[party.returnPolicy || 'never'] ?? 1
+              return Math.floor(baseTime * multiplier)
+            })()
+
+        if (seconds < 60) {
+          return `${seconds}秒`
+        }
+        const minutes = Math.floor(seconds / 60)
+        const remainSeconds = seconds % 60
+        return `${minutes}分${remainSeconds}秒`
+      })()
+    : null
 
   return (
     <div className="flex flex-col h-full">
@@ -198,15 +247,15 @@ export const ExpeditionPreparationScreen = ({
                 <button
                   onClick={() => setShowFloorModal(true)}
                   disabled={!selectedDungeon}
-                  className="px-3 py-2 w-full text-sm text-left bg-gray-100 rounded transition-colors hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className={`px-3 py-2 w-full text-sm text-left rounded transition-colors ${
+                    selectedDungeon
+                      ? 'bg-gray-100 hover:bg-gray-200 text-gray-800'
+                      : 'bg-gray-200 text-gray-500 cursor-not-allowed'
+                  }`}
                 >
-                  {!selectedDungeon ? (
-                    <div className="text-gray-600">遠征先を選択してください</div>
-                  ) : party.targetFloor ? (
-                    <div className="text-gray-800">{party.targetFloor}階まで</div>
-                  ) : (
-                    <div className="text-gray-800">どこまでも進む</div>
-                  )}
+                  {party.targetFloor
+                    ? `${party.targetFloor}階まで探索`
+                    : '最下層まで探索'}
                 </button>
               </div>
 
@@ -217,54 +266,57 @@ export const ExpeditionPreparationScreen = ({
                   onClick={() => setShowReturnPolicyModal(true)}
                   className="px-3 py-2 w-full text-sm text-left bg-gray-100 rounded transition-colors hover:bg-gray-200"
                 >
-                  <div className="text-gray-800">
-                    {getReturnPolicyLabel(party.returnPolicy)}
-                  </div>
+                  {getReturnPolicyLabel(party.returnPolicy)}
                 </button>
               </div>
+
+              {/* 推定探索時間 */}
+              {estimatedTimeLabel && (
+                <div>
+                  <div className="mb-2 text-sm font-semibold text-gray-700">推定探索時間</div>
+                  <div className="px-3 py-2 text-sm text-gray-700 bg-gray-100 rounded">
+                    {estimatedTimeLabel}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
       </div>
 
-      {/* ダンジョン選択モーダル */}
-      {showDungeonModal && (
-        <div className="fixed inset-0 z-50">
-          <DungeonSelectionModal
-            dungeons={dungeons}
-            onSelect={handleDungeonSelect}
-            onClose={() => setShowDungeonModal(false)}
-          />
-        </div>
-      )}
-
-      {/* 目標階数選択モーダル */}
-      {showFloorModal && selectedDungeon && (
-        <FloorTargetSelectionModal
-          maxFloor={selectedDungeon.floors}
-          onSelect={handleFloorTargetSelect}
-          onClose={() => setShowFloorModal(false)}
-        />
-      )}
-
-      {/* 帰還条件選択モーダル */}
-      {showReturnPolicyModal && (
-        <ReturnPolicySelectionModal
-          onSelect={handleReturnPolicySelect}
-          onClose={() => setShowReturnPolicyModal(false)}
-        />
-      )}
-
-      {/* 出撃確認モーダル */}
+      {/* Modals */}
       {showConfirmModal && selectedDungeon && (
         <ExpeditionConfirmModal
+          onClose={() => setShowConfirmModal(false)}
           dungeon={selectedDungeon}
           partyName={party.name}
           members={partyMembers}
-          targetFloor={party.targetFloor || null}
+          targetFloor={party.targetFloor ?? null}
           returnPolicyLabel={getReturnPolicyLabel(party.returnPolicy)}
           onConfirm={handleConfirmExpedition}
-          onClose={() => setShowConfirmModal(false)}
+        />
+      )}
+
+      {showDungeonModal && (
+        <DungeonSelectionModal
+          onClose={() => setShowDungeonModal(false)}
+          dungeons={dungeons}
+          onSelect={handleDungeonSelect}
+        />
+      )}
+
+      {showFloorModal && selectedDungeon && (
+        <FloorTargetSelectionModal
+          onClose={() => setShowFloorModal(false)}
+          maxFloor={selectedDungeon.floors}
+          onSelect={handleFloorTargetSelect}
+        />
+      )}
+
+      {showReturnPolicyModal && (
+        <ReturnPolicySelectionModal
+          onClose={() => setShowReturnPolicyModal(false)}
+          onSelect={handleReturnPolicySelect}
         />
       )}
     </div>

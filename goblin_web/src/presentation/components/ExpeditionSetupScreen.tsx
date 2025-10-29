@@ -7,6 +7,7 @@ interface ExpeditionSetupScreenProps {
   dungeon: Dungeon
   onStartExpedition: (request: ExpeditionRequest) => void
   onBack: () => void
+  estimateExplorationTime?: (dungeon: Dungeon, returnPolicy: ExpeditionRequest['returnPolicy']) => number
 }
 
 export const ExpeditionSetupScreen = ({
@@ -14,7 +15,8 @@ export const ExpeditionSetupScreen = ({
   goblins,
   dungeon,
   onStartExpedition,
-  onBack
+  onBack,
+  estimateExplorationTime
 }: ExpeditionSetupScreenProps) => {
   const [selectedPartyId, setSelectedPartyId] = useState<number | null>(null)
   const [returnPolicy, setReturnPolicy] = useState<ExpeditionRequest["returnPolicy"]>("never")
@@ -54,29 +56,23 @@ export const ExpeditionSetupScreen = ({
   }
 
   const getEstimatedTime = (): string => {
-    const baseTime = dungeon.exploration_time_sec_first || dungeon.exploration_time_sec
+    const defaultEstimate = (() => {
+      const baseTime = dungeon.exploration_time_sec_first || dungeon.exploration_time_sec
+      const multiplierMap: Record<ExpeditionRequest['returnPolicy'], number> = {
+        never: 1.0,
+        until_floor2: 0.4,
+        until_floor3: 0.6,
+        if_any_ko: 0.7,
+        if_two_ko: 0.75,
+        last_one: 0.9
+      }
+      const multiplier = multiplierMap[returnPolicy] ?? 1.0
+      return Math.floor(baseTime * multiplier)
+    })()
 
-    // 帰還条件による時間補正
-    let timeMultiplier = 1.0
-    switch (returnPolicy) {
-      case "until_floor2":
-        timeMultiplier = 0.4
-        break
-      case "until_floor3":
-        timeMultiplier = 0.6
-        break
-      case "if_any_ko":
-        timeMultiplier = 0.7
-        break
-      case "last_one":
-        timeMultiplier = 0.9
-        break
-      case "never":
-        timeMultiplier = 1.0
-        break
-    }
-
-    const estimatedTime = Math.floor(baseTime * timeMultiplier)
+    const estimatedTime = estimateExplorationTime
+      ? estimateExplorationTime(dungeon, returnPolicy)
+      : defaultEstimate
     return estimatedTime < 60 ? `${estimatedTime}秒` : `${Math.floor(estimatedTime / 60)}分${estimatedTime % 60}秒`
   }
 

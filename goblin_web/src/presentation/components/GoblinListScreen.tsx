@@ -1,19 +1,16 @@
-import { useState, useMemo } from 'react'
+import { useState } from 'react'
 import type { Goblin } from '../../shared/types'
-import { useGoblinRepository } from '../hooks/useGoblinRepository.ts'
+import { useGoblinService } from '../hooks/useGoblinService.ts'
 import { GoblinCard } from './GoblinCard.tsx'
 import { GoblinDetailModal } from './GoblinDetailModal.tsx'
-import { GetGoblinListUseCase } from '../../core/usecases'
 
 export const GoblinListScreen = () => {
   const [selectedGoblin, setSelectedGoblin] = useState<Goblin | null>(null)
-  const { goblinRepository, isLoading } = useGoblinRepository()
-
-  const getGoblinListUseCase = useMemo(
-    () => new GetGoblinListUseCase(goblinRepository),
-    [goblinRepository]
-  )
-  const goblins = getGoblinListUseCase.execute()
+  const {
+    goblins,
+    isLoading,
+    goblinRepository,
+  } = useGoblinService()
 
   const handleGoblinClick = (goblin: Goblin) => {
     setSelectedGoblin(goblin)

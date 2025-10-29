@@ -1,27 +1,60 @@
-import { useState, useEffect } from 'react'
-import type { Goblin } from '../../shared/types'
-import type { IPartyRepository } from '../../core/repositories'
+import { useEffect, useMemo, useState } from 'react'
+import type { Goblin, Party } from '../../shared/types'
 import { GoblinCard } from './GoblinCard.tsx'
 
 interface PartyEditScreenProps {
   partyId: number
   goblins: Goblin[]
-  partyRepository: IPartyRepository
+  getPartyById: (partyId: number) => Party
+  updateMembers: (partyId: number, memberIds: number[]) => Party
   onBack: () => void
 }
 
-export const PartyEditScreen = ({ partyId, goblins, partyRepository, onBack }: PartyEditScreenProps) => {
+export const PartyEditScreen = ({
+  partyId,
+  goblins,
+  getPartyById,
+  updateMembers,
+  onBack,
+}: PartyEditScreenProps) => {
   const [partyMemberIds, setPartyMemberIds] = useState<number[]>([])
   const [selectedSlot, setSelectedSlot] = useState<number | null>(null)
   const [isExpedition, setIsExpedition] = useState(false)
 
-  useEffect(() => {
-    const party = partyRepository.getParty(partyId)
-    if (party) {
-      setPartyMemberIds(party.memberIds)
-      setIsExpedition(party.status === 'expedition')
+  const party = useMemo(() => {
+    try {
+      return getPartyById(partyId)
+    } catch {
+      return null
     }
-  }, [partyId, partyRepository])
+  }, [getPartyById, partyId])
+
+  useEffect(() => {
+    if (!party) return
+    setPartyMemberIds(party.memberIds)
+    setIsExpedition(party.status === 'expedition')
+  }, [party])
+
+  if (!party) {
+    return (
+      <div className="h-full flex flex-col">
+        <div className="flex items-center mb-4 pb-2 border-b-2 border-gray-200">
+          <button
+            onClick={onBack}
+            className="text-gray-600 hover:text-gray-800 mr-3 text-xl"
+          >
+            ←
+          </button>
+          <div className="text-lg font-bold text-gray-800">
+            PT{partyId} 編成
+          </div>
+        </div>
+        <div className="flex-1 flex items-center justify-center text-gray-600">
+          パーティが見つかりません
+        </div>
+      </div>
+    )
+  }
 
   const partyMembers = partyMemberIds
     .map(id => goblins.find(g => g.id === id))
@@ -33,41 +66,28 @@ export const PartyEditScreen = ({ partyId, goblins, partyRepository, onBack }: P
     }
   }
 
+  const persistMembers = (members: number[]) => {
+    const updated = updateMembers(partyId, members)
+    setPartyMemberIds(updated.memberIds)
+  }
+
   const handleMemberRemove = (index: number) => {
     if (isExpedition) return
-
     const newMemberIds = partyMemberIds.filter((_, i) => i !== index)
-    setPartyMemberIds(newMemberIds)
-
-    if (newMemberIds.length > 0) {
-      const party = partyRepository.getParty(partyId)
-      if (party) {
-        partyRepository.saveParty({ ...party, memberIds: newMemberIds })
-      }
-    }
+    persistMembers(newMemberIds)
   }
 
   const handleGoblinSelect = (goblin: Goblin) => {
     if (isExpedition || selectedSlot === null) return
 
-    if (selectedSlot !== null) {
-      const newMemberIds = [...partyMemberIds]
-      if (selectedSlot < newMemberIds.length) {
-        newMemberIds[selectedSlot] = goblin.id
-      } else {
-        newMemberIds.push(goblin.id)
-      }
-      setPartyMemberIds(newMemberIds)
-
-      if (newMemberIds.length > 0) {
-        const party = partyRepository.getParty(partyId)
-        if (party) {
-          partyRepository.saveParty({ ...party, memberIds: newMemberIds })
-        }
-      }
-
-      setSelectedSlot(null)
+    const newMemberIds = [...partyMemberIds]
+    if (selectedSlot < newMemberIds.length) {
+      newMemberIds[selectedSlot] = goblin.id
+    } else {
+      newMemberIds.push(goblin.id)
     }
+    persistMembers(newMemberIds)
+    setSelectedSlot(null)
   }
 
   const availableGoblins = goblins.filter(

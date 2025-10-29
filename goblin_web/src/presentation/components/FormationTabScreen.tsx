@@ -1,23 +1,45 @@
-import { useState, useMemo } from 'react'
-import type { ExpeditionRecord, ExpeditionRequest, Goblin } from '../../shared/types'
+import { useMemo, useState } from 'react'
+import type { ExpeditionRecord, ExpeditionRequest } from '../../shared/types'
 import { PartyEditScreen } from './PartyEditScreen.tsx'
 import { FormationScreen } from './FormationScreen.tsx'
 import { ExpeditionLogScreen } from './ExpeditionLogScreen.tsx'
 import { ExpeditionResultScreen } from './ExpeditionResultScreen.tsx'
 import { ExpeditionPreparationScreen } from './ExpeditionPreparationScreen.tsx'
-import { usePartyRepository } from '../hooks/usePartyRepository.ts'
-import { useGoblinRepository } from '../hooks/useGoblinRepository.ts'
+import { usePartyService } from '../hooks/usePartyService.ts'
+import { useGoblinService } from '../hooks/useGoblinService.ts'
 import { useExpeditionState } from '../contexts/ExpeditionStateContextValue.ts'
 import { areasData } from '../../shared/data'
 import { ExpeditionEngine } from '../../core/services'
 import { StartExpeditionUseCase } from '../../core/usecases'
+import { useExpeditionFlow } from '../hooks/useExpeditionFlow.ts'
 
 type ViewMode = 'list' | 'preparation' | 'edit' | 'log' | 'result'
 
 export const FormationTabScreen = () => {
-  const { partyRepository, isLoading: isPartyLoading } = usePartyRepository()
-  const { goblinRepository, isLoading: isGoblinLoading } = useGoblinRepository()
-  const { getExpeditionByPartyId, setPartyExpeditionStatus, expeditionRepository } = useExpeditionState()
+  const {
+    partyRepository,
+    parties,
+    isLoading: isPartyLoading,
+    getPartyById,
+    updateMembers,
+    markExpedition,
+    markIdle,
+    setDungeon,
+    setTargetFloor,
+    setReturnPolicy,
+  } = usePartyService()
+  const {
+    goblinRepository,
+    goblins,
+    isLoading: isGoblinLoading,
+  } = useGoblinService()
+  const {
+    getExpeditionByPartyId,
+    setPartyExpeditionStatus,
+    getPartyExpeditionHistory,
+    expeditionRepository,
+    clearExpedition,
+  } = useExpeditionState()
   const [editingPartyId, setEditingPartyId] = useState<number | null>(null)
   const [selectedHistoryReplay, setSelectedHistoryReplay] = useState<ExpeditionRecord | null>(null)
   const [viewMode, setViewMode] = useState<ViewMode>('list')
@@ -27,7 +49,15 @@ export const FormationTabScreen = () => {
     () => new StartExpeditionUseCase(partyRepository, goblinRepository, expeditionEngine),
     [partyRepository, goblinRepository, expeditionEngine]
   )
-  const goblins = goblinRepository.getGoblins()
+  const { startExpedition, estimateExplorationTime } = useExpeditionFlow({
+    startExpeditionUseCase,
+    expeditionRepository,
+    setPartyExpeditionStatus,
+    clearExpedition,
+    getPartyById,
+    markPartyAsOnExpedition: markExpedition,
+    markPartyAsIdle: markIdle,
+  })
   const isLoading = isPartyLoading || isGoblinLoading
 
   const handlePartySelect = (partyId: number) => {
@@ -96,73 +126,26 @@ export const FormationTabScreen = () => {
   }
 
   const handleStartExpedition = async (request: ExpeditionRequest) => {
+    const partyId = Number.parseInt(request.partyId, 10)
+    if (Number.isNaN(partyId)) {
+      alert('パーティIDが不正です')
+      return
+    }
+
     try {
-      const partyId = parseInt(request.partyId)
-      const party = partyRepository.getParty(partyId)
-      if (!party) {
-        alert('パーティが見つかりません')
+      const party = getPartyById(partyId)
+      if (!party.dungeonId) {
+        alert('探索先が設定されていません')
         return
       }
 
-      const partyMembers = party.memberIds
-        .map(id => goblins.find(g => g.id === id))
-        .filter((g): g is Goblin => g !== undefined)
-
-      if (partyMembers.length === 0) {
-        alert('有効なパーティメンバーがいません')
-        return
-      }
-
-      const dungeon = areasData.find(d => d.id === party.dungeonId)
+      const dungeon = areasData.find(d => d.id.toString() === party.dungeonId)
       if (!dungeon) {
         alert('ダンジョン情報が取得できません')
         return
       }
 
-      const baseTime = dungeon.exploration_time_sec_first || dungeon.exploration_time_sec
-      let timeMultiplier = 1.0
-      switch (request.returnPolicy) {
-        case "until_floor2":
-          timeMultiplier = 0.4
-          break
-        case "until_floor3":
-          timeMultiplier = 0.6
-          break
-        case "if_any_ko":
-          timeMultiplier = 0.7
-          break
-        case "if_two_ko":
-          timeMultiplier = 0.75
-          break
-        case "last_one":
-          timeMultiplier = 0.9
-          break
-        case "never":
-          timeMultiplier = 1.0
-          break
-      }
-      const explorationTimeSec = Math.floor(baseTime * timeMultiplier)
-
-      let expeditionRecord = null
-      if (expeditionRepository) {
-        expeditionRecord = await expeditionRepository.createExpedition(
-          partyId,
-          party.name,
-          dungeon.id,
-          dungeon.name,
-          request.returnPolicy,
-          explorationTimeSec
-        )
-      }
-
-      const result = await startExpeditionUseCase.execute(request)
-
-      setPartyExpeditionStatus(partyId, 'expedition')
-
-      if (expeditionRecord && expeditionRepository) {
-        await expeditionRepository.updateExpeditionReplay(expeditionRecord.id, result)
-      }
-
+      await startExpedition(request, dungeon)
       handleBackToFormation()
     } catch (error) {
       console.error('遠征エラー:', error)
@@ -233,12 +216,16 @@ export const FormationTabScreen = () => {
     return (
       <ExpeditionPreparationScreen
         partyId={editingPartyId}
-        partyRepository={partyRepository}
+        getPartyById={getPartyById}
         goblins={goblins}
         dungeons={areasData}
+        onSetDungeon={setDungeon}
+        onSetTargetFloor={setTargetFloor}
+        onSetReturnPolicy={setReturnPolicy}
         onBack={handleBackToFormation}
         onEditParty={handleEditParty}
         onStartExpedition={handleStartExpedition}
+        estimateExplorationTime={estimateExplorationTime}
       />
     )
   }
@@ -249,7 +236,8 @@ export const FormationTabScreen = () => {
       <PartyEditScreen
         partyId={editingPartyId}
         goblins={goblins}
-        partyRepository={partyRepository}
+        getPartyById={getPartyById}
+        updateMembers={updateMembers}
         onBack={handleBackToPreparation}
       />
     )
@@ -258,13 +246,16 @@ export const FormationTabScreen = () => {
   // パーティ一覧画面
   return (
     <FormationScreen
-      partyRepository={partyRepository}
+      parties={parties}
       goblins={goblins}
       onPartySelect={handlePartySelect}
       onExpeditionPartyClick={handleExpeditionPartyClick}
       onHistoryClick={handleHistoryClick}
       onLogClick={handleLogClick}
       isLoading={isLoading}
+      getPartyExpeditionHistory={getPartyExpeditionHistory}
+      onMarkPartyIdle={markIdle}
+      onClearExpedition={clearExpedition}
     />
   )
 }

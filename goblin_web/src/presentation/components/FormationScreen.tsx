@@ -1,47 +1,33 @@
-import { useState, useEffect, useMemo } from 'react'
-import type { Goblin, ExpeditionRecord, Party } from '../../shared/types'
-import type { IPartyRepository } from '../../core/repositories'
-import { useExpeditionState } from '../contexts/ExpeditionStateContextValue.ts'
+import { useEffect, useMemo, useState } from 'react'
+import type { ExpeditionRecord, Goblin, Party } from '../../shared/types'
 import { useCurrentTime } from '../hooks/useCurrentTime.ts'
-import { ManagePartyUseCase } from '../../core/usecases'
 
 interface FormationScreenProps {
-  partyRepository: IPartyRepository
+  parties: Party[]
   goblins: Goblin[]
   onPartySelect: (partyId: number) => void
   onExpeditionPartyClick?: (partyId: number) => void
   onHistoryClick?: (expeditionRecord: ExpeditionRecord) => void
   onLogClick?: (expeditionRecord: ExpeditionRecord) => void
   isLoading?: boolean
+  getPartyExpeditionHistory: (partyId: number) => Promise<ExpeditionRecord[]>
+  onMarkPartyIdle: (partyId: number) => void
+  onClearExpedition: (partyId: number) => void
 }
 
 export const FormationScreen = ({
-  partyRepository,
+  parties,
   goblins,
   onPartySelect,
   onExpeditionPartyClick,
   onHistoryClick,
   onLogClick,
-  isLoading = false
+  isLoading = false,
+  getPartyExpeditionHistory,
+  onMarkPartyIdle,
+  onClearExpedition,
 }: FormationScreenProps) => {
-  const { getPartyExpeditionHistory, expeditionRecords, clearExpedition } = useExpeditionState()
   const [partyHistories, setPartyHistories] = useState<Record<number, ExpeditionRecord[]>>({})
-  const [parties, setParties] = useState<Party[]>(() => partyRepository.getParties())
-  const managePartyUseCase = useMemo(() => new ManagePartyUseCase(partyRepository), [partyRepository])
-
-  const arePartiesSame = (a: Party[], b: Party[]): boolean => {
-    if (a.length !== b.length) return false
-    return a.every((party, index) => {
-      const other = b[index]
-      if (!other) return false
-      if (party.id !== other.id) return false
-      if (party.memberIds.length !== other.memberIds.length) return false
-      for (let i = 0; i < party.memberIds.length; i++) {
-        if (party.memberIds[i] !== other.memberIds[i]) return false
-      }
-      return party.name === other.name && party.status === other.status
-    })
-  }
 
   const areHistoriesSame = (
     a: Record<number, ExpeditionRecord[]>,
@@ -67,11 +53,9 @@ export const FormationScreen = ({
   // 各パーティの履歴を取得
   useEffect(() => {
     let isActive = true
-    const currentParties = partyRepository.getParties()
-    setParties(prev => (arePartiesSame(prev, currentParties) ? prev : currentParties))
     const loadHistories = async () => {
       const histories: Record<number, ExpeditionRecord[]> = {}
-      for (const party of currentParties) {
+      for (const party of parties) {
         const history = await getPartyExpeditionHistory(party.id)
         if (history.length > 0) {
           histories[party.id] = history
@@ -81,12 +65,13 @@ export const FormationScreen = ({
         setPartyHistories(prev => (areHistoriesSame(prev, histories) ? prev : histories))
       }
     }
-    loadHistories()
-
+    if (!isLoading) {
+      loadHistories()
+    }
     return () => {
       isActive = false
     }
-  }, [partyRepository, isLoading, expeditionRecords, getPartyExpeditionHistory])
+  }, [parties, isLoading, getPartyExpeditionHistory])
 
   // 遠征中のパーティがあるかチェック
   const hasOngoingExpedition = useMemo(() => {
@@ -108,12 +93,12 @@ export const FormationScreen = ({
         const latestExpedition = history?.[0]
         // 最新の遠征が存在し、かつ帰還時刻を過ぎている場合
         if (latestExpedition && latestExpedition.returnTime <= now) {
-          clearExpedition(party.id)
-          managePartyUseCase.markIdle(party.id)
+          onClearExpedition(party.id)
+          onMarkPartyIdle(party.id)
         }
       }
     }
-  }, [parties, partyHistories, currentTime, clearExpedition, managePartyUseCase])
+  }, [parties, partyHistories, currentTime, onClearExpedition, onMarkPartyIdle])
 
   const formatFullDateTime = (date: Date) => {
     const year = date.getFullYear()

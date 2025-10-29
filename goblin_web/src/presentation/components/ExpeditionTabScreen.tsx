@@ -1,43 +1,52 @@
-import { useState, useMemo } from 'react'
-import type { Dungeon, ExpeditionRequest, ExpeditionReplay, Goblin } from '../../shared/types'
+import { useMemo, useState } from 'react'
+import type { Dungeon, ExpeditionRequest, ExpeditionReplay } from '../../shared/types'
 import { areasData } from '../../shared/data'
 import { DungeonScreen } from './DungeonScreen.tsx'
 import { ExpeditionSetupScreen } from './ExpeditionSetupScreen.tsx'
 import { ExpeditionPlaybackScreen } from './ExpeditionPlaybackScreen.tsx'
 import { ExpeditionResultScreen } from './ExpeditionResultScreen.tsx'
-import { FirestoreExpeditionRepositoryAdapter } from '../../infrastructure/repositories/FirestoreExpeditionRepositoryImpl'
 import { ExpeditionEngine } from '../../core/services'
-import { ManagePartyUseCase, StartExpeditionUseCase } from '../../core/usecases'
+import { StartExpeditionUseCase } from '../../core/usecases'
 import { useExpeditionState } from '../contexts/ExpeditionStateContextValue.ts'
-import { usePartyRepository } from '../hooks/usePartyRepository.ts'
-import { useGoblinRepository } from '../hooks/useGoblinRepository.ts'
+import { usePartyService } from '../hooks/usePartyService.ts'
+import { useGoblinService } from '../hooks/useGoblinService.ts'
+import { useExpeditionFlow } from '../hooks/useExpeditionFlow.ts'
 
 export function ExpeditionTabScreen() {
-  const { setPartyExpeditionStatus, clearExpedition } = useExpeditionState()
+  const {
+    setPartyExpeditionStatus,
+    clearExpedition,
+    expeditionRepository,
+  } = useExpeditionState()
   const [selectedDungeon, setSelectedDungeon] = useState<Dungeon | null>(null)
   const [isExpeditionSetup, setIsExpeditionSetup] = useState(false)
   const [currentExpeditionReplay, setCurrentExpeditionReplay] = useState<ExpeditionReplay | null>(null)
   const [showExpeditionResult, setShowExpeditionResult] = useState(false)
   const [currentExpeditionPartyId, setCurrentExpeditionPartyId] = useState<number | null>(null)
 
-  const { partyRepository } = usePartyRepository()
-  const { goblinRepository } = useGoblinRepository()
+  const {
+    partyRepository,
+    parties,
+    getPartyById,
+    markExpedition,
+    markIdle,
+  } = usePartyService()
+  const { goblinRepository, goblins } = useGoblinService()
 
-  const useFirestore = import.meta.env.VITE_USE_FIRESTORE === 'true'
   const expeditionEngine = useMemo(() => new ExpeditionEngine(), [])
   const startExpeditionUseCase = useMemo(
     () => new StartExpeditionUseCase(partyRepository, goblinRepository, expeditionEngine),
     [partyRepository, goblinRepository, expeditionEngine]
   )
-  const managePartyUseCase = useMemo(
-    () => new ManagePartyUseCase(partyRepository),
-    [partyRepository]
-  )
-  const expeditionRepository = useMemo(() =>
-    useFirestore ? new FirestoreExpeditionRepositoryAdapter() : null, [useFirestore]
-  )
-
-  const goblins = goblinRepository.getGoblins()
+  const { startExpedition, completeExpedition, estimateExplorationTime } = useExpeditionFlow({
+    startExpeditionUseCase,
+    expeditionRepository,
+    setPartyExpeditionStatus,
+    clearExpedition,
+    getPartyById,
+    markPartyAsOnExpedition: markExpedition,
+    markPartyAsIdle: markIdle,
+  })
 
   const handleStartExplore = (dungeon: Dungeon) => {
     setSelectedDungeon(dungeon)
@@ -50,72 +59,15 @@ export function ExpeditionTabScreen() {
   }
 
   const handleStartExpedition = async (request: ExpeditionRequest) => {
+    if (!selectedDungeon) {
+      alert('ダンジョン情報が取得できません')
+      return
+    }
+
     try {
-      const partyId = parseInt(request.partyId)
-      const party = partyRepository.getParty(partyId)
-      if (!party) {
-        alert('パーティが見つかりません')
-        return
-      }
-
-      const partyMembers = party.memberIds
-        .map(id => goblins.find(g => g.id === id))
-        .filter((g): g is Goblin => g !== undefined)
-
-      if (partyMembers.length === 0) {
-        alert('有効なパーティメンバーがいません')
-        return
-      }
-
-      const dungeon = selectedDungeon
-      if (!dungeon) {
-        alert('ダンジョン情報が取得できません')
-        return
-      }
-
-      const baseTime = dungeon.exploration_time_sec_first || dungeon.exploration_time_sec
-      let timeMultiplier = 1.0
-      switch (request.returnPolicy) {
-        case "until_floor2":
-          timeMultiplier = 0.4
-          break
-        case "until_floor3":
-          timeMultiplier = 0.6
-          break
-        case "if_any_ko":
-          timeMultiplier = 0.7
-          break
-        case "last_one":
-          timeMultiplier = 0.9
-          break
-        case "never":
-          timeMultiplier = 1.0
-          break
-      }
-      const explorationTimeSec = Math.floor(baseTime * timeMultiplier)
-
-      let expeditionRecord = null
-      if (expeditionRepository) {
-        expeditionRecord = await expeditionRepository.createExpedition(
-          partyId,
-          party.name,
-          dungeon.id,
-          dungeon.name,
-          request.returnPolicy,
-          explorationTimeSec
-        )
-      }
-
-      setPartyExpeditionStatus(partyId, 'expedition')
+      const { partyId, replay } = await startExpedition(request, selectedDungeon)
       setCurrentExpeditionPartyId(partyId)
-
-      const result = await startExpeditionUseCase.execute(request)
-
-      if (expeditionRecord && expeditionRepository) {
-        await expeditionRepository.updateExpeditionReplay(expeditionRecord.id, result)
-      }
-
-      setCurrentExpeditionReplay(result)
+      setCurrentExpeditionReplay(replay)
       setIsExpeditionSetup(false)
     } catch (error) {
       console.error('遠征エラー:', error)
@@ -125,8 +77,7 @@ export function ExpeditionTabScreen() {
 
   const handleExpeditionComplete = () => {
     if (currentExpeditionPartyId !== null) {
-      clearExpedition(currentExpeditionPartyId)
-      managePartyUseCase.markIdle(currentExpeditionPartyId)
+      completeExpedition(currentExpeditionPartyId)
     }
 
     setShowExpeditionResult(true)
@@ -164,11 +115,12 @@ export function ExpeditionTabScreen() {
   if (selectedDungeon && isExpeditionSetup) {
     return (
       <ExpeditionSetupScreen
-        parties={partyRepository.getParties()}
+        parties={parties}
         goblins={goblins}
         dungeon={selectedDungeon}
         onStartExpedition={handleStartExpedition}
         onBack={handleBackToDungeon}
+        estimateExplorationTime={estimateExplorationTime}
       />
     )
   }
