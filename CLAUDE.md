@@ -50,7 +50,9 @@ npm run watch
 
 ## アーキテクチャ
 
-**詳細**: [goblin_web/docs/architecture.md](goblin_web/docs/architecture.md) を参照してください。
+**詳細**:
+- [goblin_web/docs/architecture.md](goblin_web/docs/architecture.md): アーキテクチャ設計
+- [goblin_web/docs/current_implementation.md](goblin_web/docs/current_implementation.md): 現在の実装状況
 
 このプロジェクトは将来的なUnity等への移植を見据えて設計されています。コアロジックはプラットフォーム非依存に保ち、UI層のみが環境固有となるよう層分離されています。
 
