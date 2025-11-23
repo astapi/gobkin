@@ -1,6 +1,6 @@
 interface TabMenuProps {
-  activeTab: string
-  onTabChange: (tab: string) => void
+  activeTab: 'list' | 'formation'
+  onTabChange: (tab: 'list' | 'formation') => void
 }
 
 export const TabMenu = ({ activeTab, onTabChange }: TabMenuProps) => (
@@ -11,7 +11,7 @@ export const TabMenu = ({ activeTab, onTabChange }: TabMenuProps) => (
       }`}
       onClick={() => onTabChange('list')}
     >
-      {activeTab !== 'list' && <div className="absolute right-0 top-[15%] h-[70%] w-px bg-gray-200" />}
+      <div className="absolute right-0 top-[15%] h-[70%] w-px bg-gray-200" />
       <img src="/src/assets/list.svg" alt="リスト" className="w-8 h-8 mb-1" />
       <span className={`text-[11px] tracking-wider ${activeTab === 'list' ? 'text-gray-600 font-semibold' : 'text-gray-600 font-medium'}`}>
         リスト
@@ -24,22 +24,9 @@ export const TabMenu = ({ activeTab, onTabChange }: TabMenuProps) => (
       }`}
       onClick={() => onTabChange('formation')}
     >
-      {activeTab !== 'formation' && <div className="absolute right-0 top-[15%] h-[70%] w-px bg-gray-200" />}
       <img src="/src/assets/hensei.svg" alt="編成" className="w-8 h-8 mb-1" />
       <span className={`text-[11px] tracking-wider ${activeTab === 'formation' ? 'text-gray-600 font-semibold' : 'text-gray-600 font-medium'}`}>
         編成
-      </span>
-    </button>
-
-    <button
-      className={`flex-1 flex flex-col items-center justify-center p-2.5 transition-all border-t-[3px] ${
-        activeTab === 'expedition' ? 'bg-gray-100 border-gray-600' : 'hover:bg-gray-50 border-transparent'
-      }`}
-      onClick={() => onTabChange('expedition')}
-    >
-      <img src="/src/assets/expedition.svg" alt="遠征" className="w-8 h-8 mb-1" />
-      <span className={`text-[11px] tracking-wider ${activeTab === 'expedition' ? 'text-gray-600 font-semibold' : 'text-gray-600 font-medium'}`}>
-        遠征
       </span>
     </button>
   </div>
