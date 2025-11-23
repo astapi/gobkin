@@ -14,19 +14,6 @@
       "gold": 3
     },
     {
-      "id": "S002",
-      "name": "ぷるぷるスライム",
-      "raceTags": ["slime"],
-      "level": 2,
-      "hp": 12,
-      "atk": 3,
-      "def": 2,
-      "spd": 3,
-      "sp": 0,
-      "exp": 5,
-      "gold": 5
-    },
-    {
       "id": "B_SLIME",
       "name": "大きなスライム",
       "raceTags": ["slime"],
@@ -44,22 +31,22 @@
     {
       "id": "SP001",
       "floors": [1, 2],
-      "enemies": ["S001", "S001", "S001"]
+      "enemies": ["S001"]
     },
     {
       "id": "SP002",
       "floors": [1, 2],
-      "enemies": ["S001", "S002"]
+      "enemies": ["S001", "S001"]
     },
     {
       "id": "SP003",
       "floors": [1, 2],
-      "enemies": ["S002", "S002", "S001"]
+      "enemies": ["S001", "S001", "S001"]
     },
     {
       "id": "SBOSS",
       "floors": [2],
-      "enemies": ["B_SLIME"],
+      "enemies": ["S001", "S001", "B_SLIME"],
       "isBoss": true
     }
   ]
