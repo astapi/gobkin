@@ -2,6 +2,39 @@ import type { AreaConfig } from '../types'
 
 export const areasConfig: AreaConfig[] = [
   {
+    id: "slime_cave",
+    name: "スライムの洞窟",
+    floors: 2,
+    baseDurationSec: 45,
+    moveSpeedScale: 1.1,
+    encounter: {
+      perFloorEvents: 2,
+      eventWeights: {
+        battle: 80,
+        resource: 15,
+        trap: 0,
+        npc: 5
+      },
+      pityTimerSec: 3
+    },
+    enemyTable: [
+      { id: "tutorial_slime", weight: 80, lvl: 1 },
+      { id: "sticky_slime", weight: 20, lvl: 2 }
+    ],
+    boss: { id: "slime_mother", lvl: 3 },
+    rewards: {
+      xpFloor: [4, 6],
+      xpBoss: 15,
+      lootPool: [
+        { id: "slime_core", w: 50 },
+        { id: "healing_herb", w: 30 },
+        { id: "forest_gem", w: 20 }
+      ],
+      captureBonus: 0.12
+    },
+    unlockNext: "forest_outskirts"
+  },
+  {
     id: "forest_outskirts",
     name: "周辺の森",
     floors: 3,
@@ -114,6 +147,9 @@ export const areasConfig: AreaConfig[] = [
 
 // 敵データの定義
 export const enemyDatabase = {
+  "tutorial_slime": { name: "スライム", baseHP: 12, baseATK: 5, baseDEF: 2 },
+  "sticky_slime": { name: "ぷるぷるスライム", baseHP: 16, baseATK: 6, baseDEF: 3 },
+  "slime_mother": { name: "大きなスライム", baseHP: 40, baseATK: 8, baseDEF: 5 },
   "slime": { name: "スライム", baseHP: 20, baseATK: 8, baseDEF: 3 },
   "goblin_scout": { name: "ゴブリン斥候", baseHP: 25, baseATK: 12, baseDEF: 5 },
   "forest_wolf": { name: "森の狼", baseHP: 35, baseATK: 15, baseDEF: 8 },

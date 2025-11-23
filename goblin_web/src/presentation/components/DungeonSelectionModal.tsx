@@ -44,29 +44,45 @@ export const DungeonSelectionModal = ({ dungeons, onSelect, onClose }: DungeonSe
         {/* Content */}
         <div className="overflow-y-auto flex-1 p-4">
           <div className="flex flex-col gap-3">
-            {dungeons.map(dungeon => (
-              <div
-                key={dungeon.id}
-                className="overflow-hidden bg-white rounded-xl border-2 border-gray-200 shadow-md transition-all cursor-pointer hover:border-gray-400 hover:shadow-lg"
-                onClick={() => onSelect(dungeon)}
-              >
-                <div className="p-3 text-white bg-gray-700">
-                  <div className="mb-1 text-sm font-bold">
-                    {dungeon.name}
+            {dungeons.map(dungeon => {
+              const unlockTarget = dungeon.unlockRequires
+                ? dungeons.find(target => target.id === dungeon.unlockRequires)?.name ?? dungeon.unlockRequires
+                : null
+
+              return (
+                <div
+                  key={dungeon.id}
+                  className={`relative overflow-hidden bg-white rounded-xl border-2 border-gray-200 shadow-md transition-all ${
+                    dungeon.unlocked === false
+                      ? 'opacity-60 cursor-not-allowed'
+                      : 'cursor-pointer hover:border-gray-400 hover:shadow-lg'
+                  }`}
+                  onClick={() => dungeon.unlocked !== false && onSelect(dungeon)}
+                >
+                  <div className="p-3 text-white bg-gray-700">
+                    <div className="mb-1 text-sm font-bold">
+                      {dungeon.name}
+                    </div>
+                    <div className="text-xs opacity-90">{dungeon.description}</div>
                   </div>
-                  <div className="text-xs opacity-90">{dungeon.description}</div>
+                  <div className="p-3">
+                    <div className="flex justify-between mb-1 text-xs text-gray-600">
+                      <span>🏰 階層数: {dungeon.floors}階</span>
+                    </div>
+                    <div className="flex justify-between text-xs text-gray-600">
+                      <span>⏱️ 探索時間: {formatTime(dungeon.cleared ? dungeon.exploration_time_sec : dungeon.exploration_time_sec_first)}</span>
+                      {dungeon.cleared && <span className="font-bold text-green-600">✓ 攻略済み</span>}
+                    </div>
+                    {dungeon.unlocked === false && unlockTarget && (
+                      <div className="mt-2 text-xs text-red-600 font-semibold">
+                        🔒 {unlockTarget} を攻略すると解放
+                      </div>
+                    )}
+                  </div>
+                  {dungeon.unlocked === false && <div className="absolute inset-0 bg-white/30" />}
                 </div>
-                <div className="p-3">
-                  <div className="flex justify-between mb-1 text-xs text-gray-600">
-                    <span>🏰 階層数: {dungeon.floors}階</span>
-                  </div>
-                  <div className="flex justify-between text-xs text-gray-600">
-                    <span>⏱️ 探索時間: {formatTime(dungeon.cleared ? dungeon.exploration_time_sec : dungeon.exploration_time_sec_first)}</span>
-                    {dungeon.cleared && <span className="font-bold text-green-600">✓ 攻略済み</span>}
-                  </div>
-                </div>
-              </div>
-            ))}
+              )
+            })}
           </div>
         </div>
       </div>

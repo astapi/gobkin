@@ -1,12 +1,23 @@
 {
   "areas": [
     {
+      "id": "slime_cave",
+      "name": "スライムの洞窟",
+      "floors": 2,
+      "exploration_time_sec_first": 45,
+      "exploration_time_sec": 25,
+      "description": "スライムだけが出現する入門用の洞窟。ゴブリン1体でも攻略可能。",
+      "unlockNext": "forest_outskirts",
+      "unlocked": true
+    },
+    {
       "id": "forest_outskirts",
       "name": "周辺の森",
       "floors": 3,
       "exploration_time_sec_first": 60,
       "exploration_time_sec": 30,
-      "description": "明るい森、弱い獣や小鬼が出現"
+      "description": "明るい森、弱い獣や小鬼が出現",
+      "unlockRequires": "slime_cave"
     }
   ]
 }
