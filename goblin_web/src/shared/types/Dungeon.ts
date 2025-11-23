@@ -6,7 +6,9 @@ export type Dungeon = {
   exploration_time_sec: number
   description: string
   cleared?: boolean
+  unlocked?: boolean
   icon?: string
   difficulty?: string
   unlockNext?: string
+  unlockRequires?: string
 }

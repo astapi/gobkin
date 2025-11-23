@@ -1,6 +1,5 @@
 import { useMemo, useState } from 'react'
 import type { Dungeon, ExpeditionRequest, ExpeditionReplay } from '../../shared/types'
-import { areasData } from '../../shared/data'
 import { DungeonScreen } from './DungeonScreen.tsx'
 import { ExpeditionSetupScreen } from './ExpeditionSetupScreen.tsx'
 import { ExpeditionPlaybackScreen } from './ExpeditionPlaybackScreen.tsx'
@@ -11,6 +10,7 @@ import { useExpeditionState } from '../contexts/ExpeditionStateContextValue.ts'
 import { usePartyService } from '../hooks/usePartyService.ts'
 import { useGoblinService } from '../hooks/useGoblinService.ts'
 import { useExpeditionFlow } from '../hooks/useExpeditionFlow.ts'
+import { useDungeonProgress } from '../hooks/useDungeonProgress.ts'
 
 export function ExpeditionTabScreen() {
   const {
@@ -32,6 +32,7 @@ export function ExpeditionTabScreen() {
     markIdle,
   } = usePartyService()
   const { goblinRepository, goblins } = useGoblinService()
+  const { dungeons, markDungeonCleared } = useDungeonProgress()
 
   const expeditionEngine = useMemo(() => new ExpeditionEngine(), [])
   const startExpeditionUseCase = useMemo(
@@ -49,6 +50,11 @@ export function ExpeditionTabScreen() {
   })
 
   const handleStartExplore = (dungeon: Dungeon) => {
+    if (!dungeon.unlocked) {
+      alert('このダンジョンは未解放です')
+      return
+    }
+
     setSelectedDungeon(dungeon)
     setIsExpeditionSetup(true)
   }
@@ -78,6 +84,11 @@ export function ExpeditionTabScreen() {
   const handleExpeditionComplete = () => {
     if (currentExpeditionPartyId !== null) {
       completeExpedition(currentExpeditionPartyId)
+    }
+
+    if (selectedDungeon && currentExpeditionReplay?.summary.success) {
+      const cleared = currentExpeditionReplay.summary.maxFloorReached >= selectedDungeon.floors
+      markDungeonCleared(selectedDungeon, cleared)
     }
 
     setShowExpeditionResult(true)
@@ -127,7 +138,7 @@ export function ExpeditionTabScreen() {
 
   return (
     <DungeonScreen
-      dungeons={areasData}
+      dungeons={dungeons}
       onStartExplore={handleStartExplore}
     />
   )

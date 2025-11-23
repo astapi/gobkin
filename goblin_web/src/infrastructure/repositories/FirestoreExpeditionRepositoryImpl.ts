@@ -86,6 +86,7 @@ export class FirestoreExpeditionRepositoryImpl {
       const docRef = getUserExpeditionDoc(expeditionId)
       await updateDoc(docRef, {
         replay,
+        status: 'completed',
         updatedAt: Timestamp.fromDate(new Date())
       })
     } catch (error) {
@@ -313,9 +314,12 @@ export class FirestoreExpeditionRepositoryAdapter {
     const cached = this.cache.get(expeditionId)
     if (cached) {
       cached.replay = replay
+      cached.status = 'completed'
       cached.updatedAt = new Date()
-      // statusは変更せず、ongoingExpeditionsからも削除しない
+      this.ongoingExpeditions = this.ongoingExpeditions.filter(exp => exp.id !== expeditionId)
       this.onDataChange?.()
+    } else {
+      this.ongoingExpeditions = this.ongoingExpeditions.filter(exp => exp.id !== expeditionId)
     }
   }
 

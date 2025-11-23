@@ -19,6 +19,8 @@ const formatTime = (seconds: number): string => {
 }
 
 export const DungeonSelectionModal = ({ dungeons, onSelect, onClose }: DungeonSelectionModalProps) => {
+  const unlockedDungeons = dungeons.filter(dungeon => dungeon.unlocked !== false)
+
   return (
     <div
       className="flex fixed inset-0 z-50 justify-center items-center bg-black bg-opacity-50"
@@ -44,10 +46,10 @@ export const DungeonSelectionModal = ({ dungeons, onSelect, onClose }: DungeonSe
         {/* Content */}
         <div className="overflow-y-auto flex-1 p-4">
           <div className="flex flex-col gap-3">
-            {dungeons.map(dungeon => (
+            {unlockedDungeons.map(dungeon => (
               <div
                 key={dungeon.id}
-                className="overflow-hidden bg-white rounded-xl border-2 border-gray-200 shadow-md transition-all cursor-pointer hover:border-gray-400 hover:shadow-lg"
+                className="relative overflow-hidden bg-white rounded-xl border-2 border-gray-200 shadow-md transition-all cursor-pointer hover:border-gray-400 hover:shadow-lg"
                 onClick={() => onSelect(dungeon)}
               >
                 <div className="p-3 text-white bg-gray-700">
@@ -67,6 +69,12 @@ export const DungeonSelectionModal = ({ dungeons, onSelect, onClose }: DungeonSe
                 </div>
               </div>
             ))}
+
+            {unlockedDungeons.length === 0 && (
+              <div className="p-4 text-center text-sm text-gray-600 bg-gray-100 rounded-lg border border-gray-200">
+                解放済みのダンジョンがありません
+              </div>
+            )}
           </div>
         </div>
       </div>

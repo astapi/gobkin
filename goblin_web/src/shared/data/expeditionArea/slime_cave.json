@@ -1,0 +1,26 @@
+{
+  "id": "slime_cave",
+  "name": "スライムの洞窟",
+  "floors": 2,
+  "baseDurationSec": 45,
+  "description": "スライムのみが出現するチュートリアルダンジョン。",
+  "encounter": {
+    "perFloorEvents": 2,
+    "eventWeights": {
+      "battle": 70,
+      "resource": 20,
+      "exploring": 10
+    }
+  },
+  "rewards": {
+    "xpFloor": [4, 6],
+    "xpBoss": 12,
+    "lootPool": [
+      { "id": "slime_core", "name": "スライムコア", "w": 60, "rarity": 1 },
+      { "id": "healing_herb", "name": "回復草", "w": 30, "rarity": 1 },
+      { "id": "forest_gem", "name": "森の宝石", "w": 10, "rarity": 2 }
+    ],
+    "captureBonus": 0.1
+  },
+  "unlockNext": "forest_outskirts"
+}

@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useRef, useState, useEffect } from 'react'
 import type { ExpeditionRecord, ExpeditionRequest } from '../../shared/types'
 import { PartyEditScreen } from './PartyEditScreen.tsx'
 import { FormationScreen } from './FormationScreen.tsx'
@@ -8,10 +8,10 @@ import { ExpeditionPreparationScreen } from './ExpeditionPreparationScreen.tsx'
 import { usePartyService } from '../hooks/usePartyService.ts'
 import { useGoblinService } from '../hooks/useGoblinService.ts'
 import { useExpeditionState } from '../contexts/ExpeditionStateContextValue.ts'
-import { areasData } from '../../shared/data'
 import { ExpeditionEngine } from '../../core/services'
 import { StartExpeditionUseCase } from '../../core/usecases'
 import { useExpeditionFlow } from '../hooks/useExpeditionFlow.ts'
+import { useDungeonProgress } from '../hooks/useDungeonProgress.ts'
 
 type ViewMode = 'list' | 'preparation' | 'edit' | 'log' | 'result'
 
@@ -58,6 +58,8 @@ export const FormationTabScreen = () => {
     markPartyAsOnExpedition: markExpedition,
     markPartyAsIdle: markIdle,
   })
+  const { dungeons, markDungeonCleared } = useDungeonProgress()
+  const processedExpeditionsRef = useRef<Set<string>>(new Set())
   const isLoading = isPartyLoading || isGoblinLoading
 
   const handlePartySelect = (partyId: number) => {
@@ -125,6 +127,25 @@ export const FormationTabScreen = () => {
     setViewMode('preparation')
   }
 
+  // 遠征結果が表示されたら進行状況を更新
+  useEffect(() => {
+    if (viewMode !== 'result' || !selectedHistoryReplay?.replay) return
+
+    const expeditionId = selectedHistoryReplay.replay.meta.expeditionId
+    if (processedExpeditionsRef.current.has(expeditionId)) return
+
+    const dungeon = dungeons.find(d => d.id === selectedHistoryReplay.dungeonId)
+    if (!dungeon) return
+
+    const cleared = selectedHistoryReplay.replay.summary.success &&
+      selectedHistoryReplay.replay.summary.maxFloorReached >= dungeon.floors
+
+    if (cleared) {
+      markDungeonCleared(dungeon, true)
+      processedExpeditionsRef.current.add(expeditionId)
+    }
+  }, [viewMode, selectedHistoryReplay, dungeons, markDungeonCleared])
+
   const handleStartExpedition = async (request: ExpeditionRequest) => {
     const partyId = Number.parseInt(request.partyId, 10)
     if (Number.isNaN(partyId)) {
@@ -139,7 +160,7 @@ export const FormationTabScreen = () => {
         return
       }
 
-      const dungeon = areasData.find(d => d.id.toString() === party.dungeonId)
+      const dungeon = dungeons.find(d => d.id.toString() === party.dungeonId)
       if (!dungeon) {
         alert('ダンジョン情報が取得できません')
         return
@@ -184,7 +205,7 @@ export const FormationTabScreen = () => {
 
   // ログ画面表示中
   if (viewMode === 'log' && selectedHistoryReplay?.replay) {
-    const dungeon = areasData.find(d => d.id === selectedHistoryReplay.dungeonId)
+    const dungeon = dungeons.find(d => d.id === selectedHistoryReplay.dungeonId)
     return (
       <div className="flex flex-col h-full">
         <div className="flex justify-between items-center px-4 py-2 bg-gray-100 border-b border-gray-300">
@@ -218,7 +239,7 @@ export const FormationTabScreen = () => {
         partyId={editingPartyId}
         getPartyById={getPartyById}
         goblins={goblins}
-        dungeons={areasData}
+        dungeons={dungeons}
         onSetDungeon={setDungeon}
         onSetTargetFloor={setTargetFloor}
         onSetReturnPolicy={setReturnPolicy}

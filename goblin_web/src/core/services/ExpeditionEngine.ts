@@ -69,7 +69,8 @@ export class ExpeditionEngine {
     }
 
     const partySnapshot = this.createPartySnapshot(party, request.returnPolicy)
-    const adjustedDuration = area.baseDurationSec
+    // 表示上の規定時間をそのまま使い、終端にイベントを揃える
+    const adjustedDuration = Math.ceil(area.baseDurationSec)
 
     const events: TimelineEvent[] = []
     let currentFloor = 1
@@ -213,6 +214,10 @@ export class ExpeditionEngine {
       const bossXp = area.rewards.xpBoss
       const bossDrops = this.generateDrops(area.rewards.lootPool, partySnapshot.luckMod * 1.5)
 
+      // 規定時間の終端でボス戦を行う（最後の秒で戦闘開始）
+      const bossTime = adjustedDuration
+      currentTime = bossTime
+
       events.push({
         type: "boss",
         at: currentTime,
@@ -232,7 +237,7 @@ export class ExpeditionEngine {
     if (shouldReturn && returnReason) {
       events.push({
         type: "return",
-        at: Math.min(currentTime + 1, adjustedDuration),
+        at: adjustedDuration,
         reason: returnReason as ExpeditionEndReason
       })
     }

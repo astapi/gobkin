@@ -54,6 +54,11 @@ export const ExpeditionPreparationScreen = ({
   }, [party, dungeons])
 
   const handleDungeonSelect = (dungeon: Dungeon) => {
+    if (!dungeon.unlocked) {
+      alert('このダンジョンは未解放です')
+      return
+    }
+
     onSetDungeon(partyId, dungeon.id.toString())
     setShowDungeonModal(false)
   }

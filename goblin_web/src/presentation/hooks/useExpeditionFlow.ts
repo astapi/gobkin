@@ -77,10 +77,10 @@ export const useExpeditionFlow = ({
           )
         }
 
+        const replay = await startExpeditionUseCase.execute(request)
+
         setPartyExpeditionStatus(partyId, 'expedition')
         markPartyAsOnExpedition(partyId)
-
-        const replay = await startExpeditionUseCase.execute(request)
 
         if (expeditionRecord && expeditionRepository) {
           await expeditionRepository.updateExpeditionReplay(expeditionRecord.id, replay)
