@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useRef, useState, useEffect } from 'react'
 import type { ExpeditionRecord, ExpeditionRequest } from '../../shared/types'
 import { PartyEditScreen } from './PartyEditScreen.tsx'
 import { FormationScreen } from './FormationScreen.tsx'
@@ -58,7 +58,8 @@ export const FormationTabScreen = () => {
     markPartyAsOnExpedition: markExpedition,
     markPartyAsIdle: markIdle,
   })
-  const { dungeons } = useDungeonProgress()
+  const { dungeons, markDungeonCleared } = useDungeonProgress()
+  const processedExpeditionsRef = useRef<Set<string>>(new Set())
   const isLoading = isPartyLoading || isGoblinLoading
 
   const handlePartySelect = (partyId: number) => {
@@ -125,6 +126,25 @@ export const FormationTabScreen = () => {
   const handleBackToPreparation = () => {
     setViewMode('preparation')
   }
+
+  // 遠征結果が表示されたら進行状況を更新
+  useEffect(() => {
+    if (viewMode !== 'result' || !selectedHistoryReplay?.replay) return
+
+    const expeditionId = selectedHistoryReplay.replay.meta.expeditionId
+    if (processedExpeditionsRef.current.has(expeditionId)) return
+
+    const dungeon = dungeons.find(d => d.id === selectedHistoryReplay.dungeonId)
+    if (!dungeon) return
+
+    const cleared = selectedHistoryReplay.replay.summary.success &&
+      selectedHistoryReplay.replay.summary.maxFloorReached >= dungeon.floors
+
+    if (cleared) {
+      markDungeonCleared(dungeon, true)
+      processedExpeditionsRef.current.add(expeditionId)
+    }
+  }, [viewMode, selectedHistoryReplay, dungeons, markDungeonCleared])
 
   const handleStartExpedition = async (request: ExpeditionRequest) => {
     const partyId = Number.parseInt(request.partyId, 10)
