@@ -22,6 +22,13 @@
 - 新規テストは対象モジュール横に `.test.ts` を追加し、ヘッドレス代替がない限りブラウザグローバルの露出を避けてください。
 - 戦闘パラメータ、遠征生成、永続化を変更する際は PR へ手動検証結果（ログやスクリーンショット）を残します。
 
+## プロジェクト概要
+- `goblin_ink/`: DQ 形式のターン制コマンドバトルを TypeScript で実装した CLI 版。4 人 PT（ゴブリン軍）と 3 体の敵（人間軍）が物理・魔法攻撃や防御・逃走コマンドで戦う簡易 AI 付きのシミュレーターです。`npm run build` / `npm start` でビルド・実行し、`src/` には型定義・データ・バトル/AI/UI/メインループが分割配置されています。[^goblin-ink]
+- `goblin_web/`: React + TypeScript + Vite 製のクライアントで、遠征（Expedition）機能をプリコンピュート方式で再生します。ダンジョン選択からパーティ編成・帰還条件設定、タイムライン再生、結果表示まで一連の UI が実装済みで、遠征エンジン・型定義・データを `src/services` / `src/types` / `src/data` にまとめています。未実装としてローカル保存や履歴表示などの段階 6 タスクが残っています。[^goblin-web]
+
+[^goblin-ink]: 詳細は `goblin_ink/README.md` を参照してください。
+[^goblin-web]: 詳細は `goblin_web/EXPEDITION_IMPLEMENTATION.md` を参照してください。
+
 ## コミットと Pull Request 方針
 - Git 履歴に沿い `fix:`・`feat:`・`chore:` などの Conventional Commits を用い、短く要点をまとめます。追加説明は本文で補足してください。
 - ブランチ名は作業範囲を示すスラッグ（例：`feature/expedition-balancing`）。PR では影響するパッケージと関連資料・Issue を明記します。
