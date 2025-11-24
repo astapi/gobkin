@@ -1,10 +1,15 @@
 import { useEffect, useMemo, useState } from 'react'
 import type { Goblin, BaseState } from '../../shared/types'
 import type { BirthEvaluationResult } from '../../core/services/BaseManagementService.ts'
+import type { IPendingGoblinRepository, IBaseStateRepository } from '../../core/repositories'
 import { BaseManagementService } from '../../core/services'
 import { useGoblinService } from '../hooks/useGoblinService.ts'
 import { FirestorePendingGoblinRepositoryAdapter } from '../../infrastructure/repositories/FirestorePendingGoblinRepositoryImpl'
 import { FirestoreBaseStateRepositoryAdapter } from '../../infrastructure/repositories/FirestoreBaseStateRepositoryImpl'
+import { JsonPendingGoblinRepositoryImpl } from '../../infrastructure/repositories/JsonPendingGoblinRepositoryImpl'
+import { JsonBaseStateRepositoryImpl } from '../../infrastructure/repositories/JsonBaseStateRepositoryImpl'
+
+const USE_FIRESTORE = import.meta.env.VITE_USE_FIRESTORE === 'true'
 
 type BaseConfig = Pick<BaseState, 'capacity' | 'rank' | 'lastSpawnTime' | 'slimeCaveCleared' | 'firstBonusGranted' | 'nextGoblinId'>
 
@@ -22,8 +27,18 @@ const createDefaultConfig = (): BaseConfig => {
 export const BaseManagementScreen = () => {
   const service = useMemo(() => new BaseManagementService(), [])
   const { goblinRepository, goblins, refreshGoblins, isLoading } = useGoblinService()
-  const pendingGoblinRepository = useMemo(() => new FirestorePendingGoblinRepositoryAdapter(), [])
-  const baseStateRepository = useMemo(() => new FirestoreBaseStateRepositoryAdapter(), [])
+  const pendingGoblinRepository = useMemo<IPendingGoblinRepository>(
+    () => USE_FIRESTORE
+      ? new FirestorePendingGoblinRepositoryAdapter()
+      : new JsonPendingGoblinRepositoryImpl(),
+    []
+  )
+  const baseStateRepository = useMemo<IBaseStateRepository>(
+    () => USE_FIRESTORE
+      ? new FirestoreBaseStateRepositoryAdapter()
+      : new JsonBaseStateRepositoryImpl(),
+    []
+  )
   const [config, setConfig] = useState<BaseConfig>(createDefaultConfig())
   const [pendingGoblins, setPendingGoblins] = useState<Goblin[]>([])
   const [selectedGoblinIds, setSelectedGoblinIds] = useState<Set<number>>(new Set())
