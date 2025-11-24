@@ -1,4 +1,5 @@
-import type { Goblin, GoblinStats } from '../../shared/types'
+import type { Goblin } from '../../shared/types'
+import { GoblinBirthService, type BirthEvaluationResult } from './GoblinBirthService'
 
 export interface BaseState {
   goblins: Goblin[]
@@ -11,75 +12,38 @@ export interface BaseState {
   nextGoblinId?: number
 }
 
-export interface BirthEvaluationResult {
-  newborns: Goblin[]
-  updatedLastSpawnTime: number
-  firstBonusGranted: boolean
-  nextGoblinId: number
-  availableSlots: number
-}
+export type { BirthEvaluationResult }
 
-const BASE_SPAWN_INTERVAL_MS = 30 * 60 * 1000
-
-const STAT_RANGES: Record<keyof GoblinStats, { min: number; max: number }> = {
-  hp: { min: 55, max: 80 },
-  atk: { min: 10, max: 16 },
-  sp: { min: 7, max: 13 },
-  spd: { min: 8, max: 14 },
-  def: { min: 8, max: 14 },
-}
-
+/**
+ * 拠点管理の統合サービス
+ * 将来的には拠点のアップグレード、施設管理など他の機能も追加予定
+ */
 export class BaseManagementService {
-  private readonly random: () => number
+  private readonly birthService: GoblinBirthService
 
   constructor(random: () => number = Math.random) {
-    this.random = random
+    this.birthService = new GoblinBirthService(random)
   }
 
+  /**
+   * ゴブリン誕生の評価（GoblinBirthServiceに委譲）
+   */
   public evaluateBirths(state: BaseState): BirthEvaluationResult {
-    const availableSlots = Math.max(0, state.capacity - state.goblins.length)
-    if (availableSlots === 0) {
-      return {
-        newborns: [],
-        updatedLastSpawnTime: state.lastSpawnTime,
-        firstBonusGranted: state.firstBonusGranted,
-        nextGoblinId: this.resolveNextId(state),
-        availableSlots,
-      }
-    }
-
-    let newborns: Goblin[] = []
-    let lastSpawnTime = state.lastSpawnTime
-    let firstBonusGranted = state.firstBonusGranted
-    let nextGoblinId = this.resolveNextId(state)
-
-    if (state.slimeCaveCleared && !firstBonusGranted && newborns.length < availableSlots) {
-      newborns.push(this.createGoblin(nextGoblinId++))
-      firstBonusGranted = true
-      lastSpawnTime = Math.max(lastSpawnTime, state.now)
-    }
-
-    if (state.now > lastSpawnTime) {
-      const intervals = Math.floor((state.now - lastSpawnTime) / BASE_SPAWN_INTERVAL_MS)
-      if (intervals > 0 && newborns.length < availableSlots) {
-        const spawnPerInterval = this.calculateSpawnCountByRank(state.rank)
-        const totalSpawn = Math.min(availableSlots - newborns.length, intervals * spawnPerInterval)
-        for (let i = 0; i < totalSpawn; i += 1) {
-          newborns.push(this.createGoblin(nextGoblinId++))
-        }
-        lastSpawnTime += intervals * BASE_SPAWN_INTERVAL_MS
-      }
-    }
-
-    return {
-      newborns,
-      updatedLastSpawnTime: lastSpawnTime,
-      firstBonusGranted,
-      nextGoblinId,
-      availableSlots: Math.max(0, availableSlots - newborns.length),
-    }
+    return this.birthService.evaluateBirths({
+      currentGoblins: state.goblins,
+      capacity: state.capacity,
+      rank: state.rank,
+      now: state.now,
+      lastSpawnTime: state.lastSpawnTime,
+      slimeCaveCleared: state.slimeCaveCleared,
+      firstBonusGranted: state.firstBonusGranted,
+      nextGoblinId: state.nextGoblinId,
+    })
   }
 
+  /**
+   * ゴブリンを拠点から追放
+   */
   public expelGoblin(goblins: Goblin[], goblinId: number): Goblin[] {
     const exists = goblins.some(goblin => goblin.id === goblinId)
     if (!exists) {
@@ -88,46 +52,8 @@ export class BaseManagementService {
     return goblins.filter(goblin => goblin.id !== goblinId)
   }
 
-  private calculateSpawnCountByRank(rank: number): number {
-    if (rank <= 1) return 1
-    if (rank <= 3) return 2
-    return 3
-  }
-
-  private createGoblin(id: number): Goblin {
-    const stats = this.generateStats()
-    return {
-      id,
-      name: `新生ゴブリン${id}`,
-      race: 'ゴブリン',
-      level: 1,
-      avatar: '/avatars/goblin.png',
-      stats,
-      equipment: [0, 1, 2].map(slotIndex => ({ slotIndex, itemId: null })),
-    }
-  }
-
-  private generateStats(): GoblinStats {
-    return {
-      hp: this.randomInRange('hp'),
-      atk: this.randomInRange('atk'),
-      sp: this.randomInRange('sp'),
-      spd: this.randomInRange('spd'),
-      def: this.randomInRange('def'),
-    }
-  }
-
-  private randomInRange(key: keyof GoblinStats): number {
-    const { min, max } = STAT_RANGES[key]
-    const value = min + (max - min) * this.random()
-    return Math.round(value)
-  }
-
-  private resolveNextId(state: BaseState): number {
-    if (state.nextGoblinId !== undefined) {
-      return state.nextGoblinId
-    }
-    const maxExistingId = state.goblins.reduce((max, goblin) => Math.max(max, goblin.id), 0)
-    return maxExistingId + 1
-  }
+  // 将来的に以下のようなメソッドを追加予定:
+  // - upgradeBase(baseState: BaseState): BaseUpgradeResult
+  // - buildFacility(baseState: BaseState, facilityType: string): BuildResult
+  // - repairFacility(baseState: BaseState, facilityId: string): RepairResult
 }

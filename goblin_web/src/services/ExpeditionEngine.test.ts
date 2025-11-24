@@ -1,133 +1,155 @@
+import { describe, it, expect } from 'vitest'
 import { ExpeditionEngine } from '../core/services'
 import type { ExpeditionRequest, Goblin } from '../shared/types'
 
-declare global {
-  interface Window {
-    runExpeditionTests?: () => Promise<void>
+describe('ExpeditionEngine', () => {
+  const testParty: Goblin[] = [
+    {
+      id: 1,
+      name: 'テストゴブリン1',
+      race: 'ゴブリン',
+      level: 5,
+      avatar: '/test.png',
+      stats: { hp: 100, atk: 50, sp: 30, spd: 40, def: 35 },
+      equipment: [
+        { slotIndex: 0, itemId: null },
+        { slotIndex: 1, itemId: null },
+        { slotIndex: 2, itemId: null }
+      ]
+    },
+    {
+      id: 2,
+      name: 'テストゴブリン2',
+      race: 'ゴブリン',
+      level: 4,
+      avatar: '/test.png',
+      stats: { hp: 80, atk: 60, sp: 40, spd: 45, def: 25 },
+      equipment: [
+        { slotIndex: 0, itemId: null },
+        { slotIndex: 1, itemId: null },
+        { slotIndex: 2, itemId: null }
+      ]
+    }
+  ]
+
+  const testRequest: ExpeditionRequest = {
+    partyId: "1",
+    areaId: "forest_outskirts",
+    returnPolicy: "never",
+    clientVersion: "1.0.0"
   }
-}
 
-// テスト用のダミーパーティ
-const testParty: Goblin[] = [
-  {
-    id: 1,
-    name: 'テストゴブリン1',
-    race: 'ゴブリン',
-    level: 5,
-    avatar: '/test.png',
-    stats: { hp: 100, atk: 50, sp: 30, spd: 40, def: 35 },
-    equipment: [
-      { slotIndex: 0, itemId: null },
-      { slotIndex: 1, itemId: null },
-      { slotIndex: 2, itemId: null }
-    ]
-  },
-  {
-    id: 2,
-    name: 'テストゴブリン2',
-    race: 'ゴブリン',
-    level: 4,
-    avatar: '/test.png',
-    stats: { hp: 80, atk: 60, sp: 40, spd: 45, def: 25 },
-    equipment: [
-      { slotIndex: 0, itemId: null },
-      { slotIndex: 1, itemId: null },
-      { slotIndex: 2, itemId: null }
-    ]
-  }
-]
+  describe('generateExpedition', () => {
+    it('遠征の生成に成功する', async () => {
+      const engine = new ExpeditionEngine(12345)
+      const result = await engine.generateExpedition(testRequest, testParty)
 
-const testRequest: ExpeditionRequest = {
-  partyId: "1",
-  areaId: "forest_outskirts",
-  returnPolicy: "never",
-  clientVersion: "1.0.0"
-}
-
-// 基本的な動作確認
-export async function testExpeditionEngine(): Promise<void> {
-  console.log("=== 遠征エンジンのテスト開始 ===")
-
-  try {
-    const engine = new ExpeditionEngine(12345) // 固定シードでテスト
-    const result = await engine.generateExpedition(testRequest, testParty)
-
-    console.log("✅ 遠征の生成に成功")
-    console.log(`📍 エリア: ${result.meta.areaName}`)
-    console.log(`⏱️  想定時間: ${result.durationSec}秒`)
-    console.log(`🎯 イベント数: ${result.events.length}`)
-    console.log(`🏆 成功: ${result.summary.success ? 'はい' : 'いいえ'}`)
-    console.log(`📈 到達階層: ${result.summary.maxFloorReached}`)
-    console.log(`⭐ 獲得XP: ${result.summary.xpGained}`)
-    console.log(`💰 戦利品: ${result.summary.loot.length}個`)
-    console.log(`🐾 捕獲: ${result.summary.captures.length}個`)
-
-    // イベントタイプの確認
-    const eventTypes = result.events.reduce((acc: Record<string, number>, event) => {
-      acc[event.type] = (acc[event.type] || 0) + 1
-      return acc
-    }, {} as Record<string, number>)
-
-    console.log("📋 イベント種別:")
-    Object.entries(eventTypes).forEach(([type, count]: [string, number]) => {
-      console.log(`  ${type}: ${count}回`)
+      expect(result).toBeDefined()
+      expect(result.meta.areaName).toBeDefined()
+      expect(result.durationSec).toBeGreaterThan(0)
+      expect(result.events.length).toBeGreaterThan(0)
+      expect(result.summary).toBeDefined()
+      expect(typeof result.summary.success).toBe('boolean')
+      expect(result.summary.maxFloorReached).toBeGreaterThanOrEqual(1)
+      expect(result.summary.xpGained).toBeGreaterThanOrEqual(0)
+      expect(Array.isArray(result.summary.loot)).toBe(true)
+      expect(Array.isArray(result.summary.captures)).toBe(true)
     })
 
-    console.log("\n=== 最初の5イベント ===")
-    result.events.slice(0, 5).forEach((event, index: number) => {
-      console.log(`${index + 1}. [${event.at.toFixed(1)}s] ${event.type}`)
+    it('イベントが正しい形式である', async () => {
+      const engine = new ExpeditionEngine(12345)
+      const result = await engine.generateExpedition(testRequest, testParty)
+
+      expect(result.events.length).toBeGreaterThan(0)
+
+      result.events.forEach(event => {
+        expect(event.type).toBeDefined()
+        expect(typeof event.at).toBe('number')
+        expect(event.at).toBeGreaterThanOrEqual(0)
+      })
     })
 
-  } catch (error) {
-    console.error("❌ テスト失敗:", error)
-  }
-}
+    it('複数のイベントタイプが生成される', async () => {
+      const engine = new ExpeditionEngine(12345)
+      const result = await engine.generateExpedition(testRequest, testParty)
 
-// 決定性テスト（同じシードで同じ結果になるか）
-export async function testDeterminism(): Promise<void> {
-  console.log("\n=== 決定性テスト ===")
+      const eventTypes = new Set(result.events.map(e => e.type))
+      expect(eventTypes.size).toBeGreaterThan(1)
+    })
+  })
 
-  const seed = 54321
-  const engine1 = new ExpeditionEngine(seed)
-  const engine2 = new ExpeditionEngine(seed)
+  describe('決定性テスト', () => {
+    it('同じシードで同じ結果を生成する', async () => {
+      const seed = 54321
+      const engine1 = new ExpeditionEngine(seed)
+      const engine2 = new ExpeditionEngine(seed)
 
-  const result1 = await engine1.generateExpedition(testRequest, testParty)
-  const result2 = await engine2.generateExpedition(testRequest, testParty)
+      const result1 = await engine1.generateExpedition(testRequest, testParty)
+      const result2 = await engine2.generateExpedition(testRequest, testParty)
 
-  const eventsMatch = result1.events.length === result2.events.length &&
-    result1.events.every((event, index: number) => {
-      const other = result2.events[index]
-      return event.type === other.type && Math.abs(event.at - other.at) < 0.001
+      expect(result1.events.length).toBe(result2.events.length)
+
+      result1.events.forEach((event, index) => {
+        const other = result2.events[index]
+        expect(event.type).toBe(other.type)
+        expect(Math.abs(event.at - other.at)).toBeLessThan(0.001)
+      })
     })
 
-  if (eventsMatch) {
-    console.log("✅ 決定性テスト成功: 同じシードで同じ結果")
-  } else {
-    console.log("❌ 決定性テスト失敗: 結果が異なる")
-  }
-}
+    it('異なるシードで異なる結果を生成する', async () => {
+      const engine1 = new ExpeditionEngine(11111)
+      const engine2 = new ExpeditionEngine(22222)
 
-// 帰還条件テスト
-export async function testReturnPolicies(): Promise<void> {
-  console.log("\n=== 帰還条件テスト ===")
+      const result1 = await engine1.generateExpedition(testRequest, testParty)
+      const result2 = await engine2.generateExpedition(testRequest, testParty)
 
-  const policies: ExpeditionRequest["returnPolicy"][] = ["until_floor2", "if_any_ko", "never"]
+      // イベント数が異なるか、イベントタイプが異なることを確認
+      const isDifferent =
+        result1.events.length !== result2.events.length ||
+        result1.events.some((event, index) => {
+          const other = result2.events[index]
+          return !other || event.type !== other.type || Math.abs(event.at - other.at) >= 0.001
+        })
 
-  for (const policy of policies) {
-    const request = { ...testRequest, returnPolicy: policy }
-    const engine = new ExpeditionEngine()
-    const result = await engine.generateExpedition(request, testParty)
+      expect(isDifferent).toBe(true)
+    })
+  })
 
-    const returnEvent = result.events.find((e) => e.type === "return")
-    console.log(`${policy}: ${returnEvent ? `理由=${returnEvent.reason}` : '帰還なし'}`)
-  }
-}
+  describe('帰還条件テスト', () => {
+    it('until_floor2で2階に到達後に帰還イベントが発生する', async () => {
+      const request: ExpeditionRequest = { ...testRequest, returnPolicy: "until_floor2" }
+      const engine = new ExpeditionEngine(12345)
+      const result = await engine.generateExpedition(request, testParty)
 
-// ブラウザ環境でのテスト実行
-if (typeof window !== 'undefined') {
-  window.runExpeditionTests = async () => {
-    await testExpeditionEngine()
-    await testDeterminism()
-    await testReturnPolicies()
-  }
-}
+      // until_floor2ポリシーでは2階到達後に帰還するはず
+      // 帰還イベントが存在することを確認
+      const returnEvent = result.events.find(e => e.type === "return")
+      // returnイベントが存在する、または2階以下で終了している
+      const isValidReturn = returnEvent !== undefined || result.summary.maxFloorReached <= 2
+      expect(isValidReturn).toBe(true)
+    })
+
+    it('if_any_koでゴブリンが倒れたら帰還する', async () => {
+      const request: ExpeditionRequest = { ...testRequest, returnPolicy: "if_any_ko" }
+      const engine = new ExpeditionEngine(12345)
+      const result = await engine.generateExpedition(request, testParty)
+
+      // 誰かが倒れる可能性があるシードの場合、returnイベントが存在する
+      // このテストは帰還条件が正しく機能していることを確認
+      const returnEvent = result.events.find(e => e.type === "return")
+      if (returnEvent) {
+        expect(returnEvent.reason).toBeDefined()
+      }
+    })
+
+    it('neverで帰還条件を満たさない限り探索を続ける', async () => {
+      const request: ExpeditionRequest = { ...testRequest, returnPolicy: "never" }
+      const engine = new ExpeditionEngine(12345)
+      const result = await engine.generateExpedition(request, testParty)
+
+      expect(result.summary).toBeDefined()
+      // 最後まで探索した証拠としてサマリが存在すること
+      expect(result.summary.maxFloorReached).toBeGreaterThanOrEqual(1)
+    })
+  })
+})

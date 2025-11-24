@@ -1,3 +1,5 @@
 export * from './IGoblinRepository'
 export * from './IPartyRepository'
 export * from './IItemRepository'
+export * from './IPendingGoblinRepository'
+export * from './IBaseStateRepository'
