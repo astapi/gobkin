@@ -21,6 +21,7 @@ export const GoblinDetailModal = ({
 }: GoblinDetailModalProps) => {
   const [items, setItems] = useState<Item[]>([])
   const [currentGoblin, setCurrentGoblin] = useState<Goblin | null>(goblin)
+  const [showBanishConfirm, setShowBanishConfirm] = useState(false)
   const equipItemUseCase = useMemo(
     () => new EquipItemUseCase(goblinRepository, itemRepository),
     [goblinRepository, itemRepository]
@@ -72,6 +73,13 @@ export const GoblinDetailModal = ({
       const updatedGoblin = goblinRepository.getGoblin(currentGoblin.id)
       setCurrentGoblin(initializeEquipment(updatedGoblin))
     }
+  }
+
+  const handleBanish = () => {
+    if (!currentGoblin) return
+    goblinRepository.deleteGoblin(currentGoblin.id)
+    setShowBanishConfirm(false)
+    onClose()
   }
 
   if (!currentGoblin) return null
@@ -200,8 +208,44 @@ export const GoblinDetailModal = ({
             </div>
           </div>
           )}
+
+          <div className="mt-6">
+            <button
+              onClick={() => setShowBanishConfirm(true)}
+              className="w-full py-3 text-white bg-red-600 rounded-lg font-bold hover:bg-red-700 transition-colors"
+            >
+              このゴブリンを追放する
+            </button>
+          </div>
         </div>
       </div>
+
+      {showBanishConfirm && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl p-6 max-w-sm mx-4 shadow-2xl">
+            <h3 className="text-xl font-bold text-gray-800 mb-4">追放の確認</h3>
+            <p className="text-gray-600 mb-6">
+              本当に <span className="font-bold text-gray-800">{currentGoblin.name}</span> を追放しますか？
+              <br />
+              この操作は取り消せません。
+            </p>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setShowBanishConfirm(false)}
+                className="flex-1 py-2 text-gray-700 bg-gray-200 rounded-lg font-bold hover:bg-gray-300 transition-colors"
+              >
+                キャンセル
+              </button>
+              <button
+                onClick={handleBanish}
+                className="flex-1 py-2 text-white bg-red-600 rounded-lg font-bold hover:bg-red-700 transition-colors"
+              >
+                追放する
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
