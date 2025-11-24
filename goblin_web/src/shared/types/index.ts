@@ -26,3 +26,6 @@ export type {
 
 // Dungeon related types
 export type { Dungeon } from "./Dungeon"
+
+// Base related types
+export type { BaseState } from "./BaseState"

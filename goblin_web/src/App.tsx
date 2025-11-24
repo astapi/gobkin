@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { GoblinListScreen } from './presentation/components/GoblinListScreen.tsx'
 import { FormationTabScreen } from './presentation/components/FormationTabScreen.tsx'
+import { BaseManagementScreen } from './presentation/components/BaseManagementScreen.tsx'
 import { TabMenu } from './presentation/components/TabMenu.tsx'
 import { AuthProvider } from './presentation/contexts/AuthContext.tsx'
 import { useAuth } from './presentation/contexts/AuthContextValue.ts'
@@ -8,7 +9,7 @@ import { ExpeditionStateProvider } from './presentation/contexts/ExpeditionState
 
 function AppContent() {
   const { loading } = useAuth()
-  const [activeTab, setActiveTab] = useState<'list' | 'formation'>('list')
+  const [activeTab, setActiveTab] = useState<'list' | 'formation' | 'base'>('list')
 
   if (loading) {
     return (
@@ -40,6 +41,9 @@ function AppContent() {
         )}
         {activeTab === 'formation' && (
           <FormationTabScreen />
+        )}
+        {activeTab === 'base' && (
+          <BaseManagementScreen />
         )}
       </div>
 

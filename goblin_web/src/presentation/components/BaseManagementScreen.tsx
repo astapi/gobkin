@@ -1,0 +1,325 @@
+import { useEffect, useMemo, useState } from 'react'
+import type { Goblin, BaseState } from '../../shared/types'
+import type { BirthEvaluationResult } from '../../core/services/BaseManagementService.ts'
+import { BaseManagementService } from '../../core/services'
+import { useGoblinService } from '../hooks/useGoblinService.ts'
+import { FirestorePendingGoblinRepositoryAdapter } from '../../infrastructure/repositories/FirestorePendingGoblinRepositoryImpl'
+import { FirestoreBaseStateRepositoryAdapter } from '../../infrastructure/repositories/FirestoreBaseStateRepositoryImpl'
+
+type BaseConfig = Pick<BaseState, 'capacity' | 'rank' | 'lastSpawnTime' | 'slimeCaveCleared' | 'firstBonusGranted' | 'nextGoblinId'>
+
+const createDefaultConfig = (): BaseConfig => {
+  const now = Date.now()
+  return {
+    capacity: 8,
+    rank: 1,
+    lastSpawnTime: now,
+    slimeCaveCleared: false,
+    firstBonusGranted: false,
+  }
+}
+
+export const BaseManagementScreen = () => {
+  const service = useMemo(() => new BaseManagementService(), [])
+  const { goblinRepository, goblins, refreshGoblins, isLoading } = useGoblinService()
+  const pendingGoblinRepository = useMemo(() => new FirestorePendingGoblinRepositoryAdapter(), [])
+  const baseStateRepository = useMemo(() => new FirestoreBaseStateRepositoryAdapter(), [])
+  const [config, setConfig] = useState<BaseConfig>(createDefaultConfig())
+  const [pendingGoblins, setPendingGoblins] = useState<Goblin[]>([])
+  const [selectedGoblinIds, setSelectedGoblinIds] = useState<Set<number>>(new Set())
+  const [isPendingRepoReady, setIsPendingRepoReady] = useState(false)
+  const [isBaseStateReady, setIsBaseStateReady] = useState(false)
+
+  // baseStateRepositoryを初期化
+  useEffect(() => {
+    const initBaseStateRepo = async () => {
+      await baseStateRepository.initialize()
+      const state = baseStateRepository.getBaseState()
+      if (state) {
+        setConfig(state)
+      }
+      setIsBaseStateReady(true)
+    }
+    initBaseStateRepo()
+  }, [baseStateRepository])
+
+  // pendingGoblinRepositoryを初期化
+  useEffect(() => {
+    const initPendingRepo = async () => {
+      await pendingGoblinRepository.initialize()
+      setPendingGoblins(pendingGoblinRepository.getPendingGoblins())
+      setIsPendingRepoReady(true)
+    }
+    initPendingRepo()
+  }, [pendingGoblinRepository])
+
+  // configが変更されたときにFirestoreに保存
+  useEffect(() => {
+    if (isBaseStateReady) {
+      baseStateRepository.saveBaseState(config)
+    }
+  }, [config, isBaseStateReady, baseStateRepository])
+
+  // 拠点ランクに応じた保留リストの上限を取得
+  const getPendingListLimit = (rank: number): number => {
+    return rank * 5 // ランク1=5体、ランク2=10体、ランク3=15体...
+  }
+
+  // 自動的に時間経過を監視して新しいゴブリンを検出
+  useEffect(() => {
+    if (!isPendingRepoReady || !isBaseStateReady) return
+
+    const checkForNewGoblins = () => {
+      const now = Date.now()
+      const maxPendingGoblins = getPendingListLimit(config.rank)
+
+      // 保留リストが上限に達している場合はスキップ
+      if (pendingGoblins.length >= maxPendingGoblins) {
+        return
+      }
+
+      const result = service.evaluateBirths({
+        goblins,
+        capacity: config.capacity,
+        rank: config.rank,
+        now,
+        lastSpawnTime: config.lastSpawnTime,
+        slimeCaveCleared: config.slimeCaveCleared,
+        firstBonusGranted: config.firstBonusGranted,
+        nextGoblinId: config.nextGoblinId,
+      })
+
+      if (result.newborns.length > 0) {
+        // Firestoreに保存
+        result.newborns.forEach(goblin => {
+          pendingGoblinRepository.addPendingGoblin(goblin)
+        })
+
+        // ローカル状態を更新
+        setPendingGoblins(prev => {
+          const combined = [...prev, ...result.newborns]
+          // 上限を超えないようにトリミング
+          return combined.slice(0, maxPendingGoblins)
+        })
+        setConfig(prev => ({
+          ...prev,
+          lastSpawnTime: result.updatedLastSpawnTime,
+          firstBonusGranted: result.firstBonusGranted,
+          nextGoblinId: result.nextGoblinId,
+        }))
+      }
+    }
+
+    const interval = setInterval(checkForNewGoblins, 5000) // 5秒ごとにチェック
+    checkForNewGoblins() // 初回実行
+    return () => clearInterval(interval)
+  }, [service, goblins, config, goblinRepository, pendingGoblins.length, isPendingRepoReady, pendingGoblinRepository])
+
+  const toggleGoblinSelection = (goblinId: number) => {
+    setSelectedGoblinIds(prev => {
+      const next = new Set(prev)
+      if (next.has(goblinId)) {
+        next.delete(goblinId)
+      } else {
+        next.add(goblinId)
+      }
+      return next
+    })
+  }
+
+  const addSelectedGoblins = async () => {
+    const selectedGoblins = pendingGoblins.filter(g => selectedGoblinIds.has(g.id))
+    for (const goblin of selectedGoblins) {
+      // 拠点に追加
+      await goblinRepository.saveGoblin(goblin)
+      // pendingGoblinsから削除
+      pendingGoblinRepository.removePendingGoblin(goblin.id)
+    }
+    await refreshGoblins()
+
+    // ローカル状態を更新
+    setPendingGoblins(prev => prev.filter(g => !selectedGoblinIds.has(g.id)))
+    setSelectedGoblinIds(new Set())
+  }
+
+  const dismissSelectedGoblins = async () => {
+    const selectedGoblins = pendingGoblins.filter(g => selectedGoblinIds.has(g.id))
+    for (const goblin of selectedGoblins) {
+      // pendingGoblinsから削除（拠点には追加しない）
+      pendingGoblinRepository.removePendingGoblin(goblin.id)
+    }
+
+    // タイマーをリセット（現在時刻を設定）
+    const now = Date.now()
+    setConfig(prev => ({
+      ...prev,
+      lastSpawnTime: now,
+    }))
+
+    // ローカル状態を更新
+    setPendingGoblins(prev => prev.filter(g => !selectedGoblinIds.has(g.id)))
+    setSelectedGoblinIds(new Set())
+  }
+
+  const toggleSlimeCleared = () => {
+    setConfig(prev => ({
+      ...prev,
+      slimeCaveCleared: !prev.slimeCaveCleared,
+    }))
+  }
+
+  const availableSlots = Math.max(0, config.capacity - goblins.length)
+  const nextSpawnAt = new Date(config.lastSpawnTime + 10 * 1000) // デバッグ用: 10秒
+  const maxPendingGoblins = getPendingListLimit(config.rank)
+
+  if (isLoading || !isBaseStateReady || !isPendingRepoReady) {
+    return (
+      <div className="h-full flex items-center justify-center text-gray-600">
+        拠点情報を読み込み中...
+      </div>
+    )
+  }
+
+  return (
+    <div className="h-full overflow-y-auto flex flex-col gap-4">
+      <div className="text-lg font-bold text-gray-800 pb-2 border-b-2 border-gray-200">
+        拠点管理
+      </div>
+
+      <div className="bg-white rounded-xl shadow p-4 border border-gray-100">
+        <div className="text-sm font-semibold text-gray-700 mb-3">拠点ステータス</div>
+        <div className="grid grid-cols-2 gap-3 text-sm text-gray-700">
+          <div className="flex flex-col gap-1">
+            <span className="text-xs text-gray-500">拠点ランク</span>
+            <div className="text-base font-semibold px-2 py-1 bg-gray-50 rounded-md border border-gray-200">
+              {config.rank}
+            </div>
+          </div>
+          <div className="flex flex-col gap-1">
+            <span className="text-xs text-gray-500">収容数</span>
+            <div className="text-base font-semibold px-2 py-1 bg-gray-50 rounded-md border border-gray-200">
+              {config.capacity}
+            </div>
+          </div>
+          <div className="flex flex-col gap-1">
+            <span className="text-xs text-gray-500">現在のゴブリン</span>
+            <span className="text-base font-semibold">{goblins.length} / {config.capacity}</span>
+          </div>
+          <div className="flex flex-col gap-1">
+            <span className="text-xs text-gray-500">空き枠</span>
+            <span className="text-base font-semibold text-emerald-600">{availableSlots}</span>
+          </div>
+        </div>
+
+        <div className="mt-3 pt-3 border-t border-gray-100">
+          <div className="flex flex-col gap-1">
+            <span className="text-xs text-gray-500">次回ゴブリン追加予定時間</span>
+            <span className="text-sm font-semibold text-gray-800">{nextSpawnAt.toLocaleTimeString('ja-JP')}</span>
+          </div>
+        </div>
+      </div>
+
+      {pendingGoblins.length > 0 && (
+        <div className="bg-white rounded-xl shadow p-4 border border-gray-100 flex flex-col gap-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="text-sm font-semibold text-gray-700">追加されたゴブリン</div>
+              <span className="text-xs px-2 py-1 rounded-full bg-emerald-100 text-emerald-700">
+                {pendingGoblins.length} / {maxPendingGoblins}体
+              </span>
+            </div>
+            {selectedGoblinIds.size > 0 && (
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={dismissSelectedGoblins}
+                  className="px-3 py-1.5 bg-gray-500 text-white text-xs font-semibold rounded-md hover:bg-gray-600 transition-colors"
+                >
+                  解雇する ({selectedGoblinIds.size})
+                </button>
+                <button
+                  type="button"
+                  onClick={addSelectedGoblins}
+                  className="px-3 py-1.5 bg-emerald-600 text-white text-xs font-semibold rounded-md hover:bg-emerald-700 transition-colors"
+                >
+                  拠点に加える ({selectedGoblinIds.size})
+                </button>
+              </div>
+            )}
+          </div>
+          <p className="text-xs text-gray-600 leading-relaxed">
+            時間経過により新しいゴブリンが見つかりました。拠点に加えるか、解雇するゴブリンを選択してください。
+          </p>
+
+          <div className="flex flex-col gap-2">
+            {pendingGoblins.map(goblin => {
+              const isSelected = selectedGoblinIds.has(goblin.id)
+              return (
+                <div
+                  key={goblin.id}
+                  onClick={() => toggleGoblinSelection(goblin.id)}
+                  className={`flex items-center gap-3 p-2.5 rounded-lg border-2 cursor-pointer transition-all ${
+                    isSelected
+                      ? 'bg-emerald-50 border-emerald-400'
+                      : 'bg-white border-gray-200 hover:border-gray-300'
+                  }`}
+                >
+                  <div className="flex-shrink-0">
+                    <div
+                      className={`w-5 h-5 rounded border-2 flex items-center justify-center ${
+                        isSelected
+                          ? 'bg-emerald-500 border-emerald-500'
+                          : 'bg-white border-gray-300'
+                      }`}
+                    >
+                      {isSelected && (
+                        <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                          <path
+                            fillRule="evenodd"
+                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                      )}
+                    </div>
+                  </div>
+                  <div className="w-10 h-10 flex items-center justify-center flex-shrink-0">
+                    <img src={goblin.avatar} alt={goblin.name} className="w-full h-full object-contain" />
+                  </div>
+                  <div className="flex-1">
+                    <div className="font-semibold text-gray-800 text-sm">{goblin.name}</div>
+                    <div className="text-xs text-gray-500 mt-0.5">
+                      HP {goblin.stats.hp} / 攻 {goblin.stats.atk} / 術 {goblin.stats.sp} / 速 {goblin.stats.spd} / 防 {goblin.stats.def}
+                    </div>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+      )}
+
+      <div className="bg-gray-50 rounded-xl p-4 border border-gray-200">
+        <div className="text-xs text-gray-600 leading-relaxed space-y-2">
+          <p>• 10秒ごとにゴブリンが追加される可能性があります（デバッグモード）</p>
+          <p>• スライムの洞窟をクリアすると初回ボーナスで1体が確定で追加されます</p>
+          <p>• 拠点ランクが高いほど、1回の判定で追加される数が増えます</p>
+          <p>• 追加されたゴブリンのリストは拠点ランク × 5体まで保持されます（現在: 最大{maxPendingGoblins}体）</p>
+          <div className="mt-3 pt-2 border-t border-gray-300">
+            <button
+              type="button"
+              onClick={toggleSlimeCleared}
+              className={`px-3 py-1.5 rounded-md text-xs font-semibold border transition-colors ${
+                config.slimeCaveCleared
+                  ? 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100'
+                  : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+              }`}
+            >
+              {config.slimeCaveCleared ? '✓ 初回ボーナス受取済み' : '初回ボーナスを受け取る'}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
