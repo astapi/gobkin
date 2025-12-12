@@ -191,28 +191,36 @@ export const FormationTabScreen = () => {
       console.error('経験値付与エラー:', error)
     }
 
-    // 遠征成功時にゴブリンを1匹追加
+    // 遠征成功時にゴブリンを1匹追加（上限チェック付き）
     if (isSuccess && isRepoReady) {
       const baseState = baseStateRepository.getBaseState()
-      const currentGoblins = goblins
       const pendingGoblins = pendingGoblinRepository.getPendingGoblins()
-      const maxId = Math.max(
-        ...currentGoblins.map(g => g.id),
-        ...pendingGoblins.map(g => g.id),
-        baseState?.nextGoblinId ?? 0,
-        0
-      )
-      const nextGoblinId = maxId + 1
+      const rank = baseState?.rank ?? 1
+      const maxPendingGoblins = rank * 5
 
-      const newGoblin = goblinBirthService.createNewGoblin(nextGoblinId)
-      pendingGoblinRepository.addPendingGoblin(newGoblin)
+      // 保留リストが上限に達している場合は追加しない
+      if (pendingGoblins.length >= maxPendingGoblins) {
+        console.log(`保留リストが上限(${maxPendingGoblins}体)に達しているため、新しいゴブリンは追加されませんでした`)
+      } else {
+        const currentGoblins = goblins
+        const maxId = Math.max(
+          ...currentGoblins.map(g => g.id),
+          ...pendingGoblins.map(g => g.id),
+          baseState?.nextGoblinId ?? 0,
+          0
+        )
+        const nextGoblinId = maxId + 1
 
-      // nextGoblinIdを更新
-      if (baseState) {
-        baseStateRepository.saveBaseState({
-          ...baseState,
-          nextGoblinId: nextGoblinId + 1,
-        })
+        const newGoblin = goblinBirthService.createNewGoblin(nextGoblinId)
+        pendingGoblinRepository.addPendingGoblin(newGoblin)
+
+        // nextGoblinIdを更新
+        if (baseState) {
+          baseStateRepository.saveBaseState({
+            ...baseState,
+            nextGoblinId: nextGoblinId + 1,
+          })
+        }
       }
     }
 
