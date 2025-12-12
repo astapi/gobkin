@@ -1,6 +1,6 @@
 import type { EnemySnap } from "./Enemy"
 import type { CombatReplay } from "./Battle"
-import type { Drop } from "./Item"
+import type { Drop } from "./Item" // capturesで使用
 
 export interface ExpeditionRequest {
   partyId: string
@@ -39,9 +39,8 @@ export interface ExpeditionReplay {
 export type TimelineEvent =
   | { type: "move_start"; at: number; floor: number }
   | { type: "floor_up"; at: number; from: number; to: number }
-  | { type: "battle"; at: number; floor: number; enemy: EnemySnap; combat: CombatReplay; xp: number; drops: Drop[] }
-  | { type: "boss"; at: number; floor: number; enemy: EnemySnap; combat: CombatReplay; xp: number; drops: Drop[] }
-  | { type: "resource"; at: number; floor: number; loot: Drop[] }
+  | { type: "battle"; at: number; floor: number; enemy: EnemySnap; combat: CombatReplay; xp: number }
+  | { type: "boss"; at: number; floor: number; enemy: EnemySnap; combat: CombatReplay; xp: number }
   | { type: "exploring"; at: number; floor: number }
   | { type: "return"; at: number; reason: ExpeditionEndReason }
 
@@ -66,7 +65,6 @@ export interface RewardSummary {
   maxFloorReached: number
   xpGained: number
   goldGained: number
-  loot: Drop[]
   captures: Drop[]
   casualties: string[]
   injuries: string[]
@@ -82,9 +80,9 @@ export interface AreaConfig {
     perFloorEvents: number
     eventWeights: {
       battle: number
-      resource: number
-      trap: number
-      npc: number
+      exploring: number
+      trap?: number
+      npc?: number
     }
     pityTimerSec?: number
   }
@@ -93,7 +91,6 @@ export interface AreaConfig {
   rewards: {
     xpFloor: number[]
     xpBoss: number
-    lootPool: { id: string; w: number }[]
     captureBonus: number
   }
   unlockNext?: string

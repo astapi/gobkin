@@ -62,6 +62,13 @@ export class GoblinBirthService {
   }
 
   /**
+   * 単体のゴブリンを生成する（遠征成功時など）
+   */
+  public createNewGoblin(nextGoblinId: number): Goblin {
+    return this.createGoblin(nextGoblinId)
+  }
+
+  /**
    * 時間経過とゲーム状態に基づいて新しいゴブリンの誕生を評価する
    */
   public evaluateBirths(state: BirthEvaluationState): BirthEvaluationResult {
@@ -133,7 +140,6 @@ export class GoblinBirthService {
       experience: 0,
       avatar: '/src/assets/goblin/goblin.png',
       stats,
-      equipment: [0, 1, 2].map(slotIndex => ({ slotIndex, itemId: null })),
     }
   }
 

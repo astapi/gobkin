@@ -108,13 +108,6 @@ export const ExpeditionLogScreen = ({
         }
         break
       }
-      case 'resource': {
-        if (event.loot && event.loot.length > 0) {
-          const items = event.loot.map(drop => `${drop.id} x${drop.qty}`).join(', ')
-          addLog(`資源発見: ${items}`)
-        }
-        break
-      }
       case 'return': {
         let reason = '探索完了'
         switch (event.reason) {
@@ -198,13 +191,6 @@ export const ExpeditionLogScreen = ({
 
           if (event.combat.capture?.success) {
             tempLogs.push({ message: `[${formatTimeLocal(event.at)}] ${event.combat.capture.captured?.id}を捕獲！` })
-          }
-          break
-        }
-        case 'resource': {
-          if (event.loot && event.loot.length > 0) {
-            const items = event.loot.map(drop => `${drop.id} x${drop.qty}`).join(', ')
-            tempLogs.push({ message: `[${formatTimeLocal(event.at)}] 資源発見: ${items}` })
           }
           break
         }

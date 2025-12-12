@@ -1,5 +1,6 @@
 import { useMemo, useRef, useState, useEffect } from 'react'
 import type { ExpeditionRecord, ExpeditionRequest } from '../../shared/types'
+import type { IPendingGoblinRepository, IBaseStateRepository } from '../../core/repositories'
 import { PartyEditScreen } from './PartyEditScreen.tsx'
 import { FormationScreen } from './FormationScreen.tsx'
 import { ExpeditionLogScreen } from './ExpeditionLogScreen.tsx'
@@ -8,10 +9,16 @@ import { ExpeditionPreparationScreen } from './ExpeditionPreparationScreen.tsx'
 import { usePartyService } from '../hooks/usePartyService.ts'
 import { useGoblinService } from '../hooks/useGoblinService.ts'
 import { useExpeditionState } from '../contexts/ExpeditionStateContextValue.ts'
-import { ExpeditionEngine } from '../../core/services'
+import { ExpeditionEngine, GoblinBirthService } from '../../core/services'
 import { StartExpeditionUseCase } from '../../core/usecases'
 import { useExpeditionFlow } from '../hooks/useExpeditionFlow.ts'
 import { useDungeonProgress } from '../hooks/useDungeonProgress.ts'
+import { FirestorePendingGoblinRepositoryAdapter } from '../../infrastructure/repositories/FirestorePendingGoblinRepositoryImpl'
+import { FirestoreBaseStateRepositoryAdapter } from '../../infrastructure/repositories/FirestoreBaseStateRepositoryImpl'
+import { JsonPendingGoblinRepositoryImpl } from '../../infrastructure/repositories/JsonPendingGoblinRepositoryImpl'
+import { JsonBaseStateRepositoryImpl } from '../../infrastructure/repositories/JsonBaseStateRepositoryImpl'
+
+const USE_FIRESTORE = import.meta.env.VITE_USE_FIRESTORE === 'true'
 
 type ViewMode = 'list' | 'preparation' | 'edit' | 'log' | 'result'
 
@@ -61,6 +68,34 @@ export const FormationTabScreen = () => {
   const { dungeons, markDungeonCleared } = useDungeonProgress()
   const processedExpeditionsRef = useRef<Set<string>>(new Set())
   const isLoading = isPartyLoading || isGoblinLoading
+  const [isRepoReady, setIsRepoReady] = useState(false)
+
+  // ゴブリン生成用のサービスとリポジトリ
+  const goblinBirthService = useMemo(() => new GoblinBirthService(), [])
+  const pendingGoblinRepository = useMemo<IPendingGoblinRepository>(
+    () => USE_FIRESTORE
+      ? new FirestorePendingGoblinRepositoryAdapter()
+      : new JsonPendingGoblinRepositoryImpl(),
+    []
+  )
+  const baseStateRepository = useMemo<IBaseStateRepository>(
+    () => USE_FIRESTORE
+      ? new FirestoreBaseStateRepositoryAdapter()
+      : new JsonBaseStateRepositoryImpl(),
+    []
+  )
+
+  // リポジトリの初期化
+  useEffect(() => {
+    const initRepos = async () => {
+      await Promise.all([
+        pendingGoblinRepository.initialize(),
+        baseStateRepository.initialize(),
+      ])
+      setIsRepoReady(true)
+    }
+    initRepos()
+  }, [pendingGoblinRepository, baseStateRepository])
 
   const handlePartySelect = (partyId: number) => {
     setEditingPartyId(partyId)
@@ -127,24 +162,51 @@ export const FormationTabScreen = () => {
     setViewMode('preparation')
   }
 
-  // 遠征結果が表示されたら進行状況を更新
-  useEffect(() => {
-    if (viewMode !== 'result' || !selectedHistoryReplay?.replay) return
+  // 遠征帰還時の処理（成功時はゴブリンを追加）
+  const handleExpeditionReturn = (expeditionRecord: ExpeditionRecord) => {
+    if (!expeditionRecord.replay) return
 
-    const expeditionId = selectedHistoryReplay.replay.meta.expeditionId
+    const expeditionId = expeditionRecord.replay.meta.expeditionId
     if (processedExpeditionsRef.current.has(expeditionId)) return
 
-    const dungeon = dungeons.find(d => d.id === selectedHistoryReplay.dungeonId)
+    const dungeon = dungeons.find(d => d.id === expeditionRecord.dungeonId)
     if (!dungeon) return
 
-    const cleared = selectedHistoryReplay.replay.summary.success &&
-      selectedHistoryReplay.replay.summary.maxFloorReached >= dungeon.floors
+    const isSuccess = expeditionRecord.replay.summary.success
+    const cleared = isSuccess &&
+      expeditionRecord.replay.summary.maxFloorReached >= dungeon.floors
 
     if (cleared) {
       markDungeonCleared(dungeon, true)
-      processedExpeditionsRef.current.add(expeditionId)
     }
-  }, [viewMode, selectedHistoryReplay, dungeons, markDungeonCleared])
+
+    // 遠征成功時にゴブリンを1匹追加
+    if (isSuccess && isRepoReady) {
+      const baseState = baseStateRepository.getBaseState()
+      const currentGoblins = goblins
+      const pendingGoblins = pendingGoblinRepository.getPendingGoblins()
+      const maxId = Math.max(
+        ...currentGoblins.map(g => g.id),
+        ...pendingGoblins.map(g => g.id),
+        baseState?.nextGoblinId ?? 0,
+        0
+      )
+      const nextGoblinId = maxId + 1
+
+      const newGoblin = goblinBirthService.createNewGoblin(nextGoblinId)
+      pendingGoblinRepository.addPendingGoblin(newGoblin)
+
+      // nextGoblinIdを更新
+      if (baseState) {
+        baseStateRepository.saveBaseState({
+          ...baseState,
+          nextGoblinId: nextGoblinId + 1,
+        })
+      }
+    }
+
+    processedExpeditionsRef.current.add(expeditionId)
+  }
 
   const handleStartExpedition = async (request: ExpeditionRequest) => {
     const partyId = Number.parseInt(request.partyId, 10)
@@ -277,6 +339,7 @@ export const FormationTabScreen = () => {
       getPartyExpeditionHistory={getPartyExpeditionHistory}
       onMarkPartyIdle={markIdle}
       onClearExpedition={clearExpedition}
+      onExpeditionReturn={handleExpeditionReturn}
     />
   )
 }

@@ -3,10 +3,8 @@ import type {
   ExpeditionReplay,
   TimelineEvent,
   AreaConfig,
-  PartySnapshot,
   EnemySnap,
   CombatReplay,
-  Drop,
   RewardSummary,
   Goblin,
   EnemyDatabase,
@@ -14,6 +12,7 @@ import type {
   EnemyPattern,
   PartyState,
   ExpeditionEndReason,
+  Drop,
 } from '../../shared/types'
 import { BattleSystem } from './BattleSystem'
 
@@ -68,7 +67,6 @@ export class ExpeditionEngine {
       throw new Error(`Enemy data not found: ${areaId}`)
     }
 
-    const partySnapshot = this.createPartySnapshot(party, request.returnPolicy)
     // 表示上の規定時間をそのまま使い、終端にイベントを揃える
     const adjustedDuration = Math.ceil(area.baseDurationSec)
 
@@ -113,7 +111,6 @@ export class ExpeditionEngine {
             const enemies = this.getEnemiesFromPattern(pattern, enemyDatabase.enemies)
             const combat = this.resolveCombat(partyState, enemies, area)
             const xp = area.rewards.xpFloor[currentFloor - 1] || 10
-            const drops = this.generateDrops(area.rewards.lootPool, partySnapshot.luckMod)
 
             events.push({
               type: "battle",
@@ -121,8 +118,7 @@ export class ExpeditionEngine {
               floor: currentFloor,
               enemy: this.createEnemySnap(enemies),
               combat,
-              xp,
-              drops
+              xp
             })
 
             // パーティ状態を更新
@@ -134,17 +130,6 @@ export class ExpeditionEngine {
               shouldReturn = true
               returnReason = returnCheck.reason
             }
-            break
-          }
-
-          case "resource": {
-            const loot = this.generateDrops(area.rewards.lootPool, partySnapshot.luckMod * 0.7)
-            events.push({
-              type: "resource",
-              at: currentTime,
-              floor: currentFloor,
-              loot
-            })
             break
           }
 
@@ -165,7 +150,6 @@ export class ExpeditionEngine {
             const enemies = this.getEnemiesFromPattern(pattern, enemyDatabase.enemies)
             const combat = this.resolveCombat(partyState, enemies, area)
             const xp = area.rewards.xpFloor[currentFloor - 1] || 10
-            const drops = this.generateDrops(area.rewards.lootPool, partySnapshot.luckMod)
 
             events.push({
               type: "battle",
@@ -173,8 +157,7 @@ export class ExpeditionEngine {
               floor: currentFloor,
               enemy: this.createEnemySnap(enemies),
               combat,
-              xp,
-              drops
+              xp
             })
 
             this.applyBattleResults(partyState, combat)
@@ -212,7 +195,6 @@ export class ExpeditionEngine {
 
       const bossCombat = this.resolveCombat(partyState, bossEnemies, area, true)
       const bossXp = area.rewards.xpBoss
-      const bossDrops = this.generateDrops(area.rewards.lootPool, partySnapshot.luckMod * 1.5)
 
       // 規定時間の終端でボス戦を行う（最後の秒で戦闘開始）
       const bossTime = adjustedDuration
@@ -224,8 +206,7 @@ export class ExpeditionEngine {
         floor: area.floors,
         enemy: this.createEnemySnap(bossEnemies),
         combat: bossCombat,
-        xp: bossXp,
-        drops: bossDrops
+        xp: bossXp
       })
 
       this.applyBattleResults(partyState, bossCombat)
@@ -260,27 +241,6 @@ export class ExpeditionEngine {
       durationSec: adjustedDuration,
       events,
       summary
-    }
-  }
-
-  private createPartySnapshot(party: Goblin[], returnPolicy: ExpeditionRequest["returnPolicy"]): PartySnapshot {
-    const totalStats = party.reduce((acc, goblin) => ({
-      hp: acc.hp + goblin.stats.hp,
-      atk: acc.atk + goblin.stats.atk,
-      sp: acc.sp + goblin.stats.sp,
-      spd: acc.spd + goblin.stats.spd,
-      def: acc.def + goblin.stats.def
-    }), { hp: 0, atk: 0, sp: 0, spd: 0, def: 0 })
-
-    return {
-      members: party.map(g => g.id.toString()),
-      returnPolicy,
-      foodSupply: 1.0,
-      speedMod: 1.0,
-      luckMod: Math.min(1.0 + (totalStats.sp / 1000), 1.2),
-      captureSlots: Math.min(party.length, 6),
-      carryWeight: party.length * 10,
-      powerRating: totalStats.atk + totalStats.def + (totalStats.hp / 10)
     }
   }
 
@@ -382,12 +342,7 @@ export class ExpeditionEngine {
         sp: 0,
         spd: 40,
         def: member.def
-      },
-      equipment: [
-        { slotIndex: 0, itemId: null },
-        { slotIndex: 1, itemId: null },
-        { slotIndex: 2, itemId: null }
-      ]
+      }
     }))
 
     // 各メンバーの現在HPを配列で渡す
@@ -429,32 +384,6 @@ export class ExpeditionEngine {
     })
   }
 
-  private generateDrops(lootPool: { id: string; w: number }[], luckMod: number): Drop[] {
-    const drops: Drop[] = []
-    const numDrops = Math.floor(this.rng() * 3) + 1
-
-    for (let i = 0; i < numDrops; i++) {
-      const adjustedPool = lootPool.map(item => ({
-        ...item,
-        w: item.w * (1 + (luckMod - 1) * 0.5)
-      }))
-
-      const totalWeight = adjustedPool.reduce((sum, item) => sum + item.w, 0)
-      const roll = this.rng() * totalWeight
-
-      let current = 0
-      for (const item of adjustedPool) {
-        current += item.w
-        if (roll <= current) {
-          drops.push({ id: item.id, qty: 1 })
-          break
-        }
-      }
-    }
-
-    return drops
-  }
-
   private checkReturnConditions(partyState: PartyState[], returnPolicy: ExpeditionRequest["returnPolicy"], currentFloor: number): { shouldReturn: boolean; reason: string } {
     const aliveMembers = partyState.filter(member => !member.isKO).length
 
@@ -487,7 +416,6 @@ export class ExpeditionEngine {
   private calculateRewardSummary(events: TimelineEvent[], partyState: PartyState[]): RewardSummary {
     let xpGained = 0
     let goldGained = 0
-    const loot: Drop[] = []
     const captures: Drop[] = []
     let maxFloorReached = 1
 
@@ -495,13 +423,10 @@ export class ExpeditionEngine {
       if (event.type === "battle" || event.type === "boss") {
         xpGained += event.xp
         goldGained += event.enemy.gold
-        loot.push(...event.drops)
         if (event.combat.capture?.success && event.combat.capture.captured) {
           captures.push(event.combat.capture.captured)
         }
         maxFloorReached = Math.max(maxFloorReached, event.floor)
-      } else if (event.type === "resource") {
-        loot.push(...event.loot)
       } else if (event.type === "floor_up") {
         maxFloorReached = Math.max(maxFloorReached, event.to)
       }
@@ -526,7 +451,6 @@ export class ExpeditionEngine {
       maxFloorReached,
       xpGained,
       goldGained,
-      loot,
       captures,
       casualties,
       injuries

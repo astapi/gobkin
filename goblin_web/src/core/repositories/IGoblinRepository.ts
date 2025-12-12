@@ -7,6 +7,4 @@ export interface IGoblinRepository {
   deleteGoblin(id: number): void
   updateGoblinStats(id: number, stats: Goblin['stats']): void
   updateGoblinLevel(id: number, level: number): void
-  equipItem(goblinId: number, slotIndex: number, itemId: string): void
-  unequipItem(goblinId: number, slotIndex: number): void
 }

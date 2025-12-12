@@ -1,14 +1,14 @@
 // Goblin related types
-export type { Goblin, GoblinStats, EquipmentSlot } from "./Goblin"
+export type { Goblin, GoblinStats } from "./Goblin"
 
 // Party related types
-export type { Party, PartyStatus, PartyState, PartySnapshot } from "./Party"
+export type { Party, PartyStatus, PartyState } from "./Party"
 
 // Enemy related types
 export type { Enemy, EnemyPattern, EnemyDatabase, EnemySnap } from "./Enemy"
 
 // Item related types
-export type { Item, ItemEffect, Drop } from "./Item"
+export type { Drop } from "./Item"
 
 // Battle related types
 export type { BattleLogEntry, CombatReplay } from "./Battle"

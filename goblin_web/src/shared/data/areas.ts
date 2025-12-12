@@ -11,7 +11,7 @@ export const areasConfig: AreaConfig[] = [
       perFloorEvents: 2,
       eventWeights: {
         battle: 80,
-        resource: 15,
+        exploring: 15,
         trap: 0,
         npc: 5
       },
@@ -25,11 +25,6 @@ export const areasConfig: AreaConfig[] = [
     rewards: {
       xpFloor: [4, 6],
       xpBoss: 15,
-      lootPool: [
-        { id: "slime_core", w: 50 },
-        { id: "healing_herb", w: 30 },
-        { id: "forest_gem", w: 20 }
-      ],
       captureBonus: 0.12
     },
     unlockNext: "forest_outskirts"
@@ -44,7 +39,7 @@ export const areasConfig: AreaConfig[] = [
       perFloorEvents: 2,
       eventWeights: {
         battle: 60,
-        resource: 25,
+        exploring: 25,
         trap: 10,
         npc: 5
       },
@@ -60,12 +55,6 @@ export const areasConfig: AreaConfig[] = [
     rewards: {
       xpFloor: [8, 10, 12],
       xpBoss: 30,
-      lootPool: [
-        { id: "meat_small", w: 40 },
-        { id: "healing_herb", w: 30 },
-        { id: "wood_stick", w: 20 },
-        { id: "forest_gem", w: 10 }
-      ],
       captureBonus: 0.05
     },
     unlockNext: "mossy_cave"
@@ -80,7 +69,7 @@ export const areasConfig: AreaConfig[] = [
       perFloorEvents: 3,
       eventWeights: {
         battle: 70,
-        resource: 20,
+        exploring: 20,
         trap: 8,
         npc: 2
       },
@@ -96,13 +85,6 @@ export const areasConfig: AreaConfig[] = [
     rewards: {
       xpFloor: [10, 12, 14, 16, 18],
       xpBoss: 50,
-      lootPool: [
-        { id: "slime_core", w: 35 },
-        { id: "bat_wing", w: 25 },
-        { id: "bone_fragment", w: 20 },
-        { id: "cave_crystal", w: 15 },
-        { id: "rare_ore", w: 5 }
-      ],
       captureBonus: 0.08
     },
     unlockNext: "old_mine"
@@ -117,7 +99,7 @@ export const areasConfig: AreaConfig[] = [
       perFloorEvents: 3,
       eventWeights: {
         battle: 65,
-        resource: 25,
+        exploring: 25,
         trap: 8,
         npc: 2
       },
@@ -133,13 +115,6 @@ export const areasConfig: AreaConfig[] = [
     rewards: {
       xpFloor: [12, 14, 16, 18, 20, 22, 24],
       xpBoss: 80,
-      lootPool: [
-        { id: "iron_ore", w: 30 },
-        { id: "precious_gem", w: 25 },
-        { id: "golem_core", w: 20 },
-        { id: "ancient_rune", w: 15 },
-        { id: "mithril_ore", w: 10 }
-      ],
       captureBonus: 0.06
     }
   }
@@ -165,22 +140,4 @@ export const enemyDatabase = {
   "crystal_spider": { name: "水晶蜘蛛", baseHP: 35, baseATK: 22, baseDEF: 12 },
   "earth_elemental": { name: "土の精霊", baseHP: 70, baseATK: 24, baseDEF: 18 },
   "ancient_golem": { name: "古代ゴーレム", baseHP: 300, baseATK: 40, baseDEF: 35 }
-}
-
-// アイテムデータの定義
-export const itemDatabase = {
-  "meat_small": { name: "小さな肉", rarity: 1 },
-  "healing_herb": { name: "回復草", rarity: 1 },
-  "wood_stick": { name: "木の枝", rarity: 1 },
-  "forest_gem": { name: "森の宝石", rarity: 2 },
-  "slime_core": { name: "スライムコア", rarity: 1 },
-  "bat_wing": { name: "コウモリの翼", rarity: 1 },
-  "bone_fragment": { name: "骨の欠片", rarity: 1 },
-  "cave_crystal": { name: "洞窟の水晶", rarity: 2 },
-  "rare_ore": { name: "レア鉱石", rarity: 3 },
-  "iron_ore": { name: "鉄鉱石", rarity: 1 },
-  "precious_gem": { name: "貴重な宝石", rarity: 2 },
-  "golem_core": { name: "ゴーレムコア", rarity: 2 },
-  "ancient_rune": { name: "古代のルーン", rarity: 3 },
-  "mithril_ore": { name: "ミスリル鉱石", rarity: 4 }
 }

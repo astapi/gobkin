@@ -9,8 +9,7 @@ export const goblinsData: Goblin[] = [
     level: 15,
     experience: 0,
     avatar: '/src/assets/goblin/goblin.png',
-    stats: { hp: 120, atk: 85, sp: 45, spd: 60, def: 75 },
-    equipment: []
+    stats: { hp: 120, atk: 85, sp: 45, spd: 60, def: 75 }
   },
   {
     id: 1,
@@ -19,8 +18,7 @@ export const goblinsData: Goblin[] = [
     level: 12,
     experience: 0,
     avatar: '/src/assets/goblin/goblin.png',
-    stats: { hp: 80, atk: 95, sp: 90, spd: 70, def: 45 },
-    equipment: []
+    stats: { hp: 80, atk: 95, sp: 90, spd: 70, def: 45 }
   },
   {
     id: 2,
@@ -29,8 +27,7 @@ export const goblinsData: Goblin[] = [
     level: 13,
     experience: 0,
     avatar: '/src/assets/goblin/goblin.png',
-    stats: { hp: 90, atk: 80, sp: 65, spd: 85, def: 55 },
-    equipment: []
+    stats: { hp: 90, atk: 80, sp: 65, spd: 85, def: 55 }
   },
   {
     id: 3,
@@ -39,8 +36,7 @@ export const goblinsData: Goblin[] = [
     level: 11,
     experience: 0,
     avatar: '/src/assets/goblin/goblin.png',
-    stats: { hp: 130, atk: 50, sp: 40, spd: 45, def: 95 },
-    equipment: []
+    stats: { hp: 130, atk: 50, sp: 40, spd: 45, def: 95 }
   },
   {
     id: 4,
@@ -49,8 +45,7 @@ export const goblinsData: Goblin[] = [
     level: 14,
     experience: 0,
     avatar: '/src/assets/goblin/goblin.png',
-    stats: { hp: 85, atk: 75, sp: 70, spd: 95, def: 50 },
-    equipment: []
+    stats: { hp: 85, atk: 75, sp: 70, spd: 95, def: 50 }
   }
 ]
 

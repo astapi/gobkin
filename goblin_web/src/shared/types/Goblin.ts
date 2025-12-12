@@ -14,10 +14,4 @@ export type Goblin = {
   experience: number
   avatar: string
   stats: GoblinStats
-  equipment: EquipmentSlot[]
-}
-
-export type EquipmentSlot = {
-  slotIndex: number
-  itemId: string | null
 }

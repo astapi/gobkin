@@ -13,6 +13,7 @@ interface FormationScreenProps {
   getPartyExpeditionHistory: (partyId: number) => Promise<ExpeditionRecord[]>
   onMarkPartyIdle: (partyId: number) => void
   onClearExpedition: (partyId: number) => void
+  onExpeditionReturn?: (expeditionRecord: ExpeditionRecord) => void
 }
 
 export const FormationScreen = ({
@@ -26,6 +27,7 @@ export const FormationScreen = ({
   getPartyExpeditionHistory,
   onMarkPartyIdle,
   onClearExpedition,
+  onExpeditionReturn,
 }: FormationScreenProps) => {
   const [partyHistories, setPartyHistories] = useState<Record<number, ExpeditionRecord[]>>({})
 
@@ -93,12 +95,16 @@ export const FormationScreen = ({
         const latestExpedition = history?.[0]
         // 最新の遠征が存在し、かつ帰還時刻を過ぎている場合
         if (latestExpedition && latestExpedition.returnTime <= now) {
+          // 帰還時のコールバックを呼び出す
+          if (onExpeditionReturn) {
+            onExpeditionReturn(latestExpedition)
+          }
           onClearExpedition(party.id)
           onMarkPartyIdle(party.id)
         }
       }
     }
-  }, [parties, partyHistories, currentTime, onClearExpedition, onMarkPartyIdle])
+  }, [parties, partyHistories, currentTime, onClearExpedition, onMarkPartyIdle, onExpeditionReturn])
 
   const formatFullDateTime = (date: Date) => {
     const year = date.getFullYear()

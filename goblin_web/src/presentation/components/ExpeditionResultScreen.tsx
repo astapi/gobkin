@@ -109,25 +109,6 @@ export const ExpeditionResultScreen = ({
         </div>
       </div>
 
-      {/* 獲得アイテム */}
-      {summary.loot.length > 0 && (
-        <div className="p-6 border-b border-gray-300">
-          <h3 className="mb-3 text-sm font-medium text-gray-900">
-            獲得アイテム
-          </h3>
-          <div className="space-y-2">
-            {summary.loot.map((item, index) => (
-              <div
-                key={index}
-                className="text-sm text-gray-700"
-              >
-                {item.id} × {item.qty}
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
       {/* 捕獲 */}
       {summary.captures.length > 0 && (
         <div className="p-6 border-b border-gray-300">

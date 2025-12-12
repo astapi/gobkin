@@ -22,8 +22,7 @@ describe('BaseManagementService', () => {
           level: 1,
           experience: 0,
           avatar: '/test.png',
-          stats: { hp: 70, atk: 13, sp: 10, spd: 11, def: 11 },
-          equipment: [],
+          stats: { hp: 70, atk: 13, sp: 10, spd: 11, def: 11 }
         })),
         capacity: 8,
         rank: 1,
@@ -154,8 +153,7 @@ describe('BaseManagementService', () => {
           level: 1,
           experience: 0,
           avatar: '/test.png',
-          stats: { hp: 70, atk: 13, sp: 10, spd: 11, def: 11 },
-          equipment: [],
+          stats: { hp: 70, atk: 13, sp: 10, spd: 11, def: 11 }
         })),
         capacity: 8, // 空き枠は2
         rank: 5,
@@ -199,8 +197,7 @@ describe('BaseManagementService', () => {
             level: 1,
             experience: 0,
             avatar: '/test.png',
-            stats: { hp: 70, atk: 13, sp: 10, spd: 11, def: 11 },
-            equipment: [],
+            stats: { hp: 70, atk: 13, sp: 10, spd: 11, def: 11 }
           },
         ],
         capacity: 8,
@@ -230,8 +227,7 @@ describe('BaseManagementService', () => {
           level: 1,
           experience: 0,
           avatar: '/test.png',
-          stats: { hp: 70, atk: 13, sp: 10, spd: 11, def: 11 },
-          equipment: [],
+          stats: { hp: 70, atk: 13, sp: 10, spd: 11, def: 11 }
         },
         {
           id: 2,
@@ -240,8 +236,7 @@ describe('BaseManagementService', () => {
           level: 1,
           experience: 0,
           avatar: '/test.png',
-          stats: { hp: 70, atk: 13, sp: 10, spd: 11, def: 11 },
-          equipment: [],
+          stats: { hp: 70, atk: 13, sp: 10, spd: 11, def: 11 }
         },
       ]
     })
@@ -285,25 +280,6 @@ describe('BaseManagementService', () => {
       expect(goblin.stats.spd).toBeLessThanOrEqual(14)
       expect(goblin.stats.def).toBeGreaterThanOrEqual(8)
       expect(goblin.stats.def).toBeLessThanOrEqual(14)
-    })
-
-    it('生成されたゴブリンは装備スロットを持つ', () => {
-      const state: BaseState = {
-        goblins: [],
-        capacity: 8,
-        rank: 1,
-        now: Date.now(),
-        lastSpawnTime: Date.now() - 10000,
-        slimeCaveCleared: false,
-        firstBonusGranted: false,
-      }
-
-      const result = service.evaluateBirths(state)
-      const goblin = result.newborns[0]
-
-      expect(goblin.equipment).toHaveLength(3)
-      expect(goblin.equipment[0].slotIndex).toBe(0)
-      expect(goblin.equipment[0].itemId).toBeNull()
     })
 
     it('生成されたゴブリンはランダムな名前を持つ', () => {

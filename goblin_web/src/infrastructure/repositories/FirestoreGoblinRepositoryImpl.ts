@@ -42,14 +42,7 @@ export class FirestoreGoblinRepositoryImpl {
         level: 15,
         experience: 0,
         avatar: '/src/assets/goblin/goblin.png',
-        stats: { hp: 120, atk: 85, sp: 45, spd: 60, def: 75 },
-        equipment: [
-          { slotIndex: 0, itemId: null },
-          { slotIndex: 1, itemId: null },
-          { slotIndex: 2, itemId: null },
-          { slotIndex: 3, itemId: null },
-          { slotIndex: 4, itemId: null }
-        ]
+        stats: { hp: 120, atk: 85, sp: 45, spd: 60, def: 75 }
       },
       {
         id: 1,
@@ -58,14 +51,7 @@ export class FirestoreGoblinRepositoryImpl {
         level: 12,
         experience: 0,
         avatar: '/src/assets/goblin/goblin.png',
-        stats: { hp: 80, atk: 95, sp: 90, spd: 70, def: 45 },
-        equipment: [
-          { slotIndex: 0, itemId: null },
-          { slotIndex: 1, itemId: null },
-          { slotIndex: 2, itemId: null },
-          { slotIndex: 3, itemId: null },
-          { slotIndex: 4, itemId: null }
-        ]
+        stats: { hp: 80, atk: 95, sp: 90, spd: 70, def: 45 }
       },
       {
         id: 2,
@@ -74,14 +60,7 @@ export class FirestoreGoblinRepositoryImpl {
         level: 13,
         experience: 0,
         avatar: '/src/assets/goblin/goblin.png',
-        stats: { hp: 90, atk: 80, sp: 65, spd: 85, def: 55 },
-        equipment: [
-          { slotIndex: 0, itemId: null },
-          { slotIndex: 1, itemId: null },
-          { slotIndex: 2, itemId: null },
-          { slotIndex: 3, itemId: null },
-          { slotIndex: 4, itemId: null }
-        ]
+        stats: { hp: 90, atk: 80, sp: 65, spd: 85, def: 55 }
       },
       {
         id: 3,
@@ -90,14 +69,7 @@ export class FirestoreGoblinRepositoryImpl {
         level: 11,
         experience: 0,
         avatar: '/src/assets/goblin/goblin.png',
-        stats: { hp: 130, atk: 50, sp: 40, spd: 45, def: 95 },
-        equipment: [
-          { slotIndex: 0, itemId: null },
-          { slotIndex: 1, itemId: null },
-          { slotIndex: 2, itemId: null },
-          { slotIndex: 3, itemId: null },
-          { slotIndex: 4, itemId: null }
-        ]
+        stats: { hp: 130, atk: 50, sp: 40, spd: 45, def: 95 }
       },
       {
         id: 4,
@@ -106,14 +78,7 @@ export class FirestoreGoblinRepositoryImpl {
         level: 14,
         experience: 0,
         avatar: '/src/assets/goblin/goblin.png',
-        stats: { hp: 85, atk: 75, sp: 70, spd: 95, def: 50 },
-        equipment: [
-          { slotIndex: 0, itemId: null },
-          { slotIndex: 1, itemId: null },
-          { slotIndex: 2, itemId: null },
-          { slotIndex: 3, itemId: null },
-          { slotIndex: 4, itemId: null }
-        ]
+        stats: { hp: 85, atk: 75, sp: 70, spd: 95, def: 50 }
       }
     ]
   }
@@ -245,33 +210,6 @@ export class FirestoreGoblinRepositoryAdapter implements IGoblinRepository {
     const goblin = this.getGoblin(id)
     if (goblin) {
       goblin.level = level
-      this.saveGoblin(goblin)
-    }
-  }
-
-  equipItem(goblinId: number, slotIndex: number, itemId: string): void {
-    const goblin = this.getGoblin(goblinId)
-    if (goblin && slotIndex >= 0 && slotIndex < 5) {
-      if (goblin.equipment) {
-        goblin.equipment[slotIndex].itemId = itemId
-      } else {
-        goblin.equipment = [
-          { slotIndex: 0, itemId: null },
-          { slotIndex: 1, itemId: null },
-          { slotIndex: 2, itemId: null },
-          { slotIndex: 3, itemId: null },
-          { slotIndex: 4, itemId: null }
-        ]
-        goblin.equipment[slotIndex].itemId = itemId
-      }
-      this.saveGoblin(goblin)
-    }
-  }
-
-  unequipItem(goblinId: number, slotIndex: number): void {
-    const goblin = this.getGoblin(goblinId)
-    if (goblin && slotIndex >= 0 && slotIndex < 5) {
-      goblin.equipment[slotIndex].itemId = null
       this.saveGoblin(goblin)
     }
   }
