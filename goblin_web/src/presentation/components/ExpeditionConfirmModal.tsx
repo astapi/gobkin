@@ -74,8 +74,8 @@ export const ExpeditionConfirmModal = ({
             </div>
           </div>
 
-          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
-            <p className="text-sm text-yellow-800">
+          <div className="bg-gray-100 border border-gray-300 rounded-lg p-3">
+            <p className="text-sm text-gray-700">
               この設定で遠征を開始します。よろしいですか?
             </p>
           </div>
@@ -91,7 +91,7 @@ export const ExpeditionConfirmModal = ({
           </button>
           <button
             onClick={onConfirm}
-            className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded transition-colors font-medium"
+            className="flex-1 px-4 py-2 bg-gray-800 hover:bg-gray-900 text-white rounded transition-colors font-medium"
           >
             出撃する
           </button>

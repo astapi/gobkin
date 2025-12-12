@@ -84,7 +84,7 @@ export const GoblinDetailModal = ({
               </div>
               <div className="w-full h-3 bg-gray-200 rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-green-500 transition-all"
+                  className="h-full bg-gray-600 transition-all"
                   style={{ width: `${getExpProgress(goblin.level, goblin.experience) * 100}%` }}
                 />
               </div>
@@ -97,7 +97,7 @@ export const GoblinDetailModal = ({
           <div className="mt-6">
             <button
               onClick={() => setShowBanishConfirm(true)}
-              className="py-3 w-full font-bold text-white bg-red-600 rounded-lg transition-colors hover:bg-red-700"
+              className="py-3 w-full font-bold text-white bg-gray-700 rounded-lg transition-colors hover:bg-gray-800"
             >
               このゴブリンを追放する
             </button>
@@ -123,7 +123,7 @@ export const GoblinDetailModal = ({
               </button>
               <button
                 onClick={handleBanish}
-                className="flex-1 py-2 font-bold text-white bg-red-600 rounded-lg transition-colors hover:bg-red-700"
+                className="flex-1 py-2 font-bold text-white bg-gray-700 rounded-lg transition-colors hover:bg-gray-800"
               >
                 追放する
               </button>

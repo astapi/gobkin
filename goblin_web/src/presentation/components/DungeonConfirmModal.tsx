@@ -23,7 +23,7 @@ export const DungeonConfirmModal = ({ dungeon, party, goblins, onConfirm, onCanc
         <div className="bg-gray-50 rounded-lg p-4 mb-4">
           <div className="text-sm text-gray-600 mb-2">ダンジョン</div>
           <div className="font-bold text-gray-800 mb-3">
-            {dungeon.icon || '🏰'} {dungeon.name}
+            {dungeon.name}
           </div>
 
           <div className="text-sm text-gray-600 mb-2">パーティ</div>

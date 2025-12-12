@@ -142,7 +142,6 @@ export const FormationScreen = ({
       {isLoading ? (
         <div className="flex justify-center items-center h-32">
           <div className="text-center">
-            <div className="mb-2 text-xl">⚡</div>
             <div className="text-gray-600">パーティデータを読み込み中...</div>
           </div>
         </div>
@@ -171,14 +170,14 @@ export const FormationScreen = ({
                 }}
                 className={`p-2 cursor-pointer transition-colors ${
                   isExpedition
-                    ? 'bg-orange-50 hover:bg-orange-100'
+                    ? 'bg-gray-100 hover:bg-gray-200'
                     : 'hover:bg-gray-50'
                 }`}
               >
                 <div className="flex justify-between items-center mb-3">
                   <div className="text-lg font-bold text-gray-800">{party.name}</div>
                   {isExpedition && (
-                    <span className="px-2 py-1 text-xs font-bold text-white bg-orange-500 rounded-full">
+                    <span className="px-2 py-1 text-xs font-bold text-white bg-gray-700 rounded-full">
                       遠征中
                     </span>
                   )}
@@ -220,7 +219,7 @@ export const FormationScreen = ({
                           key={record.id}
                           className={`px-2 py-1 rounded text-xs transition-colors ${
                             ongoing
-                              ? 'text-orange-800 bg-orange-100 hover:bg-orange-200'
+                              ? 'text-gray-800 bg-gray-200 hover:bg-gray-300'
                               : 'text-gray-700 bg-gray-100 hover:bg-gray-200'
                           }`}
                         >

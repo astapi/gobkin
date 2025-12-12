@@ -66,17 +66,17 @@ export const ExpeditionPlaybackScreen = ({
 
     switch (event.type) {
       case 'move_start': {
-        addLog(`🚶 ${event.floor}階の探索を開始`)
+        addLog(`[探索] ${event.floor}階の探索を開始`)
         break
       }
       case 'floor_up': {
         setCurrentFloor(event.to)
-        addLog(`⬆️ ${event.from}階から${event.to}階へ移動`)
+        addLog(`[移動] ${event.from}階から${event.to}階へ移動`)
         break
       }
       case 'battle':
       case 'boss': {
-        const battleType = event.type === 'boss' ? '👹 ボス' : '⚔️'
+        const battleType = event.type === 'boss' ? '[BOSS]' : '[戦闘]'
         const result = event.combat.outcome === 'win' ? '勝利' : '敗北'
         addLog(`${battleType} ${event.enemy.name} Lv${event.enemy.lvl} ×${event.enemy.count}体と遭遇 → ${result}`)
 
@@ -91,11 +91,11 @@ export const ExpeditionPlaybackScreen = ({
         }
 
         if (event.xp > 0) {
-          addLog(`✨ ${event.xp}XP獲得`)
+          addLog(`[経験値] ${event.xp}XP獲得`)
         }
 
         if (event.combat.capture?.success) {
-          addLog(`🎯 ${event.combat.capture.captured?.id}を捕獲！`)
+          addLog(`[捕獲] ${event.combat.capture.captured?.id}を捕獲！`)
         }
         break
       }
@@ -115,7 +115,7 @@ export const ExpeditionPlaybackScreen = ({
             reason = '緊急帰還'
             break
         }
-        addLog(`🏠 ${reason}`)
+        addLog(`[帰還] ${reason}`)
         break
       }
     }
@@ -153,17 +153,17 @@ export const ExpeditionPlaybackScreen = ({
 
       switch (event.type) {
         case 'move_start': {
-          tempLogs.push(`[${formatTimeLocal(event.at)}] 🚶 ${event.floor}階の探索を開始`)
+          tempLogs.push(`[${formatTimeLocal(event.at)}] [探索] ${event.floor}階の探索を開始`)
           break
         }
         case 'floor_up': {
           tempFloor = event.to
-          tempLogs.push(`[${formatTimeLocal(event.at)}] ⬆️ ${event.from}階から${event.to}階へ移動`)
+          tempLogs.push(`[${formatTimeLocal(event.at)}] [移動] ${event.from}階から${event.to}階へ移動`)
           break
         }
         case 'battle':
         case 'boss': {
-          const battleType = event.type === 'boss' ? '👹 ボス' : '⚔️'
+          const battleType = event.type === 'boss' ? '[BOSS]' : '[戦闘]'
           const result = event.combat.outcome === 'win' ? '勝利' : '敗北'
           tempLogs.push(`[${formatTimeLocal(event.at)}] ${battleType} ${event.enemy.name} Lv${event.enemy.lvl} ×${event.enemy.count}体と遭遇 → ${result}`)
 
@@ -174,11 +174,11 @@ export const ExpeditionPlaybackScreen = ({
           }
 
           if (event.xp > 0) {
-            tempLogs.push(`[${formatTimeLocal(event.at)}] ✨ ${event.xp}XP獲得`)
+            tempLogs.push(`[${formatTimeLocal(event.at)}] [経験値] ${event.xp}XP獲得`)
           }
 
           if (event.combat.capture?.success) {
-            tempLogs.push(`[${formatTimeLocal(event.at)}] 🎯 ${event.combat.capture.captured?.id}を捕獲！`)
+            tempLogs.push(`[${formatTimeLocal(event.at)}] [捕獲] ${event.combat.capture.captured?.id}を捕獲！`)
           }
           break
         }
@@ -198,7 +198,7 @@ export const ExpeditionPlaybackScreen = ({
               reason = '緊急帰還'
               break
           }
-          tempLogs.push(`[${formatTimeLocal(event.at)}] 🏠 ${reason}`)
+          tempLogs.push(`[${formatTimeLocal(event.at)}] [帰還] ${reason}`)
           break
         }
       }
@@ -289,7 +289,7 @@ export const ExpeditionPlaybackScreen = ({
       <div className="bg-gray-800 text-white p-3 shadow-lg">
         <div className="flex justify-between items-center">
           <div className="text-sm font-bold">
-            🏰 {expeditionReplay.meta.areaName} - {currentFloor}階
+            {expeditionReplay.meta.areaName} - {currentFloor}階
           </div>
           <div className="text-xs">
             {formatTime(currentTime)} / {formatTime(expeditionReplay.durationSec)}
@@ -299,7 +299,7 @@ export const ExpeditionPlaybackScreen = ({
         {/* プログレスバー */}
         <div className="mt-2 bg-gray-700 rounded-full h-2 overflow-hidden">
           <div
-            className="h-full bg-green-500 transition-all duration-100 ease-linear"
+            className="h-full bg-gray-400 transition-all duration-100 ease-linear"
             style={{ width: `${progress}%` }}
           />
         </div>
@@ -318,7 +318,7 @@ export const ExpeditionPlaybackScreen = ({
             return (
               <div
                 key={memberId}
-                className={`bg-white rounded-lg p-2 border ${isKO ? 'border-red-400 opacity-50' : 'border-gray-300'}`}
+                className={`bg-white rounded-lg p-2 border ${isKO ? 'border-gray-500 opacity-50' : 'border-gray-300'}`}
               >
                 <div className="flex items-center gap-1 mb-1">
                   <div className="w-6 h-6 bg-gray-200 rounded-full flex items-center justify-center overflow-hidden">
@@ -330,7 +330,7 @@ export const ExpeditionPlaybackScreen = ({
                 </div>
                 <div className="h-1 bg-gray-200 rounded-full overflow-hidden">
                   <div
-                    className={`h-full transition-all duration-300 ${isKO ? 'bg-red-500' : hpPercent > 50 ? 'bg-green-500' : hpPercent > 25 ? 'bg-yellow-500' : 'bg-red-500'}`}
+                    className={`h-full transition-all duration-300 ${isKO ? 'bg-gray-400' : hpPercent > 50 ? 'bg-gray-700' : hpPercent > 25 ? 'bg-gray-500' : 'bg-gray-400'}`}
                     style={{ width: `${hpPercent}%` }}
                   />
                 </div>
@@ -368,7 +368,7 @@ export const ExpeditionPlaybackScreen = ({
                 disabled={!isPlaying}
                 className={`px-3 py-1 rounded text-sm font-bold transition-colors ${
                   speed === s && isPlaying
-                    ? 'bg-blue-600 text-white'
+                    ? 'bg-gray-700 text-white'
                     : isPlaying
                     ? 'bg-gray-300 text-gray-700 hover:bg-gray-400'
                     : 'bg-gray-200 text-gray-400 cursor-not-allowed'
@@ -388,7 +388,7 @@ export const ExpeditionPlaybackScreen = ({
                 : 'bg-gray-200 text-gray-400 cursor-not-allowed'
             }`}
           >
-            スキップ ≫
+            スキップ
           </button>
         </div>
 
@@ -400,11 +400,11 @@ export const ExpeditionPlaybackScreen = ({
               currentTime >= expeditionReplay.durationSec
                 ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
                 : isPlaying
-                ? 'bg-yellow-500 text-white hover:bg-yellow-600'
-                : 'bg-green-500 text-white hover:bg-green-600'
+                ? 'bg-gray-500 text-white hover:bg-gray-600'
+                : 'bg-gray-700 text-white hover:bg-gray-800'
             }`}
           >
-            {isPlaying ? '⏸ 一時停止' : '▶ 再開'}
+            {isPlaying ? '一時停止' : '再開'}
           </button>
 
           <button
@@ -412,11 +412,11 @@ export const ExpeditionPlaybackScreen = ({
             disabled={!isPlaying}
             className={`px-6 py-2 rounded font-bold transition-colors ${
               isPlaying
-                ? 'bg-red-500 text-white hover:bg-red-600'
+                ? 'bg-gray-800 text-white hover:bg-gray-900'
                 : 'bg-gray-200 text-gray-400 cursor-not-allowed'
             }`}
           >
-            🚨 緊急帰還
+            緊急帰還
           </button>
         </div>
       </div>

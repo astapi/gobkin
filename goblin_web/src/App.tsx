@@ -15,11 +15,10 @@ function AppContent() {
     return (
       <div className="h-screen flex flex-col max-w-[414px] mx-auto border-2 border-gray-300 overflow-hidden bg-gray-50 relative">
         <div className="p-5 text-center text-white bg-gray-800 shadow-lg">
-          <h1 className="text-lg font-bold tracking-wide">🏰 ゴブリン王国</h1>
+          <h1 className="text-lg font-bold tracking-wide">ゴブリン王国</h1>
         </div>
         <div className="flex flex-1 justify-center items-center">
           <div className="text-center">
-            <div className="mb-2 text-xl">⚡</div>
             <div className="text-gray-600">認証中...</div>
           </div>
         </div>
@@ -31,7 +30,7 @@ function AppContent() {
     <div className="h-screen flex flex-col max-w-[414px] mx-auto border-2 border-gray-300 overflow-hidden bg-gray-50 relative">
       {/* Header */}
       <div className="p-5 text-center text-white bg-gray-800 shadow-lg">
-        <h1 className="text-lg font-bold tracking-wide">🏰 ゴブリン王国</h1>
+        <h1 className="text-lg font-bold tracking-wide">ゴブリン王国</h1>
       </div>
 
       {/* Main Content */}

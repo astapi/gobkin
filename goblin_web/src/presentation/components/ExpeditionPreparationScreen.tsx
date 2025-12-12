@@ -175,7 +175,7 @@ export const ExpeditionPreparationScreen = ({
           disabled={!selectedDungeon}
           className={`px-4 py-1 text-sm font-medium rounded transition-colors ${
             selectedDungeon
-              ? 'text-white bg-blue-600 hover:bg-blue-700'
+              ? 'text-white bg-gray-800 hover:bg-gray-900'
               : 'text-gray-500 bg-gray-300 cursor-not-allowed'
           }`}
         >
@@ -215,7 +215,7 @@ export const ExpeditionPreparationScreen = ({
               </div>
               <button
                 onClick={onEditParty}
-                className="py-2 w-full text-sm text-blue-600 bg-blue-50 rounded transition-colors hover:bg-blue-100"
+                className="py-2 w-full text-sm text-gray-700 bg-gray-100 rounded transition-colors hover:bg-gray-200"
               >
                 メンバーを変更する
               </button>

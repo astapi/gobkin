@@ -155,7 +155,7 @@ export const BaseManagementScreen = () => {
           </div>
           <div className="flex flex-col gap-1">
             <span className="text-xs text-gray-500">空き枠</span>
-            <span className="text-base font-semibold text-emerald-600">{availableSlots}</span>
+            <span className="text-base font-semibold text-gray-700">{availableSlots}</span>
           </div>
         </div>
 
@@ -166,7 +166,7 @@ export const BaseManagementScreen = () => {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <div className="text-sm font-semibold text-gray-700">追加されたゴブリン</div>
-              <span className="text-xs px-2 py-1 rounded-full bg-emerald-100 text-emerald-700">
+              <span className="text-xs px-2 py-1 rounded-full bg-gray-200 text-gray-700">
                 {pendingGoblins.length} / {maxPendingGoblins}体
               </span>
             </div>
@@ -182,7 +182,7 @@ export const BaseManagementScreen = () => {
                 <button
                   type="button"
                   onClick={addSelectedGoblins}
-                  className="px-3 py-1.5 bg-emerald-600 text-white text-xs font-semibold rounded-md hover:bg-emerald-700 transition-colors"
+                  className="px-3 py-1.5 bg-gray-700 text-white text-xs font-semibold rounded-md hover:bg-gray-800 transition-colors"
                 >
                   拠点に加える ({selectedGoblinIds.size})
                 </button>
@@ -202,7 +202,7 @@ export const BaseManagementScreen = () => {
                   onClick={() => toggleGoblinSelection(goblin.id)}
                   className={`flex items-center gap-3 p-2.5 rounded-lg border-2 cursor-pointer transition-all ${
                     isSelected
-                      ? 'bg-emerald-50 border-emerald-400'
+                      ? 'bg-gray-100 border-gray-500'
                       : 'bg-white border-gray-200 hover:border-gray-300'
                   }`}
                 >
@@ -210,7 +210,7 @@ export const BaseManagementScreen = () => {
                     <div
                       className={`w-5 h-5 rounded border-2 flex items-center justify-center ${
                         isSelected
-                          ? 'bg-emerald-500 border-emerald-500'
+                          ? 'bg-gray-600 border-gray-600'
                           : 'bg-white border-gray-300'
                       }`}
                     >

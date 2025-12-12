@@ -49,15 +49,15 @@ export const DungeonScreen = ({ dungeons, onStartExplore }: DungeonScreenProps) 
               </div>
               <div className="p-4">
                 <div className="flex justify-between text-xs text-gray-600 mb-2">
-                  <span>🏰 階層数: {dungeon.floors}階</span>
+                  <span>階層数: {dungeon.floors}階</span>
                 </div>
                 <div className="flex justify-between text-xs text-gray-600">
-                  <span>⏱️ 探索時間: {formatTime(dungeon.cleared ? dungeon.exploration_time_sec : dungeon.exploration_time_sec_first)}</span>
-                  {dungeon.cleared && <span className="text-green-600 font-bold">✓ 攻略済み</span>}
+                  <span>探索時間: {formatTime(dungeon.cleared ? dungeon.exploration_time_sec : dungeon.exploration_time_sec_first)}</span>
+                  {dungeon.cleared && <span className="text-gray-700 font-bold">攻略済み</span>}
                 </div>
                 {isLocked && (
-                  <div className="mt-2 text-xs text-red-600 font-semibold">
-                    🔒 未解放{unlockTarget ? `（${unlockTarget}を攻略）` : ''}
+                  <div className="mt-2 text-xs text-gray-700 font-semibold">
+                    [未解放]{unlockTarget ? `（${unlockTarget}を攻略）` : ''}
                   </div>
                 )}
               </div>

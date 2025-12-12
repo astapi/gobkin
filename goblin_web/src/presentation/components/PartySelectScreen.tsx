@@ -28,7 +28,7 @@ export const PartySelectScreen = ({ parties, goblins, dungeon, onSelectParty, on
       <div className="bg-gray-50 rounded-lg p-4 mb-4 border-2 border-gray-200">
         <div className="text-sm text-gray-600 mb-2">探索先</div>
         <div className="font-bold text-gray-800">
-          {dungeon.icon || '🏰'} {dungeon.name}
+          {dungeon.name}
         </div>
         <div className="text-xs text-gray-600 mt-1">難易度: {dungeon.difficulty || '不明'}</div>
       </div>

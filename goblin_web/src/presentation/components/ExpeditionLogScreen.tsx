@@ -274,7 +274,7 @@ export const ExpeditionLogScreen = ({
         {/* プログレスバー */}
         <div className="overflow-hidden mt-2 h-2 bg-gray-700 rounded-full">
           <div
-            className="h-full bg-green-500 transition-all duration-100 ease-linear"
+            className="h-full bg-gray-400 transition-all duration-100 ease-linear"
             style={{ width: `${progress}%` }}
           />
         </div>
@@ -293,7 +293,7 @@ export const ExpeditionLogScreen = ({
             return (
               <div
                 key={memberId}
-                className={`bg-white rounded-lg p-2 border ${isKO ? 'border-red-400 opacity-50' : 'border-gray-300'}`}
+                className={`bg-white rounded-lg p-2 border ${isKO ? 'border-gray-500 opacity-50' : 'border-gray-300'}`}
               >
                 <div className="flex gap-1 items-center mb-1">
                   <div className="flex overflow-hidden justify-center items-center w-6 h-6 bg-gray-200 rounded-full">
@@ -305,7 +305,7 @@ export const ExpeditionLogScreen = ({
                 </div>
                 <div className="overflow-hidden h-1 bg-gray-200 rounded-full">
                   <div
-                    className={`h-full transition-all duration-300 ${isKO ? 'bg-red-500' : hpPercent > 50 ? 'bg-green-500' : hpPercent > 25 ? 'bg-yellow-500' : 'bg-red-500'}`}
+                    className={`h-full transition-all duration-300 ${isKO ? 'bg-gray-400' : hpPercent > 50 ? 'bg-gray-700' : hpPercent > 25 ? 'bg-gray-500' : 'bg-gray-400'}`}
                     style={{ width: `${hpPercent}%` }}
                   />
                 </div>
@@ -329,7 +329,7 @@ export const ExpeditionLogScreen = ({
               key={idx}
               className={`text-sm text-gray-700 font-mono ${
                 log.battleLog && log.battleLog.length > 0
-                  ? 'cursor-pointer hover:bg-blue-50 py-1 rounded'
+                  ? 'cursor-pointer hover:bg-gray-100 py-1 rounded'
                   : ''
               }`}
               onClick={() => {
@@ -340,7 +340,7 @@ export const ExpeditionLogScreen = ({
             >
               {log.message}
               {log.battleLog && log.battleLog.length > 0 && (
-                <span className="ml-2 text-xs text-blue-500">詳細</span>
+                <span className="ml-2 text-xs text-gray-500">[詳細]</span>
               )}
             </div>
           ))}
@@ -377,12 +377,12 @@ export const ExpeditionLogScreen = ({
                       </div>
                       <div className="space-y-2">
                         <div>
-                          <div className="mb-1 text-xs font-semibold text-blue-700">味方:</div>
+                          <div className="mb-1 text-xs font-semibold text-gray-700">味方:</div>
                           <div className="space-y-1">
                             {entry.turnState.allies.map((ally, i) => (
                               <div key={i} className="flex justify-between items-center text-xs">
                                 <span className="text-gray-700">{ally.name}</span>
-                                <span className={`font-mono ${ally.currentHP <= 0 ? 'text-red-600' : 'text-gray-600'}`}>
+                                <span className={`font-mono ${ally.currentHP <= 0 ? 'text-gray-500' : 'text-gray-600'}`}>
                                   {ally.currentHP}/{ally.maxHP} HP
                                 </span>
                               </div>
@@ -390,12 +390,12 @@ export const ExpeditionLogScreen = ({
                           </div>
                         </div>
                         <div>
-                          <div className="mb-1 text-xs font-semibold text-red-700">敵:</div>
+                          <div className="mb-1 text-xs font-semibold text-gray-600">敵:</div>
                           <div className="space-y-1">
                             {entry.turnState.enemies.map((enemy, i) => (
                               <div key={i} className="flex justify-between items-center text-xs">
                                 <span className="text-gray-700">{enemy.name}</span>
-                                <span className={`font-mono ${enemy.currentHP <= 0 ? 'text-red-600' : 'text-gray-600'}`}>
+                                <span className={`font-mono ${enemy.currentHP <= 0 ? 'text-gray-500' : 'text-gray-600'}`}>
                                   {enemy.currentHP}/{enemy.maxHP} HP
                                 </span>
                               </div>
@@ -412,11 +412,11 @@ export const ExpeditionLogScreen = ({
                   <div
                     key={idx}
                     className={`text-sm p-2 rounded ${
-                      entry.isAlly ? 'bg-blue-50' : 'bg-red-50'
+                      entry.isAlly ? 'bg-gray-100' : 'bg-gray-200'
                     }`}
                   >
                     <div className="font-mono text-xs">
-                      <span className={entry.isAlly ? 'text-blue-700 font-semibold' : 'text-red-700 font-semibold'}>
+                      <span className={entry.isAlly ? 'text-gray-800 font-semibold' : 'text-gray-700 font-semibold'}>
                         {entry.actorName}の攻撃
                       </span>
                       <span className="text-gray-500">

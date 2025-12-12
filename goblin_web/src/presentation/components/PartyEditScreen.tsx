@@ -108,16 +108,16 @@ export const PartyEditScreen = ({
             PT{partyId} 編成
           </div>
           {isExpedition && (
-            <span className="text-xs bg-orange-500 text-white px-2 py-1 rounded-full font-bold">
-              🏚️ 遠征中
+            <span className="text-xs bg-gray-700 text-white px-2 py-1 rounded-full font-bold">
+              遠征中
             </span>
           )}
         </div>
       </div>
 
       {isExpedition && (
-        <div className="bg-orange-50 border border-orange-200 rounded-lg p-3 mb-4 text-sm text-orange-800">
-          ⚠️ 遠征中のパーティは編成できません
+        <div className="bg-gray-100 border border-gray-300 rounded-lg p-3 mb-4 text-sm text-gray-700">
+          遠征中のパーティは編成できません
         </div>
       )}
 
@@ -135,7 +135,7 @@ export const PartyEditScreen = ({
                 member
                   ? 'border-gray-600 bg-gray-50'
                   : selectedSlot === i
-                    ? 'border-blue-500 bg-blue-50 cursor-pointer'
+                    ? 'border-gray-700 bg-gray-100 cursor-pointer'
                     : 'border-dashed border-gray-300 bg-white cursor-pointer hover:border-gray-400 hover:bg-gray-50'
               }`}
             >
@@ -151,7 +151,7 @@ export const PartyEditScreen = ({
                         e.stopPropagation()
                         handleMemberRemove(i)
                       }}
-                      className="absolute top-0 right-0 w-4 h-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center hover:bg-red-600"
+                      className="absolute top-0 right-0 w-4 h-4 bg-gray-600 text-white text-xs rounded-full flex items-center justify-center hover:bg-gray-700"
                     >
                       ×
                     </button>
@@ -159,8 +159,8 @@ export const PartyEditScreen = ({
                 </>
               ) : (
                 <>
-                  <div className={`text-2xl ${selectedSlot === i ? 'text-blue-500' : 'text-gray-300'}`}>+</div>
-                  <div className={`text-[10px] ${selectedSlot === i ? 'text-blue-600' : 'text-gray-600'}`}>
+                  <div className={`text-2xl ${selectedSlot === i ? 'text-gray-700' : 'text-gray-300'}`}>+</div>
+                  <div className={`text-[10px] ${selectedSlot === i ? 'text-gray-700' : 'text-gray-600'}`}>
                     {selectedSlot === i ? '選択中' : '空き'}
                   </div>
                 </>
@@ -174,7 +174,7 @@ export const PartyEditScreen = ({
         <>
           <div className="text-sm font-bold text-gray-700 mb-2 pb-2 border-b-2 border-gray-200">
             利用可能なゴブリン
-            {selectedSlot !== null && <span className="text-blue-600 ml-2">（選択してください）</span>}
+            {selectedSlot !== null && <span className="text-gray-600 ml-2">（選択してください）</span>}
           </div>
           <div className="flex-1 overflow-y-auto">
             <div className="flex flex-col gap-3">
