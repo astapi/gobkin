@@ -10,7 +10,7 @@ import { usePartyService } from '../hooks/usePartyService.ts'
 import { useGoblinService } from '../hooks/useGoblinService.ts'
 import { useExpeditionState } from '../contexts/ExpeditionStateContextValue.ts'
 import { ExpeditionEngine, GoblinBirthService } from '../../core/services'
-import { StartExpeditionUseCase } from '../../core/usecases'
+import { StartExpeditionUseCase, CompleteExpeditionUseCase } from '../../core/usecases'
 import { useExpeditionFlow } from '../hooks/useExpeditionFlow.ts'
 import { useDungeonProgress } from '../hooks/useDungeonProgress.ts'
 import { FirestorePendingGoblinRepositoryAdapter } from '../../infrastructure/repositories/FirestorePendingGoblinRepositoryImpl'
@@ -55,6 +55,10 @@ export const FormationTabScreen = () => {
   const startExpeditionUseCase = useMemo(
     () => new StartExpeditionUseCase(partyRepository, goblinRepository, expeditionEngine),
     [partyRepository, goblinRepository, expeditionEngine]
+  )
+  const completeExpeditionUseCase = useMemo(
+    () => new CompleteExpeditionUseCase(goblinRepository, partyRepository),
+    [goblinRepository, partyRepository]
   )
   const { startExpedition, estimateExplorationTime } = useExpeditionFlow({
     startExpeditionUseCase,
@@ -162,8 +166,8 @@ export const FormationTabScreen = () => {
     setViewMode('preparation')
   }
 
-  // 遠征帰還時の処理（成功時はゴブリンを追加）
-  const handleExpeditionReturn = (expeditionRecord: ExpeditionRecord) => {
+  // 遠征帰還時の処理（経験値付与、成功時はゴブリンを追加）
+  const handleExpeditionReturn = async (expeditionRecord: ExpeditionRecord) => {
     if (!expeditionRecord.replay) return
 
     const expeditionId = expeditionRecord.replay.meta.expeditionId
@@ -178,6 +182,13 @@ export const FormationTabScreen = () => {
 
     if (cleared) {
       markDungeonCleared(dungeon, true)
+    }
+
+    // 経験値を付与
+    try {
+      await completeExpeditionUseCase.execute(expeditionRecord.partyId, expeditionRecord.replay)
+    } catch (error) {
+      console.error('経験値付与エラー:', error)
     }
 
     // 遠征成功時にゴブリンを1匹追加

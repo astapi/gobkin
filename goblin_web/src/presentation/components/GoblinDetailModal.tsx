@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import type { Goblin } from '../../shared/types'
 import type { IGoblinRepository } from '../../core/repositories'
+import { getExpForNextLevel, getExpProgress } from '../../core/services/ExperienceSystem'
 
 interface GoblinDetailModalProps {
   goblin: Goblin | null
@@ -67,6 +68,29 @@ export const GoblinDetailModal = ({
                   </div>
                 )
               })}
+            </div>
+          </div>
+
+          <div className="mt-6">
+            <div className="pb-2 mb-3 text-lg font-bold text-gray-800 border-b border-gray-200">
+              経験値
+            </div>
+            <div className="p-3 bg-gray-50 rounded-lg border border-gray-300">
+              <div className="flex justify-between mb-2 text-sm">
+                <span className="font-bold text-gray-700">EXP</span>
+                <span className="text-gray-600">
+                  {goblin.experience} / {getExpForNextLevel(goblin.level)}
+                </span>
+              </div>
+              <div className="w-full h-3 bg-gray-200 rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-green-500 transition-all"
+                  style={{ width: `${getExpProgress(goblin.level, goblin.experience) * 100}%` }}
+                />
+              </div>
+              <div className="mt-2 text-xs text-gray-500 text-right">
+                次のレベルまで: {Math.max(0, getExpForNextLevel(goblin.level) - goblin.experience)}
+              </div>
             </div>
           </div>
 
