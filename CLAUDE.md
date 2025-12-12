@@ -17,8 +17,9 @@ TypeScriptとReactで実装された**Webアプリ**（`goblin_web`）と、タ�
 ### goblin_web (Webアプリケーション)
 
 ```bash
-# 開発サーバーの起動
 cd goblin_web
+
+# 開発サーバーの起動
 npm run dev
 
 # ビルド
@@ -27,6 +28,13 @@ npm run build
 # Lint
 npm run lint
 
+# テスト (Vitest)
+npm run test          # watchモード
+npm run test:ui       # UI付きテスト
+
+# 単一テストファイルの実行
+npx vitest run src/core/services/BattleSystem.test.ts
+
 # プレビュー
 npm run preview
 ```
@@ -34,8 +42,9 @@ npm run preview
 ### goblin_ink (CLIバトル)
 
 ```bash
-# 開発モードで実行（ビルド＋実行）
 cd goblin_ink
+
+# 開発モードで実行（ビルド＋実行）
 npm run dev
 
 # ビルド
@@ -56,44 +65,80 @@ npm run watch
 
 このプロジェクトは将来的なUnity等への移植を見据えて設計されています。コアロジックはプラットフォーム非依存に保ち、UI層のみが環境固有となるよう層分離されています。
 
-### goblin_web の設計パターン
+### goblin_web のディレクトリ構成
+
+```
+goblin_web/src/
+├── core/                    # 【移植対象】プラットフォーム非依存
+│   ├── domain/              # ドメインエンティティ
+│   │   ├── GoblinEntity.ts
+│   │   ├── PartyEntity.ts
+│   │   ├── EnemyEntity.ts
+│   │   └── ItemEntity.ts
+│   ├── usecases/            # ユースケース（ビジネスロジック）
+│   │   ├── StartExpeditionUseCase.ts
+│   │   ├── CompleteExpeditionUseCase.ts
+│   │   ├── CreatePartyUseCase.ts
+│   │   └── ...
+│   ├── services/            # ゲームシステム
+│   │   ├── ExpeditionEngine.ts    # 遠征シミュレーション
+│   │   ├── BattleSystem.ts        # 戦闘システム
+│   │   ├── BaseManagementService.ts  # 拠点管理
+│   │   ├── GoblinBirthService.ts  # ゴブリン生成
+│   │   └── ExperienceSystem.ts    # 経験値システム
+│   └── repositories/        # Repositoryインターフェース
+│       ├── IGoblinRepository.ts
+│       ├── IPartyRepository.ts
+│       └── IItemRepository.ts
+├── infrastructure/          # 【部分移植】データ永続化実装
+│   └── repositories/
+│       ├── FirestoreXxxRepositoryImpl.ts  # 本番用
+│       └── JsonXxxRepositoryImpl.ts       # 開発用
+├── presentation/            # 【非移植】UI層（React固有）
+│   ├── components/          # 画面コンポーネント
+│   ├── contexts/            # React Context
+│   └── hooks/               # カスタムフック
+└── shared/                  # 共通データ・型定義
+    ├── types/
+    └── data/
+```
+
+### 設計パターン
 
 **リポジトリパターン**を採用し、データアクセス層を抽象化しています：
 
-- **Repositoryインターフェース**: `src/repositories/` 配下に定義
-  - `GoblinRepository`: ゴブリンデータの管理
-  - `PartyRepository`: パーティ編成の管理
-  - `ItemRepository`: アイテムデータの管理
-
-- **Repository実装**:
+- **Repositoryインターフェース**: `src/core/repositories/` に定義
+- **Repository実装**: `src/infrastructure/repositories/` に配置
   - `FirestoreXxxRepositoryImpl`: Firestore を使った本番用実装
   - `JsonXxxRepositoryImpl`: JSONファイルを使った開発用実装
 
 **データの流れ**:
-1. UIコンポーネントが Repository インターフェースを通してデータ操作
+1. UIコンポーネント → UseCase → Repository という依存方向
 2. Firestore/JSON のどちらを使うかは Repository 実装で切り替え
 3. `AuthContext` がユーザー認証状態を管理
 4. `ExpeditionStateContext` が遠征状態を管理
 
 ### コアシステム
 
-**ExpeditionEngine** (`goblin_web/src/core/ExpeditionEngine.ts`):
+**ExpeditionEngine** (`src/core/services/ExpeditionEngine.ts`):
 - 遠征のシミュレーションエンジン
 - シード値を使った決定論的な乱数生成により、再現可能なリプレイを生成
 - `TimelineEvent` の配列として遠征の全イベントを記録
 
-**Battle System** (`goblin_web/src/core/battle.ts`):
+**BattleSystem** (`src/core/services/BattleSystem.ts`):
 - ターン制戦闘ロジック
 - ダメージ計算、戦闘ログ生成
 - 敵AIと捕獲判定を含む
 
-**Combatant** (`goblin_web/src/core/combatant.ts`):
-- ゴブリンと敵の戦闘中の状態管理
-- HP、攻撃力、防御力、素早さなどのパラメータ管理
+**BaseManagementService** (`src/core/services/BaseManagementService.ts`):
+- 拠点の状態管理と自動ゴブリン生成
+
+**GoblinBirthService** (`src/core/services/GoblinBirthService.ts`):
+- ゴブリンの生成ロジック
 
 ### 型定義
 
-主要な型定義は `goblin_web/src/types/index.ts` に集約されています：
+主要な型定義は `goblin_web/src/shared/types/` に集約されています：
 
 - `Goblin`: ゴブリンの基本データ（ID、名前、種族、レベル、ステータス、装備）
 - `Party`: パーティ情報（メンバーID、ステータス、遠征設定）
@@ -105,7 +150,7 @@ npm run watch
 
 ### 画面構成
 
-詳細は `SCREEN_DOCUMENTATION.md` を参照してください。主要な画面：
+主要な画面（`src/presentation/components/`）：
 
 - `GoblinListScreen`: ゴブリン一覧
 - `DungeonScreen`: ダンジョン選択
@@ -114,6 +159,7 @@ npm run watch
 - `ExpeditionPlaybackScreen`: 遠征のリアルタイム再生
 - `ExpeditionResultScreen`: 遠征結果表示（アニメーション付き）
 - `FormationScreen`: パーティ管理と遠征履歴
+- `BaseManagementScreen`: 拠点管理
 
 ### goblin_ink のバトルシステム
 

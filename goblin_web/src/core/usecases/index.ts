@@ -1,4 +1,5 @@
 export * from './StartExpeditionUseCase'
+export * from './CompleteExpeditionUseCase'
 export * from './ExecuteBattleUseCase'
 export * from './ManagePartyUseCase'
 export * from './EquipItemUseCase'

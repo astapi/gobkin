@@ -374,6 +374,7 @@ export class ExpeditionEngine {
       name: member.name,
       race: 'ゴブリン' as const,
       level: 1,
+      experience: 0,
       avatar: '/default.png',
       stats: {
         hp: member.maxHP,

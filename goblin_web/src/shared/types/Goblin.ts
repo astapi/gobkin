@@ -11,6 +11,7 @@ export type Goblin = {
   name: string
   race: string
   level: number
+  experience: number
   avatar: string
   stats: GoblinStats
   equipment: EquipmentSlot[]

@@ -9,6 +9,7 @@ describe('ExpeditionEngine', () => {
       name: 'テストゴブリン1',
       race: 'ゴブリン',
       level: 5,
+      experience: 0,
       avatar: '/test.png',
       stats: { hp: 100, atk: 50, sp: 30, spd: 40, def: 35 },
       equipment: [
@@ -22,6 +23,7 @@ describe('ExpeditionEngine', () => {
       name: 'テストゴブリン2',
       race: 'ゴブリン',
       level: 4,
+      experience: 0,
       avatar: '/test.png',
       stats: { hp: 80, atk: 60, sp: 40, spd: 45, def: 25 },
       equipment: [

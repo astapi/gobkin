@@ -130,6 +130,7 @@ export class GoblinBirthService {
       name,
       race: 'ゴブリン',
       level: 1,
+      experience: 0,
       avatar: '/src/assets/goblin/goblin.png',
       stats,
       equipment: [0, 1, 2].map(slotIndex => ({ slotIndex, itemId: null })),
