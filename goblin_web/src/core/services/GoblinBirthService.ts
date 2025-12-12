@@ -83,7 +83,7 @@ export class GoblinBirthService {
       }
     }
 
-    let newborns: Goblin[] = []
+    const newborns: Goblin[] = []
     let lastSpawnTime = state.lastSpawnTime
     let firstBonusGranted = state.firstBonusGranted
     let nextGoblinId = this.resolveNextId(state)

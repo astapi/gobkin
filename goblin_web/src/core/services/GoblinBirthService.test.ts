@@ -1,6 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { GoblinBirthService, type BirthEvaluationState } from './GoblinBirthService'
-import type { Goblin } from '../../shared/types'
 
 describe('GoblinBirthService', () => {
   let service: GoblinBirthService

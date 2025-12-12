@@ -30,16 +30,18 @@ const loadProgress = (): DungeonProgressState => {
     const saved = localStorage.getItem(STORAGE_KEY)
     if (saved) {
       try {
-        cachedProgress = { ...buildDefaultProgress(), ...JSON.parse(saved) }
-        return cachedProgress
+        const parsed: DungeonProgressState = { ...buildDefaultProgress(), ...JSON.parse(saved) }
+        cachedProgress = parsed
+        return parsed
       } catch (error) {
         console.warn('ダンジョン進行状況の読み込みに失敗しました', error)
       }
     }
   }
 
-  cachedProgress = buildDefaultProgress()
-  return cachedProgress
+  const defaultProgress = buildDefaultProgress()
+  cachedProgress = defaultProgress
+  return defaultProgress
 }
 
 const persistProgress = (progress: DungeonProgressState, saveRemote?: PersistProgress) => {
@@ -65,7 +67,9 @@ export const useDungeonProgress = () => {
   useEffect(() => {
     const handleUpdate = (next: DungeonProgressState) => setProgress(next)
     listeners.add(handleUpdate)
-    return () => listeners.delete(handleUpdate)
+    return () => {
+      listeners.delete(handleUpdate)
+    }
   }, [])
 
   // Firestore から最新の進行状況を読み込み

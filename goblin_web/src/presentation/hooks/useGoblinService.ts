@@ -80,22 +80,6 @@ export const useGoblinService = () => {
     [goblinRepository, refreshGoblins],
   )
 
-  const equipItem = useCallback(
-    (goblinId: number, slotIndex: number, itemId: string) => {
-      goblinRepository.equipItem(goblinId, slotIndex, itemId)
-      refreshGoblins()
-    },
-    [goblinRepository, refreshGoblins],
-  )
-
-  const unequipItem = useCallback(
-    (goblinId: number, slotIndex: number) => {
-      goblinRepository.unequipItem(goblinId, slotIndex)
-      refreshGoblins()
-    },
-    [goblinRepository, refreshGoblins],
-  )
-
   return {
     goblinRepository,
     goblins,
@@ -105,7 +89,5 @@ export const useGoblinService = () => {
     saveGoblin,
     deleteGoblin,
     updateGoblinLevel,
-    equipItem,
-    unequipItem,
   }
 }
