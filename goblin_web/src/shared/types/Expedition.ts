@@ -73,6 +73,7 @@ export interface RewardSummary {
 export interface AreaConfig {
   id: string
   name: string
+  areaLevel: number
   floors: number
   baseDurationSec: number
   moveSpeedScale?: number
