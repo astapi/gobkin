@@ -7,6 +7,9 @@ export type { Party, PartyStatus, PartyState } from "./Party"
 // Enemy related types
 export type { Enemy, EnemyPattern, EnemyDatabase, EnemySnap } from "./Enemy"
 
+// Factor related types
+export type { Factor, FactorEffect, FactorDropConfig } from "./Factor"
+
 // Item related types
 export type { Drop } from "./Item"
 

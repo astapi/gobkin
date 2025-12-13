@@ -68,7 +68,9 @@ export class ExpeditionEngine {
     }
 
     // 表示上の規定時間をそのまま使い、終端にイベントを揃える
-    const adjustedDuration = Math.ceil(area.baseDurationSec)
+    // DEBUG環境変数がtrueの場合は1秒に短縮
+    const isDebug = import.meta.env.VITE_DEBUG === 'true'
+    const adjustedDuration = isDebug ? 1 : Math.ceil(area.baseDurationSec)
 
     const events: TimelineEvent[] = []
     let currentFloor = 1

@@ -50,6 +50,7 @@ export const FormationTabScreen = () => {
   const [editingPartyId, setEditingPartyId] = useState<number | null>(null)
   const [selectedHistoryReplay, setSelectedHistoryReplay] = useState<ExpeditionRecord | null>(null)
   const [viewMode, setViewMode] = useState<ViewMode>('list')
+  const [lastFactorAcquisitions, setLastFactorAcquisitions] = useState<Map<number, string[]> | null>(null)
 
   const expeditionEngine = useMemo(() => new ExpeditionEngine(), [])
   const startExpeditionUseCase = useMemo(
@@ -184,9 +185,12 @@ export const FormationTabScreen = () => {
       markDungeonCleared(dungeon, true)
     }
 
-    // 経験値を付与
+    // 経験値・因子を付与
     try {
-      await completeExpeditionUseCase.execute(expeditionRecord.partyId, expeditionRecord.replay)
+      const result = await completeExpeditionUseCase.execute(expeditionRecord.partyId, expeditionRecord.replay)
+      if (result.factorAcquisitions.size > 0) {
+        setLastFactorAcquisitions(result.factorAcquisitions)
+      }
     } catch (error) {
       console.error('経験値付与エラー:', error)
     }
@@ -278,6 +282,7 @@ export const FormationTabScreen = () => {
             goblins={goblins}
             dungeonName={selectedHistoryReplay.dungeonName}
             onBackToMenu={handleBackToFormationList}
+            factorAcquisitions={lastFactorAcquisitions ?? undefined}
           />
         </div>
       </div>
@@ -320,6 +325,7 @@ export const FormationTabScreen = () => {
         partyId={editingPartyId}
         getPartyById={getPartyById}
         goblins={goblins}
+        parties={parties}
         dungeons={dungeons}
         onSetDungeon={setDungeon}
         onSetTargetFloor={setTargetFloor}

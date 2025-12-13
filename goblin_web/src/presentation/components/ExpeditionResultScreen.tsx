@@ -1,18 +1,21 @@
 import type { ExpeditionReplay, Goblin } from '../../shared/types'
 import { areasData } from '../../shared/data'
+import { getFactor } from '../../shared/data/factors'
 
 interface ExpeditionResultScreenProps {
   expeditionReplay: ExpeditionReplay
   goblins: Goblin[]
   dungeonName: string
   onBackToMenu: () => void
+  factorAcquisitions?: Map<number, string[]>  // ゴブリンID -> 獲得因子ID[]
 }
 
 export const ExpeditionResultScreen = ({
   expeditionReplay,
   goblins,
   dungeonName,
-  onBackToMenu
+  onBackToMenu,
+  factorAcquisitions
 }: ExpeditionResultScreenProps) => {
   const { summary, meta } = expeditionReplay
   const isSuccess = summary.success
@@ -124,6 +127,34 @@ export const ExpeditionResultScreen = ({
                 {capture.id} × {capture.qty}
               </div>
             ))}
+          </div>
+        </div>
+      )}
+
+      {/* 因子獲得 */}
+      {factorAcquisitions && factorAcquisitions.size > 0 && (
+        <div className="p-6 border-b border-gray-300">
+          <h3 className="mb-3 text-sm font-medium text-gray-900">
+            因子獲得
+          </h3>
+          <div className="space-y-2">
+            {Array.from(factorAcquisitions.entries()).map(([goblinId, factorIds]) => {
+              const goblin = goblins.find(g => g.id === goblinId)
+              return factorIds.map((factorId) => {
+                const factor = getFactor(factorId)
+                return (
+                  <div
+                    key={`${goblinId}-${factorId}`}
+                    className="text-sm text-gray-700"
+                  >
+                    <span className="font-medium">{goblin?.name || `ID:${goblinId}`}</span>
+                    {' が '}
+                    <span className="font-bold text-gray-900">{factor?.name || factorId}</span>
+                    {' を獲得！'}
+                  </div>
+                )
+              })
+            })}
           </div>
         </div>
       )}

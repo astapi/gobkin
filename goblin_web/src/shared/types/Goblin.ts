@@ -14,4 +14,5 @@ export type Goblin = {
   experience: number
   avatar: string
   stats: GoblinStats
+  factors?: string[]  // 獲得した因子IDの配列
 }

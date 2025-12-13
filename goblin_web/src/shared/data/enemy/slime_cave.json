@@ -24,7 +24,8 @@
       "spd": 3,
       "sp": 0,
       "exp": 12,
-      "gold": 10
+      "gold": 10,
+      "factorDrops": [{ "factorId": "slime", "probability": 1 }]
     }
   ],
   "patterns": [

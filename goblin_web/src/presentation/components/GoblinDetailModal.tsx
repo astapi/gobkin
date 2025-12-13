@@ -2,6 +2,7 @@ import { useState } from 'react'
 import type { Goblin } from '../../shared/types'
 import type { IGoblinRepository } from '../../core/repositories'
 import { getExpForNextLevel, getExpProgress } from '../../core/services/ExperienceSystem'
+import { getFactor } from '../../shared/data/factors'
 
 interface GoblinDetailModalProps {
   goblin: Goblin | null
@@ -92,6 +93,34 @@ export const GoblinDetailModal = ({
                 次のレベルまで: {Math.max(0, getExpForNextLevel(goblin.level) - goblin.experience)}
               </div>
             </div>
+          </div>
+
+          <div className="mt-6">
+            <div className="pb-2 mb-3 text-lg font-bold text-gray-800 border-b border-gray-200">
+              因子
+            </div>
+            {goblin.factors && goblin.factors.length > 0 ? (
+              <div className="flex flex-wrap gap-2">
+                {goblin.factors.map((factorId) => {
+                  const factor = getFactor(factorId)
+                  return (
+                    <div
+                      key={factorId}
+                      className="px-3 py-2 bg-gray-100 rounded-lg border border-gray-300"
+                      title={factor?.description}
+                    >
+                      <span className="text-sm font-medium text-gray-700">
+                        {factor?.name || factorId}
+                      </span>
+                    </div>
+                  )
+                })}
+              </div>
+            ) : (
+              <div className="p-3 text-sm text-gray-500 bg-gray-50 rounded-lg border border-gray-300">
+                因子を持っていません
+              </div>
+            )}
           </div>
 
           <div className="mt-6">
