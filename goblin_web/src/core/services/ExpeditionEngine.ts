@@ -124,6 +124,13 @@ export class ExpeditionEngine {
             // パーティ状態を更新
             this.applyBattleResults(partyState, combat)
 
+            // 戦闘敗北時は即座に帰還
+            if (combat.outcome === 'lose') {
+              shouldReturn = true
+              returnReason = 'lose'
+              break
+            }
+
             // 帰還条件をチェック
             const returnCheck = this.checkReturnConditions(partyState, request.returnPolicy, currentFloor)
             if (returnCheck.shouldReturn) {
@@ -161,6 +168,13 @@ export class ExpeditionEngine {
             })
 
             this.applyBattleResults(partyState, combat)
+
+            // 戦闘敗北時は即座に帰還
+            if (combat.outcome === 'lose') {
+              shouldReturn = true
+              returnReason = 'lose'
+              break
+            }
 
             const returnCheck = this.checkReturnConditions(partyState, request.returnPolicy, currentFloor)
             if (returnCheck.shouldReturn) {
