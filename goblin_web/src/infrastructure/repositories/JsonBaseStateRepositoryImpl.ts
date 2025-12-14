@@ -4,13 +4,9 @@ import type { IBaseStateRepository } from '../../core/repositories/IBaseStateRep
 const STORAGE_KEY = 'goblin-kingdom-base-state'
 
 const createDefaultBaseState = (): BaseState => {
-  const now = Date.now()
   return {
     capacity: 8,
     rank: 1,
-    lastSpawnTime: now,
-    slimeCaveCleared: false,
-    firstBonusGranted: false,
   }
 }
 
@@ -53,15 +49,5 @@ export class JsonBaseStateRepositoryImpl implements IBaseStateRepository {
   saveBaseState(state: BaseState): void {
     this.cache = { ...state }
     this.saveToLocalStorage()
-  }
-
-  updateLastSpawnTime(timestamp: number): void {
-    if (this.cache === null) {
-      this.loadFromLocalStorage()
-    }
-    if (this.cache) {
-      this.cache.lastSpawnTime = timestamp
-      this.saveToLocalStorage()
-    }
   }
 }

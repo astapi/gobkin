@@ -1,26 +1,6 @@
 import type { Goblin, GoblinStats } from '../../shared/types'
 import { ModGeneratorService } from './ModGeneratorService'
-
-export interface BirthEvaluationState {
-  currentGoblins: Goblin[]
-  capacity: number
-  rank: number
-  now: number
-  lastSpawnTime: number
-  slimeCaveCleared: boolean
-  firstBonusGranted: boolean
-  nextGoblinId?: number
-}
-
-export interface BirthEvaluationResult {
-  newborns: Goblin[]
-  updatedLastSpawnTime: number
-  firstBonusGranted: boolean
-  nextGoblinId: number
-  availableSlots: number
-}
-
-const BASE_SPAWN_INTERVAL_MS = 10 * 1000 // デバッグ用: 10秒
+import { FactorInheritanceService, type InheritanceResult } from './FactorInheritanceService'
 
 const STAT_RANGES: Record<keyof GoblinStats, { min: number; max: number }> = {
   hp: { min: 55, max: 80 },
@@ -66,79 +46,69 @@ export class GoblinBirthService {
    * 単体のゴブリンを生成する（遠征成功時など）
    * @param nextGoblinId 次のゴブリンID
    * @param individualValue 個体値 (1〜64)、デフォルトは1
+   * @param baseGoblins 因子引き継ぎ元の拠点ゴブリン（オプション）
    */
-  public createNewGoblin(nextGoblinId: number, individualValue = 1): Goblin {
-    return this.createGoblin(nextGoblinId, individualValue)
+  public createNewGoblin(nextGoblinId: number, individualValue = 1, baseGoblins?: Goblin[]): Goblin {
+    const inheritance = baseGoblins ? this.evaluateFactorInheritance(baseGoblins) : undefined
+    return this.createGoblin(nextGoblinId, individualValue, inheritance)
   }
 
   /**
-   * 時間経過とゲーム状態に基づいて新しいゴブリンの誕生を評価する
+   * 因子引き継ぎを評価
+   * @param baseGoblins 拠点所属ゴブリン
    */
-  public evaluateBirths(state: BirthEvaluationState): BirthEvaluationResult {
-    const availableSlots = Math.max(0, state.capacity - state.currentGoblins.length)
-    if (availableSlots === 0) {
-      return {
-        newborns: [],
-        updatedLastSpawnTime: state.lastSpawnTime,
-        firstBonusGranted: state.firstBonusGranted,
-        nextGoblinId: this.resolveNextId(state),
-        availableSlots,
-      }
+  private evaluateFactorInheritance(baseGoblins: Goblin[]): InheritanceResult | undefined {
+    console.log('[GoblinBirth] evaluateFactorInheritance called', {
+      baseGoblinsCount: baseGoblins.length,
+      baseGoblins: baseGoblins.map(g => ({ name: g.name, factors: g.factors })),
+    })
+
+    if (baseGoblins.length === 0) {
+      console.log('[GoblinBirth] No base goblins, skipping inheritance')
+      return undefined
     }
 
-    const newborns: Goblin[] = []
-    let lastSpawnTime = state.lastSpawnTime
-    let firstBonusGranted = state.firstBonusGranted
-    let nextGoblinId = this.resolveNextId(state)
+    const parents = FactorInheritanceService.selectParents(baseGoblins, this.random)
+    const inheritance = FactorInheritanceService.evaluateInheritance(parents, this.random)
 
-    // スライム洞窟クリア時の初回ボーナス
-    if (state.slimeCaveCleared && !firstBonusGranted && newborns.length < availableSlots) {
-      newborns.push(this.createGoblin(nextGoblinId++))
-      firstBonusGranted = true
-      lastSpawnTime = Math.max(lastSpawnTime, state.now)
+    console.log('[GoblinBirth] Inheritance result:', inheritance)
+
+    // 引き継いだ因子がない場合はundefined
+    if (inheritance.inheritedFactors.length === 0) {
+      return undefined
     }
 
-    // 時間経過による通常の誕生
-    if (state.now > lastSpawnTime) {
-      const intervals = Math.floor((state.now - lastSpawnTime) / BASE_SPAWN_INTERVAL_MS)
-      if (intervals > 0 && newborns.length < availableSlots) {
-        const spawnPerInterval = this.calculateSpawnCountByRank(state.rank)
-        const totalSpawn = Math.min(availableSlots - newborns.length, intervals * spawnPerInterval)
-        for (let i = 0; i < totalSpawn; i += 1) {
-          newborns.push(this.createGoblin(nextGoblinId++))
-        }
-        lastSpawnTime += intervals * BASE_SPAWN_INTERVAL_MS
-      }
-    }
-
-    return {
-      newborns,
-      updatedLastSpawnTime: lastSpawnTime,
-      firstBonusGranted,
-      nextGoblinId,
-      availableSlots: Math.max(0, availableSlots - newborns.length),
-    }
-  }
-
-  /**
-   * 拠点ランクに応じた1インターバルあたりの誕生数を計算
-   */
-  private calculateSpawnCountByRank(rank: number): number {
-    if (rank <= 1) return 1
-    if (rank <= 3) return 2
-    return 3
+    return inheritance
   }
 
   /**
    * 新しいゴブリンを生成
    * @param id ゴブリンID
    * @param individualValue 個体値 (1〜64)、デフォルトは1
+   * @param inheritance 因子引き継ぎ結果（オプション）
    */
-  private createGoblin(id: number, individualValue = 1): Goblin {
-    const stats = this.generateStats()
+  private createGoblin(
+    id: number,
+    individualValue = 1,
+    inheritance?: InheritanceResult
+  ): Goblin {
+    const baseStats = this.generateStats()
     const name = this.selectRandomName()
     // 個体値を1〜64の範囲にクランプ
     const clampedIV = Math.max(1, Math.min(64, individualValue))
+
+    // 因子によるステータス補正を適用
+    const stats = inheritance
+      ? this.applyStatBonuses(baseStats, inheritance.statBonuses)
+      : baseStats
+
+    // 種族とアバターを決定
+    const race = inheritance?.isVariant
+      ? inheritance.variantRace!
+      : 'ゴブリン'
+    const avatar = inheritance?.isVariant
+      ? inheritance.variantAvatar!
+      : '/src/assets/goblin/goblin.png'
 
     // Modを生成（シードはIDとタイムスタンプから生成）
     const modSeed = id * 1000 + Date.now() % 1000
@@ -148,13 +118,27 @@ export class GoblinBirthService {
     return {
       id,
       name,
-      race: 'ゴブリン',
+      race,
       level: 1,
       experience: 0,
-      avatar: '/src/assets/goblin/goblin.png',
+      avatar,
       stats,
       individualValue: clampedIV,
       mods,  // 空配列もそのまま保存（Firestoreはundefinedを許容しない）
+      factors: inheritance?.inheritedFactors ?? [],
+    }
+  }
+
+  /**
+   * 基本ステータスに因子ボーナスを適用
+   */
+  private applyStatBonuses(baseStats: GoblinStats, bonuses: GoblinStats): GoblinStats {
+    return {
+      hp: baseStats.hp + bonuses.hp,
+      atk: baseStats.atk + bonuses.atk,
+      def: baseStats.def + bonuses.def,
+      sp: baseStats.sp + bonuses.sp,
+      spd: baseStats.spd + bonuses.spd,
     }
   }
 
@@ -186,16 +170,5 @@ export class GoblinBirthService {
     const { min, max } = STAT_RANGES[key]
     const value = min + (max - min) * this.random()
     return Math.round(value)
-  }
-
-  /**
-   * 次のゴブリンIDを解決
-   */
-  private resolveNextId(state: BirthEvaluationState): number {
-    if (state.nextGoblinId !== undefined) {
-      return state.nextGoblinId
-    }
-    const maxExistingId = state.currentGoblins.reduce((max, goblin) => Math.max(max, goblin.id), 0)
-    return maxExistingId + 1
   }
 }

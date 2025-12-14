@@ -17,13 +17,9 @@ const getUserDoc = () => {
 }
 
 const createDefaultBaseState = (): BaseState => {
-  const now = Date.now()
   return {
     capacity: 8,
     rank: 1,
-    lastSpawnTime: now,
-    slimeCaveCleared: false,
-    firstBonusGranted: false,
   }
 }
 
@@ -66,24 +62,10 @@ export class FirestoreBaseStateRepositoryImpl implements IBaseStateRepository {
     this.cache = { ...state }
   }
 
-  async updateLastSpawnTime(timestamp: number): Promise<void> {
-    if (!this.cache) {
-      throw new Error('BaseStateが初期化されていません')
-    }
-    const updatedState = { ...this.cache, lastSpawnTime: timestamp }
-    await this.saveBaseState(updatedState)
-  }
-
   // 同期版のインターフェース実装（非同期版を内部で呼び出す）
   saveBaseStateSync(state: BaseState): void {
     this.saveBaseState(state).catch(err => {
       console.error('Failed to save base state:', err)
-    })
-  }
-
-  updateLastSpawnTimeSync(timestamp: number): void {
-    this.updateLastSpawnTime(timestamp).catch(err => {
-      console.error('Failed to update last spawn time:', err)
     })
   }
 }
@@ -110,9 +92,5 @@ export class FirestoreBaseStateRepositoryAdapter implements IBaseStateRepository
 
   saveBaseState(state: BaseState): void {
     this.impl.saveBaseStateSync(state)
-  }
-
-  updateLastSpawnTime(timestamp: number): void {
-    this.impl.updateLastSpawnTimeSync(timestamp)
   }
 }

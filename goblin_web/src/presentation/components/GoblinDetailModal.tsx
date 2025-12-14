@@ -121,18 +121,34 @@ export const GoblinDetailModal = ({
               因子
             </div>
             {goblin.factors && goblin.factors.length > 0 ? (
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-col gap-3">
                 {goblin.factors.map((factorId) => {
                   const factor = getFactor(factorId)
+                  if (!factor) return null
                   return (
                     <div
                       key={factorId}
-                      className="px-3 py-2 bg-gray-100 rounded-lg border border-gray-300"
-                      title={factor?.description}
+                      className="p-3 bg-gray-50 rounded-lg border border-gray-300"
                     >
-                      <span className="text-sm font-medium text-gray-700">
-                        {factor?.name || factorId}
-                      </span>
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="text-lg">
+                          {factorId === 'slime' ? '💧' : factorId === 'forest' ? '🐺' : '✨'}
+                        </span>
+                        <span className="font-bold text-gray-800">{factor.name}</span>
+                      </div>
+                      <p className="text-sm text-gray-600 mb-2">{factor.description}</p>
+                      {factor.effects && factor.effects.length > 0 && (
+                        <div className="flex flex-wrap gap-1">
+                          {factor.effects.map((effect, idx) => (
+                            <span
+                              key={idx}
+                              className="px-2 py-1 text-xs font-medium text-green-700 bg-green-100 rounded"
+                            >
+                              {effect.target.toUpperCase()} +{effect.value}
+                            </span>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   )
                 })}

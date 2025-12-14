@@ -19,7 +19,7 @@ export type {
 export { DEFAULT_MOD_CONFIG } from "./Mod"
 
 // Factor related types
-export type { Factor, FactorEffect, FactorDropConfig } from "./Factor"
+export type { Factor, FactorEffect, FactorVariantConfig, FactorDropConfig } from "./Factor"
 
 // Item related types
 export type { Drop } from "./Item"

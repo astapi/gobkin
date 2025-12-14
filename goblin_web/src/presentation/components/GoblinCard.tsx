@@ -1,4 +1,5 @@
 import type { Goblin } from '../../shared/types'
+import { FactorBadgeList } from './FactorBadge'
 
 interface GoblinCardProps {
   goblin: Goblin
@@ -17,6 +18,11 @@ export const GoblinCard = ({ goblin, onClick }: GoblinCardProps) => (
       <div className="font-bold text-gray-800 text-sm">{goblin.name}</div>
       <div className="text-gray-600 text-xs mt-0.5">{goblin.race}</div>
       <div className="text-gray-600 text-xs font-bold">Lv.{goblin.level}</div>
+      {goblin.factors && goblin.factors.length > 0 && (
+        <div className="mt-1">
+          <FactorBadgeList factorIds={goblin.factors} size="sm" maxDisplay={2} />
+        </div>
+      )}
     </div>
   </div>
 )

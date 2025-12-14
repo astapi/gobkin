@@ -226,7 +226,8 @@ export const FormationTabScreen = () => {
           console.warn('エリアデータの取得に失敗しました')
         }
 
-        const newGoblin = goblinBirthService.createNewGoblin(nextGoblinId, areaLevel)
+        // goblins（拠点ゴブリン）を因子引き継ぎ元として渡す
+        const newGoblin = goblinBirthService.createNewGoblin(nextGoblinId, areaLevel, goblins)
         pendingGoblinRepository.addPendingGoblin(newGoblin)
 
         // nextGoblinIdを更新

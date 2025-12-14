@@ -8,6 +8,7 @@ import { JsonPendingGoblinRepositoryImpl } from '../../infrastructure/repositori
 import { JsonBaseStateRepositoryImpl } from '../../infrastructure/repositories/JsonBaseStateRepositoryImpl'
 import { getModTemplate } from '../../shared/data/modPoolLoader'
 import { ModStatCalculator } from '../../core/services/ModStatCalculator'
+import { FactorBadgeList } from './FactorBadge'
 
 const STAT_LABELS: Record<ModStat, string> = {
   hp_percent: 'HP',
@@ -28,16 +29,12 @@ function getStatLabel(stat: ModStat): string {
 
 const USE_FIRESTORE = import.meta.env.VITE_USE_FIRESTORE === 'true'
 
-type BaseConfig = Pick<BaseState, 'capacity' | 'rank' | 'lastSpawnTime' | 'slimeCaveCleared' | 'firstBonusGranted' | 'nextGoblinId'>
+type BaseConfig = Pick<BaseState, 'capacity' | 'rank' | 'nextGoblinId'>
 
 const createDefaultConfig = (): BaseConfig => {
-  const now = Date.now()
   return {
     capacity: 8,
     rank: 1,
-    lastSpawnTime: now,
-    slimeCaveCleared: false,
-    firstBonusGranted: false,
   }
 }
 
@@ -217,6 +214,7 @@ export const BaseManagementScreen = () => {
               const isSelected = selectedGoblinIds.has(goblin.id)
               const effectiveStats = ModStatCalculator.calculate(goblin)
               const hasMods = goblin.mods && goblin.mods.length > 0
+              const hasFactors = goblin.factors && goblin.factors.length > 0
               return (
                 <div
                   key={goblin.id}
@@ -257,27 +255,32 @@ export const BaseManagementScreen = () => {
                       </div>
                     </div>
                   </div>
-                  {hasMods && (
-                    <div className="mt-2 pt-2 border-t border-gray-200">
-                      <div className="flex flex-wrap gap-1">
-                        {goblin.mods!.map((mod, index) => {
-                          const template = getModTemplate(mod.templateId)
-                          if (!template) return null
-                          const isPercent = template.stat.includes('percent') || template.stat === 'damage_reduction'
-                          return (
-                            <span
-                              key={index}
-                              className={`text-xs px-1.5 py-0.5 rounded ${
-                                template.type === 'prefix'
-                                  ? 'bg-blue-50 text-blue-700 border border-blue-200'
-                                  : 'bg-purple-50 text-purple-700 border border-purple-200'
-                              }`}
-                            >
-                              {getStatLabel(template.stat)}+{mod.value}{isPercent ? '%' : ''}
-                            </span>
-                          )
-                        })}
-                      </div>
+                  {(hasMods || hasFactors) && (
+                    <div className="mt-2 pt-2 border-t border-gray-200 flex flex-col gap-1">
+                      {hasFactors && (
+                        <FactorBadgeList factorIds={goblin.factors!} size="sm" />
+                      )}
+                      {hasMods && (
+                        <div className="flex flex-wrap gap-1">
+                          {goblin.mods!.map((mod, index) => {
+                            const template = getModTemplate(mod.templateId)
+                            if (!template) return null
+                            const isPercent = template.stat.includes('percent') || template.stat === 'damage_reduction'
+                            return (
+                              <span
+                                key={index}
+                                className={`text-xs px-1.5 py-0.5 rounded ${
+                                  template.type === 'prefix'
+                                    ? 'bg-blue-50 text-blue-700 border border-blue-200'
+                                    : 'bg-purple-50 text-purple-700 border border-purple-200'
+                                }`}
+                              >
+                                {getStatLabel(template.stat)}+{mod.value}{isPercent ? '%' : ''}
+                              </span>
+                            )
+                          })}
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
