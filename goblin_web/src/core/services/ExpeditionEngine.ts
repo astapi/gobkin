@@ -15,6 +15,7 @@ import type {
   Drop,
 } from '../../shared/types'
 import { BattleSystem } from './BattleSystem'
+import { ModStatCalculator } from './ModStatCalculator'
 
 export class ExpeditionEngine {
   private rng: () => number
@@ -261,16 +262,25 @@ export class ExpeditionEngine {
   }
 
   private initializePartyState(party: Goblin[]): PartyState[] {
-    return party.map(goblin => ({
-      id: goblin.id.toString(),
-      name: goblin.name,
-      currentHP: goblin.stats.hp,
-      maxHP: goblin.stats.hp,
-      atk: goblin.stats.atk,
-      def: goblin.stats.def,
-      isKO: false,
-      isDead: false
-    }))
+    return party.map(goblin => {
+      // Mod適用後の実効ステータスを取得
+      const effectiveStats = ModStatCalculator.calculate(goblin)
+      return {
+        id: goblin.id.toString(),
+        name: goblin.name,
+        currentHP: effectiveStats.hp,
+        maxHP: effectiveStats.hp,
+        atk: effectiveStats.atk,
+        def: effectiveStats.def,
+        spd: effectiveStats.spd,
+        sp: effectiveStats.sp,
+        isKO: false,
+        isDead: false,
+        mods: goblin.mods || [],
+        level: goblin.level,
+        avatar: goblin.avatar,
+      }
+    })
   }
 
   private generateFloorEvents(area: AreaConfig, floor: number, totalDuration: number): number[] {
@@ -344,21 +354,22 @@ export class ExpeditionEngine {
   }
 
   private resolveCombat(partyState: PartyState[], enemies: Enemy[], area: AreaConfig, isBoss = false): CombatReplay {
-    // partyStateから全ゴブリンを再構築（死亡メンバーも含む）
+    // partyStateから全ゴブリンを再構築（死亡メンバーも含む、modsも保持）
     const allGoblins: Goblin[] = partyState.map(member => ({
       id: parseInt(member.id),
       name: member.name,
       race: 'ゴブリン' as const,
-      level: 1,
+      level: member.level,
       experience: 0,
-      avatar: '/default.png',
+      avatar: member.avatar,
       stats: {
         hp: member.maxHP,
         atk: member.atk,
-        sp: 0,
-        spd: 40,
+        sp: member.sp,
+        spd: member.spd,
         def: member.def
-      }
+      },
+      mods: member.mods,
     }))
 
     // 各メンバーの現在HPを配列で渡す

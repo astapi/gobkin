@@ -1,4 +1,5 @@
 import type { ExpeditionRequest } from "./Expedition"
+import type { ModInstance } from "./Mod"
 
 export type PartyStatus = "idle" | "expedition"
 
@@ -19,8 +20,13 @@ export interface PartyState {
   maxHP: number
   atk: number
   def: number
+  spd: number
+  sp: number
   isKO: boolean
   isDead: boolean
+  mods: ModInstance[]
+  level: number
+  avatar: string
 }
 
 export interface PartySnapshot {
