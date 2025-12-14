@@ -16,8 +16,11 @@ export type Party = {
 export interface PartyState {
   id: string
   name: string
-  currentHP: number
-  maxHP: number
+  // HP管理
+  currentHP: number   // 現在HP（Mod適用後、戦闘でダメージを受けると減少）
+  maxHP: number       // 最大HP（Mod適用後、参照用）
+  // 基礎ステータス（BattleSystemがModを適用する）
+  baseHP: number
   atk: number
   def: number
   spd: number
