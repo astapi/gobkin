@@ -1,6 +1,7 @@
 import type { BattleLogEntry, Enemy, Goblin } from '../../shared/types'
 import { CombatantManager } from './CombatantManager'
 import { DamageCalculator } from './DamageCalculator'
+import { ModStatCalculator } from './ModStatCalculator'
 import type {
   Combatant,
   DamageOptions,
@@ -16,6 +17,7 @@ interface BattleUnit {
   spd: number
   isAlly: boolean
   originalIndex: number
+  damageReduction: number  // 被ダメージ軽減率（0〜100）
 }
 
 export interface BattleResult {
@@ -94,7 +96,7 @@ export class BattleSystem {
         const targetIndex = Math.floor(rng() * aliveTargets.length)
         const target = aliveTargets[targetIndex]
 
-        const damage = this.damageCalculator.calcDamage(
+        const baseDamage = this.damageCalculator.calcDamage(
           RACE_DICT,
           unit.combatant,
           target.combatant,
@@ -102,6 +104,10 @@ export class BattleSystem {
           DEFAULT_DAMAGE_OPTIONS,
           rng,
         )
+
+        // 被ダメージ軽減を適用
+        const reductionFactor = 1 - target.damageReduction / 100
+        const damage = Math.max(1, Math.floor(baseDamage * reductionFactor))
 
         target.currentHP = Math.max(0, target.currentHP - damage)
         const targetDefeated = target.currentHP <= 0
@@ -138,15 +144,19 @@ export class BattleSystem {
 
   private createAllyUnit(goblin: Goblin, initialHP: number | undefined, originalIndex: number): BattleUnit {
     const combatant = this.combatantManager.fromGoblin(goblin)
-    const hp = initialHP ?? goblin.stats.hp
+    // Mod適用後のステータスを使用
+    const effectiveStats = ModStatCalculator.calculate(goblin)
+    const hp = initialHP ?? effectiveStats.hp
+    const damageReduction = ModStatCalculator.getDamageReduction(goblin)
     return {
       combatant,
       currentHP: hp,
-      maxHP: goblin.stats.hp,
+      maxHP: effectiveStats.hp,
       initialHP: hp,
-      spd: goblin.stats.spd,
+      spd: effectiveStats.spd,
       isAlly: true,
       originalIndex,
+      damageReduction,
     }
   }
 
@@ -160,6 +170,7 @@ export class BattleSystem {
       spd: enemy.spd,
       isAlly: false,
       originalIndex,
+      damageReduction: 0,  // 敵は被ダメージ軽減なし
     }
   }
 

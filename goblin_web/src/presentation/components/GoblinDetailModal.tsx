@@ -1,8 +1,27 @@
 import { useState } from 'react'
-import type { Goblin } from '../../shared/types'
+import type { Goblin, ModStat } from '../../shared/types'
 import type { IGoblinRepository } from '../../core/repositories'
 import { getExpForNextLevel, getExpProgress } from '../../core/services/ExperienceSystem'
 import { getFactor } from '../../shared/data/factors'
+import { getModTemplate } from '../../shared/data/modPoolLoader'
+import { ModStatCalculator } from '../../core/services/ModStatCalculator'
+
+const STAT_LABELS: Record<ModStat, string> = {
+  hp_percent: 'HP',
+  hp_flat: 'HP',
+  atk_percent: 'ATK',
+  atk_flat: 'ATK',
+  def_percent: 'DEF',
+  def_flat: 'DEF',
+  spd_percent: 'SPD',
+  sp_percent: 'SP',
+  sp_flat: 'SP',
+  damage_reduction: '被ダメ軽減',
+}
+
+function getStatLabel(stat: ModStat): string {
+  return STAT_LABELS[stat] || stat
+}
 
 interface GoblinDetailModalProps {
   goblin: Goblin | null
@@ -27,7 +46,7 @@ export const GoblinDetailModal = ({
   if (!goblin) return null
 
   return (
-    <div className="fixed inset-0 bg-gray-50 z-50 flex flex-col max-w-[414px] mx-auto">
+    <div className="flex fixed inset-0 z-50 flex-col mx-auto max-w-full bg-gray-50">
       <div className="flex gap-4 items-center p-5 text-white bg-gray-800 shadow-lg">
         <button
           onClick={onClose}
@@ -55,21 +74,23 @@ export const GoblinDetailModal = ({
             <div className="pb-2 mb-3 text-lg font-bold text-gray-800 border-b border-gray-200">
               ステータス
             </div>
-            <div className="flex flex-col gap-2">
-              {(['hp', 'atk', 'def', 'spd', 'sp'] as const).map((key) => {
-                const value = goblin.stats[key]
-                return (
-                  <div key={key} className="flex justify-between items-center p-3 bg-gray-50 rounded-lg border border-gray-300">
-                    <div className="text-sm font-bold text-gray-700">
-                      {key.toUpperCase()}
+            {(() => {
+              const effectiveStats = ModStatCalculator.calculate(goblin)
+              return (
+                <div className="flex flex-col gap-2">
+                  {(['hp', 'atk', 'def', 'spd', 'sp'] as const).map((key) => (
+                    <div key={key} className="flex justify-between items-center p-3 bg-gray-50 rounded-lg border border-gray-300">
+                      <div className="text-sm font-bold text-gray-700">
+                        {key.toUpperCase()}
+                      </div>
+                      <div className="text-base font-bold text-gray-600">
+                        {effectiveStats[key]}
+                      </div>
                     </div>
-                    <div className="text-base font-bold text-gray-600">
-                      {value}
-                    </div>
-                  </div>
-                )
-              })}
-            </div>
+                  ))}
+                </div>
+              )
+            })()}
           </div>
 
           <div className="mt-6">
@@ -83,13 +104,13 @@ export const GoblinDetailModal = ({
                   {goblin.experience} / {getExpForNextLevel(goblin.level)}
                 </span>
               </div>
-              <div className="w-full h-3 bg-gray-200 rounded-full overflow-hidden">
+              <div className="overflow-hidden w-full h-3 bg-gray-200 rounded-full">
                 <div
                   className="h-full bg-gray-600 transition-all"
                   style={{ width: `${getExpProgress(goblin.level, goblin.experience) * 100}%` }}
                 />
               </div>
-              <div className="mt-2 text-xs text-gray-500 text-right">
+              <div className="mt-2 text-xs text-right text-gray-500">
                 次のレベルまで: {Math.max(0, getExpForNextLevel(goblin.level) - goblin.experience)}
               </div>
             </div>
@@ -119,6 +140,54 @@ export const GoblinDetailModal = ({
             ) : (
               <div className="p-3 text-sm text-gray-500 bg-gray-50 rounded-lg border border-gray-300">
                 因子を持っていません
+              </div>
+            )}
+          </div>
+
+          <div className="mt-6">
+            <div className="pb-2 mb-3 text-lg font-bold text-gray-800 border-b border-gray-200">
+              Mod
+            </div>
+            {goblin.mods && goblin.mods.length > 0 ? (
+              <div className="flex flex-col gap-2">
+                {goblin.mods.map((mod, index) => {
+                  const template = getModTemplate(mod.templateId)
+                  if (!template) return null
+                  const isPercent = template.stat.includes('percent') || template.stat === 'damage_reduction'
+                  const statLabel = getStatLabel(template.stat)
+                  return (
+                    <div
+                      key={index}
+                      className={`flex justify-between items-center p-3 rounded-lg border ${
+                        template.type === 'prefix'
+                          ? 'bg-blue-50 border-blue-200'
+                          : 'bg-purple-50 border-purple-200'
+                      }`}
+                    >
+                      <div className="text-sm font-medium text-gray-700">
+                        {statLabel}
+                      </div>
+                      <div className="text-sm font-bold text-gray-600">
+                        +{mod.value}{isPercent ? '%' : ''}
+                      </div>
+                    </div>
+                  )
+                })}
+                {(() => {
+                  const damageReduction = ModStatCalculator.getDamageReduction(goblin)
+                  if (damageReduction > 0) {
+                    return (
+                      <div className="p-2 mt-2 text-sm text-purple-700 bg-purple-50 rounded-lg border border-purple-200">
+                        被ダメージ軽減: {damageReduction}%
+                      </div>
+                    )
+                  }
+                  return null
+                })()}
+              </div>
+            ) : (
+              <div className="p-3 text-sm text-gray-500 bg-gray-50 rounded-lg border border-gray-300">
+                Modを持っていません
               </div>
             )}
           </div>

@@ -1,4 +1,5 @@
 import type { Goblin, GoblinStats } from '../../shared/types'
+import { ModGeneratorService } from './ModGeneratorService'
 
 export interface BirthEvaluationState {
   currentGoblins: Goblin[]
@@ -138,6 +139,12 @@ export class GoblinBirthService {
     const name = this.selectRandomName()
     // 個体値を1〜64の範囲にクランプ
     const clampedIV = Math.max(1, Math.min(64, individualValue))
+
+    // Modを生成（シードはIDとタイムスタンプから生成）
+    const modSeed = id * 1000 + Date.now() % 1000
+    const modGenerator = new ModGeneratorService(modSeed)
+    const mods = modGenerator.generateMods(clampedIV)
+
     return {
       id,
       name,
@@ -147,6 +154,7 @@ export class GoblinBirthService {
       avatar: '/src/assets/goblin/goblin.png',
       stats,
       individualValue: clampedIV,
+      mods,  // 空配列もそのまま保存（Firestoreはundefinedを許容しない）
     }
   }
 

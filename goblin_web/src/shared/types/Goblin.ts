@@ -1,3 +1,5 @@
+import type { ModInstance } from './Mod'
+
 export type GoblinStats = {
   hp: number
   atk: number
@@ -16,4 +18,5 @@ export type Goblin = {
   stats: GoblinStats
   factors?: string[]  // 獲得した因子IDの配列
   individualValue?: number  // 個体値 (1〜64)、未定義の場合は1として扱う
+  mods?: ModInstance[]  // 付与されたMod配列（0〜4個）
 }

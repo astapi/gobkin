@@ -1,5 +1,6 @@
 import type { Goblin, GoblinStats } from '../../shared/types'
 import { addExperience, type LevelUpResult } from '../services/ExperienceSystem'
+import { ModStatCalculator } from '../services/ModStatCalculator'
 
 export class GoblinEntity {
   private readonly base: Goblin
@@ -33,9 +34,28 @@ export class GoblinEntity {
     return this.experience
   }
 
+  /**
+   * Mod適用後の実効ステータスを取得
+   */
+  public get effectiveStats(): GoblinStats {
+    // 現在のステータス（レベルアップ込み）をベースにMod効果を適用
+    const currentSnapshot = this.toSnapshot()
+    return ModStatCalculator.calculate(currentSnapshot)
+  }
+
+  /**
+   * 被ダメージ軽減率を取得（戦闘時に使用）
+   */
+  public get damageReduction(): number {
+    return ModStatCalculator.getDamageReduction(this.toSnapshot())
+  }
+
+  /**
+   * 戦力計算（Mod適用後のステータスで計算）
+   */
   public calculateCombatPower(): number {
-    const { atk, def, sp, spd, hp } = this.stats
-    const rawPower = atk * 1.5 + def * 1.2 + sp + spd + hp / 10
+    const stats = this.effectiveStats
+    const rawPower = stats.atk * 1.5 + stats.def * 1.2 + stats.sp + stats.spd + stats.hp / 10
     return Math.round(rawPower)
   }
 

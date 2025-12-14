@@ -1,11 +1,30 @@
 import { useEffect, useMemo, useState } from 'react'
-import type { Goblin, BaseState } from '../../shared/types'
+import type { Goblin, BaseState, ModStat } from '../../shared/types'
 import type { IPendingGoblinRepository, IBaseStateRepository } from '../../core/repositories'
 import { useGoblinService } from '../hooks/useGoblinService.ts'
 import { FirestorePendingGoblinRepositoryAdapter } from '../../infrastructure/repositories/FirestorePendingGoblinRepositoryImpl'
 import { FirestoreBaseStateRepositoryAdapter } from '../../infrastructure/repositories/FirestoreBaseStateRepositoryImpl'
 import { JsonPendingGoblinRepositoryImpl } from '../../infrastructure/repositories/JsonPendingGoblinRepositoryImpl'
 import { JsonBaseStateRepositoryImpl } from '../../infrastructure/repositories/JsonBaseStateRepositoryImpl'
+import { getModTemplate } from '../../shared/data/modPoolLoader'
+import { ModStatCalculator } from '../../core/services/ModStatCalculator'
+
+const STAT_LABELS: Record<ModStat, string> = {
+  hp_percent: 'HP',
+  hp_flat: 'HP',
+  atk_percent: 'ATK',
+  atk_flat: 'ATK',
+  def_percent: 'DEF',
+  def_flat: 'DEF',
+  spd_percent: 'SPD',
+  sp_percent: 'SP',
+  sp_flat: 'SP',
+  damage_reduction: '被ダメ軽減',
+}
+
+function getStatLabel(stat: ModStat): string {
+  return STAT_LABELS[stat] || stat
+}
 
 const USE_FIRESTORE = import.meta.env.VITE_USE_FIRESTORE === 'true'
 
@@ -196,44 +215,71 @@ export const BaseManagementScreen = () => {
           <div className="flex flex-col gap-2">
             {pendingGoblins.map(goblin => {
               const isSelected = selectedGoblinIds.has(goblin.id)
+              const effectiveStats = ModStatCalculator.calculate(goblin)
+              const hasMods = goblin.mods && goblin.mods.length > 0
               return (
                 <div
                   key={goblin.id}
                   onClick={() => toggleGoblinSelection(goblin.id)}
-                  className={`flex items-center gap-3 p-2.5 rounded-lg border-2 cursor-pointer transition-all ${
+                  className={`p-2.5 rounded-lg border-2 cursor-pointer transition-all ${
                     isSelected
                       ? 'bg-gray-100 border-gray-500'
                       : 'bg-white border-gray-200 hover:border-gray-300'
                   }`}
                 >
-                  <div className="w-10 h-10 flex items-center justify-center flex-shrink-0">
-                    <div
-                      className={`w-5 h-5 rounded border-2 flex items-center justify-center ${
-                        isSelected
-                          ? 'bg-gray-600 border-gray-600'
-                          : 'bg-white border-gray-300'
-                      }`}
-                    >
-                      {isSelected && (
-                        <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                          <path
-                            fillRule="evenodd"
-                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                      )}
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 flex items-center justify-center flex-shrink-0">
+                      <div
+                        className={`w-5 h-5 rounded border-2 flex items-center justify-center ${
+                          isSelected
+                            ? 'bg-gray-600 border-gray-600'
+                            : 'bg-white border-gray-300'
+                        }`}
+                      >
+                        {isSelected && (
+                          <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path
+                              fillRule="evenodd"
+                              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                        )}
+                      </div>
+                    </div>
+                    <div className="w-10 h-10 flex items-center justify-center flex-shrink-0">
+                      <img src={goblin.avatar} alt={goblin.name} className="w-full h-full object-contain" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="font-semibold text-gray-800 text-sm truncate">{goblin.name}</div>
+                      <div className="text-xs text-gray-500 mt-0.5">
+                        HP{effectiveStats.hp} / A{effectiveStats.atk} / D{effectiveStats.def} / S{effectiveStats.spd} / SP{effectiveStats.sp}
+                      </div>
                     </div>
                   </div>
-                  <div className="w-10 h-10 flex items-center justify-center flex-shrink-0">
-                    <img src={goblin.avatar} alt={goblin.name} className="w-full h-full object-contain" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="font-semibold text-gray-800 text-sm truncate">{goblin.name}</div>
-                    <div className="text-xs text-gray-500 mt-0.5">
-                      HP {goblin.stats.hp} / 攻 {goblin.stats.atk} / 術 {goblin.stats.sp} / 速 {goblin.stats.spd} / 防 {goblin.stats.def}
+                  {hasMods && (
+                    <div className="mt-2 pt-2 border-t border-gray-200">
+                      <div className="flex flex-wrap gap-1">
+                        {goblin.mods!.map((mod, index) => {
+                          const template = getModTemplate(mod.templateId)
+                          if (!template) return null
+                          const isPercent = template.stat.includes('percent') || template.stat === 'damage_reduction'
+                          return (
+                            <span
+                              key={index}
+                              className={`text-xs px-1.5 py-0.5 rounded ${
+                                template.type === 'prefix'
+                                  ? 'bg-blue-50 text-blue-700 border border-blue-200'
+                                  : 'bg-purple-50 text-purple-700 border border-purple-200'
+                              }`}
+                            >
+                              {getStatLabel(template.stat)}+{mod.value}{isPercent ? '%' : ''}
+                            </span>
+                          )
+                        })}
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </div>
               )
             })}
