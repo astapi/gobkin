@@ -215,7 +215,18 @@ export const FormationTabScreen = () => {
         )
         const nextGoblinId = maxId + 1
 
-        const newGoblin = goblinBirthService.createNewGoblin(nextGoblinId)
+        // エリアレベルを取得して個体値として設定
+        let areaLevel = 1
+        try {
+          const areaId = expeditionRecord.replay.meta.areaId
+          const areaData = await import(`../../shared/data/expeditionArea/${areaId}.json`)
+          const area = areaData.default || areaData
+          areaLevel = Math.min(64, area.areaLevel ?? 1)
+        } catch {
+          console.warn('エリアデータの取得に失敗しました')
+        }
+
+        const newGoblin = goblinBirthService.createNewGoblin(nextGoblinId, areaLevel)
         pendingGoblinRepository.addPendingGoblin(newGoblin)
 
         // nextGoblinIdを更新

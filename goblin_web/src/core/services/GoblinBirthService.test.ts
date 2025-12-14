@@ -241,6 +241,41 @@ describe('GoblinBirthService', () => {
       expect(goblin.stats.def).toBeLessThanOrEqual(14)
     })
 
+    it('evaluateBirthsで生成されたゴブリンはデフォルト個体値1を持つ', () => {
+      const state: BirthEvaluationState = {
+        currentGoblins: [],
+        capacity: 8,
+        rank: 1,
+        now: Date.now(),
+        lastSpawnTime: Date.now() - 10000,
+        slimeCaveCleared: false,
+        firstBonusGranted: false,
+      }
+
+      const result = service.evaluateBirths(state)
+      const goblin = result.newborns[0]
+
+      expect(goblin.individualValue).toBe(1)
+    })
+
+    it('createNewGoblinで個体値を指定できる', () => {
+      const goblin = service.createNewGoblin(1, 32)
+      expect(goblin.individualValue).toBe(32)
+    })
+
+    it('createNewGoblinで個体値を省略した場合はデフォルト値1', () => {
+      const goblin = service.createNewGoblin(1)
+      expect(goblin.individualValue).toBe(1)
+    })
+
+    it('個体値は1〜64の範囲にクランプされる', () => {
+      const goblinLow = service.createNewGoblin(1, 0)
+      expect(goblinLow.individualValue).toBe(1)
+
+      const goblinHigh = service.createNewGoblin(2, 100)
+      expect(goblinHigh.individualValue).toBe(64)
+    })
+
     it('生成されたゴブリンはランダムな名前を持つ', () => {
       const state: BirthEvaluationState = {
         currentGoblins: [],

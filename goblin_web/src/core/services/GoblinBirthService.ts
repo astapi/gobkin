@@ -63,9 +63,11 @@ export class GoblinBirthService {
 
   /**
    * 単体のゴブリンを生成する（遠征成功時など）
+   * @param nextGoblinId 次のゴブリンID
+   * @param individualValue 個体値 (1〜64)、デフォルトは1
    */
-  public createNewGoblin(nextGoblinId: number): Goblin {
-    return this.createGoblin(nextGoblinId)
+  public createNewGoblin(nextGoblinId: number, individualValue = 1): Goblin {
+    return this.createGoblin(nextGoblinId, individualValue)
   }
 
   /**
@@ -128,10 +130,14 @@ export class GoblinBirthService {
 
   /**
    * 新しいゴブリンを生成
+   * @param id ゴブリンID
+   * @param individualValue 個体値 (1〜64)、デフォルトは1
    */
-  private createGoblin(id: number): Goblin {
+  private createGoblin(id: number, individualValue = 1): Goblin {
     const stats = this.generateStats()
     const name = this.selectRandomName()
+    // 個体値を1〜64の範囲にクランプ
+    const clampedIV = Math.max(1, Math.min(64, individualValue))
     return {
       id,
       name,
@@ -140,6 +146,7 @@ export class GoblinBirthService {
       experience: 0,
       avatar: '/src/assets/goblin/goblin.png',
       stats,
+      individualValue: clampedIV,
     }
   }
 

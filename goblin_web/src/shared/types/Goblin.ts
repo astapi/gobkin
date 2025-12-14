@@ -15,4 +15,5 @@ export type Goblin = {
   avatar: string
   stats: GoblinStats
   factors?: string[]  // 獲得した因子IDの配列
+  individualValue?: number  // 個体値 (1〜64)、未定義の場合は1として扱う
 }

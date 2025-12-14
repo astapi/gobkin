@@ -9,6 +9,7 @@ interface ExpeditionPreparationScreenProps {
   partyId: number
   getPartyById: (partyId: number) => Party
   goblins: Goblin[]
+  parties: Party[]
   dungeons: Dungeon[]
   onSetDungeon: (partyId: number, dungeonId: string) => void
   onSetTargetFloor: (partyId: number, floor: number | null) => void
@@ -26,6 +27,7 @@ export const ExpeditionPreparationScreen = ({
   partyId,
   getPartyById,
   goblins,
+  parties,
   dungeons,
   onSetDungeon,
   onSetTargetFloor,
@@ -46,7 +48,7 @@ export const ExpeditionPreparationScreen = ({
     } catch {
       return null
     }
-  }, [getPartyById, partyId])
+  }, [getPartyById, partyId, parties])
 
   const selectedDungeon = useMemo(() => {
     if (!party?.dungeonId) return null
