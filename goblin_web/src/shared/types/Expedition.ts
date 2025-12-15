@@ -1,6 +1,5 @@
 import type { EnemySnap } from "./Enemy"
 import type { CombatReplay } from "./Battle"
-import type { Drop } from "./Item" // capturesで使用
 
 export interface ExpeditionRequest {
   partyId: string
@@ -65,7 +64,6 @@ export interface RewardSummary {
   maxFloorReached: number
   xpGained: number
   goldGained: number
-  captures: Drop[]
   casualties: string[]
   injuries: string[]
 }
@@ -92,7 +90,6 @@ export interface AreaConfig {
   rewards: {
     xpFloor: number[]
     xpBoss: number
-    captureBonus: number
   }
   unlockNext?: string
 }

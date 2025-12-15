@@ -14,8 +14,7 @@
   },
   "rewards": {
     "xpFloor": [8, 10, 12],
-    "xpBoss": 30,
-    "captureBonus": 0.05
+    "xpBoss": 30
   },
   "unlockNext": "mossy_cave"
 }

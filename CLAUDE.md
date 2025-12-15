@@ -128,7 +128,7 @@ goblin_web/src/
 **BattleSystem** (`src/core/services/BattleSystem.ts`):
 - ターン制戦闘ロジック
 - ダメージ計算、戦闘ログ生成
-- 敵AIと捕獲判定を含む
+- 敵AIを含む
 
 **BaseManagementService** (`src/core/services/BaseManagementService.ts`):
 - 拠点の状態管理と自動ゴブリン生成

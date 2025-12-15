@@ -97,7 +97,6 @@ PartySnapshot: {
   food: number
   speed: number
   luck: number
-  captureSlots: number
   // 他の遠征時パラメータ
 }
 ```
@@ -134,7 +133,6 @@ RewardSummary: {
   totalXp: number
   totalGold: number
   itemsObtained: Drop[]
-  capturedEnemies: EnemySnap[]
   casualties: string[]
 }
 ```
@@ -205,7 +203,6 @@ CombatReplay: {
   hpDeltas: Record<string, number>
   defeatedCount: number
   detailedLog: BattleLogEntry[]
-  capture?: { /* 捕獲情報 */ }
 }
 ```
 

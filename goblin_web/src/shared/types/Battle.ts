@@ -1,5 +1,3 @@
-import type { Drop } from "./Item"
-
 export interface BattleLogEntry {
   turn: number
   actorId: string
@@ -25,10 +23,4 @@ export interface CombatReplay {
   allyHPDelta: number[]
   enemyDefeated: number
   detailedLog?: BattleLogEntry[]
-  capture?: {
-    eligible: boolean
-    success?: boolean
-    rate?: number
-    captured?: Drop
-  }
 }

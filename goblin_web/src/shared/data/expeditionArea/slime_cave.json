@@ -14,8 +14,7 @@
   },
   "rewards": {
     "xpFloor": [4, 6],
-    "xpBoss": 12,
-    "captureBonus": 0.1
+    "xpBoss": 12
   },
   "unlockNext": "forest_outskirts"
 }

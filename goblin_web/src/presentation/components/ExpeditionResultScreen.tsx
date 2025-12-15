@@ -112,25 +112,6 @@ export const ExpeditionResultScreen = ({
         </div>
       </div>
 
-      {/* 捕獲 */}
-      {summary.captures.length > 0 && (
-        <div className="p-6 border-b border-gray-300">
-          <h3 className="mb-3 text-sm font-medium text-gray-900">
-            捕獲
-          </h3>
-          <div className="space-y-2">
-            {summary.captures.map((capture, index) => (
-              <div
-                key={index}
-                className="text-sm text-gray-700"
-              >
-                {capture.id} × {capture.qty}
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
       {/* 因子獲得 */}
       {factorAcquisitions && factorAcquisitions.size > 0 && (
         <div className="p-6 border-b border-gray-300">

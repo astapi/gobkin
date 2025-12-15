@@ -420,7 +420,6 @@ type TimelineEvent =
   xpGained: number,              // 獲得経験値
   goldGained: number,            // 獲得ゴールド
   loot: Drop[],                  // 獲得したアイテム
-  captures: Drop[],              // 捕獲したモンスター
   casualties: string[],          // 死亡したメンバー
   injuries: string[]             // 負傷したメンバー
 }

@@ -44,7 +44,6 @@ describe('ExpeditionEngine', () => {
       expect(typeof result.summary.success).toBe('boolean')
       expect(result.summary.maxFloorReached).toBeGreaterThanOrEqual(1)
       expect(result.summary.xpGained).toBeGreaterThanOrEqual(0)
-      expect(Array.isArray(result.summary.captures)).toBe(true)
     })
 
     it('イベントが正しい形式である', async () => {

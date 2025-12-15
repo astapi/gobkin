@@ -102,10 +102,6 @@ export const ExpeditionLogScreen = ({
         if (event.xp > 0) {
           addLog(`${event.xp}XP獲得`)
         }
-
-        if (event.combat.capture?.success) {
-          addLog(`${event.combat.capture.captured?.id}を捕獲！`)
-        }
         break
       }
       case 'return': {
@@ -187,10 +183,6 @@ export const ExpeditionLogScreen = ({
 
           if (event.xp > 0) {
             tempLogs.push({ message: `[${formatTimeLocal(event.at)}] ${event.xp}XP獲得` })
-          }
-
-          if (event.combat.capture?.success) {
-            tempLogs.push({ message: `[${formatTimeLocal(event.at)}] ${event.combat.capture.captured?.id}を捕獲！` })
           }
           break
         }

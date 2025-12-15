@@ -65,8 +65,7 @@ goblin_web/src/
 │   │   ├── StartExpeditionUseCase.ts
 │   │   ├── ExecuteBattleUseCase.ts
 │   │   ├── ManagePartyUseCase.ts
-│   │   ├── EquipItemUseCase.ts
-│   │   └── CaptureEnemyUseCase.ts
+│   │   └── EquipItemUseCase.ts
 │   ├── services/                  # ゲームシステム
 │   │   ├── ExpeditionEngine.ts
 │   │   ├── BattleSystem.ts
@@ -268,7 +267,6 @@ goblin_web/src/
      - `removeMember(goblinId: string)`: メンバー削除
      - `canStartExpedition()`: 遠征可能判定
    - `EnemyEntity.ts`: Enemyのビジネスロジック
-     - `canBeCaptured()`: 捕獲可否判定
    - `ItemEntity.ts`: Itemのビジネスロジック
      - `calculateBonus()`: ボーナス計算
 

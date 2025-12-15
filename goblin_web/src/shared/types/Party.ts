@@ -38,7 +38,6 @@ export interface PartySnapshot {
   foodSupply: number
   speedMod: number
   luckMod: number
-  captureSlots: number
   carryWeight: number
   powerRating: number
 }

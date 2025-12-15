@@ -12,7 +12,6 @@ import type {
   EnemyPattern,
   PartyState,
   ExpeditionEndReason,
-  Drop,
 } from '../../shared/types'
 import { BattleSystem } from './BattleSystem'
 import { ModStatCalculator } from './ModStatCalculator'
@@ -356,7 +355,7 @@ export class ExpeditionEngine {
     }
   }
 
-  private resolveCombat(partyState: PartyState[], enemies: Enemy[], area: AreaConfig, isBoss = false): CombatReplay {
+  private resolveCombat(partyState: PartyState[], enemies: Enemy[], _area: AreaConfig, _isBoss = false): CombatReplay {
     // partyStateから全ゴブリンを再構築（死亡メンバーも含む、modsも保持）
     // 基礎ステータスを使用（BattleSystemがModを適用する）
     const allGoblins: Goblin[] = partyState.map(member => ({
@@ -385,22 +384,12 @@ export class ExpeditionEngine {
     // CombatReplayに変換
     const outcome = battleResult.outcome === 'retreat' ? 'lose' : battleResult.outcome
 
-    // 捕獲判定
-    const captureCheck = outcome === 'win' && !isBoss && this.rng() < (area.rewards.captureBonus + 0.1)
-    const representative = enemies[0]
-
     return {
       rounds: battleResult.rounds,
       outcome,
       allyHPDelta: battleResult.allyHPDelta,
       enemyDefeated: battleResult.enemyDefeated,
       detailedLog: battleResult.detailedLog,
-      capture: captureCheck ? {
-        eligible: true,
-        success: this.rng() < 0.3,
-        rate: 0.3,
-        captured: { id: representative.id, qty: 1 }
-      } : { eligible: false }
     }
   }
 
@@ -447,16 +436,12 @@ export class ExpeditionEngine {
   private calculateRewardSummary(events: TimelineEvent[], partyState: PartyState[]): RewardSummary {
     let xpGained = 0
     let goldGained = 0
-    const captures: Drop[] = []
     let maxFloorReached = 1
 
     for (const event of events) {
       if (event.type === "battle" || event.type === "boss") {
         xpGained += event.xp
         goldGained += event.enemy.gold
-        if (event.combat.capture?.success && event.combat.capture.captured) {
-          captures.push(event.combat.capture.captured)
-        }
         maxFloorReached = Math.max(maxFloorReached, event.floor)
       } else if (event.type === "floor_up") {
         maxFloorReached = Math.max(maxFloorReached, event.to)
@@ -482,7 +467,6 @@ export class ExpeditionEngine {
       maxFloorReached,
       xpGained,
       goldGained,
-      captures,
       casualties,
       injuries
     }
