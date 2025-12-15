@@ -5,6 +5,19 @@ import { getExpForNextLevel, getExpProgress } from '../../core/services/Experien
 import { getFactor } from '../../shared/data/factors'
 import { getModTemplate } from '../../shared/data/modPoolLoader'
 import { ModStatCalculator } from '../../core/services/ModStatCalculator'
+import factorSlime from '../../assets/factor/factor_slime.svg'
+import factorWolf from '../../assets/factor/factor_wolf.svg'
+
+const getFactorIcon = (factorId: string): string => {
+  switch (factorId) {
+    case 'slime':
+      return factorSlime
+    case 'wolf':
+      return factorWolf
+    default:
+      return factorSlime
+  }
+}
 
 const STAT_LABELS: Record<ModStat, string> = {
   hp_percent: 'HP',
@@ -131,9 +144,7 @@ export const GoblinDetailModal = ({
                       className="p-3 bg-gray-50 rounded-lg border border-gray-300"
                     >
                       <div className="flex items-center gap-2 mb-2">
-                        <span className="text-lg">
-                          {factorId === 'slime' ? '💧' : factorId === 'forest' ? '🐺' : '✨'}
-                        </span>
+                        <img src={getFactorIcon(factorId)} alt={factor.name} className="w-6 h-6" />
                         <span className="font-bold text-gray-800">{factor.name}</span>
                       </div>
                       <p className="text-sm text-gray-600 mb-2">{factor.description}</p>

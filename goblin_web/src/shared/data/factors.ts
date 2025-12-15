@@ -21,8 +21,8 @@ export const factorDatabase: Record<string, Factor> = {
       ]
     }
   },
-  forest: {
-    id: 'forest',
+  wolf: {
+    id: 'wolf',
     name: 'ウルフ因子',
     description: 'ウルフの特性を宿した因子。敏捷性が増す。',
     inheritProbability: 0.25,  // 25%で引き継ぎ
@@ -36,6 +36,45 @@ export const factorDatabase: Record<string, Factor> = {
       avatar: '/src/assets/goblin/wolf_goblin.png',
       additionalEffects: [
         { type: 'stat_bonus', target: 'spd', value: 20 }
+      ]
+    }
+  },
+  orc: {
+    id: 'orc',
+    name: 'オーク因子',
+    description: 'オークの特性を宿した因子。攻撃力と防御力が増す。',
+    inheritProbability: 0.2,  // 20%で引き継ぎ
+    effects: [
+      { type: 'stat_bonus', target: 'atk', value: 25 },
+      { type: 'stat_bonus', target: 'def', value: 20 }
+    ],
+    variantConfig: {
+      probability: 0.1,  // 因子引き継ぎ時10%で亜種化
+      raceName: 'オークゴブリン',
+      avatar: '/src/assets/goblin/orc_goblin.png',
+      additionalEffects: [
+        { type: 'stat_bonus', target: 'hp', value: 50 },
+        { type: 'stat_bonus', target: 'atk', value: 10 }
+      ]
+    }
+  },
+  hobgoblin: {
+    id: 'hobgoblin',
+    name: 'ホブゴブリン因子',
+    description: '上位ゴブリンの特性を宿した因子。全能力が底上げされる。',
+    inheritProbability: 0.25,  // 25%で引き継ぎ
+    effects: [
+      { type: 'stat_bonus', target: 'atk', value: 15 },
+      { type: 'stat_bonus', target: 'def', value: 10 },
+      { type: 'stat_bonus', target: 'spd', value: 10 }
+    ],
+    variantConfig: {
+      probability: 0.2,  // 因子引き継ぎ時20%で亜種化
+      raceName: 'ホブゴブリン',
+      avatar: '/src/assets/goblin/hobgoblin.png',
+      additionalEffects: [
+        { type: 'stat_bonus', target: 'hp', value: 30 },
+        { type: 'stat_bonus', target: 'atk', value: 10 }
       ]
     }
   },
