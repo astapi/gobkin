@@ -1,6 +1,8 @@
 import { getFactor } from '../../shared/data/factors'
 import factorSlime from '../../assets/factor/factor_slime.svg'
 import factorWolf from '../../assets/factor/factor_wolf.svg'
+import factorOrc from '../../assets/factor/factor_orc.svg'
+import factorHobgoblin from '../../assets/factor/factor_hobgoblin.svg'
 
 interface FactorBadgeProps {
   factorId: string
@@ -17,10 +19,11 @@ const getFactorIcon = (factorId: string): string => {
       return factorSlime
     case 'wolf':
       return factorWolf
-    case 'orc':
-      return factorSlime // TODO: オーク用アイコン
     case 'hobgoblin':
-      return factorSlime // TODO: ホブゴブリン用アイコン
+      return factorHobgoblin
+    case 'orc':
+      return factorOrc
+
     default:
       return factorSlime
   }
@@ -39,7 +42,7 @@ export const FactorBadge = ({ factorId, size = 'sm', showName = false }: FactorB
 
   return (
     <span
-      className="inline-flex items-center gap-1"
+      className="inline-flex gap-1 items-center"
       title={factor.description}
     >
       <img src={icon} alt={factor.name} className={iconSize} />

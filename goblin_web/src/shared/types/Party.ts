@@ -19,7 +19,7 @@ export interface PartyState {
   // HP管理
   currentHP: number   // 現在HP（Mod適用後、戦闘でダメージを受けると減少）
   maxHP: number       // 最大HP（Mod適用後、参照用）
-  // 基礎ステータス（BattleSystemがModを適用する）
+  // 基礎ステータス（ModStatCalculatorが因子・Modを適用する）
   baseHP: number
   atk: number
   def: number
@@ -28,6 +28,8 @@ export interface PartyState {
   isKO: boolean
   isDead: boolean
   mods: ModInstance[]
+  factors: string[]   // 因子ID配列（ModStatCalculatorでボーナス計算に使用）
+  variantFactorId?: string  // 亜種の元となった因子ID（追加効果適用に使用）
   level: number
   avatar: string
 }

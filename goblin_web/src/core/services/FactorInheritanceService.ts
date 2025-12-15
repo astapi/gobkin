@@ -12,13 +12,14 @@ export interface ParentSelection {
 
 /**
  * 因子引き継ぎの結果
+ * ※ステータス補正はModStatCalculatorで計算時に適用されるため、ここには含めない
  */
 export interface InheritanceResult {
   inheritedFactors: string[]   // 引き継いだ因子ID
   isVariant: boolean           // 亜種かどうか
   variantRace?: string         // 亜種の場合の種族名
   variantAvatar?: string       // 亜種の場合のアバター
-  statBonuses: GoblinStats     // 因子によるステータス補正
+  variantFactorId?: string     // 亜種の元となった因子ID（追加効果適用に使用）
 }
 
 /**
@@ -64,7 +65,6 @@ export class FactorInheritanceService {
     const emptyResult: InheritanceResult = {
       inheritedFactors: [],
       isVariant: false,
-      statBonuses: { hp: 0, atk: 0, def: 0, sp: 0, spd: 0 },
     }
 
     console.log('[FactorInheritance] evaluateInheritance called', {
@@ -118,7 +118,7 @@ export class FactorInheritanceService {
     let isVariant = false
     let variantRace: string | undefined
     let variantAvatar: string | undefined
-    let variantFactor: Factor | undefined
+    let variantFactorId: string | undefined
 
     for (const factorId of inheritedFactors) {
       const factor = factorDatabase[factorId]
@@ -127,24 +127,18 @@ export class FactorInheritanceService {
           isVariant = true
           variantRace = factor.variantConfig.raceName
           variantAvatar = factor.variantConfig.avatar
-          variantFactor = factor
+          variantFactorId = factorId
           break  // 最初に成功した亜種のみ適用
         }
       }
     }
-
-    // ステータス補正を計算
-    const statBonuses = this.calculateFactorBonuses(
-      inheritedFactors,
-      isVariant ? variantFactor : undefined
-    )
 
     return {
       inheritedFactors,
       isVariant,
       variantRace,
       variantAvatar,
-      statBonuses,
+      variantFactorId,
     }
   }
 

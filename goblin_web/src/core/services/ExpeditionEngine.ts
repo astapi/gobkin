@@ -262,8 +262,8 @@ export class ExpeditionEngine {
 
   private initializePartyState(party: Goblin[]): PartyState[] {
     return party.map(goblin => {
-      // 基礎ステータスを保存（Mod適用はBattleSystem側で行う）
-      // currentHP/maxHPはMod適用後の値を使用（戦闘中のHP管理のため）
+      // 基礎ステータスを保存（因子・Mod適用はModStatCalculatorで行う）
+      // currentHP/maxHPは因子・Mod適用後の値を使用（戦闘中のHP管理のため）
       const effectiveStats = ModStatCalculator.calculate(goblin)
       return {
         id: goblin.id.toString(),
@@ -279,6 +279,8 @@ export class ExpeditionEngine {
         isKO: false,
         isDead: false,
         mods: goblin.mods || [],
+        factors: goblin.factors || [],
+        variantFactorId: goblin.variantFactorId,
         level: goblin.level,
         avatar: goblin.avatar,
       }
@@ -357,7 +359,7 @@ export class ExpeditionEngine {
 
   private resolveCombat(partyState: PartyState[], enemies: Enemy[], _area: AreaConfig, _isBoss = false): CombatReplay {
     // partyStateから全ゴブリンを再構築（死亡メンバーも含む、modsも保持）
-    // 基礎ステータスを使用（BattleSystemがModを適用する）
+    // 基礎ステータスを使用（ModStatCalculatorが因子・Modを適用する）
     const allGoblins: Goblin[] = partyState.map(member => ({
       id: parseInt(member.id),
       name: member.name,
@@ -366,13 +368,15 @@ export class ExpeditionEngine {
       experience: 0,
       avatar: member.avatar,
       stats: {
-        hp: member.baseHP,  // 基礎HPを使用（BattleSystemがModを適用）
+        hp: member.baseHP,  // 基礎HPを使用（ModStatCalculatorが因子・Modを適用）
         atk: member.atk,
         sp: member.sp,
         spd: member.spd,
         def: member.def
       },
       mods: member.mods,
+      factors: member.factors,
+      variantFactorId: member.variantFactorId,
     }))
 
     // 各メンバーの現在HPを配列で渡す

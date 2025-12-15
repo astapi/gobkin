@@ -193,7 +193,7 @@ export const FormationScreen = ({
                             <div className="overflow-hidden w-8 h-8 rounded-full">
                               <img src={member.avatar} alt={member.name} className="object-cover w-full h-full" />
                             </div>
-                            <div className="text-xs text-gray-600">HP{member.stats.hp}</div>
+                            <div className="text-xs text-gray-600">HP{member.effectiveStats?.hp ?? member.stats.hp}</div>
                           </>
                         ) : (
                           <div className="text-xl text-gray-300">+</div>

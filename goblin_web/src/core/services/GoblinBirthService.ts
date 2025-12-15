@@ -1,5 +1,6 @@
 import type { Goblin, GoblinStats } from '../../shared/types'
 import { ModGeneratorService } from './ModGeneratorService'
+import { ModStatCalculator } from './ModStatCalculator'
 import { FactorInheritanceService, type InheritanceResult } from './FactorInheritanceService'
 
 const STAT_RANGES: Record<keyof GoblinStats, { min: number; max: number }> = {
@@ -92,15 +93,11 @@ export class GoblinBirthService {
     individualValue = 1,
     inheritance?: InheritanceResult
   ): Goblin {
-    const baseStats = this.generateStats()
+    // 基本ステータスを生成（因子ボーナスはModStatCalculatorで計算時に適用）
+    const stats = this.generateStats()
     const name = this.selectRandomName()
     // 個体値を1〜64の範囲にクランプ
     const clampedIV = Math.max(1, Math.min(64, individualValue))
-
-    // 因子によるステータス補正を適用
-    const stats = inheritance
-      ? this.applyStatBonuses(baseStats, inheritance.statBonuses)
-      : baseStats
 
     // 種族とアバターを決定
     const race = inheritance?.isVariant
@@ -115,7 +112,7 @@ export class GoblinBirthService {
     const modGenerator = new ModGeneratorService(modSeed)
     const mods = modGenerator.generateMods(clampedIV)
 
-    return {
+    const goblin: Goblin = {
       id,
       name,
       race,
@@ -123,23 +120,21 @@ export class GoblinBirthService {
       experience: 0,
       avatar,
       stats,
+      effectiveStats: stats,  // 仮設定、後で計算
       individualValue: clampedIV,
       mods,  // 空配列もそのまま保存（Firestoreはundefinedを許容しない）
       factors: inheritance?.inheritedFactors ?? [],
     }
-  }
 
-  /**
-   * 基本ステータスに因子ボーナスを適用
-   */
-  private applyStatBonuses(baseStats: GoblinStats, bonuses: GoblinStats): GoblinStats {
-    return {
-      hp: baseStats.hp + bonuses.hp,
-      atk: baseStats.atk + bonuses.atk,
-      def: baseStats.def + bonuses.def,
-      sp: baseStats.sp + bonuses.sp,
-      spd: baseStats.spd + bonuses.spd,
+    // 亜種の場合のみvariantFactorIdを設定（Firestoreはundefinedを許容しない）
+    if (inheritance?.variantFactorId) {
+      goblin.variantFactorId = inheritance.variantFactorId
     }
+
+    // 実効ステータスを計算（因子・Mod適用後）
+    goblin.effectiveStats = ModStatCalculator.calculate(goblin)
+
+    return goblin
   }
 
   /**

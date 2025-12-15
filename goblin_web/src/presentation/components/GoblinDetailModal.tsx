@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import type { Goblin, ModStat } from '../../shared/types'
+import { useState, useEffect, useMemo } from 'react'
+import type { Goblin, GoblinStats, ModStat } from '../../shared/types'
 import type { IGoblinRepository } from '../../core/repositories'
 import { getExpForNextLevel, getExpProgress } from '../../core/services/ExperienceSystem'
 import { getFactor } from '../../shared/data/factors'
@@ -7,6 +7,20 @@ import { getModTemplate } from '../../shared/data/modPoolLoader'
 import { ModStatCalculator } from '../../core/services/ModStatCalculator'
 import factorSlime from '../../assets/factor/factor_slime.svg'
 import factorWolf from '../../assets/factor/factor_wolf.svg'
+
+/**
+ * effectiveStatsが異なるかどうかを比較
+ */
+function hasEffectiveStatsChanged(stored: GoblinStats | undefined, calculated: GoblinStats): boolean {
+  if (!stored) return true
+  return (
+    stored.hp !== calculated.hp ||
+    stored.atk !== calculated.atk ||
+    stored.def !== calculated.def ||
+    stored.spd !== calculated.spd ||
+    stored.sp !== calculated.sp
+  )
+}
 
 const getFactorIcon = (factorId: string): string => {
   switch (factorId) {
@@ -49,6 +63,26 @@ export const GoblinDetailModal = ({
 }: GoblinDetailModalProps) => {
   const [showBanishConfirm, setShowBanishConfirm] = useState(false)
 
+  // effectiveStatsを計算（メモ化）
+  const effectiveStats = useMemo(() => {
+    if (!goblin) return null
+    return ModStatCalculator.calculate(goblin)
+  }, [goblin])
+
+  // モーダルを開いたときにeffectiveStatsを再計算して保存
+  useEffect(() => {
+    if (!goblin || !effectiveStats) return
+
+    // 保存されているeffectiveStatsと計算結果が異なる場合のみ更新
+    if (hasEffectiveStatsChanged(goblin.effectiveStats, effectiveStats)) {
+      const updatedGoblin: Goblin = {
+        ...goblin,
+        effectiveStats,
+      }
+      goblinRepository.saveGoblin(updatedGoblin)
+    }
+  }, [goblin, effectiveStats, goblinRepository])
+
   const handleBanish = () => {
     if (!goblin) return
     goblinRepository.deleteGoblin(goblin.id)
@@ -56,7 +90,7 @@ export const GoblinDetailModal = ({
     onClose()
   }
 
-  if (!goblin) return null
+  if (!goblin || !effectiveStats) return null
 
   return (
     <div className="flex fixed inset-0 z-50 flex-col mx-auto max-w-full bg-gray-50">
@@ -87,23 +121,18 @@ export const GoblinDetailModal = ({
             <div className="pb-2 mb-3 text-lg font-bold text-gray-800 border-b border-gray-200">
               ステータス
             </div>
-            {(() => {
-              const effectiveStats = ModStatCalculator.calculate(goblin)
-              return (
-                <div className="flex flex-col gap-2">
-                  {(['hp', 'atk', 'def', 'spd', 'sp'] as const).map((key) => (
-                    <div key={key} className="flex justify-between items-center p-3 bg-gray-50 rounded-lg border border-gray-300">
-                      <div className="text-sm font-bold text-gray-700">
-                        {key.toUpperCase()}
-                      </div>
-                      <div className="text-base font-bold text-gray-600">
-                        {effectiveStats[key]}
-                      </div>
-                    </div>
-                  ))}
+            <div className="flex flex-col gap-2">
+              {(['hp', 'atk', 'def', 'spd', 'sp'] as const).map((key) => (
+                <div key={key} className="flex justify-between items-center p-3 bg-gray-50 rounded-lg border border-gray-300">
+                  <div className="text-sm font-bold text-gray-700">
+                    {key.toUpperCase()}
+                  </div>
+                  <div className="text-base font-bold text-gray-600">
+                    {effectiveStats[key]}
+                  </div>
                 </div>
-              )
-            })()}
+              ))}
+            </div>
           </div>
 
           <div className="mt-6">

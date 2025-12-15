@@ -81,12 +81,16 @@ export class GoblinEntity {
   }
 
   public toSnapshot(): Goblin {
-    return {
+    const snapshot: Goblin = {
       ...this.base,
       level: this.level,
       experience: this.experience,
       stats: { ...this.stats },
+      effectiveStats: { ...this.stats }, // 仮設定
     }
+    // 実効ステータスを計算（因子・Mod適用後）
+    snapshot.effectiveStats = ModStatCalculator.calculate(snapshot)
+    return snapshot
   }
 
   /**

@@ -1,41 +1,47 @@
 import type { Goblin, GoblinStats } from '../../shared/types/Goblin'
 import type { ModInstance } from '../../shared/types/Mod'
 import { getModTemplate, getDamageReductionCap } from '../../shared/data/modPoolLoader'
+import { FactorInheritanceService } from './FactorInheritanceService'
+import { factorDatabase } from '../../shared/data/factors'
 
 /**
- * Modを適用した最終ステータスを計算するサービス
+ * 因子・Modを適用した最終ステータスを計算するサービス
  */
 export class ModStatCalculator {
   /**
-   * 基礎ステータス + Mod効果 = 最終ステータス
-   * 計算順序: (基礎 + フラット) * (1 + %合計)
+   * 基礎ステータス + 因子ボーナス + Mod効果 = 最終ステータス
+   * 計算順序: (基礎 + 因子 + Modフラット) * (1 + Mod%合計)
    */
   static calculate(goblin: Goblin): GoblinStats {
     const base = { ...goblin.stats }
     const mods = goblin.mods ?? []
 
-    // 1. フラット加算を集計
+    // 1. 因子ボーナスを計算（亜種の追加効果も含む）
+    const variantFactor = goblin.variantFactorId ? factorDatabase[goblin.variantFactorId] : undefined
+    const factorBonuses = FactorInheritanceService.calculateFactorBonuses(goblin.factors ?? [], variantFactor)
+
+    // 2. Modフラット加算を集計
     const flatBonuses = this.aggregateFlatBonuses(mods)
 
-    // 2. %増加を集計
+    // 3. Mod%増加を集計
     const percentBonuses = this.aggregatePercentBonuses(mods)
 
-    // 3. 計算: (基礎 + フラット) * (1 + %合計/100)
+    // 4. 計算: (基礎 + 因子 + Modフラット) * (1 + Mod%合計/100)
     return {
       hp: Math.floor(
-        (base.hp + flatBonuses.hp) * (1 + percentBonuses.hp / 100)
+        (base.hp + factorBonuses.hp + flatBonuses.hp) * (1 + percentBonuses.hp / 100)
       ),
       atk: Math.floor(
-        (base.atk + flatBonuses.atk) * (1 + percentBonuses.atk / 100)
+        (base.atk + factorBonuses.atk + flatBonuses.atk) * (1 + percentBonuses.atk / 100)
       ),
       def: Math.floor(
-        (base.def + flatBonuses.def) * (1 + percentBonuses.def / 100)
+        (base.def + factorBonuses.def + flatBonuses.def) * (1 + percentBonuses.def / 100)
       ),
       sp: Math.floor(
-        (base.sp + flatBonuses.sp) * (1 + percentBonuses.sp / 100)
+        (base.sp + factorBonuses.sp + flatBonuses.sp) * (1 + percentBonuses.sp / 100)
       ),
       spd: Math.floor(
-        (base.spd + flatBonuses.spd) * (1 + percentBonuses.spd / 100)
+        (base.spd + factorBonuses.spd + flatBonuses.spd) * (1 + percentBonuses.spd / 100)
       ),
     }
   }
