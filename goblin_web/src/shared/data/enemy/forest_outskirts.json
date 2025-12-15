@@ -63,7 +63,8 @@
       "spd": 15,
       "sp": 0,
       "exp": 50,
-      "gold": 50
+      "gold": 50,
+      "factorDrops": [{ "factorId": "wolf", "probability": 1 }]
     }
   ],
   "patterns": [
