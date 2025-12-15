@@ -55,27 +55,20 @@ export const FactorBadge = ({ factorId, size = 'sm', showName = false }: FactorB
 interface FactorBadgeListProps {
   factorIds: string[]
   size?: 'sm' | 'md'
-  maxDisplay?: number
   showName?: boolean
 }
 
 /**
  * 因子バッジのリスト表示
  */
-export const FactorBadgeList = ({ factorIds, size = 'sm', maxDisplay = 3, showName = false }: FactorBadgeListProps) => {
+export const FactorBadgeList = ({ factorIds, size = 'sm', showName = false }: FactorBadgeListProps) => {
   if (!factorIds || factorIds.length === 0) return null
-
-  const displayFactors = factorIds.slice(0, maxDisplay)
-  const remaining = factorIds.length - maxDisplay
 
   return (
     <div className="flex flex-wrap gap-1">
-      {displayFactors.map(factorId => (
+      {factorIds.map(factorId => (
         <FactorBadge key={factorId} factorId={factorId} size={size} showName={showName} />
       ))}
-      {remaining > 0 && (
-        <span className="text-xs text-gray-500">+{remaining}</span>
-      )}
     </div>
   )
 }

@@ -20,7 +20,7 @@ export const GoblinCard = ({ goblin, onClick }: GoblinCardProps) => (
       <div className="text-gray-600 text-xs font-bold">Lv.{goblin.level}</div>
       {goblin.factors && goblin.factors.length > 0 && (
         <div className="mt-1">
-          <FactorBadgeList factorIds={goblin.factors} size="sm" maxDisplay={2} />
+          <FactorBadgeList factorIds={goblin.factors} size="sm" />
         </div>
       )}
     </div>
