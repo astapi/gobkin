@@ -1,9 +1,11 @@
 import { useState, useCallback } from 'react'
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, Modal, ScrollView, ActivityIndicator } from 'react-native'
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, Modal, ScrollView, ActivityIndicator, Image } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useGoblinService } from '@/presentation/hooks/useGoblinService'
-import type { Goblin, Factor } from '@/shared/types'
+import type { Goblin } from '@/shared/types'
 import { getFactor } from '@/shared/data/factors'
+import { getGoblinImage } from '@/shared/utils/goblinImages'
+import { getFactorImage } from '@/shared/utils/factorImages'
 
 interface GoblinCardProps {
   goblin: Goblin
@@ -14,7 +16,7 @@ function GoblinCard({ goblin, onPress }: GoblinCardProps) {
   return (
     <TouchableOpacity style={styles.card} onPress={onPress}>
       <View style={styles.iconContainer}>
-        <Text style={styles.iconText}>G</Text>
+        <Image source={getGoblinImage(goblin.avatar)} style={styles.goblinImage} />
       </View>
       <View style={styles.cardInfo}>
         <Text style={styles.goblinName}>{goblin.name}</Text>
@@ -22,10 +24,10 @@ function GoblinCard({ goblin, onPress }: GoblinCardProps) {
         {goblin.factors && goblin.factors.length > 0 && (
           <View style={styles.factorRow}>
             {goblin.factors.slice(0, 3).map((factorId, idx) => {
-              const factor = getFactor(factorId)
+              const FactorIcon = getFactorImage(factorId)
               return (
                 <View key={idx} style={styles.factorBadge}>
-                  <Text style={styles.factorText}>{factor?.name?.charAt(0) || '?'}</Text>
+                  <FactorIcon width={16} height={16} />
                 </View>
               )
             })}
@@ -51,10 +53,6 @@ interface GoblinDetailModalProps {
 
 function GoblinDetailModal({ goblin, visible, onClose }: GoblinDetailModalProps) {
   if (!goblin) return null
-
-  const goblinFactors = goblin.factors?.map(factorId =>
-    getFactor(factorId)
-  ).filter((f): f is Factor => f !== undefined) || []
 
   return (
     <Modal
@@ -105,18 +103,25 @@ function GoblinDetailModal({ goblin, visible, onClose }: GoblinDetailModalProps)
               </View>
             </View>
           </View>
-          {goblinFactors.length > 0 && (
+          {goblin.factors && goblin.factors.length > 0 && (
             <View style={styles.detailSection}>
               <Text style={styles.sectionTitle}>因子</Text>
-              {goblinFactors.map((factor, idx) => (
-                <View key={idx} style={styles.factorItem}>
-                  <Text style={styles.factorIcon}>{factor.name.charAt(0)}</Text>
-                  <View style={styles.factorInfo}>
-                    <Text style={styles.factorName}>{factor.name}</Text>
-                    <Text style={styles.factorDesc}>{factor.description}</Text>
+              {goblin.factors.map((factorId, idx) => {
+                const factor = getFactor(factorId)
+                if (!factor) return null
+                const FactorIcon = getFactorImage(factorId)
+                return (
+                  <View key={idx} style={styles.factorItem}>
+                    <View style={styles.factorIconContainer}>
+                      <FactorIcon width={24} height={24} />
+                    </View>
+                    <View style={styles.factorInfo}>
+                      <Text style={styles.factorName}>{factor.name}</Text>
+                      <Text style={styles.factorDesc}>{factor.description}</Text>
+                    </View>
                   </View>
-                </View>
-              ))}
+                )
+              })}
             </View>
           )}
           {goblin.mods && goblin.mods.length > 0 && (
@@ -255,15 +260,16 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 24,
-    backgroundColor: '#10B981',
+    backgroundColor: '#F3F4F6',
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 12,
+    overflow: 'hidden',
   },
-  iconText: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
+  goblinImage: {
+    width: 40,
+    height: 40,
+    resizeMode: 'contain',
   },
   cardInfo: {
     flex: 1,
@@ -286,12 +292,8 @@ const styles = StyleSheet.create({
   factorBadge: {
     backgroundColor: '#EEF2FF',
     borderRadius: 4,
-    paddingHorizontal: 4,
-    paddingVertical: 2,
+    padding: 2,
     marginRight: 4,
-  },
-  factorText: {
-    fontSize: 12,
   },
   moreFactors: {
     fontSize: 10,
@@ -383,8 +385,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#F3F4F6',
     borderRadius: 8,
   },
-  factorIcon: {
-    fontSize: 24,
+  factorIconContainer: {
+    width: 32,
+    height: 32,
+    alignItems: 'center',
+    justifyContent: 'center',
     marginRight: 12,
   },
   factorInfo: {

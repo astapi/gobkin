@@ -1,10 +1,18 @@
 import { Tabs } from 'expo-router'
-import { Text, View, StyleSheet } from 'react-native'
+import { View, StyleSheet } from 'react-native'
+import ListIcon from '../../assets/list.svg'
+import HenseiIcon from '../../assets/hensei.svg'
+import BaseIcon from '../../assets/base.svg'
 
-function TabIcon({ name, color }: { name: string; color: string }) {
+interface TabIconProps {
+  Icon: React.FC<{ width: number; height: number; fill?: string }>
+  color: string
+}
+
+function TabIcon({ Icon, color }: TabIconProps) {
   return (
     <View style={styles.iconContainer}>
-      <Text style={[styles.icon, { color }]}>{name}</Text>
+      <Icon width={24} height={24} fill={color} />
     </View>
   )
 }
@@ -41,7 +49,7 @@ export default function TabLayout() {
         options={{
           title: 'List',
           headerTitle: 'Goblin List',
-          tabBarIcon: ({ color }) => <TabIcon name="G" color={color} />,
+          tabBarIcon: ({ color }) => <TabIcon Icon={ListIcon} color={color} />,
         }}
       />
       <Tabs.Screen
@@ -49,7 +57,7 @@ export default function TabLayout() {
         options={{
           title: 'Formation',
           headerTitle: 'Party Formation',
-          tabBarIcon: ({ color }) => <TabIcon name="P" color={color} />,
+          tabBarIcon: ({ color }) => <TabIcon Icon={HenseiIcon} color={color} />,
         }}
       />
       <Tabs.Screen
@@ -57,7 +65,7 @@ export default function TabLayout() {
         options={{
           title: 'Base',
           headerTitle: 'Base Management',
-          tabBarIcon: ({ color }) => <TabIcon name="B" color={color} />,
+          tabBarIcon: ({ color }) => <TabIcon Icon={BaseIcon} color={color} />,
         }}
       />
     </Tabs>
@@ -70,9 +78,5 @@ const styles = StyleSheet.create({
     height: 24,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  icon: {
-    fontSize: 16,
-    fontWeight: 'bold',
   },
 })
