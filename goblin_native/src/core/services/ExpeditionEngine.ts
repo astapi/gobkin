@@ -2,17 +2,17 @@ import type {
   ExpeditionRequest,
   ExpeditionReplay,
   TimelineEvent,
-  AreaConfig,
   EnemySnap,
   CombatReplay,
   RewardSummary,
   Goblin,
-  EnemyDatabase,
   Enemy,
   EnemyPattern,
   PartyState,
   ExpeditionEndReason,
 } from '../../shared/types'
+import { getAreaConfig } from '../../shared/data/expeditionArea'
+import { getEnemyDatabase } from '../../shared/data/enemy'
 import { BattleSystem } from './BattleSystem'
 import { ModStatCalculator } from './ModStatCalculator'
 
@@ -51,18 +51,14 @@ export class ExpeditionEngine {
 
     const areaId = dungeonToAreaMap[request.areaId] || request.areaId
 
-    // JSONファイルからエリアデータを読み込む
-    const areaData = await import(`../../shared/data/expeditionArea/${areaId}.json`)
-    const area: AreaConfig = areaData.default || areaData
-
+    // エリアデータを取得
+    const area = getAreaConfig(areaId)
     if (!area) {
       throw new Error(`Area not found: ${request.areaId} (mapped to: ${areaId})`)
     }
 
-    // 敵データを読み込む
-    const enemyData = await import(`../../shared/data/enemy/${areaId}.json`)
-    const enemyDatabase: EnemyDatabase = enemyData.default || enemyData
-
+    // 敵データを取得
+    const enemyDatabase = getEnemyDatabase(areaId)
     if (!enemyDatabase) {
       throw new Error(`Enemy data not found: ${areaId}`)
     }
