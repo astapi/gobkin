@@ -1,4 +1,5 @@
-import type { ExpeditionReplay, TimelineEvent, EnemyDatabase } from '../../shared/types'
+import type { ExpeditionReplay, TimelineEvent } from '../../shared/types'
+import { getEnemyDatabase } from '../../shared/data/enemy'
 import { GoblinEntity } from '../domain'
 import type { IGoblinRepository, IPartyRepository } from '../repositories'
 import type { LevelUpResult } from '../services/ExperienceSystem'
@@ -80,11 +81,10 @@ export class CompleteExpeditionUseCase {
     )
 
     if (bossEvent && bossEvent.combat.outcome === 'win') {
-      // JSONファイルから敵データを読み込んでボスの因子ドロップを取得
-      try {
-        const enemyData = await import(`../../shared/data/enemy/${replay.meta.areaId}.json`)
-        const enemyDatabase: EnemyDatabase = enemyData.default || enemyData
+      // 敵データを取得してボスの因子ドロップを取得
+      const enemyDatabase = getEnemyDatabase(replay.meta.areaId)
 
+      if (enemyDatabase) {
         // ボスパターンの敵の中からfactorDropsを持つ敵を全て取得
         const bossPattern = enemyDatabase.patterns.find(p => p.isBoss)
         const bossEnemyIds = bossPattern?.enemies ?? [bossEvent.enemy.id]
@@ -120,8 +120,7 @@ export class CompleteExpeditionUseCase {
             }
           }
         }
-      } catch {
-        // 敵データが見つからない場合はスキップ
+      } else {
         console.warn(`Enemy data not found for area: ${replay.meta.areaId}`)
       }
     }
