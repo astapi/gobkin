@@ -1,0 +1,47 @@
+{
+  "areas": [
+    {
+      "id": "slime_cave",
+      "name": "スライムの洞窟",
+      "areaLevel": 1,
+      "floors": 2,
+      "exploration_time_sec_first": 1,
+      "exploration_time_sec": 25,
+      "description": "スライムだけが出現する入門用の洞窟。ゴブリン1体でも攻略可能。",
+      "unlockNext": "forest_outskirts",
+      "unlocked": true
+    },
+    {
+      "id": "forest_outskirts",
+      "name": "周辺の森",
+      "areaLevel": 2,
+      "floors": 3,
+      "exploration_time_sec_first": 60,
+      "exploration_time_sec": 30,
+      "description": "明るい森、弱い獣や小鬼が出現",
+      "unlockRequires": "slime_cave",
+      "unlockNext": "goblin_village"
+    },
+    {
+      "id": "goblin_village",
+      "name": "ゴブリン集落",
+      "areaLevel": 5,
+      "floors": 3,
+      "exploration_time_sec_first": 1,
+      "exploration_time_sec": 40,
+      "description": "かつての支配者・ホブゴブリンが君臨する集落。独立を勝ち取るため、反逆の狼煙を上げる。",
+      "unlockRequires": "forest_outskirts",
+      "unlockNext": "orc_camp"
+    },
+    {
+      "id": "orc_camp",
+      "name": "オークの野営地",
+      "areaLevel": 8,
+      "floors": 4,
+      "exploration_time_sec_first": 90,
+      "exploration_time_sec": 45,
+      "description": "オーク族が占拠した野営地。序盤の大きな壁となる強敵が待ち受ける。攻略すれば拠点として利用可能。",
+      "unlockRequires": "goblin_village"
+    }
+  ]
+}
