@@ -1,6 +1,6 @@
-# React Native 移行ガイド
+# React Native (Expo) 移行ガイド
 
-このドキュメントは、goblin_webプロジェクトをReact Nativeに移行するために必要な情報を整理したものです。
+このドキュメントは、goblin_webプロジェクトをReact Native (Expo) に移行するために必要な情報を整理したものです。
 
 ## 目次
 
@@ -8,7 +8,7 @@
 2. [画面構成詳細](#画面構成詳細)
 3. [コアロジック詳細](#コアロジック詳細)
 4. [移行対象と非移行対象](#移行対象と非移行対象)
-5. [React Native対応方針](#react-native対応方針)
+5. [Expo対応方針](#expo対応方針)
 6. [データ永続化の移行](#データ永続化の移行)
 7. [スタイリングの移行](#スタイリングの移行)
 8. [移行手順](#移行手順)
@@ -19,13 +19,15 @@
 
 ### 技術スタック
 
-| 項目 | 現在 | React Native移行後 |
-|------|------|-------------------|
-| フレームワーク | React 19.1.1 | React Native + Expo |
-| スタイリング | Tailwind CSS 3.4.17 | NativeWind または StyleSheet |
+| 項目 | 現在 | Expo移行後 |
+|------|------|-----------|
+| フレームワーク | React 19.1.1 | Expo SDK 52+ |
+| ルーティング | 状態管理ベース | Expo Router |
+| スタイリング | Tailwind CSS 3.4.17 | StyleSheet |
 | バンドラー | Vite 7.1.7 | Metro (Expo) |
-| データベース | Firebase Firestore | Firebase Firestore (RN対応SDK) |
-| 認証 | Firebase Authentication | Firebase Authentication (RN対応SDK) |
+| データベース | Firebase Firestore | Firebase Firestore (JS SDK) |
+| 認証 | Firebase Authentication | Firebase Authentication (JS SDK) |
+| ストレージ | localStorage | AsyncStorage |
 | テスト | Vitest | Jest |
 
 ### ディレクトリ構成
@@ -166,8 +168,8 @@ class ExpeditionEngine {
 ```
 
 **移行ポイント**:
-- `import.meta.env` → React Native環境変数
-- 動的JSONインポート → require() または fetch
+- `import.meta.env` → `process.env.EXPO_PUBLIC_*`
+- 動的JSONインポート → require() または静的インポート
 
 #### BattleSystem.ts (229行)
 **機能**: ターン制戦闘ロジック
@@ -322,8 +324,8 @@ interface IBaseStateRepository { ... }
 
 | カテゴリ | 修正内容 |
 |----------|----------|
-| ExpeditionEngine.ts | `import.meta.env` → Config から取得、動的import → require() |
-| infrastructure/repositories/ | Firestore SDK → @react-native-firebase/firestore |
+| ExpeditionEngine.ts | `import.meta.env` → `process.env.EXPO_PUBLIC_*` |
+| infrastructure/repositories/ | localStorage → AsyncStorage |
 | presentation/hooks/*.ts | useCallback/useMemo はそのまま使用可能 |
 
 ### 再実装が必要
@@ -332,54 +334,140 @@ interface IBaseStateRepository { ... }
 |----------|------|
 | presentation/components/*.tsx | React Native UIコンポーネントとして再実装 |
 | presentation/contexts/*.tsx | React Native Contextとして再実装 |
-| スタイリング | Tailwind → NativeWind または StyleSheet |
-| ナビゲーション | TabMenu → @react-navigation |
-| Firebase設定 | config/firebase.ts → @react-native-firebase |
+| スタイリング | Tailwind → StyleSheet |
+| ナビゲーション | TabMenu → Expo Router |
+| Firebase設定 | config/firebase.ts → Firebase JS SDK (Expo対応) |
 
 ---
 
-## React Native対応方針
+## Expo対応方針
 
-### ナビゲーション
+### Expo Router ナビゲーション
 
-現在のタブナビゲーションを `@react-navigation` で再実装:
+現在の状態管理ベースのナビゲーションを Expo Router で再実装:
+
+#### ファイル構造
+
+```
+app/
+├── _layout.tsx              # Root Layout (AuthProvider, ExpeditionStateProvider)
+├── (tabs)/
+│   ├── _layout.tsx          # Tab Layout (3タブ)
+│   ├── index.tsx            # リストタブ (GoblinListScreen)
+│   ├── formation/
+│   │   ├── _layout.tsx      # Stack Layout
+│   │   ├── index.tsx        # FormationScreen (パーティ一覧)
+│   │   ├── preparation.tsx  # ExpeditionPreparationScreen
+│   │   ├── edit.tsx         # PartyEditScreen
+│   │   ├── playback.tsx     # ExpeditionPlaybackScreen
+│   │   ├── result.tsx       # ExpeditionResultScreen
+│   │   └── log.tsx          # ExpeditionLogScreen
+│   └── base.tsx             # 拠点タブ (BaseManagementScreen)
+└── +not-found.tsx
+```
+
+#### Root Layout
 
 ```typescript
-// 推奨構成
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
-import { createNativeStackNavigator } from '@react-navigation/native-stack'
+// app/_layout.tsx
+import { Stack } from 'expo-router'
+import { AuthProvider } from '@/presentation/contexts/AuthContext'
+import { ExpeditionStateProvider } from '@/presentation/contexts/ExpeditionStateContext'
 
-const Tab = createBottomTabNavigator()
-const Stack = createNativeStackNavigator()
+export default function RootLayout() {
+  return (
+    <AuthProvider>
+      <ExpeditionStateProvider>
+        <Stack screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="(tabs)" />
+        </Stack>
+      </ExpeditionStateProvider>
+    </AuthProvider>
+  )
+}
+```
 
-// タブナビゲーション
-<Tab.Navigator>
-  <Tab.Screen name="List" component={GoblinListStack} />
-  <Tab.Screen name="Formation" component={FormationStack} />
-  <Tab.Screen name="Base" component={BaseManagementScreen} />
-</Tab.Navigator>
+#### Tab Layout
 
-// 編成タブ内のスタック
-<Stack.Navigator>
-  <Stack.Screen name="FormationList" component={FormationScreen} />
-  <Stack.Screen name="ExpeditionPreparation" component={ExpeditionPreparationScreen} />
-  <Stack.Screen name="PartyEdit" component={PartyEditScreen} />
-  <Stack.Screen name="ExpeditionPlayback" component={ExpeditionPlaybackScreen} />
-  <Stack.Screen name="ExpeditionResult" component={ExpeditionResultScreen} />
-  <Stack.Screen name="ExpeditionLog" component={ExpeditionLogScreen} />
-</Stack.Navigator>
+```typescript
+// app/(tabs)/_layout.tsx
+import { Tabs } from 'expo-router'
+
+export default function TabLayout() {
+  return (
+    <Tabs>
+      <Tabs.Screen
+        name="index"
+        options={{ title: 'リスト', tabBarIcon: ({ color }) => <ListIcon color={color} /> }}
+      />
+      <Tabs.Screen
+        name="formation"
+        options={{ title: '編成', tabBarIcon: ({ color }) => <FormationIcon color={color} /> }}
+      />
+      <Tabs.Screen
+        name="base"
+        options={{ title: '拠点', tabBarIcon: ({ color }) => <BaseIcon color={color} /> }}
+      />
+    </Tabs>
+  )
+}
+```
+
+#### Formation Stack Layout
+
+```typescript
+// app/(tabs)/formation/_layout.tsx
+import { Stack } from 'expo-router'
+
+export default function FormationLayout() {
+  return (
+    <Stack>
+      <Stack.Screen name="index" options={{ title: '編成' }} />
+      <Stack.Screen name="preparation" options={{ title: '遠征準備' }} />
+      <Stack.Screen name="edit" options={{ title: 'パーティ編集' }} />
+      <Stack.Screen name="playback" options={{ title: '遠征中' }} />
+      <Stack.Screen name="result" options={{ title: '遠征結果' }} />
+      <Stack.Screen name="log" options={{ title: '遠征ログ' }} />
+    </Stack>
+  )
+}
+```
+
+#### 画面遷移例
+
+```typescript
+import { router, useLocalSearchParams } from 'expo-router'
+
+// 遷移
+router.push('/formation/preparation')
+router.back()
+
+// パラメータ付き遷移
+router.push({
+  pathname: '/formation/result',
+  params: { partyId: '123' }
+})
+
+// パラメータ取得
+const { partyId } = useLocalSearchParams<{ partyId: string }>()
 ```
 
 ### モーダル処理
 
-現在の条件付きレンダリングによるモーダルを、React Navigation のモーダルまたは `react-native-modal` で再実装:
+現在の条件付きレンダリングによるモーダルを、React Native の Modal で再実装:
 
 ```typescript
 // 現在
 {selectedGoblin && <GoblinDetailModal ... />}
 
 // React Native
-<Modal visible={!!selectedGoblin} animationType="slide">
+import { Modal } from 'react-native'
+
+<Modal
+  visible={!!selectedGoblin}
+  animationType="slide"
+  presentationStyle="pageSheet"
+>
   <GoblinDetailView ... />
 </Modal>
 ```
@@ -392,8 +480,22 @@ ExpeditionPlaybackScreen のアニメーションを React Native Animated ま�
 // 現在: requestAnimationFrame
 animationFrameRef.current = requestAnimationFrame(animate)
 
-// React Native: Animated API または useAnimatedReaction (Reanimated)
-import { useSharedValue, useAnimatedReaction, withTiming } from 'react-native-reanimated'
+// React Native: Animated API
+import { Animated } from 'react-native'
+
+const progress = useRef(new Animated.Value(0)).current
+
+Animated.timing(progress, {
+  toValue: 1,
+  duration: totalDuration,
+  useNativeDriver: true,
+}).start()
+
+// または Reanimated (より高性能)
+import { useSharedValue, useAnimatedStyle, withTiming } from 'react-native-reanimated'
+
+const progress = useSharedValue(0)
+progress.value = withTiming(1, { duration: totalDuration })
 ```
 
 ---
@@ -402,52 +504,112 @@ import { useSharedValue, useAnimatedReaction, withTiming } from 'react-native-re
 
 ### Firebase SDK の変更
 
+Expo では Firebase JS SDK を使用します（`@react-native-firebase/*` ではなく）:
+
+```typescript
+// src/config/firebase.ts
+import { initializeApp } from 'firebase/app'
+import { initializeAuth, getReactNativePersistence } from 'firebase/auth'
+import { getFirestore } from 'firebase/firestore'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+
+const firebaseConfig = {
+  apiKey: process.env.EXPO_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.EXPO_PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.EXPO_PUBLIC_FIREBASE_APP_ID,
+}
+
+const app = initializeApp(firebaseConfig)
+
+// Auth (AsyncStorage で永続化)
+export const auth = initializeAuth(app, {
+  persistence: getReactNativePersistence(AsyncStorage)
+})
+
+// Firestore
+export const db = getFirestore(app)
+```
+
+### 環境変数
+
+```bash
+# .env
+EXPO_PUBLIC_FIREBASE_API_KEY=xxx
+EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN=xxx
+EXPO_PUBLIC_FIREBASE_PROJECT_ID=xxx
+EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET=xxx
+EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=xxx
+EXPO_PUBLIC_FIREBASE_APP_ID=xxx
+```
+
+### localStorage → AsyncStorage
+
 ```typescript
 // 現在 (Web)
-import { db, auth } from '../../config/firebase'
-import { collection, doc, getDocs, setDoc } from 'firebase/firestore'
+localStorage.getItem('goblins')
+localStorage.setItem('goblins', JSON.stringify(data))
 
-// React Native
-import firestore from '@react-native-firebase/firestore'
-import auth from '@react-native-firebase/auth'
+// Expo
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
-// Collection参照
-const goblinsRef = firestore()
-  .collection('users')
-  .doc(userId)
-  .collection('goblins')
+// 取得 (非同期)
+const data = await AsyncStorage.getItem('goblins')
+const goblins = data ? JSON.parse(data) : []
 
-// ドキュメント取得
-const snapshot = await goblinsRef.get()
+// 保存 (非同期)
+await AsyncStorage.setItem('goblins', JSON.stringify(data))
 ```
 
 ### Repository実装の変更例
 
 ```typescript
-// React Native版 FirestoreGoblinRepositoryImpl
-import firestore from '@react-native-firebase/firestore'
-import auth from '@react-native-firebase/auth'
+// Expo版 AsyncStorageGoblinRepositoryImpl
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import { IGoblinRepository } from '@/core/repositories/IGoblinRepository'
+import { Goblin } from '@/shared/types'
 
-export class RNFirestoreGoblinRepositoryImpl implements IGoblinRepository {
-  private getUserId(): string {
-    const user = auth().currentUser
-    if (!user) throw new Error('ユーザーが認証されていません')
-    return user.uid
+const STORAGE_KEY = 'goblins'
+
+export class AsyncStorageGoblinRepositoryImpl implements IGoblinRepository {
+  private goblins: Goblin[] = []
+  private initialized = false
+
+  async initialize(): Promise<void> {
+    if (this.initialized) return
+    const data = await AsyncStorage.getItem(STORAGE_KEY)
+    this.goblins = data ? JSON.parse(data) : []
+    this.initialized = true
   }
 
-  private getGoblinsRef() {
-    return firestore()
-      .collection('users')
-      .doc(this.getUserId())
-      .collection('goblins')
+  getGoblins(): Goblin[] {
+    return [...this.goblins]
   }
 
-  async getGoblins(): Promise<Goblin[]> {
-    const snapshot = await this.getGoblinsRef().orderBy('id').get()
-    return snapshot.docs.map(doc => doc.data() as Goblin)
+  getGoblin(id: number): Goblin | null {
+    return this.goblins.find(g => g.id === id) ?? null
   }
 
-  // ... 他のメソッド
+  async saveGoblin(goblin: Goblin): Promise<void> {
+    const index = this.goblins.findIndex(g => g.id === goblin.id)
+    if (index >= 0) {
+      this.goblins[index] = goblin
+    } else {
+      this.goblins.push(goblin)
+    }
+    await this.persist()
+  }
+
+  async deleteGoblin(id: number): Promise<void> {
+    this.goblins = this.goblins.filter(g => g.id !== id)
+    await this.persist()
+  }
+
+  private async persist(): Promise<void> {
+    await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(this.goblins))
+  }
 }
 ```
 
@@ -455,35 +617,24 @@ export class RNFirestoreGoblinRepositoryImpl implements IGoblinRepository {
 
 ## スタイリングの移行
 
-### オプション1: NativeWind (推奨)
+### StyleSheet
 
-Tailwind CSSをReact Nativeで使用可能にするライブラリ:
-
-```bash
-npm install nativewind
-npm install --dev tailwindcss
-```
+React Native 標準の StyleSheet を使用:
 
 ```typescript
-// 現在
-<div className="bg-white border-2 border-gray-200 rounded-lg p-3">
+import { StyleSheet, View, Text, TouchableOpacity } from 'react-native'
 
-// NativeWind
-<View className="bg-white border-2 border-gray-200 rounded-lg p-3">
-```
-
-### オプション2: StyleSheet
-
-従来のReact Native StyleSheet:
-
-```typescript
-// 現在
-<div className="bg-white border-2 border-gray-200 rounded-lg p-3 flex items-center gap-3">
-
-// StyleSheet
-<View style={styles.card}>
-  ...
-</View>
+const GoblinCard = ({ goblin, onPress }) => (
+  <TouchableOpacity style={styles.card} onPress={onPress}>
+    <View style={styles.iconContainer}>
+      <Image source={require('@/assets/goblin.png')} style={styles.icon} />
+    </View>
+    <View style={styles.info}>
+      <Text style={styles.name}>{goblin.name}</Text>
+      <Text style={styles.level}>Lv.{goblin.level}</Text>
+    </View>
+  </TouchableOpacity>
+)
 
 const styles = StyleSheet.create({
   card: {
@@ -496,6 +647,31 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 12,
   },
+  iconContainer: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: '#F3F4F6',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  icon: {
+    width: 32,
+    height: 32,
+  },
+  info: {
+    flex: 1,
+  },
+  name: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#1F2937',
+  },
+  level: {
+    fontSize: 14,
+    color: '#6B7280',
+    marginTop: 4,
+  },
 })
 ```
 
@@ -505,20 +681,247 @@ const styles = StyleSheet.create({
 |----------|------------------------|
 | flex-1 | { flex: 1 } |
 | flex-col | { flexDirection: 'column' } |
+| flex-row | { flexDirection: 'row' } |
 | items-center | { alignItems: 'center' } |
+| justify-center | { justifyContent: 'center' } |
 | justify-between | { justifyContent: 'space-between' } |
 | gap-3 | { gap: 12 } |
 | p-3 | { padding: 12 } |
+| px-4 | { paddingHorizontal: 16 } |
+| py-2 | { paddingVertical: 8 } |
+| m-2 | { margin: 8 } |
 | mt-2 | { marginTop: 8 } |
 | rounded-lg | { borderRadius: 8 } |
+| rounded-full | { borderRadius: 9999 } |
 | text-sm | { fontSize: 14 } |
+| text-lg | { fontSize: 18 } |
 | font-bold | { fontWeight: 'bold' } |
 | text-gray-800 | { color: '#1F2937' } |
+| text-gray-500 | { color: '#6B7280' } |
 | bg-white | { backgroundColor: 'white' } |
+| bg-gray-100 | { backgroundColor: '#F3F4F6' } |
 | border-2 | { borderWidth: 2 } |
 | border-gray-200 | { borderColor: '#E5E7EB' } |
-| shadow-sm | (react-native-shadow-2 等を使用) |
-| overflow-y-auto | (ScrollView を使用) |
+| shadow-sm | 別途ライブラリ or elevation |
+| overflow-y-auto | ScrollView を使用 |
+| w-full | { width: '100%' } |
+| h-12 | { height: 48 } |
+
+### 色定数の移行
+
+```typescript
+// src/shared/constants/colors.ts
+export const colors = {
+  // Gray scale
+  gray50: '#F9FAFB',
+  gray100: '#F3F4F6',
+  gray200: '#E5E7EB',
+  gray300: '#D1D5DB',
+  gray400: '#9CA3AF',
+  gray500: '#6B7280',
+  gray600: '#4B5563',
+  gray700: '#374151',
+  gray800: '#1F2937',
+  gray900: '#111827',
+
+  // Primary
+  primary: '#3B82F6',
+  primaryDark: '#2563EB',
+
+  // Status
+  success: '#10B981',
+  warning: '#F59E0B',
+  danger: '#EF4444',
+
+  // Background
+  background: '#F9FAFB',
+  cardBackground: '#FFFFFF',
+}
+```
+
+### レスポンシブ対応 (react-native-size-matters)
+
+様々な端末サイズに対応するため、`react-native-size-matters` を使用します。
+
+#### インストール
+
+```bash
+npm install react-native-size-matters
+```
+
+#### 基本的な使い方
+
+```typescript
+import { scale, verticalScale, moderateScale } from 'react-native-size-matters'
+
+// scale(size): 幅に基づいてスケーリング
+// verticalScale(size): 高さに基づいてスケーリング
+// moderateScale(size, factor?): 緩やかなスケーリング（factor のデフォルトは 0.5）
+
+const styles = StyleSheet.create({
+  card: {
+    padding: scale(12),           // 幅ベースのスケーリング
+    marginVertical: verticalScale(8), // 高さベースのスケーリング
+    borderRadius: moderateScale(8),   // 緩やかなスケーリング
+  },
+  title: {
+    fontSize: moderateScale(16),  // フォントサイズは moderateScale 推奨
+  },
+})
+```
+
+#### スケーリング関数の使い分け
+
+| 関数 | 用途 | 例 |
+|------|------|-----|
+| `scale(size)` | 横幅に依存する要素 | 横方向のpadding、margin、width |
+| `verticalScale(size)` | 縦幅に依存する要素 | 縦方向のpadding、margin、height |
+| `moderateScale(size, factor?)` | 緩やかなスケーリングが必要な要素 | fontSize、borderRadius、アイコンサイズ |
+
+#### 実装例: GoblinCard
+
+```typescript
+import { StyleSheet, View, Text, TouchableOpacity, Image } from 'react-native'
+import { scale, verticalScale, moderateScale } from 'react-native-size-matters'
+
+const GoblinCard = ({ goblin, onPress }) => (
+  <TouchableOpacity style={styles.card} onPress={onPress}>
+    <View style={styles.iconContainer}>
+      <Image source={require('@/assets/goblin.png')} style={styles.icon} />
+    </View>
+    <View style={styles.info}>
+      <Text style={styles.name}>{goblin.name}</Text>
+      <Text style={styles.level}>Lv.{goblin.level}</Text>
+    </View>
+  </TouchableOpacity>
+)
+
+const styles = StyleSheet.create({
+  card: {
+    backgroundColor: 'white',
+    borderWidth: moderateScale(2),
+    borderColor: '#E5E7EB',
+    borderRadius: moderateScale(8),
+    padding: scale(12),
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: scale(12),
+  },
+  iconContainer: {
+    width: moderateScale(48),
+    height: moderateScale(48),
+    borderRadius: moderateScale(24),
+    backgroundColor: '#F3F4F6',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  icon: {
+    width: moderateScale(32),
+    height: moderateScale(32),
+  },
+  info: {
+    flex: 1,
+  },
+  name: {
+    fontSize: moderateScale(16),
+    fontWeight: 'bold',
+    color: '#1F2937',
+  },
+  level: {
+    fontSize: moderateScale(14),
+    color: '#6B7280',
+    marginTop: verticalScale(4),
+  },
+})
+```
+
+#### ユーティリティ関数の作成
+
+プロジェクト全体で一貫したスケーリングを行うため、ユーティリティを作成:
+
+```typescript
+// src/shared/utils/scaling.ts
+import { scale, verticalScale, moderateScale } from 'react-native-size-matters'
+
+// エイリアス（短縮形）
+export const s = scale
+export const vs = verticalScale
+export const ms = moderateScale
+
+// フォントサイズ専用（factor を調整）
+export const fs = (size: number) => moderateScale(size, 0.3)
+
+// スペーシング専用
+export const spacing = {
+  xs: scale(4),
+  sm: scale(8),
+  md: scale(12),
+  lg: scale(16),
+  xl: scale(24),
+  xxl: scale(32),
+}
+
+// フォントサイズ定義
+export const fontSize = {
+  xs: fs(12),
+  sm: fs(14),
+  md: fs(16),
+  lg: fs(18),
+  xl: fs(20),
+  xxl: fs(24),
+  title: fs(28),
+}
+
+// アイコンサイズ定義
+export const iconSize = {
+  sm: moderateScale(16),
+  md: moderateScale(24),
+  lg: moderateScale(32),
+  xl: moderateScale(48),
+}
+```
+
+#### 使用例
+
+```typescript
+import { StyleSheet } from 'react-native'
+import { s, vs, ms, spacing, fontSize, iconSize } from '@/shared/utils/scaling'
+
+const styles = StyleSheet.create({
+  container: {
+    padding: spacing.md,
+    marginVertical: vs(8),
+  },
+  title: {
+    fontSize: fontSize.lg,
+    marginBottom: spacing.sm,
+  },
+  icon: {
+    width: iconSize.lg,
+    height: iconSize.lg,
+  },
+  button: {
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.sm,
+    borderRadius: ms(8),
+  },
+})
+```
+
+#### 基準サイズ
+
+`react-native-size-matters` は以下の基準サイズを使用:
+- **幅**: 350dp (iPhone 8 相当)
+- **高さ**: 680dp
+
+異なる端末での表示例:
+| 端末 | 画面幅 | scale(10) の結果 |
+|------|--------|-----------------|
+| iPhone SE | 320dp | 9.1 |
+| iPhone 8 | 375dp | 10.7 |
+| iPhone 14 | 390dp | 11.1 |
+| iPhone 14 Pro Max | 430dp | 12.3 |
+| iPad | 768dp | 21.9 |
 
 ---
 
@@ -528,72 +931,115 @@ const styles = StyleSheet.create({
 
 1. Expo プロジェクト作成
    ```bash
-   npx create-expo-app goblin-native --template blank-typescript
+   npx create-expo-app@latest goblin-native
+   cd goblin-native
    ```
 
 2. 必要なパッケージインストール
    ```bash
-   npm install @react-navigation/native @react-navigation/bottom-tabs @react-navigation/native-stack
-   npm install @react-native-firebase/app @react-native-firebase/auth @react-native-firebase/firestore
-   npm install nativewind
-   npm install react-native-reanimated react-native-gesture-handler
+   # Expo Router
+   npx expo install expo-router
+
+   # Firebase
+   npx expo install firebase @react-native-async-storage/async-storage
+
+   # ナビゲーション依存
+   npx expo install react-native-screens react-native-safe-area-context
+
+   # アニメーション
+   npx expo install react-native-reanimated react-native-gesture-handler
+
+   # レスポンシブ対応
+   npm install react-native-size-matters
    ```
 
-### Phase 2: コアロジック移植 (約1-2日)
+3. app.json 設定
+   ```json
+   {
+     "expo": {
+       "scheme": "goblin-native",
+       "plugins": [
+         "expo-router"
+       ],
+       "experiments": {
+         "typedRoutes": true
+       }
+     }
+   }
+   ```
 
-1. `core/` ディレクトリをそのままコピー
-2. `shared/types/` をコピー
-3. `shared/data/` をコピー
-4. `shared/constants/` をコピー
+4. package.json の main を更新
+   ```json
+   {
+     "main": "expo-router/entry"
+   }
+   ```
+
+### Phase 2: コアロジック移植
+
+1. `src/core/` ディレクトリをそのままコピー
+2. `src/shared/types/` をコピー
+3. `src/shared/data/` をコピー
+4. `src/shared/constants/` をコピー（色定数を純粋な16進数に修正）
 
 5. `ExpeditionEngine.ts` の修正:
    ```typescript
    // 環境変数の読み込み方法を変更
-   const isDebug = __DEV__  // または Config.DEBUG
+   const isDebug = __DEV__  // または process.env.EXPO_PUBLIC_DEBUG
 
-   // 動的インポートの修正
-   const areaData = require(`../shared/data/expeditionArea/${areaId}.json`)
-   const enemyData = require(`../shared/data/enemy/${areaId}.json`)
+   // 動的インポートの修正（静的インポートに変更）
+   import slimeCaveArea from '@/shared/data/expeditionArea/slime_cave.json'
+   import forestOutskirtsArea from '@/shared/data/expeditionArea/forest_outskirts.json'
+   // ...
    ```
 
-### Phase 3: Repository実装 (約1日)
+### Phase 3: Firebase設定
 
-1. `infrastructure/repositories/` のFirestore実装をRN版に書き換え
-2. `@react-native-firebase/firestore` を使用
+1. `src/config/firebase.ts` を作成（上記参照）
+2. `.env` ファイルを作成
+3. `app.json` に環境変数の読み込み設定を追加
 
-### Phase 4: Context/Hooks移植 (約1日)
+### Phase 4: Repository実装
 
-1. `AuthContext` を `@react-native-firebase/auth` で再実装
+1. `src/infrastructure/repositories/` を作成
+2. AsyncStorage版のRepository実装を作成
+3. Firestore版のRepository実装を作成（Firebase JS SDK使用）
+
+### Phase 5: Context/Hooks移植
+
+1. `AuthContext` を Firebase JS SDK で再実装
 2. `ExpeditionStateContext` をそのまま移植
-3. カスタムHooksはほぼそのまま使用可能
+3. カスタムHooksを移植（大部分はそのまま使用可能）
 
-### Phase 5: 画面コンポーネント再実装 (約5-7日)
+### Phase 6: Expo Router設定・画面実装
+
+1. `app/` ディレクトリ構造を作成
+2. レイアウトファイルを作成
+3. 画面コンポーネントを実装
 
 優先度順:
+1. **ナビゲーション構築**
+   - Root Layout, Tab Layout, Stack Layout
 
-1. **ナビゲーション構築** (1日)
-   - TabNavigator
-   - StackNavigator
-
-2. **基本画面** (2日)
+2. **基本画面**
    - GoblinListScreen
    - GoblinCard
-   - TabMenu
+   - GoblinDetailModal
 
-3. **編成画面** (2日)
+3. **編成画面**
    - FormationScreen
    - PartyEditScreen
    - ExpeditionPreparationScreen
 
-4. **遠征画面** (2日)
+4. **遠征画面**
    - ExpeditionPlaybackScreen (アニメーション実装が複雑)
    - ExpeditionResultScreen
    - ExpeditionLogScreen
 
-5. **拠点画面** (1日)
+5. **拠点画面**
    - BaseManagementScreen
 
-### Phase 6: テスト・調整 (約2-3日)
+### Phase 7: テスト・調整
 
 1. 各画面の動作確認
 2. アニメーションの調整
@@ -610,7 +1056,7 @@ const styles = StyleSheet.create({
 <img src="/src/assets/goblin/goblin.png" />
 
 // React Native
-<Image source={require('../assets/goblin/goblin.png')} />
+<Image source={require('@/assets/goblin/goblin.png')} />
 // または
 <Image source={{ uri: 'https://...' }} />
 ```
@@ -621,9 +1067,8 @@ const styles = StyleSheet.create({
 // 現在
 import.meta.env.VITE_USE_FIRESTORE
 
-// React Native (react-native-config)
-import Config from 'react-native-config'
-Config.USE_FIRESTORE
+// Expo
+process.env.EXPO_PUBLIC_USE_FIRESTORE
 
 // または __DEV__ フラグ
 __DEV__ ? 'development' : 'production'
@@ -639,19 +1084,99 @@ const data = doc.data()
 const date = data.startTime.toDate() // Timestamp → Date
 ```
 
+### テキスト表示
+
+React Nativeではテキストは必ず`<Text>`コンポーネント内に:
+
+```typescript
+// Web
+<div>{name}</div>
+
+// React Native
+<Text>{name}</Text>
+```
+
+### スクロール
+
+```typescript
+// Web
+<div className="overflow-y-auto">...</div>
+
+// React Native
+<ScrollView>...</ScrollView>
+
+// FlatList（大量データの場合）
+<FlatList
+  data={goblins}
+  renderItem={({ item }) => <GoblinCard goblin={item} />}
+  keyExtractor={item => String(item.id)}
+/>
+```
+
 ---
 
-## 推定工数
+## ディレクトリ構成（移行後）
 
-| フェーズ | 作業内容 | 推定 |
-|----------|----------|------|
-| Phase 1 | プロジェクトセットアップ | 0.5日 |
-| Phase 2 | コアロジック移植 | 1-2日 |
-| Phase 3 | Repository実装 | 1日 |
-| Phase 4 | Context/Hooks移植 | 1日 |
-| Phase 5 | 画面コンポーネント再実装 | 5-7日 |
-| Phase 6 | テスト・調整 | 2-3日 |
-| **合計** | | **10-15日** |
+```
+goblin_native/
+├── app/                      # Expo Router ページ
+│   ├── _layout.tsx           # Root Layout
+│   ├── (tabs)/
+│   │   ├── _layout.tsx       # Tab Layout
+│   │   ├── index.tsx         # リストタブ
+│   │   ├── formation/
+│   │   │   ├── _layout.tsx   # Stack Layout
+│   │   │   ├── index.tsx
+│   │   │   ├── preparation.tsx
+│   │   │   ├── edit.tsx
+│   │   │   ├── playback.tsx
+│   │   │   ├── result.tsx
+│   │   │   └── log.tsx
+│   │   └── base.tsx          # 拠点タブ
+│   └── +not-found.tsx
+├── src/
+│   ├── core/                 # 【そのまま移植】
+│   │   ├── domain/
+│   │   ├── services/
+│   │   ├── usecases/
+│   │   └── repositories/
+│   ├── shared/               # 【そのまま移植】
+│   │   ├── types/
+│   │   ├── data/
+│   │   ├── constants/
+│   │   └── utils/
+│   │       └── scaling.ts    # レスポンシブ対応ユーティリティ
+│   ├── infrastructure/       # 【Expo対応版】
+│   │   └── repositories/
+│   │       ├── AsyncStorageGoblinRepositoryImpl.ts
+│   │       ├── AsyncStoragePartyRepositoryImpl.ts
+│   │       ├── FirestoreGoblinRepositoryImpl.ts
+│   │       └── FirestorePartyRepositoryImpl.ts
+│   ├── presentation/
+│   │   ├── components/       # UI部品
+│   │   │   ├── GoblinCard.tsx
+│   │   │   ├── GoblinDetailModal.tsx
+│   │   │   ├── PartyCard.tsx
+│   │   │   └── ...
+│   │   ├── contexts/         # Context
+│   │   │   ├── AuthContext.tsx
+│   │   │   └── ExpeditionStateContext.tsx
+│   │   └── hooks/            # Hooks
+│   │       ├── useGoblinService.ts
+│   │       ├── usePartyService.ts
+│   │       └── useExpeditionFlow.ts
+│   └── config/
+│       └── firebase.ts
+├── assets/                   # 画像・フォント
+│   ├── goblin/
+│   └── icons/
+├── .env                      # 環境変数
+├── app.json                  # Expo設定
+├── babel.config.js
+├── metro.config.js
+├── package.json
+└── tsconfig.json
+```
 
 ---
 
