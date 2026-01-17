@@ -1,0 +1,156 @@
+{
+  "enemies": [
+    {
+      "id": "ORC001",
+      "name": "オークスカウト",
+      "raceTags": ["orc"],
+      "level": 4,
+      "hp": 25,
+      "atk": 8,
+      "def": 5,
+      "spd": 7,
+      "sp": 0,
+      "exp": 15,
+      "gold": 12
+    },
+    {
+      "id": "ORC002",
+      "name": "オーク兵",
+      "raceTags": ["orc"],
+      "level": 5,
+      "hp": 40,
+      "atk": 10,
+      "def": 8,
+      "spd": 4,
+      "sp": 0,
+      "exp": 20,
+      "gold": 15
+    },
+    {
+      "id": "ORC003",
+      "name": "オークアーチャー",
+      "raceTags": ["orc"],
+      "level": 6,
+      "hp": 30,
+      "atk": 12,
+      "def": 4,
+      "spd": 6,
+      "sp": 0,
+      "exp": 22,
+      "gold": 18
+    },
+    {
+      "id": "ORC004",
+      "name": "オークシャーマン",
+      "raceTags": ["orc"],
+      "level": 6,
+      "hp": 35,
+      "atk": 9,
+      "def": 5,
+      "spd": 5,
+      "sp": 0,
+      "exp": 25,
+      "gold": 20
+    },
+    {
+      "id": "ORC005",
+      "name": "オークブルート",
+      "raceTags": ["orc"],
+      "level": 7,
+      "hp": 60,
+      "atk": 16,
+      "def": 12,
+      "spd": 3,
+      "sp": 0,
+      "exp": 30,
+      "gold": 25
+    },
+    {
+      "id": "B_ORC",
+      "name": "オークウォーロード",
+      "raceTags": ["orc"],
+      "level": 12,
+      "hp": 250,
+      "atk": 28,
+      "def": 18,
+      "spd": 6,
+      "sp": 0,
+      "exp": 120,
+      "gold": 100,
+      "factorDrops": [{ "factorId": "orc", "probability": 1 }]
+    }
+  ],
+  "patterns": [
+    {
+      "id": "OP001",
+      "floors": [1],
+      "enemies": ["ORC001", "ORC001"]
+    },
+    {
+      "id": "OP002",
+      "floors": [1],
+      "enemies": ["ORC001", "ORC001", "ORC001"]
+    },
+    {
+      "id": "OP003",
+      "floors": [1],
+      "enemies": ["ORC002"]
+    },
+    {
+      "id": "OP004",
+      "floors": [1],
+      "enemies": ["ORC001", "ORC001", "ORC002"]
+    },
+    {
+      "id": "OP005",
+      "floors": [2],
+      "enemies": ["ORC002", "ORC002"]
+    },
+    {
+      "id": "OP006",
+      "floors": [2],
+      "enemies": ["ORC002", "ORC002", "ORC001"]
+    },
+    {
+      "id": "OP007",
+      "floors": [2],
+      "enemies": ["ORC002", "ORC003", "ORC003"]
+    },
+    {
+      "id": "OP008",
+      "floors": [3],
+      "enemies": ["ORC002", "ORC002", "ORC003"]
+    },
+    {
+      "id": "OP009",
+      "floors": [3],
+      "enemies": ["ORC002", "ORC002", "ORC004"]
+    },
+    {
+      "id": "OP010",
+      "floors": [3],
+      "enemies": ["ORC005", "ORC002"]
+    },
+    {
+      "id": "OP011",
+      "floors": [3],
+      "enemies": ["ORC003", "ORC003", "ORC004"]
+    },
+    {
+      "id": "OP012",
+      "floors": [4],
+      "enemies": ["ORC005", "ORC005"]
+    },
+    {
+      "id": "OP013",
+      "floors": [4],
+      "enemies": ["ORC005", "ORC004", "ORC002"]
+    },
+    {
+      "id": "BOSS",
+      "floors": [4],
+      "enemies": ["B_ORC", "ORC005", "ORC005"],
+      "isBoss": true
+    }
+  ]
+}

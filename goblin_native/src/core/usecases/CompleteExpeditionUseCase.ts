@@ -1,0 +1,138 @@
+import type { ExpeditionReplay, TimelineEvent, EnemyDatabase } from '../../shared/types'
+import { GoblinEntity } from '../domain'
+import type { IGoblinRepository, IPartyRepository } from '../repositories'
+import type { LevelUpResult } from '../services/ExperienceSystem'
+import { FactorService } from '../services/FactorService'
+
+export interface ExpeditionCompletionResult {
+  levelUps: Map<number, LevelUpResult>
+  updatedGoblinIds: number[]
+  factorAcquisitions: Map<number, string[]>  // ゴブリンID -> 獲得因子ID[]
+}
+
+/**
+ * 遠征完了時の処理を行うUseCase
+ * - 経験値の付与とレベルアップ
+ * - パーティステータスの更新
+ */
+export class CompleteExpeditionUseCase {
+  private readonly goblinRepository: IGoblinRepository
+  private readonly partyRepository: IPartyRepository
+
+  constructor(
+    goblinRepository: IGoblinRepository,
+    partyRepository: IPartyRepository
+  ) {
+    this.goblinRepository = goblinRepository
+    this.partyRepository = partyRepository
+  }
+
+  public async execute(
+    partyId: number,
+    replay: ExpeditionReplay
+  ): Promise<ExpeditionCompletionResult> {
+    const party = this.partyRepository.getParty(partyId)
+    if (!party) {
+      throw new Error('パーティが見つかりません')
+    }
+
+    // 遠征に参加したゴブリンを取得
+    const participantIds = replay.meta.party.map(id => Number.parseInt(id, 10))
+    const goblins = participantIds
+      .map(id => this.goblinRepository.getGoblin(id))
+      .filter((g): g is NonNullable<typeof g> => g !== null)
+
+    if (goblins.length === 0) {
+      throw new Error('遠征メンバーが見つかりません')
+    }
+
+    // 各ゴブリンに経験値を付与
+    const levelUps = new Map<number, LevelUpResult>()
+    const updatedGoblinIds: number[] = []
+
+    for (const goblin of goblins) {
+      const entity = new GoblinEntity(goblin)
+
+      // 死亡者には経験値を付与しない
+      if (replay.summary.casualties.includes(goblin.id.toString())) {
+        continue
+      }
+
+      // 負傷者は経験値50%
+      const expMultiplier = replay.summary.injuries.includes(goblin.id.toString()) ? 0.5 : 1.0
+      const expToGain = Math.floor(replay.summary.xpGained * expMultiplier)
+
+      if (expToGain > 0) {
+        const levelUpResult = entity.gainExperience(expToGain)
+        levelUps.set(goblin.id, levelUpResult)
+
+        // ゴブリンデータを更新
+        const updatedGoblin = entity.toSnapshot()
+        await this.goblinRepository.saveGoblin(updatedGoblin)
+        updatedGoblinIds.push(goblin.id)
+      }
+    }
+
+    // 因子獲得処理
+    const factorAcquisitions = new Map<number, string[]>()
+    const bossEvent = replay.events.find(
+      (e): e is Extract<TimelineEvent, { type: 'boss' }> => e.type === 'boss'
+    )
+
+    if (bossEvent && bossEvent.combat.outcome === 'win') {
+      // JSONファイルから敵データを読み込んでボスの因子ドロップを取得
+      try {
+        const enemyData = await import(`../../shared/data/enemy/${replay.meta.areaId}.json`)
+        const enemyDatabase: EnemyDatabase = enemyData.default || enemyData
+
+        // ボスパターンの敵の中からfactorDropsを持つ敵を全て取得
+        const bossPattern = enemyDatabase.patterns.find(p => p.isBoss)
+        const bossEnemyIds = bossPattern?.enemies ?? [bossEvent.enemy.id]
+        const enemiesWithFactorDrops = enemyDatabase.enemies.filter(
+          e => bossEnemyIds.includes(e.id) && e.factorDrops && e.factorDrops.length > 0
+        )
+
+        if (enemiesWithFactorDrops.length > 0) {
+          // 全ての敵のfactorDropsを結合
+          const allFactorDrops = enemiesWithFactorDrops.flatMap(e => e.factorDrops!)
+
+          // 生存しているゴブリンごとに因子獲得判定
+          for (const goblin of goblins) {
+            // 死亡者はスキップ
+            if (replay.summary.casualties.includes(goblin.id.toString())) {
+              continue
+            }
+
+            const acquired = FactorService.rollFactorDrops(
+              goblin,
+              allFactorDrops,
+              replay.meta.seed
+            )
+
+            if (acquired.length > 0) {
+              const updatedGoblin = FactorService.addFactors(goblin, acquired)
+              await this.goblinRepository.saveGoblin(updatedGoblin)
+              factorAcquisitions.set(goblin.id, acquired)
+
+              if (!updatedGoblinIds.includes(goblin.id)) {
+                updatedGoblinIds.push(goblin.id)
+              }
+            }
+          }
+        }
+      } catch {
+        // 敵データが見つからない場合はスキップ
+        console.warn(`Enemy data not found for area: ${replay.meta.areaId}`)
+      }
+    }
+
+    // パーティステータスを待機中に戻す
+    this.partyRepository.updatePartyStatus(partyId, 'idle')
+
+    return {
+      levelUps,
+      updatedGoblinIds,
+      factorAcquisitions
+    }
+  }
+}
