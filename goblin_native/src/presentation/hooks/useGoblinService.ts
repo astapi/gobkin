@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import type { Goblin } from '../../shared/types'
-import { AsyncStorageGoblinRepositoryImpl } from '../../infrastructure/repositories/AsyncStorageGoblinRepositoryImpl'
+import { SQLiteGoblinRepository } from '../../infrastructure/repositories/SQLiteGoblinRepository'
 import type { IGoblinRepository } from '../../core/repositories'
 import { GetGoblinListUseCase } from '../../core/usecases'
 
@@ -14,7 +14,7 @@ export const useGoblinService = () => {
   const [goblins, setGoblins] = useState<Goblin[]>([])
 
   const goblinRepository = useMemo<ListenerCapableGoblinRepository>(() => {
-    return new AsyncStorageGoblinRepositoryImpl()
+    return new SQLiteGoblinRepository()
   }, [])
 
   const getGoblinListUseCase = useMemo(

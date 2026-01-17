@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import type { Party } from '../../shared/types'
-import { AsyncStoragePartyRepositoryImpl } from '../../infrastructure/repositories/AsyncStoragePartyRepositoryImpl'
+import { SQLitePartyRepository } from '../../infrastructure/repositories/SQLitePartyRepository'
 import type { IPartyRepository } from '../../core/repositories'
 import {
   ConfigurePartyUseCase,
@@ -21,7 +21,7 @@ export const usePartyService = () => {
   const [parties, setParties] = useState<Party[]>([])
 
   const partyRepository = useMemo<ListenerCapablePartyRepository>(() => {
-    return new AsyncStoragePartyRepositoryImpl()
+    return new SQLitePartyRepository()
   }, [])
 
   const getPartyListUseCase = useMemo(

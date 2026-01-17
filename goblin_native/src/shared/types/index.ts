@@ -40,6 +40,7 @@ export type {
 
 // Dungeon related types
 export type { Dungeon } from "./Dungeon"
+export type { DungeonProgressState } from "./DungeonProgress"
 
 // Base related types
 export type { BaseState } from "./BaseState"
