@@ -46,8 +46,9 @@ export class ExpeditionEngine {
     // ダンジョンIDからエリアIDにマッピング
     const dungeonToAreaMap: Record<string, string> = {
       "1": "forest_outskirts",
-      "2": "mossy_cave",
-      "3": "old_mine"
+      "2": "goblin_village",
+      "3": "orc_camp",
+      "4": "slime_cave"
     }
 
     const areaId = dungeonToAreaMap[request.areaId] || request.areaId
@@ -243,7 +244,7 @@ export class ExpeditionEngine {
     return {
       meta: {
         expeditionId: `exp_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-        areaId: request.areaId,
+        areaId: areaId,
         areaName: area.name,
         floors: area.floors,
         baseDurationSec: area.baseDurationSec,
