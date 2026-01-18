@@ -416,6 +416,11 @@ export class ExpeditionEngine {
           return { shouldReturn: true, reason: "policy_return" }
         }
         break
+      case "if_two_ko":
+        if (partyState.filter(member => member.isKO).length >= 2) {
+          return { shouldReturn: true, reason: "policy_return" }
+        }
+        break
       case "last_one":
         if (aliveMembers <= 1) {
           return { shouldReturn: true, reason: "policy_return" }
@@ -430,6 +435,9 @@ export class ExpeditionEngine {
         if (currentFloor >= 3) {
           return { shouldReturn: true, reason: "policy_return" }
         }
+        break
+      case "never":
+        // 帰還条件なし - 最後まで探索（ボスクリアまたは全滅まで続行）
         break
     }
 
