@@ -19,4 +19,7 @@ export const migrateV1 = async (db: SQLite.SQLiteDatabase): Promise<void> => {
   await db.execAsync(SCHEMA.dungeonProgress)
   await db.execAsync(SCHEMA.appMetadata)
   await db.execAsync(SCHEMA.appMetadataInit)
+
+  // 初期ゴブリンを拠点メンバーとして登録
+  await db.execAsync(SCHEMA.goblinsInit)
 }

@@ -120,4 +120,10 @@ export const SCHEMA = {
   appMetadataInit: `
     INSERT OR IGNORE INTO app_metadata (key, value) VALUES ('schema_version', '1')
   `,
+
+  goblinsInit: `
+    INSERT OR IGNORE INTO goblins (id, name, race, level, experience, avatar, stats_json)
+    VALUES
+      (0, 'グラッシュ', 'ゴブリン', 15, 0, '/src/assets/goblin/goblin.png', '{"hp":100,"atk":70,"sp":45,"spd":60,"def":65}')
+  `,
 }
