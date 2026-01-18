@@ -3,8 +3,9 @@ import { View, Text, ScrollView, TouchableOpacity, StyleSheet, ActivityIndicator
 import { router, useFocusEffect } from 'expo-router'
 import { usePartyService } from '@/presentation/hooks/usePartyService'
 import { useGoblinService } from '@/presentation/hooks/useGoblinService'
+import { useExpeditionFlow, type ExpeditionHistoryDisplay } from '@/presentation/hooks/useExpeditionFlow'
 import { getGoblinImage } from '@/shared/utils/goblinImages'
-import type { Party, Goblin, PartyStatus } from '@/shared/types'
+import type { Party, Goblin, ExpeditionRecord } from '@/shared/types'
 
 const MAX_PARTY_SLOTS = 6
 const INITIAL_PARTY_COUNT = 3
@@ -38,9 +39,19 @@ interface PartyCardProps {
   party: Party
   goblins: Goblin[]
   onPress: () => void
+  historyDisplays: ExpeditionHistoryDisplay[]
+  onHistoryPress: (record: ExpeditionRecord, ongoing: boolean) => void
+  onLogPress: (record: ExpeditionRecord) => void
 }
 
-function PartyCard({ party, goblins, onPress }: PartyCardProps) {
+function PartyCard({
+  party,
+  goblins,
+  onPress,
+  historyDisplays,
+  onHistoryPress,
+  onLogPress,
+}: PartyCardProps) {
   const members = useMemo(() => {
     return party.memberIds
       .map(id => goblins.find(g => g.id === id))
@@ -57,35 +68,63 @@ function PartyCard({ party, goblins, onPress }: PartyCardProps) {
   }, [members])
 
   const status = party.status ?? 'idle'
-
   return (
-    <TouchableOpacity style={styles.partyCard} onPress={onPress} activeOpacity={0.7}>
-      <View style={styles.partyHeader}>
-        <Text style={styles.partyName}>{party.name}</Text>
-        {status === 'expedition' && (
-          <View style={styles.expeditionBadge}>
-            <Text style={styles.expeditionBadgeText}>遠征中</Text>
+    <View style={styles.partyCard}>
+      <TouchableOpacity onPress={onPress} activeOpacity={0.7}>
+        <View style={styles.partyHeader}>
+          <Text style={styles.partyName}>{party.name}</Text>
+          {status === 'expedition' && (
+            <View style={styles.expeditionBadge}>
+              <Text style={styles.expeditionBadgeText}>遠征中</Text>
+            </View>
+          )}
+        </View>
+
+        <View style={styles.membersRow}>
+          {slots.map((goblin, index) => (
+            <MemberSlot key={index} goblin={goblin} isEmpty={!goblin} />
+          ))}
+        </View>
+      </TouchableOpacity>
+
+      {historyDisplays.length > 0 && (
+        <View style={styles.historySection}>
+          <Text style={styles.historyTitle}>遠征履歴</Text>
+          <View style={styles.historyList}>
+            {historyDisplays.map(item => (
+              <View key={item.id} style={styles.historyRow}>
+                <TouchableOpacity
+                  style={styles.historyContent}
+                  onPress={() => onHistoryPress(item.record, item.ongoing)}
+                  activeOpacity={0.7}
+                >
+                  <Text style={styles.historyText}>{item.title}</Text>
+                  <Text style={styles.historyDungeon}>{item.subtitle}</Text>
+                </TouchableOpacity>
+                {!item.ongoing && (
+                  <TouchableOpacity style={styles.historyArrow} onPress={() => onLogPress(item.record)}>
+                    <Text style={styles.historyArrowText}>&gt;</Text>
+                  </TouchableOpacity>
+                )}
+              </View>
+            ))}
           </View>
-        )}
-      </View>
-
-      <View style={styles.membersRow}>
-        {slots.map((goblin, index) => (
-          <MemberSlot key={index} goblin={goblin} isEmpty={!goblin} />
-        ))}
-      </View>
-
-      {/* 遠征履歴セクション（将来実装） */}
-      {/* <View style={styles.historySection}>
-        <Text style={styles.historyTitle}>遠征履歴</Text>
-      </View> */}
-    </TouchableOpacity>
+        </View>
+      )}
+    </View>
   )
 }
 
 export default function FormationScreen() {
   const { parties, isLoading: partiesLoading, createParty, refreshParties } = usePartyService()
   const { goblins, isLoading: goblinsLoading, refreshGoblins } = useGoblinService()
+  const {
+    completeDueExpeditions,
+    currentTime,
+    partyHistories,
+    partyHistoryDisplays,
+    formatFullDateTimeWithSeconds,
+  } = useExpeditionFlow({ refreshParties, parties, enableAutoCompletion: true })
 
   // 画面がフォーカスされたときにデータを再取得
   useFocusEffect(
@@ -104,6 +143,7 @@ export default function FormationScreen() {
     return result
   }, [parties])
 
+
   const handlePartyPress = useCallback((party: Party | null, index: number) => {
     if (!party) {
       // パーティがない場合は新規作成して遷移
@@ -120,11 +160,18 @@ export default function FormationScreen() {
 
     const status = party.status ?? 'idle'
     if (status === 'expedition') {
-      // 遠征中のパーティはプレイバック画面へ
-      router.push({
-        pathname: '/formation/playback',
-        params: { partyId: party.id.toString() },
-      })
+      const latestHistory = partyHistories[party.id]?.[0]
+      if (latestHistory) {
+        router.push({
+          pathname: '/formation/playback',
+          params: { expeditionId: latestHistory.id, partyId: party.id.toString() },
+        })
+      } else {
+        router.push({
+          pathname: '/formation/playback',
+          params: { partyId: party.id.toString() },
+        })
+      }
     } else {
       // 待機中のパーティは遠征準備画面へ
       router.push({
@@ -132,7 +179,28 @@ export default function FormationScreen() {
         params: { partyId: party.id.toString() },
       })
     }
-  }, [createParty])
+  }, [createParty, partyHistories])
+
+  const handleHistoryPress = useCallback((record: ExpeditionRecord, ongoing: boolean) => {
+    if (ongoing) {
+      router.push({
+        pathname: '/formation/playback',
+        params: { expeditionId: record.id, partyId: record.partyId.toString() },
+      })
+    } else {
+      router.push({
+        pathname: '/formation/result',
+        params: { expeditionId: record.id, partyId: record.partyId.toString() },
+      })
+    }
+  }, [])
+
+  const handleLogPress = useCallback((record: ExpeditionRecord) => {
+    router.push({
+      pathname: '/formation/playback',
+      params: { expeditionId: record.id, partyId: record.partyId.toString() },
+    })
+  }, [])
 
   if (partiesLoading || goblinsLoading) {
     return (
@@ -143,42 +211,53 @@ export default function FormationScreen() {
     )
   }
 
-  return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
-      <Text style={styles.screenTitle}>パーティ選択</Text>
+  const currentTimeLabel = formatFullDateTimeWithSeconds(currentTime)
 
-      {displayParties.map((party, index) => {
-        if (party) {
-          return (
-            <PartyCard
-              key={party.id}
-              party={party}
-              goblins={goblins}
-              onPress={() => handlePartyPress(party, index)}
-            />
-          )
-        } else {
-          // 空のパーティ枠
-          return (
-            <TouchableOpacity
-              key={`empty-${index}`}
-              style={styles.partyCard}
-              onPress={() => handlePartyPress(null, index)}
-              activeOpacity={0.7}
-            >
-              <View style={styles.partyHeader}>
-                <Text style={styles.partyName}>PT{index + 1}</Text>
-              </View>
-              <View style={styles.membersRow}>
-                {Array.from({ length: MAX_PARTY_SLOTS }).map((_, slotIndex) => (
-                  <MemberSlot key={slotIndex} isEmpty />
-                ))}
-              </View>
-            </TouchableOpacity>
-          )
-        }
-      })}
-    </ScrollView>
+  return (
+    <View style={styles.container}>
+      <ScrollView style={styles.scrollView} contentContainerStyle={styles.contentContainer}>
+        <Text style={styles.screenTitle}>パーティ選択</Text>
+
+        {displayParties.map((party, index) => {
+          if (party) {
+            return (
+              <PartyCard
+                key={party.id}
+                party={party}
+                goblins={goblins}
+                onPress={() => handlePartyPress(party, index)}
+                historyDisplays={partyHistoryDisplays[party.id] ?? []}
+                onHistoryPress={handleHistoryPress}
+                onLogPress={handleLogPress}
+              />
+            )
+          } else {
+            // 空のパーティ枠
+            return (
+              <TouchableOpacity
+                key={`empty-${index}`}
+                style={styles.partyCard}
+                onPress={() => handlePartyPress(null, index)}
+                activeOpacity={0.7}
+              >
+                <View style={styles.partyHeader}>
+                  <Text style={styles.partyName}>PT{index + 1}</Text>
+                </View>
+                <View style={styles.membersRow}>
+                  {Array.from({ length: MAX_PARTY_SLOTS }).map((_, slotIndex) => (
+                    <MemberSlot key={slotIndex} isEmpty />
+                  ))}
+                </View>
+              </TouchableOpacity>
+            )
+          }
+        })}
+      </ScrollView>
+
+      <View style={styles.currentTimeBadge} pointerEvents="none">
+        <Text style={styles.currentTimeText}>{currentTimeLabel}</Text>
+      </View>
+    </View>
   )
 }
 
@@ -187,8 +266,12 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F3F4F6',
   },
+  scrollView: {
+    flex: 1,
+  },
   contentContainer: {
     padding: 16,
+    paddingBottom: 48,
   },
   loadingContainer: {
     flex: 1,
@@ -217,6 +300,63 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 2,
     elevation: 2,
+  },
+  currentTimeBadge: {
+    position: 'absolute',
+    left: 12,
+    bottom: 8,
+    backgroundColor: 'rgba(17, 24, 39, 0.8)',
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 8,
+  },
+  currentTimeText: {
+    fontSize: 11,
+    color: '#F9FAFB',
+  },
+  historySection: {
+    marginTop: 12,
+    paddingTop: 12,
+    borderTopWidth: 1,
+    borderTopColor: '#E5E7EB',
+  },
+  historyTitle: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#6B7280',
+    marginBottom: 8,
+  },
+  historyList: {
+    gap: 8,
+  },
+  historyRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F3F4F6',
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+  },
+  historyContent: {
+    flex: 1,
+  },
+  historyText: {
+    fontSize: 12,
+    color: '#374151',
+  },
+  historyDungeon: {
+    fontSize: 11,
+    color: '#6B7280',
+    marginTop: 2,
+  },
+  historyArrow: {
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+  },
+  historyArrowText: {
+    fontSize: 16,
+    color: '#6B7280',
+    fontWeight: '600',
   },
   partyHeader: {
     flexDirection: 'row',

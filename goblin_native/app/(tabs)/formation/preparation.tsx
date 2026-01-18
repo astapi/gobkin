@@ -4,6 +4,7 @@ import { router, useLocalSearchParams, Stack, useFocusEffect } from 'expo-router
 import { usePartyService } from '@/presentation/hooks/usePartyService'
 import { useGoblinService } from '@/presentation/hooks/useGoblinService'
 import { useDungeonProgress } from '@/presentation/hooks/useDungeonProgress'
+import { useExpeditionFlow } from '@/presentation/hooks/useExpeditionFlow'
 import { getGoblinImage } from '@/shared/utils/goblinImages'
 import type { ExpeditionRequest, Goblin, Dungeon } from '@/shared/types'
 
@@ -46,9 +47,18 @@ function MemberSlot({ goblin, isEmpty }: MemberSlotProps) {
 
 export default function ExpeditionPreparationScreen() {
   const { partyId } = useLocalSearchParams<{ partyId: string }>()
-  const { parties, isLoading: partiesLoading, getPartyById, setDungeon, setReturnPolicy, setTargetFloor, refreshParties } = usePartyService()
+  const {
+    parties,
+    isLoading: partiesLoading,
+    getPartyById,
+    setDungeon,
+    setReturnPolicy,
+    setTargetFloor,
+    refreshParties,
+  } = usePartyService()
   const { goblins, isLoading: goblinsLoading, refreshGoblins } = useGoblinService()
   const { dungeons, isLoading: dungeonsLoading } = useDungeonProgress()
+  const { startExpedition } = useExpeditionFlow()
   const [retryCount, setRetryCount] = useState(0)
 
   const party = useMemo(() => {
@@ -139,15 +149,35 @@ export default function ExpeditionPreparationScreen() {
       return
     }
 
-    router.push({
-      pathname: '/formation/playback',
-      params: {
-        partyId,
-        dungeonId: selectedDungeonId,
-        returnPolicy: selectedReturnPolicy,
-      },
-    })
-  }, [partyId, selectedDungeonId, selectedReturnPolicy, partyMembers.length])
+    if (!party || !selectedDungeon) {
+      Alert.alert('ダンジョン情報が取得できません', 'ダンジョン情報の取得に失敗しました')
+      return
+    }
+
+    const doStartExpedition = async () => {
+      try {
+        await startExpedition({
+          party,
+          dungeon: selectedDungeon,
+          returnPolicy: selectedReturnPolicy,
+        })
+
+        router.replace('/formation')
+      } catch (error) {
+        console.error('[Preparation] Failed to start expedition', error)
+        Alert.alert('遠征に失敗しました', '遠征開始時にエラーが発生しました')
+      }
+    }
+
+    void doStartExpedition()
+  }, [
+    party,
+    selectedDungeon,
+    selectedDungeonId,
+    selectedReturnPolicy,
+    partyMembers.length,
+    startExpedition,
+  ])
 
   const canStartExpedition = selectedDungeonId && partyMembers.length > 0
 
