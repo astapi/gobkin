@@ -1,15 +1,19 @@
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react'
-import { View, Text, StyleSheet, Animated, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native'
+import { View, Text, StyleSheet, Animated, TouchableOpacity, ScrollView, ActivityIndicator, Image } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { router, useLocalSearchParams } from 'expo-router'
 import { usePartyService } from '@/presentation/hooks/usePartyService'
 import { useGoblinService } from '@/presentation/hooks/useGoblinService'
 import { useDungeonProgress } from '@/presentation/hooks/useDungeonProgress'
 import { useExpeditionService } from '@/presentation/hooks/useExpeditionService'
+import { usePendingGoblins } from '@/presentation/hooks/usePendingGoblins'
+import { useBaseState } from '@/presentation/hooks/useBaseState'
 import { CompleteExpeditionUseCase } from '@/core/usecases'
+import { GoblinBirthService } from '@/core/services'
 import type { TimelineEvent, ExpeditionReplay, ExpeditionRecord } from '@/shared/types'
 import type { BattleLogEntry } from '@/shared/types'
 import { storeBattleLog } from '@/presentation/contexts/battleLogStore'
+import { getGoblinImage } from '@/shared/utils/goblinImages'
 
 interface LogEntry {
   id: string
@@ -26,6 +30,8 @@ export default function ExpeditionPlaybackScreen() {
   const { getPartyById, partyRepository, isLoading: isPartyLoading } = usePartyService()
   const { goblins, goblinRepository, isLoading: isGoblinLoading } = useGoblinService()
   const { dungeons } = useDungeonProgress()
+  const { pendingGoblins, addPendingGoblin, isLoading: isPendingLoading } = usePendingGoblins()
+  const { rank, getNextGoblinId, isLoading: isBaseLoading } = useBaseState()
   const {
     expeditionRecords,
     getExpeditionById,
@@ -82,6 +88,37 @@ export default function ExpeditionPlaybackScreen() {
   const completeExpeditionUseCase = useMemo(() => {
     return new CompleteExpeditionUseCase(goblinRepository, partyRepository)
   }, [goblinRepository, partyRepository])
+
+  const addPendingGoblinOnClear = useCallback(() => {
+    if (!expeditionRecord || !replay || isPendingLoading || isBaseLoading) return
+    const targetDungeon = dungeon ?? dungeons.find(area => area.id === expeditionRecord.dungeonId)
+    if (!targetDungeon) return
+
+    const cleared = replay.summary.success &&
+      replay.summary.maxFloorReached >= targetDungeon.floors
+    if (!cleared) return
+
+    const maxPending = rank * 5
+    if (pendingGoblins.length >= maxPending) return
+
+    const nextId = getNextGoblinId()
+    const areaLevel = Math.min(64, targetDungeon.areaLevel ?? 1)
+    const goblinBirthService = new GoblinBirthService()
+    const newGoblin = goblinBirthService.createNewGoblin(nextId, areaLevel, goblins)
+    addPendingGoblin(newGoblin)
+  }, [
+    addPendingGoblin,
+    dungeons,
+    dungeon,
+    expeditionRecord,
+    getNextGoblinId,
+    goblins,
+    isBaseLoading,
+    isPendingLoading,
+    pendingGoblins.length,
+    rank,
+    replay,
+  ])
 
   const formatTime = useCallback((seconds: number): string => {
     const minutes = Math.floor(seconds / 60)
@@ -204,11 +241,12 @@ export default function ExpeditionPlaybackScreen() {
 
     try {
       await completeExpeditionUseCase.execute(expeditionRecord.partyId, replay)
+      addPendingGoblinOnClear()
       completeExpeditionRecord(expeditionRecord.id, replay)
     } catch (error) {
       console.warn('[Playback] Failed to complete expedition', error)
     }
-  }, [expeditionRecord, replay, completeExpeditionUseCase, completeExpeditionRecord])
+  }, [expeditionRecord, replay, completeExpeditionUseCase, completeExpeditionRecord, addPendingGoblinOnClear])
 
   useEffect(() => {
     if (isPartyLoading || isGoblinLoading || isExpeditionLoading) return
@@ -388,7 +426,16 @@ export default function ExpeditionPlaybackScreen() {
           const currentHp = partyHp[index] ?? maxHp
           return (
             <View key={memberId} style={styles.partyCard}>
-              <Text style={styles.partyNameText}>{goblin?.name || `ID:${memberId}`}</Text>
+              <View style={styles.partyHeader}>
+                <View style={styles.partyAvatar}>
+                  {goblin ? (
+                    <Image source={getGoblinImage(goblin.avatar)} style={styles.partyAvatarImage} />
+                  ) : (
+                    <Text style={styles.partyAvatarFallback}>?</Text>
+                  )}
+                </View>
+                <Text style={styles.partyNameText} numberOfLines={1}>{goblin?.name || `ID:${memberId}`}</Text>
+              </View>
               <View style={styles.hpBar}>
                 <View
                   style={[
@@ -478,6 +525,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 8,
     backgroundColor: '#1F2937',
+    marginBottom: 8,
   },
   statusRow: {
     flexDirection: 'row',
@@ -500,20 +548,45 @@ const styles = StyleSheet.create({
     gap: 8,
     paddingHorizontal: 12,
     paddingBottom: 8,
+    marginBottom: 8,
   },
   partyCard: {
-    width: '48%',
+    width: '31%',
     backgroundColor: '#FFFFFF',
     borderRadius: 8,
     padding: 10,
     borderWidth: 1,
     borderColor: '#E5E7EB',
   },
+  partyHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    marginBottom: 6,
+  },
+  partyAvatar: {
+    width: 24,
+    height: 24,
+    borderRadius: 6,
+    backgroundColor: '#E5E7EB',
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'hidden',
+  },
+  partyAvatarImage: {
+    width: '100%',
+    height: '100%',
+  },
+  partyAvatarFallback: {
+    fontSize: 12,
+    color: '#6B7280',
+    fontWeight: '600',
+  },
   partyNameText: {
     fontSize: 12,
     fontWeight: '600',
     color: '#111827',
-    marginBottom: 6,
+    flex: 1,
   },
   hpBar: {
     height: 4,

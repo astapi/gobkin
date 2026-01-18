@@ -1,53 +1,85 @@
 import { useState, useCallback } from 'react'
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Modal, ActivityIndicator } from 'react-native'
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet, ActivityIndicator, Image } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import { useFocusEffect } from 'expo-router'
 import { useBaseState } from '@/presentation/hooks/useBaseState'
 import { usePendingGoblins } from '@/presentation/hooks/usePendingGoblins'
 import { useGoblinService } from '@/presentation/hooks/useGoblinService'
-import type { Goblin } from '@/shared/types'
+import { getGoblinImage } from '@/shared/utils/goblinImages'
+import { getFactorImage } from '@/shared/utils/factorImages'
+import { getModTemplate } from '@/shared/data/modPoolLoader'
+import { ModStatCalculator } from '@/core/services/ModStatCalculator'
+
+const STAT_LABELS: Record<string, string> = {
+  hp_percent: 'HP',
+  hp_flat: 'HP',
+  atk_percent: 'ATK',
+  atk_flat: 'ATK',
+  def_percent: 'DEF',
+  def_flat: 'DEF',
+  spd_percent: 'SPD',
+  sp_percent: 'SP',
+  sp_flat: 'SP',
+  damage_reduction: '被ダメ軽減',
+}
+
+function getStatLabel(stat: string): string {
+  return STAT_LABELS[stat] || stat
+}
 
 export default function BaseManagementScreen() {
-  const { baseState, isLoading: baseLoading, rank, capacity, upgradeRank } = useBaseState()
-  const { pendingGoblins, isLoading: pendingLoading, removePendingGoblin } = usePendingGoblins()
+  const { isLoading: baseLoading, rank, capacity } = useBaseState()
+  const { pendingGoblins, isLoading: pendingLoading, removePendingGoblin, refreshPendingGoblins } = usePendingGoblins()
   const { goblins, saveGoblin } = useGoblinService()
 
-  const [selectedGoblin, setSelectedGoblin] = useState<Goblin | null>(null)
-  const [modalVisible, setModalVisible] = useState(false)
-  const [upgradeModalVisible, setUpgradeModalVisible] = useState(false)
+  const [selectedGoblinIds, setSelectedGoblinIds] = useState<Set<number>>(new Set())
 
   const currentGoblinCount = goblins.length
-  const canAcceptMore = currentGoblinCount < capacity
+  const availableSlots = Math.max(0, capacity - currentGoblinCount)
+  const maxPendingGoblins = rank * 5
+  const selectedCount = selectedGoblinIds.size
+  const canAddSelected = selectedCount > 0 && selectedCount <= availableSlots
 
-  const handleAcceptGoblin = useCallback((goblin: Goblin) => {
-    if (!canAcceptMore) return
-    setSelectedGoblin(goblin)
-    setModalVisible(true)
-  }, [canAcceptMore])
-
-  const handleConfirmAccept = useCallback(() => {
-    if (!selectedGoblin) return
-
-    // ゴブリンを正式に受け入れ（goblinsテーブルに追加）
-    saveGoblin(selectedGoblin)
-    // 待機リストから削除
-    removePendingGoblin(selectedGoblin.id)
-
-    setModalVisible(false)
-    setSelectedGoblin(null)
-  }, [selectedGoblin, saveGoblin, removePendingGoblin])
-
-  const handleUpgradeBase = useCallback(() => {
-    setUpgradeModalVisible(true)
+  const toggleGoblinSelection = useCallback((goblinId: number) => {
+    setSelectedGoblinIds(prev => {
+      const next = new Set(prev)
+      if (next.has(goblinId)) {
+        next.delete(goblinId)
+      } else {
+        next.add(goblinId)
+      }
+      return next
+    })
   }, [])
 
-  const handleConfirmUpgrade = useCallback(() => {
-    upgradeRank()
-    setUpgradeModalVisible(false)
-  }, [upgradeRank])
+  const addSelectedGoblins = useCallback(() => {
+    if (!canAddSelected) return
+    const selectedGoblins = pendingGoblins.filter(g => selectedGoblinIds.has(g.id))
+    selectedGoblins.forEach(goblin => {
+      saveGoblin(goblin)
+      removePendingGoblin(goblin.id)
+    })
+    setSelectedGoblinIds(new Set())
+  }, [canAddSelected, pendingGoblins, selectedGoblinIds, saveGoblin, removePendingGoblin])
+
+  const dismissSelectedGoblins = useCallback(() => {
+    if (selectedCount === 0) return
+    const selectedGoblins = pendingGoblins.filter(g => selectedGoblinIds.has(g.id))
+    selectedGoblins.forEach(goblin => {
+      removePendingGoblin(goblin.id)
+    })
+    setSelectedGoblinIds(new Set())
+  }, [pendingGoblins, selectedGoblinIds, selectedCount, removePendingGoblin])
+
+  useFocusEffect(
+    useCallback(() => {
+      refreshPendingGoblins()
+    }, [refreshPendingGoblins])
+  )
 
   if (baseLoading || pendingLoading) {
     return (
-      <SafeAreaView style={styles.container}>
+      <SafeAreaView style={styles.container} edges={['top', 'left', 'right', 'bottom']}>
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color="#3B82F6" />
           <Text style={styles.loadingText}>読み込み中...</Text>
@@ -57,188 +89,139 @@ export default function BaseManagementScreen() {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView style={styles.scrollView}>
-        {/* 拠点ステータス */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>拠点ステータス</Text>
+    <SafeAreaView style={styles.container} edges={['top', 'left', 'right', 'bottom']}>
+      <ScrollView style={styles.scrollView} contentContainerStyle={styles.contentContainer}>
+        <Text style={styles.screenTitle}>拠点管理</Text>
+
+        <View style={styles.card}>
+          <Text style={styles.cardTitle}>拠点ステータス</Text>
+          <View style={styles.statusGrid}>
+            <View style={styles.statusItem}>
+              <Text style={styles.statusLabel}>拠点ランク</Text>
+              <View style={styles.statusValueBox}>
+                <Text style={styles.statusValueText}>{rank}</Text>
+              </View>
+            </View>
+            <View style={styles.statusItem}>
+              <Text style={styles.statusLabel}>収容数</Text>
+              <View style={styles.statusValueBox}>
+                <Text style={styles.statusValueText}>{capacity}</Text>
+              </View>
+            </View>
+            <View style={styles.statusItem}>
+              <Text style={styles.statusLabel}>現在のゴブリン</Text>
+              <Text style={styles.statusValuePlain}>{currentGoblinCount} / {capacity}</Text>
+            </View>
+            <View style={styles.statusItem}>
+              <Text style={styles.statusLabel}>空き枠</Text>
+              <Text style={styles.statusValuePlain}>{availableSlots}</Text>
+            </View>
+          </View>
+        </View>
+
+        {pendingGoblins.length > 0 && (
           <View style={styles.card}>
-            <View style={styles.baseInfo}>
-              <Text style={styles.baseLevelLabel}>拠点ランク</Text>
-              <Text style={styles.baseLevelValue}>{rank}</Text>
-            </View>
-            <View style={styles.capacityContainer}>
-              <Text style={styles.capacityLabel}>収容人数</Text>
-              <Text style={styles.capacityValue}>
-                {currentGoblinCount} / {capacity}
-              </Text>
-              <View style={styles.capacityBar}>
-                <View
-                  style={[
-                    styles.capacityFill,
-                    { width: `${Math.min((currentGoblinCount / capacity) * 100, 100)}%` }
-                  ]}
-                />
+            <View style={styles.pendingHeader}>
+              <View style={styles.pendingTitleRow}>
+                <Text style={styles.cardTitle}>追加されたゴブリン</Text>
+                <View style={styles.pendingBadge}>
+                  <Text style={styles.pendingBadgeText}>{pendingGoblins.length} / {maxPendingGoblins}体</Text>
+                </View>
               </View>
-            </View>
-            <TouchableOpacity
-              style={styles.upgradeButton}
-              onPress={handleUpgradeBase}
-            >
-              <Text style={styles.upgradeButtonText}>拠点をアップグレード</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-
-        {/* 待機中ゴブリン */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>待機中ゴブリン</Text>
-          <Text style={styles.sectionSubtitle}>拠点への参加を待っているゴブリン</Text>
-          {pendingGoblins.length > 0 ? (
-            pendingGoblins.map((goblin) => (
-              <View key={goblin.id} style={styles.pendingCard}>
-                <View style={styles.pendingInfo}>
-                  <View style={styles.goblinIcon}>
-                    <Text style={styles.goblinIconText}>?</Text>
-                  </View>
-                  <View style={styles.goblinDetails}>
-                    <Text style={styles.goblinName}>{goblin.name}</Text>
-                    <Text style={styles.goblinStats}>
-                      Lv.{goblin.level} | HP:{goblin.stats.hp} ATK:{goblin.stats.atk} DEF:{goblin.stats.def}
+              {selectedCount > 0 && (
+                <View style={styles.actionRow}>
+                  <TouchableOpacity style={styles.dismissButton} onPress={dismissSelectedGoblins}>
+                    <Text style={styles.dismissButtonText}>解雇する ({selectedCount})</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={[styles.addButton, !canAddSelected && styles.addButtonDisabled]}
+                    onPress={addSelectedGoblins}
+                    disabled={!canAddSelected}
+                  >
+                    <Text style={[styles.addButtonText, !canAddSelected && styles.addButtonTextDisabled]}>
+                      拠点に加える ({selectedCount})
                     </Text>
-                    {goblin.race && (
-                      <Text style={styles.goblinRace}>{goblin.race}</Text>
-                    )}
-                  </View>
+                  </TouchableOpacity>
                 </View>
-                <TouchableOpacity
-                  style={[
-                    styles.acceptButton,
-                    !canAcceptMore && styles.acceptButtonDisabled
-                  ]}
-                  onPress={() => handleAcceptGoblin(goblin)}
-                  disabled={!canAcceptMore}
-                >
-                  <Text style={styles.acceptButtonText}>
-                    {canAcceptMore ? '受け入れ' : '満員'}
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            ))
-          ) : (
-            <View style={styles.emptyState}>
-              <Text style={styles.emptyStateIcon}>-</Text>
-              <Text style={styles.emptyStateText}>待機中のゴブリンはいません</Text>
+              )}
             </View>
-          )}
-        </View>
-
-        {/* 現在のゴブリン一覧 */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>所属ゴブリン ({currentGoblinCount})</Text>
-          <View style={styles.goblinListContainer}>
-            {goblins.slice(0, 6).map((goblin) => (
-              <View key={goblin.id} style={styles.goblinMiniCard}>
-                <View style={styles.goblinMiniAvatar}>
-                  <Text style={styles.goblinMiniAvatarText}>G</Text>
-                </View>
-                <Text style={styles.goblinMiniName} numberOfLines={1}>{goblin.name}</Text>
-                <Text style={styles.goblinMiniLevel}>Lv.{goblin.level}</Text>
-              </View>
-            ))}
-            {goblins.length > 6 && (
-              <View style={styles.goblinMiniCard}>
-                <Text style={styles.moreText}>+{goblins.length - 6}</Text>
-              </View>
-            )}
+            <Text style={styles.pendingDescription}>
+              遠征成功により新しいゴブリンが見つかりました。拠点に加えるか、解雇するゴブリンを選択してください。
+            </Text>
+            <View style={styles.pendingList}>
+              {pendingGoblins.map(goblin => {
+                const isSelected = selectedGoblinIds.has(goblin.id)
+                const effectiveStats = ModStatCalculator.calculate(goblin)
+                const hasMods = goblin.mods && goblin.mods.length > 0
+                const hasFactors = goblin.factors && goblin.factors.length > 0
+                return (
+                  <TouchableOpacity
+                    key={goblin.id}
+                    style={[styles.pendingCard, isSelected && styles.pendingCardSelected]}
+                    onPress={() => toggleGoblinSelection(goblin.id)}
+                    activeOpacity={0.7}
+                  >
+                    <View style={styles.pendingRow}>
+                      <View style={[styles.checkbox, isSelected && styles.checkboxSelected]}>
+                        {isSelected && <Text style={styles.checkboxMark}>✓</Text>}
+                      </View>
+                      <Image source={getGoblinImage(goblin.avatar)} style={styles.pendingAvatar} />
+                      <View style={styles.pendingInfo}>
+                        <Text style={styles.pendingName} numberOfLines={1}>{goblin.name}</Text>
+                        <Text style={styles.pendingStats}>
+                          HP{effectiveStats.hp} / A{effectiveStats.atk} / D{effectiveStats.def} / S{effectiveStats.spd} / SP{effectiveStats.sp}
+                        </Text>
+                      </View>
+                    </View>
+                    {(hasFactors || hasMods) && (
+                      <View style={styles.pendingExtras}>
+                        {hasFactors && (
+                          <View style={styles.factorRow}>
+                            {goblin.factors!.map((factorId, index) => {
+                              const FactorIcon = getFactorImage(factorId)
+                              return (
+                                <View key={`${factorId}-${index}`} style={styles.factorBadge}>
+                                  <FactorIcon width={14} height={14} />
+                                </View>
+                              )
+                            })}
+                          </View>
+                        )}
+                        {hasMods && (
+                          <View style={styles.modRow}>
+                            {goblin.mods!.map((mod, index) => {
+                              const template = getModTemplate(mod.templateId)
+                              if (!template) return null
+                              const isPercent = template.stat.includes('percent') || template.stat === 'damage_reduction'
+                              const label = `${getStatLabel(template.stat)}+${mod.value}${isPercent ? '%' : ''}`
+                              const isPrefix = template.type === 'prefix'
+                              return (
+                                <View
+                                  key={`${mod.templateId}-${index}`}
+                                  style={[styles.modBadge, isPrefix ? styles.modBadgeBlue : styles.modBadgePurple]}
+                                >
+                                  <Text style={[styles.modBadgeText, isPrefix ? styles.modBadgeTextBlue : styles.modBadgeTextPurple]}>
+                                    {label}
+                                  </Text>
+                                </View>
+                              )
+                            })}
+                          </View>
+                        )}
+                      </View>
+                    )}
+                  </TouchableOpacity>
+                )
+              })}
+            </View>
           </View>
+        )}
+
+        <View style={styles.noteCard}>
+          <Text style={styles.noteText}>• 遠征成功時にゴブリンが1体追加されます</Text>
+          <Text style={styles.noteText}>• 追加されたゴブリンのリストは拠点ランク × 5体まで保持されます（現在: 最大{maxPendingGoblins}体）</Text>
         </View>
       </ScrollView>
-
-      {/* ゴブリン受け入れ確認モーダル */}
-      <Modal
-        visible={modalVisible}
-        animationType="fade"
-        transparent
-        onRequestClose={() => setModalVisible(false)}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>ゴブリンを受け入れますか？</Text>
-            {selectedGoblin && (
-              <>
-                <Text style={styles.modalGoblinName}>{selectedGoblin.name}</Text>
-                <Text style={styles.modalStats}>
-                  Lv.{selectedGoblin.level}
-                </Text>
-                <View style={styles.modalStatsGrid}>
-                  <View style={styles.modalStatItem}>
-                    <Text style={styles.modalStatValue}>{selectedGoblin.stats.hp}</Text>
-                    <Text style={styles.modalStatLabel}>HP</Text>
-                  </View>
-                  <View style={styles.modalStatItem}>
-                    <Text style={styles.modalStatValue}>{selectedGoblin.stats.atk}</Text>
-                    <Text style={styles.modalStatLabel}>ATK</Text>
-                  </View>
-                  <View style={styles.modalStatItem}>
-                    <Text style={styles.modalStatValue}>{selectedGoblin.stats.def}</Text>
-                    <Text style={styles.modalStatLabel}>DEF</Text>
-                  </View>
-                  <View style={styles.modalStatItem}>
-                    <Text style={styles.modalStatValue}>{selectedGoblin.stats.spd}</Text>
-                    <Text style={styles.modalStatLabel}>SPD</Text>
-                  </View>
-                </View>
-              </>
-            )}
-            <View style={styles.modalButtons}>
-              <TouchableOpacity
-                style={styles.modalCancelButton}
-                onPress={() => setModalVisible(false)}
-              >
-                <Text style={styles.modalCancelText}>キャンセル</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.modalConfirmButton} onPress={handleConfirmAccept}>
-                <Text style={styles.modalConfirmText}>受け入れる</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </Modal>
-
-      {/* アップグレード確認モーダル */}
-      <Modal
-        visible={upgradeModalVisible}
-        animationType="fade"
-        transparent
-        onRequestClose={() => setUpgradeModalVisible(false)}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>拠点をアップグレード</Text>
-            <Text style={styles.upgradeInfo}>
-              ランク {rank} → {rank + 1}
-            </Text>
-            <Text style={styles.upgradeEffect}>
-              収容人数: {capacity} → {capacity + 4}
-            </Text>
-            <View style={styles.modalButtons}>
-              <TouchableOpacity
-                style={styles.modalCancelButton}
-                onPress={() => setUpgradeModalVisible(false)}
-              >
-                <Text style={styles.modalCancelText}>キャンセル</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.modalConfirmButton, styles.upgradeConfirmButton]}
-                onPress={handleConfirmUpgrade}
-              >
-                <Text style={styles.modalConfirmText}>アップグレード</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </Modal>
     </SafeAreaView>
   )
 }
@@ -246,7 +229,7 @@ export default function BaseManagementScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#1F2937',
+    backgroundColor: '#F3F4F6',
   },
   loadingContainer: {
     flex: 1,
@@ -256,289 +239,250 @@ const styles = StyleSheet.create({
   loadingText: {
     marginTop: 12,
     fontSize: 16,
-    color: '#9CA3AF',
+    color: '#6B7280',
   },
   scrollView: {
     flex: 1,
   },
-  section: {
+  contentContainer: {
     padding: 16,
+    paddingTop: 0,
+    paddingBottom: 32,
   },
-  sectionTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
-    marginBottom: 4,
-  },
-  sectionSubtitle: {
-    fontSize: 14,
-    color: '#9CA3AF',
-    marginBottom: 12,
+  screenTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#1F2937',
+    paddingBottom: 6,
+    borderBottomWidth: 2,
+    borderBottomColor: '#E5E7EB',
+    marginBottom: 8,
   },
   card: {
-    backgroundColor: '#374151',
-    borderRadius: 16,
-    padding: 20,
-    marginTop: 8,
-  },
-  baseInfo: {
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  baseLevelLabel: {
-    fontSize: 14,
-    color: '#9CA3AF',
-  },
-  baseLevelValue: {
-    fontSize: 56,
-    fontWeight: 'bold',
-    color: '#3B82F6',
-  },
-  capacityContainer: {
-    marginBottom: 16,
-  },
-  capacityLabel: {
-    fontSize: 14,
-    color: '#9CA3AF',
-    marginBottom: 4,
-  },
-  capacityValue: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#FFFFFF',
-    marginBottom: 8,
-  },
-  capacityBar: {
-    height: 8,
-    backgroundColor: '#4B5563',
-    borderRadius: 4,
-    overflow: 'hidden',
-  },
-  capacityFill: {
-    height: '100%',
-    backgroundColor: '#10B981',
-    borderRadius: 4,
-  },
-  upgradeButton: {
-    backgroundColor: '#3B82F6',
-    padding: 14,
-    borderRadius: 10,
-    alignItems: 'center',
-  },
-  upgradeButtonText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#FFFFFF',
-  },
-  pendingCard: {
-    backgroundColor: '#374151',
+    backgroundColor: '#FFFFFF',
     borderRadius: 12,
     padding: 16,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.06,
+    shadowRadius: 2,
+    elevation: 2,
+  },
+  cardTitle: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#4B5563',
     marginBottom: 12,
-    borderWidth: 2,
-    borderColor: '#F59E0B',
-    borderStyle: 'dashed',
   },
-  pendingInfo: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flex: 1,
-  },
-  goblinIcon: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    backgroundColor: '#FEF3C7',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: 12,
-  },
-  goblinIconText: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#F59E0B',
-  },
-  goblinDetails: {
-    flex: 1,
-  },
-  goblinName: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#FFFFFF',
-  },
-  goblinStats: {
-    fontSize: 12,
-    color: '#9CA3AF',
-    marginTop: 4,
-  },
-  goblinRace: {
-    fontSize: 11,
-    color: '#6B7280',
-    marginTop: 2,
-  },
-  acceptButton: {
-    backgroundColor: '#10B981',
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    borderRadius: 8,
-  },
-  acceptButtonDisabled: {
-    backgroundColor: '#6B7280',
-  },
-  acceptButtonText: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#FFFFFF',
-  },
-  emptyState: {
-    backgroundColor: '#374151',
-    borderRadius: 12,
-    padding: 32,
-    alignItems: 'center',
-  },
-  emptyStateIcon: {
-    fontSize: 32,
-    color: '#6B7280',
-    marginBottom: 8,
-  },
-  emptyStateText: {
-    fontSize: 14,
-    color: '#9CA3AF',
-  },
-  goblinListContainer: {
+  statusGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 8,
-    marginTop: 8,
-  },
-  goblinMiniCard: {
-    backgroundColor: '#374151',
-    borderRadius: 8,
-    padding: 12,
-    alignItems: 'center',
-    width: 80,
-  },
-  goblinMiniAvatar: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: '#10B981',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 4,
-  },
-  goblinMiniAvatarText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
-  },
-  goblinMiniName: {
-    fontSize: 11,
-    color: '#FFFFFF',
-    textAlign: 'center',
-  },
-  goblinMiniLevel: {
-    fontSize: 10,
-    color: '#9CA3AF',
-    marginTop: 2,
-  },
-  moreText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#9CA3AF',
-  },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  modalContent: {
-    backgroundColor: '#374151',
-    borderRadius: 16,
-    padding: 24,
-    width: '85%',
-    alignItems: 'center',
-  },
-  modalTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
-    marginBottom: 16,
-  },
-  modalGoblinName: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#10B981',
-    marginBottom: 8,
-  },
-  modalStats: {
-    fontSize: 14,
-    color: '#9CA3AF',
-    marginBottom: 16,
-  },
-  modalStatsGrid: {
-    flexDirection: 'row',
-    gap: 16,
-    marginBottom: 24,
-  },
-  modalStatItem: {
-    alignItems: 'center',
-  },
-  modalStatValue: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
-  },
-  modalStatLabel: {
-    fontSize: 12,
-    color: '#9CA3AF',
-    marginTop: 2,
-  },
-  modalButtons: {
-    flexDirection: 'row',
     gap: 12,
-    width: '100%',
   },
-  modalCancelButton: {
-    flex: 1,
-    backgroundColor: '#4B5563',
-    paddingVertical: 14,
-    borderRadius: 10,
-    alignItems: 'center',
+  statusItem: {
+    flexBasis: '48%',
   },
-  modalCancelText: {
+  statusLabel: {
+    fontSize: 11,
+    color: '#9CA3AF',
+    marginBottom: 6,
+  },
+  statusValueBox: {
+    backgroundColor: '#F9FAFB',
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    paddingVertical: 6,
+    paddingHorizontal: 10,
+  },
+  statusValueText: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#111827',
+  },
+  statusValuePlain: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#FFFFFF',
+    color: '#374151',
   },
-  modalConfirmButton: {
-    flex: 1,
-    backgroundColor: '#10B981',
-    paddingVertical: 14,
-    borderRadius: 10,
-    alignItems: 'center',
-  },
-  upgradeConfirmButton: {
-    backgroundColor: '#3B82F6',
-  },
-  modalConfirmText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#FFFFFF',
-  },
-  upgradeInfo: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#3B82F6',
+  pendingHeader: {
     marginBottom: 8,
   },
-  upgradeEffect: {
-    fontSize: 16,
-    color: '#10B981',
-    marginBottom: 24,
+  pendingTitleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: 8,
+  },
+  pendingBadge: {
+    backgroundColor: '#E5E7EB',
+    borderRadius: 999,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+  },
+  pendingBadgeText: {
+    fontSize: 11,
+    color: '#4B5563',
+  },
+  actionRow: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  dismissButton: {
+    flex: 1,
+    backgroundColor: '#6B7280',
+    paddingVertical: 10,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  dismissButtonText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#FFFFFF',
+  },
+  addButton: {
+    flex: 1,
+    backgroundColor: '#374151',
+    paddingVertical: 10,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  addButtonDisabled: {
+    backgroundColor: '#E5E7EB',
+  },
+  addButtonText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#FFFFFF',
+  },
+  addButtonTextDisabled: {
+    color: '#9CA3AF',
+  },
+  pendingDescription: {
+    fontSize: 12,
+    color: '#6B7280',
+    marginBottom: 12,
+    lineHeight: 18,
+  },
+  pendingList: {
+    gap: 8,
+  },
+  pendingCard: {
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: '#E5E7EB',
+    padding: 10,
+    backgroundColor: '#FFFFFF',
+  },
+  pendingCardSelected: {
+    borderColor: '#6B7280',
+    backgroundColor: '#F3F4F6',
+  },
+  pendingRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+  },
+  checkbox: {
+    width: 20,
+    height: 20,
+    borderRadius: 4,
+    borderWidth: 2,
+    borderColor: '#D1D5DB',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#FFFFFF',
+  },
+  checkboxSelected: {
+    borderColor: '#4B5563',
+    backgroundColor: '#4B5563',
+  },
+  checkboxMark: {
+    color: '#FFFFFF',
+    fontSize: 12,
+    fontWeight: '700',
+  },
+  pendingAvatar: {
+    width: 40,
+    height: 40,
+  },
+  pendingInfo: {
+    flex: 1,
+  },
+  pendingName: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#1F2937',
+  },
+  pendingStats: {
+    fontSize: 11,
+    color: '#6B7280',
+    marginTop: 2,
+  },
+  pendingExtras: {
+    marginTop: 8,
+    paddingTop: 8,
+    borderTopWidth: 1,
+    borderTopColor: '#E5E7EB',
+    gap: 6,
+  },
+  factorRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 6,
+  },
+  factorBadge: {
+    width: 22,
+    height: 22,
+    borderRadius: 6,
+    backgroundColor: '#F9FAFB',
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  modRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 6,
+  },
+  modBadge: {
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 6,
+    borderWidth: 1,
+  },
+  modBadgeBlue: {
+    backgroundColor: '#EFF6FF',
+    borderColor: '#BFDBFE',
+  },
+  modBadgePurple: {
+    backgroundColor: '#F5F3FF',
+    borderColor: '#E9D5FF',
+  },
+  modBadgeText: {
+    fontSize: 10,
+    fontWeight: '600',
+  },
+  modBadgeTextBlue: {
+    color: '#1D4ED8',
+  },
+  modBadgeTextPurple: {
+    color: '#6D28D9',
+  },
+  noteCard: {
+    backgroundColor: '#F9FAFB',
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    padding: 14,
+  },
+  noteText: {
+    fontSize: 12,
+    color: '#6B7280',
+    lineHeight: 18,
   },
 })

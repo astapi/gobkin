@@ -74,6 +74,11 @@ export function usePendingGoblins() {
     return pendingGoblins.find(g => g.id === id)
   }, [pendingGoblins])
 
+  const refreshPendingGoblins = useCallback(() => {
+    if (!repositoryRef.current) return
+    setPendingGoblins(repositoryRef.current.getPendingGoblins())
+  }, [])
+
   return {
     pendingGoblins,
     isLoading,
@@ -81,6 +86,7 @@ export function usePendingGoblins() {
     removePendingGoblin,
     clearPendingGoblins,
     getPendingGoblinById,
+    refreshPendingGoblins,
     pendingCount: pendingGoblins.length,
   }
 }

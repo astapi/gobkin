@@ -34,6 +34,11 @@ export const useGoblinService = () => {
       refreshGoblins()
       setRepositoryInitialized(true)
     }
+    if (goblinRepository.setOnDataChange) {
+      goblinRepository.setOnDataChange(() => {
+        refreshGoblins()
+      })
+    }
     initRepository()
   }, [goblinRepository, refreshGoblins])
 

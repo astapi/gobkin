@@ -1,5 +1,5 @@
 import { useState, useCallback, useMemo, useEffect } from 'react'
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView, ActivityIndicator, Alert, Image } from 'react-native'
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, ActivityIndicator, Alert, Image, useWindowDimensions } from 'react-native'
 import { router, useLocalSearchParams, Stack, useFocusEffect } from 'expo-router'
 import { usePartyService } from '@/presentation/hooks/usePartyService'
 import { useGoblinService } from '@/presentation/hooks/useGoblinService'
@@ -23,13 +23,15 @@ const RETURN_POLICIES: { value: ReturnPolicy; label: string }[] = [
 interface MemberSlotProps {
   goblin?: Goblin
   isEmpty: boolean
+  slotSize: number
+  avatarSize: number
 }
 
-function MemberSlot({ goblin, isEmpty }: MemberSlotProps) {
+function MemberSlot({ goblin, isEmpty, slotSize, avatarSize }: MemberSlotProps) {
   if (isEmpty || !goblin) {
     return (
-      <View style={styles.memberSlot}>
-        <View style={styles.emptySlot}>
+      <View style={[styles.memberSlot, { width: slotSize }]}>
+        <View style={[styles.emptySlot, { width: avatarSize, height: avatarSize }]}>
           <Text style={styles.emptySlotText}>+</Text>
         </View>
       </View>
@@ -37,15 +39,16 @@ function MemberSlot({ goblin, isEmpty }: MemberSlotProps) {
   }
 
   return (
-    <View style={styles.memberSlot}>
+    <View style={[styles.memberSlot, { width: slotSize }]}>
       <Text style={styles.memberLevel}>Lv{goblin.level}</Text>
-      <Image source={getGoblinImage(goblin.avatar)} style={styles.memberAvatar} />
+      <Image source={getGoblinImage(goblin.avatar)} style={[styles.memberAvatar, { width: avatarSize, height: avatarSize }]} />
       <Text style={styles.memberHp}>HP{goblin.stats.hp}</Text>
     </View>
   )
 }
 
 export default function ExpeditionPreparationScreen() {
+  const { width } = useWindowDimensions()
   const { partyId } = useLocalSearchParams<{ partyId: string }>()
   const {
     parties,
@@ -180,6 +183,19 @@ export default function ExpeditionPreparationScreen() {
   ])
 
   const canStartExpedition = selectedDungeonId && partyMembers.length > 0
+  const { slotSize, avatarSize } = useMemo(() => {
+    const slotGap = 8
+    const maxSlotWidth = 50
+    const minSlotWidth = 40
+    const availableWidth = Math.max(0, width - 64)
+    const singleRowSlotWidth = Math.floor((availableWidth - slotGap * (MAX_PARTY_SLOTS - 1)) / MAX_PARTY_SLOTS)
+    const shouldWrap = singleRowSlotWidth < minSlotWidth
+    const columns = shouldWrap ? 3 : MAX_PARTY_SLOTS
+    const rawSlotSize = Math.floor((availableWidth - slotGap * (columns - 1)) / columns)
+    const clampedSlotSize = Math.min(maxSlotWidth, rawSlotSize)
+    const computedAvatarSize = Math.max(28, clampedSlotSize - 10)
+    return { slotSize: clampedSlotSize, avatarSize: computedAvatarSize }
+  }, [width])
 
   // ローディング中またはパーティ取得のリトライ中
   if (partiesLoading || goblinsLoading || dungeonsLoading || (!party && retryCount < 5)) {
@@ -233,7 +249,7 @@ export default function ExpeditionPreparationScreen() {
 
             <View style={styles.membersRow}>
               {slots.map((goblin, index) => (
-                <MemberSlot key={index} goblin={goblin} isEmpty={!goblin} />
+                <MemberSlot key={index} goblin={goblin} isEmpty={!goblin} slotSize={slotSize} avatarSize={avatarSize} />
               ))}
             </View>
 
@@ -415,6 +431,7 @@ const styles = StyleSheet.create({
   membersRow: {
     flexDirection: 'row',
     justifyContent: 'flex-start',
+    flexWrap: 'wrap',
     gap: 8,
     marginBottom: 16,
   },

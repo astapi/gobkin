@@ -7,10 +7,13 @@ import type {
   Party,
 } from '../../shared/types'
 import { StartExpeditionUseCase, CompleteExpeditionUseCase } from '../../core/usecases'
-import { ExpeditionEngine } from '../../core/services'
+import { ExpeditionEngine, GoblinBirthService } from '../../core/services'
+import { areasData } from '../../shared/data'
 import { usePartyService } from './usePartyService'
 import { useGoblinService } from './useGoblinService'
 import { useExpeditionService } from './useExpeditionService'
+import { usePendingGoblins } from './usePendingGoblins'
+import { useBaseState } from './useBaseState'
 
 interface UseExpeditionFlowParams {
   refreshParties?: () => Promise<void> | void
@@ -47,7 +50,9 @@ export const useExpeditionFlow = ({
   const processedExpeditionsRef = useRef<Set<string>>(new Set())
 
   const { partyRepository } = usePartyService()
-  const { goblinRepository } = useGoblinService()
+  const { goblinRepository, goblins } = useGoblinService()
+  const { pendingGoblins, addPendingGoblin, isLoading: isPendingLoading } = usePendingGoblins()
+  const { rank, getNextGoblinId, isLoading: isBaseLoading } = useBaseState()
   const {
     expeditionRecords,
     getPartyExpeditionHistory,
@@ -66,6 +71,34 @@ export const useExpeditionFlow = ({
   const completeExpeditionUseCase = useMemo(() => {
     return new CompleteExpeditionUseCase(goblinRepository, partyRepository)
   }, [goblinRepository, partyRepository])
+
+  const addPendingGoblinOnClear = useCallback((record: ExpeditionRecord) => {
+    if (!record.replay || isPendingLoading || isBaseLoading) return
+
+    const dungeon = areasData.find(area => area.id === record.dungeonId)
+    if (!dungeon) return
+
+    const cleared = record.replay.summary.success &&
+      record.replay.summary.maxFloorReached >= dungeon.floors
+    if (!cleared) return
+
+    const maxPending = rank * 5
+    if (pendingGoblins.length >= maxPending) return
+
+    const nextId = getNextGoblinId()
+    const areaLevel = Math.min(64, dungeon.areaLevel ?? 1)
+    const goblinBirthService = new GoblinBirthService()
+    const newGoblin = goblinBirthService.createNewGoblin(nextId, areaLevel, goblins)
+    addPendingGoblin(newGoblin)
+  }, [
+    addPendingGoblin,
+    getNextGoblinId,
+    goblins,
+    isBaseLoading,
+    isPendingLoading,
+    pendingGoblins.length,
+    rank,
+  ])
 
   const estimateExplorationTime = useCallback((
     dungeon: Dungeon,
@@ -178,6 +211,7 @@ export const useExpeditionFlow = ({
       if (processedExpeditionsRef.current.has(record.id)) continue
       try {
         await completeExpeditionUseCase.execute(record.partyId, record.replay!)
+        addPendingGoblinOnClear(record)
         completeExpeditionRecord(record.id, record.replay!)
         processedExpeditionsRef.current.add(record.id)
         if (refreshParties) {
@@ -192,6 +226,7 @@ export const useExpeditionFlow = ({
     expeditionRecords,
     completeExpeditionUseCase,
     completeExpeditionRecord,
+    addPendingGoblinOnClear,
     refreshParties,
   ])
 
