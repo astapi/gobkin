@@ -29,6 +29,21 @@ export class SQLitePartyRepository implements IPartyRepository {
   async initialize(): Promise<void> {
     if (this.initialized) return
 
+    await this.loadFromDatabase()
+    this.initialized = true
+  }
+
+  /**
+   * DBからデータを再読み込み
+   */
+  async reload(): Promise<void> {
+    await this.loadFromDatabase()
+  }
+
+  /**
+   * DBからデータをロードしてキャッシュを更新
+   */
+  private async loadFromDatabase(): Promise<void> {
     const db = await getDatabase()
     const rows = await db.getAllAsync<PartyRow>('SELECT * FROM parties ORDER BY id')
 
@@ -37,8 +52,6 @@ export class SQLitePartyRepository implements IPartyRepository {
       const party = this.rowToParty(row)
       this.cache.set(party.id, party)
     }
-
-    this.initialized = true
   }
 
   /**

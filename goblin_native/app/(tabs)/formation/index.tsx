@@ -1,69 +1,123 @@
-import { useCallback } from 'react'
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, ActivityIndicator, Alert } from 'react-native'
-import { router } from 'expo-router'
+import { useCallback, useMemo } from 'react'
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet, ActivityIndicator, Image } from 'react-native'
+import { router, useFocusEffect } from 'expo-router'
 import { usePartyService } from '@/presentation/hooks/usePartyService'
 import { useGoblinService } from '@/presentation/hooks/useGoblinService'
-import type { Party, PartyStatus } from '@/shared/types'
+import { getGoblinImage } from '@/shared/utils/goblinImages'
+import type { Party, Goblin, PartyStatus } from '@/shared/types'
+
+const MAX_PARTY_SLOTS = 6
+const INITIAL_PARTY_COUNT = 3
+
+interface MemberSlotProps {
+  goblin?: Goblin
+  isEmpty: boolean
+}
+
+function MemberSlot({ goblin, isEmpty }: MemberSlotProps) {
+  if (isEmpty || !goblin) {
+    return (
+      <View style={styles.memberSlot}>
+        <View style={styles.emptySlot}>
+          <Text style={styles.emptySlotText}>+</Text>
+        </View>
+      </View>
+    )
+  }
+
+  return (
+    <View style={styles.memberSlot}>
+      <Text style={styles.memberLevel}>Lv{goblin.level}</Text>
+      <Image source={getGoblinImage(goblin.avatar)} style={styles.memberAvatar} />
+      <Text style={styles.memberHp}>HP{goblin.stats.hp}</Text>
+    </View>
+  )
+}
 
 interface PartyCardProps {
   party: Party
-  memberCount: number
+  goblins: Goblin[]
   onPress: () => void
-  onEdit: () => void
 }
 
-function PartyCard({ party, memberCount, onPress, onEdit }: PartyCardProps) {
-  const statusColors: Record<PartyStatus, string> = {
-    idle: '#10B981',
-    expedition: '#3B82F6',
-  }
+function PartyCard({ party, goblins, onPress }: PartyCardProps) {
+  const members = useMemo(() => {
+    return party.memberIds
+      .map(id => goblins.find(g => g.id === id))
+      .filter((g): g is Goblin => g !== undefined)
+  }, [party.memberIds, goblins])
 
-  const statusLabels: Record<PartyStatus, string> = {
-    idle: '待機中',
-    expedition: '遠征中',
-  }
+  // 6スロット分の配列を作成
+  const slots = useMemo(() => {
+    const result: (Goblin | undefined)[] = []
+    for (let i = 0; i < MAX_PARTY_SLOTS; i++) {
+      result.push(members[i])
+    }
+    return result
+  }, [members])
 
   const status = party.status ?? 'idle'
 
   return (
-    <TouchableOpacity style={styles.card} onPress={onPress}>
-      <View style={styles.cardHeader}>
+    <TouchableOpacity style={styles.partyCard} onPress={onPress} activeOpacity={0.7}>
+      <View style={styles.partyHeader}>
         <Text style={styles.partyName}>{party.name}</Text>
-        <View style={[styles.statusBadge, { backgroundColor: statusColors[status] }]}>
-          <Text style={styles.statusText}>{statusLabels[status]}</Text>
-        </View>
-      </View>
-      <View style={styles.cardBody}>
-        <Text style={styles.memberCount}>メンバー: {memberCount}人</Text>
-        {party.dungeonId && (
-          <Text style={styles.dungeonInfo}>ダンジョン: {party.dungeonId}</Text>
+        {status === 'expedition' && (
+          <View style={styles.expeditionBadge}>
+            <Text style={styles.expeditionBadgeText}>遠征中</Text>
+          </View>
         )}
       </View>
-      <View style={styles.cardActions}>
-        <TouchableOpacity
-          style={styles.editButton}
-          onPress={(e) => {
-            e.stopPropagation?.()
-            onEdit()
-          }}
-        >
-          <Text style={styles.editButtonText}>編集</Text>
-        </TouchableOpacity>
-        {status === 'idle' && (
-          <TouchableOpacity style={styles.expeditionButton} onPress={onPress}>
-            <Text style={styles.expeditionButtonText}>遠征準備</Text>
-          </TouchableOpacity>
-        )}
+
+      <View style={styles.membersRow}>
+        {slots.map((goblin, index) => (
+          <MemberSlot key={index} goblin={goblin} isEmpty={!goblin} />
+        ))}
       </View>
+
+      {/* 遠征履歴セクション（将来実装） */}
+      {/* <View style={styles.historySection}>
+        <Text style={styles.historyTitle}>遠征履歴</Text>
+      </View> */}
     </TouchableOpacity>
   )
 }
 
 export default function FormationScreen() {
-  const { parties, isLoading, createParty } = usePartyService()
-  const { goblins, isLoading: goblinsLoading } = useGoblinService()
+  const { parties, isLoading: partiesLoading, createParty, refreshParties } = usePartyService()
+  const { goblins, isLoading: goblinsLoading, refreshGoblins } = useGoblinService()
 
-  const handlePartyPress = useCallback((party: Party) => {
+  // 画面がフォーカスされたときにデータを再取得
+  useFocusEffect(
+    useCallback(() => {
+      void refreshParties()
+      refreshGoblins()
+    }, [refreshParties, refreshGoblins])
+  )
+
+  // 初期パーティ枠を確保（最低3つ）
+  const displayParties = useMemo(() => {
+    const result: (Party | null)[] = [...parties]
+    while (result.length < INITIAL_PARTY_COUNT) {
+      result.push(null)
+    }
+    return result
+  }, [parties])
+
+  const handlePartyPress = useCallback((party: Party | null, index: number) => {
+    if (!party) {
+      // パーティがない場合は新規作成して遷移
+      const newParty = createParty({
+        name: `PT${index + 1}`,
+        memberIds: [],
+      })
+      router.push({
+        pathname: '/formation/preparation',
+        params: { partyId: newParty.id.toString() },
+      })
+      return
+    }
+
     const status = party.status ?? 'idle'
     if (status === 'expedition') {
       // 遠征中のパーティはプレイバック画面へ
@@ -78,38 +132,9 @@ export default function FormationScreen() {
         params: { partyId: party.id.toString() },
       })
     }
-  }, [])
+  }, [createParty])
 
-  const handleEditPress = useCallback((party: Party) => {
-    router.push({
-      pathname: '/formation/edit',
-      params: { partyId: party.id.toString() },
-    })
-  }, [])
-
-  const handleCreateParty = useCallback(() => {
-    if (goblins.length === 0) {
-      Alert.alert('ゴブリンがいません', 'パーティを作成するにはゴブリンが必要です')
-      return
-    }
-
-    // 次のパーティIDを推定（createPartyが内部で計算するが、遷移用に必要）
-    const maxId = parties.reduce((max, p) => Math.max(max, p.id), 0)
-    const expectedNewId = maxId + 1
-
-    const created = createParty({
-      name: `パーティ ${expectedNewId}`,
-      memberIds: [],
-    })
-
-    // 作成後に編集画面へ遷移
-    router.push({
-      pathname: '/formation/edit',
-      params: { partyId: created.id.toString() },
-    })
-  }, [parties, goblins.length, createParty])
-
-  if (isLoading || goblinsLoading) {
+  if (partiesLoading || goblinsLoading) {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#3B82F6" />
@@ -119,156 +144,153 @@ export default function FormationScreen() {
   }
 
   return (
-    <View style={styles.container}>
-      <FlatList
-        data={parties}
-        keyExtractor={(item) => String(item.id)}
-        renderItem={({ item }) => (
-          <PartyCard
-            party={item}
-            memberCount={item.memberIds.length}
-            onPress={() => handlePartyPress(item)}
-            onEdit={() => handleEditPress(item)}
-          />
-        )}
-        contentContainerStyle={styles.listContent}
-        ItemSeparatorComponent={() => <View style={styles.separator} />}
-        ListHeaderComponent={() => (
-          <TouchableOpacity style={styles.createButton} onPress={handleCreateParty}>
-            <Text style={styles.createButtonText}>+ 新しいパーティを作成</Text>
-          </TouchableOpacity>
-        )}
-        ListEmptyComponent={() => (
-          <View style={styles.emptyContainer}>
-            <Text style={styles.emptyTitle}>パーティがありません</Text>
-            <Text style={styles.emptyDescription}>
-              上のボタンから新しいパーティを作成しましょう
-            </Text>
-          </View>
-        )}
-      />
-    </View>
+    <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
+      <Text style={styles.screenTitle}>パーティ選択</Text>
+
+      {displayParties.map((party, index) => {
+        if (party) {
+          return (
+            <PartyCard
+              key={party.id}
+              party={party}
+              goblins={goblins}
+              onPress={() => handlePartyPress(party, index)}
+            />
+          )
+        } else {
+          // 空のパーティ枠
+          return (
+            <TouchableOpacity
+              key={`empty-${index}`}
+              style={styles.partyCard}
+              onPress={() => handlePartyPress(null, index)}
+              activeOpacity={0.7}
+            >
+              <View style={styles.partyHeader}>
+                <Text style={styles.partyName}>PT{index + 1}</Text>
+              </View>
+              <View style={styles.membersRow}>
+                {Array.from({ length: MAX_PARTY_SLOTS }).map((_, slotIndex) => (
+                  <MemberSlot key={slotIndex} isEmpty />
+                ))}
+              </View>
+            </TouchableOpacity>
+          )
+        }
+      })}
+    </ScrollView>
   )
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F9FAFB',
+    backgroundColor: '#F3F4F6',
+  },
+  contentContainer: {
+    padding: 16,
   },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F9FAFB',
+    backgroundColor: '#F3F4F6',
   },
   loadingText: {
     marginTop: 12,
     fontSize: 16,
     color: '#6B7280',
   },
-  emptyContainer: {
-    padding: 32,
-    alignItems: 'center',
-  },
-  emptyTitle: {
-    fontSize: 18,
+  screenTitle: {
+    fontSize: 24,
     fontWeight: 'bold',
-    color: '#374151',
-    marginBottom: 8,
+    color: '#1F2937',
+    marginBottom: 16,
   },
-  emptyDescription: {
-    fontSize: 14,
-    color: '#6B7280',
-    textAlign: 'center',
-  },
-  listContent: {
-    padding: 16,
-  },
-  separator: {
-    height: 12,
-  },
-  card: {
+  partyCard: {
     backgroundColor: '#FFFFFF',
     borderRadius: 12,
     padding: 16,
+    marginBottom: 16,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
     shadowRadius: 2,
     elevation: 2,
   },
-  cardHeader: {
+  partyHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 12,
+    marginBottom: 16,
   },
   partyName: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: 'bold',
     color: '#1F2937',
   },
-  statusBadge: {
+  expeditionBadge: {
+    backgroundColor: '#3B82F6',
     paddingHorizontal: 12,
     paddingVertical: 4,
     borderRadius: 12,
   },
-  statusText: {
+  expeditionBadgeText: {
     fontSize: 12,
     fontWeight: '600',
     color: '#FFFFFF',
   },
-  cardBody: {
+  membersRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 12,
-  },
-  memberCount: {
-    fontSize: 14,
-    color: '#6B7280',
-  },
-  dungeonInfo: {
-    fontSize: 14,
-    color: '#6B7280',
-  },
-  cardActions: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
+    justifyContent: 'flex-start',
     gap: 8,
   },
-  editButton: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 8,
-    backgroundColor: '#E5E7EB',
+  memberSlot: {
+    alignItems: 'center',
+    width: 50,
   },
-  editButtonText: {
-    fontSize: 14,
+  memberLevel: {
+    fontSize: 11,
     fontWeight: '600',
     color: '#374151',
+    marginBottom: 4,
   },
-  expeditionButton: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 8,
-    backgroundColor: '#3B82F6',
+  memberAvatar: {
+    width: 40,
+    height: 40,
+    borderRadius: 4,
   },
-  expeditionButtonText: {
+  memberHp: {
+    fontSize: 10,
+    color: '#6B7280',
+    marginTop: 4,
+  },
+  emptySlot: {
+    width: 40,
+    height: 40,
+    borderRadius: 4,
+    backgroundColor: '#F3F4F6',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    borderStyle: 'dashed',
+    marginTop: 17, // memberLevel分の高さを確保
+  },
+  emptySlotText: {
+    fontSize: 20,
+    color: '#9CA3AF',
+  },
+  historySection: {
+    marginTop: 16,
+    paddingTop: 12,
+    borderTopWidth: 1,
+    borderTopColor: '#E5E7EB',
+  },
+  historyTitle: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#FFFFFF',
-  },
-  createButton: {
-    backgroundColor: '#3B82F6',
-    borderRadius: 12,
-    padding: 16,
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  createButtonText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#FFFFFF',
+    color: '#6B7280',
+    marginBottom: 8,
   },
 })

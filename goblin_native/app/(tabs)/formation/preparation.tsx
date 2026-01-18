@@ -1,34 +1,87 @@
-import { useState, useCallback, useMemo } from 'react'
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView, ActivityIndicator, Alert } from 'react-native'
-import { router, useLocalSearchParams } from 'expo-router'
+import { useState, useCallback, useMemo, useEffect } from 'react'
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, ActivityIndicator, Alert, Image } from 'react-native'
+import { router, useLocalSearchParams, Stack, useFocusEffect } from 'expo-router'
 import { usePartyService } from '@/presentation/hooks/usePartyService'
 import { useGoblinService } from '@/presentation/hooks/useGoblinService'
 import { useDungeonProgress } from '@/presentation/hooks/useDungeonProgress'
+import { getGoblinImage } from '@/shared/utils/goblinImages'
 import type { ExpeditionRequest, Goblin, Dungeon } from '@/shared/types'
 
 type ReturnPolicy = ExpeditionRequest['returnPolicy']
 
-const RETURN_POLICIES: { value: ReturnPolicy; label: string; description: string }[] = [
-  { value: 'never', label: '最後まで探索', description: '目標階に到達するまで探索を続けます' },
-  { value: 'until_floor2', label: '2階で帰還', description: '2階に到達したら帰還します' },
-  { value: 'until_floor3', label: '3階で帰還', description: '3階に到達したら帰還します' },
-  { value: 'if_any_ko', label: '誰かが倒れたら', description: 'パーティの誰かが倒れたら帰還します' },
-  { value: 'last_one', label: '最後の1人まで', description: '最後の1人になるまで探索を続けます' },
+const MAX_PARTY_SLOTS = 6
+
+const RETURN_POLICIES: { value: ReturnPolicy; label: string }[] = [
+  { value: 'never', label: '帰還しない' },
+  { value: 'until_floor2', label: '2階で帰還' },
+  { value: 'until_floor3', label: '3階で帰還' },
+  { value: 'if_any_ko', label: '誰か倒れたら' },
+  { value: 'last_one', label: '最後の1人まで' },
 ]
+
+interface MemberSlotProps {
+  goblin?: Goblin
+  isEmpty: boolean
+}
+
+function MemberSlot({ goblin, isEmpty }: MemberSlotProps) {
+  if (isEmpty || !goblin) {
+    return (
+      <View style={styles.memberSlot}>
+        <View style={styles.emptySlot}>
+          <Text style={styles.emptySlotText}>+</Text>
+        </View>
+      </View>
+    )
+  }
+
+  return (
+    <View style={styles.memberSlot}>
+      <Text style={styles.memberLevel}>Lv{goblin.level}</Text>
+      <Image source={getGoblinImage(goblin.avatar)} style={styles.memberAvatar} />
+      <Text style={styles.memberHp}>HP{goblin.stats.hp}</Text>
+    </View>
+  )
+}
 
 export default function ExpeditionPreparationScreen() {
   const { partyId } = useLocalSearchParams<{ partyId: string }>()
-  const { parties, isLoading: partiesLoading, getPartyById, setDungeon, setReturnPolicy } = usePartyService()
-  const { goblins, isLoading: goblinsLoading } = useGoblinService()
+  const { parties, isLoading: partiesLoading, getPartyById, setDungeon, setReturnPolicy, setTargetFloor, refreshParties } = usePartyService()
+  const { goblins, isLoading: goblinsLoading, refreshGoblins } = useGoblinService()
   const { dungeons, isLoading: dungeonsLoading } = useDungeonProgress()
+  const [retryCount, setRetryCount] = useState(0)
 
   const party = useMemo(() => {
     if (!partyId) return null
-    return getPartyById(parseInt(partyId, 10))
+    try {
+      return getPartyById(parseInt(partyId, 10))
+    } catch {
+      return null
+    }
   }, [partyId, parties, getPartyById])
+
+  // パーティが見つからない場合にリトライ
+  useEffect(() => {
+    if (!party && !partiesLoading && partyId && retryCount < 5) {
+      const timer = setTimeout(() => {
+        void refreshParties()
+        setRetryCount(prev => prev + 1)
+      }, 200)
+      return () => clearTimeout(timer)
+    }
+  }, [party, partiesLoading, partyId, retryCount, refreshParties])
+
+  // 画面がフォーカスされたときにデータを再取得
+  useFocusEffect(
+    useCallback(() => {
+      void refreshParties()
+      refreshGoblins()
+    }, [refreshParties, refreshGoblins])
+  )
 
   const [selectedDungeonId, setSelectedDungeonId] = useState<string | undefined>(party?.dungeonId)
   const [selectedReturnPolicy, setSelectedReturnPolicy] = useState<ReturnPolicy>(party?.returnPolicy ?? 'never')
+  const [selectedTargetFloor, setSelectedTargetFloor] = useState<number | null>(party?.targetFloor ?? null)
 
   const partyMembers = useMemo(() => {
     if (!party) return []
@@ -36,6 +89,15 @@ export default function ExpeditionPreparationScreen() {
       .map(id => goblins.find(g => g.id === id))
       .filter((g): g is Goblin => g !== undefined)
   }, [party, goblins])
+
+  // 6スロット分の配列を作成
+  const slots = useMemo(() => {
+    const result: (Goblin | undefined)[] = []
+    for (let i = 0; i < MAX_PARTY_SLOTS; i++) {
+      result.push(partyMembers[i])
+    }
+    return result
+  }, [partyMembers])
 
   const unlockedDungeons = useMemo(() => {
     return dungeons.filter(d => d.unlocked)
@@ -77,7 +139,6 @@ export default function ExpeditionPreparationScreen() {
       return
     }
 
-    // TODO: 遠征を開始し、プレイバック画面へ遷移
     router.push({
       pathname: '/formation/playback',
       params: {
@@ -88,7 +149,10 @@ export default function ExpeditionPreparationScreen() {
     })
   }, [partyId, selectedDungeonId, selectedReturnPolicy, partyMembers.length])
 
-  if (partiesLoading || goblinsLoading || dungeonsLoading) {
+  const canStartExpedition = selectedDungeonId && partyMembers.length > 0
+
+  // ローディング中またはパーティ取得のリトライ中
+  if (partiesLoading || goblinsLoading || dungeonsLoading || (!party && retryCount < 5)) {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#10B981" />
@@ -109,112 +173,142 @@ export default function ExpeditionPreparationScreen() {
   }
 
   return (
-    <ScrollView style={styles.container}>
-      {/* パーティメンバー */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>{party.name}</Text>
-        <View style={styles.card}>
-          {partyMembers.length === 0 ? (
-            <Text style={styles.emptyText}>メンバーがいません</Text>
-          ) : (
-            <View style={styles.membersGrid}>
-              {partyMembers.map(member => (
-                <View key={member.id} style={styles.memberItem}>
-                  <View style={styles.memberIcon}>
-                    <Text style={styles.memberIconText}>G</Text>
-                  </View>
-                  <Text style={styles.memberName}>{member.name}</Text>
-                  <Text style={styles.memberLevel}>Lv.{member.level}</Text>
-                </View>
+    <>
+      <Stack.Screen
+        options={{
+          headerLeft: () => (
+            <TouchableOpacity onPress={() => router.back()}>
+              <Text style={styles.headerButton}>← 戻る</Text>
+            </TouchableOpacity>
+          ),
+          headerRight: () => (
+            <TouchableOpacity
+              onPress={handleStartExpedition}
+              disabled={!canStartExpedition}
+            >
+              <Text style={[styles.headerButton, styles.headerButtonPrimary, !canStartExpedition && styles.headerButtonDisabled]}>
+                出撃
+              </Text>
+            </TouchableOpacity>
+          ),
+          title: '冒険準備',
+        }}
+      />
+      <ScrollView style={styles.container}>
+        {/* パーティセクション */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>パーティ</Text>
+          <View style={styles.card}>
+            <Text style={styles.partyName}>{party.name}</Text>
+
+            <View style={styles.membersRow}>
+              {slots.map((goblin, index) => (
+                <MemberSlot key={index} goblin={goblin} isEmpty={!goblin} />
               ))}
             </View>
-          )}
-          <TouchableOpacity style={styles.editButton} onPress={handleEditParty}>
-            <Text style={styles.editButtonText}>メンバー編集</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
 
-      {/* ダンジョン選択 */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>ダンジョン選択</Text>
-        <View style={styles.card}>
-          {unlockedDungeons.length === 0 ? (
-            <Text style={styles.emptyText}>解放済みのダンジョンがありません</Text>
-          ) : (
-            unlockedDungeons.map(dungeon => (
-              <TouchableOpacity
-                key={dungeon.id}
-                style={[
-                  styles.dungeonOption,
-                  selectedDungeonId === dungeon.id && styles.dungeonSelected,
-                ]}
-                onPress={() => handleSelectDungeon(dungeon)}
-              >
-                <View style={styles.dungeonHeader}>
-                  <Text style={styles.dungeonName}>{dungeon.name}</Text>
-                  {dungeon.cleared && (
-                    <View style={styles.clearedBadge}>
-                      <Text style={styles.clearedText}>クリア済</Text>
-                    </View>
-                  )}
-                </View>
-                <Text style={styles.dungeonInfo}>
-                  階層: {dungeon.floors} | 難易度: {dungeon.difficulty || '?'}
-                </Text>
-              </TouchableOpacity>
-            ))
-          )}
-        </View>
-      </View>
-
-      {/* 帰還ポリシー */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>帰還ポリシー</Text>
-        <View style={styles.card}>
-          {RETURN_POLICIES.map(policy => (
-            <TouchableOpacity
-              key={policy.value}
-              style={[
-                styles.policyOption,
-                selectedReturnPolicy === policy.value && styles.policySelected,
-              ]}
-              onPress={() => handleSelectReturnPolicy(policy.value)}
-            >
-              <Text style={styles.policyName}>{policy.label}</Text>
-              <Text style={styles.policyDescription}>{policy.description}</Text>
+            <TouchableOpacity style={styles.editButton} onPress={handleEditParty}>
+              <Text style={styles.editButtonText}>メンバーを変更する</Text>
             </TouchableOpacity>
-          ))}
+          </View>
         </View>
-      </View>
 
-      {/* 遠征開始ボタン */}
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.cancelButton} onPress={() => router.back()}>
-          <Text style={styles.cancelButtonText}>戻る</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.startButton, (!selectedDungeonId || partyMembers.length === 0) && styles.startButtonDisabled]}
-          onPress={handleStartExpedition}
-          disabled={!selectedDungeonId || partyMembers.length === 0}
-        >
-          <Text style={styles.startButtonText}>遠征開始</Text>
-        </TouchableOpacity>
-      </View>
-    </ScrollView>
+        {/* 遠征セクション */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>遠征</Text>
+          <View style={styles.card}>
+            {/* 遠征先 */}
+            <View style={styles.settingItem}>
+              <Text style={styles.settingLabel}>遠征先</Text>
+              <View style={styles.settingValue}>
+                {selectedDungeon ? (
+                  <Text style={styles.settingValueText}>{selectedDungeon.name}</Text>
+                ) : (
+                  <Text style={styles.settingValuePlaceholder}>遠征先が未設定です</Text>
+                )}
+              </View>
+            </View>
+
+            {/* ダンジョン選択リスト */}
+            {unlockedDungeons.length > 0 && (
+              <View style={styles.dungeonList}>
+                {unlockedDungeons.map(dungeon => (
+                  <TouchableOpacity
+                    key={dungeon.id}
+                    style={[
+                      styles.dungeonOption,
+                      selectedDungeonId === dungeon.id && styles.dungeonSelected,
+                    ]}
+                    onPress={() => handleSelectDungeon(dungeon)}
+                  >
+                    <Text style={[
+                      styles.dungeonName,
+                      selectedDungeonId === dungeon.id && styles.dungeonNameSelected,
+                    ]}>
+                      {dungeon.name}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            )}
+
+            {/* 目標階数 */}
+            <View style={styles.settingItem}>
+              <Text style={styles.settingLabel}>目標階数</Text>
+              <View style={styles.settingValue}>
+                <Text style={styles.settingValueText}>
+                  {selectedTargetFloor === null ? '最下層まで探索' : `${selectedTargetFloor}階まで`}
+                </Text>
+              </View>
+            </View>
+
+            {/* 帰還条件 */}
+            <View style={styles.settingItem}>
+              <Text style={styles.settingLabel}>帰還条件</Text>
+              <View style={styles.settingValue}>
+                <Text style={styles.settingValueText}>
+                  {RETURN_POLICIES.find(p => p.value === selectedReturnPolicy)?.label ?? '帰還しない'}
+                </Text>
+              </View>
+            </View>
+
+            {/* 帰還条件選択リスト */}
+            <View style={styles.policyList}>
+              {RETURN_POLICIES.map(policy => (
+                <TouchableOpacity
+                  key={policy.value}
+                  style={[
+                    styles.policyOption,
+                    selectedReturnPolicy === policy.value && styles.policySelected,
+                  ]}
+                  onPress={() => handleSelectReturnPolicy(policy.value)}
+                >
+                  <Text style={[
+                    styles.policyName,
+                    selectedReturnPolicy === policy.value && styles.policyNameSelected,
+                  ]}>
+                    {policy.label}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </View>
+        </View>
+      </ScrollView>
+    </>
   )
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F9FAFB',
+    backgroundColor: '#F3F4F6',
   },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F9FAFB',
+    backgroundColor: '#F3F4F6',
   },
   loadingText: {
     marginTop: 12,
@@ -225,7 +319,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F9FAFB',
+    backgroundColor: '#F3F4F6',
   },
   errorText: {
     fontSize: 18,
@@ -242,14 +336,35 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontWeight: '600',
   },
+  headerButton: {
+    fontSize: 16,
+    color: '#374151',
+    paddingHorizontal: 8,
+  },
+  headerButtonPrimary: {
+    color: '#3B82F6',
+    fontWeight: '600',
+    backgroundColor: '#EFF6FF',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 8,
+    overflow: 'hidden',
+  },
+  headerButtonDisabled: {
+    color: '#9CA3AF',
+    backgroundColor: '#F3F4F6',
+  },
   section: {
     padding: 16,
   },
   sectionTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#1F2937',
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#374151',
     marginBottom: 12,
+    borderBottomWidth: 2,
+    borderBottomColor: '#F59E0B',
+    paddingBottom: 8,
   },
   card: {
     backgroundColor: '#FFFFFF',
@@ -261,49 +376,58 @@ const styles = StyleSheet.create({
     shadowRadius: 2,
     elevation: 2,
   },
-  emptyText: {
-    fontSize: 14,
-    color: '#6B7280',
-    textAlign: 'center',
-    marginBottom: 12,
-  },
-  membersGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    marginBottom: 12,
-    gap: 12,
-  },
-  memberItem: {
-    alignItems: 'center',
-    width: 70,
-  },
-  memberIcon: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    backgroundColor: '#10B981',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 4,
-  },
-  memberIconText: {
+  partyName: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#FFFFFF',
-  },
-  memberName: {
-    fontSize: 12,
-    fontWeight: '600',
     color: '#1F2937',
+    marginBottom: 16,
+  },
+  membersRow: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    gap: 8,
+    marginBottom: 16,
+  },
+  memberSlot: {
+    alignItems: 'center',
+    width: 50,
   },
   memberLevel: {
+    fontSize: 11,
+    fontWeight: '600',
+    color: '#374151',
+    marginBottom: 4,
+  },
+  memberAvatar: {
+    width: 40,
+    height: 40,
+    borderRadius: 4,
+  },
+  memberHp: {
     fontSize: 10,
     color: '#6B7280',
+    marginTop: 4,
+  },
+  emptySlot: {
+    width: 40,
+    height: 40,
+    borderRadius: 4,
+    backgroundColor: '#F3F4F6',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    borderStyle: 'dashed',
+    marginTop: 17,
+  },
+  emptySlotText: {
+    fontSize: 20,
+    color: '#9CA3AF',
   },
   editButton: {
     backgroundColor: '#E5E7EB',
     borderRadius: 8,
-    padding: 12,
+    padding: 14,
     alignItems: 'center',
   },
   editButtonText: {
@@ -311,96 +435,74 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#4B5563',
   },
+  settingItem: {
+    marginBottom: 12,
+  },
+  settingLabel: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#374151',
+    marginBottom: 8,
+  },
+  settingValue: {
+    backgroundColor: '#F3F4F6',
+    borderRadius: 8,
+    padding: 12,
+  },
+  settingValueText: {
+    fontSize: 14,
+    color: '#1F2937',
+  },
+  settingValuePlaceholder: {
+    fontSize: 14,
+    color: '#9CA3AF',
+  },
+  dungeonList: {
+    marginBottom: 16,
+  },
   dungeonOption: {
-    paddingVertical: 12,
+    paddingVertical: 10,
     paddingHorizontal: 12,
     borderRadius: 8,
-    marginBottom: 8,
-    backgroundColor: '#F3F4F6',
+    marginBottom: 6,
+    backgroundColor: '#F9FAFB',
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
   },
   dungeonSelected: {
     backgroundColor: '#DBEAFE',
-    borderWidth: 2,
     borderColor: '#3B82F6',
   },
-  dungeonHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
   dungeonName: {
-    fontSize: 16,
+    fontSize: 14,
+    color: '#374151',
+  },
+  dungeonNameSelected: {
+    color: '#1D4ED8',
     fontWeight: '600',
-    color: '#1F2937',
   },
-  clearedBadge: {
-    backgroundColor: '#10B981',
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-    borderRadius: 4,
-  },
-  clearedText: {
-    fontSize: 10,
-    fontWeight: '600',
-    color: '#FFFFFF',
-  },
-  dungeonInfo: {
-    fontSize: 12,
-    color: '#6B7280',
-    marginTop: 4,
+  policyList: {
+    marginTop: 8,
   },
   policyOption: {
-    paddingVertical: 12,
+    paddingVertical: 10,
     paddingHorizontal: 12,
     borderRadius: 8,
-    marginBottom: 8,
-    backgroundColor: '#F3F4F6',
+    marginBottom: 6,
+    backgroundColor: '#F9FAFB',
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
   },
   policySelected: {
     backgroundColor: '#DBEAFE',
-    borderWidth: 2,
     borderColor: '#3B82F6',
   },
   policyName: {
     fontSize: 14,
+    color: '#374151',
+  },
+  policyNameSelected: {
+    color: '#1D4ED8',
     fontWeight: '600',
-    color: '#1F2937',
-  },
-  policyDescription: {
-    fontSize: 12,
-    color: '#6B7280',
-    marginTop: 2,
-  },
-  buttonContainer: {
-    flexDirection: 'row',
-    padding: 16,
-    gap: 12,
-  },
-  cancelButton: {
-    flex: 1,
-    backgroundColor: '#E5E7EB',
-    borderRadius: 12,
-    padding: 16,
-    alignItems: 'center',
-  },
-  cancelButtonText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#4B5563',
-  },
-  startButton: {
-    flex: 2,
-    backgroundColor: '#10B981',
-    borderRadius: 12,
-    padding: 16,
-    alignItems: 'center',
-  },
-  startButtonDisabled: {
-    backgroundColor: '#9CA3AF',
-  },
-  startButtonText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#FFFFFF',
   },
 })
