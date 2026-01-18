@@ -10,6 +10,7 @@ import type {
   EnemyPattern,
   PartyState,
   ExpeditionEndReason,
+  AreaConfig,
 } from '../../shared/types'
 import { getAreaConfig } from '../../shared/data/expeditionArea'
 import { getEnemyDatabase } from '../../shared/data/enemy'
@@ -73,7 +74,7 @@ export class ExpeditionEngine {
     let currentTime = 0
     const partyState = this.initializePartyState(party)
     let shouldReturn = false
-    let returnReason: string | null = null
+    let returnReason: ExpeditionEndReason | null = null
 
     // 移動開始イベント
     events.push({
@@ -125,13 +126,13 @@ export class ExpeditionEngine {
             // 戦闘敗北時は即座に帰還
             if (combat.outcome === 'lose') {
               shouldReturn = true
-              returnReason = 'lose'
+              returnReason = 'defeated'
               break
             }
 
             // 帰還条件をチェック
             const returnCheck = this.checkReturnConditions(partyState, request.returnPolicy, currentFloor)
-            if (returnCheck.shouldReturn) {
+            if (returnCheck.shouldReturn && returnCheck.reason) {
               shouldReturn = true
               returnReason = returnCheck.reason
             }
@@ -170,7 +171,7 @@ export class ExpeditionEngine {
             // 戦闘敗北時は即座に帰還
             if (combat.outcome === 'lose') {
               shouldReturn = true
-              returnReason = 'lose'
+              returnReason = 'defeated'
               break
             }
 
@@ -222,7 +223,7 @@ export class ExpeditionEngine {
       })
 
       this.applyBattleResults(partyState, bossCombat)
-      returnReason = bossCombat.outcome === "win" ? "boss_clear" : "lose"
+      returnReason = bossCombat.outcome === "win" ? "completed" : "defeated"
       shouldReturn = true
     }
 
@@ -231,7 +232,7 @@ export class ExpeditionEngine {
       events.push({
         type: "return",
         at: adjustedDuration,
-        reason: returnReason as ExpeditionEndReason
+        reason: returnReason
       })
     }
 
@@ -404,33 +405,33 @@ export class ExpeditionEngine {
     })
   }
 
-  private checkReturnConditions(partyState: PartyState[], returnPolicy: ExpeditionRequest["returnPolicy"], currentFloor: number): { shouldReturn: boolean; reason: string } {
+  private checkReturnConditions(partyState: PartyState[], returnPolicy: ExpeditionRequest["returnPolicy"], currentFloor: number): { shouldReturn: boolean; reason: ExpeditionEndReason | null } {
     const aliveMembers = partyState.filter(member => !member.isKO).length
 
     switch (returnPolicy) {
       case "if_any_ko":
         if (partyState.some(member => member.isKO)) {
-          return { shouldReturn: true, reason: "if_any_ko" }
+          return { shouldReturn: true, reason: "policy_return" }
         }
         break
       case "last_one":
         if (aliveMembers <= 1) {
-          return { shouldReturn: true, reason: "last_one" }
+          return { shouldReturn: true, reason: "policy_return" }
         }
         break
       case "until_floor2":
         if (currentFloor >= 2) {
-          return { shouldReturn: true, reason: "until_floorN" }
+          return { shouldReturn: true, reason: "policy_return" }
         }
         break
       case "until_floor3":
         if (currentFloor >= 3) {
-          return { shouldReturn: true, reason: "until_floorN" }
+          return { shouldReturn: true, reason: "policy_return" }
         }
         break
     }
 
-    return { shouldReturn: false, reason: "" }
+    return { shouldReturn: false, reason: null }
   }
 
   private calculateRewardSummary(events: TimelineEvent[], partyState: PartyState[]): RewardSummary {
@@ -450,9 +451,7 @@ export class ExpeditionEngine {
 
     const casualties = partyState.filter(member => member.isDead).map(member => member.id)
     const injuries = partyState.filter(member => member.isKO && !member.isDead).map(member => member.id)
-    const successReasons = new Set<ExpeditionEndReason | string>([
-      "boss_clear",
-      "until_floorN",
+    const successReasons: Set<ExpeditionEndReason> = new Set([
       "completed",
       "policy_return"
     ])
