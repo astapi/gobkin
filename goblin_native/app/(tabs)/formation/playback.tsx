@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react'
-import { View, Text, StyleSheet, Animated, TouchableOpacity, ScrollView, ActivityIndicator, Modal } from 'react-native'
+import { View, Text, StyleSheet, Animated, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { router, useLocalSearchParams } from 'expo-router'
 import { usePartyService } from '@/presentation/hooks/usePartyService'
@@ -9,6 +9,7 @@ import { useExpeditionService } from '@/presentation/hooks/useExpeditionService'
 import { CompleteExpeditionUseCase } from '@/core/usecases'
 import type { TimelineEvent, ExpeditionReplay, ExpeditionRecord } from '@/shared/types'
 import type { BattleLogEntry } from '@/shared/types'
+import { storeBattleLog } from '@/presentation/contexts/battleLogStore'
 
 interface LogEntry {
   id: string
@@ -69,7 +70,6 @@ export default function ExpeditionPlaybackScreen() {
   const [currentTime, setCurrentTime] = useState(0)
   const [replay, setReplay] = useState<ExpeditionReplay | null>(null)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
-  const [selectedBattleLog, setSelectedBattleLog] = useState<BattleLogEntry[] | null>(null)
 
   const progressAnim = useRef(new Animated.Value(0)).current
   const playbackTimerRef = useRef<NodeJS.Timeout | null>(null)
@@ -87,6 +87,12 @@ export default function ExpeditionPlaybackScreen() {
     const minutes = Math.floor(seconds / 60)
     const secs = Math.floor(seconds % 60)
     return `${minutes}:${secs.toString().padStart(2, '0')}`
+  }, [])
+
+  const openBattleLog = useCallback((detail: BattleLogEntry[]) => {
+    const logId = storeBattleLog(detail)
+    const path = `/formation/battle-log?logId=${encodeURIComponent(logId)}`
+    router.push(path)
   }, [])
 
   const getReturnReasonText = useCallback((reason: TimelineEvent extends { reason: infer R } ? R : never) => {
@@ -399,77 +405,32 @@ export default function ExpeditionPlaybackScreen() {
 
       <View style={styles.eventLog}>
         <ScrollView style={styles.logScroll}>
-          {eventLog.map(entry => (
-            <Text key={entry.id} style={styles.logText}>
-              {entry.text.replace('[詳細]', '')}
-              {entry.detail && (
-                <Text style={styles.logDetail} onPress={() => setSelectedBattleLog(entry.detail!)}>
-                  [詳細]
-                </Text>
-              )}
-            </Text>
-          ))}
+          {eventLog.map(entry => {
+            const baseText = entry.text.replace('[詳細]', '')
+            if (entry.detail) {
+              return (
+                <TouchableOpacity
+                  key={entry.id}
+                  style={styles.logRow}
+                  activeOpacity={0.7}
+                  accessibilityRole="button"
+                  hitSlop={{ top: 6, bottom: 6, left: 8, right: 8 }}
+                  onPress={() => openBattleLog(entry.detail!)}
+                >
+                  <Text style={styles.logText}>{baseText}</Text>
+                  <Text style={styles.logDetail}>詳細</Text>
+                </TouchableOpacity>
+              )
+            }
+
+            return (
+              <View key={entry.id} style={styles.logRow}>
+                <Text style={styles.logText}>{baseText}</Text>
+              </View>
+            )
+          })}
         </ScrollView>
       </View>
-
-      <Modal
-        visible={Boolean(selectedBattleLog)}
-        transparent
-        animationType="fade"
-        onRequestClose={() => setSelectedBattleLog(null)}
-      >
-        <View style={styles.modalBackdrop}>
-          <View style={styles.modalCard}>
-            <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>戦闘ログ</Text>
-              <TouchableOpacity onPress={() => setSelectedBattleLog(null)}>
-                <Text style={styles.modalClose}>×</Text>
-              </TouchableOpacity>
-            </View>
-            <ScrollView style={styles.modalBody}>
-              {selectedBattleLog?.map((entry, index) => {
-                if (entry.action === 'turn_start' && entry.turnState) {
-                  return (
-                    <View key={`turn-${entry.turn}-${index}`} style={styles.modalSection}>
-                      <Text style={styles.modalSectionTitle}>Turn {entry.turn} 開始</Text>
-                      <Text style={styles.modalLabel}>味方:</Text>
-                      {entry.turnState.allies.map(ally => (
-                        <Text key={ally.id} style={styles.modalText}>
-                          {ally.name} {ally.currentHP}/{ally.maxHP} HP
-                        </Text>
-                      ))}
-                      <Text style={styles.modalLabel}>敵:</Text>
-                      {entry.turnState.enemies.map((enemy, enemyIndex) => (
-                        <Text key={`${enemy.id}-${enemyIndex}`} style={styles.modalText}>
-                          {enemy.name} {enemy.currentHP}/{enemy.maxHP} HP
-                        </Text>
-                      ))}
-                    </View>
-                  )
-                }
-
-                if (entry.action === 'turn_start') {
-                  return null
-                }
-
-                return (
-                  <View key={`log-${index}`} style={styles.modalLogCard}>
-                    <Text style={styles.modalLogTitle}>
-                      {entry.actorName}の攻撃 ({entry.actorHP ?? 0}HP)
-                    </Text>
-                    <Text style={styles.modalText}>{entry.actorName}の{entry.action}！</Text>
-                    {entry.targetName && typeof entry.damage === 'number' && (
-                      <Text style={styles.modalText}>
-                        {entry.targetName}に{entry.damage}ダメージを与え{entry.targetDefeated ? '倒した！' : 'た！'}
-                      </Text>
-                    )}
-                  </View>
-                )
-              })}
-            </ScrollView>
-          </View>
-        </View>
-      </Modal>
     </SafeAreaView>
   )
 }
@@ -592,86 +553,21 @@ const styles = StyleSheet.create({
   logScroll: {
     flex: 1,
   },
+  logRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    marginBottom: 6,
+    gap: 6,
+  },
   logText: {
     fontSize: 12,
     color: '#374151',
     fontFamily: 'Courier',
-    marginBottom: 6,
+    flex: 1,
   },
   logDetail: {
     color: '#2563EB',
     fontWeight: '600',
-  },
-  modalBackdrop: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.4)',
-    justifyContent: 'center',
-    padding: 16,
-  },
-  modalCard: {
-    backgroundColor: '#F9FAFB',
-    borderRadius: 12,
-    overflow: 'hidden',
-    maxHeight: '85%',
-  },
-  modalHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    backgroundColor: '#1F2937',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-  },
-  modalTitle: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: '#F9FAFB',
-  },
-  modalClose: {
-    fontSize: 20,
-    color: '#F9FAFB',
-    paddingHorizontal: 8,
-  },
-  modalBody: {
-    padding: 12,
-  },
-  modalSection: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 10,
-    padding: 12,
-    marginBottom: 12,
-    borderWidth: 1,
-    borderColor: '#E5E7EB',
-  },
-  modalSectionTitle: {
-    fontSize: 14,
-    fontWeight: '700',
-    color: '#111827',
-    marginBottom: 8,
-  },
-  modalLabel: {
     fontSize: 12,
-    fontWeight: '600',
-    color: '#6B7280',
-    marginTop: 6,
-  },
-  modalText: {
-    fontSize: 12,
-    color: '#374151',
-    marginTop: 2,
-  },
-  modalLogCard: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 10,
-    padding: 12,
-    marginBottom: 10,
-    borderWidth: 1,
-    borderColor: '#E5E7EB',
-  },
-  modalLogTitle: {
-    fontSize: 13,
-    fontWeight: '700',
-    color: '#111827',
-    marginBottom: 6,
   },
 })

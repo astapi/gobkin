@@ -252,183 +252,193 @@ export const ExpeditionLogScreen = ({
 
   return (
     <div className="flex flex-col h-full">
-      {/* ヘッダー */}
-      <div className="p-3 text-white bg-gray-800 shadow-lg">
-        <div className="flex justify-between items-center">
-          <div className="text-sm font-bold">
-            {expeditionReplay.meta.areaName} - {currentFloor}階
-          </div>
-          <div className="text-xs">
-            {formatTime(currentTime)} / {formatTime(expeditionReplay.durationSec)}
-          </div>
-        </div>
-
-        {/* プログレスバー */}
-        <div className="overflow-hidden mt-2 h-2 bg-gray-700 rounded-full">
-          <div
-            className="h-full bg-gray-400 transition-all duration-100 ease-linear"
-            style={{ width: `${progress}%` }}
-          />
-        </div>
-      </div>
-
-      {/* パーティ状態 */}
-      <div className="p-3 bg-gray-100 border-b-2 border-gray-300">
-        <div className="grid grid-cols-3 gap-2">
-          {expeditionReplay.meta.party.map((memberId, idx) => {
-            const goblin = goblins.find(g => g.id === parseInt(memberId))
-            const maxHp = goblin?.stats.hp || 100
-            const currentHp = partyHp[idx]
-            const hpPercent = (currentHp / maxHp) * 100
-            const isKO = currentHp <= 0
-
-            return (
-              <div
-                key={memberId}
-                className={`bg-white rounded-lg p-2 border ${isKO ? 'border-gray-500 opacity-50' : 'border-gray-300'}`}
-              >
-                <div className="flex gap-1 items-center mb-1">
-                  <div className="flex overflow-hidden justify-center items-center w-6 h-6 bg-gray-200 rounded-full">
-                    <img src={goblin?.avatar} alt={goblin?.name} className="object-cover w-full h-full" />
-                  </div>
-                  <div className="flex-1 text-xs font-medium truncate">
-                    {goblin?.name || `ID:${memberId}`}
-                  </div>
-                </div>
-                <div className="overflow-hidden h-1 bg-gray-200 rounded-full">
-                  <div
-                    className={`h-full transition-all duration-300 ${isKO ? 'bg-gray-400' : hpPercent > 50 ? 'bg-gray-700' : hpPercent > 25 ? 'bg-gray-500' : 'bg-gray-400'}`}
-                    style={{ width: `${hpPercent}%` }}
-                  />
-                </div>
-                <div className="mt-1 text-xs text-gray-600">
-                  HP: {currentHp}/{maxHp}
-                </div>
+      {/* ログ一覧 / 戦闘詳細 */}
+      <div className="relative flex-1 overflow-hidden bg-white">
+        <div
+          className={`absolute inset-0 flex flex-col transition-transform duration-300 ease-out ${
+            selectedBattleLog ? '-translate-x-full' : 'translate-x-0'
+          }`}
+        >
+          <div className="p-3 text-white bg-gray-800 shadow-lg">
+            <div className="flex justify-between items-center">
+              <div className="text-sm font-bold">
+                {expeditionReplay.meta.areaName} - {currentFloor}階
               </div>
-            )
-          })}
-        </div>
-      </div>
-
-      {/* イベントログ */}
-      <div className="overflow-hidden flex-1 bg-white">
-        <div
-          ref={logContainerRef}
-          className="overflow-y-auto p-4 space-y-1 h-full"
-        >
-          {eventLog.map((log, idx) => (
-            <div
-              key={idx}
-              className={`text-sm text-gray-700 font-mono ${
-                log.battleLog && log.battleLog.length > 0
-                  ? 'cursor-pointer hover:bg-gray-100 py-1 rounded'
-                  : ''
-              }`}
-              onClick={() => {
-                if (log.battleLog && log.battleLog.length > 0) {
-                  setSelectedBattleLog(log.battleLog)
-                }
-              }}
-            >
-              {log.message}
-              {log.battleLog && log.battleLog.length > 0 && (
-                <span className="ml-2 text-xs text-gray-500">[詳細]</span>
-              )}
+              <div className="text-xs">
+                {formatTime(currentTime)} / {formatTime(expeditionReplay.durationSec)}
+              </div>
             </div>
-          ))}
-        </div>
-      </div>
 
-      {/* 戦闘詳細ログモーダル */}
-      {selectedBattleLog && (
-        <div
-          className="flex fixed inset-0 z-50 justify-center items-center bg-black bg-opacity-50"
-          onClick={() => setSelectedBattleLog(null)}
-        >
-          <div
-            className="bg-white max-w-[414px] w-full h-full overflow-hidden flex flex-col"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="flex justify-between items-center p-4 text-white bg-gray-800">
-              <h3 className="font-bold">戦闘ログ</h3>
-              <button
-                onClick={() => setSelectedBattleLog(null)}
-                className="text-white hover:text-gray-300"
-              >
-                ×
-              </button>
+            <div className="overflow-hidden mt-2 h-2 bg-gray-700 rounded-full">
+              <div
+                className="h-full bg-gray-400 transition-all duration-100 ease-linear"
+                style={{ width: `${progress}%` }}
+              />
             </div>
-            <div className="overflow-y-auto overflow-x-hidden flex-1 p-4 space-y-2" style={{ WebkitOverflowScrolling: 'touch' }}>
-              {selectedBattleLog.map((entry, idx) => {
-                // ターン開始ログの場合
-                if (entry.action === 'turn_start' && entry.turnState) {
-                  return (
-                    <div key={idx} className="p-3 bg-gray-100 rounded border border-gray-300">
-                      <div className="mb-2 font-bold text-gray-700">
-                        Turn {entry.turn} 開始
-                      </div>
-                      <div className="space-y-2">
-                        <div>
-                          <div className="mb-1 text-xs font-semibold text-gray-700">味方:</div>
-                          <div className="space-y-1">
-                            {entry.turnState.allies.map((ally, i) => (
-                              <div key={i} className="flex justify-between items-center text-xs">
-                                <span className="text-gray-700">{ally.name}</span>
-                                <span className={`font-mono ${ally.currentHP <= 0 ? 'text-gray-500' : 'text-gray-600'}`}>
-                                  {ally.currentHP}/{ally.maxHP} HP
-                                </span>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                        <div>
-                          <div className="mb-1 text-xs font-semibold text-gray-600">敵:</div>
-                          <div className="space-y-1">
-                            {entry.turnState.enemies.map((enemy, i) => (
-                              <div key={i} className="flex justify-between items-center text-xs">
-                                <span className="text-gray-700">{enemy.name}</span>
-                                <span className={`font-mono ${enemy.currentHP <= 0 ? 'text-gray-500' : 'text-gray-600'}`}>
-                                  {enemy.currentHP}/{enemy.maxHP} HP
-                                </span>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  )
-                }
+          </div>
 
-                // 通常の戦闘ログ
+          <div className="p-3 bg-gray-100 border-b border-gray-300">
+            <div className="grid grid-cols-3 gap-2">
+              {expeditionReplay.meta.party.map((memberId, idx) => {
+                const goblin = goblins.find(g => g.id === parseInt(memberId))
+                const maxHp = goblin?.stats.hp || 100
+                const currentHp = partyHp[idx]
+                const hpPercent = (currentHp / maxHp) * 100
+                const isKO = currentHp <= 0
+
                 return (
                   <div
-                    key={idx}
-                    className={`text-sm p-2 rounded ${
-                      entry.isAlly ? 'bg-gray-100' : 'bg-gray-200'
-                    }`}
+                    key={memberId}
+                    className={`bg-white rounded-lg p-2 border ${isKO ? 'border-gray-500 opacity-50' : 'border-gray-300'}`}
                   >
-                    <div className="font-mono text-xs">
-                      <span className={entry.isAlly ? 'text-gray-800 font-semibold' : 'text-gray-700 font-semibold'}>
-                        {entry.actorName}の攻撃
-                      </span>
-                      <span className="text-gray-500">
-                        ({entry.actorHP}HP)
-                      </span>
+                    <div className="flex gap-1 items-center mb-1">
+                      <div className="flex overflow-hidden justify-center items-center w-6 h-6 bg-gray-200 rounded-full">
+                        <img src={goblin?.avatar} alt={goblin?.name} className="object-cover w-full h-full" />
+                      </div>
+                      <div className="flex-1 text-xs font-medium truncate">
+                        {goblin?.name || `ID:${memberId}`}
+                      </div>
                     </div>
-                    <div className="mt-1 text-xs text-gray-700">
-                      {entry.actorName}の{entry.action}!
+                    <div className="overflow-hidden h-1 bg-gray-200 rounded-full">
+                      <div
+                        className={`h-full transition-all duration-300 ${isKO ? 'bg-gray-400' : hpPercent > 50 ? 'bg-gray-700' : hpPercent > 25 ? 'bg-gray-500' : 'bg-gray-400'}`}
+                        style={{ width: `${hpPercent}%` }}
+                      />
                     </div>
-                    <div className="mt-1 text-xs text-gray-700">
-                      {entry.targetName}に{entry.damage}ダメージ{entry.targetDefeated ? 'を与えて倒した！' : ''}
-                      {entry.healing && `${entry.healing}回復`}
+                    <div className="mt-1 text-xs text-gray-600">
+                      HP: {currentHp}/{maxHp}
                     </div>
                   </div>
                 )
               })}
             </div>
           </div>
+
+          <div className="overflow-hidden flex-1 bg-white">
+            <div
+              ref={logContainerRef}
+              className="overflow-y-auto p-4 space-y-1 h-full"
+            >
+              {eventLog.map((log, idx) => (
+                <div
+                  key={idx}
+                  className={`flex justify-between items-center text-sm text-gray-700 font-mono ${
+                    log.battleLog && log.battleLog.length > 0
+                      ? 'cursor-pointer hover:bg-gray-100 py-1 rounded'
+                      : ''
+                  }`}
+                  onClick={() => {
+                    if (log.battleLog && log.battleLog.length > 0) {
+                      setSelectedBattleLog(log.battleLog)
+                    }
+                  }}
+                >
+                  <div className="min-w-0">
+                    <div className="truncate">{log.message}</div>
+                    {log.battleLog && log.battleLog.length > 0 && (
+                      <div className="text-xs text-gray-500">詳細を見る</div>
+                    )}
+                  </div>
+                  {log.battleLog && log.battleLog.length > 0 && (
+                    <span className="ml-2 text-xs text-gray-400">›</span>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
-      )}
+
+        <div
+          className={`absolute inset-0 flex flex-col bg-white transition-transform duration-300 ease-out ${
+            selectedBattleLog ? 'translate-x-0' : 'translate-x-full'
+          }`}
+        >
+          <div className="px-3 py-3 bg-white border-b border-gray-200">
+            <div className="flex items-center justify-between">
+              <button
+                type="button"
+                onClick={() => setSelectedBattleLog(null)}
+                className="flex items-center gap-1 text-[15px] text-gray-600 hover:text-gray-800"
+              >
+                <span className="text-lg leading-none">‹</span>
+                戻る
+              </button>
+              <div className="text-[15px] font-semibold text-gray-900">
+                戦闘ログ
+              </div>
+              <div className="text-xs text-gray-400">
+                {formatTime(currentTime)}
+              </div>
+            </div>
+          </div>
+          <div className="overflow-y-auto overflow-x-hidden flex-1 p-4 space-y-2" style={{ WebkitOverflowScrolling: 'touch' }}>
+            {selectedBattleLog?.map((entry, idx) => {
+              if (entry.action === 'turn_start' && entry.turnState) {
+                return (
+                  <div key={idx} className="p-3 bg-gray-100 rounded border border-gray-300">
+                    <div className="mb-2 font-bold text-gray-700">
+                      Turn {entry.turn} 開始
+                    </div>
+                    <div className="space-y-2">
+                      <div>
+                        <div className="mb-1 text-xs font-semibold text-gray-700">味方:</div>
+                        <div className="space-y-1">
+                          {entry.turnState.allies.map((ally, i) => (
+                            <div key={i} className="flex justify-between items-center text-xs">
+                              <span className="text-gray-700">{ally.name}</span>
+                              <span className={`font-mono ${ally.currentHP <= 0 ? 'text-gray-500' : 'text-gray-600'}`}>
+                                {ally.currentHP}/{ally.maxHP} HP
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                      <div>
+                        <div className="mb-1 text-xs font-semibold text-gray-600">敵:</div>
+                        <div className="space-y-1">
+                          {entry.turnState.enemies.map((enemy, i) => (
+                            <div key={i} className="flex justify-between items-center text-xs">
+                              <span className="text-gray-700">{enemy.name}</span>
+                              <span className={`font-mono ${enemy.currentHP <= 0 ? 'text-gray-500' : 'text-gray-600'}`}>
+                                {enemy.currentHP}/{enemy.maxHP} HP
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )
+              }
+
+              return (
+                <div
+                  key={idx}
+                  className={`text-sm p-2 rounded ${
+                    entry.isAlly ? 'bg-gray-100' : 'bg-gray-200'
+                  }`}
+                >
+                  <div className="font-mono text-xs">
+                    <span className={entry.isAlly ? 'text-gray-800 font-semibold' : 'text-gray-700 font-semibold'}>
+                      {entry.actorName}の攻撃
+                    </span>
+                    <span className="text-gray-500">
+                      ({entry.actorHP}HP)
+                    </span>
+                  </div>
+                  <div className="mt-1 text-xs text-gray-700">
+                    {entry.actorName}の{entry.action}!
+                  </div>
+                  <div className="mt-1 text-xs text-gray-700">
+                    {entry.targetName}に{entry.damage}ダメージ{entry.targetDefeated ? 'を与えて倒した！' : ''}
+                    {entry.healing && `${entry.healing}回復`}
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+      </div>
     </div>
   )
 }
