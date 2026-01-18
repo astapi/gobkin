@@ -1,128 +1,180 @@
 import { useMemo, useCallback } from 'react'
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Animated } from 'react-native'
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Image, ActivityIndicator } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { router, useLocalSearchParams } from 'expo-router'
 import { usePartyService } from '@/presentation/hooks/usePartyService'
 import { useGoblinService } from '@/presentation/hooks/useGoblinService'
 import { useDungeonProgress } from '@/presentation/hooks/useDungeonProgress'
+import { useExpeditionService } from '@/presentation/hooks/useExpeditionService'
+import { getGoblinImage } from '@/shared/utils/goblinImages'
+import { areasData } from '@/shared/data'
 import type { Goblin } from '@/shared/types'
 
 export default function ExpeditionResultScreen() {
-  const { partyId, dungeonId, success, xpGained, maxFloor } = useLocalSearchParams<{
+  const { partyId, dungeonId, success, xpGained, maxFloor, expeditionId } = useLocalSearchParams<{
     partyId: string
     dungeonId: string
     success: string
     xpGained: string
     maxFloor: string
+    expeditionId?: string
   }>()
 
   const { getPartyById } = usePartyService()
   const { goblins } = useGoblinService()
   const { dungeons } = useDungeonProgress()
+  const { getExpeditionById, isLoading: isExpeditionLoading } = useExpeditionService()
+
+  const expeditionRecord = useMemo(() => {
+    if (!expeditionId) return null
+    return getExpeditionById(expeditionId)
+  }, [expeditionId, getExpeditionById])
+
+  const replay = expeditionRecord?.replay ?? null
+  const resolvedPartyId = expeditionRecord?.partyId ?? (partyId ? parseInt(partyId, 10) : null)
 
   const party = useMemo(() => {
-    if (!partyId) return null
-    return getPartyById(parseInt(partyId, 10))
-  }, [partyId, getPartyById])
+    if (!resolvedPartyId) return null
+    return getPartyById(resolvedPartyId)
+  }, [resolvedPartyId, getPartyById])
 
   const dungeon = useMemo(() => {
-    const id = dungeonId || party?.dungeonId
+    const id = expeditionRecord?.dungeonId || dungeonId || party?.dungeonId
     return dungeons.find(d => d.id === id)
-  }, [dungeons, dungeonId, party?.dungeonId])
+  }, [dungeons, expeditionRecord?.dungeonId, dungeonId, party?.dungeonId])
 
-  const partyMembers = useMemo(() => {
-    if (!party) return []
-    return party.memberIds
-      .map(id => goblins.find(g => g.id === id))
-      .filter((g): g is Goblin => g !== undefined)
-  }, [party, goblins])
+  const isSuccess = replay?.summary.success ?? success === 'true'
+  const expGained = replay?.summary.xpGained ?? parseInt(xpGained || '0', 10)
+  const goldGained = replay?.summary.goldGained ?? 0
+  const floorsCleared = replay?.summary.maxFloorReached ?? parseInt(maxFloor || '0', 10)
 
-  const isSuccess = success === 'true'
-  const expGained = parseInt(xpGained || '0', 10)
-  const floorsCleared = parseInt(maxFloor || '0', 10)
+  const getPartyMember = useCallback((memberId: string) => {
+    return goblins.find(g => g.id === parseInt(memberId, 10))
+  }, [goblins])
 
-  const handleViewLog = useCallback(() => {
-    router.push({
-      pathname: '/formation/log',
-      params: { partyId },
-    })
-  }, [partyId])
+  const isInjured = (memberId: string) => replay?.summary.injuries.includes(memberId) ?? false
+  const isDead = (memberId: string) => replay?.summary.casualties.includes(memberId) ?? false
+
+  const getResultText = () => {
+    if (!replay) {
+      return isSuccess ? 'ダンジョンを踏破しました。' : '帰還しました。'
+    }
+    if (replay.summary.casualties.length === replay.meta.party.length) {
+      return '全滅しました。'
+    }
+    const area = areasData.find(a => a.id === replay.meta.areaId)
+    if (replay.summary.success && replay.summary.maxFloorReached === area?.floors) {
+      return 'ダンジョンを踏破しました。'
+    }
+    if (replay.summary.success) {
+      return '目標階層を突破しました。'
+    }
+    return '帰還しました。'
+  }
+
+  const getPartyMemberHp = (memberId: string) => {
+    const goblin = getPartyMember(memberId)
+    if (!goblin) return { current: 0, max: 0 }
+
+    if (isDead(memberId)) {
+      return { current: 0, max: goblin.stats.hp }
+    }
+
+    if (isInjured(memberId)) {
+      return { current: Math.floor(goblin.stats.hp * 0.5), max: goblin.stats.hp }
+    }
+
+    return { current: goblin.stats.hp, max: goblin.stats.hp }
+  }
 
   const handleBackToList = useCallback(() => {
     router.replace('/formation')
   }, [])
 
+  const area = replay ? areasData.find(a => a.id === replay.meta.areaId) : null
+  const unlockNext = area?.unlockNext
+  const nextAreaName = unlockNext
+    ? areasData.find(a => a.id === unlockNext)?.name || unlockNext
+    : null
+
+  if (expeditionId && (isExpeditionLoading || !expeditionRecord)) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#3B82F6" />
+          <Text style={styles.loadingText}>読み込み中...</Text>
+        </View>
+      </SafeAreaView>
+    )
+  }
+
+  if (expeditionId && expeditionRecord && !expeditionRecord.replay) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <View style={styles.loadingContainer}>
+          <Text style={styles.loadingText}>遠征結果が見つかりません</Text>
+        </View>
+      </SafeAreaView>
+    )
+  }
+
   return (
     <SafeAreaView style={styles.container}>
+      <View style={styles.navBar}>
+        <TouchableOpacity onPress={() => router.back()}>
+          <Text style={styles.navBack}>← 戻る</Text>
+        </TouchableOpacity>
+        <Text style={styles.navTitle}>遠征結果</Text>
+        <View style={styles.navSpacer} />
+      </View>
+
       <ScrollView style={styles.scrollView}>
-        <View style={styles.header}>
-          <View style={[styles.resultBadge, isSuccess ? styles.successBadge : styles.failureBadge]}>
-            <Text style={styles.resultText}>{isSuccess ? '踏破成功' : '撤退'}</Text>
-          </View>
-          <Text style={styles.title}>遠征完了</Text>
-          {party && dungeon && (
-            <Text style={styles.subtitle}>{party.name} → {dungeon.name}</Text>
-          )}
+        <View style={styles.headerSection}>
+          <Text style={styles.headerTitle}>
+            {dungeon?.name || '遠征'}: {getResultText()}
+          </Text>
         </View>
 
-        <View style={styles.statsGrid}>
-          <View style={styles.statCard}>
-            <Text style={[styles.statValue, isSuccess ? styles.successValue : styles.failureValue]}>
-              {floorsCleared}
-            </Text>
-            <Text style={styles.statLabel}>到達階層</Text>
-          </View>
-          <View style={styles.statCard}>
-            <Text style={[styles.statValue, styles.expValue]}>{expGained}</Text>
-            <Text style={styles.statLabel}>獲得経験値</Text>
-          </View>
-        </View>
-
-        {/* パーティメンバー */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>参加メンバー</Text>
-          <View style={styles.memberList}>
-            {partyMembers.map(member => (
-              <View key={member.id} style={styles.memberCard}>
+          {(replay?.meta.party ?? party?.memberIds.map(id => id.toString()) ?? []).map(memberId => {
+            const goblin = getPartyMember(memberId)
+            const hp = getPartyMemberHp(memberId)
+            const dead = isDead(memberId)
+            return (
+              <View key={memberId} style={styles.memberRow}>
                 <View style={styles.memberAvatar}>
-                  <Text style={styles.memberAvatarText}>G</Text>
+                  {goblin ? (
+                    <Image
+                      source={getGoblinImage(goblin.avatar)}
+                      style={[styles.memberAvatarImage, dead && styles.memberAvatarDead]}
+                    />
+                  ) : (
+                    <Text style={styles.memberAvatarFallback}>?</Text>
+                  )}
                 </View>
                 <View style={styles.memberInfo}>
-                  <Text style={styles.memberName}>{member.name}</Text>
-                  <Text style={styles.memberLevel}>Lv.{member.level}</Text>
-                </View>
-                <View style={styles.expBadge}>
-                  <Text style={styles.expBadgeText}>+{Math.floor(expGained / Math.max(partyMembers.length, 1))} EXP</Text>
+                  <Text style={styles.memberName}>{goblin?.name || `ID:${memberId}`}</Text>
+                  <Text style={styles.memberHp}>({hp.current}/{hp.max})</Text>
                 </View>
               </View>
-            ))}
-          </View>
+            )
+          })}
         </View>
 
-        {/* 結果サマリー */}
-        <View style={styles.summarySection}>
-          <View style={styles.summaryRow}>
-            <Text style={styles.summaryLabel}>ダンジョン</Text>
-            <Text style={styles.summaryValue}>{dungeon?.name || '不明'}</Text>
-          </View>
-          <View style={styles.summaryRow}>
-            <Text style={styles.summaryLabel}>総階層</Text>
-            <Text style={styles.summaryValue}>{dungeon?.floors || 0}階</Text>
-          </View>
-          <View style={styles.summaryRow}>
-            <Text style={styles.summaryLabel}>結果</Text>
-            <Text style={[styles.summaryValue, isSuccess ? styles.successText : styles.failureText]}>
-              {isSuccess ? '完全踏破' : `${floorsCleared}階で撤退`}
-            </Text>
-          </View>
+        <View style={styles.section}>
+          <Text style={styles.summaryText}>経験値 {expGained.toLocaleString()} XP</Text>
+          <Text style={styles.summaryText}>{goldGained.toLocaleString()} Gold を獲得</Text>
         </View>
 
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.logButton} onPress={handleViewLog}>
-            <Text style={styles.logButtonText}>詳細ログを見る</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.doneButton} onPress={handleBackToList}>
-            <Text style={styles.doneButtonText}>完了</Text>
+        {nextAreaName && isSuccess && (
+          <View style={styles.section}>
+            <Text style={styles.summaryText}>次のエリア「{nextAreaName}」が解放されました</Text>
+          </View>
+        )}
+
+        <View style={styles.bottomSection}>
+          <TouchableOpacity style={styles.menuButton} onPress={handleBackToList}>
+            <Text style={styles.menuButtonText}>メニューに戻る</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -133,181 +185,117 @@ export default function ExpeditionResultScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#1F2937',
+    backgroundColor: '#F3F4F6',
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingText: {
+    marginTop: 12,
+    fontSize: 14,
+    color: '#6B7280',
   },
   scrollView: {
     flex: 1,
   },
-  header: {
-    alignItems: 'center',
-    padding: 24,
-  },
-  resultBadge: {
-    paddingHorizontal: 32,
-    paddingVertical: 12,
-    borderRadius: 24,
-    marginBottom: 16,
-  },
-  successBadge: {
-    backgroundColor: '#10B981',
-  },
-  failureBadge: {
-    backgroundColor: '#EF4444',
-  },
-  resultText: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
-  },
-  subtitle: {
-    fontSize: 16,
-    color: '#9CA3AF',
-    marginTop: 8,
-  },
-  statsGrid: {
+  navBar: {
     flexDirection: 'row',
-    padding: 16,
-    gap: 12,
-  },
-  statCard: {
-    flex: 1,
-    backgroundColor: '#374151',
-    borderRadius: 16,
-    padding: 20,
     alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#E5E7EB',
+    backgroundColor: '#FFFFFF',
   },
-  statValue: {
-    fontSize: 48,
-    fontWeight: 'bold',
-  },
-  successValue: {
-    color: '#10B981',
-  },
-  failureValue: {
-    color: '#F59E0B',
-  },
-  expValue: {
-    color: '#3B82F6',
-  },
-  statLabel: {
+  navBack: {
     fontSize: 14,
-    color: '#9CA3AF',
-    marginTop: 8,
+    color: '#374151',
+  },
+  navTitle: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#111827',
+  },
+  navSpacer: {
+    width: 60,
+  },
+  headerSection: {
+    padding: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#E5E7EB',
+    backgroundColor: '#FFFFFF',
+  },
+  headerTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#111827',
   },
   section: {
     padding: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#E5E7EB',
+    backgroundColor: '#FFFFFF',
   },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
-    marginBottom: 12,
-  },
-  memberList: {
-    gap: 8,
-  },
-  memberCard: {
+  memberRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#374151',
-    borderRadius: 12,
-    padding: 12,
+    marginBottom: 12,
   },
   memberAvatar: {
     width: 40,
     height: 40,
-    borderRadius: 20,
-    backgroundColor: '#10B981',
+    borderRadius: 6,
+    backgroundColor: '#E5E7EB',
+    overflow: 'hidden',
     alignItems: 'center',
     justifyContent: 'center',
+    marginRight: 12,
   },
-  memberAvatarText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
+  memberAvatarImage: {
+    width: '100%',
+    height: '100%',
+  },
+  memberAvatarDead: {
+    opacity: 0.5,
+  },
+  memberAvatarFallback: {
+    color: '#6B7280',
+    fontWeight: '600',
   },
   memberInfo: {
     flex: 1,
-    marginLeft: 12,
   },
   memberName: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: '600',
-    color: '#FFFFFF',
+    color: '#111827',
   },
-  memberLevel: {
+  memberHp: {
     fontSize: 12,
-    color: '#9CA3AF',
+    color: '#6B7280',
     marginTop: 2,
   },
-  expBadge: {
-    backgroundColor: '#3B82F6',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 12,
-  },
-  expBadgeText: {
-    fontSize: 12,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
-  },
-  summarySection: {
-    backgroundColor: '#111827',
-    margin: 16,
-    borderRadius: 12,
-    padding: 16,
-  },
-  summaryRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: '#374151',
-  },
-  summaryLabel: {
+  summaryText: {
     fontSize: 14,
-    color: '#9CA3AF',
+    color: '#111827',
+    marginBottom: 6,
   },
-  summaryValue: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#FFFFFF',
-  },
-  successText: {
-    color: '#10B981',
-  },
-  failureText: {
-    color: '#F59E0B',
-  },
-  buttonContainer: {
+  bottomSection: {
     padding: 16,
-    gap: 12,
+    backgroundColor: '#F3F4F6',
   },
-  logButton: {
-    backgroundColor: '#374151',
-    borderRadius: 12,
-    padding: 16,
+  menuButton: {
+    backgroundColor: '#1F2937',
+    borderRadius: 8,
+    paddingVertical: 14,
     alignItems: 'center',
   },
-  logButtonText: {
-    fontSize: 16,
+  menuButtonText: {
+    fontSize: 15,
     fontWeight: '600',
-    color: '#FFFFFF',
-  },
-  doneButton: {
-    backgroundColor: '#10B981',
-    borderRadius: 12,
-    padding: 16,
-    alignItems: 'center',
-  },
-  doneButtonText: {
-    fontSize: 16,
-    fontWeight: 'bold',
     color: '#FFFFFF',
   },
 })

@@ -66,9 +66,10 @@ export class ExpeditionEngine {
     }
 
     // 表示上の規定時間をそのまま使い、終端にイベントを揃える
-    // DEBUG環境変数がtrueの場合は1秒に短縮
+    // DEBUG環境変数がtrueの場合は1秒に短縮（明示指定がある場合は尊重）
     const isDebug = typeof __DEV__ !== 'undefined' ? __DEV__ : false
-    const adjustedDuration = isDebug ? 1 : Math.ceil(area.baseDurationSec)
+    const requestedDuration = request.durationSec ?? area.baseDurationSec
+    const adjustedDuration = isDebug && request.durationSec == null ? 1 : Math.ceil(requestedDuration)
 
     const events: TimelineEvent[] = []
     let currentFloor = 1
@@ -247,7 +248,7 @@ export class ExpeditionEngine {
         areaId: areaId,
         areaName: area.name,
         floors: area.floors,
-        baseDurationSec: area.baseDurationSec,
+        baseDurationSec: adjustedDuration,
         party: party.map(g => g.id.toString()),
         returnPolicy: request.returnPolicy,
         seed: this.seed
