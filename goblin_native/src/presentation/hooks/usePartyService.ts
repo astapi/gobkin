@@ -13,6 +13,7 @@ import {
 
 type ListenerCapablePartyRepository = IPartyRepository & {
   initialize?: () => Promise<void>
+  reload?: () => Promise<void>
   setOnDataChange?: (callback: () => void) => void
 }
 
@@ -49,21 +50,26 @@ export const usePartyService = () => {
     [partyRepository],
   )
 
-  const refreshParties = useCallback(() => {
+  const refreshParties = useCallback(async () => {
+    // DBから再読み込み
+    if (partyRepository.reload) {
+      await partyRepository.reload()
+    }
     const currentParties = getPartyListUseCase.execute()
     setParties(currentParties)
-  }, [getPartyListUseCase])
+  }, [partyRepository, getPartyListUseCase])
 
   useEffect(() => {
     const initRepository = async () => {
       if (partyRepository.initialize) {
         await partyRepository.initialize()
       }
-      refreshParties()
+      const currentParties = getPartyListUseCase.execute()
+      setParties(currentParties)
       setRepositoryInitialized(true)
     }
     initRepository()
-  }, [partyRepository, refreshParties])
+  }, [partyRepository, getPartyListUseCase])
 
   const getPartyById = useCallback(
     (partyId: number) => getPartyByIdUseCase.execute(partyId),
