@@ -23,12 +23,12 @@ export default function ExpeditionResultScreen() {
   const { getPartyById } = usePartyService()
   const { goblins } = useGoblinService()
   const { dungeons } = useDungeonProgress()
-  const { getExpeditionById, isLoading: isExpeditionLoading } = useExpeditionService()
+  const { expeditionRecords, getExpeditionById, isLoading: isExpeditionLoading } = useExpeditionService()
 
   const expeditionRecord = useMemo(() => {
     if (!expeditionId) return null
     return getExpeditionById(expeditionId)
-  }, [expeditionId, getExpeditionById])
+  }, [expeditionId, getExpeditionById, expeditionRecords])
 
   const replay = expeditionRecord?.replay ?? null
   const resolvedPartyId = expeditionRecord?.partyId ?? (partyId ? parseInt(partyId, 10) : null)
@@ -97,12 +97,22 @@ export default function ExpeditionResultScreen() {
     ? areasData.find(a => a.id === unlockNext)?.name || unlockNext
     : null
 
-  if (expeditionId && (isExpeditionLoading || !expeditionRecord)) {
+  if (expeditionId && isExpeditionLoading) {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color="#3B82F6" />
           <Text style={styles.loadingText}>読み込み中...</Text>
+        </View>
+      </SafeAreaView>
+    )
+  }
+
+  if (expeditionId && !expeditionRecord) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <View style={styles.loadingContainer}>
+          <Text style={styles.loadingText}>遠征結果が見つかりません</Text>
         </View>
       </SafeAreaView>
     )

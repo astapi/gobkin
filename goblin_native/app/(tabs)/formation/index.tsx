@@ -1,5 +1,6 @@
 import { useCallback, useMemo } from 'react'
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet, ActivityIndicator, Image } from 'react-native'
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet, ActivityIndicator, Image, useWindowDimensions } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
 import { router, useFocusEffect } from 'expo-router'
 import { usePartyService } from '@/presentation/hooks/usePartyService'
 import { useGoblinService } from '@/presentation/hooks/useGoblinService'
@@ -13,13 +14,15 @@ const INITIAL_PARTY_COUNT = 3
 interface MemberSlotProps {
   goblin?: Goblin
   isEmpty: boolean
+  slotSize: number
+  avatarSize: number
 }
 
-function MemberSlot({ goblin, isEmpty }: MemberSlotProps) {
+function MemberSlot({ goblin, isEmpty, slotSize, avatarSize }: MemberSlotProps) {
   if (isEmpty || !goblin) {
     return (
-      <View style={styles.memberSlot}>
-        <View style={styles.emptySlot}>
+      <View style={[styles.memberSlot, { width: slotSize }]}>
+        <View style={[styles.emptySlot, { width: avatarSize, height: avatarSize }]}>
           <Text style={styles.emptySlotText}>+</Text>
         </View>
       </View>
@@ -27,9 +30,9 @@ function MemberSlot({ goblin, isEmpty }: MemberSlotProps) {
   }
 
   return (
-    <View style={styles.memberSlot}>
+    <View style={[styles.memberSlot, { width: slotSize }]}>
       <Text style={styles.memberLevel}>Lv{goblin.level}</Text>
-      <Image source={getGoblinImage(goblin.avatar)} style={styles.memberAvatar} />
+      <Image source={getGoblinImage(goblin.avatar)} style={[styles.memberAvatar, { width: avatarSize, height: avatarSize }]} />
       <Text style={styles.memberHp}>HP{goblin.stats.hp}</Text>
     </View>
   )
@@ -42,6 +45,8 @@ interface PartyCardProps {
   historyDisplays: ExpeditionHistoryDisplay[]
   onHistoryPress: (record: ExpeditionRecord, ongoing: boolean) => void
   onLogPress: (record: ExpeditionRecord) => void
+  slotSize: number
+  avatarSize: number
 }
 
 function PartyCard({
@@ -51,6 +56,8 @@ function PartyCard({
   historyDisplays,
   onHistoryPress,
   onLogPress,
+  slotSize,
+  avatarSize,
 }: PartyCardProps) {
   const members = useMemo(() => {
     return party.memberIds
@@ -82,7 +89,7 @@ function PartyCard({
 
         <View style={styles.membersRow}>
           {slots.map((goblin, index) => (
-            <MemberSlot key={index} goblin={goblin} isEmpty={!goblin} />
+            <MemberSlot key={index} goblin={goblin} isEmpty={!goblin} slotSize={slotSize} avatarSize={avatarSize} />
           ))}
         </View>
       </TouchableOpacity>
@@ -116,6 +123,7 @@ function PartyCard({
 }
 
 export default function FormationScreen() {
+  const { width } = useWindowDimensions()
   const { parties, isLoading: partiesLoading, createParty, refreshParties } = usePartyService()
   const { goblins, isLoading: goblinsLoading, refreshGoblins } = useGoblinService()
   const {
@@ -125,6 +133,19 @@ export default function FormationScreen() {
     partyHistoryDisplays,
     formatFullDateTimeWithSeconds,
   } = useExpeditionFlow({ refreshParties, parties, enableAutoCompletion: true })
+  const { slotSize, avatarSize } = useMemo(() => {
+    const slotGap = 8
+    const maxSlotWidth = 50
+    const minSlotWidth = 40
+    const availableWidth = Math.max(0, width - 64)
+    const singleRowSlotWidth = Math.floor((availableWidth - slotGap * (MAX_PARTY_SLOTS - 1)) / MAX_PARTY_SLOTS)
+    const shouldWrap = singleRowSlotWidth < minSlotWidth
+    const columns = shouldWrap ? 3 : MAX_PARTY_SLOTS
+    const rawSlotSize = Math.floor((availableWidth - slotGap * (columns - 1)) / columns)
+    const clampedSlotSize = Math.min(maxSlotWidth, rawSlotSize)
+    const computedAvatarSize = Math.max(28, clampedSlotSize - 10)
+    return { slotSize: clampedSlotSize, avatarSize: computedAvatarSize }
+  }, [width])
 
   // 画面がフォーカスされたときにデータを再取得
   useFocusEffect(
@@ -204,19 +225,19 @@ export default function FormationScreen() {
 
   if (partiesLoading || goblinsLoading) {
     return (
-      <View style={styles.loadingContainer}>
+      <SafeAreaView style={styles.loadingContainer} edges={['left', 'right', 'bottom']}>
         <ActivityIndicator size="large" color="#3B82F6" />
         <Text style={styles.loadingText}>読み込み中...</Text>
-      </View>
+      </SafeAreaView>
     )
   }
 
   const currentTimeLabel = formatFullDateTimeWithSeconds(currentTime)
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['left', 'right', 'bottom']}>
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.contentContainer}>
-        <Text style={styles.screenTitle}>パーティ選択</Text>
+        <Text style={styles.prepTitle}>冒険の準備</Text>
 
         {displayParties.map((party, index) => {
           if (party) {
@@ -229,6 +250,8 @@ export default function FormationScreen() {
                 historyDisplays={partyHistoryDisplays[party.id] ?? []}
                 onHistoryPress={handleHistoryPress}
                 onLogPress={handleLogPress}
+                slotSize={slotSize}
+                avatarSize={avatarSize}
               />
             )
           } else {
@@ -245,7 +268,7 @@ export default function FormationScreen() {
                 </View>
                 <View style={styles.membersRow}>
                   {Array.from({ length: MAX_PARTY_SLOTS }).map((_, slotIndex) => (
-                    <MemberSlot key={slotIndex} isEmpty />
+                    <MemberSlot key={slotIndex} isEmpty slotSize={slotSize} avatarSize={avatarSize} />
                   ))}
                 </View>
               </TouchableOpacity>
@@ -257,7 +280,7 @@ export default function FormationScreen() {
       <View style={styles.currentTimeBadge} pointerEvents="none">
         <Text style={styles.currentTimeText}>{currentTimeLabel}</Text>
       </View>
-    </View>
+    </SafeAreaView>
   )
 }
 
@@ -270,8 +293,15 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   contentContainer: {
-    padding: 16,
+    paddingHorizontal: 16,
+    paddingTop: 8,
     paddingBottom: 48,
+  },
+  prepTitle: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#6B7280',
+    marginBottom: 8,
   },
   loadingContainer: {
     flex: 1,
@@ -383,6 +413,7 @@ const styles = StyleSheet.create({
   membersRow: {
     flexDirection: 'row',
     justifyContent: 'flex-start',
+    flexWrap: 'wrap',
     gap: 8,
   },
   memberSlot: {

@@ -160,27 +160,27 @@ export default function GoblinListScreen() {
 
   if (isLoading) {
     return (
-      <View style={styles.loadingContainer}>
+      <SafeAreaView style={styles.loadingContainer} edges={['top', 'left', 'right', 'bottom']}>
         <ActivityIndicator size="large" color="#10B981" />
         <Text style={styles.loadingText}>読み込み中...</Text>
-      </View>
+      </SafeAreaView>
     )
   }
 
   if (goblins.length === 0) {
     return (
-      <View style={styles.emptyContainer}>
+      <SafeAreaView style={styles.emptyContainer} edges={['top', 'left', 'right', 'bottom']}>
         <Text style={styles.emptyIcon}>G</Text>
         <Text style={styles.emptyTitle}>ゴブリンがいません</Text>
         <Text style={styles.emptyDescription}>
           拠点でゴブリンを受け入れると、ここに表示されます
         </Text>
-      </View>
+      </SafeAreaView>
     )
   }
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['top', 'left', 'right', 'bottom']}>
       <FlatList
         data={goblins}
         keyExtractor={(item) => String(item.id)}
@@ -195,7 +195,7 @@ export default function GoblinListScreen() {
         visible={modalVisible}
         onClose={handleCloseModal}
       />
-    </View>
+    </SafeAreaView>
   )
 }
 

@@ -6,8 +6,7 @@ export default function FormationLayout() {
       <Stack.Screen
         name="index"
         options={{
-          title: 'Parties',
-          headerShown: false,
+          title: 'パーティ編成',
         }}
       />
       <Stack.Screen
@@ -37,6 +36,7 @@ export default function FormationLayout() {
         options={{
           title: 'Results',
           presentation: 'card',
+          headerShown: false,
         }}
       />
       <Stack.Screen

@@ -1,5 +1,6 @@
 import { Tabs } from 'expo-router'
 import { View, StyleSheet } from 'react-native'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import ListIcon from '../../assets/list.svg'
 import HenseiIcon from '../../assets/hensei.svg'
 import BaseIcon from '../../assets/base.svg'
@@ -18,6 +19,10 @@ function TabIcon({ Icon, color }: TabIconProps) {
 }
 
 export default function TabLayout() {
+  const insets = useSafeAreaInsets()
+  const basePadding = 8
+  const baseHeight = 60
+  const safeAreaPadding = Math.max(basePadding, insets.bottom)
   return (
     <Tabs
       screenOptions={{
@@ -27,8 +32,8 @@ export default function TabLayout() {
           backgroundColor: '#FFFFFF',
           borderTopColor: '#E5E7EB',
           paddingTop: 8,
-          paddingBottom: 8,
-          height: 60,
+          paddingBottom: safeAreaPadding,
+          height: baseHeight + safeAreaPadding,
         },
         tabBarLabelStyle: {
           fontSize: 12,
@@ -49,6 +54,7 @@ export default function TabLayout() {
         options={{
           title: 'List',
           headerTitle: 'Goblin List',
+          headerShown: false,
           tabBarIcon: ({ color }) => <TabIcon Icon={ListIcon} color={color} />,
         }}
       />
@@ -57,6 +63,7 @@ export default function TabLayout() {
         options={{
           title: 'Formation',
           headerTitle: 'Party Formation',
+          headerShown: false,
           tabBarIcon: ({ color }) => <TabIcon Icon={HenseiIcon} color={color} />,
         }}
       />
@@ -65,6 +72,7 @@ export default function TabLayout() {
         options={{
           title: 'Base',
           headerTitle: 'Base Management',
+          headerShown: false,
           tabBarIcon: ({ color }) => <TabIcon Icon={BaseIcon} color={color} />,
         }}
       />
