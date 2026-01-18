@@ -143,10 +143,21 @@ export class SQLiteExpeditionRepository implements IExpeditionRepository {
   private async saveAsync(record: ExpeditionRecord): Promise<void> {
     const db = await getDatabase()
     await db.runAsync(
-      `INSERT OR REPLACE INTO expeditions
+      `INSERT INTO expeditions
        (id, party_id, party_name, dungeon_id, dungeon_name, start_time, return_time,
-        status, return_policy, replay_json, updated_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))`,
+        status, return_policy, replay_json, created_at, updated_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'), datetime('now'))
+       ON CONFLICT(id) DO UPDATE SET
+        party_id = excluded.party_id,
+        party_name = excluded.party_name,
+        dungeon_id = excluded.dungeon_id,
+        dungeon_name = excluded.dungeon_name,
+        start_time = excluded.start_time,
+        return_time = excluded.return_time,
+        status = excluded.status,
+        return_policy = excluded.return_policy,
+        replay_json = excluded.replay_json,
+        updated_at = datetime('now')`,
       [
         record.id,
         record.partyId,
@@ -176,7 +187,7 @@ export class SQLiteExpeditionRepository implements IExpeditionRepository {
       dungeonId: row.dungeon_id,
       dungeonName: row.dungeon_name,
       startTime: new Date(row.start_time),
-      returnTime: row.return_time ? new Date(row.return_time) : new Date(),
+      returnTime: row.return_time ? new Date(row.return_time) : null,
       status: row.status as ExpeditionRecord['status'],
       returnPolicy: row.return_policy as ExpeditionRequest['returnPolicy'],
       replay: row.replay_json ? JSON.parse(row.replay_json) : undefined,
