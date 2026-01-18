@@ -51,7 +51,7 @@ export interface ExpeditionRecord {
   dungeonId: string
   dungeonName: string
   startTime: Date
-  returnTime: Date
+  returnTime: Date | null
   status: 'ongoing' | 'completed' | 'failed'
   returnPolicy: ExpeditionRequest["returnPolicy"]
   replay?: ExpeditionReplay
