@@ -28,7 +28,7 @@ export default function FormationLayout() {
         name="playback"
         options={{
           title: 'Expedition',
-          presentation: 'fullScreenModal',
+          presentation: 'card',
           headerShown: false,
         }}
       />
@@ -44,6 +44,14 @@ export default function FormationLayout() {
         options={{
           title: 'Expedition Log',
           presentation: 'card',
+        }}
+      />
+      <Stack.Screen
+        name="battle-log"
+        options={{
+          title: 'Battle Log',
+          presentation: 'card',
+          headerShown: false,
         }}
       />
     </Stack>
