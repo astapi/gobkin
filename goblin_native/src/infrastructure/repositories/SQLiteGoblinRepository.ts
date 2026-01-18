@@ -24,9 +24,20 @@ interface GoblinRow {
 }
 
 export class SQLiteGoblinRepository implements IGoblinRepository {
+  private static instance: SQLiteGoblinRepository | null = null
   private cache: Map<number, Goblin> = new Map()
   private initialized = false
   private onDataChangeCallback: (() => void) | null = null
+
+  /**
+   * シングルトンインスタンスを取得
+   */
+  static getInstance(): SQLiteGoblinRepository {
+    if (!SQLiteGoblinRepository.instance) {
+      SQLiteGoblinRepository.instance = new SQLiteGoblinRepository()
+    }
+    return SQLiteGoblinRepository.instance
+  }
 
   /**
    * リポジトリを初期化し、DBからデータをロード

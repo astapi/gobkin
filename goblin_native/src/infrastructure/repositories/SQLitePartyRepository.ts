@@ -19,9 +19,20 @@ interface PartyRow {
 }
 
 export class SQLitePartyRepository implements IPartyRepository {
+  private static instance: SQLitePartyRepository | null = null
   private cache: Map<number, Party> = new Map()
   private initialized = false
   private onDataChangeCallback: (() => void) | null = null
+
+  /**
+   * シングルトンインスタンスを取得
+   */
+  static getInstance(): SQLitePartyRepository {
+    if (!SQLitePartyRepository.instance) {
+      SQLitePartyRepository.instance = new SQLitePartyRepository()
+    }
+    return SQLitePartyRepository.instance
+  }
 
   /**
    * リポジトリを初期化し、DBからデータをロード
