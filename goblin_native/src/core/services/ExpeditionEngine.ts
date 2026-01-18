@@ -400,6 +400,7 @@ export class ExpeditionEngine {
         partyState[index].currentHP = Math.max(0, partyState[index].currentHP + delta)
         if (partyState[index].currentHP <= 0) {
           partyState[index].isKO = true
+          partyState[index].isDead = true
         }
       }
     })
