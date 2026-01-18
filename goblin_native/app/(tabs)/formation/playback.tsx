@@ -21,14 +21,18 @@ export default function ExpeditionPlaybackScreen() {
     returnPolicy: string
   }>()
 
-  const { getPartyById, markExpedition, markIdle } = usePartyService()
-  const { goblins } = useGoblinService()
+  const { getPartyById, markExpedition, markIdle, isLoading: isPartyLoading } = usePartyService()
+  const { goblins, isLoading: isGoblinLoading } = useGoblinService()
   const { dungeons } = useDungeonProgress()
 
   const party = useMemo(() => {
-    if (!partyId) return null
-    return getPartyById(parseInt(partyId, 10))
-  }, [partyId, getPartyById])
+    if (!partyId || isPartyLoading) return null
+    try {
+      return getPartyById(parseInt(partyId, 10))
+    } catch {
+      return null
+    }
+  }, [partyId, getPartyById, isPartyLoading])
 
   const dungeon = useMemo(() => {
     const id = dungeonId || party?.dungeonId

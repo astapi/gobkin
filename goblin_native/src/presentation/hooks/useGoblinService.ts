@@ -14,7 +14,7 @@ export const useGoblinService = () => {
   const [goblins, setGoblins] = useState<Goblin[]>([])
 
   const goblinRepository = useMemo<ListenerCapableGoblinRepository>(() => {
-    return new SQLiteGoblinRepository()
+    return SQLiteGoblinRepository.getInstance()
   }, [])
 
   const getGoblinListUseCase = useMemo(

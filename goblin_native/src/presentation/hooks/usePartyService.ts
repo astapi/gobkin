@@ -22,7 +22,7 @@ export const usePartyService = () => {
   const [parties, setParties] = useState<Party[]>([])
 
   const partyRepository = useMemo<ListenerCapablePartyRepository>(() => {
-    return new SQLitePartyRepository()
+    return SQLitePartyRepository.getInstance()
   }, [])
 
   const getPartyListUseCase = useMemo(
