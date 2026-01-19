@@ -1,4 +1,5 @@
 import type { Dungeon, Goblin } from '../../shared/types'
+import { getGoblinAvatar } from '../../shared/utils/goblinAvatar'
 
 interface ExpeditionConfirmModalProps {
   dungeon: Dungeon
@@ -38,7 +39,7 @@ export const ExpeditionConfirmModal = ({
                 {members.map(member => (
                   <div key={member.id} className="flex items-center gap-1 text-xs bg-white rounded px-2 py-1 border border-gray-200">
                     <div className="w-5 h-5 rounded-full overflow-hidden">
-                      <img src={member.avatar} alt={member.name} className="w-full h-full object-cover" />
+                      <img src={getGoblinAvatar(member)} alt={member.name} className="w-full h-full object-cover" />
                     </div>
                     <span className="text-gray-700">{member.name}</span>
                   </div>

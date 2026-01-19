@@ -7,6 +7,7 @@ import { getModTemplate } from '../../shared/data/modPoolLoader'
 import { ModStatCalculator } from '../../core/services/ModStatCalculator'
 import factorSlime from '../../assets/factor/factor_slime.svg'
 import factorWolf from '../../assets/factor/factor_wolf.svg'
+import { getGoblinAvatar } from '../../shared/utils/goblinAvatar'
 
 /**
  * effectiveStatsが異なるかどうかを比較
@@ -108,7 +109,7 @@ export const GoblinDetailModal = ({
         <div className="p-6 bg-white rounded-xl border-2 border-gray-200 shadow-md">
           <div className="flex gap-4 items-center pb-4 mb-6 border-b-2 border-gray-100">
             <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center border-[3px] border-gray-400 overflow-hidden">
-              <img src={goblin.avatar} alt={goblin.name} className="object-cover w-full h-full" />
+              <img src={getGoblinAvatar(goblin)} alt={goblin.name} className="object-cover w-full h-full" />
             </div>
             <div>
               <h3 className="text-2xl font-bold text-gray-800">{goblin.name}</h3>

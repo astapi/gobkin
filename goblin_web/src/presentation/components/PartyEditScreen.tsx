@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import type { Goblin, Party } from '../../shared/types'
 import { GoblinCard } from './GoblinCard.tsx'
+import { getGoblinAvatar } from '../../shared/utils/goblinAvatar'
 
 interface PartyEditScreenProps {
   partyId: number
@@ -142,7 +143,7 @@ export const PartyEditScreen = ({
               {member ? (
                 <>
                   <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center mb-1 border border-gray-400 overflow-hidden">
-                    <img src={member.avatar} alt={member.name} className="w-full h-full object-cover" />
+                    <img src={getGoblinAvatar(member)} alt={member.name} className="w-full h-full object-cover" />
                   </div>
                   <div className="text-[10px] text-gray-600 text-center">{member.name}</div>
                   {!isExpedition && (

@@ -1,6 +1,7 @@
 import type { ExpeditionReplay, Goblin } from '../../shared/types'
 import { areasData } from '../../shared/data'
 import { getFactor } from '../../shared/data/factors'
+import { getGoblinAvatar } from '../../shared/utils/goblinAvatar'
 
 interface ExpeditionResultScreenProps {
   expeditionReplay: ExpeditionReplay
@@ -81,7 +82,7 @@ export const ExpeditionResultScreen = ({
               >
                 <div className="flex overflow-hidden flex-shrink-0 justify-center items-center w-10 h-10 bg-gray-200 rounded">
                   <img
-                    src={goblin?.avatar}
+                    src={getGoblinAvatar(goblin)}
                     alt={goblin?.name}
                     className={`w-full h-full object-cover ${dead ? 'grayscale' : ''}`}
                   />

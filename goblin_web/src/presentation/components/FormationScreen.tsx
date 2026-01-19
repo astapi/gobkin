@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import type { ExpeditionRecord, Goblin, Party } from '../../shared/types'
 import { useCurrentTime } from '../hooks/useCurrentTime.ts'
+import { getGoblinAvatar } from '../../shared/utils/goblinAvatar'
 
 interface FormationScreenProps {
   parties: Party[]
@@ -191,7 +192,7 @@ export const FormationScreen = ({
                           <>
                             <div className="text-xs text-gray-600">Lv{member.level}</div>
                             <div className="overflow-hidden w-8 h-8 rounded-full">
-                              <img src={member.avatar} alt={member.name} className="object-cover w-full h-full" />
+                              <img src={getGoblinAvatar(member)} alt={member.name} className="object-cover w-full h-full" />
                             </div>
                             <div className="text-xs text-gray-600">HP{member.effectiveStats?.hp ?? member.stats.hp}</div>
                           </>

@@ -4,12 +4,12 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { router, useFocusEffect } from 'expo-router'
 import { usePartyService } from '@/presentation/hooks/usePartyService'
 import { useGoblinService } from '@/presentation/hooks/useGoblinService'
+import { useBaseState } from '@/presentation/hooks/useBaseState'
 import { useExpeditionFlow, type ExpeditionHistoryDisplay } from '@/presentation/hooks/useExpeditionFlow'
 import { getGoblinImage } from '@/shared/utils/goblinImages'
 import type { Party, Goblin, ExpeditionRecord } from '@/shared/types'
 
 const MAX_PARTY_SLOTS = 6
-const INITIAL_PARTY_COUNT = 3
 
 interface MemberSlotProps {
   goblin?: Goblin
@@ -126,6 +126,7 @@ export default function FormationScreen() {
   const { width } = useWindowDimensions()
   const { parties, isLoading: partiesLoading, createParty, refreshParties } = usePartyService()
   const { goblins, isLoading: goblinsLoading, refreshGoblins } = useGoblinService()
+  const { rank, isLoading: baseLoading } = useBaseState()
   const {
     completeDueExpeditions,
     currentTime,
@@ -156,13 +157,15 @@ export default function FormationScreen() {
   )
 
   // 初期パーティ枠を確保（最低3つ）
+  const maxPartyCount = Math.max(1, rank)
   const displayParties = useMemo(() => {
-    const result: (Party | null)[] = [...parties]
-    while (result.length < INITIAL_PARTY_COUNT) {
+    const sortedParties = [...parties].sort((a, b) => a.id - b.id).slice(0, maxPartyCount)
+    const result: (Party | null)[] = [...sortedParties]
+    while (result.length < maxPartyCount) {
       result.push(null)
     }
     return result
-  }, [parties])
+  }, [maxPartyCount, parties])
 
 
   const handlePartyPress = useCallback((party: Party | null, index: number) => {
@@ -223,7 +226,7 @@ export default function FormationScreen() {
     })
   }, [])
 
-  if (partiesLoading || goblinsLoading) {
+  if (partiesLoading || goblinsLoading || baseLoading) {
     return (
       <SafeAreaView style={styles.loadingContainer} edges={['left', 'right', 'bottom']}>
         <ActivityIndicator size="large" color="#3B82F6" />
@@ -395,7 +398,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   partyName: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 'bold',
     color: '#1F2937',
   },

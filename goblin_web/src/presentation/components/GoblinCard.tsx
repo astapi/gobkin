@@ -1,4 +1,5 @@
 import type { Goblin } from '../../shared/types'
+import { getGoblinAvatar } from '../../shared/utils/goblinAvatar'
 import { FactorBadgeList } from './FactorBadge'
 
 interface GoblinCardProps {
@@ -12,7 +13,7 @@ export const GoblinCard = ({ goblin, onClick }: GoblinCardProps) => (
     onClick={onClick}
   >
     <div className="w-12 h-12 flex items-center justify-center">
-      <img src={goblin.avatar} alt={goblin.name} className="w-full h-full object-contain" />
+      <img src={getGoblinAvatar(goblin)} alt={goblin.name} className="w-full h-full object-contain" />
     </div>
     <div className="flex-1">
       <div className="font-bold text-gray-800 text-sm">{goblin.name}</div>

@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import type { ExpeditionReplay, TimelineEvent, Goblin } from '../../shared/types'
+import { getGoblinAvatar } from '../../shared/utils/goblinAvatar'
 
 interface ExpeditionPlaybackScreenProps {
   expeditionReplay: ExpeditionReplay
@@ -314,7 +315,7 @@ export const ExpeditionPlaybackScreen = ({
               >
                 <div className="flex items-center gap-1 mb-1">
                   <div className="w-6 h-6 bg-gray-200 rounded-full flex items-center justify-center overflow-hidden">
-                    <img src={goblin?.avatar} alt={goblin?.name} className="w-full h-full object-cover" />
+                    <img src={getGoblinAvatar(goblin)} alt={goblin?.name} className="w-full h-full object-cover" />
                   </div>
                   <div className="text-xs font-medium truncate flex-1">
                     {goblin?.name || `ID:${memberId}`}

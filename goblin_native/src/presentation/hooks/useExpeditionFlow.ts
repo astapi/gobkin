@@ -14,6 +14,7 @@ import { useGoblinService } from './useGoblinService'
 import { useExpeditionService } from './useExpeditionService'
 import { usePendingGoblins } from './usePendingGoblins'
 import { useBaseState } from './useBaseState'
+import { useDungeonProgress } from './useDungeonProgress'
 
 interface UseExpeditionFlowParams {
   refreshParties?: () => Promise<void> | void
@@ -53,6 +54,7 @@ export const useExpeditionFlow = ({
   const { goblinRepository, goblins } = useGoblinService()
   const { pendingGoblins, addPendingGoblin, isLoading: isPendingLoading } = usePendingGoblins()
   const { rank, getNextGoblinId, isLoading: isBaseLoading } = useBaseState()
+  const { markDungeonCleared } = useDungeonProgress()
   const {
     expeditionRecords,
     getPartyExpeditionHistory,
@@ -72,7 +74,7 @@ export const useExpeditionFlow = ({
     return new CompleteExpeditionUseCase(goblinRepository, partyRepository)
   }, [goblinRepository, partyRepository])
 
-  const addPendingGoblinOnClear = useCallback((record: ExpeditionRecord) => {
+  const handleDungeonClear = useCallback((record: ExpeditionRecord) => {
     if (!record.replay || isPendingLoading || isBaseLoading) return
 
     const dungeon = areasData.find(area => area.id === record.dungeonId)
@@ -81,6 +83,8 @@ export const useExpeditionFlow = ({
     const cleared = record.replay.summary.success &&
       record.replay.summary.maxFloorReached >= dungeon.floors
     if (!cleared) return
+
+    markDungeonCleared(dungeon, true)
 
     const maxPending = rank * 5
     if (pendingGoblins.length >= maxPending) return
@@ -96,6 +100,7 @@ export const useExpeditionFlow = ({
     goblins,
     isBaseLoading,
     isPendingLoading,
+    markDungeonCleared,
     pendingGoblins.length,
     rank,
   ])
@@ -211,7 +216,7 @@ export const useExpeditionFlow = ({
       if (processedExpeditionsRef.current.has(record.id)) continue
       try {
         await completeExpeditionUseCase.execute(record.partyId, record.replay!)
-        addPendingGoblinOnClear(record)
+        handleDungeonClear(record)
         completeExpeditionRecord(record.id, record.replay!)
         processedExpeditionsRef.current.add(record.id)
         if (refreshParties) {
@@ -226,7 +231,7 @@ export const useExpeditionFlow = ({
     expeditionRecords,
     completeExpeditionUseCase,
     completeExpeditionRecord,
-    addPendingGoblinOnClear,
+    handleDungeonClear,
     refreshParties,
   ])
 
