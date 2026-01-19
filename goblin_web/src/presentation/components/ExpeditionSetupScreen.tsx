@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import type { Party, Goblin, Dungeon, ExpeditionRequest } from '../../shared/types'
+import { getGoblinAvatar } from '../../shared/utils/goblinAvatar'
 
 interface ExpeditionSetupScreenProps {
   parties: Party[]
@@ -163,7 +164,7 @@ export const ExpeditionSetupScreen = ({
                   {members.map(member => (
                     <div key={member.id} className="flex items-center gap-1 text-xs bg-gray-100 rounded px-2 py-1">
                       <div className="w-5 h-5 bg-gray-200 rounded-full flex items-center justify-center border overflow-hidden">
-                        <img src={member.avatar} alt={member.name} className="w-full h-full object-cover" />
+                        <img src={getGoblinAvatar(member)} alt={member.name} className="w-full h-full object-cover" />
                       </div>
                       <span className="text-gray-600">{member.name}</span>
                     </div>

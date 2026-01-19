@@ -1,5 +1,5 @@
 import { useState, useCallback, useMemo, useEffect } from 'react'
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView, ActivityIndicator, Alert, Image, useWindowDimensions } from 'react-native'
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, ActivityIndicator, Alert, Image, useWindowDimensions, Modal, Pressable } from 'react-native'
 import { router, useLocalSearchParams, Stack, useFocusEffect } from 'expo-router'
 import { usePartyService } from '@/presentation/hooks/usePartyService'
 import { useGoblinService } from '@/presentation/hooks/useGoblinService'
@@ -61,7 +61,7 @@ export default function ExpeditionPreparationScreen() {
   } = usePartyService()
   const { goblins, isLoading: goblinsLoading, refreshGoblins } = useGoblinService()
   const { dungeons, isLoading: dungeonsLoading } = useDungeonProgress()
-  const { startExpedition } = useExpeditionFlow()
+  const { startExpedition, estimateExplorationTime } = useExpeditionFlow()
   const [retryCount, setRetryCount] = useState(0)
 
   const party = useMemo(() => {
@@ -95,6 +95,8 @@ export default function ExpeditionPreparationScreen() {
   const [selectedDungeonId, setSelectedDungeonId] = useState<string | undefined>(party?.dungeonId)
   const [selectedReturnPolicy, setSelectedReturnPolicy] = useState<ReturnPolicy>(party?.returnPolicy ?? 'never')
   const [selectedTargetFloor, setSelectedTargetFloor] = useState<number | null>(party?.targetFloor ?? null)
+  const [isDungeonModalVisible, setIsDungeonModalVisible] = useState(false)
+  const [isReturnPolicyModalVisible, setIsReturnPolicyModalVisible] = useState(false)
 
   const partyMembers = useMemo(() => {
     if (!party) return []
@@ -119,6 +121,11 @@ export default function ExpeditionPreparationScreen() {
   const selectedDungeon = useMemo(() => {
     return dungeons.find(d => d.id === selectedDungeonId)
   }, [dungeons, selectedDungeonId])
+
+  const estimatedExplorationTime = useMemo(() => {
+    if (!selectedDungeon) return null
+    return estimateExplorationTime(selectedDungeon, selectedReturnPolicy)
+  }, [estimateExplorationTime, selectedDungeon, selectedReturnPolicy])
 
   const handleEditParty = useCallback(() => {
     router.push({
@@ -266,37 +273,21 @@ export default function ExpeditionPreparationScreen() {
             {/* 遠征先 */}
             <View style={styles.settingItem}>
               <Text style={styles.settingLabel}>遠征先</Text>
-              <View style={styles.settingValue}>
+              <TouchableOpacity
+                style={styles.settingValue}
+                onPress={() => setIsDungeonModalVisible(true)}
+                disabled={unlockedDungeons.length === 0}
+              >
                 {selectedDungeon ? (
-                  <Text style={styles.settingValueText}>{selectedDungeon.name}</Text>
+                  <>
+                    <Text style={styles.settingValueText}>{selectedDungeon.name}</Text>
+                    <Text style={styles.settingValueDescription}>{selectedDungeon.description}</Text>
+                  </>
                 ) : (
                   <Text style={styles.settingValuePlaceholder}>遠征先が未設定です</Text>
                 )}
-              </View>
+              </TouchableOpacity>
             </View>
-
-            {/* ダンジョン選択リスト */}
-            {unlockedDungeons.length > 0 && (
-              <View style={styles.dungeonList}>
-                {unlockedDungeons.map(dungeon => (
-                  <TouchableOpacity
-                    key={dungeon.id}
-                    style={[
-                      styles.dungeonOption,
-                      selectedDungeonId === dungeon.id && styles.dungeonSelected,
-                    ]}
-                    onPress={() => handleSelectDungeon(dungeon)}
-                  >
-                    <Text style={[
-                      styles.dungeonName,
-                      selectedDungeonId === dungeon.id && styles.dungeonNameSelected,
-                    ]}>
-                      {dungeon.name}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
-              </View>
-            )}
 
             {/* 目標階数 */}
             <View style={styles.settingItem}>
@@ -311,36 +302,110 @@ export default function ExpeditionPreparationScreen() {
             {/* 帰還条件 */}
             <View style={styles.settingItem}>
               <Text style={styles.settingLabel}>帰還条件</Text>
-              <View style={styles.settingValue}>
+              <TouchableOpacity
+                style={styles.settingValue}
+                onPress={() => setIsReturnPolicyModalVisible(true)}
+              >
                 <Text style={styles.settingValueText}>
                   {RETURN_POLICIES.find(p => p.value === selectedReturnPolicy)?.label ?? '帰還しない'}
                 </Text>
-              </View>
+              </TouchableOpacity>
             </View>
 
-            {/* 帰還条件選択リスト */}
-            <View style={styles.policyList}>
+            {/* 推定探索時間 */}
+            <View style={styles.settingItem}>
+              <Text style={styles.settingLabel}>推定探索時間</Text>
+              <View style={styles.settingValue}>
+                {estimatedExplorationTime !== null ? (
+                  <Text style={styles.settingValueText}>{estimatedExplorationTime}秒</Text>
+                ) : (
+                  <Text style={styles.settingValuePlaceholder}>遠征先が未設定です</Text>
+                )}
+              </View>
+            </View>
+          </View>
+        </View>
+      </ScrollView>
+      <Modal
+        transparent
+        visible={isDungeonModalVisible}
+        animationType="fade"
+        onRequestClose={() => setIsDungeonModalVisible(false)}
+      >
+        <Pressable style={styles.modalOverlay} onPress={() => setIsDungeonModalVisible(false)}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>遠征先を選択</Text>
+            <ScrollView style={styles.modalList} contentContainerStyle={styles.modalListContent}>
+              {unlockedDungeons.length === 0 ? (
+                <Text style={styles.modalEmptyText}>選択できるダンジョンがありません</Text>
+              ) : (
+                unlockedDungeons.map(dungeon => (
+                  <TouchableOpacity
+                    key={dungeon.id}
+                    style={[
+                      styles.modalOption,
+                      selectedDungeonId === dungeon.id && styles.modalOptionSelected,
+                    ]}
+                    onPress={() => {
+                      handleSelectDungeon(dungeon)
+                      setIsDungeonModalVisible(false)
+                    }}
+                  >
+                    <Text style={[
+                      styles.modalOptionTitle,
+                      selectedDungeonId === dungeon.id && styles.modalOptionTitleSelected,
+                    ]}>
+                      {dungeon.name}
+                    </Text>
+                    <Text style={styles.modalOptionDescription}>{dungeon.description}</Text>
+                  </TouchableOpacity>
+                ))
+              )}
+            </ScrollView>
+            <TouchableOpacity style={styles.modalCloseButton} onPress={() => setIsDungeonModalVisible(false)}>
+              <Text style={styles.modalCloseButtonText}>閉じる</Text>
+            </TouchableOpacity>
+          </View>
+        </Pressable>
+      </Modal>
+
+      <Modal
+        transparent
+        visible={isReturnPolicyModalVisible}
+        animationType="fade"
+        onRequestClose={() => setIsReturnPolicyModalVisible(false)}
+      >
+        <Pressable style={styles.modalOverlay} onPress={() => setIsReturnPolicyModalVisible(false)}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>帰還条件を選択</Text>
+            <ScrollView style={styles.modalList} contentContainerStyle={styles.modalListContent}>
               {RETURN_POLICIES.map(policy => (
                 <TouchableOpacity
                   key={policy.value}
                   style={[
-                    styles.policyOption,
-                    selectedReturnPolicy === policy.value && styles.policySelected,
+                    styles.modalOption,
+                    selectedReturnPolicy === policy.value && styles.modalOptionSelected,
                   ]}
-                  onPress={() => handleSelectReturnPolicy(policy.value)}
+                  onPress={() => {
+                    handleSelectReturnPolicy(policy.value)
+                    setIsReturnPolicyModalVisible(false)
+                  }}
                 >
                   <Text style={[
-                    styles.policyName,
-                    selectedReturnPolicy === policy.value && styles.policyNameSelected,
+                    styles.modalOptionTitle,
+                    selectedReturnPolicy === policy.value && styles.modalOptionTitleSelected,
                   ]}>
                     {policy.label}
                   </Text>
                 </TouchableOpacity>
               ))}
-            </View>
+            </ScrollView>
+            <TouchableOpacity style={styles.modalCloseButton} onPress={() => setIsReturnPolicyModalVisible(false)}>
+              <Text style={styles.modalCloseButtonText}>閉じる</Text>
+            </TouchableOpacity>
           </View>
-        </View>
-      </ScrollView>
+        </Pressable>
+      </Modal>
     </>
   )
 }
@@ -500,56 +565,77 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#1F2937',
   },
+  settingValueDescription: {
+    fontSize: 12,
+    color: '#6B7280',
+    marginTop: 4,
+  },
   settingValuePlaceholder: {
     fontSize: 14,
     color: '#9CA3AF',
   },
-  dungeonList: {
-    marginBottom: 16,
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.35)',
+    justifyContent: 'center',
+    paddingHorizontal: 16,
   },
-  dungeonOption: {
+  modalContent: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    padding: 16,
+    maxHeight: '70%',
+  },
+  modalTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#1F2937',
+    marginBottom: 12,
+  },
+  modalList: {
+    marginBottom: 12,
+  },
+  modalListContent: {
+    gap: 8,
+  },
+  modalOption: {
     paddingVertical: 10,
     paddingHorizontal: 12,
     borderRadius: 8,
-    marginBottom: 6,
     backgroundColor: '#F9FAFB',
     borderWidth: 1,
     borderColor: '#E5E7EB',
   },
-  dungeonSelected: {
+  modalOptionSelected: {
     backgroundColor: '#DBEAFE',
     borderColor: '#3B82F6',
   },
-  dungeonName: {
+  modalOptionTitle: {
     fontSize: 14,
     color: '#374151',
-  },
-  dungeonNameSelected: {
-    color: '#1D4ED8',
     fontWeight: '600',
+    marginBottom: 4,
   },
-  policyList: {
-    marginTop: 8,
+  modalOptionTitleSelected: {
+    color: '#1D4ED8',
   },
-  policyOption: {
+  modalOptionDescription: {
+    fontSize: 12,
+    color: '#6B7280',
+  },
+  modalEmptyText: {
+    fontSize: 14,
+    color: '#6B7280',
+  },
+  modalCloseButton: {
     paddingVertical: 10,
-    paddingHorizontal: 12,
+    alignItems: 'center',
     borderRadius: 8,
-    marginBottom: 6,
-    backgroundColor: '#F9FAFB',
-    borderWidth: 1,
-    borderColor: '#E5E7EB',
+    backgroundColor: '#E5E7EB',
   },
-  policySelected: {
-    backgroundColor: '#DBEAFE',
-    borderColor: '#3B82F6',
-  },
-  policyName: {
+  modalCloseButtonText: {
     fontSize: 14,
-    color: '#374151',
-  },
-  policyNameSelected: {
-    color: '#1D4ED8',
     fontWeight: '600',
+    color: '#374151',
   },
 })

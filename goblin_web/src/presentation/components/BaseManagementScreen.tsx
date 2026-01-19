@@ -9,6 +9,7 @@ import { JsonBaseStateRepositoryImpl } from '../../infrastructure/repositories/J
 import { getModTemplate } from '../../shared/data/modPoolLoader'
 import { ModStatCalculator } from '../../core/services/ModStatCalculator'
 import { FactorBadgeList } from './FactorBadge'
+import { getGoblinAvatar } from '../../shared/utils/goblinAvatar'
 
 const STAT_LABELS: Record<ModStat, string> = {
   hp_percent: 'HP',
@@ -246,7 +247,7 @@ export const BaseManagementScreen = () => {
                       </div>
                     </div>
                     <div className="w-10 h-10 flex items-center justify-center flex-shrink-0">
-                      <img src={goblin.avatar} alt={goblin.name} className="w-full h-full object-contain" />
+                      <img src={getGoblinAvatar(goblin)} alt={goblin.name} className="w-full h-full object-contain" />
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="font-semibold text-gray-800 text-sm truncate">{goblin.name}</div>

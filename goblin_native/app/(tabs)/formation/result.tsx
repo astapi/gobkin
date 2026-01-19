@@ -1,4 +1,4 @@
-import { useMemo, useCallback } from 'react'
+import { useMemo, useCallback, useEffect } from 'react'
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Image, ActivityIndicator } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { router, useLocalSearchParams } from 'expo-router'
@@ -22,7 +22,7 @@ export default function ExpeditionResultScreen() {
 
   const { getPartyById } = usePartyService()
   const { goblins } = useGoblinService()
-  const { dungeons } = useDungeonProgress()
+  const { dungeons, markDungeonCleared } = useDungeonProgress()
   const { expeditionRecords, getExpeditionById, isLoading: isExpeditionLoading } = useExpeditionService()
 
   const expeditionRecord = useMemo(() => {
@@ -86,6 +86,14 @@ export default function ExpeditionResultScreen() {
 
     return { current: goblin.stats.hp, max: goblin.stats.hp }
   }
+
+  useEffect(() => {
+    if (!replay || !dungeon) return
+    const cleared = replay.summary.success && replay.summary.maxFloorReached >= dungeon.floors
+    if (cleared && !dungeon.cleared) {
+      markDungeonCleared(dungeon, true)
+    }
+  }, [dungeon, markDungeonCleared, replay])
 
   const handleBackToList = useCallback(() => {
     router.replace('/formation')

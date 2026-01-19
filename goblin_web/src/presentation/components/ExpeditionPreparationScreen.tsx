@@ -4,6 +4,7 @@ import { DungeonSelectionModal } from './DungeonSelectionModal.tsx'
 import { FloorTargetSelectionModal } from './FloorTargetSelectionModal.tsx'
 import { ReturnPolicySelectionModal } from './ReturnPolicySelectionModal.tsx'
 import { ExpeditionConfirmModal } from './ExpeditionConfirmModal.tsx'
+import { getGoblinAvatar } from '../../shared/utils/goblinAvatar'
 
 interface ExpeditionPreparationScreenProps {
   partyId: number
@@ -204,7 +205,7 @@ export const ExpeditionPreparationScreen = ({
                         <>
                           <div className="text-xs text-gray-600">Lv{member.level}</div>
                           <div className="overflow-hidden w-8 h-8 rounded-full">
-                            <img src={member.avatar} alt={member.name} className="object-cover w-full h-full" />
+                            <img src={getGoblinAvatar(member)} alt={member.name} className="object-cover w-full h-full" />
                           </div>
                           <div className="text-xs text-gray-600">HP{member.stats.hp}</div>
                         </>
