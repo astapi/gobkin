@@ -219,7 +219,7 @@ export class ExpeditionEngine {
         type: "boss",
         at: currentTime,
         floor: area.floors,
-        enemy: this.createEnemySnap(bossEnemies),
+        enemy: this.createEnemySnap(bossEnemies, true),
         combat: bossCombat,
         xp: bossXp
       })
@@ -342,9 +342,16 @@ export class ExpeditionEngine {
     })
   }
 
-  private createEnemySnap(enemies: Enemy[]): EnemySnap {
-    // 代表的な敵（最初の敵）の情報を使用
-    const representative = enemies[0]
+  private createEnemySnap(enemies: Enemy[], isBoss = false): EnemySnap {
+    // ボス戦の場合、ボス（IDが "B" または "B_" で始まる敵）を代表として選ぶ
+    let representative = enemies[0]
+    if (isBoss) {
+      const boss = enemies.find(e => e.id.startsWith('B_') || e.id.startsWith('B'))
+      if (boss) {
+        representative = boss
+      }
+    }
+
     // 全ての敵のゴールドを合計
     const totalGold = enemies.reduce((sum, enemy) => sum + enemy.gold, 0)
     return {

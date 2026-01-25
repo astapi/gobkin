@@ -7,6 +7,7 @@ import { useGoblinService } from '@/presentation/hooks/useGoblinService'
 import { useBaseState } from '@/presentation/hooks/useBaseState'
 import { useExpeditionFlow, type ExpeditionHistoryDisplay } from '@/presentation/hooks/useExpeditionFlow'
 import { getGoblinImage } from '@/shared/utils/goblinImages'
+import { getEffectiveStats } from '@/shared/utils/goblinStats'
 import type { Party, Goblin, ExpeditionRecord } from '@/shared/types'
 
 const MAX_PARTY_SLOTS = 6
@@ -29,11 +30,13 @@ function MemberSlot({ goblin, isEmpty, slotSize, avatarSize }: MemberSlotProps) 
     )
   }
 
+  const stats = getEffectiveStats(goblin)
+
   return (
     <View style={[styles.memberSlot, { width: slotSize }]}>
       <Text style={styles.memberLevel}>Lv{goblin.level}</Text>
       <Image source={getGoblinImage(goblin.avatar)} style={[styles.memberAvatar, { width: avatarSize, height: avatarSize }]} />
-      <Text style={styles.memberHp}>HP{goblin.stats.hp}</Text>
+      <Text style={styles.memberHp}>HP{stats.hp}</Text>
     </View>
   )
 }
