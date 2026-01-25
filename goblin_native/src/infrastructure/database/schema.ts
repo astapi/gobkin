@@ -106,6 +106,7 @@ export const SCHEMA = {
       dungeon_id TEXT PRIMARY KEY,
       unlocked INTEGER NOT NULL DEFAULT 0,
       cleared INTEGER NOT NULL DEFAULT 0,
+      unlock_notified INTEGER NOT NULL DEFAULT 0,
       updated_at TEXT NOT NULL DEFAULT (datetime('now'))
     )
   `,

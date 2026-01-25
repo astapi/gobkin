@@ -9,12 +9,14 @@ interface DungeonProgressRow {
   dungeon_id: string
   unlocked: number
   cleared: number
+  unlock_notified: number
   updated_at: string
 }
 
 interface DungeonProgress {
   unlocked: boolean
   cleared: boolean
+  unlockNotified: boolean
 }
 
 export interface IDungeonProgressRepository {
@@ -26,9 +28,20 @@ export interface IDungeonProgressRepository {
 }
 
 export class SQLiteDungeonProgressRepository implements IDungeonProgressRepository {
+  private static instance: SQLiteDungeonProgressRepository | null = null
   private cache: Map<string, DungeonProgress> = new Map()
   private initialized = false
   private onDataChangeCallback: (() => void) | null = null
+
+  /**
+   * シングルトンインスタンスを取得
+   */
+  static getInstance(): SQLiteDungeonProgressRepository {
+    if (!SQLiteDungeonProgressRepository.instance) {
+      SQLiteDungeonProgressRepository.instance = new SQLiteDungeonProgressRepository()
+    }
+    return SQLiteDungeonProgressRepository.instance
+  }
 
   /**
    * リポジトリを初期化し、DBからデータをロード
@@ -44,6 +57,7 @@ export class SQLiteDungeonProgressRepository implements IDungeonProgressReposito
       this.cache.set(row.dungeon_id, {
         unlocked: row.unlocked === 1,
         cleared: row.cleared === 1,
+        unlockNotified: row.unlock_notified === 1,
       })
     }
 
@@ -92,7 +106,7 @@ export class SQLiteDungeonProgressRepository implements IDungeonProgressReposito
    * ダンジョンを解放済みにする
    */
   unlock(dungeonId: string): void {
-    const current = this.cache.get(dungeonId) ?? { unlocked: false, cleared: false }
+    const current = this.cache.get(dungeonId) ?? { unlocked: false, cleared: false, unlockNotified: false }
     this.save(dungeonId, { ...current, unlocked: true })
   }
 
@@ -100,7 +114,7 @@ export class SQLiteDungeonProgressRepository implements IDungeonProgressReposito
    * ダンジョンをクリア済みにする
    */
   markCleared(dungeonId: string): void {
-    const current = this.cache.get(dungeonId) ?? { unlocked: true, cleared: false }
+    const current = this.cache.get(dungeonId) ?? { unlocked: true, cleared: false, unlockNotified: false }
     this.save(dungeonId, { ...current, unlocked: true, cleared: true })
   }
 
@@ -110,9 +124,14 @@ export class SQLiteDungeonProgressRepository implements IDungeonProgressReposito
     const db = await getDatabase()
     await db.runAsync(
       `INSERT OR REPLACE INTO dungeon_progress
-       (dungeon_id, unlocked, cleared, updated_at)
-       VALUES (?, ?, ?, datetime('now'))`,
-      [dungeonId, progress.unlocked ? 1 : 0, progress.cleared ? 1 : 0]
+       (dungeon_id, unlocked, cleared, unlock_notified, updated_at)
+       VALUES (?, ?, ?, ?, datetime('now'))`,
+      [
+        dungeonId,
+        progress.unlocked ? 1 : 0,
+        progress.cleared ? 1 : 0,
+        progress.unlockNotified ? 1 : 0,
+      ]
     )
   }
 

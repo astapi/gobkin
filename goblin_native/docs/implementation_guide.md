@@ -8,6 +8,8 @@
 |-------------|------|
 | [migration_tasks.md](./migration_tasks.md) | 移行タスク一覧・差分・UI実装詳細 |
 | [sqlite_migration.md](./sqlite_migration.md) | SQLiteスキーマ設計・Repository実装パターン |
+| [project_structure.md](./project_structure.md) | ディレクトリ構成・責務一覧 |
+| [screen_reference.md](./screen_reference.md) | 画面リファレンス |
 
 ---
 
@@ -44,7 +46,8 @@ src/infrastructure/database/
 ├── index.ts          # DB接続・初期化
 ├── schema.ts         # テーブル定義
 └── migrations/
-    └── v1.ts         # 初期スキーマ
+    ├── v1.ts         # 初期スキーマ
+    └── v2.ts         # v2スキーマ（unlock_notified追加）
 ```
 
 **実装ファイル**: `src/infrastructure/database/index.ts`
@@ -53,13 +56,78 @@ src/infrastructure/database/
 import * as SQLite from 'expo-sqlite'
 
 const DB_NAME = 'goblin_kingdom.db'
-let db: SQLite.SQLiteDatabase | null = null
+const CURRENT_SCHEMA_VERSION = 2
 
+let db: SQLite.SQLiteDatabase | null = null
+let initializationPromise: Promise<SQLite.SQLiteDatabase> | null = null
+
+/**
+ * データベース接続を取得
+ * シングルトンパターンで同一インスタンスを返す
+ */
 export const getDatabase = async (): Promise<SQLite.SQLiteDatabase> => {
   if (db) return db
-  db = await SQLite.openDatabaseAsync(DB_NAME)
-  await runMigrations(db)
-  return db
+
+  // 初期化中の場合は同じPromiseを返す（重複初期化防止）
+  if (initializationPromise) {
+    return initializationPromise
+  }
+
+  initializationPromise = initializeDatabase()
+  return initializationPromise
+}
+
+const initializeDatabase = async (): Promise<SQLite.SQLiteDatabase> => {
+  const database = await SQLite.openDatabaseAsync(DB_NAME)
+  await runMigrations(database)
+  db = database
+  return database
+}
+```
+
+### 1.5 アプリ起動時の初期化
+
+**実装ファイル**: `app/_layout.tsx`
+
+```typescript
+import { useEffect, useState } from 'react'
+import { getDatabase } from '@/infrastructure/database'
+import { SQLiteGoblinRepository } from '@/infrastructure/repositories/SQLiteGoblinRepository'
+// ... 他のリポジトリをインポート
+
+export default function RootLayout() {
+  const [isInitialized, setIsInitialized] = useState(false)
+
+  useEffect(() => {
+    const initializeApp = async () => {
+      try {
+        // 第1段階: DBインスタンスの初期化（マイグレーション実行）
+        await getDatabase()
+
+        // 第2段階: 全リポジトリの初期化（キャッシュの初期化）
+        await Promise.all([
+          SQLiteGoblinRepository.getInstance().initialize(),
+          SQLitePartyRepository.getInstance().initialize(),
+          SQLiteBaseStateRepository.getInstance().initialize(),
+          SQLiteExpeditionRepository.getInstance().initialize(),
+          SQLitePendingGoblinRepository.getInstance().initialize(),
+          SQLiteDungeonProgressRepository.getInstance().initialize(),
+        ])
+
+        setIsInitialized(true)
+      } catch (error) {
+        console.error('Failed to initialize app:', error)
+      }
+    }
+    initializeApp()
+  }, [])
+
+  // 初期化完了までローディング画面を表示
+  if (!isInitialized) {
+    return <LoadingScreen />
+  }
+
+  return <MainContent />
 }
 ```
 
@@ -94,9 +162,11 @@ export const migrateV1 = async (db: SQLite.SQLiteDatabase) => {
 
 ### 完了条件
 - [ ] `expo-sqlite` インストール完了
-- [ ] `getDatabase()` でDB接続可能
+- [ ] `getDatabase()` でDB接続可能（シングルトンパターン）
 - [ ] 全7テーブル作成完了
 - [ ] アプリ起動時にマイグレーション実行
+- [ ] `app/_layout.tsx` で全リポジトリを初期化
+- [ ] 初期化完了までローディング画面を表示
 
 ---
 
@@ -105,6 +175,12 @@ export const migrateV1 = async (db: SQLite.SQLiteDatabase) => {
 **目的**: ゲームの基本データ（ゴブリン、パーティ、ダンジョン進行）を管理
 
 **参照**: [sqlite_migration.md](./sqlite_migration.md) のリポジトリ実装例
+
+**設計原則**:
+1. **シングルトンパターン**: `getInstance()` メソッドでインスタンスを取得
+2. **内部キャッシュ**: `initialize()` でDBからデータをロードし、キャッシュに保持
+3. **同期的インターフェース**: キャッシュを使用して同期的にデータを取得
+4. **非同期保存**: 書き込みは非同期でDBに保存し、即座にキャッシュを更新
 
 ### 2.1 SQLiteGoblinRepository
 
@@ -116,10 +192,13 @@ src/infrastructure/repositories/SQLiteGoblinRepository.ts
 
 | メソッド | 説明 |
 |---------|------|
-| `getAll()` | 全ゴブリン取得 |
-| `getById(id)` | ID指定で取得 |
-| `save(goblin)` | 保存（INSERT OR REPLACE） |
-| `delete(id)` | 削除 |
+| `getInstance()` | シングルトンインスタンス取得（静的メソッド） |
+| `initialize()` | DBからデータをロードしてキャッシュ初期化 |
+| `getGoblins()` | 全ゴブリン取得（同期的、キャッシュから） |
+| `getGoblin(id)` | ID指定で取得（同期的、キャッシュから） |
+| `saveGoblin(goblin)` | 保存（キャッシュ即更新、DB非同期保存） |
+| `deleteGoblin(id)` | 削除（キャッシュ即更新、DB非同期削除） |
+| `setOnDataChange(callback)` | データ変更通知コールバック設定 |
 
 ### 2.2 SQLitePartyRepository
 
@@ -162,16 +241,35 @@ src/infrastructure/repositories/SQLiteDungeonProgressRepository.ts
 
 **参照**: [migration_tasks.md](./migration_tasks.md) のContext/Hooks移行タスク
 
+**重要**: リポジトリは `app/_layout.tsx` で既に初期化済みのため、Hooksでは `getInstance()` で取得してデータを読み込むだけ。
+
 ### 3.1 useGoblinService 修正
 
 ```typescript
 // src/presentation/hooks/useGoblinService.ts
 import { SQLiteGoblinRepository } from '@/infrastructure/repositories/SQLiteGoblinRepository'
 
-const repository = new SQLiteGoblinRepository()
-
 export const useGoblinService = () => {
-  // AsyncStorage → SQLite に切り替え
+  const [goblins, setGoblins] = useState<Goblin[]>([])
+
+  const goblinRepository = useMemo(() => {
+    return SQLiteGoblinRepository.getInstance()  // シングルトン取得
+  }, [])
+
+  useEffect(() => {
+    // 既に初期化済みなので、データを取得するだけ
+    const refreshGoblins = () => {
+      setGoblins(goblinRepository.getGoblins())
+    }
+
+    // データ変更通知を設定
+    goblinRepository.setOnDataChange(refreshGoblins)
+
+    // 初期データ読み込み
+    refreshGoblins()
+  }, [goblinRepository])
+
+  return { goblins, /* ... */ }
 }
 ```
 
@@ -180,13 +278,23 @@ export const useGoblinService = () => {
 ```typescript
 // src/presentation/hooks/usePartyService.ts
 import { SQLitePartyRepository } from '@/infrastructure/repositories/SQLitePartyRepository'
+
+// getInstance() でシングルトン取得、初期化済みのためデータ取得のみ
+const partyRepository = useMemo(() => {
+  return SQLitePartyRepository.getInstance()
+}, [])
 ```
 
 ### 3.3 useDungeonProgress 修正
 
 ```typescript
 // src/presentation/hooks/useDungeonProgress.ts
-// AsyncStorage → SQLiteDungeonProgressRepository に切り替え
+import { SQLiteDungeonProgressRepository } from '@/infrastructure/repositories/SQLiteDungeonProgressRepository'
+
+// getInstance() でシングルトン取得、初期化済みのためデータ取得のみ
+const repository = useMemo(() => {
+  return SQLiteDungeonProgressRepository.getInstance()
+}, [])
 ```
 
 ### 完了条件

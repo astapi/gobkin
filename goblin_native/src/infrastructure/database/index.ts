@@ -4,9 +4,10 @@
  */
 import * as SQLite from 'expo-sqlite'
 import { migrateV1 } from './migrations/v1'
+import { migrateV2 } from './migrations/v2'
 
 const DB_NAME = 'goblin_kingdom.db'
-const CURRENT_SCHEMA_VERSION = 1
+const CURRENT_SCHEMA_VERSION = 2
 
 let db: SQLite.SQLiteDatabase | null = null
 let initializationPromise: Promise<SQLite.SQLiteDatabase> | null = null
@@ -14,6 +15,7 @@ let initializationPromise: Promise<SQLite.SQLiteDatabase> | null = null
 /**
  * データベース接続を取得
  * シングルトンパターンで同一インスタンスを返す
+ * 初期化失敗時は再試行可能
  */
 export const getDatabase = async (): Promise<SQLite.SQLiteDatabase> => {
   if (db) return db
@@ -23,7 +25,12 @@ export const getDatabase = async (): Promise<SQLite.SQLiteDatabase> => {
     return initializationPromise
   }
 
-  initializationPromise = initializeDatabase()
+  // 初期化失敗時にPromiseをリセットして再試行可能にする
+  initializationPromise = initializeDatabase().catch(error => {
+    initializationPromise = null
+    throw error
+  })
+
   return initializationPromise
 }
 
@@ -51,7 +58,12 @@ const runMigrations = async (database: SQLite.SQLiteDatabase): Promise<void> => 
   }
 
   // 将来のマイグレーション追加時はここに追加
-  // if (currentVersion < 2) { await migrateV2(database); await setSchemaVersion(database, 2); }
+  if (currentVersion < 2) {
+    console.log('[DB] Running migration v2...')
+    await migrateV2(database)
+    await setSchemaVersion(database, 2)
+    console.log('[DB] Migration v2 completed')
+  }
 }
 
 /**

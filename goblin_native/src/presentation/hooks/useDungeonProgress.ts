@@ -19,6 +19,7 @@ const buildDefaultProgress = (): DungeonProgressState => {
     defaults[dungeon.id] = {
       unlocked: dungeon.unlocked ?? index === 0,
       cleared: dungeon.cleared ?? false,
+      unlockNotified: false,
     }
   })
   return defaults
@@ -29,7 +30,7 @@ export const useDungeonProgress = () => {
   const [isLoading, setIsLoading] = useState(true)
 
   const repository = useMemo<DungeonProgressRepository>(() => {
-    return new SQLiteDungeonProgressRepository()
+    return SQLiteDungeonProgressRepository.getInstance()
   }, [])
 
   const refreshProgress = useCallback(() => {
@@ -39,27 +40,10 @@ export const useDungeonProgress = () => {
   }, [repository])
 
   useEffect(() => {
-    const initRepository = async () => {
-      if (repository.initialize) {
-        await repository.initialize()
-      }
-
-      // 初期データがない場合はデフォルトを保存
-      const storedProgress = repository.getAll()
-      const defaults = buildDefaultProgress()
-
-      // 新規ダンジョンの初期状態を保存
-      for (const [dungeonId, defaultState] of Object.entries(defaults)) {
-        if (!storedProgress[dungeonId]) {
-          repository.save(dungeonId, defaultState)
-        }
-      }
-
-      refreshProgress()
-      setIsLoading(false)
-    }
-    initRepository()
-  }, [repository, refreshProgress])
+    // アプリ起動時に既に初期化されているので、データを読み込むだけ
+    refreshProgress()
+    setIsLoading(false)
+  }, [refreshProgress])
 
   const updateProgress = useCallback(
     (updater: (prev: DungeonProgressState) => DungeonProgressState) => {
@@ -80,14 +64,44 @@ export const useDungeonProgress = () => {
     (dungeon: Dungeon, cleared: boolean) => {
       updateProgress(prev => {
         const nextProgress: DungeonProgressState = { ...prev }
-        const current = nextProgress[dungeon.id] ?? { unlocked: dungeon.unlocked ?? false, cleared: false }
-        nextProgress[dungeon.id] = { ...current, unlocked: true, cleared: cleared || current.cleared }
-
-        if (cleared && dungeon.unlockNext) {
-          const target = nextProgress[dungeon.unlockNext] ?? { unlocked: false, cleared: false }
-          nextProgress[dungeon.unlockNext] = { ...target, unlocked: true }
+        const current = nextProgress[dungeon.id] ?? {
+          unlocked: dungeon.unlocked ?? false,
+          cleared: false,
+          unlockNotified: false,
+        }
+        nextProgress[dungeon.id] = {
+          ...current,
+          unlocked: true,
+          cleared: cleared || current.cleared,
         }
 
+        if (cleared && dungeon.unlockNext) {
+          const target = nextProgress[dungeon.unlockNext]
+          // 既にアンロック済みの場合は状態を変更しない（unlockNotifiedフラグを保持）
+          if (!target || !target.unlocked) {
+            nextProgress[dungeon.unlockNext] = {
+              ...(target ?? { cleared: false, unlockNotified: false }),
+              unlocked: true,
+            }
+          }
+        }
+
+        return nextProgress
+      })
+    },
+    [updateProgress]
+  )
+
+  const markUnlockNotified = useCallback(
+    (dungeonId: string) => {
+      updateProgress(prev => {
+        const nextProgress: DungeonProgressState = { ...prev }
+        const current = nextProgress[dungeonId] ?? {
+          unlocked: false,
+          cleared: false,
+          unlockNotified: false,
+        }
+        nextProgress[dungeonId] = { ...current, unlockNotified: true }
         return nextProgress
       })
     },
@@ -110,5 +124,6 @@ export const useDungeonProgress = () => {
     isLoading,
     updateProgress,
     markDungeonCleared,
+    markUnlockNotified,
   }
 }

@@ -6,6 +6,8 @@
 |-------------|------|
 | **[implementation_guide.md](./implementation_guide.md)** | 実装順序ガイド（推奨） |
 | [migration_tasks.md](./migration_tasks.md) | 移行タスク一覧・UI実装詳細 |
+| [project_structure.md](./project_structure.md) | ディレクトリ構成・責務一覧 |
+| [screen_reference.md](./screen_reference.md) | 画面リファレンス |
 
 ## 概要
 
@@ -95,7 +97,11 @@ type BaseState = {
 
 #### DungeonProgress
 ```typescript
-type DungeonProgressState = Record<string, { unlocked: boolean; cleared: boolean }>
+type DungeonProgressState = Record<string, {
+  unlocked: boolean
+  cleared: boolean
+  unlockNotified: boolean  // アンロック通知済みフラグ
+}>
 ```
 
 ---
@@ -206,8 +212,9 @@ INSERT OR IGNORE INTO base_state (id, capacity, rank) VALUES (1, 8, 1);
 ```sql
 CREATE TABLE dungeon_progress (
   dungeon_id TEXT PRIMARY KEY,
-  unlocked INTEGER NOT NULL DEFAULT 0,  -- BOOLEAN
-  cleared INTEGER NOT NULL DEFAULT 0,   -- BOOLEAN
+  unlocked INTEGER NOT NULL DEFAULT 0,        -- BOOLEAN
+  cleared INTEGER NOT NULL DEFAULT 0,         -- BOOLEAN
+  unlock_notified INTEGER NOT NULL DEFAULT 0, -- BOOLEAN（アンロック通知済みフラグ）
   updated_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
 ```
@@ -258,14 +265,32 @@ npx expo install expo-sqlite
 import * as SQLite from 'expo-sqlite'
 
 const DB_NAME = 'goblin_kingdom.db'
+const CURRENT_SCHEMA_VERSION = 2
 
 let db: SQLite.SQLiteDatabase | null = null
+let initializationPromise: Promise<SQLite.SQLiteDatabase> | null = null
 
+/**
+ * データベース接続を取得
+ * シングルトンパターンで同一インスタンスを返す
+ */
 export const getDatabase = async (): Promise<SQLite.SQLiteDatabase> => {
   if (db) return db
-  db = await SQLite.openDatabaseAsync(DB_NAME)
-  await runMigrations(db)
-  return db
+
+  // 初期化中の場合は同じPromiseを返す（重複初期化防止）
+  if (initializationPromise) {
+    return initializationPromise
+  }
+
+  initializationPromise = initializeDatabase()
+  return initializationPromise
+}
+
+const initializeDatabase = async (): Promise<SQLite.SQLiteDatabase> => {
+  const database = await SQLite.openDatabaseAsync(DB_NAME)
+  await runMigrations(database)
+  db = database
+  return database
 }
 
 const runMigrations = async (database: SQLite.SQLiteDatabase) => {
@@ -273,7 +298,55 @@ const runMigrations = async (database: SQLite.SQLiteDatabase) => {
 }
 ```
 
+### アプリ起動時の初期化
+
+```typescript
+// app/_layout.tsx
+import { getDatabase } from '@/infrastructure/database'
+import { SQLiteGoblinRepository } from '@/infrastructure/repositories/SQLiteGoblinRepository'
+import { SQLitePartyRepository } from '@/infrastructure/repositories/SQLitePartyRepository'
+// ... 他のリポジトリ
+
+export default function RootLayout() {
+  const [isInitialized, setIsInitialized] = useState(false)
+
+  useEffect(() => {
+    const initializeApp = async () => {
+      try {
+        // 第1段階: DBインスタンスの初期化（マイグレーション実行）
+        await getDatabase()
+
+        // 第2段階: 全リポジトリの初期化（キャッシュの初期化）
+        await Promise.all([
+          SQLiteGoblinRepository.getInstance().initialize(),
+          SQLitePartyRepository.getInstance().initialize(),
+          // ... 他のリポジトリ
+        ])
+
+        setIsInitialized(true)
+      } catch (error) {
+        console.error('Failed to initialize app:', error)
+      }
+    }
+    initializeApp()
+  }, [])
+
+  if (!isInitialized) {
+    return <LoadingScreen />
+  }
+
+  return <MainContent />
+}
+```
+
 ### リポジトリ実装例
+
+全てのリポジトリは以下の設計原則に従います：
+
+1. **シングルトンパターン**: `getInstance()` メソッドでインスタンスを取得
+2. **内部キャッシュ**: `initialize()` でDBからデータをロードし、キャッシュに保持
+3. **同期的インターフェース**: キャッシュを使用して同期的にデータを取得
+4. **非同期保存**: 書き込みは非同期でDBに保存し、即座にキャッシュを更新
 
 ```typescript
 // src/infrastructure/repositories/SQLiteGoblinRepository.ts
@@ -282,22 +355,91 @@ import type { IGoblinRepository } from '@/core/repositories/IGoblinRepository'
 import { getDatabase } from '../database'
 
 export class SQLiteGoblinRepository implements IGoblinRepository {
-  async getAll(): Promise<Goblin[]> {
-    const db = await getDatabase()
-    const rows = await db.getAllAsync<GoblinRow>('SELECT * FROM goblins')
-    return rows.map(this.rowToGoblin)
+  private static instance: SQLiteGoblinRepository | null = null
+  private cache: Map<number, Goblin> = new Map()
+  private initialized = false
+  private onDataChangeCallback: (() => void) | null = null
+
+  /**
+   * シングルトンインスタンスを取得
+   */
+  static getInstance(): SQLiteGoblinRepository {
+    if (!SQLiteGoblinRepository.instance) {
+      SQLiteGoblinRepository.instance = new SQLiteGoblinRepository()
+    }
+    return SQLiteGoblinRepository.instance
   }
 
-  async getById(id: number): Promise<Goblin | null> {
+  /**
+   * リポジトリを初期化し、DBからデータをロード
+   * アプリ起動時に1回だけ実行される
+   */
+  async initialize(): Promise<void> {
+    if (this.initialized) return
+
     const db = await getDatabase()
-    const row = await db.getFirstAsync<GoblinRow>(
-      'SELECT * FROM goblins WHERE id = ?',
-      [id]
-    )
-    return row ? this.rowToGoblin(row) : null
+    const rows = await db.getAllAsync<GoblinRow>('SELECT * FROM goblins ORDER BY id')
+
+    this.cache.clear()
+    for (const row of rows) {
+      const goblin = this.rowToGoblin(row)
+      this.cache.set(goblin.id, goblin)
+    }
+
+    this.initialized = true
   }
 
-  async save(goblin: Goblin): Promise<void> {
+  /**
+   * データ変更時のコールバックを設定
+   */
+  setOnDataChange(callback: () => void): void {
+    this.onDataChangeCallback = callback
+  }
+
+  /**
+   * 全ゴブリンを取得（同期的）
+   */
+  getGoblins(): Goblin[] {
+    return Array.from(this.cache.values())
+  }
+
+  /**
+   * 指定IDのゴブリンを取得（同期的）
+   */
+  getGoblin(id: number): Goblin | null {
+    return this.cache.get(id) ?? null
+  }
+
+  /**
+   * ゴブリンを保存
+   * キャッシュを即座に更新し、DBへは非同期で保存
+   */
+  saveGoblin(goblin: Goblin): void {
+    this.cache.set(goblin.id, goblin)
+
+    this.saveAsync(goblin).catch(err => {
+      console.error('[SQLiteGoblinRepository] Failed to save:', err)
+    })
+
+    this.notifyDataChange()
+  }
+
+  /**
+   * ゴブリンを削除
+   */
+  deleteGoblin(id: number): void {
+    this.cache.delete(id)
+
+    this.deleteAsync(id).catch(err => {
+      console.error('[SQLiteGoblinRepository] Failed to delete:', err)
+    })
+
+    this.notifyDataChange()
+  }
+
+  // --- Private methods ---
+
+  private async saveAsync(goblin: Goblin): Promise<void> {
     const db = await getDatabase()
     await db.runAsync(
       `INSERT OR REPLACE INTO goblins
@@ -322,7 +464,7 @@ export class SQLiteGoblinRepository implements IGoblinRepository {
     )
   }
 
-  async delete(id: number): Promise<void> {
+  private async deleteAsync(id: number): Promise<void> {
     const db = await getDatabase()
     await db.runAsync('DELETE FROM goblins WHERE id = ?', [id])
   }
@@ -339,14 +481,16 @@ export class SQLiteGoblinRepository implements IGoblinRepository {
       effectiveStats: row.effective_stats_json
         ? JSON.parse(row.effective_stats_json)
         : undefined,
-      factors: row.factors_json
-        ? JSON.parse(row.factors_json)
-        : undefined,
+      factors: row.factors_json ? JSON.parse(row.factors_json) : undefined,
       variantFactorId: row.variant_factor_id ?? undefined,
       individualValue: row.individual_value ?? undefined,
-      mods: row.mods_json
-        ? JSON.parse(row.mods_json)
-        : undefined,
+      mods: row.mods_json ? JSON.parse(row.mods_json) : undefined,
+    }
+  }
+
+  private notifyDataChange(): void {
+    if (this.onDataChangeCallback) {
+      this.onDataChangeCallback()
     }
   }
 }

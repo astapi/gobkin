@@ -20,9 +20,20 @@ const DEFAULT_BASE_STATE: BaseState = {
 }
 
 export class SQLiteBaseStateRepository implements IBaseStateRepository {
+  private static instance: SQLiteBaseStateRepository | null = null
   private cache: BaseState | null = null
   private initialized = false
   private onDataChangeCallback: (() => void) | null = null
+
+  /**
+   * シングルトンインスタンスを取得
+   */
+  static getInstance(): SQLiteBaseStateRepository {
+    if (!SQLiteBaseStateRepository.instance) {
+      SQLiteBaseStateRepository.instance = new SQLiteBaseStateRepository()
+    }
+    return SQLiteBaseStateRepository.instance
+  }
 
   /**
    * リポジトリを初期化し、DBからデータをロード

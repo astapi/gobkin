@@ -1,1 +1,4 @@
-export type DungeonProgressState = Record<string, { unlocked: boolean; cleared: boolean }>
+export type DungeonProgressState = Record<
+  string,
+  { unlocked: boolean; cleared: boolean; unlockNotified: boolean }
+>
