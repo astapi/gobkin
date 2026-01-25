@@ -3,54 +3,15 @@ import { View, Text, FlatList, TouchableOpacity, StyleSheet, Modal, ScrollView, 
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useFocusEffect } from 'expo-router'
 import { useGoblinService } from '@/presentation/hooks/useGoblinService'
+import { GoblinCard } from '@/presentation/components/GoblinCard'
 import type { Goblin } from '@/shared/types'
 import { getFactor } from '@/shared/data/factors'
 import { getGoblinImage } from '@/shared/utils/goblinImages'
 import { getFactorImage } from '@/shared/utils/factorImages'
-import { getEffectiveStats } from '@/shared/utils/goblinStats'
 import { ModStatCalculator } from '@/core/services/ModStatCalculator'
 import { getExpForNextLevel, getExpProgress } from '@/core/services/ExperienceSystem'
 import { getModTemplate } from '@/shared/data/modPoolLoader'
 
-interface GoblinCardProps {
-  goblin: Goblin
-  onPress: () => void
-}
-
-function GoblinCard({ goblin, onPress }: GoblinCardProps) {
-  const stats = getEffectiveStats(goblin)
-
-  return (
-    <TouchableOpacity style={styles.card} onPress={onPress}>
-      <View style={styles.iconContainer}>
-        <Image source={getGoblinImage(goblin.avatar)} style={styles.goblinImage} />
-      </View>
-      <View style={styles.cardInfo}>
-        <Text style={styles.goblinName}>{goblin.name}</Text>
-        <Text style={styles.goblinLevel}>Lv.{goblin.level}</Text>
-        {goblin.factors && goblin.factors.length > 0 && (
-          <View style={styles.factorRow}>
-            {goblin.factors.slice(0, 3).map((factorId, idx) => {
-              const FactorIcon = getFactorImage(factorId)
-              return (
-                <View key={idx} style={styles.factorBadge}>
-                  <FactorIcon width={16} height={16} />
-                </View>
-              )
-            })}
-            {goblin.factors.length > 3 && (
-              <Text style={styles.moreFactors}>+{goblin.factors.length - 3}</Text>
-            )}
-          </View>
-        )}
-      </View>
-      <View style={styles.statsContainer}>
-        <Text style={styles.statText}>HP:{stats.hp}</Text>
-        <Text style={styles.statText}>ATK:{stats.atk}</Text>
-      </View>
-    </TouchableOpacity>
-  )
-}
 
 const STAT_LABELS: Record<string, string> = {
   hp_percent: 'HP',
@@ -273,15 +234,13 @@ export default function GoblinListScreen() {
 
   return (
     <SafeAreaView style={styles.container} edges={['top', 'left', 'right', 'bottom']}>
-      <FlatList
-        data={goblins}
-        keyExtractor={(item) => String(item.id)}
-        renderItem={({ item }) => (
-          <GoblinCard goblin={item} onPress={() => handleGoblinPress(item)} />
-        )}
-        contentContainerStyle={styles.listContent}
-        ItemSeparatorComponent={() => <View style={styles.separator} />}
-      />
+      <View style={styles.listContent}>
+        {goblins.map((goblin) => (
+          <View key={goblin.id} style={styles.cardWrapper}>
+            <GoblinCard goblin={goblin} onPress={() => handleGoblinPress(goblin)} />
+          </View>
+        ))}
+      </View>
       <GoblinDetailModal
         goblin={selectedGoblin}
         visible={modalVisible}
@@ -333,70 +292,8 @@ const styles = StyleSheet.create({
   listContent: {
     padding: 16,
   },
-  separator: {
-    height: 12,
-  },
-  card: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    padding: 16,
-    flexDirection: 'row',
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
-  },
-  iconContainer: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    backgroundColor: '#F3F4F6',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: 12,
-    overflow: 'hidden',
-  },
-  goblinImage: {
-    width: 40,
-    height: 40,
-    resizeMode: 'contain',
-  },
-  cardInfo: {
-    flex: 1,
-  },
-  goblinName: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#1F2937',
-  },
-  goblinLevel: {
-    fontSize: 14,
-    color: '#6B7280',
-    marginTop: 2,
-  },
-  factorRow: {
-    flexDirection: 'row',
-    marginTop: 4,
-    alignItems: 'center',
-  },
-  factorBadge: {
-    backgroundColor: '#EEF2FF',
-    borderRadius: 4,
-    padding: 2,
-    marginRight: 4,
-  },
-  moreFactors: {
-    fontSize: 10,
-    color: '#6B7280',
-  },
-  statsContainer: {
-    alignItems: 'flex-end',
-  },
-  statText: {
-    fontSize: 12,
-    color: '#6B7280',
+  cardWrapper: {
+    marginBottom: 12,
   },
   modalContainer: {
     flex: 1,
