@@ -7,6 +7,7 @@ import { useGoblinService } from '@/presentation/hooks/useGoblinService'
 import { useDungeonProgress } from '@/presentation/hooks/useDungeonProgress'
 import { useExpeditionService } from '@/presentation/hooks/useExpeditionService'
 import { getGoblinImage } from '@/shared/utils/goblinImages'
+import { getEffectiveStats } from '@/shared/utils/goblinStats'
 import { areasData } from '@/shared/data'
 import type { Goblin } from '@/shared/types'
 
@@ -90,15 +91,17 @@ export default function ExpeditionResultScreen() {
     const goblin = getPartyMember(memberId)
     if (!goblin) return { current: 0, max: 0 }
 
+    const stats = getEffectiveStats(goblin)
+
     if (isDead(memberId)) {
-      return { current: 0, max: goblin.stats.hp }
+      return { current: 0, max: stats.hp }
     }
 
     if (isInjured(memberId)) {
-      return { current: Math.floor(goblin.stats.hp * 0.5), max: goblin.stats.hp }
+      return { current: Math.floor(stats.hp * 0.5), max: stats.hp }
     }
 
-    return { current: goblin.stats.hp, max: goblin.stats.hp }
+    return { current: stats.hp, max: stats.hp }
   }
 
   useEffect(() => {

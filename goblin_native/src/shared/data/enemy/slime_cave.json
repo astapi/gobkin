@@ -15,7 +15,7 @@
     },
     {
       "id": "B_SLIME",
-      "name": "大きなスライム",
+      "name": "ボススライム",
       "raceTags": ["slime"],
       "level": 3,
       "hp": 30,
@@ -47,7 +47,7 @@
     {
       "id": "SBOSS",
       "floors": [2],
-      "enemies": ["S001", "S001", "B_SLIME"],
+      "enemies": ["S001", "S001", "S001", "S001", "B_SLIME"],
       "isBoss": true
     }
   ]

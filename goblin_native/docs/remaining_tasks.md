@@ -4,6 +4,16 @@ Web版(goblin_web)とReact Native版(goblin_native)の差異を解消するた�
 
 ---
 
+## 関連ドキュメント
+
+| ドキュメント | 内容 |
+|-------------|------|
+| [project_structure.md](./project_structure.md) | ディレクトリ構成・責務一覧 |
+| [screen_reference.md](./screen_reference.md) | 画面リファレンス |
+| [migration_tasks.md](./migration_tasks.md) | 移行タスク一覧・UI実装詳細 |
+
+---
+
 ## 優先度1: 必須（仕様統一）
 
 ### 1.1 パーティ最大人数の統一

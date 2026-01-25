@@ -84,57 +84,57 @@
     {
       "id": "GP001",
       "floors": [1],
-      "enemies": ["GOB001", "GOB001"]
+      "enemies": ["GOB001", "GOB001", "GOB001", "GOB001", "GOB001", "GOB001"]
     },
     {
       "id": "GP002",
       "floors": [1],
-      "enemies": ["GOB001", "GOB001", "GOB001"]
+      "enemies": ["GOB001", "GOB001", "GOB001", "GOB001", "GOB001", "GOB001", "GOB001", "GOB001"]
     },
     {
       "id": "GP003",
       "floors": [1],
-      "enemies": ["GOB001", "GOB001", "GOB002"]
+      "enemies": ["GOB001", "GOB001", "GOB001", "GOB001", "GOB002", "GOB002", "GOB002"]
     },
     {
       "id": "GP004",
       "floors": [1],
-      "enemies": ["GOB002", "GOB002"]
+      "enemies": ["GOB002", "GOB002", "GOB002", "GOB002", "GOB002", "GOB002"]
     },
     {
       "id": "GP005",
       "floors": [2],
-      "enemies": ["GOB003", "GOB003"]
+      "enemies": ["GOB003", "GOB003", "GOB003", "GOB003", "GOB003", "GOB003"]
     },
     {
       "id": "GP006",
       "floors": [2],
-      "enemies": ["GOB003", "GOB001", "GOB001"]
+      "enemies": ["GOB003", "GOB003", "GOB003", "GOB001", "GOB001", "GOB001", "GOB001"]
     },
     {
       "id": "GP007",
       "floors": [2],
-      "enemies": ["GOB004", "GOB001", "GOB001"]
+      "enemies": ["GOB004", "GOB004", "GOB004", "GOB001", "GOB001", "GOB001", "GOB001"]
     },
     {
       "id": "GP008",
       "floors": [2],
-      "enemies": ["GOB003", "GOB004"]
+      "enemies": ["GOB003", "GOB003", "GOB003", "GOB004", "GOB004", "GOB004"]
     },
     {
       "id": "GP009",
       "floors": [3],
-      "enemies": ["GOB005", "GOB005"]
+      "enemies": ["GOB005", "GOB005", "GOB005", "GOB005", "GOB005", "GOB005"]
     },
     {
       "id": "GP010",
       "floors": [3],
-      "enemies": ["GOB005", "GOB003", "GOB003"]
+      "enemies": ["GOB005", "GOB005", "GOB005", "GOB003", "GOB003", "GOB003", "GOB003", "GOB003"]
     },
     {
       "id": "BOSS",
       "floors": [3],
-      "enemies": ["B_HOB", "GOB005", "GOB005"],
+      "enemies": ["B_HOB", "GOB005", "GOB005", "GOB005", "GOB005", "GOB003", "GOB003", "GOB003", "GOB003", "GOB004", "GOB004", "GOB004"],
       "isBoss": true
     }
   ]

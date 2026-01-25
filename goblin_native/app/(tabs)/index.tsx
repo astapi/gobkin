@@ -7,6 +7,7 @@ import type { Goblin } from '@/shared/types'
 import { getFactor } from '@/shared/data/factors'
 import { getGoblinImage } from '@/shared/utils/goblinImages'
 import { getFactorImage } from '@/shared/utils/factorImages'
+import { getEffectiveStats } from '@/shared/utils/goblinStats'
 import { ModStatCalculator } from '@/core/services/ModStatCalculator'
 import { getExpForNextLevel, getExpProgress } from '@/core/services/ExperienceSystem'
 import { getModTemplate } from '@/shared/data/modPoolLoader'
@@ -17,6 +18,8 @@ interface GoblinCardProps {
 }
 
 function GoblinCard({ goblin, onPress }: GoblinCardProps) {
+  const stats = getEffectiveStats(goblin)
+
   return (
     <TouchableOpacity style={styles.card} onPress={onPress}>
       <View style={styles.iconContainer}>
@@ -42,8 +45,8 @@ function GoblinCard({ goblin, onPress }: GoblinCardProps) {
         )}
       </View>
       <View style={styles.statsContainer}>
-        <Text style={styles.statText}>HP:{goblin.stats.hp}</Text>
-        <Text style={styles.statText}>ATK:{goblin.stats.atk}</Text>
+        <Text style={styles.statText}>HP:{stats.hp}</Text>
+        <Text style={styles.statText}>ATK:{stats.atk}</Text>
       </View>
     </TouchableOpacity>
   )

@@ -6,6 +6,7 @@ import { useGoblinService } from '@/presentation/hooks/useGoblinService'
 import { useDungeonProgress } from '@/presentation/hooks/useDungeonProgress'
 import { useExpeditionFlow } from '@/presentation/hooks/useExpeditionFlow'
 import { getGoblinImage } from '@/shared/utils/goblinImages'
+import { getEffectiveStats } from '@/shared/utils/goblinStats'
 import type { ExpeditionRequest, Goblin, Dungeon } from '@/shared/types'
 
 type ReturnPolicy = ExpeditionRequest['returnPolicy']
@@ -38,11 +39,13 @@ function MemberSlot({ goblin, isEmpty, slotSize, avatarSize }: MemberSlotProps) 
     )
   }
 
+  const stats = getEffectiveStats(goblin)
+
   return (
     <View style={[styles.memberSlot, { width: slotSize }]}>
       <Text style={styles.memberLevel}>Lv{goblin.level}</Text>
       <Image source={getGoblinImage(goblin.avatar)} style={[styles.memberAvatar, { width: avatarSize, height: avatarSize }]} />
-      <Text style={styles.memberHp}>HP{goblin.stats.hp}</Text>
+      <Text style={styles.memberHp}>HP{stats.hp}</Text>
     </View>
   )
 }
