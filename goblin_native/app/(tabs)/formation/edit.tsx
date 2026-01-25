@@ -4,7 +4,7 @@ import { router, useLocalSearchParams, Stack } from 'expo-router'
 import { usePartyService } from '@/presentation/hooks/usePartyService'
 import { useGoblinService } from '@/presentation/hooks/useGoblinService'
 import { getGoblinImage } from '@/shared/utils/goblinImages'
-import { getFactorImage } from '@/shared/utils/factorImages'
+import { GoblinCard } from '@/presentation/components/GoblinCard'
 import type { Goblin } from '@/shared/types'
 
 const MAX_PARTY_SIZE = 6
@@ -57,50 +57,6 @@ function PartySlot({ goblin, isEmpty, isSelected, onPress, onRemove }: SlotProps
   )
 }
 
-interface GoblinListItemProps {
-  goblin: Goblin
-  isAssigned: boolean
-  isAssignedElsewhere: boolean
-  onPress: () => void
-}
-
-function GoblinListItem({ goblin, isAssigned, isAssignedElsewhere }: GoblinListItemProps) {
-  const FactorIcon1 = goblin.factors?.[0] ? getFactorImage(goblin.factors[0]) : null
-  const FactorIcon2 = goblin.factors?.[1] ? getFactorImage(goblin.factors[1]) : null
-
-  return (
-    <View style={[
-      styles.goblinItem,
-      isAssigned && styles.goblinItemAssigned,
-      isAssignedElsewhere && styles.goblinItemDisabled,
-    ]}>
-      <Image source={getGoblinImage(goblin.avatar)} style={styles.goblinAvatar} />
-      <View style={styles.goblinInfo}>
-        <Text style={[styles.goblinName, isAssignedElsewhere && styles.goblinNameDisabled]}>
-          {goblin.name}
-        </Text>
-        <Text style={[styles.goblinRace, isAssignedElsewhere && styles.goblinRaceDisabled]}>
-          {goblin.race}
-        </Text>
-        <Text style={[styles.goblinLevel, isAssignedElsewhere && styles.goblinLevelDisabled]}>
-          Lv.{goblin.level}
-        </Text>
-        <View style={styles.factorIcons}>
-          {FactorIcon1 && <FactorIcon1 width={20} height={20} />}
-          {FactorIcon2 && <FactorIcon2 width={20} height={20} />}
-        </View>
-      </View>
-      {isAssignedElsewhere && (
-        <Text style={styles.assignedBadge}>他PT</Text>
-      )}
-      {isAssigned && !isAssignedElsewhere && (
-        <View style={styles.checkmark}>
-          <Text style={styles.checkmarkText}>v</Text>
-        </View>
-      )}
-    </View>
-  )
-}
 
 export default function PartyEditScreen() {
   const { partyId } = useLocalSearchParams<{ partyId: string }>()
@@ -289,18 +245,13 @@ export default function PartyEditScreen() {
           ) : (
             <View style={styles.goblinList}>
               {availableGoblins.map(goblin => (
-                <TouchableOpacity
+                <GoblinCard
                   key={goblin.id}
+                  goblin={goblin}
                   onPress={() => handleGoblinSelect(goblin)}
-                  activeOpacity={assignedToOtherParty.has(goblin.id) ? 1 : 0.7}
-                >
-                  <GoblinListItem
-                    goblin={goblin}
-                    isAssigned={selectedMemberIds.includes(goblin.id)}
-                    isAssignedElsewhere={assignedToOtherParty.has(goblin.id)}
-                    onPress={() => handleGoblinSelect(goblin)}
-                  />
-                </TouchableOpacity>
+                  isAssigned={selectedMemberIds.includes(goblin.id)}
+                  isAssignedElsewhere={assignedToOtherParty.has(goblin.id)}
+                />
               ))}
             </View>
           )}
@@ -372,7 +323,7 @@ const styles = StyleSheet.create({
   },
   slotContainer: {
     width: '30%',
-    aspectRatio: 0.85,
+    aspectRatio: 1.0,
     borderRadius: 12,
     borderWidth: 2,
     borderStyle: 'dashed',
@@ -406,8 +357,8 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   slotAvatar: {
-    width: 48,
-    height: 48,
+    width: 40,
+    height: 40,
     borderRadius: 4,
     marginBottom: 4,
   },
@@ -447,83 +398,5 @@ const styles = StyleSheet.create({
   },
   goblinList: {
     gap: 8,
-  },
-  goblinItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    padding: 12,
-    borderWidth: 1,
-    borderColor: '#E5E7EB',
-  },
-  goblinItemAssigned: {
-    backgroundColor: '#EFF6FF',
-    borderColor: '#3B82F6',
-  },
-  goblinItemDisabled: {
-    backgroundColor: '#F9FAFB',
-    opacity: 0.6,
-  },
-  goblinAvatar: {
-    width: 56,
-    height: 56,
-    borderRadius: 8,
-    marginRight: 12,
-  },
-  goblinInfo: {
-    flex: 1,
-  },
-  goblinName: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#1F2937',
-    marginBottom: 2,
-  },
-  goblinNameDisabled: {
-    color: '#9CA3AF',
-  },
-  goblinRace: {
-    fontSize: 12,
-    color: '#6B7280',
-    marginBottom: 2,
-  },
-  goblinRaceDisabled: {
-    color: '#9CA3AF',
-  },
-  goblinLevel: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: '#374151',
-    marginBottom: 4,
-  },
-  goblinLevelDisabled: {
-    color: '#9CA3AF',
-  },
-  factorIcons: {
-    flexDirection: 'row',
-    gap: 4,
-  },
-  assignedBadge: {
-    fontSize: 10,
-    fontWeight: '600',
-    color: '#9CA3AF',
-    backgroundColor: '#F3F4F6',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 4,
-  },
-  checkmark: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    backgroundColor: '#3B82F6',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  checkmarkText: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
   },
 })
