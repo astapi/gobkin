@@ -8,6 +8,8 @@
 |-------------|------|
 | **[implementation_guide.md](./implementation_guide.md)** | 実装順序ガイド（推奨） |
 | [sqlite_migration.md](./sqlite_migration.md) | SQLiteスキーマ設計・Repository実装 |
+| [project_structure.md](./project_structure.md) | ディレクトリ構成・責務一覧 |
+| [screen_reference.md](./screen_reference.md) | 画面リファレンス |
 
 > **データ永続化方針**: Web版ではFirestoreを使用していましたが、React Native版ではSQLiteをメインのローカルストレージとして使用します。
 
