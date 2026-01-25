@@ -23,7 +23,6 @@ export class SQLiteBaseStateRepository implements IBaseStateRepository {
   private static instance: SQLiteBaseStateRepository | null = null
   private cache: BaseState | null = null
   private initialized = false
-  private onDataChangeCallback: (() => void) | null = null
 
   /**
    * シングルトンインスタンスを取得
@@ -62,13 +61,6 @@ export class SQLiteBaseStateRepository implements IBaseStateRepository {
   }
 
   /**
-   * データ変更時のコールバックを設定
-   */
-  setOnDataChange(callback: () => void): void {
-    this.onDataChangeCallback = callback
-  }
-
-  /**
    * 拠点状態を取得
    */
   getBaseState(): BaseState | null {
@@ -84,8 +76,6 @@ export class SQLiteBaseStateRepository implements IBaseStateRepository {
     this.saveAsync(state).catch(err => {
       console.error('[SQLiteBaseStateRepository] Failed to save:', err)
     })
-
-    this.notifyDataChange()
   }
 
   /**
@@ -141,11 +131,5 @@ export class SQLiteBaseStateRepository implements IBaseStateRepository {
     const maxPending = pendingMax?.max_id ?? 0
 
     return Math.max(maxGoblin, maxPending) + 1
-  }
-
-  private notifyDataChange(): void {
-    if (this.onDataChangeCallback) {
-      this.onDataChangeCallback()
-    }
   }
 }

@@ -11,17 +11,11 @@ import {
   UpdatePartyMembersUseCase,
 } from '../../core/usecases'
 
-type ListenerCapablePartyRepository = IPartyRepository & {
-  initialize?: () => Promise<void>
-  reload?: () => Promise<void>
-  setOnDataChange?: (callback: () => void) => void
-}
-
 export const usePartyService = () => {
   const [repositoryInitialized, setRepositoryInitialized] = useState(false)
   const [parties, setParties] = useState<Party[]>([])
 
-  const partyRepository = useMemo<ListenerCapablePartyRepository>(() => {
+  const partyRepository = useMemo<IPartyRepository>(() => {
     return SQLitePartyRepository.getInstance()
   }, [])
 
@@ -50,14 +44,10 @@ export const usePartyService = () => {
     [partyRepository],
   )
 
-  const refreshParties = useCallback(async () => {
-    // DBから再読み込み
-    if (partyRepository.reload) {
-      await partyRepository.reload()
-    }
+  const refreshParties = useCallback(() => {
     const currentParties = getPartyListUseCase.execute()
     setParties(currentParties)
-  }, [partyRepository, getPartyListUseCase])
+  }, [getPartyListUseCase])
 
   useEffect(() => {
     // 既に初期化済みなのでデータを取得

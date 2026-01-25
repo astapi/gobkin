@@ -8,11 +8,6 @@ import { areasData } from '../../shared/data'
 import type { Dungeon } from '../../shared/types'
 import type { DungeonProgressState } from '../../shared/types/DungeonProgress'
 
-type DungeonProgressRepository = SQLiteDungeonProgressRepository & {
-  initialize?: () => Promise<void>
-  setOnDataChange?: (callback: () => void) => void
-}
-
 const buildDefaultProgress = (): DungeonProgressState => {
   const defaults: DungeonProgressState = {}
   areasData.forEach((dungeon, index) => {
@@ -29,7 +24,7 @@ export const useDungeonProgress = () => {
   const [progress, setProgress] = useState<DungeonProgressState>(() => buildDefaultProgress())
   const [isLoading, setIsLoading] = useState(true)
 
-  const repository = useMemo<DungeonProgressRepository>(() => {
+  const repository = useMemo(() => {
     return SQLiteDungeonProgressRepository.getInstance()
   }, [])
 

@@ -4,16 +4,11 @@ import { SQLiteGoblinRepository } from '../../infrastructure/repositories/SQLite
 import type { IGoblinRepository } from '../../core/repositories'
 import { GetGoblinListUseCase } from '../../core/usecases'
 
-type ListenerCapableGoblinRepository = IGoblinRepository & {
-  initialize?: () => Promise<void>
-  setOnDataChange?: (callback: () => void) => void
-}
-
 export const useGoblinService = () => {
   const [repositoryInitialized, setRepositoryInitialized] = useState(false)
   const [goblins, setGoblins] = useState<Goblin[]>([])
 
-  const goblinRepository = useMemo<ListenerCapableGoblinRepository>(() => {
+  const goblinRepository = useMemo<IGoblinRepository>(() => {
     return SQLiteGoblinRepository.getInstance()
   }, [])
 
@@ -27,16 +22,10 @@ export const useGoblinService = () => {
   }, [getGoblinListUseCase])
 
   useEffect(() => {
-    // データ変更時のコールバックを設定
-    if (goblinRepository.setOnDataChange) {
-      goblinRepository.setOnDataChange(() => {
-        refreshGoblins()
-      })
-    }
-    // 既に初期化済みなのでデータを取得
+    // 初回のデータ取得
     refreshGoblins()
     setRepositoryInitialized(true)
-  }, [goblinRepository, refreshGoblins])
+  }, [refreshGoblins])
 
   const getGoblinById = useCallback(
     (goblinId: number): Goblin => {

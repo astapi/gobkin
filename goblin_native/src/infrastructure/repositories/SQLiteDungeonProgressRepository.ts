@@ -31,7 +31,6 @@ export class SQLiteDungeonProgressRepository implements IDungeonProgressReposito
   private static instance: SQLiteDungeonProgressRepository | null = null
   private cache: Map<string, DungeonProgress> = new Map()
   private initialized = false
-  private onDataChangeCallback: (() => void) | null = null
 
   /**
    * シングルトンインスタンスを取得
@@ -65,13 +64,6 @@ export class SQLiteDungeonProgressRepository implements IDungeonProgressReposito
   }
 
   /**
-   * データ変更時のコールバックを設定
-   */
-  setOnDataChange(callback: () => void): void {
-    this.onDataChangeCallback = callback
-  }
-
-  /**
    * 全ダンジョンの進行状況を取得
    */
   getAll(): DungeonProgressState {
@@ -98,8 +90,6 @@ export class SQLiteDungeonProgressRepository implements IDungeonProgressReposito
     this.saveAsync(dungeonId, progress).catch(err => {
       console.error('[SQLiteDungeonProgressRepository] Failed to save:', err)
     })
-
-    this.notifyDataChange()
   }
 
   /**
@@ -133,11 +123,5 @@ export class SQLiteDungeonProgressRepository implements IDungeonProgressReposito
         progress.unlockNotified ? 1 : 0,
       ]
     )
-  }
-
-  private notifyDataChange(): void {
-    if (this.onDataChangeCallback) {
-      this.onDataChangeCallback()
-    }
   }
 }

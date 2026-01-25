@@ -2,9 +2,6 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import type { ExpeditionRecord, ExpeditionReplay } from '@/shared/types'
 import { SQLiteExpeditionRepository } from '@/infrastructure/repositories'
 
-let dataChangeSubscribers: Set<() => void> = new Set()
-let dataChangeListenerBound = false
-
 const getRepository = (): SQLiteExpeditionRepository => {
   return SQLiteExpeditionRepository.getInstance()
 }
@@ -13,14 +10,6 @@ export const useExpeditionService = () => {
   const [expeditionRecords, setExpeditionRecords] = useState<ExpeditionRecord[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const repositoryRef = useRef<SQLiteExpeditionRepository | null>(null)
-
-  const bindDataChangeListener = useCallback((repository: SQLiteExpeditionRepository) => {
-    if (dataChangeListenerBound) return
-    repository.setOnDataChange(() => {
-      dataChangeSubscribers.forEach(callback => callback())
-    })
-    dataChangeListenerBound = true
-  }, [])
 
   const refreshExpeditions = useCallback(() => {
     if (!repositoryRef.current) return
@@ -31,20 +20,10 @@ export const useExpeditionService = () => {
     const repository = getRepository()
     repositoryRef.current = repository
 
-    bindDataChangeListener(repository)
-    const handleDataChange = () => {
-      setExpeditionRecords(repository.getAll())
-    }
-    dataChangeSubscribers.add(handleDataChange)
-
-    // 既に初期化済みなのでデータを取得
+    // 初回のデータ取得
     setExpeditionRecords(repository.getAll())
     setIsLoading(false)
-
-    return () => {
-      dataChangeSubscribers.delete(handleDataChange)
-    }
-  }, [bindDataChangeListener])
+  }, [])
 
   const getExpeditionById = useCallback((id: string): ExpeditionRecord | null => {
     if (!repositoryRef.current) return null
@@ -60,7 +39,8 @@ export const useExpeditionService = () => {
   const saveExpeditionRecord = useCallback((record: ExpeditionRecord) => {
     if (!repositoryRef.current) return
     repositoryRef.current.save(record)
-  }, [])
+    refreshExpeditions()
+  }, [refreshExpeditions])
 
   const updateExpeditionReplay = useCallback((id: string, replay: ExpeditionReplay) => {
     if (!repositoryRef.current) return
@@ -71,12 +51,14 @@ export const useExpeditionService = () => {
       replay,
       updatedAt: new Date(),
     })
-  }, [])
+    refreshExpeditions()
+  }, [refreshExpeditions])
 
   const completeExpeditionRecord = useCallback((id: string, replay: ExpeditionReplay) => {
     if (!repositoryRef.current) return
     repositoryRef.current.complete(id, replay)
-  }, [])
+    refreshExpeditions()
+  }, [refreshExpeditions])
 
   return {
     expeditionRepository: repositoryRef.current,
