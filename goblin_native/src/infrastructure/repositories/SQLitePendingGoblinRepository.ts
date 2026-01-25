@@ -26,7 +26,6 @@ export class SQLitePendingGoblinRepository implements IPendingGoblinRepository {
   private static instance: SQLitePendingGoblinRepository | null = null
   private cache: Map<number, Goblin> = new Map()
   private initialized = false
-  private onDataChangeCallback: (() => void) | null = null
 
   /**
    * シングルトンインスタンスを取得
@@ -59,13 +58,6 @@ export class SQLitePendingGoblinRepository implements IPendingGoblinRepository {
   }
 
   /**
-   * データ変更時のコールバックを設定
-   */
-  setOnDataChange(callback: () => void): void {
-    this.onDataChangeCallback = callback
-  }
-
-  /**
    * 待機中の全ゴブリンを取得
    */
   getPendingGoblins(): Goblin[] {
@@ -81,8 +73,6 @@ export class SQLitePendingGoblinRepository implements IPendingGoblinRepository {
     this.addAsync(goblin).catch(err => {
       console.error('[SQLitePendingGoblinRepository] Failed to add:', err)
     })
-
-    this.notifyDataChange()
   }
 
   /**
@@ -94,8 +84,6 @@ export class SQLitePendingGoblinRepository implements IPendingGoblinRepository {
     this.removeAsync(id).catch(err => {
       console.error('[SQLitePendingGoblinRepository] Failed to remove:', err)
     })
-
-    this.notifyDataChange()
   }
 
   /**
@@ -107,8 +95,6 @@ export class SQLitePendingGoblinRepository implements IPendingGoblinRepository {
     this.clearAsync().catch(err => {
       console.error('[SQLitePendingGoblinRepository] Failed to clear:', err)
     })
-
-    this.notifyDataChange()
   }
 
   // --- Private methods ---
@@ -168,12 +154,6 @@ export class SQLitePendingGoblinRepository implements IPendingGoblinRepository {
       mods: row.mods_json
         ? JSON.parse(row.mods_json)
         : undefined,
-    }
-  }
-
-  private notifyDataChange(): void {
-    if (this.onDataChangeCallback) {
-      this.onDataChangeCallback()
     }
   }
 }

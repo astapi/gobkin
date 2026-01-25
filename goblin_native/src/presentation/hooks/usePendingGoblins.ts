@@ -20,12 +20,7 @@ export function usePendingGoblins() {
     const repository = getRepository()
     repositoryRef.current = repository
 
-    // データ変更時のコールバックを設定
-    repository.setOnDataChange(() => {
-      setPendingGoblins(repository.getPendingGoblins())
-    })
-
-    // 既に初期化済みなのでデータを取得
+    // 初回のデータ取得
     setPendingGoblins(repository.getPendingGoblins())
     setIsLoading(false)
   }, [])

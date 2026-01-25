@@ -27,7 +27,6 @@ export class SQLiteGoblinRepository implements IGoblinRepository {
   private static instance: SQLiteGoblinRepository | null = null
   private cache: Map<number, Goblin> = new Map()
   private initialized = false
-  private onDataChangeCallback: (() => void) | null = null
 
   /**
    * シングルトンインスタンスを取得
@@ -58,13 +57,6 @@ export class SQLiteGoblinRepository implements IGoblinRepository {
   }
 
   /**
-   * データ変更時のコールバックを設定
-   */
-  setOnDataChange(callback: () => void): void {
-    this.onDataChangeCallback = callback
-  }
-
-  /**
    * 全ゴブリンを取得
    */
   getGoblins(): Goblin[] {
@@ -89,8 +81,6 @@ export class SQLiteGoblinRepository implements IGoblinRepository {
     this.saveGoblinAsync(goblin).catch(err => {
       console.error('[SQLiteGoblinRepository] Failed to save goblin:', err)
     })
-
-    this.notifyDataChange()
   }
 
   /**
@@ -102,8 +92,6 @@ export class SQLiteGoblinRepository implements IGoblinRepository {
     this.deleteGoblinAsync(id).catch(err => {
       console.error('[SQLiteGoblinRepository] Failed to delete goblin:', err)
     })
-
-    this.notifyDataChange()
   }
 
   /**
@@ -180,12 +168,6 @@ export class SQLiteGoblinRepository implements IGoblinRepository {
       mods: row.mods_json
         ? JSON.parse(row.mods_json)
         : undefined,
-    }
-  }
-
-  private notifyDataChange(): void {
-    if (this.onDataChangeCallback) {
-      this.onDataChangeCallback()
     }
   }
 }

@@ -22,7 +22,6 @@ export class SQLitePartyRepository implements IPartyRepository {
   private static instance: SQLitePartyRepository | null = null
   private cache: Map<number, Party> = new Map()
   private initialized = false
-  private onDataChangeCallback: (() => void) | null = null
 
   /**
    * シングルトンインスタンスを取得
@@ -66,13 +65,6 @@ export class SQLitePartyRepository implements IPartyRepository {
   }
 
   /**
-   * データ変更時のコールバックを設定
-   */
-  setOnDataChange(callback: () => void): void {
-    this.onDataChangeCallback = callback
-  }
-
-  /**
    * 全パーティを取得
    */
   getParties(): Party[] {
@@ -95,8 +87,6 @@ export class SQLitePartyRepository implements IPartyRepository {
     this.savePartyAsync(party).catch(err => {
       console.error('[SQLitePartyRepository] Failed to save party:', err)
     })
-
-    this.notifyDataChange()
   }
 
   /**
@@ -108,8 +98,6 @@ export class SQLitePartyRepository implements IPartyRepository {
     this.deletePartyAsync(id).catch(err => {
       console.error('[SQLitePartyRepository] Failed to delete party:', err)
     })
-
-    this.notifyDataChange()
   }
 
   /**
@@ -197,12 +185,6 @@ export class SQLitePartyRepository implements IPartyRepository {
       dungeonId: row.dungeon_id ?? undefined,
       targetFloor: row.target_floor ?? undefined,
       returnPolicy: (row.return_policy as ExpeditionRequest['returnPolicy']) ?? undefined,
-    }
-  }
-
-  private notifyDataChange(): void {
-    if (this.onDataChangeCallback) {
-      this.onDataChangeCallback()
     }
   }
 }

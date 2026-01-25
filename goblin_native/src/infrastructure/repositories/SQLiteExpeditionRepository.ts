@@ -34,7 +34,6 @@ export class SQLiteExpeditionRepository implements IExpeditionRepository {
   private static instance: SQLiteExpeditionRepository | null = null
   private cache: Map<string, ExpeditionRecord> = new Map()
   private initialized = false
-  private onDataChangeCallback: (() => void) | null = null
 
   /**
    * シングルトンインスタンスを取得
@@ -64,13 +63,6 @@ export class SQLiteExpeditionRepository implements IExpeditionRepository {
     }
 
     this.initialized = true
-  }
-
-  /**
-   * データ変更時のコールバックを設定
-   */
-  setOnDataChange(callback: () => void): void {
-    this.onDataChangeCallback = callback
   }
 
   /**
@@ -114,8 +106,6 @@ export class SQLiteExpeditionRepository implements IExpeditionRepository {
     this.saveAsync(record).catch(err => {
       console.error('[SQLiteExpeditionRepository] Failed to save:', err)
     })
-
-    this.notifyDataChange()
   }
 
   /**
@@ -127,8 +117,6 @@ export class SQLiteExpeditionRepository implements IExpeditionRepository {
     this.deleteAsync(id).catch(err => {
       console.error('[SQLiteExpeditionRepository] Failed to delete:', err)
     })
-
-    this.notifyDataChange()
   }
 
   /**
@@ -204,12 +192,6 @@ export class SQLiteExpeditionRepository implements IExpeditionRepository {
       replay: row.replay_json ? JSON.parse(row.replay_json) : undefined,
       createdAt: new Date(row.created_at),
       updatedAt: new Date(row.updated_at),
-    }
-  }
-
-  private notifyDataChange(): void {
-    if (this.onDataChangeCallback) {
-      this.onDataChangeCallback()
     }
   }
 }

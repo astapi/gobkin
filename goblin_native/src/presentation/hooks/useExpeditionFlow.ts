@@ -220,7 +220,7 @@ export const useExpeditionFlow = ({
         completeExpeditionRecord(record.id, record.replay!)
         processedExpeditionsRef.current.add(record.id)
         if (refreshParties) {
-          await refreshParties()
+          refreshParties()
         }
       } catch (error) {
         console.warn('[useExpeditionFlow] Failed to complete expedition', error)

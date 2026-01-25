@@ -1,6 +1,7 @@
 import { useState, useCallback, useMemo } from 'react'
 import { View, Text, FlatList, TouchableOpacity, StyleSheet, Modal, ScrollView, ActivityIndicator, Image, Alert } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import { useFocusEffect } from 'expo-router'
 import { useGoblinService } from '@/presentation/hooks/useGoblinService'
 import type { Goblin } from '@/shared/types'
 import { getFactor } from '@/shared/data/factors'
@@ -226,7 +227,7 @@ function GoblinDetailModal({ goblin, visible, onClose }: GoblinDetailModalProps)
 }
 
 export default function GoblinListScreen() {
-  const { goblins, isLoading } = useGoblinService()
+  const { goblins, isLoading, refreshGoblins } = useGoblinService()
   const [selectedGoblin, setSelectedGoblin] = useState<Goblin | null>(null)
   const [modalVisible, setModalVisible] = useState(false)
 
@@ -239,6 +240,12 @@ export default function GoblinListScreen() {
     setModalVisible(false)
     setSelectedGoblin(null)
   }, [])
+
+  useFocusEffect(
+    useCallback(() => {
+      refreshGoblins()
+    }, [refreshGoblins])
+  )
 
   if (isLoading) {
     return (

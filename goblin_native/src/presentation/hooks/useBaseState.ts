@@ -20,12 +20,7 @@ export function useBaseState() {
     const repository = getRepository()
     repositoryRef.current = repository
 
-    // データ変更時のコールバックを設定
-    repository.setOnDataChange(() => {
-      setBaseState(repository.getBaseState())
-    })
-
-    // 既に初期化済みなのでデータを取得
+    // 初回のデータ取得
     setBaseState(repository.getBaseState())
     setIsLoading(false)
   }, [])
