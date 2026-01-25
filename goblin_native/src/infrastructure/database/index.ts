@@ -15,6 +15,7 @@ let initializationPromise: Promise<SQLite.SQLiteDatabase> | null = null
 /**
  * データベース接続を取得
  * シングルトンパターンで同一インスタンスを返す
+ * 初期化失敗時は再試行可能
  */
 export const getDatabase = async (): Promise<SQLite.SQLiteDatabase> => {
   if (db) return db
@@ -24,7 +25,12 @@ export const getDatabase = async (): Promise<SQLite.SQLiteDatabase> => {
     return initializationPromise
   }
 
-  initializationPromise = initializeDatabase()
+  // 初期化失敗時にPromiseをリセットして再試行可能にする
+  initializationPromise = initializeDatabase().catch(error => {
+    initializationPromise = null
+    throw error
+  })
+
   return initializationPromise
 }
 
