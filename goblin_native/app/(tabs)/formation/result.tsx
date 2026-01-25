@@ -1,4 +1,4 @@
-import { useMemo, useCallback, useEffect } from 'react'
+import { useMemo, useCallback, useEffect, useState } from 'react'
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Image, ActivityIndicator } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { router, useLocalSearchParams } from 'expo-router'
@@ -22,13 +22,27 @@ export default function ExpeditionResultScreen() {
 
   const { getPartyById } = usePartyService()
   const { goblins } = useGoblinService()
-  const { dungeons, markDungeonCleared } = useDungeonProgress()
-  const { expeditionRecords, getExpeditionById, isLoading: isExpeditionLoading } = useExpeditionService()
+  const { dungeons, progress, markDungeonCleared, markUnlockNotified } = useDungeonProgress()
+  const {
+    expeditionRecords,
+    getExpeditionById,
+    refreshExpeditions,
+    isLoading: isExpeditionLoading,
+  } = useExpeditionService()
+  const [hasRetriedLoad, setHasRetriedLoad] = useState(false)
 
   const expeditionRecord = useMemo(() => {
     if (!expeditionId) return null
-    return getExpeditionById(expeditionId)
+    const byId = getExpeditionById(expeditionId)
+    if (byId) return byId
+    return expeditionRecords.find(record => record.id === expeditionId) ?? null
   }, [expeditionId, getExpeditionById, expeditionRecords])
+
+  useEffect(() => {
+    if (!expeditionId || isExpeditionLoading || expeditionRecord || hasRetriedLoad) return
+    refreshExpeditions()
+    setHasRetriedLoad(true)
+  }, [expeditionId, expeditionRecord, hasRetriedLoad, isExpeditionLoading, refreshExpeditions])
 
   const replay = expeditionRecord?.replay ?? null
   const resolvedPartyId = expeditionRecord?.partyId ?? (partyId ? parseInt(partyId, 10) : null)
@@ -99,13 +113,23 @@ export default function ExpeditionResultScreen() {
     router.replace('/formation')
   }, [])
 
-  const area = replay ? areasData.find(a => a.id === replay.meta.areaId) : null
+  const area = replay ? areasData.find(a => a.id === replay.meta.areaId) : dungeon
   const unlockNext = area?.unlockNext
   const nextAreaName = unlockNext
     ? areasData.find(a => a.id === unlockNext)?.name || unlockNext
     : null
+  const [showUnlockNotice, setShowUnlockNotice] = useState(false)
 
-  if (expeditionId && isExpeditionLoading) {
+  useEffect(() => {
+    if (!unlockNext || !isSuccess) return
+    const nextProgress = progress[unlockNext]
+    if (!nextProgress || !nextProgress.unlocked) return
+    if (nextProgress.unlockNotified) return
+    setShowUnlockNotice(true)
+    markUnlockNotified(unlockNext)
+  }, [unlockNext, isSuccess, progress, markUnlockNotified])
+
+  if (expeditionId && (isExpeditionLoading || (!expeditionRecord && !hasRetriedLoad))) {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.loadingContainer}>
@@ -184,7 +208,7 @@ export default function ExpeditionResultScreen() {
           <Text style={styles.summaryText}>{goldGained.toLocaleString()} Gold を獲得</Text>
         </View>
 
-        {nextAreaName && isSuccess && (
+        {nextAreaName && isSuccess && showUnlockNotice && (
           <View style={styles.section}>
             <Text style={styles.summaryText}>次のエリア「{nextAreaName}」が解放されました</Text>
           </View>

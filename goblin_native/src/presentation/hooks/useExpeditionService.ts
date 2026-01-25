@@ -2,15 +2,11 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import type { ExpeditionRecord, ExpeditionReplay } from '@/shared/types'
 import { SQLiteExpeditionRepository } from '@/infrastructure/repositories'
 
-let repositoryInstance: SQLiteExpeditionRepository | null = null
 let dataChangeSubscribers: Set<() => void> = new Set()
 let dataChangeListenerBound = false
 
 const getRepository = (): SQLiteExpeditionRepository => {
-  if (!repositoryInstance) {
-    repositoryInstance = new SQLiteExpeditionRepository()
-  }
-  return repositoryInstance
+  return SQLiteExpeditionRepository.getInstance()
 }
 
 export const useExpeditionService = () => {
@@ -35,24 +31,15 @@ export const useExpeditionService = () => {
     const repository = getRepository()
     repositoryRef.current = repository
 
-    const initializeAndLoad = async () => {
-      try {
-        await repository.initialize()
-        setExpeditionRecords(repository.getAll())
-      } catch (error) {
-        console.error('[useExpeditionService] Failed to initialize:', error)
-      } finally {
-        setIsLoading(false)
-      }
-    }
-
     bindDataChangeListener(repository)
     const handleDataChange = () => {
       setExpeditionRecords(repository.getAll())
     }
     dataChangeSubscribers.add(handleDataChange)
 
-    initializeAndLoad()
+    // 既に初期化済みなのでデータを取得
+    setExpeditionRecords(repository.getAll())
+    setIsLoading(false)
 
     return () => {
       dataChangeSubscribers.delete(handleDataChange)

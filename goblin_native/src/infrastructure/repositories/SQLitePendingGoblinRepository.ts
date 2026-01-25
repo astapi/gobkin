@@ -23,9 +23,20 @@ interface PendingGoblinRow {
 }
 
 export class SQLitePendingGoblinRepository implements IPendingGoblinRepository {
+  private static instance: SQLitePendingGoblinRepository | null = null
   private cache: Map<number, Goblin> = new Map()
   private initialized = false
   private onDataChangeCallback: (() => void) | null = null
+
+  /**
+   * シングルトンインスタンスを取得
+   */
+  static getInstance(): SQLitePendingGoblinRepository {
+    if (!SQLitePendingGoblinRepository.instance) {
+      SQLitePendingGoblinRepository.instance = new SQLitePendingGoblinRepository()
+    }
+    return SQLitePendingGoblinRepository.instance
+  }
 
   /**
    * リポジトリを初期化し、DBからデータをロード

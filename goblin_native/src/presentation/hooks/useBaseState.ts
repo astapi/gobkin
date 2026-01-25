@@ -6,14 +6,8 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import type { BaseState } from '@/shared/types'
 import { SQLiteBaseStateRepository } from '@/infrastructure/repositories'
 
-// シングルトンリポジトリインスタンス
-let repositoryInstance: SQLiteBaseStateRepository | null = null
-
 const getRepository = (): SQLiteBaseStateRepository => {
-  if (!repositoryInstance) {
-    repositoryInstance = new SQLiteBaseStateRepository()
-  }
-  return repositoryInstance
+  return SQLiteBaseStateRepository.getInstance()
 }
 
 export function useBaseState() {
@@ -21,28 +15,19 @@ export function useBaseState() {
   const [isLoading, setIsLoading] = useState(true)
   const repositoryRef = useRef<SQLiteBaseStateRepository | null>(null)
 
-  // リポジトリの初期化とデータ取得
+  // リポジトリからデータを取得（アプリ起動時に既に初期化済み）
   useEffect(() => {
     const repository = getRepository()
     repositoryRef.current = repository
-
-    const initializeAndLoad = async () => {
-      try {
-        await repository.initialize()
-        setBaseState(repository.getBaseState())
-      } catch (error) {
-        console.error('[useBaseState] Failed to initialize:', error)
-      } finally {
-        setIsLoading(false)
-      }
-    }
 
     // データ変更時のコールバックを設定
     repository.setOnDataChange(() => {
       setBaseState(repository.getBaseState())
     })
 
-    initializeAndLoad()
+    // 既に初期化済みなのでデータを取得
+    setBaseState(repository.getBaseState())
+    setIsLoading(false)
   }, [])
 
   // 拠点ランクアップ

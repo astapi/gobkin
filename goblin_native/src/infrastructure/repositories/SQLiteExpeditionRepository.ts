@@ -31,9 +31,20 @@ export interface IExpeditionRepository {
 }
 
 export class SQLiteExpeditionRepository implements IExpeditionRepository {
+  private static instance: SQLiteExpeditionRepository | null = null
   private cache: Map<string, ExpeditionRecord> = new Map()
   private initialized = false
   private onDataChangeCallback: (() => void) | null = null
+
+  /**
+   * シングルトンインスタンスを取得
+   */
+  static getInstance(): SQLiteExpeditionRepository {
+    if (!SQLiteExpeditionRepository.instance) {
+      SQLiteExpeditionRepository.instance = new SQLiteExpeditionRepository()
+    }
+    return SQLiteExpeditionRepository.instance
+  }
 
   /**
    * リポジトリを初期化し、DBからデータをロード

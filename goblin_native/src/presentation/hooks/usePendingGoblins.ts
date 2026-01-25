@@ -6,14 +6,8 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import type { Goblin } from '@/shared/types'
 import { SQLitePendingGoblinRepository } from '@/infrastructure/repositories'
 
-// シングルトンリポジトリインスタンス
-let repositoryInstance: SQLitePendingGoblinRepository | null = null
-
 const getRepository = (): SQLitePendingGoblinRepository => {
-  if (!repositoryInstance) {
-    repositoryInstance = new SQLitePendingGoblinRepository()
-  }
-  return repositoryInstance
+  return SQLitePendingGoblinRepository.getInstance()
 }
 
 export function usePendingGoblins() {
@@ -21,28 +15,19 @@ export function usePendingGoblins() {
   const [isLoading, setIsLoading] = useState(true)
   const repositoryRef = useRef<SQLitePendingGoblinRepository | null>(null)
 
-  // リポジトリの初期化とデータ取得
+  // リポジトリからデータを取得（アプリ起動時に既に初期化済み）
   useEffect(() => {
     const repository = getRepository()
     repositoryRef.current = repository
-
-    const initializeAndLoad = async () => {
-      try {
-        await repository.initialize()
-        setPendingGoblins(repository.getPendingGoblins())
-      } catch (error) {
-        console.error('[usePendingGoblins] Failed to initialize:', error)
-      } finally {
-        setIsLoading(false)
-      }
-    }
 
     // データ変更時のコールバックを設定
     repository.setOnDataChange(() => {
       setPendingGoblins(repository.getPendingGoblins())
     })
 
-    initializeAndLoad()
+    // 既に初期化済みなのでデータを取得
+    setPendingGoblins(repository.getPendingGoblins())
+    setIsLoading(false)
   }, [])
 
   // 待機中ゴブリンを追加

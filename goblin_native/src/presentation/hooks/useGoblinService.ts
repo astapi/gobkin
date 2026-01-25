@@ -27,19 +27,15 @@ export const useGoblinService = () => {
   }, [getGoblinListUseCase])
 
   useEffect(() => {
-    const initRepository = async () => {
-      if (goblinRepository.initialize) {
-        await goblinRepository.initialize()
-      }
-      refreshGoblins()
-      setRepositoryInitialized(true)
-    }
+    // データ変更時のコールバックを設定
     if (goblinRepository.setOnDataChange) {
       goblinRepository.setOnDataChange(() => {
         refreshGoblins()
       })
     }
-    initRepository()
+    // 既に初期化済みなのでデータを取得
+    refreshGoblins()
+    setRepositoryInitialized(true)
   }, [goblinRepository, refreshGoblins])
 
   const getGoblinById = useCallback(

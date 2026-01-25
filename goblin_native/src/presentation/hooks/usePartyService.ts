@@ -60,16 +60,11 @@ export const usePartyService = () => {
   }, [partyRepository, getPartyListUseCase])
 
   useEffect(() => {
-    const initRepository = async () => {
-      if (partyRepository.initialize) {
-        await partyRepository.initialize()
-      }
-      const currentParties = getPartyListUseCase.execute()
-      setParties(currentParties)
-      setRepositoryInitialized(true)
-    }
-    initRepository()
-  }, [partyRepository, getPartyListUseCase])
+    // 既に初期化済みなのでデータを取得
+    const currentParties = getPartyListUseCase.execute()
+    setParties(currentParties)
+    setRepositoryInitialized(true)
+  }, [getPartyListUseCase])
 
   const getPartyById = useCallback(
     (partyId: number) => getPartyByIdUseCase.execute(partyId),
