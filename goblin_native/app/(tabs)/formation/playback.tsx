@@ -14,6 +14,7 @@ import type { TimelineEvent, ExpeditionReplay, ExpeditionRecord } from '@/shared
 import type { BattleLogEntry } from '@/shared/types'
 import { storeBattleLog } from '@/presentation/contexts/battleLogStore'
 import { getGoblinImage } from '@/shared/utils/goblinImages'
+import { ModStatCalculator } from '@/core/services/ModStatCalculator'
 
 interface LogEntry {
   id: string
@@ -272,7 +273,7 @@ export default function ExpeditionPlaybackScreen() {
 
     const initialPartyHp = replay.meta.party.map(memberId => {
       const goblin = goblins.find(g => g.id === parseInt(memberId, 10))
-      return goblin?.stats.hp ?? 100
+      return goblin ? ModStatCalculator.calculate(goblin).hp : 100
     })
     let tempHp = [...initialPartyHp]
     let tempFloor = 1
@@ -422,7 +423,7 @@ export default function ExpeditionPlaybackScreen() {
       <View style={styles.partyGrid}>
         {replay.meta.party.map((memberId, index) => {
           const goblin = goblins.find(g => g.id === parseInt(memberId, 10))
-          const maxHp = goblin?.stats.hp ?? 100
+          const maxHp = goblin ? ModStatCalculator.calculate(goblin).hp : 100
           const currentHp = partyHp[index] ?? maxHp
           return (
             <View key={memberId} style={styles.partyCard}>
