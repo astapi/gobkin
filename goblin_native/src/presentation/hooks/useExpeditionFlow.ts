@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { Alert } from 'react-native'
 import type {
   Dungeon,
   ExpeditionReplay,
@@ -15,6 +16,7 @@ import { useExpeditionService } from './useExpeditionService'
 import { usePendingGoblins } from './usePendingGoblins'
 import { useBaseState } from './useBaseState'
 import { useDungeonProgress } from './useDungeonProgress'
+import { SQLiteEquipmentRepository } from '../../infrastructure/repositories/SQLiteEquipmentRepository'
 
 interface UseExpeditionFlowParams {
   refreshParties?: () => Promise<void> | void
@@ -53,7 +55,7 @@ export const useExpeditionFlow = ({
   const { partyRepository } = usePartyService()
   const { goblinRepository, goblins } = useGoblinService()
   const { pendingGoblins, addPendingGoblin, isLoading: isPendingLoading } = usePendingGoblins()
-  const { rank, getNextGoblinId, isLoading: isBaseLoading } = useBaseState()
+  const { rank, getNextGoblinId, isLoading: isBaseLoading, baseStateRepository } = useBaseState()
   const { markDungeonCleared } = useDungeonProgress()
   const {
     expeditionRecords,
@@ -71,8 +73,8 @@ export const useExpeditionFlow = ({
   }, [partyRepository, goblinRepository])
 
   const completeExpeditionUseCase = useMemo(() => {
-    return new CompleteExpeditionUseCase(goblinRepository, partyRepository)
-  }, [goblinRepository, partyRepository])
+    return new CompleteExpeditionUseCase(goblinRepository, partyRepository, baseStateRepository, SQLiteEquipmentRepository.getInstance())
+  }, [goblinRepository, partyRepository, baseStateRepository])
 
   const handleDungeonClear = useCallback((record: ExpeditionRecord) => {
     if (!record.replay || isPendingLoading || isBaseLoading) return
@@ -90,9 +92,16 @@ export const useExpeditionFlow = ({
     if (pendingGoblins.length >= maxPending) return
 
     const nextId = getNextGoblinId()
-    const areaLevel = Math.min(64, dungeon.areaLevel ?? 1)
+    const areaLevel = dungeon.areaLevel ?? 1
     const goblinBirthService = new GoblinBirthService()
-    const newGoblin = goblinBirthService.createNewGoblin(nextId, areaLevel, goblins)
+    // 個体値は自動計算される（areaLevel + 拠点ランクボーナス）
+    const newGoblin = goblinBirthService.createNewGoblin(
+      nextId,
+      undefined,  // individualValueは指定しない（自動計算）
+      goblins,    // baseGoblins（因子継承用）
+      areaLevel,  // エリアレベル
+      rank        // 拠点ランク
+    )
     addPendingGoblin(newGoblin)
   }, [
     addPendingGoblin,
@@ -215,7 +224,20 @@ export const useExpeditionFlow = ({
     for (const record of dueExpeditions) {
       if (processedExpeditionsRef.current.has(record.id)) continue
       try {
-        await completeExpeditionUseCase.execute(record.partyId, record.replay!)
+        const result = await completeExpeditionUseCase.execute(record.partyId, record.replay!)
+
+        // 新しくダンジョンを制圧した場合の通知
+        if (result.newDungeonCaptured) {
+          const dungeon = areasData.find(d => d.id === result.newDungeonCaptured)
+          if (dungeon?.isBaseCapture) {
+            Alert.alert(
+              'ダンジョン制圧！',
+              `「${dungeon.name}」を制圧しました！\n\n拠点管理画面でランクアップが可能になりました。`,
+              [{ text: 'OK' }]
+            )
+          }
+        }
+
         handleDungeonClear(record)
         completeExpeditionRecord(record.id, record.replay!)
         processedExpeditionsRef.current.add(record.id)

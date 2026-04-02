@@ -10,6 +10,7 @@ import { usePendingGoblins } from '@/presentation/hooks/usePendingGoblins'
 import { useBaseState } from '@/presentation/hooks/useBaseState'
 import { CompleteExpeditionUseCase } from '@/core/usecases'
 import { GoblinBirthService } from '@/core/services'
+import { SQLiteEquipmentRepository } from '@/infrastructure/repositories/SQLiteEquipmentRepository'
 import type { TimelineEvent, ExpeditionReplay, ExpeditionRecord, ExpeditionEndReason } from '@/shared/types'
 import type { BattleLogEntry } from '@/shared/types'
 import { storeBattleLog } from '@/presentation/contexts/battleLogStore'
@@ -87,7 +88,7 @@ export default function ExpeditionPlaybackScreen() {
   const logIdRef = useRef(0)
 
   const completeExpeditionUseCase = useMemo(() => {
-    return new CompleteExpeditionUseCase(goblinRepository, partyRepository, baseStateRepository)
+    return new CompleteExpeditionUseCase(goblinRepository, partyRepository, baseStateRepository, SQLiteEquipmentRepository.getInstance())
   }, [goblinRepository, partyRepository, baseStateRepository])
 
   const addPendingGoblinOnClear = useCallback(() => {
