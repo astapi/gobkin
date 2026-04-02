@@ -12,11 +12,10 @@ import type {
   PartyState,
   ExpeditionEndReason,
   AreaConfig,
-  TreasureTable,
 } from '../../shared/types'
 import { getAreaConfig } from '../../shared/data/expeditionArea'
 import { getEnemyDatabase } from '../../shared/data/enemy'
-import { getEquipmentTemplate } from '../../shared/data/equipmentPoolLoader'
+import { getEquipmentTemplate, getEquipmentByDungeonLevel } from '../../shared/data/equipmentPoolLoader'
 import { BattleSystem } from './BattleSystem'
 import { ModStatCalculator } from './ModStatCalculator'
 
@@ -137,7 +136,7 @@ export class ExpeditionEngine {
             }
 
             // 宝箱ドロップ判定（勝利時のみ）
-            const treasureDrops = this.rollTreasureDrops(area.treasureTable, enemies, droppedTemplateIds)
+            const treasureDrops = this.rollTreasureDrops(area.dropChance, area.areaLevel, enemies, droppedTemplateIds)
             if (treasureDrops.length > 0) {
               events.push({
                 type: "treasure",
@@ -193,7 +192,7 @@ export class ExpeditionEngine {
             }
 
             // 宝箱ドロップ判定（勝利時のみ）
-            const defaultTreasure = this.rollTreasureDrops(area.treasureTable, enemies, droppedTemplateIds)
+            const defaultTreasure = this.rollTreasureDrops(area.dropChance, area.areaLevel, enemies, droppedTemplateIds)
             if (defaultTreasure.length > 0) {
               events.push({
                 type: "treasure",
@@ -254,7 +253,7 @@ export class ExpeditionEngine {
 
       // ボス戦勝利時の宝箱ドロップ判定
       if (bossCombat.outcome === 'win') {
-        const bossTreasure = this.rollTreasureDrops(area.treasureTable, bossEnemies, droppedTemplateIds)
+        const bossTreasure = this.rollTreasureDrops(area.dropChance, area.areaLevel, bossEnemies, droppedTemplateIds)
         if (bossTreasure.length > 0) {
           events.push({
             type: "treasure",
@@ -494,36 +493,27 @@ export class ExpeditionEngine {
 
   /**
    * 宝箱ドロップを判定（同一遠征中に同じアイテムは1個まで）
-   * 1. ダンジョンの treasureTable で通常アイテムを抽選
+   * 1. ダンジョンレベルに対応する装備プールから均等抽選
    * 2. 敵個別の equipmentDrops でレアアイテムを抽選
    */
   private rollTreasureDrops(
-    treasureTable: TreasureTable | undefined,
+    dropChance: number | undefined,
+    dungeonLevel: number,
     enemies: Enemy[],
     droppedIds: Set<string>
   ): TreasureDrop[] {
     const drops: TreasureDrop[] = []
 
-    // ダンジョンの宝箱テーブルから通常アイテムを抽選
-    if (treasureTable) {
-      // 未ドロップのアイテムだけを候補にする
-      const candidates = treasureTable.items.filter(item => !droppedIds.has(item.templateId))
+    // ダンジョンレベルに応じた装備プールから抽選
+    if (dropChance !== undefined && this.rng() < dropChance) {
+      const pool = getEquipmentByDungeonLevel(dungeonLevel)
+      const candidates = pool.filter(t => !droppedIds.has(t.id))
 
-      if (candidates.length > 0 && this.rng() < treasureTable.dropChance) {
-        const totalWeight = candidates.reduce((sum, item) => sum + item.weight, 0)
-        const roll = this.rng() * totalWeight
-        let current = 0
-        for (const item of candidates) {
-          current += item.weight
-          if (roll <= current) {
-            const template = getEquipmentTemplate(item.templateId)
-            if (template) {
-              drops.push({ templateId: item.templateId, name: template.name })
-              droppedIds.add(item.templateId)
-            }
-            break
-          }
-        }
+      if (candidates.length > 0) {
+        const index = Math.floor(this.rng() * candidates.length)
+        const selected = candidates[index]
+        drops.push({ templateId: selected.id, name: selected.name })
+        droppedIds.add(selected.id)
       }
     }
 

@@ -17,6 +17,8 @@
       "range": "melee",
       "price": 5,
       "unlockRank": 1,
+      "dropLevelMin": 1,
+      "dropLevelMax": 2,
       "description": "その辺に落ちていた棒切れ。無いよりはマシ"
     },
     {
@@ -33,6 +35,8 @@
       "range": "melee",
       "price": 15,
       "unlockRank": 1,
+      "dropLevelMin": 4,
+      "dropLevelMax": 10,
       "description": "木を削って作った棍棒。ゴブリンの定番武器"
     },
     {
@@ -50,6 +54,8 @@
       "range": "melee",
       "price": 30,
       "unlockRank": 1,
+      "dropLevelMin": 8,
+      "dropLevelMax": 15,
       "description": "銅で鍛えた初めてのまともな剣"
     },
     {
@@ -67,6 +73,8 @@
       "range": "melee",
       "price": 60,
       "unlockRank": 1,
+      "dropLevelMin": 8,
+      "dropLevelMax": 15,
       "description": "幅広の刃を持つ片手剣。攻守のバランスが良い"
     },
     {
@@ -84,6 +92,8 @@
       "range": "melee",
       "price": 100,
       "unlockRank": 1,
+      "dropLevelMin": 12,
+      "dropLevelMax": 25,
       "description": "標準的な長剣。扱いやすく初心者向き"
     },
     {
@@ -100,6 +110,8 @@
       "effects": [{ "type": "def_to_hp", "value": 4 }],
       "range": "melee",
       "price": 500,
+      "dropLevelMin": 20,
+      "dropLevelMax": 40,
       "description": "ミスリル銀で鍛えられた剣。軽く鋭い"
     },
     {
@@ -116,6 +128,8 @@
       "effects": [{ "type": "def_to_hp", "value": 5 }],
       "range": "melee",
       "price": 2500,
+      "dropLevelMin": 35,
+      "dropLevelMax": 60,
       "description": "王家に伝わる名剣。気品ある輝きを放つ"
     },
     {
@@ -133,6 +147,8 @@
       "range": "melee",
       "price": 12500,
       "unlockRank": 3,
+      "dropLevelMin": 50,
+      "dropLevelMax": 80,
       "description": "皇帝の威光を宿す剣。圧倒的な切れ味"
     },
     {
@@ -150,6 +166,8 @@
       "range": "melee",
       "price": 60000,
       "unlockRank": 5,
+      "dropLevelMin": 70,
+      "dropLevelMax": 105,
       "description": "古代文明の技術で造られた剣。失われた力が宿る"
     },
     {
@@ -166,6 +184,8 @@
       "effects": [{ "type": "def_to_hp", "value": 8 }],
       "range": "melee",
       "price": 240000,
+      "dropLevelMin": 95,
+      "dropLevelMax": 135,
       "description": "竜の骨から鍛造された大剣。重く、振るうには相応の力が要る"
     },
     {
@@ -182,6 +202,8 @@
       "effects": [{ "type": "def_to_hp", "value": 9 }],
       "range": "melee",
       "price": 720000,
+      "dropLevelMin": 120,
+      "dropLevelMax": 150,
       "description": "最硬の鉱石アダマンタイトで造られた剣。振るえる者は限られる"
     },
 
@@ -200,6 +222,8 @@
       "range": "ranged",
       "price": 10,
       "unlockRank": 1,
+      "dropLevelMin": 1,
+      "dropLevelMax": 2,
       "description": "Y字の枝とゴム紐で作った投石器。小石を飛ばす"
     },
     {
@@ -215,6 +239,8 @@
       "range": "ranged",
       "price": 40,
       "unlockRank": 1,
+      "dropLevelMin": 4,
+      "dropLevelMax": 10,
       "description": "小型の弓。取り回しが良く、後衛から援護できる"
     },
     {
@@ -234,6 +260,8 @@
       "range": "ranged",
       "price": 1000,
       "unlockRank": 1,
+      "dropLevelMin": 12,
+      "dropLevelMax": 25,
       "description": "本格的な長弓。遠距離から正確に射抜く"
     },
     {
@@ -252,6 +280,8 @@
       ],
       "range": "ranged",
       "price": 5000,
+      "dropLevelMin": 20,
+      "dropLevelMax": 40,
       "description": "ミスリル銀で補強された弓。軽く、矢の飛距離が伸びる"
     },
     {
@@ -270,6 +300,8 @@
       ],
       "range": "ranged",
       "price": 25000,
+      "dropLevelMin": 35,
+      "dropLevelMax": 60,
       "description": "王室御用達の名弓。精密な射撃が可能"
     },
     {
@@ -289,6 +321,8 @@
       "range": "ranged",
       "price": 125000,
       "unlockRank": 3,
+      "dropLevelMin": 50,
+      "dropLevelMax": 80,
       "description": "皇帝の狩猟弓。一矢で大型獣をも貫く"
     },
     {
@@ -308,6 +342,8 @@
       "range": "ranged",
       "price": 500000,
       "unlockRank": 5,
+      "dropLevelMin": 70,
+      "dropLevelMax": 105,
       "description": "古代遺跡から発掘された弓。矢が自ら標的を追う"
     },
     {
@@ -326,6 +362,8 @@
       ],
       "range": "ranged",
       "price": 1500000,
+      "dropLevelMin": 95,
+      "dropLevelMax": 135,
       "description": "竜の腱を弦にした弓。放たれた矢は風を裂く"
     },
     {
@@ -344,6 +382,8 @@
       ],
       "range": "ranged",
       "price": 3000000,
+      "dropLevelMin": 120,
+      "dropLevelMax": 150,
       "description": "アダマンタイトの矢を放つ究極の弓。貫けぬ物はない"
     }
   ]

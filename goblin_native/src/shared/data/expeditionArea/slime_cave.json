@@ -16,12 +16,6 @@
     "xpFloor": [4, 6],
     "xpBoss": 12
   },
-  "treasureTable": {
-    "dropChance": 0.15,
-    "items": [
-      { "templateId": "sword_cypress_stick", "weight": 50 },
-      { "templateId": "bow_slingshot", "weight": 50 }
-    ]
-  },
+  "dropChance": 0.15,
   "unlockNext": "forest_outskirts"
 }
