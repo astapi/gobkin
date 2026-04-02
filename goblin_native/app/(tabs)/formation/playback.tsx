@@ -106,7 +106,7 @@ export default function ExpeditionPlaybackScreen() {
     const nextId = getNextGoblinId()
     const areaLevel = Math.min(64, targetDungeon.areaLevel ?? 1)
     const goblinBirthService = new GoblinBirthService()
-    const newGoblin = goblinBirthService.createNewGoblin(nextId, areaLevel, goblins)
+    const newGoblin = goblinBirthService.createNewGoblin(nextId, undefined, goblins, areaLevel, rank)
     addPendingGoblin(newGoblin)
   }, [
     addPendingGoblin,

@@ -11,6 +11,8 @@ interface EquipmentRow {
   template_id: string
   slot_index: number
   goblin_id: number | null
+  title_id: string | null
+  title_name: string | null
   created_at: string
 }
 
@@ -78,13 +80,15 @@ export class SQLiteEquipmentRepository implements IEquipmentRepository {
   private async saveAsync(equipment: EquipmentInstance): Promise<void> {
     const db = await getDatabase()
     await db.runAsync(
-      `INSERT OR REPLACE INTO equipment (id, template_id, slot_index, goblin_id)
-       VALUES (?, ?, ?, ?)`,
+      `INSERT OR REPLACE INTO equipment (id, template_id, slot_index, goblin_id, title_id, title_name)
+       VALUES (?, ?, ?, ?, ?, ?)`,
       [
         equipment.id,
         equipment.templateId,
         equipment.slotIndex,
         equipment.goblinId,
+        equipment.titleId ?? null,
+        equipment.titleName ?? null,
       ]
     )
   }
@@ -100,6 +104,8 @@ export class SQLiteEquipmentRepository implements IEquipmentRepository {
       templateId: row.template_id,
       slotIndex: row.slot_index,
       goblinId: row.goblin_id,
+      titleId: row.title_id as EquipmentInstance['titleId'],
+      titleName: row.title_name ?? undefined,
     }
   }
 }

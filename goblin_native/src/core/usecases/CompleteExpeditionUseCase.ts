@@ -146,6 +146,8 @@ export class CompleteExpeditionUseCase {
           templateId: drop.templateId,
           slotIndex: -1,    // 在庫
           goblinId: null,
+          titleId: drop.titleId,
+          titleName: drop.titleName,
         })
       }
     }

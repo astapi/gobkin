@@ -1,5 +1,6 @@
 import type { EnemySnap } from "./Enemy"
 import type { CombatReplay } from "./Battle"
+import type { EquipmentTitleId } from "./EquipmentTitle"
 
 export interface ExpeditionRequest {
   partyId: string
@@ -38,7 +39,9 @@ export interface ExpeditionReplay {
 
 export interface TreasureDrop {
   templateId: string  // EquipmentTemplate.id
-  name: string        // 表示用の装備名
+  name: string        // 表示用の装備名（称号付き）
+  titleId?: EquipmentTitleId   // 称号ID（未設定 = 称号なし）
+  titleName?: string           // 称号の表示名（例: "伝説の"）
 }
 
 export type TimelineEvent =

@@ -24,6 +24,13 @@ export type { Factor, FactorEffect, FactorVariantConfig, FactorDropConfig } from
 // Item related types
 export type { Drop } from "./Item"
 
+// Equipment Title related types
+export type {
+  EquipmentTitleId,
+  EquipmentTitleDef,
+  EquipmentTitleInstance,
+} from "./EquipmentTitle"
+
 // Equipment related types
 export type {
   EquipmentCategory,

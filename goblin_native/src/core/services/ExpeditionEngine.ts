@@ -18,6 +18,7 @@ import { getEnemyDatabase } from '../../shared/data/enemy'
 import { getEquipmentTemplate, getEquipmentByDungeonLevel } from '../../shared/data/equipmentPoolLoader'
 import { BattleSystem } from './BattleSystem'
 import { ModStatCalculator } from './ModStatCalculator'
+import { EquipmentTitleService } from './EquipmentTitleService'
 
 export class ExpeditionEngine {
   private rng: () => number
@@ -495,12 +496,14 @@ export class ExpeditionEngine {
    * 宝箱ドロップを判定（同一遠征中に同じアイテムは1個まで）
    * 1. ダンジョンレベルに対応する装備プールから均等抽選
    * 2. 敵個別の equipmentDrops でレアアイテムを抽選
+   * 3. ドロップ時に称号を抽選して付与
    */
   private rollTreasureDrops(
     dropChance: number | undefined,
     dungeonLevel: number,
     enemies: Enemy[],
-    droppedIds: Set<string>
+    droppedIds: Set<string>,
+    titleMultiplier: number = 1
   ): TreasureDrop[] {
     const drops: TreasureDrop[] = []
 
@@ -512,7 +515,17 @@ export class ExpeditionEngine {
       if (candidates.length > 0) {
         const index = Math.floor(this.rng() * candidates.length)
         const selected = candidates[index]
-        drops.push({ templateId: selected.id, name: selected.name })
+
+        // 称号を抽選
+        const title = EquipmentTitleService.rollTitle(titleMultiplier, this.rng)
+        const displayName = EquipmentTitleService.formatTitledName(title.titleName, selected.name)
+
+        drops.push({
+          templateId: selected.id,
+          name: displayName,
+          titleId: title.titleId !== 'none' ? title.titleId : undefined,
+          titleName: title.titleName || undefined,
+        })
         droppedIds.add(selected.id)
       }
     }
@@ -525,7 +538,16 @@ export class ExpeditionEngine {
         if (this.rng() < drop.probability) {
           const template = getEquipmentTemplate(drop.templateId)
           if (template) {
-            drops.push({ templateId: drop.templateId, name: template.name })
+            // 称号を抽選
+            const title = EquipmentTitleService.rollTitle(titleMultiplier, this.rng)
+            const displayName = EquipmentTitleService.formatTitledName(title.titleName, template.name)
+
+            drops.push({
+              templateId: drop.templateId,
+              name: displayName,
+              titleId: title.titleId !== 'none' ? title.titleId : undefined,
+              titleName: title.titleName || undefined,
+            })
             droppedIds.add(drop.templateId)
           }
         }
