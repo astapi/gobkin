@@ -1,5 +1,5 @@
-import { useState, useCallback } from 'react'
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet, ActivityIndicator, Image } from 'react-native'
+import { useState, useCallback, useMemo } from 'react'
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet, ActivityIndicator, Image, Alert } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useFocusEffect } from 'expo-router'
 import { useBaseState } from '@/presentation/hooks/useBaseState'
@@ -9,6 +9,8 @@ import { getGoblinImage } from '@/shared/utils/goblinImages'
 import { getFactorImage } from '@/shared/utils/factorImages'
 import { getModTemplate } from '@/shared/data/modPoolLoader'
 import { ModStatCalculator } from '@/core/services/ModStatCalculator'
+import { checkRankUpAvailable, BASE_RANK_CONFIGS } from '@/core/services/BaseRankSystem'
+import { areasData } from '@/shared/data'
 
 const STAT_LABELS: Record<string, string> = {
   hp_percent: 'HP',
@@ -28,17 +30,38 @@ function getStatLabel(stat: string): string {
 }
 
 export default function BaseManagementScreen() {
-  const { isLoading: baseLoading, rank, capacity } = useBaseState()
+  const { isLoading: baseLoading, rank, capacity, maxParties, maxGoblins, ivBonus, baseState, gold, performRankUp } = useBaseState()
   const { pendingGoblins, isLoading: pendingLoading, removePendingGoblin, refreshPendingGoblins } = usePendingGoblins()
   const { goblins, saveGoblin } = useGoblinService()
 
   const [selectedGoblinIds, setSelectedGoblinIds] = useState<Set<number>>(new Set())
+  const [isRankingUp, setIsRankingUp] = useState(false)
 
   const currentGoblinCount = goblins.length
   const availableSlots = Math.max(0, capacity - currentGoblinCount)
   const maxPendingGoblins = rank * 5
   const selectedCount = selectedGoblinIds.size
   const canAddSelected = selectedCount > 0 && selectedCount <= availableSlots
+
+  // 次のランクアップ情報を計算
+  const nextRankInfo = useMemo(() => {
+    if (!baseState) return null
+    const nextConfig = BASE_RANK_CONFIGS.find(c => c.rank === rank + 1)
+    if (!nextConfig) return null
+
+    const targetDungeon = areasData.find(d => d.id === nextConfig.unlockCondition.dungeonId)
+    const isCaptured = baseState.capturedDungeons.includes(nextConfig.unlockCondition.dungeonId)
+
+    return {
+      nextRank: nextConfig.rank,
+      dungeonName: targetDungeon?.name || nextConfig.unlockCondition.dungeonId,
+      isCaptured,
+      maxParties: nextConfig.maxParties,
+      maxGoblins: nextConfig.maxGoblins,
+      ivBonus: nextConfig.ivBonus,
+      upgradeCost: nextConfig.upgradeCost,
+    }
+  }, [baseState, rank])
 
   const toggleGoblinSelection = useCallback((goblinId: number) => {
     setSelectedGoblinIds(prev => {
@@ -71,6 +94,36 @@ export default function BaseManagementScreen() {
     setSelectedGoblinIds(new Set())
   }, [pendingGoblins, selectedGoblinIds, selectedCount, removePendingGoblin])
 
+  const handleRankUp = useCallback(() => {
+    if (!nextRankInfo) return
+
+    Alert.alert(
+      'ランクアップ確認',
+      `拠点をランク${nextRankInfo.nextRank}にランクアップしますか？\n\n引っ越し資金: ${nextRankInfo.upgradeCost}G\n所持ゴールド: ${gold}G`,
+      [
+        { text: 'キャンセル', style: 'cancel' },
+        {
+          text: 'ランクアップ',
+          onPress: () => {
+            setIsRankingUp(true)
+            const result = performRankUp()
+            setIsRankingUp(false)
+
+            if (result.success) {
+              Alert.alert(
+                'ランクアップ成功！',
+                `拠点がランク${nextRankInfo.nextRank}になりました！\n\n新しい能力が解放されました。`,
+                [{ text: 'OK' }]
+              )
+            } else {
+              Alert.alert('ランクアップ失敗', result.error, [{ text: 'OK' }])
+            }
+          },
+        },
+      ]
+    )
+  }, [nextRankInfo, gold, performRankUp])
+
   useFocusEffect(
     useCallback(() => {
       refreshPendingGoblins()
@@ -99,25 +152,91 @@ export default function BaseManagementScreen() {
             <View style={styles.statusItem}>
               <Text style={styles.statusLabel}>拠点ランク</Text>
               <View style={styles.statusValueBox}>
-                <Text style={styles.statusValueText}>{rank}</Text>
+                <Text style={styles.statusValueText}>Lv. {rank}</Text>
+              </View>
+            </View>
+            <View style={styles.statusItem}>
+              <Text style={styles.statusLabel}>所持ゴールド</Text>
+              <View style={styles.statusValueBox}>
+                <Text style={styles.statusValueText}>{gold}G</Text>
+              </View>
+            </View>
+            <View style={styles.statusItem}>
+              <Text style={styles.statusLabel}>最大PT数</Text>
+              <View style={styles.statusValueBox}>
+                <Text style={styles.statusValueText}>{maxParties}</Text>
               </View>
             </View>
             <View style={styles.statusItem}>
               <Text style={styles.statusLabel}>収容数</Text>
               <View style={styles.statusValueBox}>
-                <Text style={styles.statusValueText}>{capacity}</Text>
+                <Text style={styles.statusValueText}>{maxGoblins}</Text>
+              </View>
+            </View>
+            <View style={styles.statusItem}>
+              <Text style={styles.statusLabel}>個体値ボーナス</Text>
+              <View style={styles.statusValueBox}>
+                <Text style={styles.statusValueText}>+{ivBonus}</Text>
               </View>
             </View>
             <View style={styles.statusItem}>
               <Text style={styles.statusLabel}>現在のゴブリン</Text>
-              <Text style={styles.statusValuePlain}>{currentGoblinCount} / {capacity}</Text>
-            </View>
-            <View style={styles.statusItem}>
-              <Text style={styles.statusLabel}>空き枠</Text>
-              <Text style={styles.statusValuePlain}>{availableSlots}</Text>
+              <Text style={styles.statusValuePlain}>{currentGoblinCount} / {maxGoblins}</Text>
             </View>
           </View>
         </View>
+
+        {nextRankInfo && (
+          <View style={styles.card}>
+            <Text style={styles.cardTitle}>次のランクアップ</Text>
+            <View style={styles.rankUpInfo}>
+              <View style={styles.rankUpRow}>
+                <Text style={styles.rankUpLabel}>目標拠点ランク:</Text>
+                <Text style={styles.rankUpValue}>Lv. {nextRankInfo.nextRank}</Text>
+              </View>
+              <View style={styles.rankUpRow}>
+                <Text style={styles.rankUpLabel}>引っ越し資金:</Text>
+                <Text style={styles.rankUpValue}>{nextRankInfo.upgradeCost}G</Text>
+              </View>
+              <View style={styles.rankUpRow}>
+                <Text style={styles.rankUpLabel}>必要な制圧:</Text>
+                <View style={styles.rankUpDungeonRow}>
+                  <Text style={[styles.rankUpValue, nextRankInfo.isCaptured && styles.rankUpCompleted]}>
+                    {nextRankInfo.dungeonName}
+                  </Text>
+                  {nextRankInfo.isCaptured && (
+                    <Text style={styles.rankUpCheck}>✓</Text>
+                  )}
+                </View>
+              </View>
+              <View style={styles.divider} />
+              <Text style={styles.rankUpBenefitsTitle}>ランクアップ時の効果:</Text>
+              <View style={styles.rankUpBenefits}>
+                <Text style={styles.rankUpBenefit}>• 最大PT数: {maxParties} → {nextRankInfo.maxParties}</Text>
+                <Text style={styles.rankUpBenefit}>• 収容数: {maxGoblins} → {nextRankInfo.maxGoblins}</Text>
+                <Text style={styles.rankUpBenefit}>• 個体値ボーナス: +{ivBonus} → +{nextRankInfo.ivBonus}</Text>
+              </View>
+
+              {nextRankInfo.isCaptured && (
+                <TouchableOpacity
+                  style={[
+                    styles.rankUpButton,
+                    (gold < nextRankInfo.upgradeCost || isRankingUp) && styles.rankUpButtonDisabled
+                  ]}
+                  onPress={handleRankUp}
+                  disabled={gold < nextRankInfo.upgradeCost || isRankingUp}
+                >
+                  <Text style={[
+                    styles.rankUpButtonText,
+                    (gold < nextRankInfo.upgradeCost || isRankingUp) && styles.rankUpButtonTextDisabled
+                  ]}>
+                    {isRankingUp ? '実行中...' : `ランク${nextRankInfo.nextRank}にランクアップ (${nextRankInfo.upgradeCost}G)`}
+                  </Text>
+                </TouchableOpacity>
+              )}
+            </View>
+          </View>
+        )}
 
         {pendingGoblins.length > 0 && (
           <View style={styles.card}>
@@ -484,5 +603,75 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#6B7280',
     lineHeight: 18,
+  },
+  rankUpInfo: {
+    gap: 10,
+  },
+  rankUpRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  rankUpLabel: {
+    fontSize: 13,
+    color: '#6B7280',
+    flex: 1,
+  },
+  rankUpValue: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#1F2937',
+  },
+  rankUpDungeonRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  rankUpCompleted: {
+    color: '#10B981',
+    textDecorationLine: 'line-through',
+  },
+  rankUpCheck: {
+    fontSize: 16,
+    color: '#10B981',
+    fontWeight: '700',
+  },
+  divider: {
+    height: 1,
+    backgroundColor: '#E5E7EB',
+    marginVertical: 4,
+  },
+  rankUpBenefitsTitle: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#4B5563',
+    marginBottom: 4,
+  },
+  rankUpBenefits: {
+    gap: 4,
+  },
+  rankUpBenefit: {
+    fontSize: 12,
+    color: '#6B7280',
+    lineHeight: 18,
+  },
+  rankUpButton: {
+    backgroundColor: '#3B82F6',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    marginTop: 12,
+    alignItems: 'center',
+  },
+  rankUpButtonDisabled: {
+    backgroundColor: '#D1D5DB',
+  },
+  rankUpButtonText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#FFFFFF',
+  },
+  rankUpButtonTextDisabled: {
+    color: '#9CA3AF',
   },
 })

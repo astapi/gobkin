@@ -5,6 +5,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import type { BaseState } from '@/shared/types'
 import { SQLiteBaseStateRepository } from '@/infrastructure/repositories'
+import { performRankUp as executeRankUp } from '@/core/services/BaseRankSystem'
 
 const getRepository = (): SQLiteBaseStateRepository => {
   return SQLiteBaseStateRepository.getInstance()
@@ -53,13 +54,34 @@ export function useBaseState() {
     setBaseState(newState)
   }, [baseState])
 
+  // ランクアップを実行
+  const performRankUp = useCallback(() => {
+    if (!repositoryRef.current || !baseState) {
+      return { success: false, error: '拠点状態が読み込まれていません' }
+    }
+
+    const result = executeRankUp(baseState)
+    if (result.success) {
+      repositoryRef.current.saveBaseState(result.state)
+      setBaseState(result.state)
+    }
+
+    return result
+  }, [baseState])
+
   return {
     baseState,
     isLoading,
     upgradeRank,
     getNextGoblinId,
     updateBaseState,
-    capacity: baseState?.capacity ?? 8,
+    performRankUp,
+    capacity: baseState?.capacity ?? 10,
     rank: baseState?.rank ?? 1,
+    baseStateRepository: repositoryRef.current!,
+    maxParties: baseState?.currentMaxParties ?? 1,
+    maxGoblins: baseState?.currentMaxGoblins ?? 10,
+    ivBonus: baseState?.currentIVBonus ?? 0,
+    gold: baseState?.gold ?? 0,
   }
 }

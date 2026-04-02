@@ -31,7 +31,9 @@
       "exploration_time_sec": 40,
       "description": "かつての支配者・ホブゴブリンが君臨する集落。独立を勝ち取るため、反逆の狼煙を上げる。",
       "unlockRequires": "forest_outskirts",
-      "unlockNext": "orc_camp"
+      "unlockNext": "orc_camp",
+      "isBaseCapture": true,
+      "rankUpTarget": 2
     },
     {
       "id": "orc_camp",
@@ -41,7 +43,9 @@
       "exploration_time_sec_first": 90,
       "exploration_time_sec": 45,
       "description": "オーク族が占拠した野営地。序盤の大きな壁となる強敵が待ち受ける。攻略すれば拠点として利用可能。",
-      "unlockRequires": "goblin_village"
+      "unlockRequires": "goblin_village",
+      "isBaseCapture": true,
+      "rankUpTarget": 3
     }
   ]
 }

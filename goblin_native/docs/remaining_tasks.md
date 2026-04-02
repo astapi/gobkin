@@ -20,28 +20,28 @@ Web版(goblin_web)とReact Native版(goblin_native)の差異を解消するた�
 
 | 項目 | 内容 |
 |-----|------|
-| 現状 | Web: 6人、Native: 4人 |
+| 現状 | Web: 6人、Native: 6人（統一済み） |
 | 対象ファイル | `app/(tabs)/formation/edit.tsx` |
-| 作業内容 | `MAX_PARTY_SIZE` を6に変更、UIを6スロット表示に対応 |
+| 作業内容 | 対応済み（`MAX_PARTY_SIZE = 6`、UI 6スロット対応） |
 | 参照 | `goblin_web/src/presentation/components/PartyEditScreen.tsx` |
 
 ### 1.2 ExpeditionEngine の移植
 
 | 項目 | 内容 |
 |-----|------|
-| 現状 | Native版はランダム生成の仮実装 |
-| 対象ファイル | 新規: `src/core/services/ExpeditionEngine.ts` |
-| 作業内容 | Web版のExpeditionEngineをReact Native用に移植 |
+| 現状 | 実装済み（`ExpeditionEngine.ts` あり） |
+| 対象ファイル | `src/core/services/ExpeditionEngine.ts` |
+| 作業内容 | 移植後の挙動調整・テスト強化を継続 |
 | 参照 | `goblin_web/src/core/services/ExpeditionEngine.ts` |
-| 依存 | BattleSystem.tsも移植が必要 |
+| 依存 | BattleSystem.ts は実装済み |
 
 ### 1.3 遠征プレイバックの完全実装
 
 | 項目 | 内容 |
 |-----|------|
-| 現状 | 固定イベントのシミュレーション表示 |
+| 現状 | `replay` ベースの再生実装済み（改善余地あり） |
 | 対象ファイル | `app/(tabs)/formation/playback.tsx` |
-| 作業内容 | ExpeditionEngine を使用した本格的なリプレイ再生 |
+| 作業内容 | 追加改善（再生制御や演出） |
 | 参照 | `goblin_web/src/presentation/components/ExpeditionPlaybackScreen.tsx` (417行) |
 
 ---
@@ -70,9 +70,9 @@ Web版(goblin_web)とReact Native版(goblin_native)の差異を解消するた�
 
 | 項目 | 内容 |
 |-----|------|
-| 現状 | 表示なし |
+| 現状 | 実装済み（推定探索時間を表示） |
 | 対象ファイル | `app/(tabs)/formation/preparation.tsx` |
-| 作業内容 | ダンジョン・パーティ構成から推定時間を計算して表示 |
+| 作業内容 | 必要に応じて表示文言/単位を調整 |
 | 参照 | `goblin_web/src/presentation/components/ExpeditionPreparationScreen.tsx` |
 
 ### 2.4 因子獲得表示
@@ -101,9 +101,9 @@ Web版(goblin_web)とReact Native版(goblin_native)の差異を解消するた�
 
 | 項目 | 内容 |
 |-----|------|
-| 現状 | 簡易表示 |
+| 現状 | 実装済み（イベント進行に応じて更新） |
 | 対象ファイル | `app/(tabs)/formation/playback.tsx` |
-| 作業内容 | 各メンバーのHP/最大HPをリアルタイム更新表示 |
+| 作業内容 | 表示精度/演出の改善を検討 |
 
 ### 3.2 緊急帰還ボタン
 
@@ -117,25 +117,25 @@ Web版(goblin_web)とReact Native版(goblin_native)の差異を解消するた�
 
 | 項目 | 内容 |
 |-----|------|
-| 現状 | ScrollView内に統合 |
+| 現状 | モーダル化済み |
 | 対象ファイル | `app/(tabs)/formation/preparation.tsx` |
-| 作業内容 | Web版と同様にモーダルで選択する形式に変更（任意） |
+| 作業内容 | 対応済み（任意改善のみ） |
 | 参照 | `goblin_web/src/presentation/components/DungeonSelectionModal.tsx` (83行) |
 
 ### 3.4 帰還ポリシー選択モーダル化
 
 | 項目 | 内容 |
 |-----|------|
-| 現状 | ScrollView内に統合 |
+| 現状 | モーダル化済み |
 | 対象ファイル | `app/(tabs)/formation/preparation.tsx` |
-| 作業内容 | Web版と同様にモーダルで選択する形式に変更（任意） |
+| 作業内容 | 対応済み（任意改善のみ） |
 | 参照 | `goblin_web/src/presentation/components/ReturnPolicySelectionModal.tsx` (78行) |
 
 ---
 
 ## コア移植タスク（優先度1の前提）
 
-ExpeditionEngineを動作させるために必要なコアロジックの移植：
+ExpeditionEngineを動作させるために必要なコアロジックは移植済みです。
 
 | ファイル | 行数 | 説明 |
 |---------|------|------|
@@ -148,10 +148,10 @@ ExpeditionEngineを動作させるために必要なコアロジックの移植�
 
 ```
 src/core/services/
-├── ExpeditionEngine.ts      ← 移植
-├── BattleSystem.ts          ← 移植
-├── ExperienceSystem.ts      ← 移植
-└── GoblinBirthService.ts    ← 移植
+├── ExpeditionEngine.ts      ← 実装済み
+├── BattleSystem.ts          ← 実装済み
+├── ExperienceSystem.ts      ← 実装済み
+└── GoblinBirthService.ts    ← 実装済み
 ```
 
 ---
@@ -159,23 +159,16 @@ src/core/services/
 ## 実装順序推奨
 
 ```
-Step 1: コアサービス移植
-  └── BattleSystem.ts
-  └── ExpeditionEngine.ts
-  └── ExperienceSystem.ts
-
-Step 2: 遠征プレイバック完全実装
-  └── playback.tsx を ExpeditionEngine 連携に書き換え
-
-Step 3: 遠征ログ完全実装
+Step 1: 遠征ログ完全実装
   └── log.tsx を replay データ表示に書き換え
 
-Step 4: パーティ人数統一
-  └── edit.tsx の MAX_PARTY_SIZE を 6 に変更
-
-Step 5: その他機能追加
+Step 2: 再生制御機能の追加
   └── 再生制御
-  └── 推定時間表示
+
+Step 3: 目標階層UIの拡張
+  └── 目標階層選択モーダル
+
+Step 4: 結果画面の報酬詳細化
   └── 因子獲得表示
 ```
 
@@ -184,22 +177,22 @@ Step 5: その他機能追加
 ## 完了条件チェックリスト
 
 ### 優先度1
-- [ ] パーティ最大人数が Web/Native で統一されている
-- [ ] ExpeditionEngine が Native で動作する
-- [ ] 遠征プレイバックが ExpeditionEngine ベースで動作する
+- [x] パーティ最大人数が Web/Native で統一されている
+- [x] ExpeditionEngine が Native で動作する
+- [x] 遠征プレイバックが ExpeditionEngine ベースで動作する
 
 ### 優先度2
 - [ ] 遠征ログが実際の replay データを表示する
 - [ ] 再生制御（一時停止・スキップ・速度変更）が動作する
-- [ ] 推定探索時間が表示される
+- [x] 推定探索時間が表示される
 - [ ] 因子獲得が結果画面に表示される
 - [ ] 目標階層選択が独立したUIで選択可能
 
 ### 優先度3
-- [ ] パーティHP がリアルタイム更新表示される
+- [x] パーティHP がリアルタイム更新表示される
 - [ ] 緊急帰還ボタンが動作する
-- [ ] ダンジョン選択がモーダル化されている（任意）
-- [ ] 帰還ポリシー選択がモーダル化されている（任意）
+- [x] ダンジョン選択がモーダル化されている（任意）
+- [x] 帰還ポリシー選択がモーダル化されている（任意）
 
 ---
 
