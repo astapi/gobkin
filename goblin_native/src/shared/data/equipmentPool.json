@@ -1,0 +1,350 @@
+{
+  "version": "1.2.0",
+  "templates": [
+
+    {"_comment": "===== 武器:剣 (melee) ====="},
+
+    {
+      "id": "sword_cypress_stick",
+      "name": "ひのきの棒",
+      "category": "weapon",
+      "subCategory": "sword",
+      "tier": 1,
+      "statBonuses": [
+        { "stat": "atk_flat", "value": 2 }
+      ],
+      "weaponStats": { "accuracy": 1, "attackCountModifier": 0 },
+      "range": "melee",
+      "price": 5,
+      "unlockRank": 1,
+      "description": "その辺に落ちていた棒切れ。無いよりはマシ"
+    },
+    {
+      "id": "sword_club",
+      "name": "こんぼう",
+      "category": "weapon",
+      "subCategory": "sword",
+      "tier": 1,
+      "statBonuses": [
+        { "stat": "atk_flat", "value": 5 },
+        { "stat": "def_flat", "value": 1 }
+      ],
+      "weaponStats": { "accuracy": 2, "attackCountModifier": -0.1 },
+      "range": "melee",
+      "price": 15,
+      "unlockRank": 1,
+      "description": "木を削って作った棍棒。ゴブリンの定番武器"
+    },
+    {
+      "id": "sword_copper",
+      "name": "銅の剣",
+      "category": "weapon",
+      "subCategory": "sword",
+      "tier": 1,
+      "statBonuses": [
+        { "stat": "atk_flat", "value": 8 },
+        { "stat": "def_flat", "value": 2 }
+      ],
+      "weaponStats": { "accuracy": 3, "attackCountModifier": -0.2 },
+      "effects": [{ "type": "def_to_hp", "value": 1 }],
+      "range": "melee",
+      "price": 30,
+      "unlockRank": 1,
+      "description": "銅で鍛えた初めてのまともな剣"
+    },
+    {
+      "id": "sword_broad",
+      "name": "ブロードソード",
+      "category": "weapon",
+      "subCategory": "sword",
+      "tier": 1,
+      "statBonuses": [
+        { "stat": "atk_flat", "value": 12 },
+        { "stat": "def_flat", "value": 3 }
+      ],
+      "weaponStats": { "accuracy": 4, "attackCountModifier": -0.2 },
+      "effects": [{ "type": "def_to_hp", "value": 2 }],
+      "range": "melee",
+      "price": 60,
+      "unlockRank": 1,
+      "description": "幅広の刃を持つ片手剣。攻守のバランスが良い"
+    },
+    {
+      "id": "sword_long",
+      "name": "ロングソード",
+      "category": "weapon",
+      "subCategory": "sword",
+      "tier": 1,
+      "statBonuses": [
+        { "stat": "atk_flat", "value": 16 },
+        { "stat": "def_flat", "value": 4 }
+      ],
+      "weaponStats": { "accuracy": 6, "attackCountModifier": -0.2 },
+      "effects": [{ "type": "def_to_hp", "value": 3 }],
+      "range": "melee",
+      "price": 100,
+      "unlockRank": 1,
+      "description": "標準的な長剣。扱いやすく初心者向き"
+    },
+    {
+      "id": "sword_mithril",
+      "name": "ミスリルソード",
+      "category": "weapon",
+      "subCategory": "sword",
+      "tier": 2,
+      "statBonuses": [
+        { "stat": "atk_flat", "value": 24 },
+        { "stat": "def_flat", "value": 6 }
+      ],
+      "weaponStats": { "accuracy": 9, "attackCountModifier": -0.2 },
+      "effects": [{ "type": "def_to_hp", "value": 4 }],
+      "range": "melee",
+      "price": 500,
+      "description": "ミスリル銀で鍛えられた剣。軽く鋭い"
+    },
+    {
+      "id": "sword_royal",
+      "name": "ロイヤルソード",
+      "category": "weapon",
+      "subCategory": "sword",
+      "tier": 3,
+      "statBonuses": [
+        { "stat": "atk_flat", "value": 32 },
+        { "stat": "def_flat", "value": 8 }
+      ],
+      "weaponStats": { "accuracy": 12, "attackCountModifier": -0.2 },
+      "effects": [{ "type": "def_to_hp", "value": 5 }],
+      "range": "melee",
+      "price": 2500,
+      "description": "王家に伝わる名剣。気品ある輝きを放つ"
+    },
+    {
+      "id": "sword_kaiser",
+      "name": "カイザーソード",
+      "category": "weapon",
+      "subCategory": "sword",
+      "tier": 3,
+      "statBonuses": [
+        { "stat": "atk_flat", "value": 48 },
+        { "stat": "def_flat", "value": 10 }
+      ],
+      "weaponStats": { "accuracy": 18, "attackCountModifier": -0.2 },
+      "effects": [{ "type": "def_to_hp", "value": 6 }],
+      "range": "melee",
+      "price": 12500,
+      "unlockRank": 3,
+      "description": "皇帝の威光を宿す剣。圧倒的な切れ味"
+    },
+    {
+      "id": "sword_ancient",
+      "name": "エンシェントソード",
+      "category": "weapon",
+      "subCategory": "sword",
+      "tier": 4,
+      "statBonuses": [
+        { "stat": "atk_flat", "value": 64 },
+        { "stat": "def_flat", "value": 12 }
+      ],
+      "weaponStats": { "accuracy": 24, "attackCountModifier": -0.2 },
+      "effects": [{ "type": "def_to_hp", "value": 7 }],
+      "range": "melee",
+      "price": 60000,
+      "unlockRank": 5,
+      "description": "古代文明の技術で造られた剣。失われた力が宿る"
+    },
+    {
+      "id": "sword_dragon",
+      "name": "ドラゴンソード",
+      "category": "weapon",
+      "subCategory": "sword",
+      "tier": 5,
+      "statBonuses": [
+        { "stat": "atk_flat", "value": 96 },
+        { "stat": "def_flat", "value": 24 }
+      ],
+      "weaponStats": { "accuracy": 36, "attackCountModifier": -0.4 },
+      "effects": [{ "type": "def_to_hp", "value": 8 }],
+      "range": "melee",
+      "price": 240000,
+      "description": "竜の骨から鍛造された大剣。重く、振るうには相応の力が要る"
+    },
+    {
+      "id": "sword_adamant",
+      "name": "アダマントソード",
+      "category": "weapon",
+      "subCategory": "sword",
+      "tier": 5,
+      "statBonuses": [
+        { "stat": "atk_flat", "value": 128 },
+        { "stat": "def_flat", "value": 36 }
+      ],
+      "weaponStats": { "accuracy": 48, "attackCountModifier": -0.6 },
+      "effects": [{ "type": "def_to_hp", "value": 9 }],
+      "range": "melee",
+      "price": 720000,
+      "description": "最硬の鉱石アダマンタイトで造られた剣。振るえる者は限られる"
+    },
+
+    {"_comment": "===== 武器:弓 (ranged) ====="},
+
+    {
+      "id": "bow_slingshot",
+      "name": "スリングショット",
+      "category": "weapon",
+      "subCategory": "bow",
+      "tier": 1,
+      "statBonuses": [
+        { "stat": "atk_flat", "value": 3 }
+      ],
+      "weaponStats": { "accuracy": 2, "attackCountModifier": 0 },
+      "range": "ranged",
+      "price": 10,
+      "unlockRank": 1,
+      "description": "Y字の枝とゴム紐で作った投石器。小石を飛ばす"
+    },
+    {
+      "id": "bow_short",
+      "name": "ショートボウ",
+      "category": "weapon",
+      "subCategory": "bow",
+      "tier": 1,
+      "statBonuses": [
+        { "stat": "atk_flat", "value": 6 }
+      ],
+      "weaponStats": { "accuracy": 4, "attackCountModifier": -0.1 },
+      "range": "ranged",
+      "price": 40,
+      "unlockRank": 1,
+      "description": "小型の弓。取り回しが良く、後衛から援護できる"
+    },
+    {
+      "id": "bow_long",
+      "name": "ロングボウ",
+      "category": "weapon",
+      "subCategory": "bow",
+      "tier": 1,
+      "statBonuses": [
+        { "stat": "atk_flat", "value": 20 }
+      ],
+      "weaponStats": { "accuracy": 8, "attackCountModifier": -0.6, "evasionModifier": -8 },
+      "effects": [
+        { "type": "critical_damage_bonus", "value": 6 },
+        { "type": "accuracy_boost", "value": 30 }
+      ],
+      "range": "ranged",
+      "price": 1000,
+      "unlockRank": 1,
+      "description": "本格的な長弓。遠距離から正確に射抜く"
+    },
+    {
+      "id": "bow_mithril",
+      "name": "ミスリルボウ",
+      "category": "weapon",
+      "subCategory": "bow",
+      "tier": 2,
+      "statBonuses": [
+        { "stat": "atk_flat", "value": 30 }
+      ],
+      "weaponStats": { "accuracy": 12, "attackCountModifier": -0.6, "evasionModifier": -12 },
+      "effects": [
+        { "type": "critical_damage_bonus", "value": 7 },
+        { "type": "accuracy_boost", "value": 50 }
+      ],
+      "range": "ranged",
+      "price": 5000,
+      "description": "ミスリル銀で補強された弓。軽く、矢の飛距離が伸びる"
+    },
+    {
+      "id": "bow_royal",
+      "name": "ロイヤルボウ",
+      "category": "weapon",
+      "subCategory": "bow",
+      "tier": 3,
+      "statBonuses": [
+        { "stat": "atk_flat", "value": 45 }
+      ],
+      "weaponStats": { "accuracy": 16, "attackCountModifier": -0.6, "evasionModifier": -16 },
+      "effects": [
+        { "type": "critical_damage_bonus", "value": 8 },
+        { "type": "accuracy_boost", "value": 70 }
+      ],
+      "range": "ranged",
+      "price": 25000,
+      "description": "王室御用達の名弓。精密な射撃が可能"
+    },
+    {
+      "id": "bow_kaiser",
+      "name": "カイザーボウ",
+      "category": "weapon",
+      "subCategory": "bow",
+      "tier": 3,
+      "statBonuses": [
+        { "stat": "atk_flat", "value": 60 }
+      ],
+      "weaponStats": { "accuracy": 24, "attackCountModifier": -0.6, "evasionModifier": -24 },
+      "effects": [
+        { "type": "critical_damage_bonus", "value": 9 },
+        { "type": "accuracy_boost", "value": 90 }
+      ],
+      "range": "ranged",
+      "price": 125000,
+      "unlockRank": 3,
+      "description": "皇帝の狩猟弓。一矢で大型獣をも貫く"
+    },
+    {
+      "id": "bow_ancient",
+      "name": "エンシェントボウ",
+      "category": "weapon",
+      "subCategory": "bow",
+      "tier": 4,
+      "statBonuses": [
+        { "stat": "atk_flat", "value": 90 }
+      ],
+      "weaponStats": { "accuracy": 32, "attackCountModifier": -0.6, "evasionModifier": -32 },
+      "effects": [
+        { "type": "critical_damage_bonus", "value": 10 },
+        { "type": "accuracy_boost", "value": 110 }
+      ],
+      "range": "ranged",
+      "price": 500000,
+      "unlockRank": 5,
+      "description": "古代遺跡から発掘された弓。矢が自ら標的を追う"
+    },
+    {
+      "id": "bow_dragon",
+      "name": "ドラゴンボウ",
+      "category": "weapon",
+      "subCategory": "bow",
+      "tier": 5,
+      "statBonuses": [
+        { "stat": "atk_flat", "value": 120 }
+      ],
+      "weaponStats": { "accuracy": 40, "attackCountModifier": -0.6, "evasionModifier": -40 },
+      "effects": [
+        { "type": "critical_damage_bonus", "value": 11 },
+        { "type": "accuracy_boost", "value": 130 }
+      ],
+      "range": "ranged",
+      "price": 1500000,
+      "description": "竜の腱を弦にした弓。放たれた矢は風を裂く"
+    },
+    {
+      "id": "bow_adamant",
+      "name": "アダマントボウ",
+      "category": "weapon",
+      "subCategory": "bow",
+      "tier": 5,
+      "statBonuses": [
+        { "stat": "atk_flat", "value": 160 }
+      ],
+      "weaponStats": { "accuracy": 50, "attackCountModifier": -0.6, "evasionModifier": -50 },
+      "effects": [
+        { "type": "critical_damage_bonus", "value": 12 },
+        { "type": "accuracy_boost", "value": 150 }
+      ],
+      "range": "ranged",
+      "price": 3000000,
+      "description": "アダマンタイトの矢を放つ究極の弓。貫けぬ物はない"
+    }
+  ]
+}

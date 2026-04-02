@@ -2,6 +2,7 @@ import type {
   ExpeditionRequest,
   ExpeditionReplay,
   TimelineEvent,
+  TreasureDrop,
   EnemySnap,
   CombatReplay,
   RewardSummary,
@@ -11,9 +12,11 @@ import type {
   PartyState,
   ExpeditionEndReason,
   AreaConfig,
+  TreasureTable,
 } from '../../shared/types'
 import { getAreaConfig } from '../../shared/data/expeditionArea'
 import { getEnemyDatabase } from '../../shared/data/enemy'
+import { getEquipmentTemplate } from '../../shared/data/equipmentPoolLoader'
 import { BattleSystem } from './BattleSystem'
 import { ModStatCalculator } from './ModStatCalculator'
 
@@ -77,6 +80,7 @@ export class ExpeditionEngine {
     const partyState = this.initializePartyState(party)
     let shouldReturn = false
     let returnReason: ExpeditionEndReason | null = null
+    const droppedTemplateIds = new Set<string>()  // 遠征中に既にドロップしたアイテム
 
     // 移動開始イベント
     events.push({
@@ -132,6 +136,17 @@ export class ExpeditionEngine {
               break
             }
 
+            // 宝箱ドロップ判定（勝利時のみ）
+            const treasureDrops = this.rollTreasureDrops(area.treasureTable, enemies, droppedTemplateIds)
+            if (treasureDrops.length > 0) {
+              events.push({
+                type: "treasure",
+                at: currentTime,
+                floor: currentFloor,
+                items: treasureDrops
+              })
+            }
+
             // 帰還条件をチェック
             const returnCheck = this.checkReturnConditions(partyState, request.returnPolicy, currentFloor)
             if (returnCheck.shouldReturn && returnCheck.reason) {
@@ -175,6 +190,17 @@ export class ExpeditionEngine {
               shouldReturn = true
               returnReason = 'defeated'
               break
+            }
+
+            // 宝箱ドロップ判定（勝利時のみ）
+            const defaultTreasure = this.rollTreasureDrops(area.treasureTable, enemies, droppedTemplateIds)
+            if (defaultTreasure.length > 0) {
+              events.push({
+                type: "treasure",
+                at: currentTime,
+                floor: currentFloor,
+                items: defaultTreasure
+              })
             }
 
             const returnCheck = this.checkReturnConditions(partyState, request.returnPolicy, currentFloor)
@@ -225,6 +251,20 @@ export class ExpeditionEngine {
       })
 
       this.applyBattleResults(partyState, bossCombat)
+
+      // ボス戦勝利時の宝箱ドロップ判定
+      if (bossCombat.outcome === 'win') {
+        const bossTreasure = this.rollTreasureDrops(area.treasureTable, bossEnemies, droppedTemplateIds)
+        if (bossTreasure.length > 0) {
+          events.push({
+            type: "treasure",
+            at: currentTime,
+            floor: area.floors,
+            items: bossTreasure
+          })
+        }
+      }
+
       returnReason = bossCombat.outcome === "win" ? "completed" : "defeated"
       shouldReturn = true
     }
@@ -452,10 +492,64 @@ export class ExpeditionEngine {
     return { shouldReturn: false, reason: null }
   }
 
+  /**
+   * 宝箱ドロップを判定（同一遠征中に同じアイテムは1個まで）
+   * 1. ダンジョンの treasureTable で通常アイテムを抽選
+   * 2. 敵個別の equipmentDrops でレアアイテムを抽選
+   */
+  private rollTreasureDrops(
+    treasureTable: TreasureTable | undefined,
+    enemies: Enemy[],
+    droppedIds: Set<string>
+  ): TreasureDrop[] {
+    const drops: TreasureDrop[] = []
+
+    // ダンジョンの宝箱テーブルから通常アイテムを抽選
+    if (treasureTable) {
+      // 未ドロップのアイテムだけを候補にする
+      const candidates = treasureTable.items.filter(item => !droppedIds.has(item.templateId))
+
+      if (candidates.length > 0 && this.rng() < treasureTable.dropChance) {
+        const totalWeight = candidates.reduce((sum, item) => sum + item.weight, 0)
+        const roll = this.rng() * totalWeight
+        let current = 0
+        for (const item of candidates) {
+          current += item.weight
+          if (roll <= current) {
+            const template = getEquipmentTemplate(item.templateId)
+            if (template) {
+              drops.push({ templateId: item.templateId, name: template.name })
+              droppedIds.add(item.templateId)
+            }
+            break
+          }
+        }
+      }
+    }
+
+    // 敵個別のレアアイテムドロップ（将来用）
+    for (const enemy of enemies) {
+      if (!enemy.equipmentDrops) continue
+      for (const drop of enemy.equipmentDrops) {
+        if (droppedIds.has(drop.templateId)) continue
+        if (this.rng() < drop.probability) {
+          const template = getEquipmentTemplate(drop.templateId)
+          if (template) {
+            drops.push({ templateId: drop.templateId, name: template.name })
+            droppedIds.add(drop.templateId)
+          }
+        }
+      }
+    }
+
+    return drops
+  }
+
   private calculateRewardSummary(events: TimelineEvent[], partyState: PartyState[]): RewardSummary {
     let xpGained = 0
     let goldGained = 0
     let maxFloorReached = 1
+    const treasureDrops: TreasureDrop[] = []
 
     for (const event of events) {
       if (event.type === "battle" || event.type === "boss") {
@@ -464,6 +558,8 @@ export class ExpeditionEngine {
         maxFloorReached = Math.max(maxFloorReached, event.floor)
       } else if (event.type === "floor_up") {
         maxFloorReached = Math.max(maxFloorReached, event.to)
+      } else if (event.type === "treasure") {
+        treasureDrops.push(...event.items)
       }
     }
 
@@ -485,7 +581,8 @@ export class ExpeditionEngine {
       xpGained,
       goldGained,
       casualties,
-      injuries
+      injuries,
+      treasureDrops: treasureDrops.length > 0 ? treasureDrops : undefined,
     }
   }
 }
