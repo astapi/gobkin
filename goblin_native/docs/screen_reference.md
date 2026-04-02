@@ -25,12 +25,12 @@
 - `formation/index` → `formation/preparation`（待機パーティを選択）
 - `formation/index` → `formation/playback`（遠征中パーティを選択）
 - `formation/index` → `formation/result`（履歴の完了分を選択）
+- `formation/index` → `formation/playback`（履歴の進行中分を選択）
 - `formation/preparation` → `formation/edit`（メンバー編集）
 - `formation/preparation` → `formation`（出撃完了後に戻る）
 - `formation/playback` → `formation/battle-log`（戦闘詳細ログ）
 - `formation/playback` → `formation`（戻る）
 - `formation/result` → `formation`（メニューに戻る）
-- `formation/log` → `formation`（戻る）
 
 ## 画面遷移の詳細条件（補足）
 ### Formation 一覧からの分岐
@@ -60,6 +60,7 @@
 - `formation/result` → `formation`（「メニューに戻る」）
 - `formation/log` → `formation`（戻る）
 - `formation/battle-log` → `formation/playback`（戻る）
+  - `canGoBack()` が false の場合は `formation/playback` に `replace`。
 
 ### List / Base
 - List: 一覧 → 詳細モーダル（閉じるで一覧へ）
@@ -152,6 +153,7 @@
 - UI概要:
   - ダンジョン階層に応じた疑似ログを生成表示。
 - 補足: 実ログは未接続（ExpeditionRepository連携予定）。
+- 補足: 現在は `formation/index` からの導線は未接続（必要時に直接遷移で利用）。
 
 ### 戦闘ログ
 - ルート: `/(tabs)/formation/battle-log` → `app/(tabs)/formation/battle-log.tsx`
@@ -176,7 +178,7 @@
   - 次エリア解放メッセージ。
 
 ## メモ
-- 現時点の `src/presentation/components/` は空で、画面は `app/` 直下に実装されています。
+- 画面の主実装は `app/` 直下です。`src/presentation/components/` には `GoblinCard.tsx` があります。
 - 画面側のロジックは `presentation/hooks` に分散しています。
 
 ## 主要イベントとデータ更新対応表（概要）

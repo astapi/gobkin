@@ -5,18 +5,29 @@
 import type { BaseState } from '../../shared/types'
 import type { IBaseStateRepository } from '../../core/repositories/IBaseStateRepository'
 import { getDatabase } from '../database'
+import { BASE_RANK_CONFIGS } from '../../core/services/BaseRankSystem'
 
 interface BaseStateRow {
   id: number
   capacity: number
   rank: number
+  captured_dungeons_json: string
+  current_max_parties: number
+  current_max_goblins: number
+  current_iv_bonus: number
+  gold: number
   updated_at: string
 }
 
 const DEFAULT_BASE_STATE: BaseState = {
-  capacity: 8,
+  capacity: 10,
   rank: 1,
   nextGoblinId: 1,
+  capturedDungeons: [],
+  currentMaxParties: 1,
+  currentMaxGoblins: 10,
+  currentIVBonus: 0,
+  gold: 500,
 }
 
 export class SQLiteBaseStateRepository implements IBaseStateRepository {
@@ -50,6 +61,11 @@ export class SQLiteBaseStateRepository implements IBaseStateRepository {
         capacity: row.capacity,
         rank: row.rank,
         nextGoblinId: await this.getNextGoblinId(),
+        capturedDungeons: JSON.parse(row.captured_dungeons_json || '[]'),
+        currentMaxParties: row.current_max_parties,
+        currentMaxGoblins: row.current_max_goblins,
+        currentIVBonus: row.current_iv_bonus,
+        gold: row.gold,
       }
     } else {
       // 初期データがない場合は作成
@@ -80,14 +96,26 @@ export class SQLiteBaseStateRepository implements IBaseStateRepository {
 
   /**
    * 拠点のランクを上げる
+   * @deprecated 代わりに BaseRankSystem.captureDungeon を使用してください
    */
   upgradeRank(): void {
     if (!this.cache) return
 
+    const nextRank = this.cache.rank + 1
+    const nextConfig = BASE_RANK_CONFIGS.find((c) => c.rank === nextRank)
+
+    if (!nextConfig) {
+      console.warn('[SQLiteBaseStateRepository] Cannot upgrade: max rank reached')
+      return
+    }
+
     const newState: BaseState = {
       ...this.cache,
-      rank: this.cache.rank + 1,
-      capacity: this.cache.capacity + 4, // ランクアップごとに容量+4
+      rank: nextRank,
+      capacity: nextConfig.maxGoblins,
+      currentMaxParties: nextConfig.maxParties,
+      currentMaxGoblins: nextConfig.maxGoblins,
+      currentIVBonus: nextConfig.ivBonus,
     }
 
     this.saveBaseState(newState)
@@ -110,9 +138,20 @@ export class SQLiteBaseStateRepository implements IBaseStateRepository {
   private async saveAsync(state: BaseState): Promise<void> {
     const db = await getDatabase()
     await db.runAsync(
-      `INSERT OR REPLACE INTO base_state (id, capacity, rank, updated_at)
-       VALUES (1, ?, ?, datetime('now'))`,
-      [state.capacity, state.rank]
+      `INSERT OR REPLACE INTO base_state (
+        id, capacity, rank, captured_dungeons_json,
+        current_max_parties, current_max_goblins, current_iv_bonus, gold, updated_at
+      )
+       VALUES (1, ?, ?, ?, ?, ?, ?, ?, datetime('now'))`,
+      [
+        state.capacity,
+        state.rank,
+        JSON.stringify(state.capturedDungeons),
+        state.currentMaxParties,
+        state.currentMaxGoblins,
+        state.currentIVBonus,
+        state.gold,
+      ]
     )
   }
 

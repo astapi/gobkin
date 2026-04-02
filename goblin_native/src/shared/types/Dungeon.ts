@@ -11,4 +11,7 @@ export type Dungeon = {
   difficulty?: string
   unlockNext?: string
   unlockRequires?: string
+  areaLevel?: number                // エリアレベル（1-8）、個体値計算に使用
+  isBaseCapture?: boolean           // 拠点化可能か
+  rankUpTarget?: number             // このダンジョン制圧で到達するランク
 }

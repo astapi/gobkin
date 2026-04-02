@@ -20,11 +20,11 @@
 | コアロジック (core/) | 完全 | 完全移植 | 100% |
 | 型定義 (shared/types/) | 完全 | 完全移植 | 100% |
 | データ (shared/data/) | 完全 | 完全移植 | 100% |
-| Repository | Firestore + Json | SQLite (設計完了/実装待ち) | 10% |
+| Repository | Firestore + Json | SQLite (主要Repository実装済み) | 90% |
 | Services (infrastructure) | 1ファイル | 0ファイル | 0% |
-| Context | 2ファイル | 2ファイル (簡略化) | 70% |
-| Hooks | 5ファイル | 5ファイル (簡略化) | 70% |
-| UIコンポーネント | 22ファイル (3,768行) | 11ファイル (1,790行/サンプル) | 10% |
+| Context | 2ファイル | 2ファイル（ExpeditionStateは簡略化） | 80% |
+| Hooks | 5ファイル | 主要HookはSQLite連携済み | 90% |
+| UIコンポーネント | 22ファイル (3,768行) | app配下で主要画面実装済み（改善余地あり） | 70% |
 
 ---
 
@@ -36,21 +36,21 @@
 |--------|---------------|------|------|--------|
 | 高 | GoblinDetailModal.tsx | 290 | ゴブリン詳細・装備管理・ステータス表示 | 中 |
 | 高 | FormationTabScreen.tsx | 382 | ビューモード管理・画面遷移制御 | 高 |
-| 高 | FormationScreen.tsx | 279 | パーティ一覧・遠征履歴表示 | 中 |
-| 高 | ExpeditionPlaybackScreen.tsx | 417 | 遠征リアルタイム再生・アニメーション | 高 |
-| 高 | ExpeditionPreparationScreen.tsx | 331 | 遠征準備・設定画面 | 中 |
+| 高 | FormationScreen.tsx | 279 | パーティ一覧・遠征履歴表示 | 中（基本実装済み、改善余地あり） |
+| 高 | ExpeditionPlaybackScreen.tsx | 417 | 遠征リアルタイム再生・アニメーション | 中（基本実装済み、再生制御は未対応） |
+| 高 | ExpeditionPreparationScreen.tsx | 331 | 遠征準備・設定画面 | 低（基本実装済み） |
 | 中 | ExpeditionLogScreen.tsx | 434 | 遠征ログ詳細表示 | 中 |
-| 中 | PartyEditScreen.tsx | 196 | パーティメンバー編集 | 低 |
-| 中 | ExpeditionResultScreen.tsx | 162 | 遠征結果・報酬表示 | 低 |
-| 中 | BaseManagementScreen.tsx | 301 | 拠点管理・ゴブリン受け入れ | 中 |
+| 中 | PartyEditScreen.tsx | 196 | パーティメンバー編集 | 低（実装済み） |
+| 中 | ExpeditionResultScreen.tsx | 162 | 遠征結果・報酬表示 | 低（実装済み、因子表示は未対応） |
+| 中 | BaseManagementScreen.tsx | 301 | 拠点管理・ゴブリン受け入れ | 低（実装済み） |
 | 中 | ExpeditionSetupScreen.tsx | 248 | 遠征設定（未使用の可能性あり） | 中 |
-| 低 | DungeonSelectionModal.tsx | 83 | ダンジョン選択モーダル | 低 |
-| 低 | DungeonConfirmModal.tsx | 63 | ダンジョン確認モーダル | 低 |
-| 低 | ReturnPolicySelectionModal.tsx | 78 | 帰還ポリシー選択モーダル | 低 |
+| 低 | DungeonSelectionModal.tsx | 83 | ダンジョン選択モーダル | 実装済み（画面内モーダルとして統合） |
+| 低 | DungeonConfirmModal.tsx | 63 | ダンジョン確認モーダル | 未実装 |
+| 低 | ReturnPolicySelectionModal.tsx | 78 | 帰還ポリシー選択モーダル | 実装済み（画面内モーダルとして統合） |
 | 低 | FloorTargetSelectionModal.tsx | 59 | 目標階層選択モーダル | 低 |
 | 低 | ExpeditionConfirmModal.tsx | 102 | 遠征開始確認モーダル | 低 |
 | 低 | FactorBadge.tsx | 77 | 因子バッジ表示 | 低 |
-| 低 | GoblinCard.tsx | 27 | ゴブリンカード（リスト用） | 低 |
+| 低 | GoblinCard.tsx | 27 | ゴブリンカード（リスト用） | 実装済み |
 | 低 | DungeonScreen.tsx | 70 | ダンジョン画面 | 低 |
 | 低 | PartySelectScreen.tsx | 68 | パーティ選択画面 | 低 |
 | 低 | GoblinListScreen.tsx | 56 | ゴブリン一覧画面 | 低 |
@@ -63,14 +63,14 @@
 
 | ファイル | 現在の行数 | 対応する goblin_web | 状態 |
 |----------|-----------|---------------------|------|
-| app/(tabs)/index.tsx | 252 | GoblinListScreen + GoblinDetailModal | サンプル実装 |
-| app/(tabs)/formation/index.tsx | 161 | FormationScreen | サンプル実装 |
-| app/(tabs)/formation/preparation.tsx | 183 | ExpeditionPreparationScreen | サンプル実装 |
-| app/(tabs)/formation/edit.tsx | 151 | PartyEditScreen | サンプル実装 |
-| app/(tabs)/formation/playback.tsx | 228 | ExpeditionPlaybackScreen | サンプル実装 |
-| app/(tabs)/formation/result.tsx | 190 | ExpeditionResultScreen | サンプル実装 |
+| app/(tabs)/index.tsx | 252 | GoblinListScreen + GoblinDetailModal | 基本実装済み（詳細機能差分あり） |
+| app/(tabs)/formation/index.tsx | 161 | FormationScreen | 基本実装済み |
+| app/(tabs)/formation/preparation.tsx | 183 | ExpeditionPreparationScreen | 基本実装済み |
+| app/(tabs)/formation/edit.tsx | 151 | PartyEditScreen | 基本実装済み |
+| app/(tabs)/formation/playback.tsx | 228 | ExpeditionPlaybackScreen | 基本実装済み（再生制御差分あり） |
+| app/(tabs)/formation/result.tsx | 190 | ExpeditionResultScreen | 基本実装済み（因子表示差分あり） |
 | app/(tabs)/formation/log.tsx | 122 | ExpeditionLogScreen | サンプル実装 |
-| app/(tabs)/base.tsx | 351 | BaseManagementScreen | サンプル実装 |
+| app/(tabs)/base.tsx | 351 | BaseManagementScreen | 基本実装済み |
 
 ---
 
@@ -83,12 +83,12 @@
 
 | Repository | SQLiteスキーマ | 実装 | 状態 |
 |------------|---------------|------|------|
-| GoblinRepository | ✅ 設計完了 | ⬜ 未実装 | 実装待ち |
-| PartyRepository | ✅ 設計完了 | ⬜ 未実装 | 実装待ち |
-| PendingGoblinRepository | ✅ 設計完了 | ⬜ 未実装 | 実装待ち |
-| BaseStateRepository | ✅ 設計完了 | ⬜ 未実装 | 実装待ち |
-| ExpeditionRepository | ✅ 設計完了 | ⬜ 未実装 | 実装待ち |
-| DungeonProgressRepository | ✅ 設計完了 | ⬜ 未実装 | 実装待ち |
+| GoblinRepository | ✅ 設計完了 | ✅ 実装済み | 運用中 |
+| PartyRepository | ✅ 設計完了 | ✅ 実装済み | 運用中 |
+| PendingGoblinRepository | ✅ 設計完了 | ✅ 実装済み | 運用中 |
+| BaseStateRepository | ✅ 設計完了 | ✅ 実装済み | 運用中 |
+| ExpeditionRepository | ✅ 設計完了 | ✅ 実装済み | 運用中 |
+| DungeonProgressRepository | ✅ 設計完了 | ✅ 実装済み | 運用中 |
 
 ### 2.2 Repository 実装タスク
 
@@ -101,7 +101,7 @@
   - src/infrastructure/database/schema.ts (スキーマ定義)
   - src/infrastructure/database/migrations/v1.ts (初期マイグレーション)
 
-□ SQLite Repository の実装
+□ SQLite Repository の追加改善
   - SQLiteGoblinRepository.ts
   - SQLitePartyRepository.ts
   - SQLitePendingGoblinRepository.ts
@@ -127,9 +127,9 @@
 ### 3.2 タスク
 
 ```
-□ DungeonProgressはSQLiteDungeonProgressRepositoryで管理
-  - useDungeonProgress.tsをSQLiteリポジトリに接続
-  - 現在は暫定的にAsyncStorageを使用中（TODO: 移行）
+□ DungeonProgressの運用改善
+  - useDungeonProgress.ts は SQLite リポジトリ連携済み
+  - 同期戦略/通知フローを必要に応じて拡張
 ```
 
 ---
@@ -147,10 +147,10 @@
 
 | Hook | goblin_web | goblin_native | 差分 |
 |------|------------|---------------|------|
-| useGoblinService | Json/Firestore 切替 | SQLite接続待ち | SQLite Repository 未実装 |
-| usePartyService | Json/Firestore 切替 | SQLite接続待ち | SQLite Repository 未実装 |
-| useExpeditionFlow | Firestore Repository 連携 | 簡略化 | SQLite Repository 未連携 |
-| useDungeonProgress | localStorage + Firestore | AsyncStorage (暫定) | SQLite移行待ち |
+| useGoblinService | Json/Firestore 切替 | SQLite連携済み | 同期レイヤー未実装 |
+| usePartyService | Json/Firestore 切替 | SQLite連携済み | 同期レイヤー未実装 |
+| useExpeditionFlow | Firestore Repository 連携 | SQLite連携済み | 詳細ログ/再生制御に改善余地 |
+| useDungeonProgress | localStorage + Firestore | SQLite連携済み | 通知/同期の改善余地 |
 | useCurrentTime | 完全 | 完全移植 | 同等 |
 
 ### 4.3 タスク
@@ -160,19 +160,13 @@
   - SQLiteExpeditionRepository との連携
   - リアルタイム更新対応
 
-□ useGoblinService をSQLiteに接続
-  - SQLiteGoblinRepository との連携
+□ useGoblinService / usePartyService / useDungeonProgress の運用改善
+  - いずれも SQLite 連携済み
+  - 監視・通知・同期方針を必要に応じて拡張
 
-□ usePartyService をSQLiteに接続
-  - SQLitePartyRepository との連携
-
-□ useDungeonProgress をSQLiteに移行
-  - 現在はAsyncStorage使用（暫定）
-  - SQLiteDungeonProgressRepository に切替
-
-□ useExpeditionFlow を完全実装
-  - 遠征開始・完了フロー
-  - SQLiteExpeditionRepository 連携
+□ useExpeditionFlow の機能拡張
+  - 遠征開始・完了フローは実装済み
+  - 詳細ログ連携と再生制御の強化
 ```
 
 ---
@@ -457,19 +451,19 @@ const sampleGoblins: Goblin[] = [
 | src/shared/data/** | src/shared/data/** | ✅ 完全移植 |
 | src/shared/constants/** | src/shared/constants/** | ✅ 完全移植 |
 | src/config/firebase.ts | src/config/firebase.ts | ✅ 移植済み（RN対応） |
-| src/infrastructure/repositories/Firestore*.ts | SQLite版を新規作成 | ⚠️ SQLite版設計完了/実装待ち |
+| src/infrastructure/repositories/Firestore*.ts | SQLite版を新規作成 | ✅ SQLite版実装済み（継続改善） |
 | src/infrastructure/repositories/Json*.ts | SQLite版で代替 | ❌ 不要 |
 | src/infrastructure/services/FirestoreDungeonProgressService.ts | SQLite版で代替 | ❌ 不要 |
-| - | src/infrastructure/database/ | ⚠️ 新規作成待ち |
-| - | src/infrastructure/repositories/SQLite*.ts | ⚠️ 新規作成待ち |
+| - | src/infrastructure/database/ | ✅ 実装済み |
+| - | src/infrastructure/repositories/SQLite*.ts | ✅ 実装済み |
 | src/presentation/contexts/AuthContext.tsx | src/presentation/contexts/AuthContext.tsx | ✅ 移植済み |
 | src/presentation/contexts/ExpeditionStateContext.tsx | src/presentation/contexts/ExpeditionStateContext.tsx | ⚠️ 簡略化 |
-| src/presentation/hooks/useGoblinService.ts | src/presentation/hooks/useGoblinService.ts | ⚠️ SQLite接続待ち |
-| src/presentation/hooks/usePartyService.ts | src/presentation/hooks/usePartyService.ts | ⚠️ SQLite接続待ち |
-| src/presentation/hooks/useExpeditionFlow.ts | src/presentation/hooks/useExpeditionFlow.ts | ⚠️ 簡略化 |
-| src/presentation/hooks/useDungeonProgress.ts | src/presentation/hooks/useDungeonProgress.ts | ⚠️ AsyncStorage暫定/SQLite移行待ち |
+| src/presentation/hooks/useGoblinService.ts | src/presentation/hooks/useGoblinService.ts | ✅ SQLite連携済み |
+| src/presentation/hooks/usePartyService.ts | src/presentation/hooks/usePartyService.ts | ✅ SQLite連携済み |
+| src/presentation/hooks/useExpeditionFlow.ts | src/presentation/hooks/useExpeditionFlow.ts | ⚠️ SQLite連携済み（機能改善余地） |
+| src/presentation/hooks/useDungeonProgress.ts | src/presentation/hooks/useDungeonProgress.ts | ✅ SQLite連携済み |
 | src/presentation/hooks/useCurrentTime.ts | src/presentation/hooks/useCurrentTime.ts | ✅ 完全移植 |
-| src/presentation/components/*.tsx (22ファイル) | app/(tabs)/*.tsx (11ファイル) | ❌ サンプル実装のみ |
+| src/presentation/components/*.tsx (22ファイル) | app/(tabs)/*.tsx (11ファイル) | ⚠️ 主要画面実装済み（機能差分あり） |
 
 ---
 

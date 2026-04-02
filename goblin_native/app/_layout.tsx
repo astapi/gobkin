@@ -24,6 +24,7 @@ export default function RootLayout() {
       try {
         // 第1段階: DBインスタンスの初期化（マイグレーション実行）
         console.log('[RootLayout] Initializing database...')
+
         await getDatabase()
         console.log('[RootLayout] Database initialized')
 
