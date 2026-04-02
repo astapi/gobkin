@@ -38,6 +38,19 @@ export function getShopEquipment(baseRank: number): EquipmentTemplate[] {
 }
 
 /**
+ * ダンジョンレベルに対応する装備テンプレートを取得
+ */
+export function getEquipmentByDungeonLevel(dungeonLevel: number): EquipmentTemplate[] {
+  return templates.filter(
+    (t) =>
+      t.dropLevelMin !== undefined &&
+      t.dropLevelMax !== undefined &&
+      dungeonLevel >= t.dropLevelMin &&
+      dungeonLevel <= t.dropLevelMax
+  )
+}
+
+/**
  * 装備プールのバージョン情報を取得
  */
 export function getEquipmentPoolVersion(): string {

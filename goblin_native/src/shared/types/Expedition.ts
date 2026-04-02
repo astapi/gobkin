@@ -76,16 +76,6 @@ export interface RewardSummary {
   treasureDrops?: TreasureDrop[]  // 宝箱から獲得した装備
 }
 
-export interface TreasureTableEntry {
-  templateId: string  // EquipmentTemplate.id
-  weight: number      // 抽選ウェイト
-}
-
-export interface TreasureTable {
-  dropChance: number             // 戦闘勝利ごとの宝箱出現確率 (0.0〜1.0)
-  items: TreasureTableEntry[]    // 出現時のアイテム抽選テーブル
-}
-
 export interface AreaConfig {
   id: string
   name: string
@@ -109,6 +99,6 @@ export interface AreaConfig {
     xpFloor: number[]
     xpBoss: number
   }
-  treasureTable?: TreasureTable  // ダンジョンの宝箱ドロップ設定
+  dropChance?: number  // 戦闘勝利ごとの宝箱出現確率 (0.0〜1.0)、areaLevelに応じた装備がドロップ
   unlockNext?: string
 }

@@ -48,8 +48,6 @@ export type {
   ExpeditionReplay,
   TimelineEvent,
   TreasureDrop,
-  TreasureTableEntry,
-  TreasureTable,
   ExpeditionRecord,
   RewardSummary,
   AreaConfig,
