@@ -1,3 +1,5 @@
+import type { EquipmentTitleId } from './EquipmentTitle'
+
 /**
  * 装備の種別
  */
@@ -87,6 +89,8 @@ export interface EquipmentInstance {
   templateId: string
   slotIndex: number       // 装着スロット (0-based)、-1 = 在庫
   goblinId: number | null // 装着先、null = 在庫
+  titleId?: EquipmentTitleId   // 称号ID（未設定 = 称号なし）
+  titleName?: string           // 称号の表示名（例: "伝説の"）
 }
 
 /**

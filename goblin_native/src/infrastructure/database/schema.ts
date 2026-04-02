@@ -132,6 +132,8 @@ export const SCHEMA = {
       template_id TEXT NOT NULL,
       slot_index INTEGER NOT NULL DEFAULT -1,
       goblin_id INTEGER,
+      title_id TEXT,
+      title_name TEXT,
       created_at TEXT NOT NULL DEFAULT (datetime('now')),
       FOREIGN KEY (goblin_id) REFERENCES goblins(id) ON DELETE SET NULL
     )
