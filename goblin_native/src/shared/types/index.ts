@@ -5,7 +5,7 @@ export type { Goblin, GoblinStats } from "./Goblin"
 export type { Party, PartyStatus, PartyState } from "./Party"
 
 // Enemy related types
-export type { Enemy, EnemyPattern, EnemyDatabase, EnemySnap } from "./Enemy"
+export type { Enemy, EnemyPattern, EnemyDatabase, EnemySnap, EquipmentDropConfig } from "./Enemy"
 
 // Mod related types
 export type {
@@ -24,6 +24,21 @@ export type { Factor, FactorEffect, FactorVariantConfig, FactorDropConfig } from
 // Item related types
 export type { Drop } from "./Item"
 
+// Equipment related types
+export type {
+  EquipmentCategory,
+  WeaponSubCategory,
+  WeaponRange,
+  EquipmentStat,
+  EquipmentStatBonus,
+  EquipmentEffectType,
+  EquipmentEffect,
+  WeaponStats,
+  EquipmentTemplate,
+  EquipmentInstance,
+  RaceSlotConfig,
+} from "./Equipment"
+
 // Battle related types
 export type { BattleLogEntry, CombatReplay } from "./Battle"
 
@@ -32,6 +47,9 @@ export type {
   ExpeditionRequest,
   ExpeditionReplay,
   TimelineEvent,
+  TreasureDrop,
+  TreasureTableEntry,
+  TreasureTable,
   ExpeditionRecord,
   RewardSummary,
   AreaConfig,

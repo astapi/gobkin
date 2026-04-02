@@ -10,7 +10,7 @@ import { usePendingGoblins } from '@/presentation/hooks/usePendingGoblins'
 import { useBaseState } from '@/presentation/hooks/useBaseState'
 import { CompleteExpeditionUseCase } from '@/core/usecases'
 import { GoblinBirthService } from '@/core/services'
-import type { TimelineEvent, ExpeditionReplay, ExpeditionRecord } from '@/shared/types'
+import type { TimelineEvent, ExpeditionReplay, ExpeditionRecord, ExpeditionEndReason } from '@/shared/types'
 import type { BattleLogEntry } from '@/shared/types'
 import { storeBattleLog } from '@/presentation/contexts/battleLogStore'
 import { getGoblinImage } from '@/shared/utils/goblinImages'
@@ -133,7 +133,7 @@ export default function ExpeditionPlaybackScreen() {
     router.push(path)
   }, [])
 
-  const getReturnReasonText = useCallback((reason: TimelineEvent extends { reason: infer R } ? R : never) => {
+  const getReturnReasonText = useCallback((reason: ExpeditionEndReason) => {
     if (reason === 'completed') return '探索完了'
     if (reason === 'defeated') return '全滅により撤退'
     if (reason === 'policy_return') return '帰還'
@@ -167,6 +167,10 @@ export default function ExpeditionPlaybackScreen() {
           entries.push(createEntry(`${event.xp}XP獲得`))
         }
         return entries
+      }
+      case 'treasure': {
+        const itemNames = event.items.map(item => item.name).join('、')
+        return [createEntry(`宝箱を発見！ ${itemNames} を手に入れた`)]
       }
       case 'return':
         return [createEntry(getReturnReasonText(event.reason))]

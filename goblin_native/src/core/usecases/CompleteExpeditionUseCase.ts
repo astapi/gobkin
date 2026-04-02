@@ -1,14 +1,19 @@
-import type { ExpeditionReplay, TimelineEvent } from '../../shared/types'
+import type { ExpeditionReplay, TimelineEvent, TreasureDrop } from '../../shared/types'
 import { getEnemyDatabase } from '../../shared/data/enemy'
 import { GoblinEntity } from '../domain'
-import type { IGoblinRepository, IPartyRepository } from '../repositories'
+import type { IGoblinRepository, IPartyRepository, IBaseStateRepository } from '../repositories'
+import type { IEquipmentRepository } from '../repositories/IEquipmentRepository'
 import type { LevelUpResult } from '../services/ExperienceSystem'
 import { FactorService } from '../services/FactorService'
+import { captureDungeon } from '../services/BaseRankSystem'
 
 export interface ExpeditionCompletionResult {
   levelUps: Map<number, LevelUpResult>
   updatedGoblinIds: number[]
   factorAcquisitions: Map<number, string[]>  // ゴブリンID -> 獲得因子ID[]
+  newDungeonCaptured?: string  // 新しく制圧したダンジョンID
+  goldGained: number  // 獲得したゴールド
+  treasureDrops?: TreasureDrop[]  // 宝箱から獲得した装備
 }
 
 /**
@@ -19,13 +24,19 @@ export interface ExpeditionCompletionResult {
 export class CompleteExpeditionUseCase {
   private readonly goblinRepository: IGoblinRepository
   private readonly partyRepository: IPartyRepository
+  private readonly baseStateRepository: IBaseStateRepository
+  private readonly equipmentRepository?: IEquipmentRepository
 
   constructor(
     goblinRepository: IGoblinRepository,
-    partyRepository: IPartyRepository
+    partyRepository: IPartyRepository,
+    baseStateRepository: IBaseStateRepository,
+    equipmentRepository?: IEquipmentRepository
   ) {
     this.goblinRepository = goblinRepository
     this.partyRepository = partyRepository
+    this.baseStateRepository = baseStateRepository
+    this.equipmentRepository = equipmentRepository
   }
 
   public async execute(
@@ -125,13 +136,57 @@ export class CompleteExpeditionUseCase {
       }
     }
 
+    // 宝箱装備をインベントリに保存
+    const treasureDrops = replay.summary.treasureDrops ?? []
+    if (treasureDrops.length > 0 && this.equipmentRepository) {
+      for (const drop of treasureDrops) {
+        const equipmentId = `eq_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+        this.equipmentRepository.save({
+          id: equipmentId,
+          templateId: drop.templateId,
+          slotIndex: -1,    // 在庫
+          goblinId: null,
+        })
+      }
+    }
+
+    // ゴールド付与とダンジョン制圧記録
+    let newDungeonCaptured: string | undefined
+    const goldGained = replay.summary.goldGained || 0
+
+    const currentBaseState = this.baseStateRepository.getBaseState()
+    if (currentBaseState) {
+      // ゴールドを追加
+      let updatedBaseState = {
+        ...currentBaseState,
+        gold: currentBaseState.gold + goldGained,
+      }
+
+      // 遠征成功時にダンジョン制圧を記録
+      if (replay.summary.success) {
+        const wasCaptured = currentBaseState.capturedDungeons.includes(replay.meta.areaId)
+        updatedBaseState = captureDungeon(replay.meta.areaId, updatedBaseState)
+
+        // 新しく制圧した場合
+        if (!wasCaptured) {
+          newDungeonCaptured = replay.meta.areaId
+        }
+      }
+
+      // 拠点状態を保存
+      this.baseStateRepository.saveBaseState(updatedBaseState)
+    }
+
     // パーティステータスを待機中に戻す
     this.partyRepository.updatePartyStatus(partyId, 'idle')
 
     return {
       levelUps,
       updatedGoblinIds,
-      factorAcquisitions
+      factorAcquisitions,
+      newDungeonCaptured,
+      goldGained,
+      treasureDrops: treasureDrops.length > 0 ? treasureDrops : undefined,
     }
   }
 }

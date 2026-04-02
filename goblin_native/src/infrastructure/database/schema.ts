@@ -91,14 +91,22 @@ export const SCHEMA = {
   baseState: `
     CREATE TABLE IF NOT EXISTS base_state (
       id INTEGER PRIMARY KEY CHECK (id = 1),
-      capacity INTEGER NOT NULL DEFAULT 8,
+      capacity INTEGER NOT NULL DEFAULT 10,
       rank INTEGER NOT NULL DEFAULT 1,
+      captured_dungeons_json TEXT NOT NULL DEFAULT '[]',
+      current_max_parties INTEGER NOT NULL DEFAULT 1,
+      current_max_goblins INTEGER NOT NULL DEFAULT 10,
+      current_iv_bonus INTEGER NOT NULL DEFAULT 0,
+      gold INTEGER NOT NULL DEFAULT 0,
       updated_at TEXT NOT NULL DEFAULT (datetime('now'))
     )
   `,
 
   baseStateInit: `
-    INSERT OR IGNORE INTO base_state (id, capacity, rank) VALUES (1, 8, 1)
+    INSERT OR IGNORE INTO base_state (
+      id, capacity, rank, captured_dungeons_json,
+      current_max_parties, current_max_goblins, current_iv_bonus, gold
+    ) VALUES (1, 10, 1, '[]', 1, 10, 0, 500)
   `,
 
   dungeonProgress: `
@@ -116,6 +124,21 @@ export const SCHEMA = {
       key TEXT PRIMARY KEY,
       value TEXT NOT NULL
     )
+  `,
+
+  equipment: `
+    CREATE TABLE IF NOT EXISTS equipment (
+      id TEXT PRIMARY KEY,
+      template_id TEXT NOT NULL,
+      slot_index INTEGER NOT NULL DEFAULT -1,
+      goblin_id INTEGER,
+      created_at TEXT NOT NULL DEFAULT (datetime('now')),
+      FOREIGN KEY (goblin_id) REFERENCES goblins(id) ON DELETE SET NULL
+    )
+  `,
+
+  equipmentIndex: `
+    CREATE INDEX IF NOT EXISTS idx_equipment_goblin_id ON equipment(goblin_id)
   `,
 
   appMetadataInit: `

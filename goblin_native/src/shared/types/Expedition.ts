@@ -36,12 +36,18 @@ export interface ExpeditionReplay {
   summary: RewardSummary
 }
 
+export interface TreasureDrop {
+  templateId: string  // EquipmentTemplate.id
+  name: string        // 表示用の装備名
+}
+
 export type TimelineEvent =
   | { type: "move_start"; at: number; floor: number }
   | { type: "floor_up"; at: number; from: number; to: number }
   | { type: "battle"; at: number; floor: number; enemy: EnemySnap; combat: CombatReplay; xp: number }
   | { type: "boss"; at: number; floor: number; enemy: EnemySnap; combat: CombatReplay; xp: number }
   | { type: "exploring"; at: number; floor: number }
+  | { type: "treasure"; at: number; floor: number; items: TreasureDrop[] }
   | { type: "return"; at: number; reason: ExpeditionEndReason }
 
 export interface ExpeditionRecord {
@@ -67,6 +73,17 @@ export interface RewardSummary {
   goldGained: number
   casualties: string[]
   injuries: string[]
+  treasureDrops?: TreasureDrop[]  // 宝箱から獲得した装備
+}
+
+export interface TreasureTableEntry {
+  templateId: string  // EquipmentTemplate.id
+  weight: number      // 抽選ウェイト
+}
+
+export interface TreasureTable {
+  dropChance: number             // 戦闘勝利ごとの宝箱出現確率 (0.0〜1.0)
+  items: TreasureTableEntry[]    // 出現時のアイテム抽選テーブル
 }
 
 export interface AreaConfig {
@@ -92,5 +109,6 @@ export interface AreaConfig {
     xpFloor: number[]
     xpBoss: number
   }
+  treasureTable?: TreasureTable  // ダンジョンの宝箱ドロップ設定
   unlockNext?: string
 }

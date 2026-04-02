@@ -18,6 +18,7 @@ export type ModStat =
   | 'spd_percent'
   | 'sp_percent'
   | 'sp_flat'
+  | 'spd_flat'
   | 'damage_reduction'
 
 /**

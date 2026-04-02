@@ -5,9 +5,11 @@
 import * as SQLite from 'expo-sqlite'
 import { migrateV1 } from './migrations/v1'
 import { migrateV2 } from './migrations/v2'
+import { migrateV3 } from './migrations/v3'
+import { migrateV4 } from './migrations/v4'
 
 const DB_NAME = 'goblin_kingdom.db'
-const CURRENT_SCHEMA_VERSION = 2
+const CURRENT_SCHEMA_VERSION = 4
 
 let db: SQLite.SQLiteDatabase | null = null
 let initializationPromise: Promise<SQLite.SQLiteDatabase> | null = null
@@ -16,9 +18,16 @@ let initializationPromise: Promise<SQLite.SQLiteDatabase> | null = null
  * データベース接続を取得
  * シングルトンパターンで同一インスタンスを返す
  * 初期化失敗時は再試行可能
+ *
+ * IMPORTANT: アプリアップデート後も正しくマイグレーションを実行するため、
+ * 既存の接続がある場合でもスキーマバージョンをチェックします
  */
 export const getDatabase = async (): Promise<SQLite.SQLiteDatabase> => {
-  if (db) return db
+  // 既に接続がある場合、スキーマバージョンをチェック
+  if (db) {
+    await ensureMigrations(db)
+    return db
+  }
 
   // 初期化中の場合は同じPromiseを返す（重複初期化防止）
   if (initializationPromise) {
@@ -32,6 +41,19 @@ export const getDatabase = async (): Promise<SQLite.SQLiteDatabase> => {
   })
 
   return initializationPromise
+}
+
+/**
+ * マイグレーションが必要かチェックし、必要なら実行
+ * アプリアップデート後にプロセスが生き続けている場合でも対応
+ */
+export const ensureMigrations = async (database: SQLite.SQLiteDatabase): Promise<void> => {
+  const currentVersion = await getSchemaVersion(database)
+
+  if (currentVersion < CURRENT_SCHEMA_VERSION) {
+    console.log(`[DB] Schema outdated (v${currentVersion}), running migrations to v${CURRENT_SCHEMA_VERSION}...`)
+    await runMigrations(database)
+  }
 }
 
 /**
@@ -63,6 +85,20 @@ const runMigrations = async (database: SQLite.SQLiteDatabase): Promise<void> => 
     await migrateV2(database)
     await setSchemaVersion(database, 2)
     console.log('[DB] Migration v2 completed')
+  }
+
+  if (currentVersion < 3) {
+    console.log('[DB] Running migration v3...')
+    await migrateV3(database)
+    await setSchemaVersion(database, 3)
+    console.log('[DB] Migration v3 completed')
+  }
+
+  if (currentVersion < 4) {
+    console.log('[DB] Running migration v4...')
+    await migrateV4(database)
+    await setSchemaVersion(database, 4)
+    console.log('[DB] Migration v4 completed')
   }
 }
 
@@ -121,3 +157,4 @@ export const deleteDatabase = async (): Promise<void> => {
   await closeDatabase()
   await SQLite.deleteDatabaseAsync(DB_NAME)
 }
+
