@@ -24,13 +24,13 @@ export interface ExpeditionCompletionResult {
 export class CompleteExpeditionUseCase {
   private readonly goblinRepository: IGoblinRepository
   private readonly partyRepository: IPartyRepository
-  private readonly baseStateRepository: IBaseStateRepository
+  private readonly baseStateRepository?: IBaseStateRepository
   private readonly equipmentRepository?: IEquipmentRepository
 
   constructor(
     goblinRepository: IGoblinRepository,
     partyRepository: IPartyRepository,
-    baseStateRepository: IBaseStateRepository,
+    baseStateRepository?: IBaseStateRepository,
     equipmentRepository?: IEquipmentRepository
   ) {
     this.goblinRepository = goblinRepository
@@ -154,7 +154,7 @@ export class CompleteExpeditionUseCase {
     let newDungeonCaptured: string | undefined
     const goldGained = replay.summary.goldGained || 0
 
-    const currentBaseState = this.baseStateRepository.getBaseState()
+    const currentBaseState = this.baseStateRepository?.getBaseState()
     if (currentBaseState) {
       // ゴールドを追加
       let updatedBaseState = {
@@ -174,7 +174,7 @@ export class CompleteExpeditionUseCase {
       }
 
       // 拠点状態を保存
-      this.baseStateRepository.saveBaseState(updatedBaseState)
+      this.baseStateRepository?.saveBaseState(updatedBaseState)
     }
 
     // パーティステータスを待機中に戻す
