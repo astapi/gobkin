@@ -32,7 +32,7 @@ export default function ExpeditionPlaybackScreen() {
   const { goblins, goblinRepository, isLoading: isGoblinLoading } = useGoblinService()
   const { dungeons } = useDungeonProgress()
   const { pendingGoblins, addPendingGoblin, isLoading: isPendingLoading } = usePendingGoblins()
-  const { rank, getNextGoblinId, isLoading: isBaseLoading } = useBaseState()
+  const { rank, getNextGoblinId, isLoading: isBaseLoading, baseStateRepository } = useBaseState()
   const {
     expeditionRecords,
     getExpeditionById,
@@ -87,8 +87,8 @@ export default function ExpeditionPlaybackScreen() {
   const logIdRef = useRef(0)
 
   const completeExpeditionUseCase = useMemo(() => {
-    return new CompleteExpeditionUseCase(goblinRepository, partyRepository)
-  }, [goblinRepository, partyRepository])
+    return new CompleteExpeditionUseCase(goblinRepository, partyRepository, baseStateRepository)
+  }, [goblinRepository, partyRepository, baseStateRepository])
 
   const addPendingGoblinOnClear = useCallback(() => {
     if (!expeditionRecord || !replay || isPendingLoading || isBaseLoading) return
