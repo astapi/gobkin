@@ -34,6 +34,9 @@ export type Combatant = {
   name: string;
   atk: number;
   def: number;
+  attackCount: number;
+  accuracy: number;
+  evasion: number;
   raceTags: RaceKey[];
   items?: Item[];
   buffs?: Buff[];

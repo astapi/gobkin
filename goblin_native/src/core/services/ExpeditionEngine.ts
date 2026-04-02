@@ -137,7 +137,7 @@ export class ExpeditionEngine {
             }
 
             // 宝箱ドロップ判定（勝利時のみ）
-            const treasureDrops = this.rollTreasureDrops(area.dropChance, area.areaLevel, enemies, droppedTemplateIds)
+            const treasureDrops = this.rollTreasureDrops(area.dropChance, area.areaLevel, enemies.flat(), droppedTemplateIds)
             if (treasureDrops.length > 0) {
               events.push({
                 type: "treasure",
@@ -193,7 +193,7 @@ export class ExpeditionEngine {
             }
 
             // 宝箱ドロップ判定（勝利時のみ）
-            const defaultTreasure = this.rollTreasureDrops(area.dropChance, area.areaLevel, enemies, droppedTemplateIds)
+            const defaultTreasure = this.rollTreasureDrops(area.dropChance, area.areaLevel, enemies.flat(), droppedTemplateIds)
             if (defaultTreasure.length > 0) {
               events.push({
                 type: "treasure",
@@ -254,7 +254,7 @@ export class ExpeditionEngine {
 
       // ボス戦勝利時の宝箱ドロップ判定
       if (bossCombat.outcome === 'win') {
-        const bossTreasure = this.rollTreasureDrops(area.dropChance, area.areaLevel, bossEnemies, droppedTemplateIds)
+        const bossTreasure = this.rollTreasureDrops(area.dropChance, area.areaLevel, bossEnemies.flat(), droppedTemplateIds)
         if (bossTreasure.length > 0) {
           events.push({
             type: "treasure",
@@ -315,6 +315,9 @@ export class ExpeditionEngine {
         def: goblin.stats.def,
         spd: goblin.stats.spd,
         sp: goblin.stats.sp,
+        attackCount: goblin.stats.attackCount,
+        accuracy: goblin.stats.accuracy,
+        evasion: goblin.stats.evasion,
         isKO: false,
         isDead: false,
         mods: goblin.mods || [],
@@ -372,17 +375,20 @@ export class ExpeditionEngine {
     return availablePatterns[Math.floor(this.rng() * availablePatterns.length)]
   }
 
-  private getEnemiesFromPattern(pattern: EnemyPattern, enemyList: Enemy[]): Enemy[] {
-    return pattern.enemies.map(enemyId => {
-      const enemy = enemyList.find(e => e.id === enemyId)
-      if (!enemy) {
-        throw new Error(`Enemy not found: ${enemyId}`)
-      }
-      return enemy
-    })
+  private getEnemiesFromPattern(pattern: EnemyPattern, enemyList: Enemy[]): Enemy[][] {
+    return pattern.enemies.map(row =>
+      row.map(enemyId => {
+        const enemy = enemyList.find(e => e.id === enemyId)
+        if (!enemy) {
+          throw new Error(`Enemy not found: ${enemyId}`)
+        }
+        return enemy
+      })
+    )
   }
 
-  private createEnemySnap(enemies: Enemy[], isBoss = false): EnemySnap {
+  private createEnemySnap(enemies2D: Enemy[][], isBoss = false): EnemySnap {
+    const enemies = enemies2D.flat()
     // ボス戦の場合、ボス（IDが "B" または "B_" で始まる敵）を代表として選ぶ
     let representative = enemies[0]
     if (isBoss) {
@@ -403,7 +409,7 @@ export class ExpeditionEngine {
     }
   }
 
-  private resolveCombat(partyState: PartyState[], enemies: Enemy[], _area: AreaConfig, _isBoss = false): CombatReplay {
+  private resolveCombat(partyState: PartyState[], enemies: Enemy[][], _area: AreaConfig, _isBoss = false): CombatReplay {
     // partyStateから全ゴブリンを再構築（死亡メンバーも含む、modsも保持）
     // 基礎ステータスを使用（ModStatCalculatorが因子・Modを適用する）
     const allGoblins: Goblin[] = partyState.map(member => ({
@@ -418,7 +424,10 @@ export class ExpeditionEngine {
         atk: member.atk,
         sp: member.sp,
         spd: member.spd,
-        def: member.def
+        def: member.def,
+        attackCount: member.attackCount ?? 2,
+        accuracy: member.accuracy ?? 20,
+        evasion: member.evasion ?? 15,
       },
       mods: member.mods,
       factors: member.factors,

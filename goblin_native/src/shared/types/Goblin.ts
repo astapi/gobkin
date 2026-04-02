@@ -6,6 +6,9 @@ export type GoblinStats = {
   sp: number
   spd: number
   def: number
+  attackCount: number  // 攻撃回数（種族基本値、ゴブリン=2）
+  accuracy: number     // 命中精度
+  evasion: number      // 回避能力
 }
 
 export type Goblin = {

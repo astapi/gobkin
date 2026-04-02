@@ -38,22 +38,21 @@ export class ModStatCalculator {
     const equipPercent = this.aggregateEquipmentPercent(equipmentBonuses ?? [])
 
     // 5. 計算: (基礎 + 因子 + Modフラット + 装備フラット) * (1 + (Mod% + 装備%)/100)
+    const calc = (key: keyof GoblinStats) =>
+      Math.floor(
+        (base[key] + factorBonuses[key] + flatBonuses[key] + equipFlat[key]) *
+        (1 + (percentBonuses[key] + equipPercent[key]) / 100)
+      )
+
     const result: GoblinStats = {
-      hp: Math.floor(
-        (base.hp + factorBonuses.hp + flatBonuses.hp + equipFlat.hp) * (1 + (percentBonuses.hp + equipPercent.hp) / 100)
-      ),
-      atk: Math.floor(
-        (base.atk + factorBonuses.atk + flatBonuses.atk + equipFlat.atk) * (1 + (percentBonuses.atk + equipPercent.atk) / 100)
-      ),
-      def: Math.floor(
-        (base.def + factorBonuses.def + flatBonuses.def + equipFlat.def) * (1 + (percentBonuses.def + equipPercent.def) / 100)
-      ),
-      sp: Math.floor(
-        (base.sp + factorBonuses.sp + flatBonuses.sp + equipFlat.sp) * (1 + (percentBonuses.sp + equipPercent.sp) / 100)
-      ),
-      spd: Math.floor(
-        (base.spd + factorBonuses.spd + flatBonuses.spd + equipFlat.spd) * (1 + (percentBonuses.spd + equipPercent.spd) / 100)
-      ),
+      hp: calc('hp'),
+      atk: calc('atk'),
+      def: calc('def'),
+      sp: calc('sp'),
+      spd: calc('spd'),
+      attackCount: calc('attackCount'),
+      accuracy: calc('accuracy'),
+      evasion: calc('evasion'),
     }
 
     // 6. 装備特殊効果を適用（ステータス確定後）
@@ -88,35 +87,31 @@ export class ModStatCalculator {
     return Math.min(total, getDamageReductionCap())
   }
 
+  private static readonly ZERO_STATS: Record<keyof GoblinStats, number> = {
+    hp: 0, atk: 0, def: 0, sp: 0, spd: 0, attackCount: 0, accuracy: 0, evasion: 0,
+  }
+
+  /** stat名からGoblinStatsのキーを抽出（例: 'hp_flat' → 'hp'） */
+  private static statKeyFromSuffix(stat: string, suffix: string): keyof GoblinStats | undefined {
+    if (!stat.endsWith(suffix)) return undefined
+    const key = stat.slice(0, -suffix.length)
+    if (key in this.ZERO_STATS) return key as keyof GoblinStats
+    return undefined
+  }
+
   /**
    * フラット加算ボーナスを集計
    */
   private static aggregateFlatBonuses(
     mods: ModInstance[]
   ): Record<keyof GoblinStats, number> {
-    const bonuses = { hp: 0, atk: 0, def: 0, sp: 0, spd: 0 }
+    const bonuses = { ...this.ZERO_STATS }
 
     for (const mod of mods) {
       const template = getModTemplate(mod.templateId)
       if (!template) continue
-
-      switch (template.stat) {
-        case 'hp_flat':
-          bonuses.hp += mod.value
-          break
-        case 'atk_flat':
-          bonuses.atk += mod.value
-          break
-        case 'def_flat':
-          bonuses.def += mod.value
-          break
-        case 'sp_flat':
-          bonuses.sp += mod.value
-          break
-        case 'spd_flat':
-          bonuses.spd += mod.value
-          break
-      }
+      const key = this.statKeyFromSuffix(template.stat, '_flat')
+      if (key) bonuses[key] += mod.value
     }
 
     return bonuses
@@ -128,29 +123,13 @@ export class ModStatCalculator {
   private static aggregatePercentBonuses(
     mods: ModInstance[]
   ): Record<keyof GoblinStats, number> {
-    const bonuses = { hp: 0, atk: 0, def: 0, sp: 0, spd: 0 }
+    const bonuses = { ...this.ZERO_STATS }
 
     for (const mod of mods) {
       const template = getModTemplate(mod.templateId)
       if (!template) continue
-
-      switch (template.stat) {
-        case 'hp_percent':
-          bonuses.hp += mod.value
-          break
-        case 'atk_percent':
-          bonuses.atk += mod.value
-          break
-        case 'def_percent':
-          bonuses.def += mod.value
-          break
-        case 'sp_percent':
-          bonuses.sp += mod.value
-          break
-        case 'spd_percent':
-          bonuses.spd += mod.value
-          break
-      }
+      const key = this.statKeyFromSuffix(template.stat, '_percent')
+      if (key) bonuses[key] += mod.value
     }
 
     return bonuses
@@ -178,26 +157,11 @@ export class ModStatCalculator {
   private static aggregateEquipmentFlat(
     bonuses: EquipmentStatBonus[]
   ): Record<keyof GoblinStats, number> {
-    const result = { hp: 0, atk: 0, def: 0, sp: 0, spd: 0 }
+    const result = { ...this.ZERO_STATS }
 
     for (const bonus of bonuses) {
-      switch (bonus.stat) {
-        case 'hp_flat':
-          result.hp += bonus.value
-          break
-        case 'atk_flat':
-          result.atk += bonus.value
-          break
-        case 'def_flat':
-          result.def += bonus.value
-          break
-        case 'sp_flat':
-          result.sp += bonus.value
-          break
-        case 'spd_flat':
-          result.spd += bonus.value
-          break
-      }
+      const key = this.statKeyFromSuffix(bonus.stat, '_flat')
+      if (key) result[key] += bonus.value
     }
 
     return result
@@ -209,26 +173,11 @@ export class ModStatCalculator {
   private static aggregateEquipmentPercent(
     bonuses: EquipmentStatBonus[]
   ): Record<keyof GoblinStats, number> {
-    const result = { hp: 0, atk: 0, def: 0, sp: 0, spd: 0 }
+    const result = { ...this.ZERO_STATS }
 
     for (const bonus of bonuses) {
-      switch (bonus.stat) {
-        case 'hp_percent':
-          result.hp += bonus.value
-          break
-        case 'atk_percent':
-          result.atk += bonus.value
-          break
-        case 'def_percent':
-          result.def += bonus.value
-          break
-        case 'sp_percent':
-          result.sp += bonus.value
-          break
-        case 'spd_percent':
-          result.spd += bonus.value
-          break
-      }
+      const key = this.statKeyFromSuffix(bonus.stat, '_percent')
+      if (key) result[key] += bonus.value
     }
 
     return result

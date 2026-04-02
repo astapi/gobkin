@@ -19,6 +19,12 @@ export type ModStat =
   | 'sp_percent'
   | 'sp_flat'
   | 'spd_flat'
+  | 'attackCount_flat'
+  | 'attackCount_percent'
+  | 'accuracy_flat'
+  | 'accuracy_percent'
+  | 'evasion_flat'
+  | 'evasion_percent'
   | 'damage_reduction'
 
 /**

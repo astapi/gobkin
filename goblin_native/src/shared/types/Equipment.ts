@@ -24,11 +24,17 @@ export type EquipmentStat =
   | 'def_flat'
   | 'sp_flat'
   | 'spd_flat'
+  | 'attackCount_flat'
+  | 'accuracy_flat'
+  | 'evasion_flat'
   | 'hp_percent'
   | 'atk_percent'
   | 'def_percent'
   | 'sp_percent'
   | 'spd_percent'
+  | 'attackCount_percent'
+  | 'accuracy_percent'
+  | 'evasion_percent'
   | 'damage_reduction'
 
 /**

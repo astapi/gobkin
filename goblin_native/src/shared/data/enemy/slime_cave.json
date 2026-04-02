@@ -3,51 +3,102 @@
     {
       "id": "S001",
       "name": "スライム",
-      "raceTags": ["slime"],
+      "raceTags": [
+        "slime"
+      ],
       "level": 1,
       "hp": 8,
       "atk": 2,
       "def": 1,
       "spd": 2,
       "sp": 0,
+      "attackCount": 1,
+      "accuracy": 17,
+      "evasion": 9,
       "exp": 3,
       "gold": 3
     },
     {
       "id": "B_SLIME",
       "name": "ボススライム",
-      "raceTags": ["slime"],
+      "raceTags": [
+        "slime"
+      ],
       "level": 3,
       "hp": 30,
       "atk": 6,
       "def": 4,
       "spd": 3,
       "sp": 0,
+      "attackCount": 2,
+      "accuracy": 21,
+      "evasion": 11,
       "exp": 12,
       "gold": 10,
-      "factorDrops": [{ "factorId": "slime", "probability": 1 }]
+      "factorDrops": [
+        {
+          "factorId": "slime",
+          "probability": 1
+        }
+      ]
     }
   ],
   "patterns": [
     {
       "id": "SP001",
-      "floors": [1, 2],
-      "enemies": ["S001"]
+      "floors": [
+        1,
+        2
+      ],
+      "enemies": [
+        [
+          "S001"
+        ]
+      ]
     },
     {
       "id": "SP002",
-      "floors": [1, 2],
-      "enemies": ["S001", "S001"]
+      "floors": [
+        1,
+        2
+      ],
+      "enemies": [
+        [
+          "S001",
+          "S001"
+        ]
+      ]
     },
     {
       "id": "SP003",
-      "floors": [1, 2],
-      "enemies": ["S001", "S001", "S001"]
+      "floors": [
+        1,
+        2
+      ],
+      "enemies": [
+        [
+          "S001",
+          "S001",
+          "S001"
+        ]
+      ]
     },
     {
       "id": "SBOSS",
-      "floors": [2],
-      "enemies": ["S001", "S001", "S001", "S001", "B_SLIME"],
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "S001",
+          "S001",
+          "S001",
+          "S001"
+        ],
+        [
+          "B_SLIME"
+        ]
+      ],
       "isBoss": true
     }
   ]

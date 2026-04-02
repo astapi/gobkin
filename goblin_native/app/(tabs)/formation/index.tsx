@@ -351,13 +351,13 @@ const styles = StyleSheet.create({
     color: '#F9FAFB',
   },
   historySection: {
-    marginTop: 12,
+    marginTop: 16,
     paddingTop: 12,
     borderTopWidth: 1,
     borderTopColor: '#E5E7EB',
   },
   historyTitle: {
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: '600',
     color: '#6B7280',
     marginBottom: 8,
@@ -457,17 +457,5 @@ const styles = StyleSheet.create({
   emptySlotText: {
     fontSize: 20,
     color: '#9CA3AF',
-  },
-  historySection: {
-    marginTop: 16,
-    paddingTop: 12,
-    borderTopWidth: 1,
-    borderTopColor: '#E5E7EB',
-  },
-  historyTitle: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#6B7280',
-    marginBottom: 8,
   },
 })

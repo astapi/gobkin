@@ -12,7 +12,7 @@ export class ExecuteBattleUseCase {
   public execute(
     allies: Goblin[],
     initialAllyHP: number[],
-    enemies: Enemy[],
+    enemies: Enemy[][],
     rng: () => number = Math.random,
   ): BattleResult {
     return this.battleSystem.executeBattle(allies, initialAllyHP, enemies, rng)

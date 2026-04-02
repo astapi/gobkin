@@ -7,6 +7,8 @@ export interface BattleLogEntry {
   targetName?: string
   damage?: number
   healing?: number
+  missed?: boolean        // 命中判定でミスした場合true
+  attackIndex?: number    // 複数回攻撃時の何回目か（1-based）
   isAlly: boolean
   targetDefeated?: boolean
   actorHP?: number

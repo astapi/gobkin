@@ -9,6 +9,31 @@ export const RACE_SLOT_CONFIGS: Record<string, RaceSlotConfig> = {
   '魔獣': { baseSlots: 1, slotsPerLevel: 7, maxSlots: 4 },
 }
 
+/**
+ * 種族別の戦闘ステータス初期値
+ */
+export interface RaceCombatStats {
+  attackCount: number  // 攻撃回数の初期値
+  accuracy: number     // 命中精度の基準値（実際はランダム範囲で生成）
+  evasion: number      // 回避能力の基準値（実際はランダム範囲で生成）
+}
+
+export const RACE_COMBAT_STATS: Record<string, RaceCombatStats> = {
+  'ゴブリン': { attackCount: 2, accuracy: 20, evasion: 15 },
+  '魔獣':    { attackCount: 1, accuracy: 20, evasion: 18 },
+}
+
+const DEFAULT_COMBAT_STATS: RaceCombatStats = {
+  attackCount: 2, accuracy: 20, evasion: 15,
+}
+
+/**
+ * 種族の戦闘ステータス初期値を取得
+ */
+export function getRaceCombatStats(race: string): RaceCombatStats {
+  return RACE_COMBAT_STATS[race] ?? DEFAULT_COMBAT_STATS
+}
+
 const DEFAULT_SLOT_CONFIG: RaceSlotConfig = {
   baseSlots: 2,
   slotsPerLevel: 5,

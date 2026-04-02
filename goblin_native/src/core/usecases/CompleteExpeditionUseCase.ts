@@ -98,7 +98,7 @@ export class CompleteExpeditionUseCase {
       if (enemyDatabase) {
         // ボスパターンの敵の中からfactorDropsを持つ敵を全て取得
         const bossPattern = enemyDatabase.patterns.find(p => p.isBoss)
-        const bossEnemyIds = bossPattern?.enemies ?? [bossEvent.enemy.id]
+        const bossEnemyIds = bossPattern?.enemies.flat() ?? [bossEvent.enemy.id]
         const enemiesWithFactorDrops = enemyDatabase.enemies.filter(
           e => bossEnemyIds.includes(e.id) && e.factorDrops && e.factorDrops.length > 0
         )
