@@ -39,14 +39,14 @@ interface GoblinDetailModalProps {
 function GoblinDetailModal({ goblin, visible, onClose }: GoblinDetailModalProps) {
   const { deleteGoblin } = useGoblinService()
 
+  if (!goblin) return null
+
   const effectiveStats = useMemo(
-    () => (goblin ? ModStatCalculator.calculate(goblin) : null),
+    () => ModStatCalculator.calculate(goblin),
     [goblin]
   )
-  const expForNext = goblin ? getExpForNextLevel(goblin.level) : 0
-  const expProgress = goblin ? getExpProgress(goblin.level, goblin.experience) : 0
-
-  if (!goblin) return null
+  const expForNext = getExpForNextLevel(goblin.level)
+  const expProgress = getExpProgress(goblin.level, goblin.experience)
 
   const handleBanish = () => {
     Alert.alert(

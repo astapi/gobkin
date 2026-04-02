@@ -15,6 +15,9 @@ export interface Enemy {
   def: number
   spd: number
   sp: number
+  attackCount: number  // 攻撃回数
+  accuracy: number     // 命中精度
+  evasion: number      // 回避能力
   exp: number
   gold: number
   factorDrops?: FactorDropConfig[]      // この敵を倒すと得られる可能性のある因子
@@ -24,7 +27,7 @@ export interface Enemy {
 export interface EnemyPattern {
   id: string
   floors: number[]
-  enemies: string[]
+  enemies: string[][]  // enemies[row][slotIndex] = enemyId（2D配列で隊列を表現）
   isBoss?: boolean
 }
 

@@ -25,6 +25,9 @@ export interface PartyState {
   def: number
   spd: number
   sp: number
+  attackCount: number
+  accuracy: number
+  evasion: number
   isKO: boolean
   isDead: boolean
   mods: ModInstance[]

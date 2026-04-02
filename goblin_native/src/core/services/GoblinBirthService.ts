@@ -2,13 +2,18 @@ import type { Goblin, GoblinStats } from '../../shared/types'
 import { ModGeneratorService } from './ModGeneratorService'
 import { ModStatCalculator } from './ModStatCalculator'
 import { FactorInheritanceService, type InheritanceResult } from './FactorInheritanceService'
+import { calculateIndividualValue } from './BaseRankSystem'
+import { getRaceCombatStats } from '../../shared/data/equipmentConfig'
 
-const STAT_RANGES: Record<keyof GoblinStats, { min: number; max: number }> = {
+/** attackCount以外のランダム生成範囲（attackCountは種族固定値） */
+const STAT_RANGES: Record<Exclude<keyof GoblinStats, 'attackCount'>, { min: number; max: number }> = {
   hp: { min: 55, max: 80 },
   atk: { min: 10, max: 16 },
   sp: { min: 7, max: 13 },
   spd: { min: 8, max: 14 },
   def: { min: 8, max: 14 },
+  accuracy: { min: 15, max: 25 },
+  evasion: { min: 10, max: 20 },
 }
 
 const GOBLIN_NAMES = [
@@ -46,12 +51,30 @@ export class GoblinBirthService {
   /**
    * 単体のゴブリンを生成する（遠征成功時など）
    * @param nextGoblinId 次のゴブリンID
-   * @param individualValue 個体値 (1〜64)、デフォルトは1
+   * @param individualValue 個体値 (1〜64)、指定しない場合は自動計算
    * @param baseGoblins 因子引き継ぎ元の拠点ゴブリン（オプション）
+   * @param areaLevel エリアレベル（1-8）、個体値計算に使用（オプション）
+   * @param baseRank 拠点ランク（1-7）、個体値計算に使用（オプション）
    */
-  public createNewGoblin(nextGoblinId: number, individualValue = 1, baseGoblins?: Goblin[]): Goblin {
+  public createNewGoblin(
+    nextGoblinId: number,
+    individualValue?: number,
+    baseGoblins?: Goblin[],
+    areaLevel?: number,
+    baseRank?: number
+  ): Goblin {
+    // 個体値が指定されていない場合、エリアレベルと拠点ランクから計算
+    let finalIV = individualValue
+    if (finalIV === undefined && areaLevel !== undefined && baseRank !== undefined) {
+      finalIV = calculateIndividualValue(areaLevel, baseRank, this.random)
+    }
+    // どちらも指定されていない場合はデフォルト値1
+    if (finalIV === undefined) {
+      finalIV = 1
+    }
+
     const inheritance = baseGoblins ? this.evaluateFactorInheritance(baseGoblins) : undefined
-    return this.createGoblin(nextGoblinId, individualValue, inheritance)
+    return this.createGoblin(nextGoblinId, finalIV, inheritance)
   }
 
   /**
@@ -93,8 +116,6 @@ export class GoblinBirthService {
     individualValue = 1,
     inheritance?: InheritanceResult
   ): Goblin {
-    // 基本ステータスを生成（因子ボーナスはModStatCalculatorで計算時に適用）
-    const stats = this.generateStats()
     const name = this.selectRandomName()
     // 個体値を1〜64の範囲にクランプ
     const clampedIV = Math.max(1, Math.min(64, individualValue))
@@ -103,6 +124,9 @@ export class GoblinBirthService {
     const race = inheritance?.isVariant
       ? inheritance.variantRace!
       : 'ゴブリン'
+
+    // 基本ステータスを生成（因子ボーナスはModStatCalculatorで計算時に適用）
+    const stats = this.generateStats(race)
     const avatar = inheritance?.isVariant
       ? inheritance.variantAvatar!
       : '/src/assets/goblin/goblin.png'
@@ -147,21 +171,26 @@ export class GoblinBirthService {
 
   /**
    * ランダムなステータスを生成
+   * @param race 種族名（attackCountの初期値に使用）
    */
-  private generateStats(): GoblinStats {
+  private generateStats(race: string): GoblinStats {
+    const combatStats = getRaceCombatStats(race)
     return {
       hp: this.randomInRange('hp'),
       atk: this.randomInRange('atk'),
       sp: this.randomInRange('sp'),
       spd: this.randomInRange('spd'),
       def: this.randomInRange('def'),
+      attackCount: combatStats.attackCount,
+      accuracy: this.randomInRange('accuracy'),
+      evasion: this.randomInRange('evasion'),
     }
   }
 
   /**
    * 指定されたステータスの範囲内でランダムな値を生成
    */
-  private randomInRange(key: keyof GoblinStats): number {
+  private randomInRange(key: Exclude<keyof GoblinStats, 'attackCount'>): number {
     const { min, max } = STAT_RANGES[key]
     const value = min + (max - min) * this.random()
     return Math.round(value)

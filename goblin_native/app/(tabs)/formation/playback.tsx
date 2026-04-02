@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react'
 import { View, Text, StyleSheet, Animated, TouchableOpacity, ScrollView, ActivityIndicator, Image } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { router, useLocalSearchParams } from 'expo-router'
+import { router, useLocalSearchParams, type Href } from 'expo-router'
 import { usePartyService } from '@/presentation/hooks/usePartyService'
 import { useGoblinService } from '@/presentation/hooks/useGoblinService'
 import { useDungeonProgress } from '@/presentation/hooks/useDungeonProgress'
@@ -80,7 +80,7 @@ export default function ExpeditionPlaybackScreen() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
   const progressAnim = useRef(new Animated.Value(0)).current
-  const playbackTimerRef = useRef<NodeJS.Timeout | null>(null)
+  const playbackTimerRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const startTimestampRef = useRef<number>(0)
   const baseTimeRef = useRef<number>(0)
   const processedEventIndexRef = useRef(0)
@@ -130,8 +130,7 @@ export default function ExpeditionPlaybackScreen() {
 
   const openBattleLog = useCallback((detail: BattleLogEntry[]) => {
     const logId = storeBattleLog(detail)
-    const path = `/formation/battle-log?logId=${encodeURIComponent(logId)}`
-    router.push(path)
+    router.push(`/formation/battle-log?logId=${encodeURIComponent(logId)}` as Href)
   }, [])
 
   const getReturnReasonText = useCallback((reason: ExpeditionEndReason) => {

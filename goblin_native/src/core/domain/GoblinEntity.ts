@@ -100,6 +100,7 @@ export class GoblinEntity {
   private applyLevelUpBonus(levelsGained: number): void {
     for (let i = 0; i < levelsGained; i++) {
       this.stats = {
+        ...this.stats,
         hp: this.stats.hp + 5,
         atk: this.stats.atk + 2,
         def: this.stats.def + 1,
