@@ -237,6 +237,7 @@ export class ModStatCalculator {
   /**
    * 装備特殊効果をステータス確定後に適用
    * - def_to_hp: 最終防御力のX%をHPに加算
+   * - critical_damage_bonus / accuracy_boost: BattleSystem側で処理（ステータス計算には影響しない）
    */
   private static applyEquipmentEffects(
     stats: GoblinStats,
@@ -247,6 +248,7 @@ export class ModStatCalculator {
         case 'def_to_hp':
           stats.hp += Math.floor(stats.def * effect.value / 100)
           break
+        // critical_damage_bonus, accuracy_boost は戦闘時に参照（BattleSystem未実装）
       }
     }
   }
