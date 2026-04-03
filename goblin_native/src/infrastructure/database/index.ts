@@ -143,18 +143,38 @@ const setSchemaVersion = async (
  * データベースをクローズ（主にテスト用）
  */
 export const closeDatabase = async (): Promise<void> => {
+  // 初期化中のPromiseがあれば完了を待つ
+  if (initializationPromise) {
+    try {
+      await initializationPromise
+    } catch {
+      // 初期化失敗は無視
+    }
+  }
   if (db) {
     await db.closeAsync()
     db = null
-    initializationPromise = null
   }
+  initializationPromise = null
 }
 
 /**
- * データベースを削除（主にテスト/デバッグ用）
+ * データベースをリセット（削除→再初期化）
  */
-export const deleteDatabase = async (): Promise<void> => {
-  await closeDatabase()
+export const resetDatabase = async (): Promise<void> => {
+  if (initializationPromise) {
+    try {
+      const database = await initializationPromise
+      await database.closeAsync()
+    } catch {
+      // 初期化失敗は無視
+    }
+  } else if (db) {
+    await db.closeAsync()
+  }
+  db = null
+  initializationPromise = null
   await SQLite.deleteDatabaseAsync(DB_NAME)
+  await initializeDatabase()
 }
 

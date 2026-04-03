@@ -1,70 +1,30 @@
-import { useEffect, useState } from 'react'
-import { View, ActivityIndicator, Text, StyleSheet } from 'react-native'
+import { View, ActivityIndicator, Text, StyleSheet, Pressable } from 'react-native'
 import { Stack } from 'expo-router'
 import { StatusBar } from 'expo-status-bar'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { AuthProvider } from '@/presentation/contexts/AuthContext'
 import { ExpeditionStateProvider } from '@/presentation/contexts/ExpeditionStateContext'
-import { getDatabase } from '@/infrastructure/database'
-import { SQLiteDungeonProgressRepository } from '@/infrastructure/repositories/SQLiteDungeonProgressRepository'
-import { SQLiteGoblinRepository } from '@/infrastructure/repositories/SQLiteGoblinRepository'
-import { SQLitePartyRepository } from '@/infrastructure/repositories/SQLitePartyRepository'
-import { SQLiteBaseStateRepository } from '@/infrastructure/repositories/SQLiteBaseStateRepository'
-import { SQLiteExpeditionRepository } from '@/infrastructure/repositories/SQLiteExpeditionRepository'
-import { SQLitePendingGoblinRepository } from '@/infrastructure/repositories/SQLitePendingGoblinRepository'
-import { areasData } from '@/shared/data'
+import { ResetProvider } from '@/presentation/contexts/ResetContext'
+import { useDatabaseInit } from '@/presentation/hooks/useDatabaseInit'
 
 export default function RootLayout() {
-  const [isInitialized, setIsInitialized] = useState(false)
+  const { ready, error, resetAndReinitialize } = useDatabaseInit()
 
-  useEffect(() => {
-    // アプリ起動時にDBとリポジトリを初期化
-    const initializeApp = async () => {
-      try {
-        // 第1段階: DBインスタンスの初期化（マイグレーション実行）
-        console.log('[RootLayout] Initializing database...')
+  if (error) {
+    return (
+      <SafeAreaProvider>
+        <View style={styles.loadingContainer}>
+          <Text style={styles.errorText}>DB init error: {error}</Text>
+          <Pressable style={styles.resetButton} onPress={() => void resetAndReinitialize()}>
+            <Text style={styles.resetButtonText}>Reset Database</Text>
+          </Pressable>
+        </View>
+      </SafeAreaProvider>
+    )
+  }
 
-        await getDatabase()
-        console.log('[RootLayout] Database initialized')
-
-        // 第2段階: 全リポジトリの初期化（キャッシュの初期化）
-        console.log('[RootLayout] Initializing repositories...')
-
-        // 各リポジトリを並列で初期化
-        await Promise.all([
-          SQLiteGoblinRepository.getInstance().initialize(),
-          SQLitePartyRepository.getInstance().initialize(),
-          SQLiteBaseStateRepository.getInstance().initialize(),
-          SQLiteExpeditionRepository.getInstance().initialize(),
-          SQLitePendingGoblinRepository.getInstance().initialize(),
-          SQLiteDungeonProgressRepository.getInstance().initialize(),
-        ])
-
-        // ダンジョン進行状況のデフォルトデータを保存
-        const dungeonProgressRepo = SQLiteDungeonProgressRepository.getInstance()
-        const storedProgress = dungeonProgressRepo.getAll()
-        areasData.forEach((dungeon, index) => {
-          if (!storedProgress[dungeon.id]) {
-            dungeonProgressRepo.save(dungeon.id, {
-              unlocked: dungeon.unlocked ?? index === 0,
-              cleared: dungeon.cleared ?? false,
-              unlockNotified: false,
-            })
-          }
-        })
-
-        console.log('[RootLayout] All repositories initialized successfully')
-        setIsInitialized(true)
-      } catch (error) {
-        console.error('[RootLayout] Failed to initialize app:', error)
-      }
-    }
-    initializeApp()
-  }, [])
-
-  // 初期化完了まではローディング画面を表示
-  if (!isInitialized) {
+  if (!ready) {
     return (
       <SafeAreaProvider>
         <View style={styles.loadingContainer}>
@@ -80,10 +40,12 @@ export default function RootLayout() {
       <SafeAreaProvider>
         <AuthProvider>
           <ExpeditionStateProvider>
-            <Stack screenOptions={{ headerShown: false }}>
-              <Stack.Screen name="(tabs)" />
-            </Stack>
-            <StatusBar style="auto" />
+            <ResetProvider resetAndReinitialize={resetAndReinitialize}>
+              <Stack screenOptions={{ headerShown: false }}>
+                <Stack.Screen name="(tabs)" />
+              </Stack>
+              <StatusBar style="auto" />
+            </ResetProvider>
           </ExpeditionStateProvider>
         </AuthProvider>
       </SafeAreaProvider>
@@ -102,5 +64,21 @@ const styles = StyleSheet.create({
     marginTop: 12,
     fontSize: 14,
     color: '#6B7280',
+  },
+  errorText: {
+    textAlign: 'center',
+    color: '#DC2626',
+    marginBottom: 12,
+  },
+  resetButton: {
+    marginTop: 12,
+    borderRadius: 10,
+    backgroundColor: '#374151',
+    paddingVertical: 10,
+    paddingHorizontal: 14,
+  },
+  resetButtonText: {
+    color: '#FFFFFF',
+    fontWeight: '600',
   },
 })

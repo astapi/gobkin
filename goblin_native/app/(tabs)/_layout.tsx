@@ -1,5 +1,5 @@
 import { Tabs } from 'expo-router'
-import { View, StyleSheet } from 'react-native'
+import { View, Text, StyleSheet } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import ListIcon from '../../assets/list.svg'
 import HenseiIcon from '../../assets/hensei.svg'
@@ -74,6 +74,18 @@ export default function TabLayout() {
           headerTitle: 'Base Management',
           headerShown: false,
           tabBarIcon: ({ color }) => <TabIcon Icon={BaseIcon} color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="settings"
+        options={{
+          title: 'Settings',
+          headerShown: false,
+          tabBarIcon: ({ color }) => (
+            <View style={styles.iconContainer}>
+              <Text style={{ fontSize: 20, color }}>&#9881;</Text>
+            </View>
+          ),
         }}
       />
     </Tabs>
