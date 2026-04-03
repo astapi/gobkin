@@ -1,7 +1,7 @@
 import { GoblinBirthService } from '../GoblinBirthService'
 import { ModStatCalculator } from '../ModStatCalculator'
 import { BattleSystem, getDamageModifier, getAccuracyModifier, getRowWeight, selectTarget } from '../BattleSystem'
-import { getRaceCombatStats } from '../../../shared/data/equipmentConfig'
+import { getBloodlineCombatStats } from '../../../shared/data/equipmentConfig'
 import type { Goblin, Enemy } from '../../../shared/types'
 
 /**
@@ -104,21 +104,36 @@ describe('getAccuracyModifier', () => {
 })
 
 // =========================================================================
-// 種族別戦闘ステータス初期値
+// 血統別戦闘ステータス初期値
 // =========================================================================
-describe('getRaceCombatStats', () => {
+describe('getBloodlineCombatStats', () => {
   it('ゴブリンの攻撃回数は2', () => {
-    const stats = getRaceCombatStats('ゴブリン')
+    const stats = getBloodlineCombatStats('ゴブリン')
     expect(stats.attackCount).toBe(2)
   })
 
-  it('魔獣の攻撃回数は1', () => {
-    const stats = getRaceCombatStats('魔獣')
-    expect(stats.attackCount).toBe(1)
+  it('ウルフゴブリンの攻撃回数は3', () => {
+    const stats = getBloodlineCombatStats('ウルフゴブリン')
+    expect(stats.attackCount).toBe(3)
   })
 
-  it('未定義種族はデフォルト値を返す', () => {
-    const stats = getRaceCombatStats('未知の種族')
+  it('スライムゴブリンの攻撃回数は2', () => {
+    const stats = getBloodlineCombatStats('スライムゴブリン')
+    expect(stats.attackCount).toBe(2)
+  })
+
+  it('オークゴブリンの攻撃回数は2', () => {
+    const stats = getBloodlineCombatStats('オークゴブリン')
+    expect(stats.attackCount).toBe(2)
+  })
+
+  it('ホブゴブリンの攻撃回数は2', () => {
+    const stats = getBloodlineCombatStats('ホブゴブリン')
+    expect(stats.attackCount).toBe(2)
+  })
+
+  it('未定義血統はデフォルト値を返す', () => {
+    const stats = getBloodlineCombatStats('未知の血統')
     expect(stats.attackCount).toBe(2)
     expect(stats.accuracy).toBe(20)
     expect(stats.evasion).toBe(15)
@@ -139,7 +154,7 @@ describe('GoblinBirthService — 戦闘ステータス生成', () => {
     expect(goblin.stats.evasion).toBeDefined()
   })
 
-  it('ゴブリンのattackCountは種族初期値2', () => {
+  it('ゴブリンのattackCountは血統初期値2', () => {
     const rng = createSeededRng(200)
     const service = new GoblinBirthService(rng)
     const goblin = service.createNewGoblin(1)
