@@ -3,9 +3,9 @@ import { ModGeneratorService } from './ModGeneratorService'
 import { ModStatCalculator } from './ModStatCalculator'
 import { FactorInheritanceService, type InheritanceResult } from './FactorInheritanceService'
 import { calculateIndividualValue } from './BaseRankSystem'
-import { getRaceCombatStats } from '../../shared/data/equipmentConfig'
+import { getBloodlineCombatStats } from '../../shared/data/equipmentConfig'
 
-/** attackCount以外のランダム生成範囲（attackCountは種族固定値） */
+/** attackCount以外のランダム生成範囲（attackCountは血統固定値） */
 const STAT_RANGES: Record<Exclude<keyof GoblinStats, 'attackCount'>, { min: number; max: number }> = {
   hp: { min: 55, max: 80 },
   atk: { min: 10, max: 16 },
@@ -171,10 +171,10 @@ export class GoblinBirthService {
 
   /**
    * ランダムなステータスを生成
-   * @param race 種族名（attackCountの初期値に使用）
+   * @param bloodline 血統名（attackCountの初期値に使用）
    */
-  private generateStats(race: string): GoblinStats {
-    const combatStats = getRaceCombatStats(race)
+  private generateStats(bloodline: string): GoblinStats {
+    const combatStats = getBloodlineCombatStats(bloodline)
     return {
       hp: this.randomInRange('hp'),
       atk: this.randomInRange('atk'),

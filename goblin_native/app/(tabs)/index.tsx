@@ -21,8 +21,15 @@ const STAT_LABELS: Record<string, string> = {
   def_percent: 'DEF',
   def_flat: 'DEF',
   spd_percent: 'SPD',
+  spd_flat: 'SPD',
   sp_percent: 'SP',
   sp_flat: 'SP',
+  attackCount_percent: '攻撃回数',
+  attackCount_flat: '攻撃回数',
+  accuracy_percent: '命中精度',
+  accuracy_flat: '命中精度',
+  evasion_percent: '回避',
+  evasion_flat: '回避',
   damage_reduction: '被ダメ軽減',
 }
 
@@ -39,14 +46,14 @@ interface GoblinDetailModalProps {
 function GoblinDetailModal({ goblin, visible, onClose }: GoblinDetailModalProps) {
   const { deleteGoblin } = useGoblinService()
 
-  if (!goblin) return null
-
   const effectiveStats = useMemo(
-    () => ModStatCalculator.calculate(goblin),
+    () => goblin ? ModStatCalculator.calculate(goblin) : null,
     [goblin]
   )
-  const expForNext = getExpForNextLevel(goblin.level)
-  const expProgress = getExpProgress(goblin.level, goblin.experience)
+  const expForNext = goblin ? getExpForNextLevel(goblin.level) : 0
+  const expProgress = goblin ? getExpProgress(goblin.level, goblin.experience) : 0
+
+  if (!goblin || !effectiveStats) return null
 
   const handleBanish = () => {
     Alert.alert(
@@ -104,6 +111,9 @@ function GoblinDetailModal({ goblin, visible, onClose }: GoblinDetailModalProps)
                 { key: 'def', label: 'DEF' },
                 { key: 'spd', label: 'SPD' },
                 { key: 'sp', label: 'SP' },
+                { key: 'attackCount', label: '攻撃回数' },
+                { key: 'accuracy', label: '命中精度' },
+                { key: 'evasion', label: '回避' },
               ] as const).map(item => (
                 <View key={item.key} style={styles.statRow}>
                   <Text style={styles.statRowLabel}>{item.label}</Text>

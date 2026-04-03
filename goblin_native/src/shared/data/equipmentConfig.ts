@@ -10,28 +10,32 @@ export const RACE_SLOT_CONFIGS: Record<string, RaceSlotConfig> = {
 }
 
 /**
- * 種族別の戦闘ステータス初期値
+ * 血統別の戦闘ステータス初期値
+ * 血統: ゴブリンの派生（スライムゴブリン、ウルフゴブリンなど）
  */
-export interface RaceCombatStats {
+export interface BloodlineCombatStats {
   attackCount: number  // 攻撃回数の初期値
   accuracy: number     // 命中精度の基準値（実際はランダム範囲で生成）
   evasion: number      // 回避能力の基準値（実際はランダム範囲で生成）
 }
 
-export const RACE_COMBAT_STATS: Record<string, RaceCombatStats> = {
-  'ゴブリン': { attackCount: 2, accuracy: 20, evasion: 15 },
-  '魔獣':    { attackCount: 1, accuracy: 20, evasion: 18 },
+export const BLOODLINE_COMBAT_STATS: Record<string, BloodlineCombatStats> = {
+  'ゴブリン':         { attackCount: 2, accuracy: 20, evasion: 15 },
+  'スライムゴブリン': { attackCount: 2, accuracy: 20, evasion: 15 },
+  'ウルフゴブリン':   { attackCount: 3, accuracy: 20, evasion: 15 },
+  'オークゴブリン':   { attackCount: 2, accuracy: 20, evasion: 15 },
+  'ホブゴブリン':     { attackCount: 2, accuracy: 20, evasion: 15 },
 }
 
-const DEFAULT_COMBAT_STATS: RaceCombatStats = {
+const DEFAULT_COMBAT_STATS: BloodlineCombatStats = {
   attackCount: 2, accuracy: 20, evasion: 15,
 }
 
 /**
- * 種族の戦闘ステータス初期値を取得
+ * 血統の戦闘ステータス初期値を取得
  */
-export function getRaceCombatStats(race: string): RaceCombatStats {
-  return RACE_COMBAT_STATS[race] ?? DEFAULT_COMBAT_STATS
+export function getBloodlineCombatStats(bloodline: string): BloodlineCombatStats {
+  return BLOODLINE_COMBAT_STATS[bloodline] ?? DEFAULT_COMBAT_STATS
 }
 
 const DEFAULT_SLOT_CONFIG: RaceSlotConfig = {
