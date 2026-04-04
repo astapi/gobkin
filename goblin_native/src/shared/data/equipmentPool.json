@@ -13,7 +13,7 @@
       "statBonuses": [
         { "stat": "atk_flat", "value": 2 }
       ],
-      "weaponStats": { "accuracy": 1, "attackCountModifier": 0 },
+      "weaponStats": { "accuracy": 8, "attackCountModifier": 0 },
       "range": "melee",
       "price": 5,
       "unlockRank": 1,
@@ -31,7 +31,7 @@
         { "stat": "atk_flat", "value": 5 },
         { "stat": "def_flat", "value": 1 }
       ],
-      "weaponStats": { "accuracy": 2, "attackCountModifier": -0.1 },
+      "weaponStats": { "accuracy": 16, "attackCountModifier": -0.1 },
       "range": "melee",
       "price": 15,
       "unlockRank": 1,
@@ -49,7 +49,7 @@
         { "stat": "atk_flat", "value": 8 },
         { "stat": "def_flat", "value": 2 }
       ],
-      "weaponStats": { "accuracy": 3, "attackCountModifier": -0.2 },
+      "weaponStats": { "accuracy": 24, "attackCountModifier": -0.2 },
       "effects": [{ "type": "def_to_hp", "value": 1 }],
       "range": "melee",
       "price": 30,
@@ -68,7 +68,7 @@
         { "stat": "atk_flat", "value": 12 },
         { "stat": "def_flat", "value": 3 }
       ],
-      "weaponStats": { "accuracy": 4, "attackCountModifier": -0.2 },
+      "weaponStats": { "accuracy": 32, "attackCountModifier": -0.2 },
       "effects": [{ "type": "def_to_hp", "value": 2 }],
       "range": "melee",
       "price": 60,
@@ -87,7 +87,7 @@
         { "stat": "atk_flat", "value": 16 },
         { "stat": "def_flat", "value": 4 }
       ],
-      "weaponStats": { "accuracy": 6, "attackCountModifier": -0.2 },
+      "weaponStats": { "accuracy": 48, "attackCountModifier": -0.2 },
       "effects": [{ "type": "def_to_hp", "value": 3 }],
       "range": "melee",
       "price": 100,
@@ -106,7 +106,7 @@
         { "stat": "atk_flat", "value": 24 },
         { "stat": "def_flat", "value": 6 }
       ],
-      "weaponStats": { "accuracy": 9, "attackCountModifier": -0.2 },
+      "weaponStats": { "accuracy": 72, "attackCountModifier": -0.2 },
       "effects": [{ "type": "def_to_hp", "value": 4 }],
       "range": "melee",
       "price": 500,
@@ -124,7 +124,7 @@
         { "stat": "atk_flat", "value": 32 },
         { "stat": "def_flat", "value": 8 }
       ],
-      "weaponStats": { "accuracy": 12, "attackCountModifier": -0.2 },
+      "weaponStats": { "accuracy": 96, "attackCountModifier": -0.2 },
       "effects": [{ "type": "def_to_hp", "value": 5 }],
       "range": "melee",
       "price": 2500,
@@ -142,7 +142,7 @@
         { "stat": "atk_flat", "value": 48 },
         { "stat": "def_flat", "value": 10 }
       ],
-      "weaponStats": { "accuracy": 18, "attackCountModifier": -0.2 },
+      "weaponStats": { "accuracy": 144, "attackCountModifier": -0.2 },
       "effects": [{ "type": "def_to_hp", "value": 6 }],
       "range": "melee",
       "price": 12500,
@@ -161,7 +161,7 @@
         { "stat": "atk_flat", "value": 64 },
         { "stat": "def_flat", "value": 12 }
       ],
-      "weaponStats": { "accuracy": 24, "attackCountModifier": -0.2 },
+      "weaponStats": { "accuracy": 192, "attackCountModifier": -0.2 },
       "effects": [{ "type": "def_to_hp", "value": 7 }],
       "range": "melee",
       "price": 60000,
@@ -180,7 +180,7 @@
         { "stat": "atk_flat", "value": 96 },
         { "stat": "def_flat", "value": 24 }
       ],
-      "weaponStats": { "accuracy": 36, "attackCountModifier": -0.4 },
+      "weaponStats": { "accuracy": 288, "attackCountModifier": -0.4 },
       "effects": [{ "type": "def_to_hp", "value": 8 }],
       "range": "melee",
       "price": 240000,
@@ -198,7 +198,7 @@
         { "stat": "atk_flat", "value": 128 },
         { "stat": "def_flat", "value": 36 }
       ],
-      "weaponStats": { "accuracy": 48, "attackCountModifier": -0.6 },
+      "weaponStats": { "accuracy": 384, "attackCountModifier": -0.6 },
       "effects": [{ "type": "def_to_hp", "value": 9 }],
       "range": "melee",
       "price": 720000,
@@ -218,7 +218,7 @@
       "statBonuses": [
         { "stat": "atk_flat", "value": 3 }
       ],
-      "weaponStats": { "accuracy": 2, "attackCountModifier": 0 },
+      "weaponStats": { "accuracy": 16, "attackCountModifier": 0 },
       "range": "ranged",
       "price": 10,
       "unlockRank": 1,
@@ -235,7 +235,7 @@
       "statBonuses": [
         { "stat": "atk_flat", "value": 6 }
       ],
-      "weaponStats": { "accuracy": 4, "attackCountModifier": -0.1 },
+      "weaponStats": { "accuracy": 32, "attackCountModifier": -0.1 },
       "range": "ranged",
       "price": 40,
       "unlockRank": 1,
@@ -252,7 +252,7 @@
       "statBonuses": [
         { "stat": "atk_flat", "value": 20 }
       ],
-      "weaponStats": { "accuracy": 8, "attackCountModifier": -0.6, "evasionModifier": -8 },
+      "weaponStats": { "accuracy": 64, "attackCountModifier": -0.6, "evasionModifier": -8 },
       "effects": [
         { "type": "critical_damage_bonus", "value": 6 },
         { "type": "accuracy_boost", "value": 30 }
@@ -273,7 +273,7 @@
       "statBonuses": [
         { "stat": "atk_flat", "value": 30 }
       ],
-      "weaponStats": { "accuracy": 12, "attackCountModifier": -0.6, "evasionModifier": -12 },
+      "weaponStats": { "accuracy": 96, "attackCountModifier": -0.6, "evasionModifier": -12 },
       "effects": [
         { "type": "critical_damage_bonus", "value": 7 },
         { "type": "accuracy_boost", "value": 50 }
@@ -293,7 +293,7 @@
       "statBonuses": [
         { "stat": "atk_flat", "value": 45 }
       ],
-      "weaponStats": { "accuracy": 16, "attackCountModifier": -0.6, "evasionModifier": -16 },
+      "weaponStats": { "accuracy": 128, "attackCountModifier": -0.6, "evasionModifier": -16 },
       "effects": [
         { "type": "critical_damage_bonus", "value": 8 },
         { "type": "accuracy_boost", "value": 70 }
@@ -313,7 +313,7 @@
       "statBonuses": [
         { "stat": "atk_flat", "value": 60 }
       ],
-      "weaponStats": { "accuracy": 24, "attackCountModifier": -0.6, "evasionModifier": -24 },
+      "weaponStats": { "accuracy": 192, "attackCountModifier": -0.6, "evasionModifier": -24 },
       "effects": [
         { "type": "critical_damage_bonus", "value": 9 },
         { "type": "accuracy_boost", "value": 90 }
@@ -334,7 +334,7 @@
       "statBonuses": [
         { "stat": "atk_flat", "value": 90 }
       ],
-      "weaponStats": { "accuracy": 32, "attackCountModifier": -0.6, "evasionModifier": -32 },
+      "weaponStats": { "accuracy": 256, "attackCountModifier": -0.6, "evasionModifier": -32 },
       "effects": [
         { "type": "critical_damage_bonus", "value": 10 },
         { "type": "accuracy_boost", "value": 110 }
@@ -355,7 +355,7 @@
       "statBonuses": [
         { "stat": "atk_flat", "value": 120 }
       ],
-      "weaponStats": { "accuracy": 40, "attackCountModifier": -0.6, "evasionModifier": -40 },
+      "weaponStats": { "accuracy": 320, "attackCountModifier": -0.6, "evasionModifier": -40 },
       "effects": [
         { "type": "critical_damage_bonus", "value": 11 },
         { "type": "accuracy_boost", "value": 130 }
@@ -375,7 +375,7 @@
       "statBonuses": [
         { "stat": "atk_flat", "value": 160 }
       ],
-      "weaponStats": { "accuracy": 50, "attackCountModifier": -0.6, "evasionModifier": -50 },
+      "weaponStats": { "accuracy": 400, "attackCountModifier": -0.6, "evasionModifier": -50 },
       "effects": [
         { "type": "critical_damage_bonus", "value": 12 },
         { "type": "accuracy_boost", "value": 150 }

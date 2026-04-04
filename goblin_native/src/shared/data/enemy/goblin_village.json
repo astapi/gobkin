@@ -13,7 +13,7 @@
       "spd": 5,
       "sp": 0,
       "attackCount": 1,
-      "accuracy": 21,
+      "accuracy": 168,
       "evasion": 11,
       "exp": 8,
       "gold": 6
@@ -31,7 +31,7 @@
       "spd": 9,
       "sp": 0,
       "attackCount": 1,
-      "accuracy": 23,
+      "accuracy": 184,
       "evasion": 12,
       "exp": 12,
       "gold": 10
@@ -49,7 +49,7 @@
       "spd": 4,
       "sp": 0,
       "attackCount": 1,
-      "accuracy": 25,
+      "accuracy": 200,
       "evasion": 13,
       "exp": 15,
       "gold": 12
@@ -67,7 +67,7 @@
       "spd": 5,
       "sp": 0,
       "attackCount": 1,
-      "accuracy": 25,
+      "accuracy": 200,
       "evasion": 13,
       "exp": 18,
       "gold": 15
@@ -85,7 +85,7 @@
       "spd": 3,
       "sp": 0,
       "attackCount": 1,
-      "accuracy": 27,
+      "accuracy": 216,
       "evasion": 14,
       "exp": 20,
       "gold": 18
@@ -104,7 +104,7 @@
       "spd": 8,
       "sp": 0,
       "attackCount": 2,
-      "accuracy": 35,
+      "accuracy": 280,
       "evasion": 18,
       "exp": 80,
       "gold": 70,

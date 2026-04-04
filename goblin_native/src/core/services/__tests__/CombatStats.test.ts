@@ -163,14 +163,14 @@ describe('GoblinBirthService — 戦闘ステータス生成', () => {
     expect(goblin.stats.attackCount).toBe(2)
   })
 
-  it('accuracyは15〜25の範囲に収まる', () => {
+  it('accuracyは120〜200の範囲に収まる', () => {
     for (let i = 0; i < 100; i++) {
       const rng = createSeededRng(i * 7)
       const service = new GoblinBirthService(rng)
       const goblin = service.createNewGoblin(i)
 
-      expect(goblin.stats.accuracy).toBeGreaterThanOrEqual(15)
-      expect(goblin.stats.accuracy).toBeLessThanOrEqual(25)
+      expect(goblin.stats.accuracy).toBeGreaterThanOrEqual(120)
+      expect(goblin.stats.accuracy).toBeLessThanOrEqual(200)
     }
   })
 

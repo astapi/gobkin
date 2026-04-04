@@ -268,7 +268,7 @@ export class BattleSystem {
 
   /**
    * 命中率を計算
-   * 命中率 = 命中精度 × 命中精度補正(n) × 乱数A − 回避能力 × 残りHP補正 × 乱数B
+   * 命中率 = 乱数A × (命中精度 × 攻撃回数補正 − 回避能力 × 残りHP補正)
    * clamp(5, 95)
    */
   private calculateHitRate(
@@ -278,14 +278,13 @@ export class BattleSystem {
     rng: () => number,
   ): number {
     const accMod = getAccuracyModifier(attackNumber)
-    const randA = rng()
-    const randB = rng()
+    const rand = rng()
 
     // 残りHP補正 = 0.5 * (1 + 残りHP / 最大HP)
     const hpRatio = defender.maxHP > 0 ? defender.currentHP / defender.maxHP : 0
     const hpMod = 0.5 * (1 + hpRatio)
 
-    const hitRate = attacker.accuracy * accMod * randA - defender.evasion * randB * hpMod
+    const hitRate = rand * (attacker.accuracy * accMod - defender.evasion * hpMod)
 
     // 限界値補正: 5% 〜 95%
     return Math.max(5, Math.min(95, hitRate))
