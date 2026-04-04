@@ -151,6 +151,6 @@ export const SCHEMA = {
   goblinsInit: `
     INSERT OR IGNORE INTO goblins (id, name, race, level, experience, avatar, stats_json)
     VALUES
-      (0, 'グラッシュ', 'ゴブリン', 15, 0, '/src/assets/goblin/goblin.png', '{"hp":100,"atk":70,"sp":45,"spd":60,"def":65,"attackCount":2,"accuracy":160,"evasion":15}')
+      (0, 'グラッシュ', 'ゴブリン', 1, 0, '/src/assets/goblin/goblin.png', '{"hp":68,"atk":13,"sp":10,"spd":11,"def":11,"attackCount":2,"accuracy":160,"evasion":15}')
   `,
 }
