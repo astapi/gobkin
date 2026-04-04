@@ -1,18 +1,26 @@
+/** ターゲットごとのダメージ詳細 */
+export interface AttackTargetDetail {
+  targetId: string
+  targetName: string
+  targetRow: number       // ターゲットの隊列番号
+  totalDamage: number     // このターゲットへの合計ダメージ
+  hitCount: number        // このターゲットへの命中回数
+  defeated: boolean       // この攻撃で倒したか
+  targetHP: number        // 攻撃後の残りHP
+}
+
 export interface BattleLogEntry {
   turn: number
   actorId: string
   actorName: string
+  actorRow: number        // 攻撃者の隊列番号
   action: string
-  targetId?: string
-  targetName?: string
-  damage?: number
-  healing?: number
-  missed?: boolean        // 命中判定でミスした場合true
-  attackIndex?: number    // 複数回攻撃時の何回目か（1-based）
+  attackCount: number     // 総攻撃回数
+  hitCount: number        // 総命中回数
+  actorHP: number         // 攻撃者の現在HP
+  actorMaxHP: number      // 攻撃者の最大HP
   isAlly: boolean
-  targetDefeated?: boolean
-  actorHP?: number
-  targetHP?: number
+  targets: AttackTargetDetail[]  // ターゲットごとの結果
   turnState?: {
     allies: Array<{ id: string; name: string; currentHP: number; maxHP: number }>
     enemies: Array<{ id: string; name: string; currentHP: number; maxHP: number }>
