@@ -27,6 +27,22 @@ export interface BattleLogEntry {
   }
 }
 
+/** 戦闘結果のメタ情報（ログ表示用） */
+export interface BattleLogMeta {
+  outcome: 'win' | 'lose' | 'escape'
+  xpGained: number
+  goldGained: number
+  /** 隊列順のパーティメンバー情報 */
+  members: Array<{
+    name: string
+    currentHP: number
+    maxHP: number
+    level: number
+    xpEach: number
+    expMultiplier: number
+  }>
+}
+
 export interface CombatReplay {
   rounds: number
   outcome: "win" | "lose" | "escape"

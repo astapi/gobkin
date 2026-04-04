@@ -2,18 +2,21 @@ import { useMemo, useEffect } from 'react'
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { router, useLocalSearchParams } from 'expo-router'
-import type { BattleLogEntry } from '@/shared/types'
+import type { BattleLogEntry, BattleLogMeta } from '@/shared/types'
 import { getBattleLog, clearBattleLog } from '@/presentation/contexts/battleLogStore'
 
 export default function BattleLogScreen() {
   const { logId } = useLocalSearchParams<{ logId?: string }>()
 
-  const battleLog = useMemo<BattleLogEntry[] | null>(() => {
+  const stored = useMemo(() => {
     if (!logId) return null
     const raw = Array.isArray(logId) ? logId[0] : logId
     if (!raw) return null
     return getBattleLog(raw)
   }, [logId])
+
+  const battleLog = stored?.log ?? null
+  const meta = stored?.meta ?? null
 
   useEffect(() => {
     const raw = Array.isArray(logId) ? logId[0] : logId
@@ -77,20 +80,56 @@ export default function BattleLogScreen() {
             return (
               <View key={`log-${index}`} style={styles.logCard}>
                 <Text style={styles.logTitle}>
-                  {entry.actorName}の攻撃 ({entry.actorHP ?? 0}HP)
+                  {entry.actorName}の{entry.attackCount}回攻撃（{entry.actorHP}/{entry.actorMaxHP}HP）
                 </Text>
-                <Text style={styles.logText}>{entry.actorName}の{entry.action}！</Text>
-                {entry.targetName && typeof entry.damage === 'number' && (
-                  <Text style={styles.logText}>
-                    {entry.targetName}に{entry.damage}ダメージを与え{entry.targetDefeated ? '倒した！' : 'た！'}
+                <Text style={styles.logText}>
+                  [列{entry.actorRow}] {entry.actorName}の攻撃！{entry.hitCount}回ヒット！
+                </Text>
+                {entry.targets?.map((target, targetIndex) => (
+                  <Text key={`target-${targetIndex}`} style={styles.logText}>
+                    [列{target.targetRow}] {target.targetName}に {target.totalDamage}ダメージ{target.defeated ? 'を与えて倒した！' : `(${target.hitCount}回)`}
                   </Text>
-                )}
+                ))}
               </View>
             )
           })}
+
+          {meta && <BattleResultSection meta={meta} />}
         </ScrollView>
       )}
     </SafeAreaView>
+  )
+}
+
+function BattleResultSection({ meta }: { meta: BattleLogMeta }) {
+  const outcomeText = meta.outcome === 'win' ? '戦いに勝利した！' : '戦いに敗北した...'
+
+  return (
+    <View style={styles.resultCard}>
+      <Text style={styles.resultTitle}>{outcomeText}</Text>
+
+      {meta.outcome === 'win' && (
+        <>
+          <Text style={styles.resultSummary}>
+            経験値 {meta.xpGained} と {meta.goldGained} gold を手に入れました。
+          </Text>
+
+          <Text style={styles.resultLabel}>＜獲得経験値＞</Text>
+          {meta.members.map((member, index) => (
+            <Text key={`xp-${index}`} style={styles.resultText}>
+              Exp +{member.xpEach} {member.name} ({member.xpEach} x {member.expMultiplier}倍)
+            </Text>
+          ))}
+        </>
+      )}
+
+      <Text style={styles.resultLabel}> </Text>
+      {meta.members.map((member, index) => (
+        <Text key={`status-${index}`} style={styles.resultText}>
+          ({member.currentHP}/{member.maxHP}) {member.name} Lv{member.level}
+        </Text>
+      ))}
+    </View>
   )
 }
 
@@ -178,6 +217,36 @@ const styles = StyleSheet.create({
     marginBottom: 6,
   },
   logText: {
+    fontSize: 12,
+    color: '#374151',
+    marginTop: 2,
+  },
+  resultCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    padding: 14,
+    borderWidth: 1,
+    borderColor: '#D1D5DB',
+  },
+  resultTitle: {
+    fontSize: 15,
+    fontWeight: '700',
+    color: '#111827',
+    marginBottom: 8,
+  },
+  resultSummary: {
+    fontSize: 13,
+    color: '#374151',
+    marginBottom: 10,
+  },
+  resultLabel: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#6B7280',
+    marginTop: 6,
+    marginBottom: 2,
+  },
+  resultText: {
     fontSize: 12,
     color: '#374151',
     marginTop: 2,

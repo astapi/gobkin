@@ -5,10 +5,17 @@ import type * as SQLite from 'expo-sqlite'
  * キャッシュ削除後もアトミックなID採番を行うため
  */
 export const migrateV5 = async (database: SQLite.SQLiteDatabase): Promise<void> => {
-  // next_goblin_id カラムを追加
-  await database.execAsync(`
-    ALTER TABLE base_state ADD COLUMN next_goblin_id INTEGER NOT NULL DEFAULT 1
-  `)
+  // next_goblin_id カラムが既に存在するかチェック（v1スキーマに含まれている場合はスキップ）
+  const columns = await database.getAllAsync<{ name: string }>(
+    "PRAGMA table_info(base_state)"
+  )
+  const hasColumn = columns.some(col => col.name === 'next_goblin_id')
+
+  if (!hasColumn) {
+    await database.execAsync(`
+      ALTER TABLE base_state ADD COLUMN next_goblin_id INTEGER NOT NULL DEFAULT 1
+    `)
+  }
 
   // 現在の MAX(id)+1 で初期化
   const goblinMax = await database.getFirstAsync<{ max_id: number | null }>(
