@@ -12,7 +12,7 @@ import { CompleteExpeditionUseCase } from '@/core/usecases'
 import { GoblinBirthService } from '@/core/services'
 import { SQLiteEquipmentRepository } from '@/infrastructure/repositories/SQLiteEquipmentRepository'
 import type { TimelineEvent, ExpeditionReplay, ExpeditionRecord, ExpeditionEndReason, Party } from '@/shared/types'
-import type { BattleLogEntry } from '@/shared/types'
+import type { BattleLogEntry, BattleLogMeta } from '@/shared/types'
 import { storeBattleLog } from '@/presentation/contexts/battleLogStore'
 import { getGoblinImage } from '@/shared/utils/goblinImages'
 import { ModStatCalculator } from '@/core/services/ModStatCalculator'
@@ -21,6 +21,7 @@ interface LogEntry {
   id: string
   text: string
   detail?: BattleLogEntry[]
+  meta?: BattleLogMeta
 }
 
 export default function ExpeditionPlaybackScreen() {
@@ -138,8 +139,8 @@ export default function ExpeditionPlaybackScreen() {
     return `${minutes}:${secs.toString().padStart(2, '0')}`
   }, [])
 
-  const openBattleLog = useCallback((detail: BattleLogEntry[]) => {
-    const logId = storeBattleLog(detail)
+  const openBattleLog = useCallback((detail: BattleLogEntry[], meta?: BattleLogMeta) => {
+    const logId = storeBattleLog(detail, meta)
     router.push(`/formation/battle-log?logId=${encodeURIComponent(logId)}` as Href)
   }, [])
 
@@ -152,9 +153,9 @@ export default function ExpeditionPlaybackScreen() {
   }, [])
 
   const buildLogEntries = useCallback((event: TimelineEvent): LogEntry[] => {
-    const createEntry = (text: string, detail?: BattleLogEntry[]) => {
+    const createEntry = (text: string, detail?: BattleLogEntry[], meta?: BattleLogMeta) => {
       logIdRef.current += 1
-      return { id: `${logIdRef.current}`, text, detail }
+      return { id: `${logIdRef.current}`, text, detail, meta }
     }
     switch (event.type) {
       case 'move_start':
@@ -167,10 +168,33 @@ export default function ExpeditionPlaybackScreen() {
       case 'boss': {
         const label = event.type === 'boss' ? 'ボス' : '戦闘'
         const result = event.combat.outcome === 'win' ? '勝利' : '敗北'
+        const partyMembers = replay?.meta.party ?? []
+        const xpPerMember = partyMembers.length > 0 ? Math.floor(event.xp / partyMembers.length) : 0
+        const meta: BattleLogMeta = {
+          outcome: event.combat.outcome,
+          xpGained: event.xp,
+          goldGained: event.enemy.gold,
+          members: partyMembers.map((memberId, idx) => {
+            const goblin = goblins.find(g => g.id === parseInt(memberId, 10))
+            const allyLog = event.combat.detailedLog?.filter(e => e.isAlly && e.action !== 'turn_start')
+            const lastEntry = allyLog?.findLast(e => e.actorId === memberId)
+            return {
+              name: goblin?.name ?? `ID:${memberId}`,
+              currentHP: lastEntry?.actorHP ?? (event.combat.allyHPDelta[idx] !== undefined
+                ? (goblin ? ModStatCalculator.calculate(goblin).hp : 100) + event.combat.allyHPDelta[idx]
+                : 0),
+              maxHP: goblin ? ModStatCalculator.calculate(goblin).hp : 100,
+              level: goblin?.level ?? 1,
+              xpEach: xpPerMember,
+              expMultiplier: 1,
+            }
+          }),
+        }
         const entries: LogEntry[] = [
           createEntry(
             `${label} ${event.enemy.name} Lv${event.enemy.lvl} ×${event.enemy.count}体と遭遇 → ${result}[詳細]`,
             event.combat.detailedLog,
+            meta,
           ),
         ]
         if (event.xp > 0) {
@@ -179,15 +203,18 @@ export default function ExpeditionPlaybackScreen() {
         return entries
       }
       case 'treasure': {
-        const itemNames = event.items.map(item => item.name).join('、')
-        return [createEntry(`宝箱を発見！ ${itemNames} を手に入れた`)]
+        const entries: LogEntry[] = [createEntry('宝箱を発見！')]
+        for (const item of event.items) {
+          entries.push(createEntry(`${item.name}が入っていた！`))
+        }
+        return entries
       }
       case 'return':
         return [createEntry(getReturnReasonText(event.reason))]
       default:
         return [createEntry('イベント発生')]
     }
-  }, [getReturnReasonText])
+  }, [getReturnReasonText, goblins, replay])
 
   const applyEvent = useCallback((event: TimelineEvent, eventTime: number) => {
     const entries = buildLogEntries(event)
@@ -477,7 +504,7 @@ export default function ExpeditionPlaybackScreen() {
                   activeOpacity={0.7}
                   accessibilityRole="button"
                   hitSlop={{ top: 6, bottom: 6, left: 8, right: 8 }}
-                  onPress={() => openBattleLog(entry.detail!)}
+                  onPress={() => openBattleLog(entry.detail!, entry.meta)}
                 >
                   <Text style={styles.logText}>{baseText}</Text>
                   <Text style={styles.logDetail}>詳細</Text>
