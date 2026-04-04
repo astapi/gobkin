@@ -1,4 +1,4 @@
-import type { BattleLogEntry, Enemy, Goblin } from '../../shared/types'
+import type { AttackTargetDetail, BattleLogEntry, Enemy, Goblin } from '../../shared/types'
 import { CombatantManager } from './CombatantManager'
 import { DamageCalculator } from './DamageCalculator'
 import { ModStatCalculator } from './ModStatCalculator'
@@ -180,7 +180,10 @@ export class BattleSystem {
       for (const unit of actingUnits) {
         if (unit.currentHP <= 0) continue
 
-        // 攻撃回数分ループ
+        // 攻撃回数分ループ（結果を集約して1つのログにする）
+        const targetDetails: Map<string, AttackTargetDetail> = new Map()
+        let totalHitCount = 0
+
         for (let atkIdx = 0; atkIdx < unit.attackCount; atkIdx++) {
           if (unit.currentHP <= 0) break
 
@@ -194,25 +197,9 @@ export class BattleSystem {
           const hitRate = this.calculateHitRate(unit, target, atkIdx + 1, rng)
           const isHit = rng() * 100 < hitRate
 
-          if (!isHit) {
-            // ミス
-            detailedLog.push({
-              turn: currentTurn,
-              actorId: unit.combatant.id,
-              actorName: unit.combatant.name,
-              action: BASIC_ATTACK_SKILL.name,
-              targetId: target.combatant.id,
-              targetName: target.combatant.name,
-              damage: 0,
-              isAlly: unit.isAlly,
-              targetDefeated: false,
-              actorHP: unit.currentHP,
-              targetHP: target.currentHP,
-              missed: true,
-              attackIndex: atkIdx + 1,
-            })
-            continue
-          }
+          if (!isHit) continue
+
+          totalHitCount++
 
           // ダメージ計算
           const baseDamage = this.damageCalculator.calcDamage(
@@ -232,23 +219,41 @@ export class BattleSystem {
           const damage = Math.max(1, Math.floor(baseDamage * dmgMod * reductionFactor))
 
           target.currentHP = Math.max(0, target.currentHP - damage)
-          const targetDefeated = target.currentHP <= 0
 
-          detailedLog.push({
-            turn: currentTurn,
-            actorId: unit.combatant.id,
-            actorName: unit.combatant.name,
-            action: BASIC_ATTACK_SKILL.name,
-            targetId: target.combatant.id,
-            targetName: target.combatant.name,
-            damage,
-            isAlly: unit.isAlly,
-            targetDefeated,
-            actorHP: unit.currentHP,
-            targetHP: target.currentHP,
-            attackIndex: atkIdx + 1,
-          })
+          // ターゲットごとの結果を集約
+          const existing = targetDetails.get(target.combatant.id)
+          if (existing) {
+            existing.totalDamage += damage
+            existing.hitCount++
+            existing.defeated = target.currentHP <= 0
+            existing.targetHP = target.currentHP
+          } else {
+            targetDetails.set(target.combatant.id, {
+              targetId: target.combatant.id,
+              targetName: target.combatant.name,
+              targetRow: target.row + 1,
+              totalDamage: damage,
+              hitCount: 1,
+              defeated: target.currentHP <= 0,
+              targetHP: target.currentHP,
+            })
+          }
         }
+
+        // 1ユニットにつき1つのログエントリを生成
+        detailedLog.push({
+          turn: currentTurn,
+          actorId: unit.combatant.id,
+          actorName: unit.combatant.name,
+          actorRow: unit.row + 1,
+          action: BASIC_ATTACK_SKILL.name,
+          attackCount: unit.attackCount,
+          hitCount: totalHitCount,
+          actorHP: unit.currentHP,
+          actorMaxHP: unit.maxHP,
+          isAlly: unit.isAlly,
+          targets: [...targetDetails.values()],
+        })
       }
 
       const allyAlive = allyUnits.some(unit => unit.currentHP > 0)
@@ -341,14 +346,14 @@ export class BattleSystem {
       turn: currentTurn,
       actorId: 'system',
       actorName: 'ターン開始',
+      actorRow: -1,
       action: 'turn_start',
-      targetId: '',
-      targetName: '',
-      damage: 0,
-      isAlly: true,
-      targetDefeated: false,
+      attackCount: 0,
+      hitCount: 0,
       actorHP: 0,
-      targetHP: 0,
+      actorMaxHP: 0,
+      isAlly: true,
+      targets: [],
       turnState: {
         allies: allyUnits.map(unit => ({
           id: unit.combatant.id,

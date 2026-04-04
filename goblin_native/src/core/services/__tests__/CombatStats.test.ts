@@ -250,11 +250,10 @@ describe('ModStatCalculator — 戦闘ステータス計算', () => {
 })
 
 // =========================================================================
-// BattleSystem — 命中判定と複数回攻撃
+// BattleSystem — 命中判定と複数回攻撃（集約ログ）
 // =========================================================================
 describe('BattleSystem — 命中判定と複数回攻撃', () => {
-  it('攻撃回数分のログが生成される', () => {
-    // 高命中・低回避で全ヒットさせる
+  it('攻撃回数3の場合、1つのログエントリにまとまる', () => {
     const allies = [createTestGoblin({
       stats: { hp: 100, atk: 50, sp: 10, spd: 100, def: 10, attackCount: 3, accuracy: 999, evasion: 10 },
     })]
@@ -264,12 +263,13 @@ describe('BattleSystem — 命中判定と複数回攻撃', () => {
     const battle = new BattleSystem()
     const result = battle.executeBattle(allies, [100], enemies, rng, 1)
 
-    // 味方の攻撃ログのみ抽出
     const allyAttackLogs = result.detailedLog.filter(log => log.action === '通常攻撃' && log.isAlly)
-    expect(allyAttackLogs.length).toBe(3) // attackCount=3
+    // 1ユニットにつき1ログ
+    expect(allyAttackLogs.length).toBe(1)
+    expect(allyAttackLogs[0].attackCount).toBe(3)
   })
 
-  it('attackIndexが1から始まり攻撃回数分まで振られる', () => {
+  it('集約ログにattackCount, hitCount, targetsが含まれる', () => {
     const allies = [createTestGoblin({
       stats: { hp: 100, atk: 50, sp: 10, spd: 100, def: 10, attackCount: 3, accuracy: 999, evasion: 10 },
     })]
@@ -279,9 +279,12 @@ describe('BattleSystem — 命中判定と複数回攻撃', () => {
     const battle = new BattleSystem()
     const result = battle.executeBattle(allies, [100], enemies, rng, 1)
 
-    const allyAttackLogs = result.detailedLog.filter(log => log.action === '通常攻撃' && log.isAlly)
-    const indices = allyAttackLogs.map(log => log.attackIndex)
-    expect(indices).toEqual([1, 2, 3])
+    const log = result.detailedLog.find(log => log.action === '通常攻撃' && log.isAlly)!
+    expect(log.attackCount).toBe(3)
+    expect(log.hitCount).toBeGreaterThan(0)
+    expect(log.targets.length).toBeGreaterThan(0)
+    expect(log.targets[0].totalDamage).toBeGreaterThan(0)
+    expect(log.targets[0].hitCount).toBeGreaterThan(0)
   })
 
   it('命中精度0・回避極大でほぼ全ミスになる', () => {
@@ -290,16 +293,16 @@ describe('BattleSystem — 命中判定と複数回攻撃', () => {
     })]
     const enemies = [[createTestEnemy({ hp: 9999, spd: 1, evasion: 999 })]]
 
-    // 100ターン戦って、ミス率を確認
     const rng = createSeededRng(1)
     const battle = new BattleSystem()
     const result = battle.executeBattle(allies, [100], enemies, rng, 100)
 
-    const attackLogs = result.detailedLog.filter(log => log.action === '通常攻撃')
-    const missedLogs = attackLogs.filter(log => log.missed === true)
+    const allyAttackLogs = result.detailedLog.filter(log => log.action === '通常攻撃' && log.isAlly)
+    const totalAttacks = allyAttackLogs.reduce((sum, log) => sum + log.attackCount, 0)
+    const totalHits = allyAttackLogs.reduce((sum, log) => sum + log.hitCount, 0)
 
     // 命中率下限5%なので、ほとんどがミスになるはず（90%以上ミス）
-    expect(missedLogs.length / attackLogs.length).toBeGreaterThan(0.8)
+    expect((totalAttacks - totalHits) / totalAttacks).toBeGreaterThan(0.8)
   })
 
   it('命中精度極大・回避0でほぼ全ヒットになる', () => {
@@ -313,13 +316,15 @@ describe('BattleSystem — 命中判定と複数回攻撃', () => {
     const result = battle.executeBattle(allies, [100], enemies, rng, 100)
 
     const allyAttackLogs = result.detailedLog.filter(log => log.action === '通常攻撃' && log.isAlly)
-    const hitLogs = allyAttackLogs.filter(log => !log.missed)
+    const totalAttacks = allyAttackLogs.reduce((sum, log) => sum + log.attackCount, 0)
+    const totalHits = allyAttackLogs.reduce((sum, log) => sum + log.hitCount, 0)
 
     // 命中率上限95%なので、ほぼ全ヒット（80%以上ヒット）
-    expect(hitLogs.length / allyAttackLogs.length).toBeGreaterThan(0.8)
+    expect(totalHits / totalAttacks).toBeGreaterThan(0.8)
   })
 
-  it('ミス時はdamage=0でmissed=trueが記録される', () => {
+  it('全ミス時はhitCount=0でtargetsが空になる', () => {
+    // accuracy=0, evasion=999で強制的に全ミス状態を作る
     const allies = [createTestGoblin({
       stats: { hp: 100, atk: 50, sp: 10, spd: 100, def: 10, attackCount: 1, accuracy: 0, evasion: 10 },
     })]
@@ -329,13 +334,14 @@ describe('BattleSystem — 命中判定と複数回攻撃', () => {
     const battle = new BattleSystem()
     const result = battle.executeBattle(allies, [100], enemies, rng, 50)
 
-    const missedLog = result.detailedLog.find(log => log.missed === true)
+    const missedLog = result.detailedLog.find(
+      log => log.action === '通常攻撃' && log.isAlly && log.hitCount === 0
+    )
     expect(missedLog).toBeDefined()
-    expect(missedLog!.damage).toBe(0)
+    expect(missedLog!.targets.length).toBe(0)
   })
 
-  it('敵も複数回攻撃できる', () => {
-    // 敵のattackCount=3、高命中で全ヒットさせる
+  it('敵も複数回攻撃でき、1つのログにまとまる', () => {
     const allies = [createTestGoblin({
       stats: { hp: 9999, atk: 5, sp: 10, spd: 1, def: 10, attackCount: 1, accuracy: 20, evasion: 0 },
     })]
@@ -348,11 +354,12 @@ describe('BattleSystem — 命中判定と複数回攻撃', () => {
     const enemyAttackLogs = result.detailedLog.filter(
       log => log.action === '通常攻撃' && !log.isAlly
     )
-    expect(enemyAttackLogs.length).toBe(3)
+    // 1ユニットにつき1ログ
+    expect(enemyAttackLogs.length).toBe(1)
+    expect(enemyAttackLogs[0].attackCount).toBe(3)
   })
 
   it('残りHP低下で回避率が下がる（HP1 vs 全快で比較）', () => {
-    // 同一条件で、味方のHP差だけ変えて回避率を比較
     const statsBase = { hp: 100, atk: 5, sp: 10, spd: 1, def: 10, attackCount: 1, accuracy: 20, evasion: 30 }
 
     // 全快ケース
@@ -365,8 +372,8 @@ describe('BattleSystem — 命中判定と複数回攻撃', () => {
       const battle = new BattleSystem()
       const result = battle.executeBattle(allies, [100], enemies, rng, 5)
       const logs = result.detailedLog.filter(log => log.action === '通常攻撃' && !log.isAlly)
-      totalFull += logs.length
-      hitCountFull += logs.filter(log => !log.missed).length
+      totalFull += logs.reduce((sum, log) => sum + log.attackCount, 0)
+      hitCountFull += logs.reduce((sum, log) => sum + log.hitCount, 0)
     }
 
     // HP1ケース
@@ -379,8 +386,8 @@ describe('BattleSystem — 命中判定と複数回攻撃', () => {
       const battle = new BattleSystem()
       const result = battle.executeBattle(allies, [1], enemies, rng, 5)
       const logs = result.detailedLog.filter(log => log.action === '通常攻撃' && !log.isAlly)
-      totalLow += logs.length
-      hitCountLow += logs.filter(log => !log.missed).length
+      totalLow += logs.reduce((sum, log) => sum + log.attackCount, 0)
+      hitCountLow += logs.reduce((sum, log) => sum + log.hitCount, 0)
     }
 
     const hitRateFull = hitCountFull / totalFull
@@ -388,6 +395,40 @@ describe('BattleSystem — 命中判定と複数回攻撃', () => {
 
     // HP1だと回避率が半減するので、敵の命中率が上がるはず
     expect(hitRateLow).toBeGreaterThan(hitRateFull)
+  })
+
+  it('actorRowが正しく記録される', () => {
+    const allies = [createTestGoblin({
+      stats: { hp: 100, atk: 50, sp: 10, spd: 100, def: 10, attackCount: 1, accuracy: 999, evasion: 10 },
+    })]
+    const enemies = [[createTestEnemy({ hp: 9999, spd: 1, evasion: 0 })]]
+
+    const rng = createSeededRng(42)
+    const battle = new BattleSystem()
+    const result = battle.executeBattle(allies, [100], enemies, rng, 1)
+
+    const allyLog = result.detailedLog.find(log => log.action === '通常攻撃' && log.isAlly)!
+    expect(allyLog.actorRow).toBe(1) // 最初の味方は列1（1-based）
+  })
+
+  it('ターゲットのtargetRowが正しく記録される', () => {
+    const allies = [createTestGoblin({
+      stats: { hp: 100, atk: 50, sp: 10, spd: 100, def: 10, attackCount: 1, accuracy: 999, evasion: 10 },
+    })]
+    const enemies = [
+      [createTestEnemy({ id: 'E1', name: '前列敵', hp: 9999, spd: 1, evasion: 0 })],
+      [createTestEnemy({ id: 'E2', name: '後列敵', hp: 9999, spd: 1, evasion: 0 })],
+    ]
+
+    const rng = createSeededRng(42)
+    const battle = new BattleSystem()
+    const result = battle.executeBattle(allies, [100], enemies, rng, 1)
+
+    const allyLog = result.detailedLog.find(log => log.action === '通常攻撃' && log.isAlly)!
+    expect(allyLog.targets.length).toBeGreaterThan(0)
+    for (const target of allyLog.targets) {
+      expect(target.targetRow).toBeGreaterThanOrEqual(1)
+    }
   })
 })
 
@@ -680,7 +721,7 @@ describe('BattleSystem — 隊列統合テスト', () => {
 
   it('前列の敵が後列より多くダメージを受ける（統計的検証）', () => {
     // 3列の敵に攻撃して、ダメージの分布を確認
-    const damageByRow: Record<string, number> = { '前列': 0, '中列': 0, '後列': 0 }
+    const damageByName: Record<string, number> = { '前列': 0, '中列': 0, '後列': 0 }
 
     for (let seed = 0; seed < 100; seed++) {
       const allies = [createTestGoblin({
@@ -697,14 +738,16 @@ describe('BattleSystem — 隊列統合テスト', () => {
       const result = battle.executeBattle(allies, [9999], enemies, rng, 5)
 
       for (const log of result.detailedLog) {
-        if (log.action === '通常攻撃' && log.isAlly && !log.missed && log.damage) {
-          damageByRow[log.targetName!] = (damageByRow[log.targetName!] ?? 0) + log.damage
+        if (log.action === '通常攻撃' && log.isAlly) {
+          for (const target of log.targets) {
+            damageByName[target.targetName] = (damageByName[target.targetName] ?? 0) + target.totalDamage
+          }
         }
       }
     }
 
     // 3列: 1/2, 1/4, 1/4 → 前列が最もダメージを受ける
-    expect(damageByRow['前列']).toBeGreaterThan(damageByRow['中列'])
-    expect(damageByRow['前列']).toBeGreaterThan(damageByRow['後列'])
+    expect(damageByName['前列']).toBeGreaterThan(damageByName['中列'])
+    expect(damageByName['前列']).toBeGreaterThan(damageByName['後列'])
   })
 })

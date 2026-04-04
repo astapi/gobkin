@@ -47,7 +47,7 @@ export type {
 } from "./Equipment"
 
 // Battle related types
-export type { BattleLogEntry, CombatReplay } from "./Battle"
+export type { AttackTargetDetail, BattleLogEntry, CombatReplay } from "./Battle"
 
 // Expedition related types
 export type {
