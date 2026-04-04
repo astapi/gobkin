@@ -55,23 +55,57 @@ export class CompleteExpeditionUseCase {
     const levelUps = new Map<number, LevelUpResult>()
     const updatedGoblinIds: number[] = []
 
+    // 戦闘ごとに生存メンバー数で経験値を分配
+    const partyIds = replay.meta.party
+    const perGoblinExp = new Map<number, number>()
     for (const goblin of goblins) {
+      perGoblinExp.set(goblin.id, 0)
+    }
+
+    // 各メンバーのHP状態を追跡（戦闘不能判定用）
+    const currentHP: number[] = partyIds.map((id) => {
+      const goblin = goblins.find(g => g.id === Number.parseInt(id, 10))
+      return goblin ? goblin.stats.hp : 0
+    })
+
+    for (const event of replay.events) {
+      if (event.type !== 'battle' && event.type !== 'boss') continue
+
+      // この戦闘時点での生存メンバーを特定
+      const aliveIndices: number[] = []
+      for (let i = 0; i < partyIds.length; i++) {
+        if (currentHP[i] > 0) aliveIndices.push(i)
+      }
+
+      // 生存メンバー数で経験値を分配
+      const aliveCount = aliveIndices.length
+      if (aliveCount > 0 && event.xp > 0) {
+        const xpPerMember = Math.floor(event.xp / aliveCount)
+        for (const idx of aliveIndices) {
+          const goblinId = Number.parseInt(partyIds[idx], 10)
+          perGoblinExp.set(goblinId, (perGoblinExp.get(goblinId) ?? 0) + xpPerMember)
+        }
+      }
+
+      // 戦闘後のHP更新
+      event.combat.allyHPDelta.forEach((delta, index) => {
+        if (index < currentHP.length) {
+          currentHP[index] = Math.max(0, currentHP[index] + delta)
+        }
+      })
+    }
+
+    for (const goblin of goblins) {
+      const expToGain = perGoblinExp.get(goblin.id) ?? 0
+      if (expToGain <= 0) continue
+
       const entity = new GoblinEntity(goblin)
+      const levelUpResult = entity.gainExperience(expToGain)
+      levelUps.set(goblin.id, levelUpResult)
 
-      if (replay.summary.casualties.includes(goblin.id.toString())) {
-        continue
-      }
-
-      const expToGain = replay.summary.xpGained
-
-      if (expToGain > 0) {
-        const levelUpResult = entity.gainExperience(expToGain)
-        levelUps.set(goblin.id, levelUpResult)
-
-        const updatedGoblin = entity.toSnapshot()
-        await this.goblinRepository.saveGoblin(updatedGoblin)
-        updatedGoblinIds.push(goblin.id)
-      }
+      const updatedGoblin = entity.toSnapshot()
+      await this.goblinRepository.saveGoblin(updatedGoblin)
+      updatedGoblinIds.push(goblin.id)
     }
 
     const factorAcquisitions = new Map<number, string[]>()
