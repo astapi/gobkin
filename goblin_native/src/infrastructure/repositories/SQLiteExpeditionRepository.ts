@@ -27,7 +27,7 @@ export interface IExpeditionRepository {
   getOngoing(): Promise<ExpeditionRecord[]>
   save(record: ExpeditionRecord): Promise<void>
   delete(id: string): Promise<void>
-  complete(id: string, replay: ExpeditionReplay): Promise<void>
+  complete(id: string, replay: ExpeditionReplay): Promise<boolean>
 }
 
 export class SQLiteExpeditionRepository implements IExpeditionRepository {
@@ -112,19 +112,16 @@ export class SQLiteExpeditionRepository implements IExpeditionRepository {
     await db.runAsync('DELETE FROM expeditions WHERE id = ?', [id])
   }
 
-  async complete(id: string, replay: ExpeditionReplay): Promise<void> {
-    const record = await this.getById(id)
-    if (!record) return
-
-    const updated: ExpeditionRecord = {
-      ...record,
-      status: replay.summary.success ? 'completed' : 'failed',
-      returnTime: new Date(),
-      replay,
-      updatedAt: new Date(),
-    }
-
-    await this.save(updated)
+  async complete(id: string, replay: ExpeditionReplay): Promise<boolean> {
+    const db = await getDatabase()
+    const status = replay.summary.success ? 'completed' : 'failed'
+    const result = await db.runAsync(
+      `UPDATE expeditions
+       SET status = ?, return_time = ?, replay_json = ?, updated_at = datetime('now')
+       WHERE id = ? AND status = 'ongoing'`,
+      [status, new Date().toISOString(), JSON.stringify(replay), id]
+    )
+    return (result.changes ?? 0) > 0
   }
 
   private rowToRecord(row: ExpeditionRow): ExpeditionRecord {

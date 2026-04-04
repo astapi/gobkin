@@ -6,11 +6,6 @@ import { usePartyService } from '@/presentation/hooks/usePartyService'
 import { useGoblinService } from '@/presentation/hooks/useGoblinService'
 import { useDungeonProgress } from '@/presentation/hooks/useDungeonProgress'
 import { useExpeditionService } from '@/presentation/hooks/useExpeditionService'
-import { usePendingGoblins } from '@/presentation/hooks/usePendingGoblins'
-import { useBaseState } from '@/presentation/hooks/useBaseState'
-import { CompleteExpeditionUseCase } from '@/core/usecases'
-import { GoblinBirthService } from '@/core/services'
-import { SQLiteEquipmentRepository } from '@/infrastructure/repositories/SQLiteEquipmentRepository'
 import type { TimelineEvent, ExpeditionReplay, ExpeditionRecord, ExpeditionEndReason, Party } from '@/shared/types'
 import type { BattleLogEntry, BattleLogMeta } from '@/shared/types'
 import { storeBattleLog } from '@/presentation/contexts/battleLogStore'
@@ -30,16 +25,13 @@ export default function ExpeditionPlaybackScreen() {
     expeditionId?: string
   }>()
 
-  const { getPartyById, partyRepository, isLoading: isPartyLoading } = usePartyService()
-  const { goblins, goblinRepository, isLoading: isGoblinLoading } = useGoblinService()
+  const { getPartyById, isLoading: isPartyLoading } = usePartyService()
+  const { isLoading: isGoblinLoading } = useGoblinService()
   const { dungeons } = useDungeonProgress()
-  const { pendingGoblins, addPendingGoblin, isLoading: isPendingLoading } = usePendingGoblins()
-  const { rank, getNextGoblinId, isLoading: isBaseLoading, baseStateRepository } = useBaseState()
   const {
     expeditionRecords,
     getExpeditionById,
     getPartyExpeditionHistory,
-    completeExpeditionRecord,
     isLoading: isExpeditionLoading,
   } = useExpeditionService()
 
@@ -102,41 +94,6 @@ export default function ExpeditionPlaybackScreen() {
   const processedEventIndexRef = useRef(0)
   const hasCompletedRef = useRef(false)
   const logIdRef = useRef(0)
-
-  const completeExpeditionUseCase = useMemo(() => {
-    return new CompleteExpeditionUseCase(goblinRepository, partyRepository, baseStateRepository, SQLiteEquipmentRepository.getInstance())
-  }, [goblinRepository, partyRepository, baseStateRepository])
-
-  const addPendingGoblinOnClear = useCallback(async () => {
-    if (!expeditionRecord || !replay || isPendingLoading || isBaseLoading) return
-    const targetDungeon = dungeon ?? dungeons.find(area => area.id === expeditionRecord.dungeonId)
-    if (!targetDungeon) return
-
-    const cleared = replay.summary.success &&
-      replay.summary.maxFloorReached >= targetDungeon.floors
-    if (!cleared) return
-
-    const maxPending = rank * 5
-    if (pendingGoblins.length >= maxPending) return
-
-    const nextId = await getNextGoblinId()
-    const areaLevel = Math.min(64, targetDungeon.areaLevel ?? 1)
-    const goblinBirthService = new GoblinBirthService()
-    const newGoblin = goblinBirthService.createNewGoblin(nextId, undefined, goblins, areaLevel, rank)
-    await addPendingGoblin(newGoblin)
-  }, [
-    addPendingGoblin,
-    dungeons,
-    dungeon,
-    expeditionRecord,
-    getNextGoblinId,
-    goblins,
-    isBaseLoading,
-    isPendingLoading,
-    pendingGoblins.length,
-    rank,
-    replay,
-  ])
 
   const formatTime = useCallback((seconds: number): string => {
     const minutes = Math.floor(seconds / 60)
@@ -286,14 +243,9 @@ export default function ExpeditionPlaybackScreen() {
       return
     }
 
-    try {
-      await completeExpeditionUseCase.execute(expeditionRecord.partyId, replay)
-      await addPendingGoblinOnClear()
-      await completeExpeditionRecord(expeditionRecord.id, replay)
-    } catch (error) {
-      console.warn('[Playback] Failed to complete expedition', error)
-    }
-  }, [expeditionRecord, replay, completeExpeditionUseCase, completeExpeditionRecord, addPendingGoblinOnClear])
+    // 完了処理は useExpeditionFlow の completeDueExpeditions に一本化。
+    // playback側ではタイマー停止のみ行う。
+  }, [expeditionRecord, replay])
 
   useEffect(() => {
     if (isPartyLoading || isGoblinLoading || isExpeditionLoading) return

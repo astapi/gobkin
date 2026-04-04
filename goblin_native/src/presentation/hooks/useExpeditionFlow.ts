@@ -230,8 +230,10 @@ export const useExpeditionFlow = ({
       if (processedExpeditionsRef.current.has(record.id)) continue
       processedExpeditionsRef.current.add(record.id)
       try {
-        // 先にステータスを更新して再マウント時の二重実行を防ぐ
-        await completeExpeditionRecord(record.id, record.replay!)
+        // DBレベルで WHERE status='ongoing' を条件にアトミックに更新。
+        // 既に完了済み（playback側で処理済み等）なら false が返り、スキップ。
+        const updated = await completeExpeditionRecord(record.id, record.replay!)
+        if (!updated) continue
 
         const result = await completeExpeditionUseCase.execute(record.partyId, record.replay!)
 

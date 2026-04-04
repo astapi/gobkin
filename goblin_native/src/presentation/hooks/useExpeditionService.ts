@@ -56,10 +56,11 @@ export const useExpeditionService = () => {
     await refreshExpeditions()
   }, [refreshExpeditions])
 
-  const completeExpeditionRecord = useCallback(async (id: string, replay: ExpeditionReplay) => {
-    if (!repositoryRef.current) return
-    await repositoryRef.current.complete(id, replay)
+  const completeExpeditionRecord = useCallback(async (id: string, replay: ExpeditionReplay): Promise<boolean> => {
+    if (!repositoryRef.current) return false
+    const updated = await repositoryRef.current.complete(id, replay)
     await refreshExpeditions()
+    return updated
   }, [refreshExpeditions])
 
   return {
