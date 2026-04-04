@@ -75,7 +75,6 @@ export interface EquipmentTemplate {
   name: string
   category: EquipmentCategory
   subCategory?: WeaponSubCategory
-  tier: number
   statBonuses: EquipmentStatBonus[]
   weaponStats?: WeaponStats
   effects?: EquipmentEffect[]

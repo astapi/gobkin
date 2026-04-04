@@ -101,6 +101,15 @@ export default function ExpeditionPreparationScreen() {
   const [isDungeonModalVisible, setIsDungeonModalVisible] = useState(false)
   const [isReturnPolicyModalVisible, setIsReturnPolicyModalVisible] = useState(false)
 
+  // partyが非同期取得された後にローカルstateを同期
+  useEffect(() => {
+    if (party) {
+      setSelectedDungeonId(party.dungeonId)
+      setSelectedReturnPolicy(party.returnPolicy ?? 'never')
+      setSelectedTargetFloor(party.targetFloor ?? null)
+    }
+  }, [party])
+
   const partyMembers = useMemo(() => {
     if (!party) return []
     return party.memberIds
