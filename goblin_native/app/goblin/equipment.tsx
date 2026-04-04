@@ -1,0 +1,468 @@
+import { useState, useEffect, useCallback, useMemo } from 'react'
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Modal, Alert } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
+import { useLocalSearchParams } from 'expo-router'
+import type { EquipmentInstance, EquipmentTemplate, EquipmentCategory } from '@/shared/types'
+import { useGoblinService } from '@/presentation/hooks/useGoblinService'
+import { useEquipmentService } from '@/presentation/hooks/useEquipmentService'
+import { EquipmentService } from '@/core/services/EquipmentService'
+import { getEquipmentTemplate, getEquipmentTemplates } from '@/shared/data/equipmentPoolLoader'
+import { EquipmentTitleService } from '@/core/services/EquipmentTitleService'
+import { EQUIPMENT_TITLE_DEFS } from '@/shared/data/equipmentTitleConfig'
+import type { Goblin } from '@/shared/types'
+
+const CATEGORY_LABELS: Record<EquipmentCategory, string> = {
+  weapon: '武器',
+  armor: '防具',
+  accessory: '装飾',
+}
+
+const CATEGORY_ORDER: Record<EquipmentCategory, number> = {
+  weapon: 0,
+  armor: 1,
+  accessory: 2,
+}
+
+const STAT_LABELS: Record<string, string> = {
+  hp_percent: 'HP', hp_flat: 'HP',
+  atk_percent: 'ATK', atk_flat: 'ATK',
+  def_percent: 'DEF', def_flat: 'DEF',
+  spd_percent: 'SPD', spd_flat: 'SPD',
+  sp_percent: 'SP', sp_flat: 'SP',
+  attackCount_percent: '攻撃回数', attackCount_flat: '攻撃回数',
+  accuracy_percent: '命中精度', accuracy_flat: '命中精度',
+  evasion_percent: '回避', evasion_flat: '回避',
+  damage_reduction: '被ダメ軽減',
+}
+
+function getDisplayName(eq: EquipmentInstance, template: EquipmentTemplate): string {
+  if (eq.titleName) {
+    return EquipmentTitleService.formatTitledName(eq.titleName, template.name)
+  }
+  return template.name
+}
+
+function formatBonus(stat: string, value: number): string {
+  const isPercent = stat.includes('percent') || stat === 'damage_reduction'
+  return `${value > 0 ? '+' : ''}${value}${isPercent ? '%' : ''}`
+}
+
+/** カテゴリ→定義順→称号レア度（低→高）でソート */
+function sortEquipment(items: EquipmentInstance[]): EquipmentInstance[] {
+  const allTemplates = getEquipmentTemplates()
+  const templateOrder = new Map(allTemplates.map((t, i) => [t.id, i]))
+  const titleOrder = new Map(EQUIPMENT_TITLE_DEFS.map((t, i) => [t.id, i]))
+  return [...items].sort((a, b) => {
+    const tA = getEquipmentTemplate(a.templateId)
+    const tB = getEquipmentTemplate(b.templateId)
+    if (!tA || !tB) return 0
+    const catDiff = CATEGORY_ORDER[tA.category] - CATEGORY_ORDER[tB.category]
+    if (catDiff !== 0) return catDiff
+    const orderA = templateOrder.get(a.templateId) ?? 0
+    const orderB = templateOrder.get(b.templateId) ?? 0
+    if (orderA !== orderB) return orderA - orderB
+    const titleA = titleOrder.get(a.titleId ?? 'none') ?? 0
+    const titleB = titleOrder.get(b.titleId ?? 'none') ?? 0
+    return titleA - titleB
+  })
+}
+
+/** 装備済みアイテムの詳細モーダル */
+function EquippedItemDetail({
+  equipment,
+  template,
+  visible,
+  onClose,
+  onUnequip,
+}: {
+  equipment: EquipmentInstance
+  template: EquipmentTemplate
+  visible: boolean
+  onClose: () => void
+  onUnequip: () => void
+}) {
+  return (
+    <Modal visible={visible} animationType="fade" transparent onRequestClose={onClose}>
+      <View style={styles.overlayBackground}>
+        <View style={styles.detailCard}>
+          <Text style={styles.detailName}>
+            {getDisplayName(equipment, template)}
+          </Text>
+          <Text style={styles.detailCategory}>
+            {CATEGORY_LABELS[template.category]}
+          </Text>
+
+          {template.description && (
+            <Text style={styles.detailDescription}>{template.description}</Text>
+          )}
+
+          <View style={styles.detailBonuses}>
+            {template.statBonuses.map((bonus, i) => (
+              <View key={i} style={styles.bonusBadge}>
+                <Text style={styles.bonusBadgeText}>
+                  {STAT_LABELS[bonus.stat] ?? bonus.stat} {formatBonus(bonus.stat, bonus.value)}
+                </Text>
+              </View>
+            ))}
+          </View>
+
+          {template.effects && template.effects.length > 0 && (
+            <View style={styles.detailEffects}>
+              {template.effects.map((effect, i) => (
+                <Text key={i} style={styles.effectText}>
+                  {effect.type}: {effect.value}
+                </Text>
+              ))}
+            </View>
+          )}
+
+          <View style={styles.detailActions}>
+            <TouchableOpacity style={styles.unequipButton} onPress={onUnequip}>
+              <Text style={styles.unequipButtonText}>外す</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.detailCloseButton} onPress={onClose}>
+              <Text style={styles.detailCloseButtonText}>閉じる</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
+    </Modal>
+  )
+}
+
+/** 装備アイテム1行 */
+function EquipmentRow({
+  eq,
+  template,
+  onPress,
+  highlighted,
+}: {
+  eq: EquipmentInstance
+  template: EquipmentTemplate
+  onPress: () => void
+  highlighted?: boolean
+}) {
+  return (
+    <TouchableOpacity
+      style={[styles.itemRow, highlighted && styles.itemRowHighlighted]}
+      onPress={onPress}
+    >
+      <View style={styles.itemInfo}>
+        <Text style={styles.itemName} numberOfLines={1}>
+          {getDisplayName(eq, template)}
+        </Text>
+        <View style={styles.itemBonusRow}>
+          {template.statBonuses.map((bonus, i) => (
+            <View key={i} style={styles.itemBonusBadge}>
+              <Text style={styles.itemBonusText}>
+                {STAT_LABELS[bonus.stat] ?? bonus.stat} {formatBonus(bonus.stat, bonus.value)}
+              </Text>
+            </View>
+          ))}
+        </View>
+      </View>
+    </TouchableOpacity>
+  )
+}
+
+export default function EquipmentScreenPage() {
+  const { goblinId } = useLocalSearchParams<{ goblinId: string }>()
+  const { getGoblinById } = useGoblinService()
+  const { equippedItems, inventoryItems, refreshEquipment, equipItem, unequipItem } =
+    useEquipmentService()
+  const [goblin, setGoblin] = useState<Goblin | null>(null)
+  const [selectedEquipped, setSelectedEquipped] = useState<EquipmentInstance | null>(null)
+
+  useEffect(() => {
+    if (!goblinId) return
+    void getGoblinById(parseInt(goblinId, 10))
+      .then(setGoblin)
+      .catch(() => setGoblin(null))
+  }, [goblinId, getGoblinById])
+
+  const maxSlots = useMemo(
+    () => goblin ? EquipmentService.getAvailableSlots(goblin) : 0,
+    [goblin],
+  )
+
+  useEffect(() => {
+    if (goblin) {
+      void refreshEquipment(goblin.id)
+    }
+  }, [goblin, refreshEquipment])
+
+  const sortedEquipped = useMemo(() => sortEquipment(equippedItems), [equippedItems])
+  const sortedInventory = useMemo(() => sortEquipment(inventoryItems), [inventoryItems])
+  const emptySlots = maxSlots - equippedItems.length
+
+  const handleEquip = useCallback(
+    async (equipment: EquipmentInstance) => {
+      if (!goblin) return
+      const usedSlots = new Set(equippedItems.map(e => e.slotIndex))
+      let targetSlot = -1
+      for (let i = 0; i < maxSlots; i++) {
+        if (!usedSlots.has(i)) {
+          targetSlot = i
+          break
+        }
+      }
+      if (targetSlot < 0) {
+        Alert.alert('空きスロットなし', '先に装備を外してください')
+        return
+      }
+      const result = await equipItem(goblin, equipment, targetSlot)
+      if (!result.success) {
+        Alert.alert('装備エラー', result.error ?? '装備できませんでした')
+      }
+    },
+    [equippedItems, maxSlots, goblin, equipItem],
+  )
+
+  const handleUnequip = useCallback(async () => {
+    if (!selectedEquipped || !goblin) return
+    await unequipItem(goblin.id, selectedEquipped)
+    setSelectedEquipped(null)
+  }, [selectedEquipped, goblin, unequipItem])
+
+  const selectedEquippedTemplate = selectedEquipped
+    ? getEquipmentTemplate(selectedEquipped.templateId)
+    : null
+
+  if (!goblin) return null
+
+  return (
+    <SafeAreaView style={styles.container} edges={['left', 'right', 'bottom']}>
+      <ScrollView style={styles.content}>
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>装備枠 ({equippedItems.length}/{maxSlots})</Text>
+          <View style={styles.slotList}>
+            {sortedEquipped.map(eq => {
+              const template = getEquipmentTemplate(eq.templateId)
+              if (!template) return null
+              return (
+                <EquipmentRow
+                  key={eq.id}
+                  eq={eq}
+                  template={template}
+                  onPress={() => setSelectedEquipped(eq)}
+                />
+              )
+            })}
+            {Array.from({ length: emptySlots }).map((_, i) => (
+              <View key={`empty-${i}`} style={styles.emptySlot}>
+                <Text style={styles.emptySlotText}>空きスロット</Text>
+              </View>
+            ))}
+          </View>
+        </View>
+
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>所持アイテム</Text>
+          {sortedInventory.length === 0 ? (
+            <View style={styles.emptyInventory}>
+              <Text style={styles.emptyInventoryText}>所持アイテムがありません</Text>
+            </View>
+          ) : (
+            sortedInventory.map(eq => {
+              const template = getEquipmentTemplate(eq.templateId)
+              if (!template) return null
+              return (
+                <EquipmentRow
+                  key={eq.id}
+                  eq={eq}
+                  template={template}
+                  onPress={() => handleEquip(eq)}
+                  highlighted={emptySlots > 0}
+                />
+              )
+            })
+          )}
+        </View>
+      </ScrollView>
+
+      {selectedEquipped && selectedEquippedTemplate && (
+        <EquippedItemDetail
+          equipment={selectedEquipped}
+          template={selectedEquippedTemplate}
+          visible={true}
+          onClose={() => setSelectedEquipped(null)}
+          onUnequip={handleUnequip}
+        />
+      )}
+    </SafeAreaView>
+  )
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#F9FAFB',
+  },
+  content: {
+    flex: 1,
+    padding: 16,
+  },
+  section: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+  },
+  sectionTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#1F2937',
+    marginBottom: 12,
+  },
+  slotList: {
+    gap: 8,
+  },
+  itemRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 12,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    backgroundColor: '#F9FAFB',
+    marginBottom: 8,
+  },
+  itemRowHighlighted: {
+    borderColor: '#93C5FD',
+    backgroundColor: '#F0F9FF',
+  },
+  itemInfo: {
+    flex: 1,
+  },
+  itemName: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#1F2937',
+  },
+  itemBonusRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 4,
+    marginTop: 4,
+  },
+  itemBonusBadge: {
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 4,
+    backgroundColor: '#DCFCE7',
+  },
+  itemBonusText: {
+    fontSize: 10,
+    color: '#166534',
+    fontWeight: '600',
+  },
+  emptySlot: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 12,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    borderStyle: 'dashed',
+    backgroundColor: '#F9FAFB',
+  },
+  emptySlotText: {
+    fontSize: 14,
+    color: '#9CA3AF',
+  },
+  emptyInventory: {
+    paddingVertical: 24,
+    alignItems: 'center',
+  },
+  emptyInventoryText: {
+    fontSize: 14,
+    color: '#9CA3AF',
+  },
+  overlayBackground: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 32,
+  },
+  detailCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+    padding: 24,
+    width: '100%',
+    maxWidth: 340,
+  },
+  detailName: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#1F2937',
+    marginBottom: 4,
+  },
+  detailCategory: {
+    fontSize: 13,
+    color: '#6B7280',
+    marginBottom: 12,
+  },
+  detailDescription: {
+    fontSize: 13,
+    color: '#4B5563',
+    marginBottom: 12,
+    lineHeight: 18,
+  },
+  detailBonuses: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 6,
+    marginBottom: 12,
+  },
+  bonusBadge: {
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 6,
+    backgroundColor: '#DCFCE7',
+  },
+  bonusBadgeText: {
+    fontSize: 12,
+    color: '#166534',
+    fontWeight: '600',
+  },
+  detailEffects: {
+    marginBottom: 12,
+  },
+  effectText: {
+    fontSize: 12,
+    color: '#7C3AED',
+    marginBottom: 4,
+  },
+  detailActions: {
+    flexDirection: 'row',
+    gap: 10,
+    marginTop: 4,
+  },
+  unequipButton: {
+    flex: 1,
+    backgroundColor: '#DC2626',
+    borderRadius: 10,
+    paddingVertical: 12,
+    alignItems: 'center',
+  },
+  unequipButtonText: {
+    color: '#FFFFFF',
+    fontWeight: '700',
+    fontSize: 14,
+  },
+  detailCloseButton: {
+    flex: 1,
+    backgroundColor: '#E5E7EB',
+    borderRadius: 10,
+    paddingVertical: 12,
+    alignItems: 'center',
+  },
+  detailCloseButtonText: {
+    color: '#374151',
+    fontWeight: '700',
+    fontSize: 14,
+  },
+})

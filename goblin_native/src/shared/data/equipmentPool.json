@@ -1,19 +1,24 @@
 {
   "version": "1.2.0",
   "templates": [
-
-    {"_comment": "===== 武器:剣 (melee) ====="},
-
+    {
+      "_comment": "===== 武器:剣 (melee) ====="
+    },
     {
       "id": "sword_cypress_stick",
       "name": "ひのきの棒",
       "category": "weapon",
       "subCategory": "sword",
-      "tier": 1,
       "statBonuses": [
-        { "stat": "atk_flat", "value": 2 }
+        {
+          "stat": "atk_flat",
+          "value": 2
+        }
       ],
-      "weaponStats": { "accuracy": 8, "attackCountModifier": 0 },
+      "weaponStats": {
+        "accuracy": 8,
+        "attackCountModifier": 0
+      },
       "range": "melee",
       "price": 5,
       "unlockRank": 1,
@@ -26,12 +31,20 @@
       "name": "こんぼう",
       "category": "weapon",
       "subCategory": "sword",
-      "tier": 1,
       "statBonuses": [
-        { "stat": "atk_flat", "value": 5 },
-        { "stat": "def_flat", "value": 1 }
+        {
+          "stat": "atk_flat",
+          "value": 5
+        },
+        {
+          "stat": "def_flat",
+          "value": 1
+        }
       ],
-      "weaponStats": { "accuracy": 16, "attackCountModifier": -0.1 },
+      "weaponStats": {
+        "accuracy": 16,
+        "attackCountModifier": -0.1
+      },
       "range": "melee",
       "price": 15,
       "unlockRank": 1,
@@ -44,13 +57,26 @@
       "name": "銅の剣",
       "category": "weapon",
       "subCategory": "sword",
-      "tier": 1,
       "statBonuses": [
-        { "stat": "atk_flat", "value": 8 },
-        { "stat": "def_flat", "value": 2 }
+        {
+          "stat": "atk_flat",
+          "value": 8
+        },
+        {
+          "stat": "def_flat",
+          "value": 2
+        }
       ],
-      "weaponStats": { "accuracy": 24, "attackCountModifier": -0.2 },
-      "effects": [{ "type": "def_to_hp", "value": 1 }],
+      "weaponStats": {
+        "accuracy": 24,
+        "attackCountModifier": -0.2
+      },
+      "effects": [
+        {
+          "type": "def_to_hp",
+          "value": 1
+        }
+      ],
       "range": "melee",
       "price": 30,
       "unlockRank": 1,
@@ -63,13 +89,26 @@
       "name": "ブロードソード",
       "category": "weapon",
       "subCategory": "sword",
-      "tier": 1,
       "statBonuses": [
-        { "stat": "atk_flat", "value": 12 },
-        { "stat": "def_flat", "value": 3 }
+        {
+          "stat": "atk_flat",
+          "value": 12
+        },
+        {
+          "stat": "def_flat",
+          "value": 3
+        }
       ],
-      "weaponStats": { "accuracy": 32, "attackCountModifier": -0.2 },
-      "effects": [{ "type": "def_to_hp", "value": 2 }],
+      "weaponStats": {
+        "accuracy": 32,
+        "attackCountModifier": -0.2
+      },
+      "effects": [
+        {
+          "type": "def_to_hp",
+          "value": 2
+        }
+      ],
       "range": "melee",
       "price": 60,
       "unlockRank": 1,
@@ -82,13 +121,26 @@
       "name": "ロングソード",
       "category": "weapon",
       "subCategory": "sword",
-      "tier": 1,
       "statBonuses": [
-        { "stat": "atk_flat", "value": 16 },
-        { "stat": "def_flat", "value": 4 }
+        {
+          "stat": "atk_flat",
+          "value": 16
+        },
+        {
+          "stat": "def_flat",
+          "value": 4
+        }
       ],
-      "weaponStats": { "accuracy": 48, "attackCountModifier": -0.2 },
-      "effects": [{ "type": "def_to_hp", "value": 3 }],
+      "weaponStats": {
+        "accuracy": 48,
+        "attackCountModifier": -0.2
+      },
+      "effects": [
+        {
+          "type": "def_to_hp",
+          "value": 3
+        }
+      ],
       "range": "melee",
       "price": 100,
       "unlockRank": 1,
@@ -101,13 +153,26 @@
       "name": "ミスリルソード",
       "category": "weapon",
       "subCategory": "sword",
-      "tier": 2,
       "statBonuses": [
-        { "stat": "atk_flat", "value": 24 },
-        { "stat": "def_flat", "value": 6 }
+        {
+          "stat": "atk_flat",
+          "value": 24
+        },
+        {
+          "stat": "def_flat",
+          "value": 6
+        }
       ],
-      "weaponStats": { "accuracy": 72, "attackCountModifier": -0.2 },
-      "effects": [{ "type": "def_to_hp", "value": 4 }],
+      "weaponStats": {
+        "accuracy": 72,
+        "attackCountModifier": -0.2
+      },
+      "effects": [
+        {
+          "type": "def_to_hp",
+          "value": 4
+        }
+      ],
       "range": "melee",
       "price": 500,
       "dropLevelMin": 20,
@@ -119,13 +184,26 @@
       "name": "ロイヤルソード",
       "category": "weapon",
       "subCategory": "sword",
-      "tier": 3,
       "statBonuses": [
-        { "stat": "atk_flat", "value": 32 },
-        { "stat": "def_flat", "value": 8 }
+        {
+          "stat": "atk_flat",
+          "value": 32
+        },
+        {
+          "stat": "def_flat",
+          "value": 8
+        }
       ],
-      "weaponStats": { "accuracy": 96, "attackCountModifier": -0.2 },
-      "effects": [{ "type": "def_to_hp", "value": 5 }],
+      "weaponStats": {
+        "accuracy": 96,
+        "attackCountModifier": -0.2
+      },
+      "effects": [
+        {
+          "type": "def_to_hp",
+          "value": 5
+        }
+      ],
       "range": "melee",
       "price": 2500,
       "dropLevelMin": 35,
@@ -137,13 +215,26 @@
       "name": "カイザーソード",
       "category": "weapon",
       "subCategory": "sword",
-      "tier": 3,
       "statBonuses": [
-        { "stat": "atk_flat", "value": 48 },
-        { "stat": "def_flat", "value": 10 }
+        {
+          "stat": "atk_flat",
+          "value": 48
+        },
+        {
+          "stat": "def_flat",
+          "value": 10
+        }
       ],
-      "weaponStats": { "accuracy": 144, "attackCountModifier": -0.2 },
-      "effects": [{ "type": "def_to_hp", "value": 6 }],
+      "weaponStats": {
+        "accuracy": 144,
+        "attackCountModifier": -0.2
+      },
+      "effects": [
+        {
+          "type": "def_to_hp",
+          "value": 6
+        }
+      ],
       "range": "melee",
       "price": 12500,
       "unlockRank": 3,
@@ -156,13 +247,26 @@
       "name": "エンシェントソード",
       "category": "weapon",
       "subCategory": "sword",
-      "tier": 4,
       "statBonuses": [
-        { "stat": "atk_flat", "value": 64 },
-        { "stat": "def_flat", "value": 12 }
+        {
+          "stat": "atk_flat",
+          "value": 64
+        },
+        {
+          "stat": "def_flat",
+          "value": 12
+        }
       ],
-      "weaponStats": { "accuracy": 192, "attackCountModifier": -0.2 },
-      "effects": [{ "type": "def_to_hp", "value": 7 }],
+      "weaponStats": {
+        "accuracy": 192,
+        "attackCountModifier": -0.2
+      },
+      "effects": [
+        {
+          "type": "def_to_hp",
+          "value": 7
+        }
+      ],
       "range": "melee",
       "price": 60000,
       "unlockRank": 5,
@@ -175,13 +279,26 @@
       "name": "ドラゴンソード",
       "category": "weapon",
       "subCategory": "sword",
-      "tier": 5,
       "statBonuses": [
-        { "stat": "atk_flat", "value": 96 },
-        { "stat": "def_flat", "value": 24 }
+        {
+          "stat": "atk_flat",
+          "value": 96
+        },
+        {
+          "stat": "def_flat",
+          "value": 24
+        }
       ],
-      "weaponStats": { "accuracy": 288, "attackCountModifier": -0.4 },
-      "effects": [{ "type": "def_to_hp", "value": 8 }],
+      "weaponStats": {
+        "accuracy": 288,
+        "attackCountModifier": -0.4
+      },
+      "effects": [
+        {
+          "type": "def_to_hp",
+          "value": 8
+        }
+      ],
       "range": "melee",
       "price": 240000,
       "dropLevelMin": 95,
@@ -193,32 +310,50 @@
       "name": "アダマントソード",
       "category": "weapon",
       "subCategory": "sword",
-      "tier": 5,
       "statBonuses": [
-        { "stat": "atk_flat", "value": 128 },
-        { "stat": "def_flat", "value": 36 }
+        {
+          "stat": "atk_flat",
+          "value": 128
+        },
+        {
+          "stat": "def_flat",
+          "value": 36
+        }
       ],
-      "weaponStats": { "accuracy": 384, "attackCountModifier": -0.6 },
-      "effects": [{ "type": "def_to_hp", "value": 9 }],
+      "weaponStats": {
+        "accuracy": 384,
+        "attackCountModifier": -0.6
+      },
+      "effects": [
+        {
+          "type": "def_to_hp",
+          "value": 9
+        }
+      ],
       "range": "melee",
       "price": 720000,
       "dropLevelMin": 120,
       "dropLevelMax": 150,
       "description": "最硬の鉱石アダマンタイトで造られた剣。振るえる者は限られる"
     },
-
-    {"_comment": "===== 武器:弓 (ranged) ====="},
-
+    {
+      "_comment": "===== 武器:弓 (ranged) ====="
+    },
     {
       "id": "bow_slingshot",
       "name": "スリングショット",
       "category": "weapon",
       "subCategory": "bow",
-      "tier": 1,
       "statBonuses": [
-        { "stat": "atk_flat", "value": 3 }
+        {
+          "stat": "atk_flat",
+          "value": 3
+        }
       ],
-      "weaponStats": { "accuracy": 16, "attackCountModifier": 0 },
+      "weaponStats": {
+        "accuracy": 16,
+        "attackCountModifier": 0
+      },
       "range": "ranged",
       "price": 10,
       "unlockRank": 1,
@@ -231,11 +366,16 @@
       "name": "ショートボウ",
       "category": "weapon",
       "subCategory": "bow",
-      "tier": 1,
       "statBonuses": [
-        { "stat": "atk_flat", "value": 6 }
+        {
+          "stat": "atk_flat",
+          "value": 6
+        }
       ],
-      "weaponStats": { "accuracy": 32, "attackCountModifier": -0.1 },
+      "weaponStats": {
+        "accuracy": 32,
+        "attackCountModifier": -0.1
+      },
       "range": "ranged",
       "price": 40,
       "unlockRank": 1,
@@ -248,14 +388,26 @@
       "name": "ロングボウ",
       "category": "weapon",
       "subCategory": "bow",
-      "tier": 1,
       "statBonuses": [
-        { "stat": "atk_flat", "value": 20 }
+        {
+          "stat": "atk_flat",
+          "value": 20
+        }
       ],
-      "weaponStats": { "accuracy": 64, "attackCountModifier": -0.6, "evasionModifier": -8 },
+      "weaponStats": {
+        "accuracy": 64,
+        "attackCountModifier": -0.6,
+        "evasionModifier": -8
+      },
       "effects": [
-        { "type": "critical_damage_bonus", "value": 6 },
-        { "type": "accuracy_boost", "value": 30 }
+        {
+          "type": "critical_damage_bonus",
+          "value": 6
+        },
+        {
+          "type": "accuracy_boost",
+          "value": 30
+        }
       ],
       "range": "ranged",
       "price": 1000,
@@ -269,14 +421,26 @@
       "name": "ミスリルボウ",
       "category": "weapon",
       "subCategory": "bow",
-      "tier": 2,
       "statBonuses": [
-        { "stat": "atk_flat", "value": 30 }
+        {
+          "stat": "atk_flat",
+          "value": 30
+        }
       ],
-      "weaponStats": { "accuracy": 96, "attackCountModifier": -0.6, "evasionModifier": -12 },
+      "weaponStats": {
+        "accuracy": 96,
+        "attackCountModifier": -0.6,
+        "evasionModifier": -12
+      },
       "effects": [
-        { "type": "critical_damage_bonus", "value": 7 },
-        { "type": "accuracy_boost", "value": 50 }
+        {
+          "type": "critical_damage_bonus",
+          "value": 7
+        },
+        {
+          "type": "accuracy_boost",
+          "value": 50
+        }
       ],
       "range": "ranged",
       "price": 5000,
@@ -289,14 +453,26 @@
       "name": "ロイヤルボウ",
       "category": "weapon",
       "subCategory": "bow",
-      "tier": 3,
       "statBonuses": [
-        { "stat": "atk_flat", "value": 45 }
+        {
+          "stat": "atk_flat",
+          "value": 45
+        }
       ],
-      "weaponStats": { "accuracy": 128, "attackCountModifier": -0.6, "evasionModifier": -16 },
+      "weaponStats": {
+        "accuracy": 128,
+        "attackCountModifier": -0.6,
+        "evasionModifier": -16
+      },
       "effects": [
-        { "type": "critical_damage_bonus", "value": 8 },
-        { "type": "accuracy_boost", "value": 70 }
+        {
+          "type": "critical_damage_bonus",
+          "value": 8
+        },
+        {
+          "type": "accuracy_boost",
+          "value": 70
+        }
       ],
       "range": "ranged",
       "price": 25000,
@@ -309,14 +485,26 @@
       "name": "カイザーボウ",
       "category": "weapon",
       "subCategory": "bow",
-      "tier": 3,
       "statBonuses": [
-        { "stat": "atk_flat", "value": 60 }
+        {
+          "stat": "atk_flat",
+          "value": 60
+        }
       ],
-      "weaponStats": { "accuracy": 192, "attackCountModifier": -0.6, "evasionModifier": -24 },
+      "weaponStats": {
+        "accuracy": 192,
+        "attackCountModifier": -0.6,
+        "evasionModifier": -24
+      },
       "effects": [
-        { "type": "critical_damage_bonus", "value": 9 },
-        { "type": "accuracy_boost", "value": 90 }
+        {
+          "type": "critical_damage_bonus",
+          "value": 9
+        },
+        {
+          "type": "accuracy_boost",
+          "value": 90
+        }
       ],
       "range": "ranged",
       "price": 125000,
@@ -330,14 +518,26 @@
       "name": "エンシェントボウ",
       "category": "weapon",
       "subCategory": "bow",
-      "tier": 4,
       "statBonuses": [
-        { "stat": "atk_flat", "value": 90 }
+        {
+          "stat": "atk_flat",
+          "value": 90
+        }
       ],
-      "weaponStats": { "accuracy": 256, "attackCountModifier": -0.6, "evasionModifier": -32 },
+      "weaponStats": {
+        "accuracy": 256,
+        "attackCountModifier": -0.6,
+        "evasionModifier": -32
+      },
       "effects": [
-        { "type": "critical_damage_bonus", "value": 10 },
-        { "type": "accuracy_boost", "value": 110 }
+        {
+          "type": "critical_damage_bonus",
+          "value": 10
+        },
+        {
+          "type": "accuracy_boost",
+          "value": 110
+        }
       ],
       "range": "ranged",
       "price": 500000,
@@ -351,14 +551,26 @@
       "name": "ドラゴンボウ",
       "category": "weapon",
       "subCategory": "bow",
-      "tier": 5,
       "statBonuses": [
-        { "stat": "atk_flat", "value": 120 }
+        {
+          "stat": "atk_flat",
+          "value": 120
+        }
       ],
-      "weaponStats": { "accuracy": 320, "attackCountModifier": -0.6, "evasionModifier": -40 },
+      "weaponStats": {
+        "accuracy": 320,
+        "attackCountModifier": -0.6,
+        "evasionModifier": -40
+      },
       "effects": [
-        { "type": "critical_damage_bonus", "value": 11 },
-        { "type": "accuracy_boost", "value": 130 }
+        {
+          "type": "critical_damage_bonus",
+          "value": 11
+        },
+        {
+          "type": "accuracy_boost",
+          "value": 130
+        }
       ],
       "range": "ranged",
       "price": 1500000,
@@ -371,14 +583,26 @@
       "name": "アダマントボウ",
       "category": "weapon",
       "subCategory": "bow",
-      "tier": 5,
       "statBonuses": [
-        { "stat": "atk_flat", "value": 160 }
+        {
+          "stat": "atk_flat",
+          "value": 160
+        }
       ],
-      "weaponStats": { "accuracy": 400, "attackCountModifier": -0.6, "evasionModifier": -50 },
+      "weaponStats": {
+        "accuracy": 400,
+        "attackCountModifier": -0.6,
+        "evasionModifier": -50
+      },
       "effects": [
-        { "type": "critical_damage_bonus", "value": 12 },
-        { "type": "accuracy_boost", "value": 150 }
+        {
+          "type": "critical_damage_bonus",
+          "value": 12
+        },
+        {
+          "type": "accuracy_boost",
+          "value": 150
+        }
       ],
       "range": "ranged",
       "price": 3000000,

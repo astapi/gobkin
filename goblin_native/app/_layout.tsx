@@ -43,6 +43,7 @@ export default function RootLayout() {
             <ResetProvider resetAndReinitialize={resetAndReinitialize}>
               <Stack screenOptions={{ headerShown: false }}>
                 <Stack.Screen name="(tabs)" />
+                <Stack.Screen name="goblin" />
               </Stack>
               <StatusBar style="auto" />
             </ResetProvider>
