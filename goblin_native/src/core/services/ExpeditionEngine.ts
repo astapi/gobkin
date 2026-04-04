@@ -586,7 +586,6 @@ export class ExpeditionEngine {
     }
 
     const casualties = partyState.filter(member => member.isDead).map(member => member.id)
-    const injuries = partyState.filter(member => member.isKO && !member.isDead).map(member => member.id)
     const successReasons: Set<ExpeditionEndReason> = new Set([
       "completed",
       "policy_return"
@@ -603,7 +602,6 @@ export class ExpeditionEngine {
       xpGained,
       goldGained,
       casualties,
-      injuries,
       treasureDrops: treasureDrops.length > 0 ? treasureDrops : undefined,
     }
   }

@@ -79,9 +79,7 @@ export default function ExpeditionResultScreen() {
       const isCasualty = replay.summary.casualties.includes(goblin.id.toString())
       if (isCasualty) continue
 
-      const isInjured = replay.summary.injuries.includes(goblin.id.toString())
-      const multiplier = isInjured ? 0.5 : 1.0
-      const expGained = Math.floor(replay.summary.xpGained * multiplier)
+      const expGained = replay.summary.xpGained
       const result = addExperience(goblin.level, goblin.experience, expGained)
       if (result.didLevelUp) {
         map.set(goblin.id, { oldLevel: goblin.level, newLevel: result.newLevel })

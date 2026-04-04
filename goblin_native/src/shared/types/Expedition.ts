@@ -77,7 +77,6 @@ export interface RewardSummary {
   xpGained: number
   goldGained: number
   casualties: string[]
-  injuries: string[]
   treasureDrops?: TreasureDrop[]  // 宝箱から獲得した装備
 }
 

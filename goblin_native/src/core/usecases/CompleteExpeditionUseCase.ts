@@ -62,8 +62,7 @@ export class CompleteExpeditionUseCase {
         continue
       }
 
-      const expMultiplier = replay.summary.injuries.includes(goblin.id.toString()) ? 0.5 : 1.0
-      const expToGain = Math.floor(replay.summary.xpGained * expMultiplier)
+      const expToGain = replay.summary.xpGained
 
       if (expToGain > 0) {
         const levelUpResult = entity.gainExperience(expToGain)
