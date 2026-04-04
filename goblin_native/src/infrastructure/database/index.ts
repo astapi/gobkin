@@ -8,9 +8,10 @@ import { migrateV2 } from './migrations/v2'
 import { migrateV3 } from './migrations/v3'
 import { migrateV4 } from './migrations/v4'
 import { migrateV5 } from './migrations/v5'
+import { migrateV6 } from './migrations/v6'
 
 const DB_NAME = 'goblin_kingdom.db'
-const CURRENT_SCHEMA_VERSION = 5
+const CURRENT_SCHEMA_VERSION = 6
 
 let db: SQLite.SQLiteDatabase | null = null
 let initializationPromise: Promise<SQLite.SQLiteDatabase> | null = null
@@ -107,6 +108,13 @@ const runMigrations = async (database: SQLite.SQLiteDatabase): Promise<void> => 
     await migrateV5(database)
     await setSchemaVersion(database, 5)
     console.log('[DB] Migration v5 completed')
+  }
+
+  if (currentVersion < 6) {
+    console.log('[DB] Running migration v6...')
+    await migrateV6(database)
+    await setSchemaVersion(database, 6)
+    console.log('[DB] Migration v6 completed')
   }
 }
 

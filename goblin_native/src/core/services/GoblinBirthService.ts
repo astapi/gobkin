@@ -12,7 +12,7 @@ const STAT_RANGES: Record<Exclude<keyof GoblinStats, 'attackCount'>, { min: numb
   sp: { min: 7, max: 13 },
   spd: { min: 8, max: 14 },
   def: { min: 8, max: 14 },
-  accuracy: { min: 15, max: 25 },
+  accuracy: { min: 120, max: 200 },
   evasion: { min: 10, max: 20 },
 }
 
