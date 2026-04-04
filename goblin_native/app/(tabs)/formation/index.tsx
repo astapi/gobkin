@@ -155,7 +155,7 @@ export default function FormationScreen() {
   useFocusEffect(
     useCallback(() => {
       void refreshParties()
-      refreshGoblins()
+      void refreshGoblins()
     }, [refreshParties, refreshGoblins])
   )
 
@@ -171,10 +171,10 @@ export default function FormationScreen() {
   }, [maxPartyCount, parties])
 
 
-  const handlePartyPress = useCallback((party: Party | null, index: number) => {
+  const handlePartyPress = useCallback(async (party: Party | null, index: number) => {
     if (!party) {
       // パーティがない場合は新規作成して遷移
-      const newParty = createParty({
+      const newParty = await createParty({
         name: `PT${index + 1}`,
         memberIds: [],
       })

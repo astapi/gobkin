@@ -1,13 +1,13 @@
 import type { Party, PartyStatus, ExpeditionRequest } from '../../shared/types'
 
 export interface IPartyRepository {
-  getParties(): Party[]
-  getParty(id: number): Party | null
-  saveParty(party: Party): void
-  deleteParty(id: number): void
-  updatePartyStatus(id: number, status: PartyStatus): void
-  getPartiesByStatus(status: PartyStatus): Party[]
-  updateDungeonSettings(id: number, dungeonId: string): void
-  updateFloorTarget(id: number, targetFloor: number | null): void
-  updateReturnPolicy(id: number, returnPolicy: ExpeditionRequest['returnPolicy']): void
+  getParties(): Promise<Party[]>
+  getParty(id: number): Promise<Party | null>
+  saveParty(party: Party): Promise<void>
+  deleteParty(id: number): Promise<void>
+  updatePartyStatus(id: number, status: PartyStatus): Promise<void>
+  getPartiesByStatus(status: PartyStatus): Promise<Party[]>
+  updateDungeonSettings(id: number, dungeonId: string): Promise<void>
+  updateFloorTarget(id: number, targetFloor: number | null): Promise<void>
+  updateReturnPolicy(id: number, returnPolicy: ExpeditionRequest['returnPolicy']): Promise<void>
 }

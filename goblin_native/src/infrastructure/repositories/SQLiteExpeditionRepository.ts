@@ -1,6 +1,6 @@
 /**
  * SQLiteを使用した遠征記録リポジトリ実装
- * 内部キャッシュを使用して同期的なインターフェースを提供
+ * DBから直接読み書きする設計
  */
 import type { ExpeditionRecord, ExpeditionReplay, ExpeditionRequest } from '../../shared/types'
 import { getDatabase } from '../database'
@@ -21,23 +21,18 @@ interface ExpeditionRow {
 }
 
 export interface IExpeditionRepository {
-  getAll(): ExpeditionRecord[]
-  getById(id: string): ExpeditionRecord | null
-  getByPartyId(partyId: number): ExpeditionRecord[]
-  getOngoing(): ExpeditionRecord[]
-  save(record: ExpeditionRecord): void
-  delete(id: string): void
-  complete(id: string, replay: ExpeditionReplay): void
+  getAll(): Promise<ExpeditionRecord[]>
+  getById(id: string): Promise<ExpeditionRecord | null>
+  getByPartyId(partyId: number): Promise<ExpeditionRecord[]>
+  getOngoing(): Promise<ExpeditionRecord[]>
+  save(record: ExpeditionRecord): Promise<void>
+  delete(id: string): Promise<void>
+  complete(id: string, replay: ExpeditionReplay): Promise<void>
 }
 
 export class SQLiteExpeditionRepository implements IExpeditionRepository {
   private static instance: SQLiteExpeditionRepository | null = null
-  private cache: Map<string, ExpeditionRecord> = new Map()
-  private initialized = false
 
-  /**
-   * シングルトンインスタンスを取得
-   */
   static getInstance(): SQLiteExpeditionRepository {
     if (!SQLiteExpeditionRepository.instance) {
       SQLiteExpeditionRepository.instance = new SQLiteExpeditionRepository()
@@ -45,101 +40,41 @@ export class SQLiteExpeditionRepository implements IExpeditionRepository {
     return SQLiteExpeditionRepository.instance
   }
 
-  /**
-   * リポジトリを初期化し、DBからデータをロード
-   */
-  async initialize(): Promise<void> {
-    if (this.initialized) return
-
+  async getAll(): Promise<ExpeditionRecord[]> {
     const db = await getDatabase()
     const rows = await db.getAllAsync<ExpeditionRow>(
       'SELECT * FROM expeditions ORDER BY created_at DESC'
     )
-
-    this.cache.clear()
-    for (const row of rows) {
-      const record = this.rowToRecord(row)
-      this.cache.set(record.id, record)
-    }
-
-    this.initialized = true
+    return rows.map(row => this.rowToRecord(row))
   }
 
-  /**
-   * 全遠征記録を取得
-   */
-  getAll(): ExpeditionRecord[] {
-    return Array.from(this.cache.values()).sort(
-      (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+  async getById(id: string): Promise<ExpeditionRecord | null> {
+    const db = await getDatabase()
+    const row = await db.getFirstAsync<ExpeditionRow>(
+      'SELECT * FROM expeditions WHERE id = ?',
+      [id]
     )
+    return row ? this.rowToRecord(row) : null
   }
 
-  /**
-   * 指定IDの遠征記録を取得
-   */
-  getById(id: string): ExpeditionRecord | null {
-    return this.cache.get(id) ?? null
+  async getByPartyId(partyId: number): Promise<ExpeditionRecord[]> {
+    const db = await getDatabase()
+    const rows = await db.getAllAsync<ExpeditionRow>(
+      'SELECT * FROM expeditions WHERE party_id = ? ORDER BY created_at DESC',
+      [partyId]
+    )
+    return rows.map(row => this.rowToRecord(row))
   }
 
-  /**
-   * 指定パーティの遠征記録を取得
-   */
-  getByPartyId(partyId: number): ExpeditionRecord[] {
-    return Array.from(this.cache.values())
-      .filter(r => r.partyId === partyId)
-      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+  async getOngoing(): Promise<ExpeditionRecord[]> {
+    const db = await getDatabase()
+    const rows = await db.getAllAsync<ExpeditionRow>(
+      "SELECT * FROM expeditions WHERE status = 'ongoing' ORDER BY created_at DESC"
+    )
+    return rows.map(row => this.rowToRecord(row))
   }
 
-  /**
-   * 進行中の遠征記録を取得
-   */
-  getOngoing(): ExpeditionRecord[] {
-    return Array.from(this.cache.values()).filter(r => r.status === 'ongoing')
-  }
-
-  /**
-   * 遠征記録を保存
-   */
-  save(record: ExpeditionRecord): void {
-    this.cache.set(record.id, record)
-
-    this.saveAsync(record).catch(err => {
-      console.error('[SQLiteExpeditionRepository] Failed to save:', err)
-    })
-  }
-
-  /**
-   * 遠征記録を削除
-   */
-  delete(id: string): void {
-    this.cache.delete(id)
-
-    this.deleteAsync(id).catch(err => {
-      console.error('[SQLiteExpeditionRepository] Failed to delete:', err)
-    })
-  }
-
-  /**
-   * 遠征を完了状態にする
-   */
-  complete(id: string, replay: ExpeditionReplay): void {
-    const record = this.cache.get(id)
-    if (!record) return
-
-    const updated: ExpeditionRecord = {
-      ...record,
-      status: replay.summary.success ? 'completed' : 'failed',
-      returnTime: new Date(),
-      replay,
-      updatedAt: new Date(),
-    }
-
-    this.save(updated)
-  }
-
-  // --- Private methods ---
-
-  private async saveAsync(record: ExpeditionRecord): Promise<void> {
+  async save(record: ExpeditionRecord): Promise<void> {
     const db = await getDatabase()
     await db.runAsync(
       `INSERT INTO expeditions
@@ -172,15 +107,30 @@ export class SQLiteExpeditionRepository implements IExpeditionRepository {
     )
   }
 
-  private async deleteAsync(id: string): Promise<void> {
+  async delete(id: string): Promise<void> {
     const db = await getDatabase()
     await db.runAsync('DELETE FROM expeditions WHERE id = ?', [id])
+  }
+
+  async complete(id: string, replay: ExpeditionReplay): Promise<void> {
+    const record = await this.getById(id)
+    if (!record) return
+
+    const updated: ExpeditionRecord = {
+      ...record,
+      status: replay.summary.success ? 'completed' : 'failed',
+      returnTime: new Date(),
+      replay,
+      updatedAt: new Date(),
+    }
+
+    await this.save(updated)
   }
 
   private rowToRecord(row: ExpeditionRow): ExpeditionRecord {
     return {
       id: row.id,
-      userId: '', // SQLite版ではローカルユーザーのみ
+      userId: '',
       partyId: row.party_id,
       partyName: row.party_name,
       dungeonId: row.dungeon_id,

@@ -28,36 +28,34 @@ export const useDungeonProgress = () => {
     return SQLiteDungeonProgressRepository.getInstance()
   }, [])
 
-  const refreshProgress = useCallback(() => {
-    const storedProgress = repository.getAll()
+  const refreshProgress = useCallback(async () => {
+    const storedProgress = await repository.getAll()
     const mergedProgress = { ...buildDefaultProgress(), ...storedProgress }
     setProgress(mergedProgress)
   }, [repository])
 
   useEffect(() => {
-    // アプリ起動時に既に初期化されているので、データを読み込むだけ
-    refreshProgress()
-    setIsLoading(false)
+    void refreshProgress().then(() => setIsLoading(false))
   }, [refreshProgress])
 
   const updateProgress = useCallback(
-    (updater: (prev: DungeonProgressState) => DungeonProgressState) => {
-      const currentProgress = { ...buildDefaultProgress(), ...repository.getAll() }
+    async (updater: (prev: DungeonProgressState) => DungeonProgressState) => {
+      const storedProgress = await repository.getAll()
+      const currentProgress = { ...buildDefaultProgress(), ...storedProgress }
       const nextProgress = updater(currentProgress)
 
-      // 変更された項目のみ保存
       for (const [dungeonId, state] of Object.entries(nextProgress)) {
-        repository.save(dungeonId, state)
+        await repository.save(dungeonId, state)
       }
 
-      refreshProgress()
+      await refreshProgress()
     },
     [repository, refreshProgress]
   )
 
   const markDungeonCleared = useCallback(
-    (dungeon: Dungeon, cleared: boolean) => {
-      updateProgress(prev => {
+    async (dungeon: Dungeon, cleared: boolean) => {
+      await updateProgress(prev => {
         const nextProgress: DungeonProgressState = { ...prev }
         const current = nextProgress[dungeon.id] ?? {
           unlocked: dungeon.unlocked ?? false,
@@ -72,7 +70,6 @@ export const useDungeonProgress = () => {
 
         if (cleared && dungeon.unlockNext) {
           const target = nextProgress[dungeon.unlockNext]
-          // 既にアンロック済みの場合は状態を変更しない（unlockNotifiedフラグを保持）
           if (!target || !target.unlocked) {
             nextProgress[dungeon.unlockNext] = {
               ...(target ?? { cleared: false, unlockNotified: false }),
@@ -88,8 +85,8 @@ export const useDungeonProgress = () => {
   )
 
   const markUnlockNotified = useCallback(
-    (dungeonId: string) => {
-      updateProgress(prev => {
+    async (dungeonId: string) => {
+      await updateProgress(prev => {
         const nextProgress: DungeonProgressState = { ...prev }
         const current = nextProgress[dungeonId] ?? {
           unlocked: false,

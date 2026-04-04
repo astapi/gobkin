@@ -8,8 +8,8 @@ export class GetGoblinByIdUseCase {
     this.goblinRepository = goblinRepository
   }
 
-  public execute(goblinId: number): Goblin {
-    const goblin = this.goblinRepository.getGoblin(goblinId)
+  public async execute(goblinId: number): Promise<Goblin> {
+    const goblin = await this.goblinRepository.getGoblin(goblinId)
     if (!goblin) {
       throw new Error(`ID ${goblinId} のゴブリンが見つかりません`)
     }

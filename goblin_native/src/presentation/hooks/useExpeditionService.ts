@@ -11,53 +11,55 @@ export const useExpeditionService = () => {
   const [isLoading, setIsLoading] = useState(true)
   const repositoryRef = useRef<SQLiteExpeditionRepository | null>(null)
 
-  const refreshExpeditions = useCallback(() => {
+  const refreshExpeditions = useCallback(async () => {
     if (!repositoryRef.current) return
-    setExpeditionRecords(repositoryRef.current.getAll())
+    const records = await repositoryRef.current.getAll()
+    setExpeditionRecords(records)
   }, [])
 
   useEffect(() => {
     const repository = getRepository()
     repositoryRef.current = repository
 
-    // 初回のデータ取得
-    setExpeditionRecords(repository.getAll())
-    setIsLoading(false)
+    void repository.getAll().then(records => {
+      setExpeditionRecords(records)
+      setIsLoading(false)
+    })
   }, [])
 
-  const getExpeditionById = useCallback((id: string): ExpeditionRecord | null => {
+  const getExpeditionById = useCallback(async (id: string): Promise<ExpeditionRecord | null> => {
     if (!repositoryRef.current) return null
     return repositoryRef.current.getById(id)
   }, [])
 
-  const getPartyExpeditionHistory = useCallback((partyId: number, limit = 2): ExpeditionRecord[] => {
+  const getPartyExpeditionHistory = useCallback(async (partyId: number, limit = 2): Promise<ExpeditionRecord[]> => {
     if (!repositoryRef.current) return []
-    const records = repositoryRef.current.getByPartyId(partyId)
+    const records = await repositoryRef.current.getByPartyId(partyId)
     return records.slice(0, limit)
   }, [])
 
-  const saveExpeditionRecord = useCallback((record: ExpeditionRecord) => {
+  const saveExpeditionRecord = useCallback(async (record: ExpeditionRecord) => {
     if (!repositoryRef.current) return
-    repositoryRef.current.save(record)
-    refreshExpeditions()
+    await repositoryRef.current.save(record)
+    await refreshExpeditions()
   }, [refreshExpeditions])
 
-  const updateExpeditionReplay = useCallback((id: string, replay: ExpeditionReplay) => {
+  const updateExpeditionReplay = useCallback(async (id: string, replay: ExpeditionReplay) => {
     if (!repositoryRef.current) return
-    const record = repositoryRef.current.getById(id)
+    const record = await repositoryRef.current.getById(id)
     if (!record) return
-    repositoryRef.current.save({
+    await repositoryRef.current.save({
       ...record,
       replay,
       updatedAt: new Date(),
     })
-    refreshExpeditions()
+    await refreshExpeditions()
   }, [refreshExpeditions])
 
-  const completeExpeditionRecord = useCallback((id: string, replay: ExpeditionReplay) => {
+  const completeExpeditionRecord = useCallback(async (id: string, replay: ExpeditionReplay) => {
     if (!repositoryRef.current) return
-    repositoryRef.current.complete(id, replay)
-    refreshExpeditions()
+    await repositoryRef.current.complete(id, replay)
+    await refreshExpeditions()
   }, [refreshExpeditions])
 
   return {

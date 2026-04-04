@@ -8,7 +8,7 @@ export class GetPartyListUseCase {
     this.partyRepository = partyRepository
   }
 
-  public execute(): Party[] {
+  public async execute(): Promise<Party[]> {
     return this.partyRepository.getParties()
   }
 }

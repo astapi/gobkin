@@ -75,22 +75,22 @@ export default function BaseManagementScreen() {
     })
   }, [])
 
-  const addSelectedGoblins = useCallback(() => {
+  const addSelectedGoblins = useCallback(async () => {
     if (!canAddSelected) return
     const selectedGoblins = pendingGoblins.filter(g => selectedGoblinIds.has(g.id))
-    selectedGoblins.forEach(goblin => {
-      saveGoblin(goblin)
-      removePendingGoblin(goblin.id)
-    })
+    for (const goblin of selectedGoblins) {
+      await saveGoblin(goblin)
+      await removePendingGoblin(goblin.id)
+    }
     setSelectedGoblinIds(new Set())
   }, [canAddSelected, pendingGoblins, selectedGoblinIds, saveGoblin, removePendingGoblin])
 
-  const dismissSelectedGoblins = useCallback(() => {
+  const dismissSelectedGoblins = useCallback(async () => {
     if (selectedCount === 0) return
     const selectedGoblins = pendingGoblins.filter(g => selectedGoblinIds.has(g.id))
-    selectedGoblins.forEach(goblin => {
-      removePendingGoblin(goblin.id)
-    })
+    for (const goblin of selectedGoblins) {
+      await removePendingGoblin(goblin.id)
+    }
     setSelectedGoblinIds(new Set())
   }, [pendingGoblins, selectedGoblinIds, selectedCount, removePendingGoblin])
 
@@ -104,9 +104,9 @@ export default function BaseManagementScreen() {
         { text: 'キャンセル', style: 'cancel' },
         {
           text: 'ランクアップ',
-          onPress: () => {
+          onPress: async () => {
             setIsRankingUp(true)
-            const result = performRankUp()
+            const result = await performRankUp()
             setIsRankingUp(false)
 
             if (result.success) {
@@ -126,7 +126,7 @@ export default function BaseManagementScreen() {
 
   useFocusEffect(
     useCallback(() => {
-      refreshPendingGoblins()
+      void refreshPendingGoblins()
     }, [refreshPendingGoblins])
   )
 

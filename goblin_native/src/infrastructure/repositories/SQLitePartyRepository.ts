@@ -1,6 +1,6 @@
 /**
  * SQLiteを使用したパーティリポジトリ実装
- * 内部キャッシュを使用して同期的なインターフェースを提供
+ * DBから直接読み書きする設計
  */
 import type { Party, PartyStatus, ExpeditionRequest } from '../../shared/types'
 import type { IPartyRepository } from '../../core/repositories/IPartyRepository'
@@ -20,12 +20,7 @@ interface PartyRow {
 
 export class SQLitePartyRepository implements IPartyRepository {
   private static instance: SQLitePartyRepository | null = null
-  private cache: Map<number, Party> = new Map()
-  private initialized = false
 
-  /**
-   * シングルトンインスタンスを取得
-   */
   static getInstance(): SQLitePartyRepository {
     if (!SQLitePartyRepository.instance) {
       SQLitePartyRepository.instance = new SQLitePartyRepository()
@@ -33,127 +28,19 @@ export class SQLitePartyRepository implements IPartyRepository {
     return SQLitePartyRepository.instance
   }
 
-  /**
-   * リポジトリを初期化し、DBからデータをロード
-   */
-  async initialize(): Promise<void> {
-    if (this.initialized) return
-
-    await this.loadFromDatabase()
-    this.initialized = true
-  }
-
-  /**
-   * DBからデータを再読み込み
-   */
-  async reload(): Promise<void> {
-    await this.loadFromDatabase()
-  }
-
-  /**
-   * DBからデータをロードしてキャッシュを更新
-   */
-  private async loadFromDatabase(): Promise<void> {
+  async getParties(): Promise<Party[]> {
     const db = await getDatabase()
     const rows = await db.getAllAsync<PartyRow>('SELECT * FROM parties ORDER BY id')
-
-    this.cache.clear()
-    for (const row of rows) {
-      const party = this.rowToParty(row)
-      this.cache.set(party.id, party)
-    }
+    return rows.map(row => this.rowToParty(row))
   }
 
-  /**
-   * 全パーティを取得
-   */
-  getParties(): Party[] {
-    return Array.from(this.cache.values())
+  async getParty(id: number): Promise<Party | null> {
+    const db = await getDatabase()
+    const row = await db.getFirstAsync<PartyRow>('SELECT * FROM parties WHERE id = ?', [id])
+    return row ? this.rowToParty(row) : null
   }
 
-  /**
-   * 指定IDのパーティを取得
-   */
-  getParty(id: number): Party | null {
-    return this.cache.get(id) ?? null
-  }
-
-  /**
-   * パーティを保存（新規作成または更新）
-   */
-  saveParty(party: Party): void {
-    this.cache.set(party.id, party)
-
-    this.savePartyAsync(party).catch(err => {
-      console.error('[SQLitePartyRepository] Failed to save party:', err)
-    })
-  }
-
-  /**
-   * パーティを削除
-   */
-  deleteParty(id: number): void {
-    this.cache.delete(id)
-
-    this.deletePartyAsync(id).catch(err => {
-      console.error('[SQLitePartyRepository] Failed to delete party:', err)
-    })
-  }
-
-  /**
-   * パーティのステータスを更新
-   */
-  updatePartyStatus(id: number, status: PartyStatus): void {
-    const party = this.cache.get(id)
-    if (!party) return
-
-    const updated = { ...party, status }
-    this.saveParty(updated)
-  }
-
-  /**
-   * 指定ステータスのパーティ一覧を取得
-   */
-  getPartiesByStatus(status: PartyStatus): Party[] {
-    return Array.from(this.cache.values()).filter(p => p.status === status)
-  }
-
-  /**
-   * ダンジョン設定を更新
-   */
-  updateDungeonSettings(id: number, dungeonId: string): void {
-    const party = this.cache.get(id)
-    if (!party) return
-
-    const updated = { ...party, dungeonId }
-    this.saveParty(updated)
-  }
-
-  /**
-   * 目標階層を更新
-   */
-  updateFloorTarget(id: number, targetFloor: number | null): void {
-    const party = this.cache.get(id)
-    if (!party) return
-
-    const updated = { ...party, targetFloor }
-    this.saveParty(updated)
-  }
-
-  /**
-   * 帰還ポリシーを更新
-   */
-  updateReturnPolicy(id: number, returnPolicy: ExpeditionRequest['returnPolicy']): void {
-    const party = this.cache.get(id)
-    if (!party) return
-
-    const updated = { ...party, returnPolicy }
-    this.saveParty(updated)
-  }
-
-  // --- Private methods ---
-
-  private async savePartyAsync(party: Party): Promise<void> {
+  async saveParty(party: Party): Promise<void> {
     const db = await getDatabase()
     await db.runAsync(
       `INSERT OR REPLACE INTO parties
@@ -171,9 +58,47 @@ export class SQLitePartyRepository implements IPartyRepository {
     )
   }
 
-  private async deletePartyAsync(id: number): Promise<void> {
+  async deleteParty(id: number): Promise<void> {
     const db = await getDatabase()
     await db.runAsync('DELETE FROM parties WHERE id = ?', [id])
+  }
+
+  async updatePartyStatus(id: number, status: PartyStatus): Promise<void> {
+    const db = await getDatabase()
+    await db.runAsync(
+      "UPDATE parties SET status = ?, updated_at = datetime('now') WHERE id = ?",
+      [status, id]
+    )
+  }
+
+  async getPartiesByStatus(status: PartyStatus): Promise<Party[]> {
+    const db = await getDatabase()
+    const rows = await db.getAllAsync<PartyRow>('SELECT * FROM parties WHERE status = ? ORDER BY id', [status])
+    return rows.map(row => this.rowToParty(row))
+  }
+
+  async updateDungeonSettings(id: number, dungeonId: string): Promise<void> {
+    const db = await getDatabase()
+    await db.runAsync(
+      "UPDATE parties SET dungeon_id = ?, updated_at = datetime('now') WHERE id = ?",
+      [dungeonId, id]
+    )
+  }
+
+  async updateFloorTarget(id: number, targetFloor: number | null): Promise<void> {
+    const db = await getDatabase()
+    await db.runAsync(
+      "UPDATE parties SET target_floor = ?, updated_at = datetime('now') WHERE id = ?",
+      [targetFloor, id]
+    )
+  }
+
+  async updateReturnPolicy(id: number, returnPolicy: ExpeditionRequest['returnPolicy']): Promise<void> {
+    const db = await getDatabase()
+    await db.runAsync(
+      "UPDATE parties SET return_policy = ?, updated_at = datetime('now') WHERE id = ?",
+      [returnPolicy, id]
+    )
   }
 
   private rowToParty(row: PartyRow): Party {

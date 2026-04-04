@@ -8,26 +8,26 @@ export class ConfigurePartyUseCase {
     this.partyRepository = partyRepository
   }
 
-  public setDungeon(partyId: number, dungeonId: string): Party {
-    this.partyRepository.updateDungeonSettings(partyId, dungeonId)
+  public async setDungeon(partyId: number, dungeonId: string): Promise<Party> {
+    await this.partyRepository.updateDungeonSettings(partyId, dungeonId)
     return this.requireParty(partyId)
   }
 
-  public setTargetFloor(partyId: number, targetFloor: number | null): Party {
-    this.partyRepository.updateFloorTarget(partyId, targetFloor)
+  public async setTargetFloor(partyId: number, targetFloor: number | null): Promise<Party> {
+    await this.partyRepository.updateFloorTarget(partyId, targetFloor)
     return this.requireParty(partyId)
   }
 
-  public setReturnPolicy(
+  public async setReturnPolicy(
     partyId: number,
     returnPolicy: ExpeditionRequest['returnPolicy']
-  ): Party {
-    this.partyRepository.updateReturnPolicy(partyId, returnPolicy)
+  ): Promise<Party> {
+    await this.partyRepository.updateReturnPolicy(partyId, returnPolicy)
     return this.requireParty(partyId)
   }
 
-  private requireParty(partyId: number): Party {
-    const party = this.partyRepository.getParty(partyId)
+  private async requireParty(partyId: number): Promise<Party> {
+    const party = await this.partyRepository.getParty(partyId)
     if (!party) {
       throw new Error(`ID ${partyId} のパーティが見つかりません`)
     }

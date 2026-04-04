@@ -1,11 +1,10 @@
 /**
  * SQLiteを使用した拠点状態リポジトリ実装
- * シングルトンテーブルで拠点の状態を管理
+ * DBから直接読み書きする設計
  */
 import type { BaseState } from '../../shared/types'
 import type { IBaseStateRepository } from '../../core/repositories/IBaseStateRepository'
 import { getDatabase } from '../database'
-import { BASE_RANK_CONFIGS } from '../../core/services/BaseRankSystem'
 
 interface BaseStateRow {
   id: number
@@ -16,6 +15,7 @@ interface BaseStateRow {
   current_max_goblins: number
   current_iv_bonus: number
   gold: number
+  next_goblin_id: number
   updated_at: string
 }
 
@@ -32,12 +32,7 @@ const DEFAULT_BASE_STATE: BaseState = {
 
 export class SQLiteBaseStateRepository implements IBaseStateRepository {
   private static instance: SQLiteBaseStateRepository | null = null
-  private cache: BaseState | null = null
-  private initialized = false
 
-  /**
-   * シングルトンインスタンスを取得
-   */
   static getInstance(): SQLiteBaseStateRepository {
     if (!SQLiteBaseStateRepository.instance) {
       SQLiteBaseStateRepository.instance = new SQLiteBaseStateRepository()
@@ -45,104 +40,36 @@ export class SQLiteBaseStateRepository implements IBaseStateRepository {
     return SQLiteBaseStateRepository.instance
   }
 
-  /**
-   * リポジトリを初期化し、DBからデータをロード
-   */
-  async initialize(): Promise<void> {
-    if (this.initialized) return
-
+  async getBaseState(): Promise<BaseState | null> {
     const db = await getDatabase()
     const row = await db.getFirstAsync<BaseStateRow>(
       'SELECT * FROM base_state WHERE id = 1'
     )
 
-    if (row) {
-      this.cache = {
-        capacity: row.capacity,
-        rank: row.rank,
-        nextGoblinId: await this.getNextGoblinId(),
-        capturedDungeons: JSON.parse(row.captured_dungeons_json || '[]'),
-        currentMaxParties: row.current_max_parties,
-        currentMaxGoblins: row.current_max_goblins,
-        currentIVBonus: row.current_iv_bonus,
-        gold: row.gold,
-      }
-    } else {
-      // 初期データがない場合は作成
-      this.cache = DEFAULT_BASE_STATE
-      await this.saveAsync(this.cache)
+    if (!row) return null
+
+    return {
+      capacity: row.capacity,
+      rank: row.rank,
+      nextGoblinId: row.next_goblin_id,
+      capturedDungeons: JSON.parse(row.captured_dungeons_json || '[]'),
+      currentMaxParties: row.current_max_parties,
+      currentMaxGoblins: row.current_max_goblins,
+      currentIVBonus: row.current_iv_bonus,
+      gold: row.gold,
     }
-
-    this.initialized = true
   }
 
-  /**
-   * 拠点状態を取得
-   */
-  getBaseState(): BaseState | null {
-    return this.cache
-  }
-
-  /**
-   * 拠点状態を保存
-   */
-  saveBaseState(state: BaseState): void {
-    this.cache = state
-
-    this.saveAsync(state).catch(err => {
-      console.error('[SQLiteBaseStateRepository] Failed to save:', err)
-    })
-  }
-
-  /**
-   * 拠点のランクを上げる
-   * @deprecated 代わりに BaseRankSystem.captureDungeon を使用してください
-   */
-  upgradeRank(): void {
-    if (!this.cache) return
-
-    const nextRank = this.cache.rank + 1
-    const nextConfig = BASE_RANK_CONFIGS.find((c) => c.rank === nextRank)
-
-    if (!nextConfig) {
-      console.warn('[SQLiteBaseStateRepository] Cannot upgrade: max rank reached')
-      return
-    }
-
-    const newState: BaseState = {
-      ...this.cache,
-      rank: nextRank,
-      capacity: nextConfig.maxGoblins,
-      currentMaxParties: nextConfig.maxParties,
-      currentMaxGoblins: nextConfig.maxGoblins,
-      currentIVBonus: nextConfig.ivBonus,
-    }
-
-    this.saveBaseState(newState)
-  }
-
-  /**
-   * 次のゴブリンIDを取得して更新
-   */
-  getAndIncrementNextGoblinId(): number {
-    if (!this.cache) return 1
-
-    const nextId = this.cache.nextGoblinId ?? 1
-    this.cache.nextGoblinId = nextId + 1
-    this.saveBaseState(this.cache)
-    return nextId
-  }
-
-  // --- Private methods ---
-
-  private async saveAsync(state: BaseState): Promise<void> {
+  async saveBaseState(state: BaseState): Promise<void> {
     const db = await getDatabase()
+    // next_goblin_id はカウンター専用カラムなので、ここでは触らない
+    // getAndIncrementNextGoblinId() のみがアトミックに更新する
     await db.runAsync(
-      `INSERT OR REPLACE INTO base_state (
-        id, capacity, rank, captured_dungeons_json,
-        current_max_parties, current_max_goblins, current_iv_bonus, gold, updated_at
-      )
-       VALUES (1, ?, ?, ?, ?, ?, ?, ?, datetime('now'))`,
+      `UPDATE base_state SET
+        capacity = ?, rank = ?, captured_dungeons_json = ?,
+        current_max_parties = ?, current_max_goblins = ?,
+        current_iv_bonus = ?, gold = ?, updated_at = datetime('now')
+       WHERE id = 1`,
       [
         state.capacity,
         state.rank,
@@ -155,20 +82,49 @@ export class SQLiteBaseStateRepository implements IBaseStateRepository {
     )
   }
 
-  private async getNextGoblinId(): Promise<number> {
+  async ensureInitialized(): Promise<void> {
+    const db = await getDatabase()
+    const row = await db.getFirstAsync<{ id: number }>(
+      'SELECT id FROM base_state WHERE id = 1'
+    )
+    if (!row) {
+      await db.runAsync(
+        `INSERT INTO base_state (
+          id, capacity, rank, captured_dungeons_json,
+          current_max_parties, current_max_goblins, current_iv_bonus, gold,
+          next_goblin_id
+        ) VALUES (1, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [
+          DEFAULT_BASE_STATE.capacity,
+          DEFAULT_BASE_STATE.rank,
+          JSON.stringify(DEFAULT_BASE_STATE.capturedDungeons),
+          DEFAULT_BASE_STATE.currentMaxParties,
+          DEFAULT_BASE_STATE.currentMaxGoblins,
+          DEFAULT_BASE_STATE.currentIVBonus,
+          DEFAULT_BASE_STATE.gold,
+          DEFAULT_BASE_STATE.nextGoblinId ?? 1,
+        ]
+      )
+    }
+  }
+
+  /**
+   * 次のゴブリンIDをアトミックにインクリメントして返す
+   * UPDATE で +1 した後、更新後の値-1 を返す（採番された値）
+   */
+  async getAndIncrementNextGoblinId(): Promise<number> {
     const db = await getDatabase()
 
-    // goblins と pending_goblins の最大IDを取得
-    const goblinMax = await db.getFirstAsync<{ max_id: number | null }>(
-      'SELECT MAX(id) as max_id FROM goblins'
-    )
-    const pendingMax = await db.getFirstAsync<{ max_id: number | null }>(
-      'SELECT MAX(id) as max_id FROM pending_goblins'
+    // アトミックにインクリメント
+    await db.runAsync(
+      'UPDATE base_state SET next_goblin_id = next_goblin_id + 1 WHERE id = 1'
     )
 
-    const maxGoblin = goblinMax?.max_id ?? 0
-    const maxPending = pendingMax?.max_id ?? 0
+    // インクリメント後の値を取得（採番されたIDは -1 した値）
+    const row = await db.getFirstAsync<{ next_goblin_id: number }>(
+      'SELECT next_goblin_id FROM base_state WHERE id = 1'
+    )
 
-    return Math.max(maxGoblin, maxPending) + 1
+    return (row?.next_goblin_id ?? 2) - 1
   }
 }

@@ -11,7 +11,7 @@ import { useBaseState } from '@/presentation/hooks/useBaseState'
 import { CompleteExpeditionUseCase } from '@/core/usecases'
 import { GoblinBirthService } from '@/core/services'
 import { SQLiteEquipmentRepository } from '@/infrastructure/repositories/SQLiteEquipmentRepository'
-import type { TimelineEvent, ExpeditionReplay, ExpeditionRecord, ExpeditionEndReason } from '@/shared/types'
+import type { TimelineEvent, ExpeditionReplay, ExpeditionRecord, ExpeditionEndReason, Party } from '@/shared/types'
 import type { BattleLogEntry } from '@/shared/types'
 import { storeBattleLog } from '@/presentation/contexts/battleLogStore'
 import { getGoblinImage } from '@/shared/utils/goblinImages'
@@ -42,14 +42,23 @@ export default function ExpeditionPlaybackScreen() {
     isLoading: isExpeditionLoading,
   } = useExpeditionService()
 
-  const expeditionRecord = useMemo<ExpeditionRecord | null>(() => {
-    if (expeditionId) {
-      return getExpeditionById(expeditionId)
-    }
-    const numericPartyId = partyId ? Number.parseInt(partyId, 10) : NaN
-    if (Number.isNaN(numericPartyId)) return null
-    const history = getPartyExpeditionHistory(numericPartyId, 1)
-    return history[0] ?? null
+  const [expeditionRecord, setExpeditionRecord] = useState<ExpeditionRecord | null>(null)
+
+  useEffect(() => {
+    void (async () => {
+      if (expeditionId) {
+        const record = await getExpeditionById(expeditionId)
+        setExpeditionRecord(record)
+        return
+      }
+      const numericPartyId = partyId ? Number.parseInt(partyId, 10) : NaN
+      if (Number.isNaN(numericPartyId)) {
+        setExpeditionRecord(null)
+        return
+      }
+      const history = await getPartyExpeditionHistory(numericPartyId, 1)
+      setExpeditionRecord(history[0] ?? null)
+    })()
   }, [expeditionId, partyId, getExpeditionById, getPartyExpeditionHistory, expeditionRecords])
 
   const resolvedPartyId = useMemo(() => {
@@ -58,13 +67,14 @@ export default function ExpeditionPlaybackScreen() {
     return Number.isNaN(numericPartyId) ? null : numericPartyId
   }, [expeditionRecord, partyId])
 
-  const party = useMemo(() => {
-    if (!resolvedPartyId || isPartyLoading) return null
-    try {
-      return getPartyById(resolvedPartyId)
-    } catch {
-      return null
+  const [party, setParty] = useState<Party | null>(null)
+
+  useEffect(() => {
+    if (!resolvedPartyId || isPartyLoading) {
+      setParty(null)
+      return
     }
+    void getPartyById(resolvedPartyId).then(p => setParty(p)).catch(() => setParty(null))
   }, [resolvedPartyId, getPartyById, isPartyLoading])
 
   const dungeon = useMemo(() => {
@@ -91,7 +101,7 @@ export default function ExpeditionPlaybackScreen() {
     return new CompleteExpeditionUseCase(goblinRepository, partyRepository, baseStateRepository, SQLiteEquipmentRepository.getInstance())
   }, [goblinRepository, partyRepository, baseStateRepository])
 
-  const addPendingGoblinOnClear = useCallback(() => {
+  const addPendingGoblinOnClear = useCallback(async () => {
     if (!expeditionRecord || !replay || isPendingLoading || isBaseLoading) return
     const targetDungeon = dungeon ?? dungeons.find(area => area.id === expeditionRecord.dungeonId)
     if (!targetDungeon) return
@@ -103,11 +113,11 @@ export default function ExpeditionPlaybackScreen() {
     const maxPending = rank * 5
     if (pendingGoblins.length >= maxPending) return
 
-    const nextId = getNextGoblinId()
+    const nextId = await getNextGoblinId()
     const areaLevel = Math.min(64, targetDungeon.areaLevel ?? 1)
     const goblinBirthService = new GoblinBirthService()
     const newGoblin = goblinBirthService.createNewGoblin(nextId, undefined, goblins, areaLevel, rank)
-    addPendingGoblin(newGoblin)
+    await addPendingGoblin(newGoblin)
   }, [
     addPendingGoblin,
     dungeons,
@@ -246,8 +256,8 @@ export default function ExpeditionPlaybackScreen() {
 
     try {
       await completeExpeditionUseCase.execute(expeditionRecord.partyId, replay)
-      addPendingGoblinOnClear()
-      completeExpeditionRecord(expeditionRecord.id, replay)
+      await addPendingGoblinOnClear()
+      await completeExpeditionRecord(expeditionRecord.id, replay)
     } catch (error) {
       console.warn('[Playback] Failed to complete expedition', error)
     }

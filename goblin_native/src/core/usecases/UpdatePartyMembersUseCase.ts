@@ -10,8 +10,8 @@ export class UpdatePartyMembersUseCase {
     this.partyRepository = partyRepository
   }
 
-  public execute(partyId: number, memberIds: number[]): Party {
-    const party = this.partyRepository.getParty(partyId)
+  public async execute(partyId: number, memberIds: number[]): Promise<Party> {
+    const party = await this.partyRepository.getParty(partyId)
     if (!party) {
       throw new Error('パーティが見つかりません')
     }
@@ -26,7 +26,7 @@ export class UpdatePartyMembersUseCase {
       memberIds: uniqueMembers,
     }
 
-    this.partyRepository.saveParty(updated)
+    await this.partyRepository.saveParty(updated)
     return updated
   }
 }

@@ -1,4 +1,4 @@
-import { useMemo, useCallback } from 'react'
+import { useMemo, useCallback, useState, useEffect } from 'react'
 import { View, Text, FlatList, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { router, useLocalSearchParams } from 'expo-router'
@@ -36,9 +36,14 @@ export default function ExpeditionLogScreen() {
   const { getPartyById } = usePartyService()
   const { dungeons } = useDungeonProgress()
 
-  const party = useMemo(() => {
-    if (!partyId) return null
-    return getPartyById(parseInt(partyId, 10))
+  const [party, setParty] = useState<Awaited<ReturnType<typeof getPartyById>> | null>(null)
+
+  useEffect(() => {
+    if (!partyId) {
+      setParty(null)
+      return
+    }
+    void getPartyById(parseInt(partyId, 10)).then(p => setParty(p)).catch(() => setParty(null))
   }, [partyId, getPartyById])
 
   const dungeon = useMemo(() => {

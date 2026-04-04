@@ -8,7 +8,7 @@ export class GetGoblinListUseCase {
     this.goblinRepository = goblinRepository
   }
 
-  public execute(): Goblin[] {
+  public async execute(): Promise<Goblin[]> {
     return this.goblinRepository.getGoblins()
   }
 }

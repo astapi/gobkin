@@ -12,8 +12,8 @@ import {
 } from '../../core/usecases'
 
 export const usePartyService = () => {
-  const [repositoryInitialized, setRepositoryInitialized] = useState(false)
   const [parties, setParties] = useState<Party[]>([])
+  const [isLoading, setIsLoading] = useState(true)
 
   const partyRepository = useMemo<IPartyRepository>(() => {
     return SQLitePartyRepository.getInstance()
@@ -44,17 +44,14 @@ export const usePartyService = () => {
     [partyRepository],
   )
 
-  const refreshParties = useCallback(() => {
-    const currentParties = getPartyListUseCase.execute()
+  const refreshParties = useCallback(async () => {
+    const currentParties = await getPartyListUseCase.execute()
     setParties(currentParties)
   }, [getPartyListUseCase])
 
   useEffect(() => {
-    // 既に初期化済みなのでデータを取得
-    const currentParties = getPartyListUseCase.execute()
-    setParties(currentParties)
-    setRepositoryInitialized(true)
-  }, [getPartyListUseCase])
+    void refreshParties().then(() => setIsLoading(false))
+  }, [refreshParties])
 
   const getPartyById = useCallback(
     (partyId: number) => getPartyByIdUseCase.execute(partyId),
@@ -62,79 +59,79 @@ export const usePartyService = () => {
   )
 
   const addMember = useCallback(
-    (partyId: number, goblinId: number) => {
-      const updated = managePartyUseCase.addMember(partyId, goblinId.toString())
-      refreshParties()
+    async (partyId: number, goblinId: number) => {
+      const updated = await managePartyUseCase.addMember(partyId, goblinId.toString())
+      await refreshParties()
       return updated
     },
     [managePartyUseCase, refreshParties],
   )
 
   const removeMember = useCallback(
-    (partyId: number, goblinId: number) => {
-      const updated = managePartyUseCase.removeMember(partyId, goblinId.toString())
-      refreshParties()
+    async (partyId: number, goblinId: number) => {
+      const updated = await managePartyUseCase.removeMember(partyId, goblinId.toString())
+      await refreshParties()
       return updated
     },
     [managePartyUseCase, refreshParties],
   )
 
   const updateMembers = useCallback(
-    (partyId: number, memberIds: number[]) => {
-      const updated = updatePartyMembersUseCase.execute(partyId, memberIds)
-      refreshParties()
+    async (partyId: number, memberIds: number[]) => {
+      const updated = await updatePartyMembersUseCase.execute(partyId, memberIds)
+      await refreshParties()
       return updated
     },
     [updatePartyMembersUseCase, refreshParties],
   )
 
   const createParty = useCallback(
-    (input: Parameters<CreatePartyUseCase['execute']>[0]) => {
-      const created = createPartyUseCase.execute(input)
-      refreshParties()
+    async (input: Parameters<CreatePartyUseCase['execute']>[0]) => {
+      const created = await createPartyUseCase.execute(input)
+      await refreshParties()
       return created
     },
     [createPartyUseCase, refreshParties],
   )
 
   const markExpedition = useCallback(
-    (partyId: number) => {
-      managePartyUseCase.markExpedition(partyId)
-      refreshParties()
+    async (partyId: number) => {
+      await managePartyUseCase.markExpedition(partyId)
+      await refreshParties()
     },
     [managePartyUseCase, refreshParties],
   )
 
   const markIdle = useCallback(
-    (partyId: number) => {
-      managePartyUseCase.markIdle(partyId)
-      refreshParties()
+    async (partyId: number) => {
+      await managePartyUseCase.markIdle(partyId)
+      await refreshParties()
     },
     [managePartyUseCase, refreshParties],
   )
 
   const setDungeon = useCallback(
-    (partyId: number, dungeonId: string) => {
-      const updated = configurePartyUseCase.setDungeon(partyId, dungeonId)
-      refreshParties()
+    async (partyId: number, dungeonId: string) => {
+      const updated = await configurePartyUseCase.setDungeon(partyId, dungeonId)
+      await refreshParties()
       return updated
     },
     [configurePartyUseCase, refreshParties],
   )
 
   const setTargetFloor = useCallback(
-    (partyId: number, targetFloor: number | null) => {
-      const updated = configurePartyUseCase.setTargetFloor(partyId, targetFloor)
-      refreshParties()
+    async (partyId: number, targetFloor: number | null) => {
+      const updated = await configurePartyUseCase.setTargetFloor(partyId, targetFloor)
+      await refreshParties()
       return updated
     },
     [configurePartyUseCase, refreshParties],
   )
 
   const setReturnPolicy = useCallback(
-    (partyId: number, returnPolicy: Parameters<ConfigurePartyUseCase['setReturnPolicy']>[1]) => {
-      const updated = configurePartyUseCase.setReturnPolicy(partyId, returnPolicy)
-      refreshParties()
+    async (partyId: number, returnPolicy: Parameters<ConfigurePartyUseCase['setReturnPolicy']>[1]) => {
+      const updated = await configurePartyUseCase.setReturnPolicy(partyId, returnPolicy)
+      await refreshParties()
       return updated
     },
     [configurePartyUseCase, refreshParties],
@@ -143,7 +140,7 @@ export const usePartyService = () => {
   return {
     partyRepository,
     parties,
-    isLoading: !repositoryInitialized,
+    isLoading,
     refreshParties,
     getPartyById,
     createParty,

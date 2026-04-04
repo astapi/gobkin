@@ -7,7 +7,7 @@ import { useDungeonProgress } from '@/presentation/hooks/useDungeonProgress'
 import { useExpeditionFlow } from '@/presentation/hooks/useExpeditionFlow'
 import { getGoblinImage } from '@/shared/utils/goblinImages'
 import { getEffectiveStats } from '@/shared/utils/goblinStats'
-import type { ExpeditionRequest, Goblin, Dungeon } from '@/shared/types'
+import type { ExpeditionRequest, Goblin, Dungeon, Party } from '@/shared/types'
 
 type ReturnPolicy = ExpeditionRequest['returnPolicy']
 
@@ -66,14 +66,14 @@ export default function ExpeditionPreparationScreen() {
   const { dungeons, isLoading: dungeonsLoading } = useDungeonProgress()
   const { startExpedition, estimateExplorationTime } = useExpeditionFlow()
   const [retryCount, setRetryCount] = useState(0)
+  const [party, setParty] = useState<Party | null>(null)
 
-  const party = useMemo(() => {
-    if (!partyId) return null
-    try {
-      return getPartyById(parseInt(partyId, 10))
-    } catch {
-      return null
+  useEffect(() => {
+    if (!partyId) {
+      setParty(null)
+      return
     }
+    void getPartyById(parseInt(partyId, 10)).then(p => setParty(p)).catch(() => setParty(null))
   }, [partyId, parties, getPartyById])
 
   // パーティが見つからない場合にリトライ
@@ -91,7 +91,7 @@ export default function ExpeditionPreparationScreen() {
   useFocusEffect(
     useCallback(() => {
       void refreshParties()
-      refreshGoblins()
+      void refreshGoblins()
     }, [refreshParties, refreshGoblins])
   )
 
@@ -140,14 +140,14 @@ export default function ExpeditionPreparationScreen() {
   const handleSelectDungeon = useCallback((dungeon: Dungeon) => {
     setSelectedDungeonId(dungeon.id)
     if (partyId) {
-      setDungeon(parseInt(partyId, 10), dungeon.id)
+      void setDungeon(parseInt(partyId, 10), dungeon.id)
     }
   }, [partyId, setDungeon])
 
   const handleSelectReturnPolicy = useCallback((policy: ReturnPolicy) => {
     setSelectedReturnPolicy(policy)
     if (partyId) {
-      setReturnPolicy(parseInt(partyId, 10), policy)
+      void setReturnPolicy(parseInt(partyId, 10), policy)
     }
   }, [partyId, setReturnPolicy])
 

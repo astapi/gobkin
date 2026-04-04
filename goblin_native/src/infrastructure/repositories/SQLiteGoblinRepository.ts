@@ -1,6 +1,6 @@
 /**
  * SQLiteを使用したゴブリンリポジトリ実装
- * 内部キャッシュを使用して同期的なインターフェースを提供
+ * DBから直接読み書きする設計
  */
 import type { Goblin, GoblinStats } from '../../shared/types'
 import type { IGoblinRepository } from '../../core/repositories/IGoblinRepository'
@@ -25,12 +25,7 @@ interface GoblinRow {
 
 export class SQLiteGoblinRepository implements IGoblinRepository {
   private static instance: SQLiteGoblinRepository | null = null
-  private cache: Map<number, Goblin> = new Map()
-  private initialized = false
 
-  /**
-   * シングルトンインスタンスを取得
-   */
   static getInstance(): SQLiteGoblinRepository {
     if (!SQLiteGoblinRepository.instance) {
       SQLiteGoblinRepository.instance = new SQLiteGoblinRepository()
@@ -38,87 +33,19 @@ export class SQLiteGoblinRepository implements IGoblinRepository {
     return SQLiteGoblinRepository.instance
   }
 
-  /**
-   * リポジトリを初期化し、DBからデータをロード
-   */
-  async initialize(): Promise<void> {
-    if (this.initialized) return
-
+  async getGoblins(): Promise<Goblin[]> {
     const db = await getDatabase()
     const rows = await db.getAllAsync<GoblinRow>('SELECT * FROM goblins ORDER BY id')
-
-    this.cache.clear()
-    for (const row of rows) {
-      const goblin = this.rowToGoblin(row)
-      this.cache.set(goblin.id, goblin)
-    }
-
-    this.initialized = true
+    return rows.map(row => this.rowToGoblin(row))
   }
 
-  /**
-   * 全ゴブリンを取得
-   */
-  getGoblins(): Goblin[] {
-    return Array.from(this.cache.values())
+  async getGoblin(id: number): Promise<Goblin | null> {
+    const db = await getDatabase()
+    const row = await db.getFirstAsync<GoblinRow>('SELECT * FROM goblins WHERE id = ?', [id])
+    return row ? this.rowToGoblin(row) : null
   }
 
-  /**
-   * 指定IDのゴブリンを取得
-   */
-  getGoblin(id: number): Goblin | null {
-    return this.cache.get(id) ?? null
-  }
-
-  /**
-   * ゴブリンを保存（新規作成または更新）
-   */
-  saveGoblin(goblin: Goblin): void {
-    // キャッシュを即座に更新
-    this.cache.set(goblin.id, goblin)
-
-    // DBへの保存は非同期で実行
-    this.saveGoblinAsync(goblin).catch(err => {
-      console.error('[SQLiteGoblinRepository] Failed to save goblin:', err)
-    })
-  }
-
-  /**
-   * ゴブリンを削除
-   */
-  deleteGoblin(id: number): void {
-    this.cache.delete(id)
-
-    this.deleteGoblinAsync(id).catch(err => {
-      console.error('[SQLiteGoblinRepository] Failed to delete goblin:', err)
-    })
-  }
-
-  /**
-   * ゴブリンのステータスを更新
-   */
-  updateGoblinStats(id: number, stats: GoblinStats): void {
-    const goblin = this.cache.get(id)
-    if (!goblin) return
-
-    const updated = { ...goblin, stats }
-    this.saveGoblin(updated)
-  }
-
-  /**
-   * ゴブリンのレベルを更新
-   */
-  updateGoblinLevel(id: number, level: number): void {
-    const goblin = this.cache.get(id)
-    if (!goblin) return
-
-    const updated = { ...goblin, level }
-    this.saveGoblin(updated)
-  }
-
-  // --- Private methods ---
-
-  private async saveGoblinAsync(goblin: Goblin): Promise<void> {
+  async saveGoblin(goblin: Goblin): Promise<void> {
     const db = await getDatabase()
     await db.runAsync(
       `INSERT OR REPLACE INTO goblins
@@ -143,9 +70,23 @@ export class SQLiteGoblinRepository implements IGoblinRepository {
     )
   }
 
-  private async deleteGoblinAsync(id: number): Promise<void> {
+  async deleteGoblin(id: number): Promise<void> {
     const db = await getDatabase()
     await db.runAsync('DELETE FROM goblins WHERE id = ?', [id])
+  }
+
+  async updateGoblinStats(id: number, stats: GoblinStats): Promise<void> {
+    const goblin = await this.getGoblin(id)
+    if (!goblin) return
+
+    await this.saveGoblin({ ...goblin, stats })
+  }
+
+  async updateGoblinLevel(id: number, level: number): Promise<void> {
+    const goblin = await this.getGoblin(id)
+    if (!goblin) return
+
+    await this.saveGoblin({ ...goblin, level })
   }
 
   private rowToGoblin(row: GoblinRow): Goblin {

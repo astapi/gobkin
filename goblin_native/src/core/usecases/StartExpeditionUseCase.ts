@@ -29,7 +29,7 @@ export class StartExpeditionUseCase {
       throw new Error('パーティIDが不正です')
     }
 
-    const party = this.partyRepository.getParty(partyId)
+    const party = await this.partyRepository.getParty(partyId)
     if (!party) {
       throw new Error('パーティが見つかりません')
     }
@@ -39,20 +39,24 @@ export class StartExpeditionUseCase {
       throw new Error('パーティが遠征可能な状態ではありません')
     }
 
-    const goblins = this.loadPartyMembers(party)
+    const goblins = await this.loadPartyMembers(party)
     if (goblins.length === 0) {
       throw new Error('遠征可能なメンバーがいません')
     }
 
     const replay = await this.expeditionEngine.generateExpedition(request, goblins)
-    this.partyRepository.updatePartyStatus(partyId, 'expedition')
+    await this.partyRepository.updatePartyStatus(partyId, 'expedition')
     return replay
   }
 
-  private loadPartyMembers(party: Party): Goblin[] {
-    return party.memberIds
-      .map(id => this.goblinRepository.getGoblin(id))
-      .filter((goblin): goblin is Goblin => Boolean(goblin))
-      .map(goblin => new GoblinEntity(goblin).toSnapshot())
+  private async loadPartyMembers(party: Party): Promise<Goblin[]> {
+    const goblins: Goblin[] = []
+    for (const id of party.memberIds) {
+      const goblin = await this.goblinRepository.getGoblin(id)
+      if (goblin) {
+        goblins.push(new GoblinEntity(goblin).toSnapshot())
+      }
+    }
+    return goblins
   }
 }

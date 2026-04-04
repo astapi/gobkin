@@ -98,6 +98,7 @@ export const SCHEMA = {
       current_max_goblins INTEGER NOT NULL DEFAULT 10,
       current_iv_bonus INTEGER NOT NULL DEFAULT 0,
       gold INTEGER NOT NULL DEFAULT 0,
+      next_goblin_id INTEGER NOT NULL DEFAULT 1,
       updated_at TEXT NOT NULL DEFAULT (datetime('now'))
     )
   `,

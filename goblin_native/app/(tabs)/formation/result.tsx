@@ -9,7 +9,7 @@ import { useExpeditionService } from '@/presentation/hooks/useExpeditionService'
 import { getGoblinImage } from '@/shared/utils/goblinImages'
 import { getEffectiveStats } from '@/shared/utils/goblinStats'
 import { areasData } from '@/shared/data'
-import type { Goblin } from '@/shared/types'
+import type { Goblin, ExpeditionRecord, Party } from '@/shared/types'
 
 export default function ExpeditionResultScreen() {
   const { partyId, dungeonId, success, xpGained, maxFloor, expeditionId } = useLocalSearchParams<{
@@ -31,26 +31,41 @@ export default function ExpeditionResultScreen() {
     isLoading: isExpeditionLoading,
   } = useExpeditionService()
   const [hasRetriedLoad, setHasRetriedLoad] = useState(false)
+  const [expeditionRecord, setExpeditionRecord] = useState<ExpeditionRecord | null>(null)
 
-  const expeditionRecord = useMemo(() => {
-    if (!expeditionId) return null
-    const byId = getExpeditionById(expeditionId)
-    if (byId) return byId
-    return expeditionRecords.find(record => record.id === expeditionId) ?? null
+  useEffect(() => {
+    if (!expeditionId) {
+      setExpeditionRecord(null)
+      return
+    }
+    void (async () => {
+      const byId = await getExpeditionById(expeditionId)
+      if (byId) {
+        setExpeditionRecord(byId)
+      } else {
+        const fromList = expeditionRecords.find(record => record.id === expeditionId) ?? null
+        setExpeditionRecord(fromList)
+      }
+    })()
   }, [expeditionId, getExpeditionById, expeditionRecords])
 
   useEffect(() => {
     if (!expeditionId || isExpeditionLoading || expeditionRecord || hasRetriedLoad) return
-    refreshExpeditions()
+    void refreshExpeditions()
     setHasRetriedLoad(true)
   }, [expeditionId, expeditionRecord, hasRetriedLoad, isExpeditionLoading, refreshExpeditions])
 
   const replay = expeditionRecord?.replay ?? null
   const resolvedPartyId = expeditionRecord?.partyId ?? (partyId ? parseInt(partyId, 10) : null)
 
-  const party = useMemo(() => {
-    if (!resolvedPartyId) return null
-    return getPartyById(resolvedPartyId)
+  const [party, setParty] = useState<Party | null>(null)
+
+  useEffect(() => {
+    if (!resolvedPartyId) {
+      setParty(null)
+      return
+    }
+    void getPartyById(resolvedPartyId).then(p => setParty(p)).catch(() => setParty(null))
   }, [resolvedPartyId, getPartyById])
 
   const dungeon = useMemo(() => {
@@ -108,7 +123,7 @@ export default function ExpeditionResultScreen() {
     if (!replay || !dungeon) return
     const cleared = replay.summary.success && replay.summary.maxFloorReached >= dungeon.floors
     if (cleared && !dungeon.cleared) {
-      markDungeonCleared(dungeon, true)
+      void markDungeonCleared(dungeon, true)
     }
   }, [dungeon, markDungeonCleared, replay])
 
@@ -129,7 +144,7 @@ export default function ExpeditionResultScreen() {
     if (!nextProgress || !nextProgress.unlocked) return
     if (nextProgress.unlockNotified) return
     setShowUnlockNotice(true)
-    markUnlockNotified(unlockNext)
+    void markUnlockNotified(unlockNext)
   }, [unlockNext, isSuccess, progress, markUnlockNotified])
 
   if (expeditionId && (isExpeditionLoading || (!expeditionRecord && !hasRetriedLoad))) {

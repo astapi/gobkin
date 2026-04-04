@@ -5,8 +5,8 @@ import type { IGoblinRepository } from '../../core/repositories'
 import { GetGoblinListUseCase } from '../../core/usecases'
 
 export const useGoblinService = () => {
-  const [repositoryInitialized, setRepositoryInitialized] = useState(false)
   const [goblins, setGoblins] = useState<Goblin[]>([])
+  const [isLoading, setIsLoading] = useState(true)
 
   const goblinRepository = useMemo<IGoblinRepository>(() => {
     return SQLiteGoblinRepository.getInstance()
@@ -17,19 +17,18 @@ export const useGoblinService = () => {
     [goblinRepository],
   )
 
-  const refreshGoblins = useCallback(() => {
-    setGoblins(getGoblinListUseCase.execute())
+  const refreshGoblins = useCallback(async () => {
+    const list = await getGoblinListUseCase.execute()
+    setGoblins(list)
   }, [getGoblinListUseCase])
 
   useEffect(() => {
-    // 初回のデータ取得
-    refreshGoblins()
-    setRepositoryInitialized(true)
+    void refreshGoblins().then(() => setIsLoading(false))
   }, [refreshGoblins])
 
   const getGoblinById = useCallback(
-    (goblinId: number): Goblin => {
-      const goblin = goblinRepository.getGoblin(goblinId)
+    async (goblinId: number): Promise<Goblin> => {
+      const goblin = await goblinRepository.getGoblin(goblinId)
       if (!goblin) {
         throw new Error(`ID ${goblinId} のゴブリンが見つかりません`)
       }
@@ -39,25 +38,25 @@ export const useGoblinService = () => {
   )
 
   const saveGoblin = useCallback(
-    (goblin: Goblin) => {
-      goblinRepository.saveGoblin(goblin)
-      refreshGoblins()
+    async (goblin: Goblin) => {
+      await goblinRepository.saveGoblin(goblin)
+      await refreshGoblins()
     },
     [goblinRepository, refreshGoblins],
   )
 
   const deleteGoblin = useCallback(
-    (goblinId: number) => {
-      goblinRepository.deleteGoblin(goblinId)
-      refreshGoblins()
+    async (goblinId: number) => {
+      await goblinRepository.deleteGoblin(goblinId)
+      await refreshGoblins()
     },
     [goblinRepository, refreshGoblins],
   )
 
   const updateGoblinLevel = useCallback(
-    (goblinId: number, level: number) => {
-      goblinRepository.updateGoblinLevel(goblinId, level)
-      refreshGoblins()
+    async (goblinId: number, level: number) => {
+      await goblinRepository.updateGoblinLevel(goblinId, level)
+      await refreshGoblins()
     },
     [goblinRepository, refreshGoblins],
   )
@@ -65,7 +64,7 @@ export const useGoblinService = () => {
   return {
     goblinRepository,
     goblins,
-    isLoading: !repositoryInitialized,
+    isLoading,
     refreshGoblins,
     getGoblinById,
     saveGoblin,

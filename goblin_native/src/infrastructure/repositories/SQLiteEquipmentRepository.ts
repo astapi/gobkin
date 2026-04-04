@@ -1,6 +1,6 @@
 /**
  * SQLiteを使用した装備リポジトリ実装
- * SQLiteGoblinRepository と同じシングルトン+キャッシュパターン
+ * DBから直接読み書きする設計
  */
 import type { EquipmentInstance } from '../../shared/types'
 import type { IEquipmentRepository } from '../../core/repositories/IEquipmentRepository'
@@ -18,8 +18,6 @@ interface EquipmentRow {
 
 export class SQLiteEquipmentRepository implements IEquipmentRepository {
   private static instance: SQLiteEquipmentRepository | null = null
-  private cache: Map<string, EquipmentInstance> = new Map()
-  private initialized = false
 
   static getInstance(): SQLiteEquipmentRepository {
     if (!SQLiteEquipmentRepository.instance) {
@@ -28,56 +26,30 @@ export class SQLiteEquipmentRepository implements IEquipmentRepository {
     return SQLiteEquipmentRepository.instance
   }
 
-  async initialize(): Promise<void> {
-    if (this.initialized) return
-
+  async getAll(): Promise<EquipmentInstance[]> {
     const db = await getDatabase()
     const rows = await db.getAllAsync<EquipmentRow>('SELECT * FROM equipment')
-
-    this.cache.clear()
-    for (const row of rows) {
-      const eq = this.rowToEquipment(row)
-      this.cache.set(eq.id, eq)
-    }
-
-    this.initialized = true
+    return rows.map(row => this.rowToEquipment(row))
   }
 
-  getAll(): EquipmentInstance[] {
-    return Array.from(this.cache.values())
-  }
-
-  getByGoblinId(goblinId: number): EquipmentInstance[] {
-    return Array.from(this.cache.values()).filter(
-      (eq) => eq.goblinId === goblinId && eq.slotIndex >= 0
+  async getByGoblinId(goblinId: number): Promise<EquipmentInstance[]> {
+    const db = await getDatabase()
+    const rows = await db.getAllAsync<EquipmentRow>(
+      'SELECT * FROM equipment WHERE goblin_id = ? AND slot_index >= 0',
+      [goblinId]
     )
+    return rows.map(row => this.rowToEquipment(row))
   }
 
-  getUnequipped(): EquipmentInstance[] {
-    return Array.from(this.cache.values()).filter(
-      (eq) => eq.goblinId === null || eq.slotIndex < 0
+  async getUnequipped(): Promise<EquipmentInstance[]> {
+    const db = await getDatabase()
+    const rows = await db.getAllAsync<EquipmentRow>(
+      'SELECT * FROM equipment WHERE goblin_id IS NULL OR slot_index < 0'
     )
+    return rows.map(row => this.rowToEquipment(row))
   }
 
-  save(equipment: EquipmentInstance): void {
-    this.cache.set(equipment.id, equipment)
-
-    this.saveAsync(equipment).catch((err) => {
-      console.error('[SQLiteEquipmentRepository] Failed to save equipment:', err)
-    })
-  }
-
-  delete(id: string): void {
-    this.cache.delete(id)
-
-    this.deleteAsync(id).catch((err) => {
-      console.error('[SQLiteEquipmentRepository] Failed to delete equipment:', err)
-    })
-  }
-
-  // --- Private methods ---
-
-  private async saveAsync(equipment: EquipmentInstance): Promise<void> {
+  async save(equipment: EquipmentInstance): Promise<void> {
     const db = await getDatabase()
     await db.runAsync(
       `INSERT OR REPLACE INTO equipment (id, template_id, slot_index, goblin_id, title_id, title_name)
@@ -93,7 +65,7 @@ export class SQLiteEquipmentRepository implements IEquipmentRepository {
     )
   }
 
-  private async deleteAsync(id: string): Promise<void> {
+  async delete(id: string): Promise<void> {
     const db = await getDatabase()
     await db.runAsync('DELETE FROM equipment WHERE id = ?', [id])
   }
