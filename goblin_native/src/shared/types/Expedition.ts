@@ -1,6 +1,7 @@
 import type { EnemySnap } from "./Enemy"
 import type { CombatReplay } from "./Battle"
 import type { EquipmentTitleId } from "./EquipmentTitle"
+import type { Goblin } from "./Goblin"
 
 export interface ExpeditionRequest {
   partyId: string
@@ -28,6 +29,7 @@ export interface ExpeditionReplay {
     floors: number
     baseDurationSec: number
     party: string[]
+    partySnapshot?: Goblin[]
     returnPolicy: ExpeditionRequest["returnPolicy"]
     seed: number
     serverCommitHash?: string

@@ -290,6 +290,7 @@ export class ExpeditionEngine {
         floors: area.floors,
         baseDurationSec: adjustedDuration,
         party: party.map(g => g.id.toString()),
+        partySnapshot: party.map(g => ({ ...g })),
         returnPolicy: request.returnPolicy,
         seed: this.seed
       },
