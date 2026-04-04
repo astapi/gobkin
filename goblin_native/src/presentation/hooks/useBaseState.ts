@@ -16,33 +16,34 @@ export function useBaseState() {
   const [isLoading, setIsLoading] = useState(true)
   const repositoryRef = useRef<SQLiteBaseStateRepository | null>(null)
 
-  // リポジトリからデータを取得（アプリ起動時に既に初期化済み）
   useEffect(() => {
     const repository = getRepository()
     repositoryRef.current = repository
 
-    // 初回のデータ取得
-    setBaseState(repository.getBaseState())
-    setIsLoading(false)
+    void repository.getBaseState().then(state => {
+      setBaseState(state)
+      setIsLoading(false)
+    })
   }, [])
 
-  // 拠点ランクアップ
-  const upgradeRank = useCallback(() => {
-    if (!repositoryRef.current) return
+  const upgradeRank = useCallback(async () => {
+    if (!repositoryRef.current || !baseState) return
 
-    repositoryRef.current.upgradeRank()
-    setBaseState(repositoryRef.current.getBaseState())
-  }, [])
+    // upgradeRank はもう BaseRankSystem 経由で行うため、ここでは performRankUp を使う
+    const result = executeRankUp(baseState)
+    if (result.success) {
+      await repositoryRef.current.saveBaseState(result.state)
+      setBaseState(result.state)
+    }
+  }, [baseState])
 
-  // 次のゴブリンIDを取得して更新
-  const getNextGoblinId = useCallback((): number => {
+  const getNextGoblinId = useCallback(async (): Promise<number> => {
     if (!repositoryRef.current) return 1
 
     return repositoryRef.current.getAndIncrementNextGoblinId()
   }, [])
 
-  // 拠点状態を更新
-  const updateBaseState = useCallback((updates: Partial<BaseState>) => {
+  const updateBaseState = useCallback(async (updates: Partial<BaseState>) => {
     if (!repositoryRef.current || !baseState) return
 
     const newState: BaseState = {
@@ -50,19 +51,18 @@ export function useBaseState() {
       ...updates,
     }
 
-    repositoryRef.current.saveBaseState(newState)
+    await repositoryRef.current.saveBaseState(newState)
     setBaseState(newState)
   }, [baseState])
 
-  // ランクアップを実行
-  const performRankUp = useCallback(() => {
+  const performRankUp = useCallback(async () => {
     if (!repositoryRef.current || !baseState) {
       return { success: false, error: '拠点状態が読み込まれていません' }
     }
 
     const result = executeRankUp(baseState)
     if (result.success) {
-      repositoryRef.current.saveBaseState(result.state)
+      await repositoryRef.current.saveBaseState(result.state)
       setBaseState(result.state)
     }
 

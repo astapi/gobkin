@@ -15,48 +15,47 @@ export function usePendingGoblins() {
   const [isLoading, setIsLoading] = useState(true)
   const repositoryRef = useRef<SQLitePendingGoblinRepository | null>(null)
 
-  // リポジトリからデータを取得（アプリ起動時に既に初期化済み）
   useEffect(() => {
     const repository = getRepository()
     repositoryRef.current = repository
 
-    // 初回のデータ取得
-    setPendingGoblins(repository.getPendingGoblins())
-    setIsLoading(false)
+    void repository.getPendingGoblins().then(goblins => {
+      setPendingGoblins(goblins)
+      setIsLoading(false)
+    })
   }, [])
 
-  // 待機中ゴブリンを追加
-  const addPendingGoblin = useCallback((goblin: Goblin) => {
+  const addPendingGoblin = useCallback(async (goblin: Goblin) => {
     if (!repositoryRef.current) return
 
-    repositoryRef.current.addPendingGoblin(goblin)
-    setPendingGoblins(repositoryRef.current.getPendingGoblins())
+    await repositoryRef.current.addPendingGoblin(goblin)
+    const goblins = await repositoryRef.current.getPendingGoblins()
+    setPendingGoblins(goblins)
   }, [])
 
-  // 待機中ゴブリンを削除（受け入れ時）
-  const removePendingGoblin = useCallback((id: number) => {
+  const removePendingGoblin = useCallback(async (id: number) => {
     if (!repositoryRef.current) return
 
-    repositoryRef.current.removePendingGoblin(id)
-    setPendingGoblins(repositoryRef.current.getPendingGoblins())
+    await repositoryRef.current.removePendingGoblin(id)
+    const goblins = await repositoryRef.current.getPendingGoblins()
+    setPendingGoblins(goblins)
   }, [])
 
-  // 全待機中ゴブリンをクリア
-  const clearPendingGoblins = useCallback(() => {
+  const clearPendingGoblins = useCallback(async () => {
     if (!repositoryRef.current) return
 
-    repositoryRef.current.clearPendingGoblins()
+    await repositoryRef.current.clearPendingGoblins()
     setPendingGoblins([])
   }, [])
 
-  // 指定IDの待機中ゴブリンを取得
   const getPendingGoblinById = useCallback((id: number): Goblin | undefined => {
     return pendingGoblins.find(g => g.id === id)
   }, [pendingGoblins])
 
-  const refreshPendingGoblins = useCallback(() => {
+  const refreshPendingGoblins = useCallback(async () => {
     if (!repositoryRef.current) return
-    setPendingGoblins(repositoryRef.current.getPendingGoblins())
+    const goblins = await repositoryRef.current.getPendingGoblins()
+    setPendingGoblins(goblins)
   }, [])
 
   return {

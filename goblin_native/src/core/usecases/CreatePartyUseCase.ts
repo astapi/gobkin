@@ -15,8 +15,8 @@ export class CreatePartyUseCase {
     this.partyRepository = partyRepository
   }
 
-  public execute(input: CreatePartyInput): Party {
-    const parties = this.partyRepository.getParties()
+  public async execute(input: CreatePartyInput): Promise<Party> {
+    const parties = await this.partyRepository.getParties()
     const nextId =
       parties.length === 0 ? 1 : Math.max(...parties.map(existing => existing.id)) + 1
 
@@ -31,7 +31,7 @@ export class CreatePartyUseCase {
       returnPolicy: input.returnPolicy,
     }
 
-    this.partyRepository.saveParty(party)
+    await this.partyRepository.saveParty(party)
     return party
   }
 }

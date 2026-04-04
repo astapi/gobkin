@@ -8,8 +8,8 @@ export class GetPartyByIdUseCase {
     this.partyRepository = partyRepository
   }
 
-  public execute(partyId: number): Party {
-    const party = this.partyRepository.getParty(partyId)
+  public async execute(partyId: number): Promise<Party> {
+    const party = await this.partyRepository.getParty(partyId)
     if (!party) {
       throw new Error(`ID ${partyId} のパーティが見つかりません`)
     }

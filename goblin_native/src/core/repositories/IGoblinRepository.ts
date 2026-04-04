@@ -1,10 +1,10 @@
 import type { Goblin } from '../../shared/types'
 
 export interface IGoblinRepository {
-  getGoblins(): Goblin[]
-  getGoblin(id: number): Goblin | null
-  saveGoblin(goblin: Goblin): void
-  deleteGoblin(id: number): void
-  updateGoblinStats(id: number, stats: Goblin['stats']): void
-  updateGoblinLevel(id: number, level: number): void
+  getGoblins(): Promise<Goblin[]>
+  getGoblin(id: number): Promise<Goblin | null>
+  saveGoblin(goblin: Goblin): Promise<void>
+  deleteGoblin(id: number): Promise<void>
+  updateGoblinStats(id: number, stats: Goblin['stats']): Promise<void>
+  updateGoblinLevel(id: number, level: number): Promise<void>
 }

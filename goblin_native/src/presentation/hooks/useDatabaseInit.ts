@@ -1,36 +1,28 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { getDatabase, resetDatabase } from '@/infrastructure/database'
 import { SQLiteDungeonProgressRepository } from '@/infrastructure/repositories/SQLiteDungeonProgressRepository'
-import { SQLiteGoblinRepository } from '@/infrastructure/repositories/SQLiteGoblinRepository'
-import { SQLitePartyRepository } from '@/infrastructure/repositories/SQLitePartyRepository'
 import { SQLiteBaseStateRepository } from '@/infrastructure/repositories/SQLiteBaseStateRepository'
-import { SQLiteExpeditionRepository } from '@/infrastructure/repositories/SQLiteExpeditionRepository'
-import { SQLitePendingGoblinRepository } from '@/infrastructure/repositories/SQLitePendingGoblinRepository'
 import { areasData } from '@/shared/data'
 
-async function initializeRepositories(): Promise<void> {
+async function ensureDefaults(): Promise<void> {
   await getDatabase()
 
-  await Promise.all([
-    SQLiteGoblinRepository.getInstance().initialize(),
-    SQLitePartyRepository.getInstance().initialize(),
-    SQLiteBaseStateRepository.getInstance().initialize(),
-    SQLiteExpeditionRepository.getInstance().initialize(),
-    SQLitePendingGoblinRepository.getInstance().initialize(),
-    SQLiteDungeonProgressRepository.getInstance().initialize(),
-  ])
+  // 拠点状態がなければデフォルト値を作成
+  await SQLiteBaseStateRepository.getInstance().ensureInitialized()
 
+  // ダンジョンプログレス初期値設定
   const dungeonProgressRepo = SQLiteDungeonProgressRepository.getInstance()
-  const storedProgress = dungeonProgressRepo.getAll()
-  areasData.forEach((dungeon, index) => {
+  const storedProgress = await dungeonProgressRepo.getAll()
+  for (let index = 0; index < areasData.length; index++) {
+    const dungeon = areasData[index]
     if (!storedProgress[dungeon.id]) {
-      dungeonProgressRepo.save(dungeon.id, {
+      await dungeonProgressRepo.save(dungeon.id, {
         unlocked: dungeon.unlocked ?? index === 0,
         cleared: dungeon.cleared ?? false,
         unlockNotified: false,
       })
     }
-  })
+  }
 }
 
 export const useDatabaseInit = () => {
@@ -42,7 +34,7 @@ export const useDatabaseInit = () => {
     mountedRef.current = true
     const run = async () => {
       try {
-        await initializeRepositories()
+        await ensureDefaults()
         if (mountedRef.current) setReady(true)
       } catch (e) {
         if (mountedRef.current) {
@@ -59,7 +51,7 @@ export const useDatabaseInit = () => {
     setError(null)
     try {
       await resetDatabase()
-      await initializeRepositories()
+      await ensureDefaults()
       setReady(true)
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Database reset failed')

@@ -9,34 +9,34 @@ export class ManagePartyUseCase {
     this.partyRepository = partyRepository
   }
 
-  public addMember(partyId: number, goblinId: string): Party {
-    const party = this.requireParty(partyId)
+  public async addMember(partyId: number, goblinId: string): Promise<Party> {
+    const party = await this.requireParty(partyId)
     const partyEntity = new PartyEntity(party)
     partyEntity.addMember(goblinId)
     const updated = partyEntity.toSnapshot()
-    this.partyRepository.saveParty(updated)
+    await this.partyRepository.saveParty(updated)
     return updated
   }
 
-  public removeMember(partyId: number, goblinId: string): Party {
-    const party = this.requireParty(partyId)
+  public async removeMember(partyId: number, goblinId: string): Promise<Party> {
+    const party = await this.requireParty(partyId)
     const partyEntity = new PartyEntity(party)
     partyEntity.removeMember(goblinId)
     const updated = partyEntity.toSnapshot()
-    this.partyRepository.saveParty(updated)
+    await this.partyRepository.saveParty(updated)
     return updated
   }
 
-  public markIdle(partyId: number): void {
-    this.partyRepository.updatePartyStatus(partyId, 'idle')
+  public async markIdle(partyId: number): Promise<void> {
+    await this.partyRepository.updatePartyStatus(partyId, 'idle')
   }
 
-  public markExpedition(partyId: number): void {
-    this.partyRepository.updatePartyStatus(partyId, 'expedition')
+  public async markExpedition(partyId: number): Promise<void> {
+    await this.partyRepository.updatePartyStatus(partyId, 'expedition')
   }
 
-  private requireParty(partyId: number): Party {
-    const party = this.partyRepository.getParty(partyId)
+  private async requireParty(partyId: number): Promise<Party> {
+    const party = await this.partyRepository.getParty(partyId)
     if (!party) {
       throw new Error(`ID ${partyId} のパーティが見つかりません`)
     }

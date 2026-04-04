@@ -24,12 +24,7 @@ interface PendingGoblinRow {
 
 export class SQLitePendingGoblinRepository implements IPendingGoblinRepository {
   private static instance: SQLitePendingGoblinRepository | null = null
-  private cache: Map<number, Goblin> = new Map()
-  private initialized = false
 
-  /**
-   * シングルトンインスタンスを取得
-   */
   static getInstance(): SQLitePendingGoblinRepository {
     if (!SQLitePendingGoblinRepository.instance) {
       SQLitePendingGoblinRepository.instance = new SQLitePendingGoblinRepository()
@@ -37,69 +32,15 @@ export class SQLitePendingGoblinRepository implements IPendingGoblinRepository {
     return SQLitePendingGoblinRepository.instance
   }
 
-  /**
-   * リポジトリを初期化し、DBからデータをロード
-   */
-  async initialize(): Promise<void> {
-    if (this.initialized) return
-
+  async getPendingGoblins(): Promise<Goblin[]> {
     const db = await getDatabase()
     const rows = await db.getAllAsync<PendingGoblinRow>(
       'SELECT * FROM pending_goblins ORDER BY created_at DESC'
     )
-
-    this.cache.clear()
-    for (const row of rows) {
-      const goblin = this.rowToGoblin(row)
-      this.cache.set(goblin.id, goblin)
-    }
-
-    this.initialized = true
+    return rows.map(row => this.rowToGoblin(row))
   }
 
-  /**
-   * 待機中の全ゴブリンを取得
-   */
-  getPendingGoblins(): Goblin[] {
-    return Array.from(this.cache.values())
-  }
-
-  /**
-   * 待機中ゴブリンを追加
-   */
-  addPendingGoblin(goblin: Goblin): void {
-    this.cache.set(goblin.id, goblin)
-
-    this.addAsync(goblin).catch(err => {
-      console.error('[SQLitePendingGoblinRepository] Failed to add:', err)
-    })
-  }
-
-  /**
-   * 待機中ゴブリンを削除（受け入れ時）
-   */
-  removePendingGoblin(id: number): void {
-    this.cache.delete(id)
-
-    this.removeAsync(id).catch(err => {
-      console.error('[SQLitePendingGoblinRepository] Failed to remove:', err)
-    })
-  }
-
-  /**
-   * 全待機中ゴブリンをクリア
-   */
-  clearPendingGoblins(): void {
-    this.cache.clear()
-
-    this.clearAsync().catch(err => {
-      console.error('[SQLitePendingGoblinRepository] Failed to clear:', err)
-    })
-  }
-
-  // --- Private methods ---
-
-  private async addAsync(goblin: Goblin): Promise<void> {
+  async addPendingGoblin(goblin: Goblin): Promise<void> {
     const db = await getDatabase()
     await db.runAsync(
       `INSERT OR REPLACE INTO pending_goblins
@@ -124,12 +65,12 @@ export class SQLitePendingGoblinRepository implements IPendingGoblinRepository {
     )
   }
 
-  private async removeAsync(id: number): Promise<void> {
+  async removePendingGoblin(id: number): Promise<void> {
     const db = await getDatabase()
     await db.runAsync('DELETE FROM pending_goblins WHERE id = ?', [id])
   }
 
-  private async clearAsync(): Promise<void> {
+  async clearPendingGoblins(): Promise<void> {
     const db = await getDatabase()
     await db.runAsync('DELETE FROM pending_goblins')
   }

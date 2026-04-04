@@ -5,7 +5,7 @@ import { usePartyService } from '@/presentation/hooks/usePartyService'
 import { useGoblinService } from '@/presentation/hooks/useGoblinService'
 import { getGoblinImage } from '@/shared/utils/goblinImages'
 import { GoblinCard } from '@/presentation/components/GoblinCard'
-import type { Goblin } from '@/shared/types'
+import type { Goblin, Party } from '@/shared/types'
 
 const MAX_PARTY_SIZE = 6
 
@@ -63,14 +63,14 @@ export default function PartyEditScreen() {
   const { parties, isLoading: partiesLoading, updateMembers, getPartyById, refreshParties } = usePartyService()
   const { goblins, isLoading: goblinsLoading } = useGoblinService()
   const [retryCount, setRetryCount] = useState(0)
+  const [party, setParty] = useState<Party | null>(null)
 
-  const party = useMemo(() => {
-    if (!partyId) return null
-    try {
-      return getPartyById(parseInt(partyId, 10))
-    } catch {
-      return null
+  useEffect(() => {
+    if (!partyId) {
+      setParty(null)
+      return
     }
+    void getPartyById(parseInt(partyId, 10)).then(p => setParty(p)).catch(() => setParty(null))
   }, [partyId, parties, getPartyById])
 
   // パーティが見つからない場合にリトライ
@@ -173,9 +173,9 @@ export default function PartyEditScreen() {
     }
   }, [selectedMemberIds, selectedSlotIndex, assignedToOtherParty])
 
-  const handleSave = useCallback(() => {
+  const handleSave = useCallback(async () => {
     if (!partyId) return
-    updateMembers(parseInt(partyId, 10), selectedMemberIds)
+    await updateMembers(parseInt(partyId, 10), selectedMemberIds)
     router.back()
   }, [partyId, selectedMemberIds, updateMembers])
 

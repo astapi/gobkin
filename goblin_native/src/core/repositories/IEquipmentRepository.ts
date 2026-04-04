@@ -1,9 +1,9 @@
 import type { EquipmentInstance } from '../../shared/types'
 
 export interface IEquipmentRepository {
-  getAll(): EquipmentInstance[]
-  getByGoblinId(goblinId: number): EquipmentInstance[]
-  getUnequipped(): EquipmentInstance[]
-  save(equipment: EquipmentInstance): void
-  delete(id: string): void
+  getAll(): Promise<EquipmentInstance[]>
+  getByGoblinId(goblinId: number): Promise<EquipmentInstance[]>
+  getUnequipped(): Promise<EquipmentInstance[]>
+  save(equipment: EquipmentInstance): Promise<void>
+  delete(id: string): Promise<void>
 }

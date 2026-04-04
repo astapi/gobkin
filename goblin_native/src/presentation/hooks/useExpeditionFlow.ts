@@ -76,7 +76,7 @@ export const useExpeditionFlow = ({
     return new CompleteExpeditionUseCase(goblinRepository, partyRepository, baseStateRepository, SQLiteEquipmentRepository.getInstance())
   }, [goblinRepository, partyRepository, baseStateRepository])
 
-  const handleDungeonClear = useCallback((record: ExpeditionRecord) => {
+  const handleDungeonClear = useCallback(async (record: ExpeditionRecord) => {
     if (!record.replay || isPendingLoading || isBaseLoading) return
 
     const dungeon = areasData.find(area => area.id === record.dungeonId)
@@ -86,23 +86,22 @@ export const useExpeditionFlow = ({
       record.replay.summary.maxFloorReached >= dungeon.floors
     if (!cleared) return
 
-    markDungeonCleared(dungeon, true)
+    await markDungeonCleared(dungeon, true)
 
     const maxPending = rank * 5
     if (pendingGoblins.length >= maxPending) return
 
-    const nextId = getNextGoblinId()
+    const nextId = await getNextGoblinId()
     const areaLevel = dungeon.areaLevel ?? 1
     const goblinBirthService = new GoblinBirthService()
-    // 個体値は自動計算される（areaLevel + 拠点ランクボーナス）
     const newGoblin = goblinBirthService.createNewGoblin(
       nextId,
-      undefined,  // individualValueは指定しない（自動計算）
-      goblins,    // baseGoblins（因子継承用）
-      areaLevel,  // エリアレベル
-      rank        // 拠点ランク
+      undefined,
+      goblins,
+      areaLevel,
+      rank
     )
-    addPendingGoblin(newGoblin)
+    await addPendingGoblin(newGoblin)
   }, [
     addPendingGoblin,
     getNextGoblinId,
@@ -202,7 +201,7 @@ export const useExpeditionFlow = ({
           updatedAt: startTime,
         }
 
-        saveExpeditionRecord(record)
+        await saveExpeditionRecord(record)
 
         return { replay, record }
       } finally {
@@ -226,7 +225,6 @@ export const useExpeditionFlow = ({
       try {
         const result = await completeExpeditionUseCase.execute(record.partyId, record.replay!)
 
-        // 新しくダンジョンを制圧した場合の通知
         if (result.newDungeonCaptured) {
           const dungeon = areasData.find(d => d.id === result.newDungeonCaptured)
           if (dungeon?.isBaseCapture) {
@@ -238,11 +236,11 @@ export const useExpeditionFlow = ({
           }
         }
 
-        handleDungeonClear(record)
-        completeExpeditionRecord(record.id, record.replay!)
+        await handleDungeonClear(record)
+        await completeExpeditionRecord(record.id, record.replay!)
         processedExpeditionsRef.current.add(record.id)
         if (refreshParties) {
-          refreshParties()
+          await refreshParties()
         }
       } catch (error) {
         console.warn('[useExpeditionFlow] Failed to complete expedition', error)
@@ -257,14 +255,24 @@ export const useExpeditionFlow = ({
     refreshParties,
   ])
 
-  const partyHistories = useMemo(() => {
-    return (parties ?? []).reduce<Record<number, ExpeditionRecord[]>>((acc, party) => {
-      const history = getPartyExpeditionHistory(party.id, 2)
-      if (history.length > 0) {
-        acc[party.id] = history
+  const [partyHistories, setPartyHistories] = useState<Record<number, ExpeditionRecord[]>>({})
+
+  useEffect(() => {
+    if (!parties || parties.length === 0) {
+      setPartyHistories({})
+      return
+    }
+    const loadHistories = async () => {
+      const result: Record<number, ExpeditionRecord[]> = {}
+      for (const party of parties) {
+        const history = await getPartyExpeditionHistory(party.id, 2)
+        if (history.length > 0) {
+          result[party.id] = history
+        }
       }
-      return acc
-    }, {})
+      setPartyHistories(result)
+    }
+    void loadHistories()
   }, [parties, expeditionRecords, getPartyExpeditionHistory])
 
   const partyHistoryDisplays = useMemo(() => {

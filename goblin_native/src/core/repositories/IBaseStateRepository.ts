@@ -1,7 +1,7 @@
 import type { BaseState } from '../../shared/types'
 
 export interface IBaseStateRepository {
-  initialize(): Promise<void>
-  getBaseState(): BaseState | null
-  saveBaseState(state: BaseState): void
+  getBaseState(): Promise<BaseState | null>
+  saveBaseState(state: BaseState): Promise<void>
+  getAndIncrementNextGoblinId(): Promise<number>
 }
