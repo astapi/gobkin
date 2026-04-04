@@ -43,7 +43,17 @@ export default function RootLayout() {
             <ResetProvider resetAndReinitialize={resetAndReinitialize}>
               <Stack screenOptions={{ headerShown: false }}>
                 <Stack.Screen name="(tabs)" />
-                <Stack.Screen name="goblin" />
+                <Stack.Screen
+                  name="goblin"
+                  options={{
+                    headerShown: true,
+                    headerStyle: { backgroundColor: '#FFFFFF' },
+                    headerTitleStyle: { color: '#1F2937', fontWeight: 'bold' },
+                    headerTintColor: '#6B7280',
+                    headerBackTitle: '戻る',
+                    title: 'ゴブリン詳細',
+                  }}
+                />
               </Stack>
               <StatusBar style="auto" />
             </ResetProvider>
