@@ -90,6 +90,11 @@ export default function ExpeditionPlaybackScreen() {
   const [replay, setReplay] = useState<ExpeditionReplay | null>(null)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
+  const partyGoblins = useMemo(() => {
+    if (!replay?.meta.partySnapshot) return []
+    return replay.meta.partySnapshot
+  }, [replay])
+
   const progressAnim = useRef(new Animated.Value(0)).current
   const playbackTimerRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const startTimestampRef = useRef<number>(0)
@@ -175,7 +180,7 @@ export default function ExpeditionPlaybackScreen() {
           xpGained: event.xp,
           goldGained: event.enemy.gold,
           members: partyMembers.map((memberId, idx) => {
-            const goblin = goblins.find(g => g.id === parseInt(memberId, 10))
+            const goblin = partyGoblins[idx]
             const allyLog = event.combat.detailedLog?.filter(e => e.isAlly && e.action !== 'turn_start')
             const lastEntry = allyLog?.findLast(e => e.actorId === memberId)
             return {
@@ -214,7 +219,7 @@ export default function ExpeditionPlaybackScreen() {
       default:
         return [createEntry('イベント発生')]
     }
-  }, [getReturnReasonText, goblins, replay])
+  }, [getReturnReasonText, partyGoblins, replay])
 
   const applyEvent = useCallback((event: TimelineEvent, eventTime: number) => {
     const entries = buildLogEntries(event)
@@ -312,8 +317,7 @@ export default function ExpeditionPlaybackScreen() {
       clearInterval(playbackTimerRef.current)
     }
 
-    const initialPartyHp = replay.meta.party.map(memberId => {
-      const goblin = goblins.find(g => g.id === parseInt(memberId, 10))
+    const initialPartyHp = partyGoblins.map(goblin => {
       return goblin ? ModStatCalculator.calculate(goblin).hp : 100
     })
     let tempHp = [...initialPartyHp]
@@ -404,7 +408,6 @@ export default function ExpeditionPlaybackScreen() {
     completePlayback,
     progressAnim,
     initialTime,
-    goblins,
     applyEvent,
     playbackEvents,
     playbackDuration,
@@ -463,7 +466,7 @@ export default function ExpeditionPlaybackScreen() {
 
       <View style={styles.partyGrid}>
         {replay.meta.party.map((memberId, index) => {
-          const goblin = goblins.find(g => g.id === parseInt(memberId, 10))
+          const goblin = partyGoblins[index]
           const maxHp = goblin ? ModStatCalculator.calculate(goblin).hp : 100
           const currentHp = partyHp[index] ?? maxHp
           return (

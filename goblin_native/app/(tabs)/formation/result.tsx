@@ -2,27 +2,17 @@ import { useMemo, useCallback, useEffect, useState } from 'react'
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Image, ActivityIndicator } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { router, useLocalSearchParams } from 'expo-router'
-import { usePartyService } from '@/presentation/hooks/usePartyService'
-import { useGoblinService } from '@/presentation/hooks/useGoblinService'
 import { useDungeonProgress } from '@/presentation/hooks/useDungeonProgress'
 import { useExpeditionService } from '@/presentation/hooks/useExpeditionService'
 import { getGoblinImage } from '@/shared/utils/goblinImages'
-import { getEffectiveStats } from '@/shared/utils/goblinStats'
 import { areasData } from '@/shared/data'
-import type { Goblin, ExpeditionRecord, Party } from '@/shared/types'
+import { ModStatCalculator } from '@/core/services/ModStatCalculator'
+import { addExperience } from '@/core/services/ExperienceSystem'
+import type { ExpeditionRecord, Goblin, TimelineEvent } from '@/shared/types'
 
 export default function ExpeditionResultScreen() {
-  const { partyId, dungeonId, success, xpGained, maxFloor, expeditionId } = useLocalSearchParams<{
-    partyId: string
-    dungeonId: string
-    success: string
-    xpGained: string
-    maxFloor: string
-    expeditionId?: string
-  }>()
+  const { expeditionId } = useLocalSearchParams<{ expeditionId?: string }>()
 
-  const { getPartyById } = usePartyService()
-  const { goblins } = useGoblinService()
   const { dungeons, progress, markDungeonCleared, markUnlockNotified } = useDungeonProgress()
   const {
     expeditionRecords,
@@ -34,10 +24,7 @@ export default function ExpeditionResultScreen() {
   const [expeditionRecord, setExpeditionRecord] = useState<ExpeditionRecord | null>(null)
 
   useEffect(() => {
-    if (!expeditionId) {
-      setExpeditionRecord(null)
-      return
-    }
+    if (!expeditionId) return
     void (async () => {
       const byId = await getExpeditionById(expeditionId)
       if (byId) {
@@ -56,42 +43,63 @@ export default function ExpeditionResultScreen() {
   }, [expeditionId, expeditionRecord, hasRetriedLoad, isExpeditionLoading, refreshExpeditions])
 
   const replay = expeditionRecord?.replay ?? null
-  const resolvedPartyId = expeditionRecord?.partyId ?? (partyId ? parseInt(partyId, 10) : null)
-
-  const [party, setParty] = useState<Party | null>(null)
-
-  useEffect(() => {
-    if (!resolvedPartyId) {
-      setParty(null)
-      return
-    }
-    void getPartyById(resolvedPartyId).then(p => setParty(p)).catch(() => setParty(null))
-  }, [resolvedPartyId, getPartyById])
 
   const dungeon = useMemo(() => {
-    const id = expeditionRecord?.dungeonId || dungeonId || party?.dungeonId
-    return dungeons.find(d => d.id === id)
-  }, [dungeons, expeditionRecord?.dungeonId, dungeonId, party?.dungeonId])
+    const id = expeditionRecord?.dungeonId
+    return id ? dungeons.find(d => d.id === id) : null
+  }, [dungeons, expeditionRecord?.dungeonId])
 
-  const isSuccess = replay?.summary.success ?? success === 'true'
-  const expGained = replay?.summary.xpGained ?? parseInt(xpGained || '0', 10)
-  const goldGained = replay?.summary.goldGained ?? 0
-  const floorsCleared = replay?.summary.maxFloorReached ?? parseInt(maxFloor || '0', 10)
+  const partySnapshot = replay?.meta.partySnapshot ?? []
 
-  const getPartyMember = useCallback((memberId: string) => {
-    return goblins.find(g => g.id === parseInt(memberId, 10))
-  }, [goblins])
+  // 遠征終了時のHP計算（全戦闘のallyHPDeltaを累積）
+  const endHpMap = useMemo(() => {
+    if (!replay || partySnapshot.length === 0) return new Map<number, number>()
 
-  const isInjured = (memberId: string) => replay?.summary.injuries.includes(memberId) ?? false
-  const isDead = (memberId: string) => replay?.summary.casualties.includes(memberId) ?? false
+    const hpValues = partySnapshot.map(g => ModStatCalculator.calculate(g).hp)
+
+    for (const event of replay.events) {
+      if ((event.type === 'battle' || event.type === 'boss') && event.combat.allyHPDelta) {
+        event.combat.allyHPDelta.forEach((delta, idx) => {
+          hpValues[idx] = Math.max(0, hpValues[idx] + delta)
+        })
+      }
+    }
+
+    const map = new Map<number, number>()
+    partySnapshot.forEach((g, idx) => map.set(g.id, hpValues[idx]))
+    return map
+  }, [replay, partySnapshot])
+
+  // レベルアップ計算
+  const levelUpMap = useMemo(() => {
+    if (!replay || partySnapshot.length === 0) return new Map<number, { oldLevel: number; newLevel: number }>()
+
+    const map = new Map<number, { oldLevel: number; newLevel: number }>()
+    for (const goblin of partySnapshot) {
+      const isCasualty = replay.summary.casualties.includes(goblin.id.toString())
+      if (isCasualty) continue
+
+      const isInjured = replay.summary.injuries.includes(goblin.id.toString())
+      const multiplier = isInjured ? 0.5 : 1.0
+      const expGained = Math.floor(replay.summary.xpGained * multiplier)
+      const result = addExperience(goblin.level, goblin.experience, expGained)
+      if (result.didLevelUp) {
+        map.set(goblin.id, { oldLevel: goblin.level, newLevel: result.newLevel })
+      }
+    }
+    return map
+  }, [replay, partySnapshot])
 
   const getResultText = () => {
-    if (!replay) {
-      return isSuccess ? 'ダンジョンを踏破しました。' : '帰還しました。'
-    }
+    if (!replay) return ''
     if (replay.summary.casualties.length === replay.meta.party.length) {
-      return '全滅しました。'
+      return 'パーティは全滅しました。'
     }
+    return 'パーティは帰還しました。'
+  }
+
+  const getHeaderText = () => {
+    if (!replay) return ''
     const area = areasData.find(a => a.id === replay.meta.areaId)
     if (replay.summary.success && replay.summary.maxFloorReached === area?.floors) {
       return 'ダンジョンを踏破しました。'
@@ -102,22 +110,10 @@ export default function ExpeditionResultScreen() {
     return '帰還しました。'
   }
 
-  const getPartyMemberHp = (memberId: string) => {
-    const goblin = getPartyMember(memberId)
-    if (!goblin) return { current: 0, max: 0 }
-
-    const stats = getEffectiveStats(goblin)
-
-    if (isDead(memberId)) {
-      return { current: 0, max: stats.hp }
-    }
-
-    if (isInjured(memberId)) {
-      return { current: Math.floor(stats.hp * 0.5), max: stats.hp }
-    }
-
-    return { current: stats.hp, max: stats.hp }
-  }
+  const isSuccess = replay?.summary.success ?? false
+  const expGained = replay?.summary.xpGained ?? 0
+  const goldGained = replay?.summary.goldGained ?? 0
+  const treasureDrops = replay?.summary.treasureDrops ?? []
 
   useEffect(() => {
     if (!replay || !dungeon) return
@@ -126,10 +122,6 @@ export default function ExpeditionResultScreen() {
       void markDungeonCleared(dungeon, true)
     }
   }, [dungeon, markDungeonCleared, replay])
-
-  const handleBackToList = useCallback(() => {
-    router.replace('/formation')
-  }, [])
 
   const area = replay ? areasData.find(a => a.id === replay.meta.areaId) : dungeon
   const unlockNext = area?.unlockNext
@@ -147,6 +139,10 @@ export default function ExpeditionResultScreen() {
     void markUnlockNotified(unlockNext)
   }, [unlockNext, isSuccess, progress, markUnlockNotified])
 
+  const handleBackToList = useCallback(() => {
+    router.replace('/formation')
+  }, [])
+
   if (expeditionId && (isExpeditionLoading || (!expeditionRecord && !hasRetriedLoad))) {
     return (
       <SafeAreaView style={styles.container}>
@@ -158,17 +154,7 @@ export default function ExpeditionResultScreen() {
     )
   }
 
-  if (expeditionId && !expeditionRecord) {
-    return (
-      <SafeAreaView style={styles.container}>
-        <View style={styles.loadingContainer}>
-          <Text style={styles.loadingText}>遠征結果が見つかりません</Text>
-        </View>
-      </SafeAreaView>
-    )
-  }
-
-  if (expeditionId && expeditionRecord && !expeditionRecord.replay) {
+  if (!expeditionRecord || !replay) {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.loadingContainer}>
@@ -191,30 +177,36 @@ export default function ExpeditionResultScreen() {
       <ScrollView style={styles.scrollView}>
         <View style={styles.headerSection}>
           <Text style={styles.headerTitle}>
-            {dungeon?.name || '遠征'}: {getResultText()}
+            {dungeon?.name || '遠征'}: {getHeaderText()}
           </Text>
+          <Text style={styles.headerSubtitle}>{getResultText()}</Text>
         </View>
 
         <View style={styles.section}>
-          {(replay?.meta.party ?? party?.memberIds.map(id => id.toString()) ?? []).map(memberId => {
-            const goblin = getPartyMember(memberId)
-            const hp = getPartyMemberHp(memberId)
-            const dead = isDead(memberId)
+          {partySnapshot.map(goblin => {
+            const maxHp = ModStatCalculator.calculate(goblin).hp
+            const currentHp = endHpMap.get(goblin.id) ?? maxHp
+            const levelUp = levelUpMap.get(goblin.id)
+            const dead = currentHp === 0
+
             return (
-              <View key={memberId} style={styles.memberRow}>
+              <View key={goblin.id} style={styles.memberRow}>
                 <View style={styles.memberAvatar}>
-                  {goblin ? (
-                    <Image
-                      source={getGoblinImage(goblin.avatar)}
-                      style={[styles.memberAvatarImage, dead && styles.memberAvatarDead]}
-                    />
-                  ) : (
-                    <Text style={styles.memberAvatarFallback}>?</Text>
-                  )}
+                  <Image
+                    source={getGoblinImage(goblin.avatar)}
+                    style={[styles.memberAvatarImage, dead && styles.memberAvatarDead]}
+                  />
                 </View>
                 <View style={styles.memberInfo}>
-                  <Text style={styles.memberName}>{goblin?.name || `ID:${memberId}`}</Text>
-                  <Text style={styles.memberHp}>({hp.current}/{hp.max})</Text>
+                  <Text style={styles.memberName}>
+                    {goblin.name}
+                    <Text style={styles.memberHp}> ({currentHp}/{maxHp})</Text>
+                  </Text>
+                  {levelUp && (
+                    <Text style={styles.levelUpText}>
+                      Lv{levelUp.oldLevel} → Lv{levelUp.newLevel}
+                    </Text>
+                  )}
                 </View>
               </View>
             )
@@ -225,6 +217,15 @@ export default function ExpeditionResultScreen() {
           <Text style={styles.summaryText}>経験値 {expGained.toLocaleString()} XP</Text>
           <Text style={styles.summaryText}>{goldGained.toLocaleString()} Gold を獲得</Text>
         </View>
+
+        {treasureDrops.length > 0 && (
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>獲得アイテム</Text>
+            {treasureDrops.map((drop, idx) => (
+              <Text key={idx} style={styles.summaryText}>{drop.name}</Text>
+            ))}
+          </View>
+        )}
 
         {nextAreaName && isSuccess && showUnlockNotice && (
           <View style={styles.section}>
@@ -293,11 +294,22 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: '#111827',
   },
+  headerSubtitle: {
+    fontSize: 14,
+    color: '#6B7280',
+    marginTop: 4,
+  },
   section: {
     padding: 16,
     borderBottomWidth: 1,
     borderBottomColor: '#E5E7EB',
     backgroundColor: '#FFFFFF',
+  },
+  sectionTitle: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#374151',
+    marginBottom: 8,
   },
   memberRow: {
     flexDirection: 'row',
@@ -321,10 +333,6 @@ const styles = StyleSheet.create({
   memberAvatarDead: {
     opacity: 0.5,
   },
-  memberAvatarFallback: {
-    color: '#6B7280',
-    fontWeight: '600',
-  },
   memberInfo: {
     flex: 1,
   },
@@ -335,7 +343,13 @@ const styles = StyleSheet.create({
   },
   memberHp: {
     fontSize: 12,
+    fontWeight: '400',
     color: '#6B7280',
+  },
+  levelUpText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#2563EB',
     marginTop: 2,
   },
   summaryText: {

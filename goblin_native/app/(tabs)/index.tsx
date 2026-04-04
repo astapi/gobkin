@@ -3,6 +3,8 @@ import { View, Text, FlatList, TouchableOpacity, StyleSheet, Modal, ScrollView, 
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useFocusEffect } from 'expo-router'
 import { useGoblinService } from '@/presentation/hooks/useGoblinService'
+import { usePendingGoblins } from '@/presentation/hooks/usePendingGoblins'
+import { useBaseState } from '@/presentation/hooks/useBaseState'
 import { GoblinCard } from '@/presentation/components/GoblinCard'
 import type { Goblin } from '@/shared/types'
 import { getFactor } from '@/shared/data/factors'
@@ -201,9 +203,13 @@ function GoblinDetailModal({ goblin, visible, onClose }: GoblinDetailModalProps)
 }
 
 export default function GoblinListScreen() {
-  const { goblins, isLoading, refreshGoblins } = useGoblinService()
+  const { goblins, isLoading, refreshGoblins, saveGoblin } = useGoblinService()
+  const { pendingGoblins, removePendingGoblin, refreshPendingGoblins } = usePendingGoblins()
+  const { maxGoblins } = useBaseState()
   const [selectedGoblin, setSelectedGoblin] = useState<Goblin | null>(null)
   const [modalVisible, setModalVisible] = useState(false)
+
+  const hasCapacity = goblins.length < maxGoblins
 
   const handleGoblinPress = useCallback((goblin: Goblin) => {
     setSelectedGoblin(goblin)
@@ -215,10 +221,31 @@ export default function GoblinListScreen() {
     setSelectedGoblin(null)
   }, [])
 
+  const handleAddPending = useCallback(async (goblin: Goblin) => {
+    await saveGoblin(goblin)
+    await removePendingGoblin(goblin.id)
+  }, [saveGoblin, removePendingGoblin])
+
+  const handleDismissPending = useCallback((goblin: Goblin) => {
+    Alert.alert(
+      '解雇確認',
+      `${goblin.name}を解雇しますか？`,
+      [
+        { text: 'キャンセル', style: 'cancel' },
+        {
+          text: '解雇する',
+          style: 'destructive',
+          onPress: () => removePendingGoblin(goblin.id),
+        },
+      ],
+    )
+  }, [removePendingGoblin])
+
   useFocusEffect(
     useCallback(() => {
       refreshGoblins()
-    }, [refreshGoblins])
+      refreshPendingGoblins()
+    }, [refreshGoblins, refreshPendingGoblins])
   )
 
   if (isLoading) {
@@ -244,13 +271,59 @@ export default function GoblinListScreen() {
 
   return (
     <SafeAreaView style={styles.container} edges={['top', 'left', 'right', 'bottom']}>
-      <View style={styles.listContent}>
-        {goblins.map((goblin) => (
-          <View key={goblin.id} style={styles.cardWrapper}>
-            <GoblinCard goblin={goblin} onPress={() => handleGoblinPress(goblin)} />
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+        <View style={styles.listContent}>
+          {goblins.map((goblin) => (
+            <View key={goblin.id} style={styles.cardWrapper}>
+              <GoblinCard goblin={goblin} onPress={() => handleGoblinPress(goblin)} />
+            </View>
+          ))}
+        </View>
+
+        {pendingGoblins.length > 0 && (
+          <View style={styles.pendingSection}>
+            <View style={styles.pendingSectionHeader}>
+              <Text style={styles.pendingSectionTitle}>産まれたゴブリン</Text>
+              <View style={styles.pendingBadge}>
+                <Text style={styles.pendingBadgeText}>{pendingGoblins.length}体</Text>
+              </View>
+            </View>
+            <Text style={styles.pendingSectionDesc}>
+              拠点がいっぱいのため待機中です。
+            </Text>
+            {pendingGoblins.map((goblin) => {
+              const effectiveStats = ModStatCalculator.calculate(goblin)
+              return (
+                <View key={goblin.id} style={styles.pendingCard}>
+                  <View style={styles.pendingRow}>
+                    <Image source={getGoblinImage(goblin.avatar)} style={styles.pendingAvatar} />
+                    <View style={styles.pendingInfo}>
+                      <Text style={styles.pendingName} numberOfLines={1}>{goblin.name}</Text>
+                      <Text style={styles.pendingStats}>
+                        HP{effectiveStats.hp} / A{effectiveStats.atk} / D{effectiveStats.def} / S{effectiveStats.spd} / SP{effectiveStats.sp}
+                      </Text>
+                    </View>
+                    {hasCapacity && (
+                      <TouchableOpacity
+                        style={styles.addButton}
+                        onPress={() => handleAddPending(goblin)}
+                      >
+                        <Text style={styles.addButtonText}>追加</Text>
+                      </TouchableOpacity>
+                    )}
+                    <TouchableOpacity
+                      style={styles.dismissButton}
+                      onPress={() => handleDismissPending(goblin)}
+                    >
+                      <Text style={styles.dismissButtonText}>解雇</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              )
+            })}
           </View>
-        ))}
-      </View>
+        )}
+      </ScrollView>
       <GoblinDetailModal
         goblin={selectedGoblin}
         visible={modalVisible}
@@ -299,11 +372,97 @@ const styles = StyleSheet.create({
     color: '#6B7280',
     textAlign: 'center',
   },
+  scrollContent: {
+    paddingBottom: 32,
+  },
   listContent: {
     padding: 16,
   },
   cardWrapper: {
     marginBottom: 12,
+  },
+  pendingSection: {
+    paddingHorizontal: 16,
+    paddingTop: 8,
+  },
+  pendingSectionHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: 8,
+  },
+  pendingSectionTitle: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#6B7280',
+  },
+  pendingBadge: {
+    backgroundColor: '#E5E7EB',
+    borderRadius: 999,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+  },
+  pendingBadgeText: {
+    fontSize: 11,
+    color: '#4B5563',
+    fontWeight: '600',
+  },
+  pendingSectionDesc: {
+    fontSize: 12,
+    color: '#9CA3AF',
+    marginBottom: 12,
+  },
+  pendingCard: {
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    padding: 10,
+    backgroundColor: '#FFFFFF',
+    marginBottom: 8,
+  },
+  pendingRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+  },
+  pendingAvatar: {
+    width: 40,
+    height: 40,
+  },
+  pendingInfo: {
+    flex: 1,
+  },
+  pendingName: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#1F2937',
+  },
+  pendingStats: {
+    fontSize: 11,
+    color: '#6B7280',
+    marginTop: 2,
+  },
+  addButton: {
+    backgroundColor: '#374151',
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 6,
+  },
+  addButtonText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#FFFFFF',
+  },
+  dismissButton: {
+    backgroundColor: '#6B7280',
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 6,
+  },
+  dismissButtonText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#FFFFFF',
   },
   modalContainer: {
     flex: 1,

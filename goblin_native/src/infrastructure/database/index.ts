@@ -4,14 +4,9 @@
  */
 import * as SQLite from 'expo-sqlite'
 import { migrateV1 } from './migrations/v1'
-import { migrateV2 } from './migrations/v2'
-import { migrateV3 } from './migrations/v3'
-import { migrateV4 } from './migrations/v4'
-import { migrateV5 } from './migrations/v5'
-import { migrateV6 } from './migrations/v6'
 
 const DB_NAME = 'goblin_kingdom.db'
-const CURRENT_SCHEMA_VERSION = 6
+const CURRENT_SCHEMA_VERSION = 1
 
 let db: SQLite.SQLiteDatabase | null = null
 let initializationPromise: Promise<SQLite.SQLiteDatabase> | null = null
@@ -63,8 +58,8 @@ export const ensureMigrations = async (database: SQLite.SQLiteDatabase): Promise
  */
 const initializeDatabase = async (): Promise<SQLite.SQLiteDatabase> => {
   const database = await SQLite.openDatabaseAsync(DB_NAME)
-  await runMigrations(database)
   db = database
+  await runMigrations(database)
   return database
 }
 
@@ -79,42 +74,6 @@ const runMigrations = async (database: SQLite.SQLiteDatabase): Promise<void> => 
     await migrateV1(database)
     await setSchemaVersion(database, 1)
     console.log('[DB] Migration v1 completed')
-  }
-
-  // 将来のマイグレーション追加時はここに追加
-  if (currentVersion < 2) {
-    console.log('[DB] Running migration v2...')
-    await migrateV2(database)
-    await setSchemaVersion(database, 2)
-    console.log('[DB] Migration v2 completed')
-  }
-
-  if (currentVersion < 3) {
-    console.log('[DB] Running migration v3...')
-    await migrateV3(database)
-    await setSchemaVersion(database, 3)
-    console.log('[DB] Migration v3 completed')
-  }
-
-  if (currentVersion < 4) {
-    console.log('[DB] Running migration v4...')
-    await migrateV4(database)
-    await setSchemaVersion(database, 4)
-    console.log('[DB] Migration v4 completed')
-  }
-
-  if (currentVersion < 5) {
-    console.log('[DB] Running migration v5...')
-    await migrateV5(database)
-    await setSchemaVersion(database, 5)
-    console.log('[DB] Migration v5 completed')
-  }
-
-  if (currentVersion < 6) {
-    console.log('[DB] Running migration v6...')
-    await migrateV6(database)
-    await setSchemaVersion(database, 6)
-    console.log('[DB] Migration v6 completed')
   }
 }
 
@@ -193,4 +152,3 @@ export const resetDatabase = async (): Promise<void> => {
   await SQLite.deleteDatabaseAsync(DB_NAME)
   await initializeDatabase()
 }
-

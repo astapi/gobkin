@@ -55,7 +55,7 @@ export const useExpeditionFlow = ({
   const { partyRepository } = usePartyService()
   const { goblinRepository, goblins } = useGoblinService()
   const { pendingGoblins, addPendingGoblin, isLoading: isPendingLoading } = usePendingGoblins()
-  const { rank, getNextGoblinId, isLoading: isBaseLoading, baseStateRepository } = useBaseState()
+  const { rank, maxGoblins, getNextGoblinId, isLoading: isBaseLoading, baseStateRepository } = useBaseState()
   const { markDungeonCleared } = useDungeonProgress()
   const {
     expeditionRecords,
@@ -88,9 +88,6 @@ export const useExpeditionFlow = ({
 
     await markDungeonCleared(dungeon, true)
 
-    const maxPending = rank * 5
-    if (pendingGoblins.length >= maxPending) return
-
     const nextId = await getNextGoblinId()
     const areaLevel = dungeon.areaLevel ?? 1
     const goblinBirthService = new GoblinBirthService()
@@ -101,11 +98,20 @@ export const useExpeditionFlow = ({
       areaLevel,
       rank
     )
-    await addPendingGoblin(newGoblin)
+
+    if (goblins.length < maxGoblins) {
+      await goblinRepository.saveGoblin(newGoblin)
+    } else {
+      const maxPending = rank * 5
+      if (pendingGoblins.length >= maxPending) return
+      await addPendingGoblin(newGoblin)
+    }
   }, [
     addPendingGoblin,
+    goblinRepository,
     getNextGoblinId,
     goblins,
+    maxGoblins,
     isBaseLoading,
     isPendingLoading,
     markDungeonCleared,
@@ -222,7 +228,11 @@ export const useExpeditionFlow = ({
 
     for (const record of dueExpeditions) {
       if (processedExpeditionsRef.current.has(record.id)) continue
+      processedExpeditionsRef.current.add(record.id)
       try {
+        // 先にステータスを更新して再マウント時の二重実行を防ぐ
+        await completeExpeditionRecord(record.id, record.replay!)
+
         const result = await completeExpeditionUseCase.execute(record.partyId, record.replay!)
 
         if (result.newDungeonCaptured) {
@@ -237,8 +247,6 @@ export const useExpeditionFlow = ({
         }
 
         await handleDungeonClear(record)
-        await completeExpeditionRecord(record.id, record.replay!)
-        processedExpeditionsRef.current.add(record.id)
         if (refreshParties) {
           await refreshParties()
         }
