@@ -1,7 +1,7 @@
 import { useMemo, useCallback, useEffect, useState } from 'react'
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, Alert } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { useLocalSearchParams, router, Stack } from 'expo-router'
+import { useLocalSearchParams, router, useNavigation } from 'expo-router'
 import { useGoblinService } from '@/presentation/hooks/useGoblinService'
 import type { Goblin } from '@/shared/types'
 import { getFactor } from '@/shared/data/factors'
@@ -31,6 +31,7 @@ export default function GoblinDetailScreen() {
   const { goblinId } = useLocalSearchParams<{ goblinId: string }>()
   const { getGoblinById, deleteGoblin } = useGoblinService()
   const [goblin, setGoblin] = useState<Goblin | null>(null)
+  const parentNav = useNavigation()
 
   useEffect(() => {
     if (!goblinId) return
@@ -38,6 +39,12 @@ export default function GoblinDetailScreen() {
       .then(setGoblin)
       .catch(() => setGoblin(null))
   }, [goblinId, getGoblinById])
+
+  useEffect(() => {
+    if (goblin) {
+      parentNav.getParent()?.setOptions({ title: goblin.name })
+    }
+  }, [goblin, parentNav])
 
   const effectiveStats = useMemo(
     () => goblin ? ModStatCalculator.calculate(goblin) : null,
@@ -74,7 +81,6 @@ export default function GoblinDetailScreen() {
 
   return (
     <SafeAreaView style={styles.container} edges={['left', 'right', 'bottom']}>
-      <Stack.Screen options={{ title: goblin.name, headerShown: true }} />
       <ScrollView style={styles.content}>
         <View style={styles.profileCard}>
           <View style={styles.profileRow}>
