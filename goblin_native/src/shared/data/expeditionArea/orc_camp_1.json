@@ -1,0 +1,19 @@
+{
+  "id": "orc_camp_1",
+  "name": "オークの野営地・前哨",
+  "areaLevel": 3,
+  "floors": 2,
+  "baseDurationSec": 35,
+  "description": "オーク野営地の前哨。スカウトや兵士が見張りに立っている。",
+  "encounter": {
+    "perFloorEvents": 3,
+    "eventWeights": {
+      "battle": 65,
+      "exploring": 35
+    }
+  },
+  "rewards": {
+    "xpFloor": [18, 24]
+  },
+  "unlockNext": "orc_camp_2"
+}

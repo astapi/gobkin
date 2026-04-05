@@ -1,0 +1,121 @@
+{
+  "enemies": [
+    {
+      "id": "GOB001",
+      "name": "ゴブリン",
+      "raceTags": ["goblin"],
+      "level": 3,
+      "hp": 15,
+      "atk": 7,
+      "def": 3,
+      "spd": 5,
+      "sp": 0,
+      "attackCount": 1,
+      "accuracy": 200,
+      "evasion": 11,
+      "exp": 8,
+      "gold": 6
+    },
+    {
+      "id": "GOB002",
+      "name": "ゴブリンシーフ",
+      "raceTags": ["goblin"],
+      "level": 4,
+      "hp": 18,
+      "atk": 9,
+      "def": 2,
+      "spd": 9,
+      "sp": 0,
+      "attackCount": 1,
+      "accuracy": 215,
+      "evasion": 12,
+      "exp": 12,
+      "gold": 10
+    },
+    {
+      "id": "GOB003",
+      "name": "ゴブリンウォリアー",
+      "raceTags": ["goblin"],
+      "level": 5,
+      "hp": 30,
+      "atk": 12,
+      "def": 6,
+      "spd": 4,
+      "sp": 0,
+      "attackCount": 1,
+      "accuracy": 230,
+      "evasion": 13,
+      "exp": 15,
+      "gold": 12
+    },
+    {
+      "id": "GOB004",
+      "name": "ゴブリンメイジ",
+      "raceTags": ["goblin"],
+      "level": 5,
+      "hp": 20,
+      "atk": 13,
+      "def": 3,
+      "spd": 5,
+      "sp": 0,
+      "attackCount": 1,
+      "accuracy": 230,
+      "evasion": 13,
+      "exp": 18,
+      "gold": 15
+    },
+    {
+      "id": "GOB005",
+      "name": "ゴブリンガード",
+      "raceTags": ["goblin"],
+      "level": 6,
+      "hp": 40,
+      "atk": 11,
+      "def": 10,
+      "spd": 3,
+      "sp": 0,
+      "attackCount": 1,
+      "accuracy": 240,
+      "evasion": 14,
+      "exp": 20,
+      "gold": 18
+    },
+    {
+      "id": "B_HOB",
+      "name": "ホブゴブリン",
+      "raceTags": ["goblin", "hobgoblin"],
+      "level": 10,
+      "hp": 150,
+      "atk": 25,
+      "def": 14,
+      "spd": 8,
+      "sp": 0,
+      "attackCount": 2,
+      "accuracy": 310,
+      "evasion": 18,
+      "exp": 80,
+      "gold": 70,
+      "factorDrops": [
+        { "factorId": "hobgoblin", "probability": 1 }
+      ]
+    }
+  ],
+  "patterns": [
+    { "id": "GV3_001", "floors": [1], "enemies": [["GOB005", "GOB005", "GOB005"]] },
+    { "id": "GV3_002", "floors": [1], "enemies": [["GOB005", "GOB005"], ["GOB003", "GOB003"]] },
+    { "id": "GV3_003", "floors": [1], "enemies": [["GOB003", "GOB003", "GOB003"], ["GOB004", "GOB004"]] },
+    { "id": "GV3_004", "floors": [1], "enemies": [["GOB005", "GOB005", "GOB005", "GOB005"]] },
+    { "id": "GV3_005", "floors": [1], "enemies": [["GOB005", "GOB005", "GOB005"], ["GOB004", "GOB004", "GOB004"]] },
+
+    { "id": "GV3_006", "floors": [2], "enemies": [["GOB005", "GOB005", "GOB005"], ["GOB003", "GOB003", "GOB003"]] },
+    { "id": "GV3_007", "floors": [2], "enemies": [["GOB005", "GOB005", "GOB005", "GOB005"]] },
+    { "id": "GV3_008", "floors": [2], "enemies": [["GOB005", "GOB005"], ["GOB004", "GOB004"], ["GOB003", "GOB003"]] },
+    { "id": "GV3_009", "floors": [2], "enemies": [["GOB005", "GOB005", "GOB005", "GOB005", "GOB005", "GOB005"]] },
+    {
+      "id": "BOSS",
+      "floors": [2],
+      "enemies": [["B_HOB"], ["GOB005", "GOB005", "GOB005", "GOB005"], ["GOB003", "GOB003", "GOB003", "GOB003"], ["GOB004", "GOB004", "GOB004"]],
+      "isBoss": true
+    }
+  ]
+}

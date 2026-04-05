@@ -1,0 +1,14 @@
+{
+  "id": "lizardman_swamp_2",
+  "name": "リザードマンの沼砦・深沼",
+  "areaLevel": 6,
+  "floors": 2,
+  "baseDurationSec": 60,
+  "description": "砦の深部。呪術師や暗殺者が潜む危険な沼地。",
+  "encounter": {
+    "perFloorEvents": 3,
+    "eventWeights": { "battle": 65, "exploring": 35 }
+  },
+  "rewards": { "xpFloor": [78, 90] },
+  "unlockNext": "lizardman_swamp_3"
+}

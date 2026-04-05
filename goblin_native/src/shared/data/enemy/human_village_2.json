@@ -1,0 +1,97 @@
+{
+  "enemies": [
+    {
+      "id": "VIL001",
+      "name": "民兵",
+      "raceTags": ["human"],
+      "level": 9,
+      "hp": 45,
+      "atk": 16,
+      "def": 8,
+      "spd": 5,
+      "sp": 0,
+      "attackCount": 1,
+      "accuracy": 300,
+      "evasion": 17,
+      "exp": 30,
+      "gold": 26
+    },
+    {
+      "id": "VIL002",
+      "name": "村守備兵",
+      "raceTags": ["human"],
+      "level": 10,
+      "hp": 55,
+      "atk": 19,
+      "def": 12,
+      "spd": 5,
+      "sp": 0,
+      "attackCount": 1,
+      "accuracy": 315,
+      "evasion": 18,
+      "exp": 35,
+      "gold": 30
+    },
+    {
+      "id": "VIL003",
+      "name": "猟師",
+      "raceTags": ["human"],
+      "level": 10,
+      "hp": 40,
+      "atk": 21,
+      "def": 6,
+      "spd": 9,
+      "sp": 0,
+      "attackCount": 1,
+      "accuracy": 315,
+      "evasion": 19,
+      "exp": 33,
+      "gold": 28
+    },
+    {
+      "id": "VIL004",
+      "name": "簡易魔法兵器",
+      "raceTags": ["construct"],
+      "level": 11,
+      "hp": 80,
+      "atk": 28,
+      "def": 15,
+      "spd": 1,
+      "sp": 0,
+      "attackCount": 1,
+      "accuracy": 330,
+      "evasion": 10,
+      "exp": 40,
+      "gold": 35
+    },
+    {
+      "id": "VIL005",
+      "name": "自警団長",
+      "raceTags": ["human"],
+      "level": 12,
+      "hp": 70,
+      "atk": 23,
+      "def": 14,
+      "spd": 6,
+      "sp": 0,
+      "attackCount": 1,
+      "accuracy": 345,
+      "evasion": 20,
+      "exp": 42,
+      "gold": 36
+    }
+  ],
+  "patterns": [
+    { "id": "HV2_001", "floors": [1], "enemies": [["VIL001", "VIL002"], ["VIL003"]] },
+    { "id": "HV2_002", "floors": [1], "enemies": [["VIL002", "VIL003"], ["VIL001", "VIL004"]] },
+    { "id": "HV2_003", "floors": [1], "enemies": [["VIL002", "VIL002"], ["VIL003", "VIL001"], ["VIL004"]] },
+    { "id": "HV2_004", "floors": [1], "enemies": [["VIL001", "VIL002", "VIL003"], ["VIL004", "VIL001"], ["VIL002"]] },
+    { "id": "HV2_005", "floors": [1], "enemies": [["VIL002", "VIL003", "VIL001"], ["VIL004", "VIL002"], ["VIL001", "VIL003"]] },
+
+    { "id": "HV2_006", "floors": [2], "enemies": [["VIL002", "VIL003"], ["VIL001", "VIL004"]] },
+    { "id": "HV2_007", "floors": [2], "enemies": [["VIL002", "VIL002"], ["VIL003", "VIL001"], ["VIL004"]] },
+    { "id": "HV2_008", "floors": [2], "enemies": [["VIL004", "VIL002"], ["VIL003", "VIL001"], ["VIL002"]] },
+    { "id": "HV2_009", "floors": [2], "enemies": [["VIL002", "VIL003", "VIL001"], ["VIL004", "VIL002"], ["VIL003"]] },
+    { "id": "HV2_010", "floors": [2], "enemies": [["VIL002", "VIL002", "VIL003"], ["VIL004", "VIL001"], ["VIL003", "VIL002"]] }
+  ]
+}

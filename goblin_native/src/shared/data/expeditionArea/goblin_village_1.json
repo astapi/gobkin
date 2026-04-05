@@ -1,0 +1,19 @@
+{
+  "id": "goblin_village_1",
+  "name": "ゴブリン集落・外縁",
+  "areaLevel": 2,
+  "floors": 2,
+  "baseDurationSec": 30,
+  "description": "ゴブリン集落の外縁部。雑兵ゴブリンやシーフが群れをなして徘徊している。",
+  "encounter": {
+    "perFloorEvents": 3,
+    "eventWeights": {
+      "battle": 60,
+      "exploring": 40
+    }
+  },
+  "rewards": {
+    "xpFloor": [10, 14]
+  },
+  "unlockNext": "goblin_village_2"
+}

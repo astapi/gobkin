@@ -19,7 +19,7 @@ export const BASE_RANK_CONFIGS: BaseRankConfig[] = [
     ivBonus: 2,
     upgradeCost: 100,  // ランク2への引っ越し資金
     unlockCondition: {
-      dungeonId: 'goblin_village',  // ゴブリン集落（既存）
+      dungeonId: 'goblin_village_3',  // ゴブリン集落・中枢
       clearCount: 1,
     },
   },
@@ -30,7 +30,7 @@ export const BASE_RANK_CONFIGS: BaseRankConfig[] = [
     ivBonus: 4,
     upgradeCost: 500,  // ランク3への引っ越し資金
     unlockCondition: {
-      dungeonId: 'orc_camp',  // オークの野営地（既存）
+      dungeonId: 'orc_camp_3',  // オークの野営地・本陣
       clearCount: 1,
     },
   },
@@ -41,7 +41,7 @@ export const BASE_RANK_CONFIGS: BaseRankConfig[] = [
     ivBonus: 6,
     upgradeCost: 1500,
     unlockCondition: {
-      dungeonId: 'subjugation_force',
+      dungeonId: 'subjugation_force_3',
       clearCount: 1,
     },
   },
@@ -52,7 +52,7 @@ export const BASE_RANK_CONFIGS: BaseRankConfig[] = [
     ivBonus: 8,
     upgradeCost: 4000,
     unlockCondition: {
-      dungeonId: 'dwarf_mine',
+      dungeonId: 'dwarf_mine_3',
       clearCount: 1,
     },
   },
@@ -63,7 +63,7 @@ export const BASE_RANK_CONFIGS: BaseRankConfig[] = [
     ivBonus: 10,
     upgradeCost: 10000,
     unlockCondition: {
-      dungeonId: 'human_fortress',
+      dungeonId: 'human_fortress_3',
       clearCount: 1,
     },
   },
@@ -74,7 +74,7 @@ export const BASE_RANK_CONFIGS: BaseRankConfig[] = [
     ivBonus: 12,
     upgradeCost: 25000,
     unlockCondition: {
-      dungeonId: 'royal_capital',
+      dungeonId: 'royal_capital_3',
       clearCount: 1,
     },
   },

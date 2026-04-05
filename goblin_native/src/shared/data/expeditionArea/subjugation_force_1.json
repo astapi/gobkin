@@ -1,0 +1,14 @@
+{
+  "id": "subjugation_force_1",
+  "name": "vs討伐隊防衛戦・前哨戦",
+  "areaLevel": 3,
+  "floors": 2,
+  "baseDurationSec": 40,
+  "description": "討伐隊の先遣部隊が接近。正規兵と弓兵の小部隊を迎撃せよ。",
+  "encounter": {
+    "perFloorEvents": 3,
+    "eventWeights": { "battle": 70, "exploring": 30 }
+  },
+  "rewards": { "xpFloor": [24, 30] },
+  "unlockNext": "subjugation_force_2"
+}

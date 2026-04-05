@@ -1,0 +1,19 @@
+{
+  "id": "orc_camp_2",
+  "name": "オークの野営地・陣営",
+  "areaLevel": 3,
+  "floors": 2,
+  "baseDurationSec": 40,
+  "description": "野営地の陣営部。アーチャーやシャーマンが待ち構え、組織的な抵抗が激しくなる。",
+  "encounter": {
+    "perFloorEvents": 3,
+    "eventWeights": {
+      "battle": 65,
+      "exploring": 35
+    }
+  },
+  "rewards": {
+    "xpFloor": [28, 34]
+  },
+  "unlockNext": "orc_camp_3"
+}

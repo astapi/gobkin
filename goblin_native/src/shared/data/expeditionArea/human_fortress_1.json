@@ -1,0 +1,14 @@
+{
+  "id": "human_fortress_1",
+  "name": "人間の城塞・外壁",
+  "areaLevel": 7,
+  "floors": 2,
+  "baseDurationSec": 68,
+  "description": "城塞の外壁。騎士と宮廷魔術師が城壁から迎え撃つ。",
+  "encounter": {
+    "perFloorEvents": 3,
+    "eventWeights": { "battle": 70, "exploring": 30 }
+  },
+  "rewards": { "xpFloor": [78, 92] },
+  "unlockNext": "human_fortress_2"
+}

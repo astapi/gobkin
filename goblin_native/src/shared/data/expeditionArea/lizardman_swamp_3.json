@@ -1,0 +1,14 @@
+{
+  "id": "lizardman_swamp_3",
+  "name": "リザードマンの沼砦・本拠",
+  "areaLevel": 6,
+  "floors": 2,
+  "baseDurationSec": 65,
+  "description": "砦の本拠。鱗の重装兵に守られた沼王が待ち受ける。水棲戦力を手に入れろ。",
+  "encounter": {
+    "perFloorEvents": 3,
+    "eventWeights": { "battle": 65, "exploring": 35 }
+  },
+  "rewards": { "xpFloor": [104, 112], "xpBoss": 320 },
+  "unlockNext": "troll_canyon_1"
+}

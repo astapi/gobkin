@@ -1,0 +1,19 @@
+{
+  "id": "orc_camp_3",
+  "name": "オークの野営地・本陣",
+  "areaLevel": 3,
+  "floors": 2,
+  "baseDurationSec": 45,
+  "description": "野営地の本陣。ブルートが陣を固め、奥にはオークウォーロードが待ち受ける。攻略すれば拠点として利用可能。",
+  "encounter": {
+    "perFloorEvents": 3,
+    "eventWeights": {
+      "battle": 65,
+      "exploring": 35
+    }
+  },
+  "rewards": {
+    "xpFloor": [38, 45],
+    "xpBoss": 120
+  }
+}

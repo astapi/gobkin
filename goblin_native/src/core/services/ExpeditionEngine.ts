@@ -49,8 +49,8 @@ export class ExpeditionEngine {
     // ダンジョンIDからエリアIDにマッピング
     const dungeonToAreaMap: Record<string, string> = {
       "1": "forest_outskirts",
-      "2": "goblin_village",
-      "3": "orc_camp",
+      "2": "goblin_village_3",
+      "3": "orc_camp_3",
       "4": "slime_cave"
     }
 
@@ -235,7 +235,7 @@ export class ExpeditionEngine {
       const bossEnemies = this.getEnemiesFromPattern(bossPattern, enemyDatabase.enemies)
 
       const bossCombat = this.resolveCombat(partyState, bossEnemies, area, true)
-      const bossXp = area.rewards.xpBoss
+      const bossXp = area.rewards.xpBoss ?? 0
 
       // 規定時間の終端でボス戦を行う（最後の秒で戦闘開始）
       const bossTime = adjustedDuration

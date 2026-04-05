@@ -1,0 +1,14 @@
+{
+  "id": "lizardman_swamp_1",
+  "name": "リザードマンの沼砦・浅瀬",
+  "areaLevel": 6,
+  "floors": 2,
+  "baseDurationSec": 55,
+  "description": "沼砦の浅瀬。沼の戦士と毒牙兵が水際で襲いかかる。",
+  "encounter": {
+    "perFloorEvents": 3,
+    "eventWeights": { "battle": 65, "exploring": 35 }
+  },
+  "rewards": { "xpFloor": [52, 64] },
+  "unlockNext": "lizardman_swamp_2"
+}
