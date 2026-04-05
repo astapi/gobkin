@@ -89,6 +89,14 @@ export class SQLiteGoblinRepository implements IGoblinRepository {
     await this.saveGoblin({ ...goblin, level })
   }
 
+  async updateGoblinFactors(id: number, factors: string[], effectiveStats: GoblinStats): Promise<void> {
+    const db = await getDatabase()
+    await db.runAsync(
+      `UPDATE goblins SET factors_json = ?, effective_stats_json = ?, updated_at = datetime('now') WHERE id = ?`,
+      [JSON.stringify(factors), JSON.stringify(effectiveStats), id]
+    )
+  }
+
   private rowToGoblin(row: GoblinRow): Goblin {
     return {
       id: row.id,

@@ -96,6 +96,9 @@ export class CompleteExpeditionUseCase {
       })
     }
 
+    // レベルアップ後の最新ゴブリンを保持（因子獲得時に参照）
+    const latestGoblins = new Map(goblins.map(g => [g.id, g]))
+
     for (const goblin of goblins) {
       const expToGain = perGoblinExp.get(goblin.id) ?? 0
       if (expToGain <= 0) continue
@@ -107,6 +110,7 @@ export class CompleteExpeditionUseCase {
       const updatedGoblin = entity.toSnapshot()
       await this.goblinRepository.saveGoblin(updatedGoblin)
       updatedGoblinIds.push(goblin.id)
+      latestGoblins.set(goblin.id, updatedGoblin)
     }
 
     const factorAcquisitions = new Map<number, string[]>()
@@ -132,15 +136,17 @@ export class CompleteExpeditionUseCase {
               continue
             }
 
+            const latest = latestGoblins.get(goblin.id)!
             const acquired = FactorService.rollFactorDrops(
-              goblin,
+              latest,
               allFactorDrops,
               replay.meta.seed
             )
 
             if (acquired.length > 0) {
-              const updatedGoblin = FactorService.addFactors(goblin, acquired)
-              await this.goblinRepository.saveGoblin(updatedGoblin)
+              const withFactors = FactorService.addFactors(latest, acquired)
+              // 因子と実効ステータスだけをUPDATEし、レベルアップ等の他データを上書きしない
+              await this.goblinRepository.updateGoblinFactors(goblin.id, withFactors.factors!, withFactors.effectiveStats!)
               factorAcquisitions.set(goblin.id, acquired)
 
               if (!updatedGoblinIds.includes(goblin.id)) {
