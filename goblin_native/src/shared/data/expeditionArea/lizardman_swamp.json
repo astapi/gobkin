@@ -1,0 +1,20 @@
+{
+  "id": "lizardman_swamp",
+  "name": "リザードマンの沼砦",
+  "areaLevel": 6,
+  "floors": 5,
+  "baseDurationSec": 65,
+  "description": "沼地に築かれたリザードマンの砦。毒と呪術を操る爬虫人が守る。水棲戦力を手に入れろ。",
+  "encounter": {
+    "perFloorEvents": 3,
+    "eventWeights": {
+      "battle": 65,
+      "exploring": 35
+    }
+  },
+  "rewards": {
+    "xpFloor": [60, 72, 85, 98, 112],
+    "xpBoss": 320
+  },
+  "unlockNext": "troll_canyon"
+}

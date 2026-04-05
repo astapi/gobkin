@@ -1,0 +1,20 @@
+{
+  "id": "subjugation_force",
+  "name": "vs討伐隊防衛戦",
+  "areaLevel": 3,
+  "floors": 4,
+  "baseDurationSec": 50,
+  "description": "人間の討伐隊がゴブリン拠点に攻め込んできた。まだ脅威度は低いが、装備と連携で襲いかかる。撃退せよ。",
+  "encounter": {
+    "perFloorEvents": 3,
+    "eventWeights": {
+      "battle": 70,
+      "exploring": 30
+    }
+  },
+  "rewards": {
+    "xpFloor": [28, 35, 42, 52],
+    "xpBoss": 140
+  },
+  "unlockNext": "human_village"
+}

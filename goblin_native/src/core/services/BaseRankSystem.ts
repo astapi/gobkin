@@ -41,7 +41,7 @@ export const BASE_RANK_CONFIGS: BaseRankConfig[] = [
     ivBonus: 6,
     upgradeCost: 1500,
     unlockCondition: {
-      dungeonId: 'trade_checkpoint', // 将来追加予定
+      dungeonId: 'subjugation_force',
       clearCount: 1,
     },
   },
@@ -52,7 +52,7 @@ export const BASE_RANK_CONFIGS: BaseRankConfig[] = [
     ivBonus: 8,
     upgradeCost: 4000,
     unlockCondition: {
-      dungeonId: 'dwarf_mine', // 将来追加予定
+      dungeonId: 'dwarf_mine',
       clearCount: 1,
     },
   },
@@ -63,7 +63,7 @@ export const BASE_RANK_CONFIGS: BaseRankConfig[] = [
     ivBonus: 10,
     upgradeCost: 10000,
     unlockCondition: {
-      dungeonId: 'human_fortress', // 将来追加予定
+      dungeonId: 'human_fortress',
       clearCount: 1,
     },
   },
@@ -74,7 +74,7 @@ export const BASE_RANK_CONFIGS: BaseRankConfig[] = [
     ivBonus: 12,
     upgradeCost: 25000,
     unlockCondition: {
-      dungeonId: 'royal_capital', // 将来追加予定
+      dungeonId: 'royal_capital',
       clearCount: 1,
     },
   },
@@ -84,14 +84,14 @@ export const BASE_RANK_CONFIGS: BaseRankConfig[] = [
  * エリアレベルごとのベース個体値範囲
  */
 export const AREA_LEVEL_IV_RANGES: Record<number, [number, number]> = {
-  1: [1, 8],      // 序盤（スライム洞窟、周辺の森）
-  2: [6, 14],     // 初期中盤（ゴブリン集落、盗賊のアジト、ハーフリング農村）
-  3: [12, 20],    // 中盤（交易路の関所、小さな鉱山、沼地の見張り小屋）
-  4: [18, 28],    // 中盤後期（ドワーフ坑道、オークキャンプ、アンデッド墳墓）
-  5: [26, 36],    // 上級（リザードマン集落、ハーピーの崖巣、トロルの峡谷）
-  6: [34, 44],    // 終盤（ミノタウロス迷宮、吸血鬼の古城、ドラゴンの火山巣）
-  7: [42, 52],    // 最終盤（人間の街塞、騎士団本部、学術都市）
-  8: [50, 60],    // 最終決戦（王都防衛戦）
+  1: [1, 8],      // 序盤（スライムの洞窟、周辺の森）
+  2: [6, 14],     // 初期中盤（ゴブリン集落、忘れられた廃墟）
+  3: [12, 20],    // 中盤（オークの野営地、vs討伐隊防衛戦）
+  4: [18, 28],    // 中盤後期（辺境の村）
+  5: [26, 36],    // 上級（ドワーフ坑道、エルフの隠れ里）
+  6: [34, 44],    // 終盤（リザードマンの沼砦、トロルの峡谷）
+  7: [42, 52],    // 最終盤（人間の城塞）
+  8: [50, 60],    // 最終決戦（王都決戦）
 }
 
 /**

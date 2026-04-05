@@ -1,7 +1,7 @@
 {
   "id": "orc_camp",
   "name": "オークの野営地",
-  "areaLevel": 8,
+  "areaLevel": 3,
   "floors": 4,
   "baseDurationSec": 45,
   "description": "オーク族が占拠した野営地。序盤の大きな壁となる強敵が待ち受ける。攻略すれば拠点として利用可能。",
