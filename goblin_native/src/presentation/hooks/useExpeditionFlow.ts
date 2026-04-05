@@ -10,16 +10,14 @@ import type {
 import { StartExpeditionUseCase, CompleteExpeditionUseCase } from '../../core/usecases'
 import { ExpeditionEngine, GoblinBirthService } from '../../core/services'
 import { areasData } from '../../shared/data'
-import { usePartyService } from './usePartyService'
-import { useGoblinService } from './useGoblinService'
-import { useExpeditionService } from './useExpeditionService'
-import { usePendingGoblins } from './usePendingGoblins'
-import { useBaseState } from './useBaseState'
-import { useDungeonProgress } from './useDungeonProgress'
+import { usePartyStore, getPartyRepository } from '../stores/usePartyStore'
+import { useGoblinStore, getGoblinRepository } from '../stores/useGoblinStore'
+import { useExpeditionStore } from '../stores/useExpeditionStore'
+import { useBaseStore, getBaseStateRepository } from '../stores/useBaseStore'
+import { useDungeonStore } from '../stores/useDungeonStore'
 import { SQLiteEquipmentRepository } from '../../infrastructure/repositories/SQLiteEquipmentRepository'
 
 interface UseExpeditionFlowParams {
-  refreshParties?: () => Promise<void> | void
   parties?: Party[]
   enableAutoCompletion?: boolean
 }
@@ -44,7 +42,6 @@ export interface ExpeditionHistoryDisplay {
 }
 
 export const useExpeditionFlow = ({
-  refreshParties,
   parties,
   enableAutoCompletion = false,
 }: UseExpeditionFlowParams = {}) => {
@@ -52,17 +49,22 @@ export const useExpeditionFlow = ({
   const [currentTime, setCurrentTime] = useState(new Date())
   const processedExpeditionsRef = useRef<Set<string>>(new Set())
 
-  const { partyRepository } = usePartyService()
-  const { goblinRepository, goblins } = useGoblinService()
-  const { pendingGoblins, addPendingGoblin, isLoading: isPendingLoading } = usePendingGoblins()
-  const { rank, maxGoblins, getNextGoblinId, isLoading: isBaseLoading, baseStateRepository } = useBaseState()
-  const { markDungeonCleared } = useDungeonProgress()
+  const partyRepository = getPartyRepository()
+  const goblinRepository = getGoblinRepository()
+  const { goblins } = useGoblinStore()
+  const { pendingGoblins, addPendingGoblin, isLoading: isPendingLoading, getNextGoblinId } = useBaseStore()
+  const rank = useBaseStore(s => s.baseState?.rank ?? 1)
+  const maxGoblins = useBaseStore(s => s.baseState?.currentMaxGoblins ?? 10)
+  const isBaseLoading = useBaseStore(s => s.isLoading)
+  const baseStateRepository = getBaseStateRepository()
+  const { markDungeonCleared } = useDungeonStore()
   const {
     expeditionRecords,
     getPartyExpeditionHistory,
     saveExpeditionRecord,
     completeExpeditionRecord,
-  } = useExpeditionService()
+    refresh: refreshExpeditions,
+  } = useExpeditionStore()
 
   const startExpeditionUseCase = useMemo(() => {
     return new StartExpeditionUseCase(
@@ -100,7 +102,7 @@ export const useExpeditionFlow = ({
     )
 
     if (goblins.length < maxGoblins) {
-      await goblinRepository.saveGoblin(newGoblin)
+      await useGoblinStore.getState().saveGoblin(newGoblin)
     } else {
       const maxPending = rank * 5
       if (pendingGoblins.length >= maxPending) return
@@ -108,7 +110,6 @@ export const useExpeditionFlow = ({
     }
   }, [
     addPendingGoblin,
-    goblinRepository,
     getNextGoblinId,
     goblins,
     maxGoblins,
@@ -208,6 +209,8 @@ export const useExpeditionFlow = ({
         }
 
         await saveExpeditionRecord(record)
+        // UseCaseがDB上のparty.statusを'expedition'に直接更新するため、ストアを同期
+        await usePartyStore.getState().refresh()
 
         return { replay, record }
       } finally {
@@ -251,9 +254,10 @@ export const useExpeditionFlow = ({
         }
 
         await handleDungeonClear(record)
-        if (refreshParties) {
-          await refreshParties()
-        }
+        // UseCaseがDB上のparty.statusを'idle'に直接更新するため、ストアを同期
+        await usePartyStore.getState().refresh()
+        // ゴブリンのレベルアップ等もDB直接更新されるため同期
+        await useGoblinStore.getState().refresh()
       } catch (error) {
         console.warn('[useExpeditionFlow] Failed to complete expedition', error)
       }
@@ -264,7 +268,6 @@ export const useExpeditionFlow = ({
     completeExpeditionUseCase,
     completeExpeditionRecord,
     handleDungeonClear,
-    refreshParties,
   ])
 
   const [partyHistories, setPartyHistories] = useState<Record<number, ExpeditionRecord[]>>({})

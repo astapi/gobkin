@@ -1,10 +1,10 @@
-import { useCallback, useMemo } from 'react'
+import { useMemo, useCallback } from 'react'
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet, ActivityIndicator, Image, useWindowDimensions } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { router, useFocusEffect } from 'expo-router'
-import { usePartyService } from '@/presentation/hooks/usePartyService'
-import { useGoblinService } from '@/presentation/hooks/useGoblinService'
-import { useBaseState } from '@/presentation/hooks/useBaseState'
+import { router } from 'expo-router'
+import { usePartyStore } from '@/presentation/stores/usePartyStore'
+import { useGoblinStore } from '@/presentation/stores/useGoblinStore'
+import { useBaseStore, selectRank } from '@/presentation/stores/useBaseStore'
 import { useExpeditionFlow, type ExpeditionHistoryDisplay } from '@/presentation/hooks/useExpeditionFlow'
 import { getGoblinImage } from '@/shared/utils/goblinImages'
 import { getEffectiveStats } from '@/shared/utils/goblinStats'
@@ -127,14 +127,15 @@ function PartyCard({
 
 export default function FormationScreen() {
   const { width } = useWindowDimensions()
-  const { parties, isLoading: partiesLoading, createParty, refreshParties } = usePartyService()
-  const { goblins, isLoading: goblinsLoading, refreshGoblins } = useGoblinService()
-  const { rank, isLoading: baseLoading } = useBaseState()
+  const { parties, isLoading: partiesLoading, createParty } = usePartyStore()
+  const { goblins, isLoading: goblinsLoading } = useGoblinStore()
+  const { isLoading: baseLoading } = useBaseStore()
+  const rank = useBaseStore(selectRank)
   const {
     completeDueExpeditions,
     partyHistories,
     partyHistoryDisplays,
-  } = useExpeditionFlow({ refreshParties, parties, enableAutoCompletion: true })
+  } = useExpeditionFlow({ parties, enableAutoCompletion: true })
   const { slotSize, avatarSize } = useMemo(() => {
     const slotGap = 8
     const maxSlotWidth = 50
@@ -148,14 +149,6 @@ export default function FormationScreen() {
     const computedAvatarSize = Math.max(28, clampedSlotSize - 10)
     return { slotSize: clampedSlotSize, avatarSize: computedAvatarSize }
   }, [width])
-
-  // 画面がフォーカスされたときにデータを再取得
-  useFocusEffect(
-    useCallback(() => {
-      void refreshParties()
-      void refreshGoblins()
-    }, [refreshParties, refreshGoblins])
-  )
 
   // 初期パーティ枠を確保（最低3つ）
   const maxPartyCount = Math.max(1, rank)

@@ -1,14 +1,20 @@
 import { useState, useCallback, useMemo } from 'react'
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet, ActivityIndicator, Alert } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { useBaseState } from '@/presentation/hooks/useBaseState'
-import { useGoblinService } from '@/presentation/hooks/useGoblinService'
+import { useBaseStore, selectRank, selectCapacity, selectMaxParties, selectMaxGoblins, selectIvBonus, selectGold } from '@/presentation/stores/useBaseStore'
+import { useGoblinStore } from '@/presentation/stores/useGoblinStore'
 import { checkRankUpAvailable, BASE_RANK_CONFIGS } from '@/core/services/BaseRankSystem'
 import { areasData } from '@/shared/data'
 
 export default function BaseManagementScreen() {
-  const { isLoading: baseLoading, rank, capacity, maxParties, maxGoblins, ivBonus, baseState, gold, performRankUp } = useBaseState()
-  const { goblins } = useGoblinService()
+  const { isLoading: baseLoading, baseState, performRankUp } = useBaseStore()
+  const rank = useBaseStore(selectRank)
+  const capacity = useBaseStore(selectCapacity)
+  const maxParties = useBaseStore(selectMaxParties)
+  const maxGoblins = useBaseStore(selectMaxGoblins)
+  const ivBonus = useBaseStore(selectIvBonus)
+  const gold = useBaseStore(selectGold)
+  const { goblins } = useGoblinStore()
 
   const [isRankingUp, setIsRankingUp] = useState(false)
 

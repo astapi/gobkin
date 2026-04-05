@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Modal, Alert } fr
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useLocalSearchParams } from 'expo-router'
 import type { EquipmentInstance, EquipmentTemplate, EquipmentCategory } from '@/shared/types'
-import { useGoblinService } from '@/presentation/hooks/useGoblinService'
+import { useGoblinStore } from '@/presentation/stores/useGoblinStore'
 import { useEquipmentService } from '@/presentation/hooks/useEquipmentService'
 import { EquipmentService } from '@/core/services/EquipmentService'
 import { getEquipmentTemplate, getEquipmentTemplates } from '@/shared/data/equipmentPoolLoader'
@@ -167,7 +167,7 @@ function EquipmentRow({
 
 export default function EquipmentScreenPage() {
   const { goblinId } = useLocalSearchParams<{ goblinId: string }>()
-  const { getGoblinById } = useGoblinService()
+  const { getGoblinById } = useGoblinStore()
   const { equippedItems, inventoryItems, refreshEquipment, equipItem, unequipItem } =
     useEquipmentService()
   const [goblin, setGoblin] = useState<Goblin | null>(null)

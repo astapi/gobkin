@@ -1,9 +1,9 @@
 import { useState, useCallback, useMemo, useEffect } from 'react'
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView, ActivityIndicator, Alert, Image, useWindowDimensions, Modal, Pressable } from 'react-native'
-import { router, useLocalSearchParams, Stack, useFocusEffect } from 'expo-router'
-import { usePartyService } from '@/presentation/hooks/usePartyService'
-import { useGoblinService } from '@/presentation/hooks/useGoblinService'
-import { useDungeonProgress } from '@/presentation/hooks/useDungeonProgress'
+import { router, useLocalSearchParams, Stack } from 'expo-router'
+import { usePartyStore } from '@/presentation/stores/usePartyStore'
+import { useGoblinStore } from '@/presentation/stores/useGoblinStore'
+import { useDungeonStore } from '@/presentation/stores/useDungeonStore'
 import { useExpeditionFlow } from '@/presentation/hooks/useExpeditionFlow'
 import { getGoblinImage } from '@/shared/utils/goblinImages'
 import { getEffectiveStats } from '@/shared/utils/goblinStats'
@@ -60,10 +60,10 @@ export default function ExpeditionPreparationScreen() {
     setDungeon,
     setReturnPolicy,
     setTargetFloor,
-    refreshParties,
-  } = usePartyService()
-  const { goblins, isLoading: goblinsLoading, refreshGoblins } = useGoblinService()
-  const { dungeons, isLoading: dungeonsLoading } = useDungeonProgress()
+    refresh: refreshParties,
+  } = usePartyStore()
+  const { goblins, isLoading: goblinsLoading } = useGoblinStore()
+  const { dungeons, isLoading: dungeonsLoading } = useDungeonStore()
   const { startExpedition, estimateExplorationTime } = useExpeditionFlow()
   const [retryCount, setRetryCount] = useState(0)
   const [party, setParty] = useState<Party | null>(null)
@@ -86,14 +86,6 @@ export default function ExpeditionPreparationScreen() {
       return () => clearTimeout(timer)
     }
   }, [party, partiesLoading, partyId, retryCount, refreshParties])
-
-  // 画面がフォーカスされたときにデータを再取得
-  useFocusEffect(
-    useCallback(() => {
-      void refreshParties()
-      void refreshGoblins()
-    }, [refreshParties, refreshGoblins])
-  )
 
   const [selectedDungeonId, setSelectedDungeonId] = useState<string | undefined>(party?.dungeonId)
   const [selectedReturnPolicy, setSelectedReturnPolicy] = useState<ReturnPolicy>(party?.returnPolicy ?? 'never')
