@@ -132,10 +132,8 @@ export default function FormationScreen() {
   const { rank, isLoading: baseLoading } = useBaseState()
   const {
     completeDueExpeditions,
-    currentTime,
     partyHistories,
     partyHistoryDisplays,
-    formatFullDateTimeWithSeconds,
   } = useExpeditionFlow({ refreshParties, parties, enableAutoCompletion: true })
   const { slotSize, avatarSize } = useMemo(() => {
     const slotGap = 8
@@ -238,8 +236,6 @@ export default function FormationScreen() {
     )
   }
 
-  const currentTimeLabel = formatFullDateTimeWithSeconds(currentTime)
-
   return (
     <SafeAreaView style={styles.container} edges={['left', 'right', 'bottom']}>
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.contentContainer}>
@@ -282,10 +278,6 @@ export default function FormationScreen() {
           }
         })}
       </ScrollView>
-
-      <View style={styles.currentTimeBadge} pointerEvents="none">
-        <Text style={styles.currentTimeText}>{currentTimeLabel}</Text>
-      </View>
     </SafeAreaView>
   )
 }
@@ -336,19 +328,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 2,
     elevation: 2,
-  },
-  currentTimeBadge: {
-    position: 'absolute',
-    left: 12,
-    bottom: 8,
-    backgroundColor: 'rgba(17, 24, 39, 0.8)',
-    paddingHorizontal: 10,
-    paddingVertical: 6,
-    borderRadius: 8,
-  },
-  currentTimeText: {
-    fontSize: 11,
-    color: '#F9FAFB',
   },
   historySection: {
     marginTop: 16,
