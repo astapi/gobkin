@@ -1,0 +1,19 @@
+/** 呪文のターゲティング方式 */
+export type SpellTargeting =
+  | { type: 'random_hits'; hitCount: number }
+  | { type: 'multi_target'; baseTargets: number; scalePerLevel: number; scaleLevelInterval: number }
+
+/** 呪文定義（マスターデータ） */
+export interface SpellDef {
+  id: string
+  name: string
+  power: number              // Skill.power と同じ（ATKベース）
+  targeting: SpellTargeting
+  defaultCharges: number     // 1戦闘あたりの使用回数（デフォルト1）
+}
+
+/** キャラクターが習得した呪文 */
+export interface LearnedSpell {
+  spellId: string
+  extraCharges?: number      // Modによる追加チャージ数
+}

@@ -77,13 +77,21 @@ export default function BattleLogScreen() {
               return null
             }
 
+            const isSpell = entry.action !== '通常攻撃' && entry.action !== 'turn_start'
+
             return (
               <View key={`log-${index}`} style={styles.logCard}>
                 <Text style={styles.logTitle}>
-                  {entry.actorName}の{entry.attackCount}回攻撃（{entry.actorHP}/{entry.actorMaxHP}HP）
+                  {isSpell
+                    ? `${entry.actorName}の${entry.action}（${entry.actorHP}/${entry.actorMaxHP}HP）`
+                    : `${entry.actorName}の${entry.attackCount}回攻撃（${entry.actorHP}/${entry.actorMaxHP}HP）`
+                  }
                 </Text>
                 <Text style={styles.logText}>
-                  [列{entry.actorRow}] {entry.actorName}の攻撃！{entry.hitCount}回ヒット！
+                  {isSpell
+                    ? `[列${entry.actorRow}] ${entry.actorName}の${entry.action}！${entry.hitCount}体にヒット！`
+                    : `[列${entry.actorRow}] ${entry.actorName}の攻撃！${entry.hitCount}回ヒット！`
+                  }
                 </Text>
                 {entry.targets?.map((target, targetIndex) => (
                   <Text key={`target-${targetIndex}`} style={styles.logText}>

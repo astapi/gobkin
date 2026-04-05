@@ -1,4 +1,5 @@
 import type { FactorDropConfig } from './Factor'
+import type { LearnedSpell } from './Spell'
 
 export interface EquipmentDropConfig {
   templateId: string   // EquipmentTemplate.id
@@ -22,6 +23,7 @@ export interface Enemy {
   gold: number
   factorDrops?: FactorDropConfig[]      // この敵を倒すと得られる可能性のある因子
   equipmentDrops?: EquipmentDropConfig[] // この敵を倒すと得られる可能性のある装備
+  spells?: LearnedSpell[]               // この敵が使える呪文リスト
 }
 
 export interface EnemyPattern {

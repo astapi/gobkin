@@ -1,4 +1,6 @@
-import type { AttackTargetDetail, BattleLogEntry, Enemy, Goblin } from '../../shared/types'
+import type { AttackTargetDetail, BattleLogEntry, Enemy, Goblin, LearnedSpell } from '../../shared/types'
+import { SPELL_DEFS } from '../../shared/data/spells'
+import type { SpellDef } from '../../shared/types/Spell'
 import { CombatantManager } from './CombatantManager'
 import { DamageCalculator } from './DamageCalculator'
 import { ModStatCalculator } from './ModStatCalculator'
@@ -8,6 +10,12 @@ import type {
   RaceDict,
   Skill,
 } from './DamageCalculator'
+
+interface SpellCharge {
+  spellId: string
+  remaining: number   // 残りチャージ
+  maxCharges: number  // 最大チャージ
+}
 
 interface BattleUnit {
   combatant: Combatant
@@ -23,6 +31,8 @@ interface BattleUnit {
   damageReduction: number  // 被ダメージ軽減率（0〜100）
   row: number              // 隊列の列番号（0-based）
   rowSlot: number          // 列内のスロット番号（0-based）
+  level: number            // 呪文のターゲット数計算用
+  spellCharges: SpellCharge[]  // 戦闘中の呪文チャージ状態
 }
 
 export interface BattleResult {
@@ -172,6 +182,17 @@ export class BattleSystem {
 
     while (currentTurn < maxTurns) {
       currentTurn++
+
+      // ターン10で呪文チャージリセット
+      if (currentTurn === 10) {
+        for (const unit of [...allyUnits, ...enemyUnits]) {
+          if (unit.currentHP <= 0) continue
+          for (const sc of unit.spellCharges) {
+            sc.remaining = Math.min(sc.remaining + 1, sc.maxCharges)
+          }
+        }
+      }
+
       detailedLog.push(this.createTurnStartLog(currentTurn, allyUnits, enemyUnits))
 
       const actingUnits = [...allyUnits, ...enemyUnits].filter(unit => unit.currentHP > 0)
@@ -180,80 +201,108 @@ export class BattleSystem {
       for (const unit of actingUnits) {
         if (unit.currentHP <= 0) continue
 
-        // 攻撃回数分ループ（結果を集約して1つのログにする）
-        const targetDetails: Map<string, AttackTargetDetail> = new Map()
-        let totalHitCount = 0
+        const targetGroup = unit.isAlly ? enemyUnits : allyUnits
 
-        for (let atkIdx = 0; atkIdx < unit.attackCount; atkIdx++) {
-          if (unit.currentHP <= 0) break
+        // 行動決定: 呪文チャージがあれば呪文優先
+        const spellAction = this.decideSpellAction(unit)
 
-          const targetGroup = unit.isAlly ? enemyUnits : allyUnits
-          const aliveTargets = targetGroup.filter(target => target.currentHP > 0)
-          if (aliveTargets.length === 0) break
-
-          const target = selectTarget(aliveTargets, rng)
-
-          // 命中判定
-          const hitRate = this.calculateHitRate(unit, target, atkIdx + 1, rng)
-          const isHit = rng() * 100 < hitRate
-
-          if (!isHit) continue
-
-          totalHitCount++
-
-          // ダメージ計算
-          const baseDamage = this.damageCalculator.calcDamage(
-            RACE_DICT,
-            unit.combatant,
-            target.combatant,
-            BASIC_ATTACK_SKILL,
-            DEFAULT_DAMAGE_OPTIONS,
-            rng,
+        if (spellAction) {
+          // 呪文実行
+          const { targetDetails, totalHitCount } = this.executeSpell(
+            unit, spellAction, targetGroup, rng,
           )
 
-          // ダメージ補正: n<=2 → 1.0, n>=3 → 0.9^(n-2)
-          const dmgMod = getDamageModifier(atkIdx + 1)
+          // チャージ消費
+          const charge = unit.spellCharges.find(sc => sc.spellId === spellAction.id)
+          if (charge) charge.remaining--
 
-          // 被ダメージ軽減を適用
-          const reductionFactor = 1 - target.damageReduction / 100
-          const damage = Math.max(1, Math.floor(baseDamage * dmgMod * reductionFactor))
+          detailedLog.push({
+            turn: currentTurn,
+            actorId: unit.combatant.id,
+            actorName: unit.combatant.name,
+            actorRow: unit.row + 1,
+            action: spellAction.name,
+            attackCount: totalHitCount,
+            hitCount: totalHitCount,
+            actorHP: unit.currentHP,
+            actorMaxHP: unit.maxHP,
+            isAlly: unit.isAlly,
+            targets: [...targetDetails.values()],
+          })
+        } else {
+          // 通常攻撃
+          const targetDetails: Map<string, AttackTargetDetail> = new Map()
+          let totalHitCount = 0
 
-          target.currentHP = Math.max(0, target.currentHP - damage)
+          for (let atkIdx = 0; atkIdx < unit.attackCount; atkIdx++) {
+            if (unit.currentHP <= 0) break
 
-          // ターゲットごとの結果を集約
-          const existing = targetDetails.get(target.combatant.id)
-          if (existing) {
-            existing.totalDamage += damage
-            existing.hitCount++
-            existing.defeated = target.currentHP <= 0
-            existing.targetHP = target.currentHP
-          } else {
-            targetDetails.set(target.combatant.id, {
-              targetId: target.combatant.id,
-              targetName: target.combatant.name,
-              targetRow: target.row + 1,
-              totalDamage: damage,
-              hitCount: 1,
-              defeated: target.currentHP <= 0,
-              targetHP: target.currentHP,
-            })
+            const aliveTargets = targetGroup.filter(target => target.currentHP > 0)
+            if (aliveTargets.length === 0) break
+
+            const target = selectTarget(aliveTargets, rng)
+
+            // 命中判定
+            const hitRate = this.calculateHitRate(unit, target, atkIdx + 1, rng)
+            const isHit = rng() * 100 < hitRate
+
+            if (!isHit) continue
+
+            totalHitCount++
+
+            // ダメージ計算
+            const baseDamage = this.damageCalculator.calcDamage(
+              RACE_DICT,
+              unit.combatant,
+              target.combatant,
+              BASIC_ATTACK_SKILL,
+              DEFAULT_DAMAGE_OPTIONS,
+              rng,
+            )
+
+            // ダメージ補正: n<=2 → 1.0, n>=3 → 0.9^(n-2)
+            const dmgMod = getDamageModifier(atkIdx + 1)
+
+            // 被ダメージ軽減を適用
+            const reductionFactor = 1 - target.damageReduction / 100
+            const damage = Math.max(1, Math.floor(baseDamage * dmgMod * reductionFactor))
+
+            target.currentHP = Math.max(0, target.currentHP - damage)
+
+            // ターゲットごとの結果を集約
+            const existing = targetDetails.get(target.combatant.id)
+            if (existing) {
+              existing.totalDamage += damage
+              existing.hitCount++
+              existing.defeated = target.currentHP <= 0
+              existing.targetHP = target.currentHP
+            } else {
+              targetDetails.set(target.combatant.id, {
+                targetId: target.combatant.id,
+                targetName: target.combatant.name,
+                targetRow: target.row + 1,
+                totalDamage: damage,
+                hitCount: 1,
+                defeated: target.currentHP <= 0,
+                targetHP: target.currentHP,
+              })
+            }
           }
-        }
 
-        // 1ユニットにつき1つのログエントリを生成
-        detailedLog.push({
-          turn: currentTurn,
-          actorId: unit.combatant.id,
-          actorName: unit.combatant.name,
-          actorRow: unit.row + 1,
-          action: BASIC_ATTACK_SKILL.name,
-          attackCount: unit.attackCount,
-          hitCount: totalHitCount,
-          actorHP: unit.currentHP,
-          actorMaxHP: unit.maxHP,
-          isAlly: unit.isAlly,
-          targets: [...targetDetails.values()],
-        })
+          detailedLog.push({
+            turn: currentTurn,
+            actorId: unit.combatant.id,
+            actorName: unit.combatant.name,
+            actorRow: unit.row + 1,
+            action: BASIC_ATTACK_SKILL.name,
+            attackCount: unit.attackCount,
+            hitCount: totalHitCount,
+            actorHP: unit.currentHP,
+            actorMaxHP: unit.maxHP,
+            isAlly: unit.isAlly,
+            targets: [...targetDetails.values()],
+          })
+        }
 
         // 敵または味方が全滅したら即座にターン終了
         const allEnemiesDefeated = enemyUnits.every(u => u.currentHP <= 0)
@@ -300,6 +349,141 @@ export class BattleSystem {
     return Math.max(5, Math.min(95, hitRate))
   }
 
+  private initSpellCharges(spells: LearnedSpell[] | undefined): SpellCharge[] {
+    if (!spells) return []
+    return spells
+      .map(ls => {
+        const def = SPELL_DEFS[ls.spellId]
+        if (!def) return null
+        const extra = ls.extraCharges ?? 0
+        return {
+          spellId: ls.spellId,
+          remaining: def.defaultCharges + extra,
+          maxCharges: def.defaultCharges + extra,
+        }
+      })
+      .filter((sc): sc is SpellCharge => sc !== null)
+  }
+
+  /**
+   * 使用可能な呪文があれば返す（呪文優先AI）
+   */
+  private decideSpellAction(unit: BattleUnit): SpellDef | null {
+    for (const sc of unit.spellCharges) {
+      if (sc.remaining > 0) {
+        const def = SPELL_DEFS[sc.spellId]
+        if (def) return def
+      }
+    }
+    return null
+  }
+
+  /**
+   * 呪文のターゲット数を計算
+   */
+  private getSpellHitCount(spellDef: SpellDef, level: number): number {
+    const t = spellDef.targeting
+    if (t.type === 'random_hits') return t.hitCount
+    // multi_target
+    const bonus = Math.floor(level / t.scaleLevelInterval) * t.scalePerLevel
+    return t.baseTargets + bonus
+  }
+
+  /**
+   * 呪文を実行（必中）
+   */
+  private executeSpell(
+    unit: BattleUnit,
+    spellDef: SpellDef,
+    targetGroup: BattleUnit[],
+    rng: () => number,
+  ): { targetDetails: Map<string, AttackTargetDetail>; totalHitCount: number } {
+    const targetDetails: Map<string, AttackTargetDetail> = new Map()
+    let totalHitCount = 0
+    const hitCount = this.getSpellHitCount(spellDef, unit.level)
+
+    const spellSkill: Skill = {
+      id: spellDef.id,
+      name: spellDef.name,
+      power: spellDef.power,
+    }
+
+    if (spellDef.targeting.type === 'random_hits') {
+      // マジックアロー: ランダムにhitCount回攻撃（同じ敵に複数回当たりうる）
+      for (let i = 0; i < hitCount; i++) {
+        const aliveTargets = targetGroup.filter(t => t.currentHP > 0)
+        if (aliveTargets.length === 0) break
+
+        // 完全ランダム選択（隊列重みなし）
+        const target = aliveTargets[Math.floor(rng() * aliveTargets.length)]
+
+        const baseDamage = this.damageCalculator.calcDamage(
+          RACE_DICT, unit.combatant, target.combatant,
+          spellSkill, DEFAULT_DAMAGE_OPTIONS, rng,
+        )
+        const reductionFactor = 1 - target.damageReduction / 100
+        const damage = Math.max(1, Math.floor(baseDamage * reductionFactor))
+
+        target.currentHP = Math.max(0, target.currentHP - damage)
+        totalHitCount++
+
+        this.accumulateTargetDetail(targetDetails, target, damage)
+      }
+    } else {
+      // ファイヤーボール: 最大hitCount体にそれぞれ1回ダメージ（重複なし）
+      const aliveTargets = targetGroup.filter(t => t.currentHP > 0)
+      const count = Math.min(hitCount, aliveTargets.length)
+
+      // ランダムにcount体選択（Fisher-Yatesシャッフルの先頭count個）
+      const shuffled = [...aliveTargets]
+      for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(rng() * (i + 1))
+        ;[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
+      }
+      const selected = shuffled.slice(0, count)
+
+      for (const target of selected) {
+        const baseDamage = this.damageCalculator.calcDamage(
+          RACE_DICT, unit.combatant, target.combatant,
+          spellSkill, DEFAULT_DAMAGE_OPTIONS, rng,
+        )
+        const reductionFactor = 1 - target.damageReduction / 100
+        const damage = Math.max(1, Math.floor(baseDamage * reductionFactor))
+
+        target.currentHP = Math.max(0, target.currentHP - damage)
+        totalHitCount++
+
+        this.accumulateTargetDetail(targetDetails, target, damage)
+      }
+    }
+
+    return { targetDetails, totalHitCount }
+  }
+
+  private accumulateTargetDetail(
+    details: Map<string, AttackTargetDetail>,
+    target: BattleUnit,
+    damage: number,
+  ): void {
+    const existing = details.get(target.combatant.id)
+    if (existing) {
+      existing.totalDamage += damage
+      existing.hitCount++
+      existing.defeated = target.currentHP <= 0
+      existing.targetHP = target.currentHP
+    } else {
+      details.set(target.combatant.id, {
+        targetId: target.combatant.id,
+        targetName: target.combatant.name,
+        targetRow: target.row + 1,
+        totalDamage: damage,
+        hitCount: 1,
+        defeated: target.currentHP <= 0,
+        targetHP: target.currentHP,
+      })
+    }
+  }
+
   private createAllyUnit(goblin: Goblin, initialHP: number | undefined, originalIndex: number): BattleUnit {
     const combatant = this.combatantManager.fromGoblin(goblin)
     // Mod適用後のステータスを使用
@@ -320,6 +504,8 @@ export class BattleSystem {
       damageReduction,
       row: originalIndex,  // 味方は1列1体（配列順 = 列番号）
       rowSlot: 0,
+      level: goblin.level,
+      spellCharges: this.initSpellCharges(goblin.spells),
     }
   }
 
@@ -339,6 +525,8 @@ export class BattleSystem {
       damageReduction: 0,  // 敵は被ダメージ軽減なし
       row,
       rowSlot,
+      level: enemy.level,
+      spellCharges: this.initSpellCharges(enemy.spells),
     }
   }
 
