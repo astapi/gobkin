@@ -1,6 +1,6 @@
 import { CompleteExpeditionUseCase } from '../CompleteExpeditionUseCase'
 import type { IGoblinRepository, IPartyRepository, IBaseStateRepository } from '../../repositories'
-import type { Goblin, Party, BaseState, ExpeditionReplay, TimelineEvent } from '../../../shared/types'
+import type { Goblin, GoblinStats, Party, BaseState, ExpeditionReplay, TimelineEvent } from '../../../shared/types'
 
 // --- テストヘルパー ---
 
@@ -96,6 +96,10 @@ function createMockGoblinRepository(goblins: Goblin[]): IGoblinRepository {
     deleteGoblin: jest.fn(async () => {}),
     updateGoblinStats: jest.fn(async () => {}),
     updateGoblinLevel: jest.fn(async () => {}),
+    updateGoblinFactors: jest.fn(async (id: number, factors: string[], effectiveStats: GoblinStats) => {
+      const goblin = store.get(id)
+      if (goblin) store.set(id, { ...goblin, factors, effectiveStats })
+    }),
   }
 }
 
