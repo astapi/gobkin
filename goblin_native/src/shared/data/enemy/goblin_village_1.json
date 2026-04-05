@@ -62,7 +62,8 @@
       "accuracy": 230,
       "evasion": 13,
       "exp": 18,
-      "gold": 15
+      "gold": 15,
+      "spells": [{ "spellId": "fireball" }]
     },
     {
       "id": "GOB005",

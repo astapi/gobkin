@@ -46,6 +46,9 @@ export type {
   RaceSlotConfig,
 } from "./Equipment"
 
+// Spell related types
+export type { SpellDef, SpellTargeting, LearnedSpell } from "./Spell"
+
 // Battle related types
 export type { AttackTargetDetail, BattleLogEntry, BattleLogMeta, CombatReplay } from "./Battle"
 

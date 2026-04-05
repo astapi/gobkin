@@ -1,4 +1,5 @@
 import type { ModInstance } from './Mod'
+import type { LearnedSpell } from './Spell'
 
 export type GoblinStats = {
   hp: number
@@ -24,4 +25,5 @@ export type Goblin = {
   variantFactorId?: string  // 亜種として生まれた因子ID（亜種の追加効果適用に使用）
   individualValue?: number  // 個体値 (1〜64)、未定義の場合は1として扱う
   mods?: ModInstance[]  // 付与されたMod配列（0〜4個）
+  spells?: LearnedSpell[]  // 習得した呪文リスト
 }

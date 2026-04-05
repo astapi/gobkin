@@ -483,6 +483,8 @@ describe('selectTarget — 隊列ターゲット選択', () => {
       damageReduction: 0,
       row,
       rowSlot,
+      level: 1,
+      spellCharges: [],
     }
   }
 
