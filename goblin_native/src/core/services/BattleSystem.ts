@@ -254,6 +254,11 @@ export class BattleSystem {
           isAlly: unit.isAlly,
           targets: [...targetDetails.values()],
         })
+
+        // 敵または味方が全滅したら即座にターン終了
+        const allEnemiesDefeated = enemyUnits.every(u => u.currentHP <= 0)
+        const allAlliesDefeated = allyUnits.every(u => u.currentHP <= 0)
+        if (allEnemiesDefeated || allAlliesDefeated) break
       }
 
       const allyAlive = allyUnits.some(unit => unit.currentHP > 0)
