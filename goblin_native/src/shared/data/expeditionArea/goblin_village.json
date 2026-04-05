@@ -1,7 +1,7 @@
 {
   "id": "goblin_village",
   "name": "ゴブリン集落",
-  "areaLevel": 5,
+  "areaLevel": 2,
   "floors": 3,
   "baseDurationSec": 40,
   "description": "かつての支配者・ホブゴブリンが君臨する集落。独立を勝ち取るため、反逆の狼煙を上げる。",
@@ -16,5 +16,5 @@
     "xpFloor": [15, 20, 25],
     "xpBoss": 80
   },
-  "unlockNext": "orc_camp"
+  "unlockNext": "undead_ruins"
 }

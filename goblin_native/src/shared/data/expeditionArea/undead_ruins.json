@@ -1,0 +1,20 @@
+{
+  "id": "undead_ruins",
+  "name": "忘れられた廃墟",
+  "areaLevel": 2,
+  "floors": 4,
+  "baseDurationSec": 40,
+  "description": "アンデッドが徘徊する古い廃墟。スケルトン、ゾンビ、ゴーストが待ち受ける。奥には死霊術師の残骸が眠る。",
+  "encounter": {
+    "perFloorEvents": 3,
+    "eventWeights": {
+      "battle": 65,
+      "exploring": 35
+    }
+  },
+  "rewards": {
+    "xpFloor": [18, 24, 30, 38],
+    "xpBoss": 90
+  },
+  "unlockNext": "orc_camp"
+}

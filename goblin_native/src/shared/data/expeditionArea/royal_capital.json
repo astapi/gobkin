@@ -1,0 +1,19 @@
+{
+  "id": "royal_capital",
+  "name": "王都決戦",
+  "areaLevel": 8,
+  "floors": 7,
+  "baseDurationSec": 90,
+  "description": "最終決戦。人間王国の首都に攻め入る。近衛騎士、大魔導師、聖騎士、そして勇者と人間王が最後の壁として立ちはだかる。ゴブリンキングダムの完成をかけた決戦。",
+  "encounter": {
+    "perFloorEvents": 3,
+    "eventWeights": {
+      "battle": 75,
+      "exploring": 25
+    }
+  },
+  "rewards": {
+    "xpFloor": [105, 125, 148, 170, 195, 225, 260],
+    "xpBoss": 600
+  }
+}

@@ -1,0 +1,122 @@
+{
+  "enemies": [
+    {
+      "id": "DWF001",
+      "name": "ドワーフ坑夫",
+      "raceTags": ["dwarf"],
+      "level": 12,
+      "hp": 65,
+      "atk": 14,
+      "def": 14,
+      "spd": 3,
+      "sp": 0,
+      "attackCount": 1,
+      "accuracy": 312,
+      "evasion": 20,
+      "exp": 38,
+      "gold": 32
+    },
+    {
+      "id": "DWF002",
+      "name": "ドワーフ戦士",
+      "raceTags": ["dwarf"],
+      "level": 13,
+      "hp": 80,
+      "atk": 18,
+      "def": 18,
+      "spd": 4,
+      "sp": 0,
+      "attackCount": 1,
+      "accuracy": 328,
+      "evasion": 21,
+      "exp": 44,
+      "gold": 38
+    },
+    {
+      "id": "DWF003",
+      "name": "ルーン鍛冶師",
+      "raceTags": ["dwarf"],
+      "level": 14,
+      "hp": 55,
+      "atk": 20,
+      "def": 10,
+      "spd": 5,
+      "sp": 0,
+      "attackCount": 1,
+      "accuracy": 344,
+      "evasion": 22,
+      "exp": 48,
+      "gold": 42
+    },
+    {
+      "id": "DWF004",
+      "name": "坑道守護者",
+      "raceTags": ["dwarf"],
+      "level": 15,
+      "hp": 110,
+      "atk": 22,
+      "def": 22,
+      "spd": 3,
+      "sp": 0,
+      "attackCount": 1,
+      "accuracy": 360,
+      "evasion": 23,
+      "exp": 55,
+      "gold": 48
+    },
+    {
+      "id": "DWF005",
+      "name": "ドワーフ擲弾兵",
+      "raceTags": ["dwarf"],
+      "level": 14,
+      "hp": 70,
+      "atk": 24,
+      "def": 12,
+      "spd": 4,
+      "sp": 0,
+      "attackCount": 1,
+      "accuracy": 344,
+      "evasion": 22,
+      "exp": 50,
+      "gold": 44
+    },
+    {
+      "id": "B_FORGEKING",
+      "name": "鍛冶王",
+      "raceTags": ["dwarf"],
+      "level": 18,
+      "hp": 500,
+      "atk": 38,
+      "def": 32,
+      "spd": 5,
+      "sp": 0,
+      "attackCount": 2,
+      "accuracy": 408,
+      "evasion": 26,
+      "exp": 220,
+      "gold": 200,
+      "factorDrops": [
+        { "factorId": "dwarf", "probability": 1 }
+      ]
+    }
+  ],
+  "patterns": [
+    { "id": "DP001", "floors": [1], "enemies": [["DWF001", "DWF001", "DWF001"]] },
+    { "id": "DP002", "floors": [1], "enemies": [["DWF001", "DWF001"], ["DWF002"]] },
+    { "id": "DP003", "floors": [2], "enemies": [["DWF002", "DWF002"], ["DWF001"]] },
+    { "id": "DP004", "floors": [2], "enemies": [["DWF002"], ["DWF003", "DWF003"]] },
+    { "id": "DP005", "floors": [3], "enemies": [["DWF002", "DWF002"], ["DWF005"]] },
+    { "id": "DP006", "floors": [3], "enemies": [["DWF004"], ["DWF003"]] },
+    { "id": "DP007", "floors": [3], "enemies": [["DWF005", "DWF005"], ["DWF001"]] },
+    { "id": "DP008", "floors": [4], "enemies": [["DWF004"], ["DWF005"], ["DWF003"]] },
+    { "id": "DP009", "floors": [4], "enemies": [["DWF004", "DWF004"], ["DWF005"]] },
+    { "id": "DP010", "floors": [5], "enemies": [["DWF004", "DWF004"], ["DWF003", "DWF005"]] },
+    { "id": "DP011", "floors": [5], "enemies": [["DWF004"], ["DWF005", "DWF005"]] },
+    {
+      "id": "BOSS",
+      "floors": [5],
+      "enemies": [["B_FORGEKING"], ["DWF004", "DWF004"], ["DWF005", "DWF003"]],
+      "isBoss": true
+    }
+  ]
+}
