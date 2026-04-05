@@ -1,9 +1,11 @@
+import { useCallback } from 'react'
 import { Tabs } from 'expo-router'
 import { View, Text, StyleSheet } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import ListIcon from '../../assets/list.svg'
 import HenseiIcon from '../../assets/hensei.svg'
 import BaseIcon from '../../assets/base.svg'
+import { useCurrentTime } from '@/presentation/hooks/useCurrentTime'
 
 interface TabIconProps {
   Icon: React.FC<{ width: number; height: number; fill?: string }>
@@ -18,12 +20,25 @@ function TabIcon({ Icon, color }: TabIconProps) {
   )
 }
 
+function formatFullDateTimeWithSeconds(date: Date) {
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  const hours = String(date.getHours()).padStart(2, '0')
+  const minutes = String(date.getMinutes()).padStart(2, '0')
+  const seconds = String(date.getSeconds()).padStart(2, '0')
+  return `${year}/${month}/${day} ${hours}:${minutes}:${seconds}`
+}
+
 export default function TabLayout() {
   const insets = useSafeAreaInsets()
+  const currentTime = useCurrentTime({ enabled: true })
+  const currentTimeLabel = formatFullDateTimeWithSeconds(currentTime)
   const basePadding = 8
   const baseHeight = 60
   const safeAreaPadding = Math.max(basePadding, insets.bottom)
   return (
+    <View style={styles.rootContainer}>
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: '#3B82F6',
@@ -89,14 +104,33 @@ export default function TabLayout() {
         }}
       />
     </Tabs>
+    <View style={[styles.currentTimeBadge, { bottom: baseHeight + safeAreaPadding + 8 }]} pointerEvents="none">
+      <Text style={styles.currentTimeText}>{currentTimeLabel}</Text>
+    </View>
+    </View>
   )
 }
 
 const styles = StyleSheet.create({
+  rootContainer: {
+    flex: 1,
+  },
   iconContainer: {
     width: 24,
     height: 24,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  currentTimeBadge: {
+    position: 'absolute',
+    left: 12,
+    backgroundColor: 'rgba(17, 24, 39, 0.8)',
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 8,
+  },
+  currentTimeText: {
+    fontSize: 11,
+    color: '#F9FAFB',
   },
 })
