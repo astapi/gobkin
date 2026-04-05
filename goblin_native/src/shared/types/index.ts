@@ -60,6 +60,7 @@ export type {
   TreasureDrop,
   ExpeditionRecord,
   RewardSummary,
+  MemberLevelUp,
   AreaConfig,
   ExpeditionEndReason
 } from "./Expedition"

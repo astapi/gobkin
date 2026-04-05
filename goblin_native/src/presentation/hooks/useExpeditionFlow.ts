@@ -230,12 +230,14 @@ export const useExpeditionFlow = ({
       if (processedExpeditionsRef.current.has(record.id)) continue
       processedExpeditionsRef.current.add(record.id)
       try {
-        // DBレベルで WHERE status='ongoing' を条件にアトミックに更新。
-        // 既に完了済み（playback側で処理済み等）なら false が返り、スキップ。
-        const updated = await completeExpeditionRecord(record.id, record.replay!)
-        if (!updated) continue
-
+        // ゲームロジックを先に実行し、レベルアップ情報を含む enrichedReplay を取得
         const result = await completeExpeditionUseCase.execute(record.partyId, record.replay!)
+
+        // DBレベルで WHERE status='ongoing' を条件にアトミックに更新。
+        // enrichedReplay（memberLevelUps含む）を一括保存。
+        // 既に完了済み（playback側で処理済み等）なら false が返り、スキップ。
+        const updated = await completeExpeditionRecord(record.id, result.enrichedReplay)
+        if (!updated) continue
 
         if (result.newDungeonCaptured) {
           const dungeon = areasData.find(d => d.id === result.newDungeonCaptured)

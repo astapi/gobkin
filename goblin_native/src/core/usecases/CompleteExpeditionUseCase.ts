@@ -1,4 +1,4 @@
-import type { ExpeditionReplay, TimelineEvent, TreasureDrop } from '../../shared/types'
+import type { ExpeditionReplay, MemberLevelUp, TimelineEvent, TreasureDrop } from '../../shared/types'
 import { getEnemyDatabase } from '../../shared/data/enemy'
 import { GoblinEntity } from '../domain'
 import type { IGoblinRepository, IPartyRepository, IBaseStateRepository } from '../repositories'
@@ -14,6 +14,7 @@ export interface ExpeditionCompletionResult {
   newDungeonCaptured?: string
   goldGained: number
   treasureDrops?: TreasureDrop[]
+  enrichedReplay: ExpeditionReplay
 }
 
 export class CompleteExpeditionUseCase {
@@ -192,6 +193,26 @@ export class CompleteExpeditionUseCase {
 
     await this.partyRepository.updatePartyStatus(partyId, 'idle')
 
+    // replayのsummaryにレベルアップ情報を書き込み
+    const memberLevelUps: MemberLevelUp[] = []
+    for (const [goblinId, levelUp] of levelUps) {
+      if (levelUp.didLevelUp) {
+        memberLevelUps.push({
+          goblinId,
+          oldLevel: levelUp.oldLevel,
+          newLevel: levelUp.newLevel,
+        })
+      }
+    }
+
+    const enrichedReplay: ExpeditionReplay = {
+      ...replay,
+      summary: {
+        ...replay.summary,
+        memberLevelUps: memberLevelUps.length > 0 ? memberLevelUps : undefined,
+      },
+    }
+
     return {
       levelUps,
       updatedGoblinIds,
@@ -199,6 +220,7 @@ export class CompleteExpeditionUseCase {
       newDungeonCaptured,
       goldGained,
       treasureDrops: treasureDrops.length > 0 ? treasureDrops : undefined,
+      enrichedReplay,
     }
   }
 }
