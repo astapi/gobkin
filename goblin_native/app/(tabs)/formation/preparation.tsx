@@ -184,7 +184,7 @@ export default function ExpeditionPreparationScreen() {
           returnPolicy: selectedReturnPolicy,
         })
 
-        router.replace('/formation')
+        router.dismissAll()
       } catch (error) {
         console.error('[Preparation] Failed to start expedition', error)
         Alert.alert('遠征に失敗しました', '遠征開始時にエラーが発生しました')
