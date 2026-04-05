@@ -231,41 +231,48 @@ export class ExpeditionEngine {
 
     // ボス戦（最上階到達時）
     if (currentFloor > area.floors && !shouldReturn) {
-      const bossPattern = this.selectEnemyPattern(enemyDatabase.patterns, area.floors, true)
-      const bossEnemies = this.getEnemiesFromPattern(bossPattern, enemyDatabase.enemies)
+      const bossPatterns = enemyDatabase.patterns.filter(p => p.isBoss && p.floors.includes(area.floors))
 
-      const bossCombat = this.resolveCombat(partyState, bossEnemies, area, true)
-      const bossXp = area.rewards.xpBoss ?? 0
+      if (bossPatterns.length > 0) {
+        const bossPattern = this.selectEnemyPattern(enemyDatabase.patterns, area.floors, true)
+        const bossEnemies = this.getEnemiesFromPattern(bossPattern, enemyDatabase.enemies)
 
-      // 規定時間の終端でボス戦を行う（最後の秒で戦闘開始）
-      const bossTime = adjustedDuration
-      currentTime = bossTime
+        const bossCombat = this.resolveCombat(partyState, bossEnemies, area, true)
+        const bossXp = area.rewards.xpBoss ?? 0
 
-      events.push({
-        type: "boss",
-        at: currentTime,
-        floor: area.floors,
-        enemy: this.createEnemySnap(bossEnemies, true),
-        combat: bossCombat,
-        xp: bossXp
-      })
+        // 規定時間の終端でボス戦を行う（最後の秒で戦闘開始）
+        const bossTime = adjustedDuration
+        currentTime = bossTime
 
-      this.applyBattleResults(partyState, bossCombat)
+        events.push({
+          type: "boss",
+          at: currentTime,
+          floor: area.floors,
+          enemy: this.createEnemySnap(bossEnemies, true),
+          combat: bossCombat,
+          xp: bossXp
+        })
 
-      // ボス戦勝利時の宝箱ドロップ判定
-      if (bossCombat.outcome === 'win') {
-        const bossTreasure = this.rollTreasureDrops(area.dropChance, area.areaLevel, bossEnemies.flat(), droppedTemplateIds)
-        if (bossTreasure.length > 0) {
-          events.push({
-            type: "treasure",
-            at: currentTime,
-            floor: area.floors,
-            items: bossTreasure
-          })
+        this.applyBattleResults(partyState, bossCombat)
+
+        // ボス戦勝利時の宝箱ドロップ判定
+        if (bossCombat.outcome === 'win') {
+          const bossTreasure = this.rollTreasureDrops(area.dropChance, area.areaLevel, bossEnemies.flat(), droppedTemplateIds)
+          if (bossTreasure.length > 0) {
+            events.push({
+              type: "treasure",
+              at: currentTime,
+              floor: area.floors,
+              items: bossTreasure
+            })
+          }
         }
-      }
 
-      returnReason = bossCombat.outcome === "win" ? "completed" : "defeated"
+        returnReason = bossCombat.outcome === "win" ? "completed" : "defeated"
+      } else {
+        // ボスなしエリア: 最終階層到達で遠征完了
+        returnReason = "completed"
+      }
       shouldReturn = true
     }
 
