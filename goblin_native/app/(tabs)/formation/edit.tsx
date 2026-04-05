@@ -1,8 +1,8 @@
 import { useState, useCallback, useMemo, useEffect } from 'react'
 import { View, Text, FlatList, TouchableOpacity, StyleSheet, ActivityIndicator, Image, ScrollView } from 'react-native'
 import { router, useLocalSearchParams, Stack } from 'expo-router'
-import { usePartyService } from '@/presentation/hooks/usePartyService'
-import { useGoblinService } from '@/presentation/hooks/useGoblinService'
+import { usePartyStore } from '@/presentation/stores/usePartyStore'
+import { useGoblinStore } from '@/presentation/stores/useGoblinStore'
 import { getGoblinImage } from '@/shared/utils/goblinImages'
 import { GoblinCard } from '@/presentation/components/GoblinCard'
 import type { Goblin, Party } from '@/shared/types'
@@ -60,8 +60,8 @@ function PartySlot({ goblin, isEmpty, isSelected, onPress, onRemove }: SlotProps
 
 export default function PartyEditScreen() {
   const { partyId } = useLocalSearchParams<{ partyId: string }>()
-  const { parties, isLoading: partiesLoading, updateMembers, getPartyById, refreshParties } = usePartyService()
-  const { goblins, isLoading: goblinsLoading } = useGoblinService()
+  const { parties, isLoading: partiesLoading, updateMembers, getPartyById, refresh: refreshParties } = usePartyStore()
+  const { goblins, isLoading: goblinsLoading } = useGoblinStore()
   const [retryCount, setRetryCount] = useState(0)
   const [party, setParty] = useState<Party | null>(null)
 

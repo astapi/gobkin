@@ -2,10 +2,10 @@ import { useState, useEffect, useRef, useMemo, useCallback } from 'react'
 import { View, Text, StyleSheet, Animated, TouchableOpacity, ScrollView, ActivityIndicator, Image } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { router, useLocalSearchParams, type Href } from 'expo-router'
-import { usePartyService } from '@/presentation/hooks/usePartyService'
-import { useGoblinService } from '@/presentation/hooks/useGoblinService'
-import { useDungeonProgress } from '@/presentation/hooks/useDungeonProgress'
-import { useExpeditionService } from '@/presentation/hooks/useExpeditionService'
+import { usePartyStore } from '@/presentation/stores/usePartyStore'
+import { useGoblinStore } from '@/presentation/stores/useGoblinStore'
+import { useDungeonStore } from '@/presentation/stores/useDungeonStore'
+import { useExpeditionStore } from '@/presentation/stores/useExpeditionStore'
 import type { TimelineEvent, ExpeditionReplay, ExpeditionRecord, ExpeditionEndReason, Party } from '@/shared/types'
 import type { BattleLogEntry, BattleLogMeta } from '@/shared/types'
 import { storeBattleLog } from '@/presentation/contexts/battleLogStore'
@@ -25,15 +25,15 @@ export default function ExpeditionPlaybackScreen() {
     expeditionId?: string
   }>()
 
-  const { getPartyById, isLoading: isPartyLoading } = usePartyService()
-  const { isLoading: isGoblinLoading } = useGoblinService()
-  const { dungeons } = useDungeonProgress()
+  const { getPartyById, isLoading: isPartyLoading } = usePartyStore()
+  const { isLoading: isGoblinLoading } = useGoblinStore()
+  const { dungeons } = useDungeonStore()
   const {
     expeditionRecords,
     getExpeditionById,
     getPartyExpeditionHistory,
     isLoading: isExpeditionLoading,
-  } = useExpeditionService()
+  } = useExpeditionStore()
 
   const [expeditionRecord, setExpeditionRecord] = useState<ExpeditionRecord | null>(null)
 

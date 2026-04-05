@@ -1,15 +1,36 @@
+import { useEffect, useState } from 'react'
 import { View, ActivityIndicator, Text, StyleSheet, Pressable } from 'react-native'
 import { Stack } from 'expo-router'
 import { StatusBar } from 'expo-status-bar'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { AuthProvider } from '@/presentation/contexts/AuthContext'
-import { ExpeditionStateProvider } from '@/presentation/contexts/ExpeditionStateContext'
 import { ResetProvider } from '@/presentation/contexts/ResetContext'
 import { useDatabaseInit } from '@/presentation/hooks/useDatabaseInit'
+import { useGoblinStore } from '@/presentation/stores/useGoblinStore'
+import { usePartyStore } from '@/presentation/stores/usePartyStore'
+import { useBaseStore } from '@/presentation/stores/useBaseStore'
+import { useDungeonStore } from '@/presentation/stores/useDungeonStore'
+import { useExpeditionStore } from '@/presentation/stores/useExpeditionStore'
 
 export default function RootLayout() {
   const { ready, error, resetAndReinitialize } = useDatabaseInit()
+  const [storesReady, setStoresReady] = useState(false)
+
+  useEffect(() => {
+    if (!ready) return
+    const init = async () => {
+      await Promise.all([
+        useGoblinStore.getState().initialize(),
+        usePartyStore.getState().initialize(),
+        useBaseStore.getState().initialize(),
+        useDungeonStore.getState().initialize(),
+        useExpeditionStore.getState().initialize(),
+      ])
+      setStoresReady(true)
+    }
+    void init()
+  }, [ready])
 
   if (error) {
     return (
@@ -24,7 +45,7 @@ export default function RootLayout() {
     )
   }
 
-  if (!ready) {
+  if (!ready || !storesReady) {
     return (
       <SafeAreaProvider>
         <View style={styles.loadingContainer}>
@@ -39,8 +60,7 @@ export default function RootLayout() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
         <AuthProvider>
-          <ExpeditionStateProvider>
-            <ResetProvider resetAndReinitialize={resetAndReinitialize}>
+          <ResetProvider resetAndReinitialize={resetAndReinitialize}>
               <Stack screenOptions={{ headerShown: false }}>
                 <Stack.Screen name="(tabs)" />
                 <Stack.Screen
@@ -57,7 +77,6 @@ export default function RootLayout() {
               </Stack>
               <StatusBar style="auto" />
             </ResetProvider>
-          </ExpeditionStateProvider>
         </AuthProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>

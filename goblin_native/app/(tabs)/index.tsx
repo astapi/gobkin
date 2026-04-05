@@ -1,19 +1,18 @@
 import { useCallback } from 'react'
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView, ActivityIndicator, Image, Alert } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { useFocusEffect, router } from 'expo-router'
-import { useGoblinService } from '@/presentation/hooks/useGoblinService'
-import { usePendingGoblins } from '@/presentation/hooks/usePendingGoblins'
-import { useBaseState } from '@/presentation/hooks/useBaseState'
+import { router } from 'expo-router'
+import { useGoblinStore } from '@/presentation/stores/useGoblinStore'
+import { useBaseStore, selectMaxGoblins } from '@/presentation/stores/useBaseStore'
 import { GoblinCard } from '@/presentation/components/GoblinCard'
 import type { Goblin } from '@/shared/types'
 import { getGoblinImage } from '@/shared/utils/goblinImages'
 import { ModStatCalculator } from '@/core/services/ModStatCalculator'
 
 export default function GoblinListScreen() {
-  const { goblins, isLoading, refreshGoblins, saveGoblin } = useGoblinService()
-  const { pendingGoblins, removePendingGoblin, refreshPendingGoblins } = usePendingGoblins()
-  const { maxGoblins } = useBaseState()
+  const { goblins, isLoading, saveGoblin } = useGoblinStore()
+  const { pendingGoblins, removePendingGoblin } = useBaseStore()
+  const maxGoblins = useBaseStore(selectMaxGoblins)
 
   const hasCapacity = goblins.length < maxGoblins
 
@@ -41,12 +40,6 @@ export default function GoblinListScreen() {
     )
   }, [removePendingGoblin])
 
-  useFocusEffect(
-    useCallback(() => {
-      refreshGoblins()
-      refreshPendingGoblins()
-    }, [refreshGoblins, refreshPendingGoblins])
-  )
 
   if (isLoading) {
     return (

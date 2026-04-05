@@ -2,8 +2,8 @@ import { useMemo, useCallback, useState, useEffect } from 'react'
 import { View, Text, FlatList, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { router, useLocalSearchParams } from 'expo-router'
-import { usePartyService } from '@/presentation/hooks/usePartyService'
-import { useDungeonProgress } from '@/presentation/hooks/useDungeonProgress'
+import { usePartyStore } from '@/presentation/stores/usePartyStore'
+import { useDungeonStore } from '@/presentation/stores/useDungeonStore'
 
 interface LogEntry {
   time: string
@@ -33,8 +33,8 @@ const getEventColor = (type: LogEntry['type']): string => {
 export default function ExpeditionLogScreen() {
   const { partyId, dungeonId } = useLocalSearchParams<{ partyId: string; dungeonId?: string }>()
 
-  const { getPartyById } = usePartyService()
-  const { dungeons } = useDungeonProgress()
+  const { getPartyById } = usePartyStore()
+  const { dungeons } = useDungeonStore()
 
   const [party, setParty] = useState<Awaited<ReturnType<typeof getPartyById>> | null>(null)
 

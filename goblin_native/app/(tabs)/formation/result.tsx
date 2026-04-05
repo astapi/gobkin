@@ -2,8 +2,8 @@ import { useMemo, useCallback, useEffect, useState } from 'react'
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Image, ActivityIndicator } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { router, useLocalSearchParams } from 'expo-router'
-import { useDungeonProgress } from '@/presentation/hooks/useDungeonProgress'
-import { useExpeditionService } from '@/presentation/hooks/useExpeditionService'
+import { useDungeonStore } from '@/presentation/stores/useDungeonStore'
+import { useExpeditionStore } from '@/presentation/stores/useExpeditionStore'
 import { getGoblinImage } from '@/shared/utils/goblinImages'
 import { areasData } from '@/shared/data'
 import { ModStatCalculator } from '@/core/services/ModStatCalculator'
@@ -12,13 +12,14 @@ import type { ExpeditionRecord, Goblin, TimelineEvent } from '@/shared/types'
 export default function ExpeditionResultScreen() {
   const { expeditionId } = useLocalSearchParams<{ expeditionId?: string }>()
 
-  const { dungeons, progress, markDungeonCleared, markUnlockNotified } = useDungeonProgress()
+  const { dungeons } = useDungeonStore()
+  const { progress, markDungeonCleared, markUnlockNotified } = useDungeonStore()
   const {
     expeditionRecords,
     getExpeditionById,
-    refreshExpeditions,
+    refresh: refreshExpeditions,
     isLoading: isExpeditionLoading,
-  } = useExpeditionService()
+  } = useExpeditionStore()
   const [hasRetriedLoad, setHasRetriedLoad] = useState(false)
   const [expeditionRecord, setExpeditionRecord] = useState<ExpeditionRecord | null>(null)
 

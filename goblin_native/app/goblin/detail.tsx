@@ -2,7 +2,7 @@ import { useMemo, useCallback, useEffect, useState } from 'react'
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, Alert } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useLocalSearchParams, router, useNavigation } from 'expo-router'
-import { useGoblinService } from '@/presentation/hooks/useGoblinService'
+import { useGoblinStore } from '@/presentation/stores/useGoblinStore'
 import type { Goblin } from '@/shared/types'
 import { getFactor } from '@/shared/data/factors'
 import { getGoblinImage } from '@/shared/utils/goblinImages'
@@ -29,7 +29,7 @@ function getStatLabel(stat: string): string {
 
 export default function GoblinDetailScreen() {
   const { goblinId } = useLocalSearchParams<{ goblinId: string }>()
-  const { getGoblinById, deleteGoblin } = useGoblinService()
+  const { getGoblinById, deleteGoblin } = useGoblinStore()
   const [goblin, setGoblin] = useState<Goblin | null>(null)
   const parentNav = useNavigation()
 
