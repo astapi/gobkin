@@ -1,0 +1,14 @@
+{
+  "id": "royal_capital_2",
+  "name": "王都決戦・王城内部",
+  "areaLevel": 8,
+  "floors": 2,
+  "baseDurationSec": 84,
+  "description": "王城内部へ侵攻。聖騎士や王国禁衛隊が最後の防衛線を張る。",
+  "encounter": {
+    "perFloorEvents": 3,
+    "eventWeights": { "battle": 75, "exploring": 25 }
+  },
+  "rewards": { "xpFloor": [160, 195] },
+  "unlockNext": "royal_capital_3"
+}

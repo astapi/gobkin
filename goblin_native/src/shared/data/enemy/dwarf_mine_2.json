@@ -1,0 +1,97 @@
+{
+  "enemies": [
+    {
+      "id": "DWF001",
+      "name": "ドワーフ坑夫",
+      "raceTags": ["dwarf"],
+      "level": 12,
+      "hp": 65,
+      "atk": 22,
+      "def": 14,
+      "spd": 3,
+      "sp": 0,
+      "attackCount": 1,
+      "accuracy": 360,
+      "evasion": 20,
+      "exp": 38,
+      "gold": 32
+    },
+    {
+      "id": "DWF002",
+      "name": "ドワーフ戦士",
+      "raceTags": ["dwarf"],
+      "level": 13,
+      "hp": 80,
+      "atk": 28,
+      "def": 18,
+      "spd": 4,
+      "sp": 0,
+      "attackCount": 1,
+      "accuracy": 380,
+      "evasion": 21,
+      "exp": 44,
+      "gold": 38
+    },
+    {
+      "id": "DWF003",
+      "name": "ルーン鍛冶師",
+      "raceTags": ["dwarf"],
+      "level": 14,
+      "hp": 55,
+      "atk": 30,
+      "def": 10,
+      "spd": 5,
+      "sp": 0,
+      "attackCount": 1,
+      "accuracy": 395,
+      "evasion": 22,
+      "exp": 48,
+      "gold": 42
+    },
+    {
+      "id": "DWF004",
+      "name": "坑道守護者",
+      "raceTags": ["dwarf"],
+      "level": 15,
+      "hp": 110,
+      "atk": 34,
+      "def": 22,
+      "spd": 3,
+      "sp": 0,
+      "attackCount": 1,
+      "accuracy": 410,
+      "evasion": 23,
+      "exp": 55,
+      "gold": 48
+    },
+    {
+      "id": "DWF005",
+      "name": "ドワーフ擲弾兵",
+      "raceTags": ["dwarf"],
+      "level": 14,
+      "hp": 70,
+      "atk": 35,
+      "def": 12,
+      "spd": 4,
+      "sp": 0,
+      "attackCount": 1,
+      "accuracy": 395,
+      "evasion": 22,
+      "exp": 50,
+      "gold": 44
+    }
+  ],
+  "patterns": [
+    { "id": "DM2_001", "floors": [1], "enemies": [["DWF002", "DWF003"], ["DWF002"]] },
+    { "id": "DM2_002", "floors": [1], "enemies": [["DWF005", "DWF002"], ["DWF003", "DWF002"]] },
+    { "id": "DM2_003", "floors": [1], "enemies": [["DWF002", "DWF003"], ["DWF005", "DWF002"], ["DWF003"]] },
+    { "id": "DM2_004", "floors": [1], "enemies": [["DWF005", "DWF002"], ["DWF003", "DWF002"], ["DWF002", "DWF005"]] },
+    { "id": "DM2_005", "floors": [1], "enemies": [["DWF002", "DWF005", "DWF002"], ["DWF003", "DWF002"], ["DWF005", "DWF003"]] },
+
+    { "id": "DM2_006", "floors": [2], "enemies": [["DWF005", "DWF003"], ["DWF002"]] },
+    { "id": "DM2_007", "floors": [2], "enemies": [["DWF002", "DWF005"], ["DWF003", "DWF002"]] },
+    { "id": "DM2_008", "floors": [2], "enemies": [["DWF005", "DWF003"], ["DWF002", "DWF005"], ["DWF002"]] },
+    { "id": "DM2_009", "floors": [2], "enemies": [["DWF003", "DWF005"], ["DWF002", "DWF002"], ["DWF005", "DWF003"]] },
+    { "id": "DM2_010", "floors": [2], "enemies": [["DWF005", "DWF002", "DWF003"], ["DWF002", "DWF005"], ["DWF003", "DWF002"]] }
+  ]
+}

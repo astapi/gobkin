@@ -1,0 +1,14 @@
+{
+  "id": "elf_forest_2",
+  "name": "エルフの隠れ里・内部",
+  "areaLevel": 5,
+  "floors": 2,
+  "baseDurationSec": 55,
+  "description": "里の内部。精霊使いや月の衛士が守りを固めている。",
+  "encounter": {
+    "perFloorEvents": 3,
+    "eventWeights": { "battle": 60, "exploring": 40 }
+  },
+  "rewards": { "xpFloor": [64, 76] },
+  "unlockNext": "elf_forest_3"
+}

@@ -1,0 +1,121 @@
+{
+  "enemies": [
+    {
+      "id": "UND001",
+      "name": "スケルトン兵",
+      "raceTags": ["undead"],
+      "level": 5,
+      "hp": 25,
+      "atk": 10,
+      "def": 8,
+      "spd": 3,
+      "sp": 0,
+      "attackCount": 1,
+      "accuracy": 230,
+      "evasion": 13,
+      "exp": 16,
+      "gold": 12
+    },
+    {
+      "id": "UND002",
+      "name": "ゾンビ",
+      "raceTags": ["undead"],
+      "level": 6,
+      "hp": 45,
+      "atk": 12,
+      "def": 4,
+      "spd": 2,
+      "sp": 0,
+      "attackCount": 1,
+      "accuracy": 240,
+      "evasion": 14,
+      "exp": 18,
+      "gold": 14
+    },
+    {
+      "id": "UND003",
+      "name": "ゴースト",
+      "raceTags": ["undead"],
+      "level": 6,
+      "hp": 20,
+      "atk": 14,
+      "def": 2,
+      "spd": 10,
+      "sp": 0,
+      "attackCount": 1,
+      "accuracy": 240,
+      "evasion": 16,
+      "exp": 20,
+      "gold": 16
+    },
+    {
+      "id": "UND004",
+      "name": "骨弓兵",
+      "raceTags": ["undead"],
+      "level": 7,
+      "hp": 28,
+      "atk": 15,
+      "def": 5,
+      "spd": 5,
+      "sp": 0,
+      "attackCount": 1,
+      "accuracy": 255,
+      "evasion": 15,
+      "exp": 22,
+      "gold": 18
+    },
+    {
+      "id": "UND005",
+      "name": "屍鬼",
+      "raceTags": ["undead"],
+      "level": 8,
+      "hp": 55,
+      "atk": 18,
+      "def": 10,
+      "spd": 3,
+      "sp": 0,
+      "attackCount": 1,
+      "accuracy": 270,
+      "evasion": 16,
+      "exp": 28,
+      "gold": 22
+    },
+    {
+      "id": "B_LICH",
+      "name": "死霊術師の残骸",
+      "raceTags": ["undead"],
+      "level": 11,
+      "hp": 200,
+      "atk": 28,
+      "def": 12,
+      "spd": 7,
+      "sp": 0,
+      "attackCount": 2,
+      "accuracy": 330,
+      "evasion": 19,
+      "exp": 90,
+      "gold": 80,
+      "factorDrops": [
+        { "factorId": "undead", "probability": 1 }
+      ]
+    }
+  ],
+  "patterns": [
+    { "id": "UR3_001", "floors": [1], "enemies": [["UND004", "UND004"], ["UND002"]] },
+    { "id": "UR3_002", "floors": [1], "enemies": [["UND005"], ["UND003"]] },
+    { "id": "UR3_003", "floors": [1], "enemies": [["UND005", "UND005"]] },
+    { "id": "UR3_004", "floors": [1], "enemies": [["UND004", "UND004"], ["UND003", "UND003"]] },
+    { "id": "UR3_005", "floors": [1], "enemies": [["UND005"], ["UND004", "UND004"], ["UND003"]] },
+
+    { "id": "UR3_006", "floors": [2], "enemies": [["UND005"], ["UND004", "UND004"]] },
+    { "id": "UR3_007", "floors": [2], "enemies": [["UND005", "UND005"]] },
+    { "id": "UR3_008", "floors": [2], "enemies": [["UND005"], ["UND003", "UND003"], ["UND004"]] },
+    { "id": "UR3_009", "floors": [2], "enemies": [["UND005", "UND005"], ["UND004", "UND004"]] },
+    {
+      "id": "BOSS",
+      "floors": [2],
+      "enemies": [["B_LICH"], ["UND005", "UND005"], ["UND004", "UND004"]],
+      "isBoss": true
+    }
+  ]
+}

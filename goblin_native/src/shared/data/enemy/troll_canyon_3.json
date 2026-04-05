@@ -1,0 +1,122 @@
+{
+  "enemies": [
+    {
+      "id": "TRL001",
+      "name": "トロル",
+      "raceTags": ["troll"],
+      "level": 19,
+      "hp": 120,
+      "atk": 32,
+      "def": 14,
+      "spd": 4,
+      "sp": 0,
+      "attackCount": 1,
+      "accuracy": 465,
+      "evasion": 24,
+      "exp": 62,
+      "gold": 54
+    },
+    {
+      "id": "TRL002",
+      "name": "洞窟トロル",
+      "raceTags": ["troll"],
+      "level": 20,
+      "hp": 140,
+      "atk": 37,
+      "def": 18,
+      "spd": 3,
+      "sp": 0,
+      "attackCount": 1,
+      "accuracy": 480,
+      "evasion": 24,
+      "exp": 68,
+      "gold": 60
+    },
+    {
+      "id": "TRL003",
+      "name": "投石トロル",
+      "raceTags": ["troll"],
+      "level": 21,
+      "hp": 100,
+      "atk": 42,
+      "def": 12,
+      "spd": 5,
+      "sp": 0,
+      "attackCount": 1,
+      "accuracy": 495,
+      "evasion": 25,
+      "exp": 72,
+      "gold": 64
+    },
+    {
+      "id": "TRL004",
+      "name": "巨大トロル",
+      "raceTags": ["troll"],
+      "level": 22,
+      "hp": 160,
+      "atk": 40,
+      "def": 22,
+      "spd": 3,
+      "sp": 0,
+      "attackCount": 1,
+      "accuracy": 510,
+      "evasion": 24,
+      "exp": 78,
+      "gold": 68
+    },
+    {
+      "id": "TRL005",
+      "name": "トロルシャーマン",
+      "raceTags": ["troll"],
+      "level": 21,
+      "hp": 90,
+      "atk": 35,
+      "def": 14,
+      "spd": 7,
+      "sp": 0,
+      "attackCount": 1,
+      "accuracy": 495,
+      "evasion": 26,
+      "exp": 70,
+      "gold": 62
+    },
+    {
+      "id": "B_TYRANT",
+      "name": "峡谷の暴君",
+      "raceTags": ["troll"],
+      "level": 25,
+      "hp": 850,
+      "atk": 65,
+      "def": 34,
+      "spd": 6,
+      "sp": 0,
+      "attackCount": 2,
+      "accuracy": 580,
+      "evasion": 30,
+      "exp": 380,
+      "gold": 340,
+      "factorDrops": [
+        { "factorId": "troll", "probability": 1 }
+      ]
+    }
+  ],
+  "patterns": [
+    { "id": "TC3_001", "floors": [1], "enemies": [["TRL004"], ["TRL003"]] },
+    { "id": "TC3_002", "floors": [1], "enemies": [["TRL004", "TRL003"], ["TRL005"]] },
+    { "id": "TC3_003", "floors": [1], "enemies": [["TRL004", "TRL005"], ["TRL003"]] },
+    { "id": "TC3_004", "floors": [1], "enemies": [["TRL004", "TRL003"], ["TRL005", "TRL004"]] },
+    { "id": "TC3_005", "floors": [1], "enemies": [["TRL004", "TRL003"], ["TRL005", "TRL004"], ["TRL003"]] },
+
+    { "id": "TC3_006", "floors": [2], "enemies": [["TRL004"], ["TRL003"]] },
+    { "id": "TC3_007", "floors": [2], "enemies": [["TRL004", "TRL005"], ["TRL003"]] },
+    { "id": "TC3_008", "floors": [2], "enemies": [["TRL004", "TRL003"], ["TRL005", "TRL004"]] },
+    { "id": "TC3_009", "floors": [2], "enemies": [["TRL004", "TRL004"], ["TRL003", "TRL005"]] },
+    { "id": "TC3_010", "floors": [2], "enemies": [["TRL004", "TRL003"], ["TRL005", "TRL004"], ["TRL003"]] },
+    {
+      "id": "BOSS",
+      "floors": [2],
+      "enemies": [["B_TYRANT"], ["TRL004", "TRL005"], ["TRL003", "TRL004"]],
+      "isBoss": true
+    }
+  ]
+}

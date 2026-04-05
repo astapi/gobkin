@@ -1,0 +1,14 @@
+{
+  "id": "elf_forest_3",
+  "name": "エルフの隠れ里・中枢",
+  "areaLevel": 5,
+  "floors": 2,
+  "baseDurationSec": 60,
+  "description": "里の中枢。古樹の戦士に守られた森の番人が最後の壁として立ちはだかる。魔法の力を手に入れろ。",
+  "encounter": {
+    "perFloorEvents": 3,
+    "eventWeights": { "battle": 60, "exploring": 40 }
+  },
+  "rewards": { "xpFloor": [88, 95], "xpBoss": 260 },
+  "unlockNext": "lizardman_swamp_1"
+}

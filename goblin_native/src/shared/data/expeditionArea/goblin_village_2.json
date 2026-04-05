@@ -1,0 +1,19 @@
+{
+  "id": "goblin_village_2",
+  "name": "ゴブリン集落・内部",
+  "areaLevel": 2,
+  "floors": 2,
+  "baseDurationSec": 35,
+  "description": "集落の内部へ侵入。ウォリアーやメイジが組織的に守りを固めている。",
+  "encounter": {
+    "perFloorEvents": 3,
+    "eventWeights": {
+      "battle": 60,
+      "exploring": 40
+    }
+  },
+  "rewards": {
+    "xpFloor": [16, 20]
+  },
+  "unlockNext": "goblin_village_3"
+}

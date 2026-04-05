@@ -1,0 +1,118 @@
+{
+  "enemies": [
+    {
+      "id": "ROY001",
+      "name": "近衛騎士",
+      "raceTags": ["human"],
+      "level": 28,
+      "hp": 160,
+      "atk": 48,
+      "def": 32,
+      "spd": 9,
+      "sp": 0,
+      "attackCount": 1,
+      "accuracy": 640,
+      "evasion": 33,
+      "exp": 105,
+      "gold": 95
+    },
+    {
+      "id": "ROY002",
+      "name": "大魔導師",
+      "raceTags": ["human"],
+      "level": 30,
+      "hp": 120,
+      "atk": 60,
+      "def": 18,
+      "spd": 10,
+      "sp": 0,
+      "attackCount": 1,
+      "accuracy": 670,
+      "evasion": 35,
+      "exp": 115,
+      "gold": 105
+    },
+    {
+      "id": "ROY003",
+      "name": "聖騎士",
+      "raceTags": ["human"],
+      "level": 31,
+      "hp": 200,
+      "atk": 54,
+      "def": 38,
+      "spd": 7,
+      "sp": 0,
+      "attackCount": 1,
+      "accuracy": 685,
+      "evasion": 34,
+      "exp": 120,
+      "gold": 110
+    },
+    {
+      "id": "ROY004",
+      "name": "王国禁衛隊",
+      "raceTags": ["human"],
+      "level": 32,
+      "hp": 220,
+      "atk": 56,
+      "def": 36,
+      "spd": 8,
+      "sp": 0,
+      "attackCount": 2,
+      "accuracy": 700,
+      "evasion": 36,
+      "exp": 130,
+      "gold": 120
+    },
+    {
+      "id": "ROY005",
+      "name": "勇者",
+      "raceTags": ["human"],
+      "level": 33,
+      "hp": 260,
+      "atk": 66,
+      "def": 34,
+      "spd": 12,
+      "sp": 0,
+      "attackCount": 2,
+      "accuracy": 720,
+      "evasion": 38,
+      "exp": 150,
+      "gold": 140
+    },
+    {
+      "id": "B_KING",
+      "name": "人間王",
+      "raceTags": ["human"],
+      "level": 38,
+      "hp": 2000,
+      "atk": 85,
+      "def": 48,
+      "spd": 11,
+      "sp": 0,
+      "attackCount": 3,
+      "accuracy": 810,
+      "evasion": 40,
+      "exp": 600,
+      "gold": 500
+    }
+  ],
+  "patterns": [
+    { "id": "RC3_001", "floors": [1], "enemies": [["ROY005"], ["ROY003"], ["ROY004"], ["ROY003"], ["ROY004"]] },
+    { "id": "RC3_002", "floors": [1], "enemies": [["ROY004"], ["ROY005"], ["ROY003", "ROY003"], ["ROY004", "ROY003"]] },
+    { "id": "RC3_003", "floors": [1], "enemies": [["ROY005"], ["ROY003", "ROY004"], ["ROY005", "ROY003"], ["ROY003", "ROY004"]] },
+    { "id": "RC3_004", "floors": [1], "enemies": [["ROY004", "ROY005"], ["ROY003", "ROY003"], ["ROY005", "ROY004"], ["ROY003", "ROY004"]] },
+    { "id": "RC3_005", "floors": [1], "enemies": [["ROY005", "ROY005"], ["ROY003", "ROY004", "ROY003"], ["ROY004", "ROY005", "ROY003"], ["ROY003", "ROY004"]] },
+
+    { "id": "RC3_006", "floors": [2], "enemies": [["ROY005"], ["ROY003"], ["ROY004"], ["ROY003"]] },
+    { "id": "RC3_007", "floors": [2], "enemies": [["ROY004", "ROY005"], ["ROY003"], ["ROY005"], ["ROY003", "ROY004"]] },
+    { "id": "RC3_008", "floors": [2], "enemies": [["ROY005"], ["ROY004", "ROY004"], ["ROY003", "ROY005"], ["ROY003", "ROY004"]] },
+    { "id": "RC3_009", "floors": [2], "enemies": [["ROY005", "ROY005"], ["ROY004", "ROY003", "ROY003"], ["ROY005", "ROY004"], ["ROY003"]] },
+    {
+      "id": "BOSS",
+      "floors": [2],
+      "enemies": [["B_KING"], ["ROY005", "ROY005", "ROY005"], ["ROY004", "ROY004", "ROY003", "ROY003"], ["ROY003", "ROY004", "ROY003"]],
+      "isBoss": true
+    }
+  ]
+}

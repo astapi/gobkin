@@ -1,0 +1,14 @@
+{
+  "id": "troll_canyon_2",
+  "name": "トロルの峡谷・深部",
+  "areaLevel": 6,
+  "floors": 2,
+  "baseDurationSec": 64,
+  "description": "峡谷の深部。洞窟トロルや投石トロルが群れをなす。",
+  "encounter": {
+    "perFloorEvents": 3,
+    "eventWeights": { "battle": 70, "exploring": 30 }
+  },
+  "rewards": { "xpFloor": [88, 105] },
+  "unlockNext": "troll_canyon_3"
+}

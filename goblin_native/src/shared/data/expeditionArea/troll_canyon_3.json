@@ -1,0 +1,14 @@
+{
+  "id": "troll_canyon_3",
+  "name": "トロルの峡谷・暴君の間",
+  "areaLevel": 6,
+  "floors": 2,
+  "baseDurationSec": 70,
+  "description": "峡谷の最奥。巨大トロルの群れの先に、峡谷の暴君が待ち受ける。再生能力を手に入れろ。",
+  "encounter": {
+    "perFloorEvents": 3,
+    "eventWeights": { "battle": 70, "exploring": 30 }
+  },
+  "rewards": { "xpFloor": [130, 142], "xpBoss": 380 },
+  "unlockNext": "human_fortress_1"
+}
