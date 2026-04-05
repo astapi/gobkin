@@ -7,7 +7,6 @@ import { useExpeditionService } from '@/presentation/hooks/useExpeditionService'
 import { getGoblinImage } from '@/shared/utils/goblinImages'
 import { areasData } from '@/shared/data'
 import { ModStatCalculator } from '@/core/services/ModStatCalculator'
-import { addExperience } from '@/core/services/ExperienceSystem'
 import type { ExpeditionRecord, Goblin, TimelineEvent } from '@/shared/types'
 
 export default function ExpeditionResultScreen() {
@@ -70,23 +69,16 @@ export default function ExpeditionResultScreen() {
     return map
   }, [replay, partySnapshot])
 
-  // レベルアップ計算
+  // 保存済みのレベルアップ情報を読み取り
   const levelUpMap = useMemo(() => {
-    if (!replay || partySnapshot.length === 0) return new Map<number, { oldLevel: number; newLevel: number }>()
-
     const map = new Map<number, { oldLevel: number; newLevel: number }>()
-    for (const goblin of partySnapshot) {
-      const isCasualty = replay.summary.casualties.includes(goblin.id.toString())
-      if (isCasualty) continue
+    if (!replay?.summary.memberLevelUps) return map
 
-      const expGained = replay.summary.xpGained
-      const result = addExperience(goblin.level, goblin.experience, expGained)
-      if (result.didLevelUp) {
-        map.set(goblin.id, { oldLevel: goblin.level, newLevel: result.newLevel })
-      }
+    for (const entry of replay.summary.memberLevelUps) {
+      map.set(entry.goblinId, { oldLevel: entry.oldLevel, newLevel: entry.newLevel })
     }
     return map
-  }, [replay, partySnapshot])
+  }, [replay])
 
   const getResultText = () => {
     if (!replay) return ''

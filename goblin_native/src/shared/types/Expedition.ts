@@ -71,6 +71,12 @@ export interface ExpeditionRecord {
   updatedAt: Date
 }
 
+export interface MemberLevelUp {
+  goblinId: number
+  oldLevel: number
+  newLevel: number
+}
+
 export interface RewardSummary {
   success: boolean
   maxFloorReached: number
@@ -78,6 +84,7 @@ export interface RewardSummary {
   goldGained: number
   casualties: string[]
   treasureDrops?: TreasureDrop[]  // 宝箱から獲得した装備
+  memberLevelUps?: MemberLevelUp[]  // 遠征完了時に確定したレベルアップ情報
 }
 
 export interface AreaConfig {
