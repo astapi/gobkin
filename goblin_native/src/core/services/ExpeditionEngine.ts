@@ -20,6 +20,9 @@ import { BattleSystem } from './BattleSystem'
 import { ModStatCalculator } from './ModStatCalculator'
 import { EquipmentTitleService } from './EquipmentTitleService'
 
+/** 全エリア共通の宝箱ドロップ確率（戦闘勝利ごと） */
+const DROP_CHANCE = 0.25
+
 export class ExpeditionEngine {
   private rng: () => number
   private seed: number
@@ -137,7 +140,7 @@ export class ExpeditionEngine {
             }
 
             // 宝箱ドロップ判定（勝利時のみ）
-            const treasureDrops = this.rollTreasureDrops(area.dropChance, area.areaLevel, enemies.flat(), droppedTemplateIds)
+            const treasureDrops = this.rollTreasureDrops(area.areaLevel, enemies.flat(), droppedTemplateIds)
             if (treasureDrops.length > 0) {
               events.push({
                 type: "treasure",
@@ -193,7 +196,7 @@ export class ExpeditionEngine {
             }
 
             // 宝箱ドロップ判定（勝利時のみ）
-            const defaultTreasure = this.rollTreasureDrops(area.dropChance, area.areaLevel, enemies.flat(), droppedTemplateIds)
+            const defaultTreasure = this.rollTreasureDrops(area.areaLevel, enemies.flat(), droppedTemplateIds)
             if (defaultTreasure.length > 0) {
               events.push({
                 type: "treasure",
@@ -257,7 +260,7 @@ export class ExpeditionEngine {
 
         // ボス戦勝利時の宝箱ドロップ判定
         if (bossCombat.outcome === 'win') {
-          const bossTreasure = this.rollTreasureDrops(area.dropChance, area.areaLevel, bossEnemies.flat(), droppedTemplateIds)
+          const bossTreasure = this.rollTreasureDrops(area.areaLevel, bossEnemies.flat(), droppedTemplateIds)
           if (bossTreasure.length > 0) {
             events.push({
               type: "treasure",
@@ -516,7 +519,6 @@ export class ExpeditionEngine {
    * 3. ドロップ時に称号を抽選して付与
    */
   private rollTreasureDrops(
-    dropChance: number | undefined,
     dungeonLevel: number,
     enemies: Enemy[],
     droppedIds: Set<string>,
@@ -525,7 +527,7 @@ export class ExpeditionEngine {
     const drops: TreasureDrop[] = []
 
     // ダンジョンレベルに応じた装備プールから抽選
-    if (dropChance !== undefined && this.rng() < dropChance) {
+    if (this.rng() < DROP_CHANCE) {
       const pool = getEquipmentByDungeonLevel(dungeonLevel)
       const candidates = pool.filter(t => !droppedIds.has(t.id))
 

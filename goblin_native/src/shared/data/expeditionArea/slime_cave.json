@@ -16,6 +16,5 @@
     "xpFloor": [4, 6],
     "xpBoss": 12
   },
-  "dropChance": 0.15,
   "unlockNext": "forest_outskirts"
 }
