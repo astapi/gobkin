@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useState } from 'react'
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView, ActivityIndicator, Image, Alert } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { router } from 'expo-router'
@@ -7,6 +7,7 @@ import { useBaseStore, selectMaxGoblins } from '@/presentation/stores/useBaseSto
 import { GoblinCard } from '@/presentation/components/GoblinCard'
 import type { Goblin } from '@/shared/types'
 import { getGoblinImage } from '@/shared/utils/goblinImages'
+import { getEffectiveStats } from '@/shared/utils/goblinStats'
 import { ModStatCalculator } from '@/core/services/ModStatCalculator'
 
 export default function GoblinListScreen() {
@@ -15,6 +16,14 @@ export default function GoblinListScreen() {
   const maxGoblins = useBaseStore(selectMaxGoblins)
 
   const hasCapacity = goblins.length < maxGoblins
+  const [sortKey, setSortKey] = useState<'level' | 'atk' | 'hp'>('level')
+
+  const sortedGoblins = [...goblins].sort((a, b) => {
+    if (sortKey === 'level') return b.level - a.level
+    const statsA = getEffectiveStats(a)
+    const statsB = getEffectiveStats(b)
+    return sortKey === 'atk' ? statsB.atk - statsA.atk : statsB.hp - statsA.hp
+  })
 
   const handleGoblinPress = useCallback((goblin: Goblin) => {
     router.push({ pathname: '/goblin/detail', params: { goblinId: String(goblin.id) } })
@@ -64,9 +73,28 @@ export default function GoblinListScreen() {
 
   return (
     <SafeAreaView style={styles.container} edges={['top', 'left', 'right', 'bottom']}>
+      <View style={styles.header}>
+        <View style={styles.headerTop}>
+          <Text style={styles.headerTitle}>ゴブリン一覧</Text>
+          <Text style={styles.headerCount}>{goblins.length} / {maxGoblins}</Text>
+        </View>
+        <View style={styles.sortRow}>
+          {(['level', 'atk', 'hp'] as const).map((key) => (
+            <TouchableOpacity
+              key={key}
+              style={[styles.sortButton, sortKey === key && styles.sortButtonActive]}
+              onPress={() => setSortKey(key)}
+            >
+              <Text style={[styles.sortButtonText, sortKey === key && styles.sortButtonTextActive]}>
+                {key === 'level' ? 'Lv' : key.toUpperCase()}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      </View>
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <View style={styles.listContent}>
-          {goblins.map((goblin) => (
+          {sortedGoblins.map((goblin) => (
             <View key={goblin.id} style={styles.cardWrapper}>
               <GoblinCard goblin={goblin} onPress={() => handleGoblinPress(goblin)} />
             </View>
@@ -160,24 +188,67 @@ const styles = StyleSheet.create({
     color: '#6B7280',
     textAlign: 'center',
   },
+  header: {
+    paddingHorizontal: 16,
+    paddingTop: 8,
+    paddingBottom: 8,
+    backgroundColor: '#F9FAFB',
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: '#D1D5DB',
+  },
+  headerTop: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  headerTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#1F2937',
+  },
+  headerCount: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#6B7280',
+  },
+  sortRow: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  sortButton: {
+    paddingVertical: 4,
+    paddingHorizontal: 12,
+    borderRadius: 14,
+    backgroundColor: '#E5E7EB',
+  },
+  sortButtonActive: {
+    backgroundColor: '#374151',
+  },
+  sortButtonText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#6B7280',
+  },
+  sortButtonTextActive: {
+    color: '#FFFFFF',
+  },
   scrollContent: {
     paddingBottom: 32,
   },
   listContent: {
-    padding: 16,
   },
   cardWrapper: {
-    marginBottom: 12,
   },
   pendingSection: {
-    paddingHorizontal: 16,
     paddingTop: 8,
   },
   pendingSectionHeader: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
-    marginBottom: 8,
+    marginBottom: 4,
+    paddingHorizontal: 12,
   },
   pendingSectionTitle: {
     fontSize: 16,
@@ -198,24 +269,24 @@ const styles = StyleSheet.create({
   pendingSectionDesc: {
     fontSize: 12,
     color: '#9CA3AF',
-    marginBottom: 12,
+    marginBottom: 8,
+    paddingHorizontal: 12,
   },
   pendingCard: {
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: '#E5E7EB',
-    padding: 10,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
     backgroundColor: '#FFFFFF',
-    marginBottom: 8,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: '#E5E7EB',
   },
   pendingRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10,
+    gap: 8,
   },
   pendingAvatar: {
-    width: 40,
-    height: 40,
+    width: 32,
+    height: 32,
   },
   pendingInfo: {
     flex: 1,
@@ -226,29 +297,29 @@ const styles = StyleSheet.create({
     color: '#1F2937',
   },
   pendingStats: {
-    fontSize: 11,
+    fontSize: 10,
     color: '#6B7280',
-    marginTop: 2,
+    marginTop: 1,
   },
   addButton: {
     backgroundColor: '#374151',
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-    borderRadius: 6,
+    paddingVertical: 4,
+    paddingHorizontal: 10,
+    borderRadius: 4,
   },
   addButtonText: {
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: '600',
     color: '#FFFFFF',
   },
   dismissButton: {
     backgroundColor: '#6B7280',
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-    borderRadius: 6,
+    paddingVertical: 4,
+    paddingHorizontal: 10,
+    borderRadius: 4,
   },
   dismissButtonText: {
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: '600',
     color: '#FFFFFF',
   },
