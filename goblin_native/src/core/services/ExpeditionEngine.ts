@@ -318,6 +318,8 @@ export class ExpeditionEngine {
       return {
         id: goblin.id.toString(),
         name: goblin.name,
+        race: goblin.race,
+        skills: goblin.skills,
         currentHP: effectiveStats.hp,
         maxHP: effectiveStats.hp,
         // 基礎ステータスを保存（ゴブリン再構築時に使用）
@@ -334,6 +336,7 @@ export class ExpeditionEngine {
         mods: goblin.mods || [],
         factors: goblin.factors || [],
         variantFactorId: goblin.variantFactorId,
+        spells: goblin.spells,
         level: goblin.level,
         avatar: goblin.avatar,
       }
@@ -426,7 +429,7 @@ export class ExpeditionEngine {
     const allGoblins: Goblin[] = partyState.map(member => ({
       id: parseInt(member.id),
       name: member.name,
-      race: 'ゴブリン' as const,
+      race: member.race,
       level: member.level,
       experience: 0,
       avatar: member.avatar,
@@ -441,8 +444,10 @@ export class ExpeditionEngine {
         evasion: member.evasion ?? 15,
       },
       mods: member.mods,
+      skills: member.skills,
       factors: member.factors,
       variantFactorId: member.variantFactorId,
+      spells: member.spells,
     }))
 
     // 各メンバーの現在HPを配列で渡す

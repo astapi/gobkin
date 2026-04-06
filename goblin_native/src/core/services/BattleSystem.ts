@@ -1,6 +1,6 @@
-import type { AttackTargetDetail, BattleLogEntry, Enemy, Goblin, LearnedSpell } from '../../shared/types'
+import type { AttackTargetDetail, BattleLogEntry, CharacterSkill, Enemy, Goblin, LearnedSpell } from '../../shared/types'
 import { SPELL_DEFS } from '../../shared/data/spells'
-import { getRaceAdditionalDamage, getRearProtectionMultiplier } from '../../shared/data/raceAbilities'
+import { getAdditionalDamageFromSkills, getRearProtectionMultiplierFromSkills } from '../../shared/data/characterSkills'
 import type { SpellDef } from '../../shared/types/Spell'
 import { CombatantManager } from './CombatantManager'
 import { DamageCalculator } from './DamageCalculator'
@@ -34,7 +34,7 @@ interface BattleUnit {
   rowSlot: number          // 列内のスロット番号（0-based）
   level: number            // 呪文のターゲット数計算用
   spellCharges: SpellCharge[]  // 戦闘中の呪文チャージ状態
-  race?: string
+  skills: CharacterSkill[]
 }
 
 export interface BattleResult {
@@ -264,7 +264,7 @@ export class BattleSystem {
 
             // ダメージ補正: n<=2 → 1.0, n>=3 → 0.9^(n-2)
             const dmgMod = getDamageModifier(atkIdx + 1)
-            const additionalDamage = unit.race ? getRaceAdditionalDamage(unit.race) : 0
+            const additionalDamage = getAdditionalDamageFromSkills(unit.skills)
 
             // 被ダメージ軽減を適用
             const reductionFactor = 1 - target.damageReduction / 100
@@ -513,7 +513,7 @@ export class BattleSystem {
       rowSlot: 0,
       level: goblin.level,
       spellCharges: this.initSpellCharges(goblin.spells),
-      race: goblin.race,
+      skills: goblin.skills,
     }
   }
 
@@ -535,6 +535,7 @@ export class BattleSystem {
       rowSlot,
       level: enemy.level,
       spellCharges: this.initSpellCharges(enemy.spells),
+      skills: [],
     }
   }
 
@@ -542,10 +543,10 @@ export class BattleSystem {
     if (!target.isAlly || target.currentHP <= 0) return 1
 
     return allyUnits.reduce((factor, ally) => {
-      if (ally.currentHP <= 0 || ally.row >= target.row || !ally.race) {
+      if (ally.currentHP <= 0 || ally.row >= target.row) {
         return factor
       }
-      return factor * getRearProtectionMultiplier(ally.race)
+      return factor * getRearProtectionMultiplierFromSkills(ally.skills)
     }, 1)
   }
 

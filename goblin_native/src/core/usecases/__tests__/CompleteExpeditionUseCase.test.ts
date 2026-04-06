@@ -1,19 +1,22 @@
 import { CompleteExpeditionUseCase } from '../CompleteExpeditionUseCase'
 import type { IGoblinRepository, IPartyRepository, IBaseStateRepository } from '../../repositories'
+import { getDefaultSkillsForRace } from '../../../shared/data/raceSkills'
 import type { Goblin, GoblinStats, Party, BaseState, ExpeditionReplay, TimelineEvent } from '../../../shared/types'
 
 // --- テストヘルパー ---
 
 function createTestGoblin(overrides: Partial<Goblin> = {}): Goblin {
+  const race = overrides.race ?? 'ゴブリン'
   return {
     id: 1,
     name: 'テストゴブリン',
-    race: 'ゴブリン',
+    race,
     level: 1,
     experience: 0,
     avatar: '/test.png',
     stats: { hp: 60, atk: 12, sp: 10, spd: 10, def: 10, attackCount: 2, accuracy: 20, evasion: 15 },
     mods: [],
+    skills: overrides.skills ?? getDefaultSkillsForRace(race),
     factors: [],
     ...overrides,
   }

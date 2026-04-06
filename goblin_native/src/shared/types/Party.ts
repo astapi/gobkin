@@ -1,5 +1,7 @@
 import type { ExpeditionRequest } from "./Expedition"
+import type { CharacterSkill } from "./CharacterSkill"
 import type { ModInstance } from "./Mod"
+import type { LearnedSpell } from "./Spell"
 
 export type PartyStatus = "idle" | "expedition"
 
@@ -16,6 +18,7 @@ export type Party = {
 export interface PartyState {
   id: string
   name: string
+  race: string
   // HP管理
   currentHP: number   // 現在HP（Mod適用後、戦闘でダメージを受けると減少）
   maxHP: number       // 最大HP（Mod適用後、参照用）
@@ -31,8 +34,10 @@ export interface PartyState {
   isKO: boolean
   isDead: boolean
   mods: ModInstance[]
+  skills: CharacterSkill[]
   factors: string[]   // 因子ID配列（ModStatCalculatorでボーナス計算に使用）
   variantFactorId?: string  // 亜種の元となった因子ID（追加効果適用に使用）
+  spells?: LearnedSpell[]
   level: number
   avatar: string
 }

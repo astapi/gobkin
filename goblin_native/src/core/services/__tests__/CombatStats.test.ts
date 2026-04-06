@@ -1,6 +1,8 @@
 import { GoblinBirthService } from '../GoblinBirthService'
 import { ModStatCalculator } from '../ModStatCalculator'
 import { BattleSystem, getDamageModifier, getAccuracyModifier, getRowWeight, selectTarget } from '../BattleSystem'
+import { ExpeditionEngine } from '../ExpeditionEngine'
+import { getDefaultSkillsForRace } from '../../../shared/data/raceSkills'
 import { getBloodlineCombatStats } from '../../../shared/data/equipmentConfig'
 import { EquipmentService } from '../EquipmentService'
 import type { Goblin, Enemy } from '../../../shared/types'
@@ -20,15 +22,17 @@ function createSeededRng(seed: number): () => number {
  * テスト用の最小限のゴブリンを作成
  */
 function createTestGoblin(overrides: Partial<Goblin> = {}): Goblin {
+  const race = overrides.race ?? 'ゴブリン'
   return {
     id: 1,
     name: 'テストゴブリン',
-    race: 'ゴブリン',
+    race,
     level: 1,
     experience: 0,
     avatar: '/test.png',
     stats: { hp: 60, atk: 12, sp: 10, spd: 10, def: 10, attackCount: 2, accuracy: 20, evasion: 15 },
     mods: [],
+    skills: overrides.skills ?? getDefaultSkillsForRace(race),
     factors: [],
     ...overrides,
   }
@@ -549,6 +553,95 @@ describe('BattleSystem — 命中判定と複数回攻撃', () => {
     expect(protectedRear!.hitCount).toBe(plainRear!.hitCount)
     expect(protectedRear!.totalDamage).toBeLessThan(plainRear!.totalDamage)
   })
+
+  it('遠征戦闘でもスライムゴブリンの後列防護が適用される', () => {
+    const protectedPartyState = [
+      {
+        id: '1',
+        name: '前列スライム',
+        race: 'スライムゴブリン',
+        currentHP: 9999,
+        maxHP: 9999,
+        baseHP: 9999,
+        atk: 1,
+        def: 0,
+        spd: 10,
+        sp: 10,
+        attackCount: 1,
+        accuracy: 1,
+        evasion: 0,
+        isKO: false,
+        isDead: false,
+        mods: [],
+        skills: getDefaultSkillsForRace('スライムゴブリン'),
+        factors: [],
+        level: 1,
+        avatar: '/slime.png',
+      },
+      {
+        id: '2',
+        name: '後列ゴブリン',
+        race: 'ゴブリン',
+        currentHP: 9999,
+        maxHP: 9999,
+        baseHP: 9999,
+        atk: 1,
+        def: 0,
+        spd: 1,
+        sp: 10,
+        attackCount: 1,
+        accuracy: 1,
+        evasion: 0,
+        isKO: false,
+        isDead: false,
+        mods: [],
+        skills: getDefaultSkillsForRace('ゴブリン'),
+        factors: [],
+        level: 1,
+        avatar: '/goblin.png',
+      },
+    ]
+    const plainPartyState = [
+      {
+        ...protectedPartyState[0],
+        race: 'ゴブリン',
+        skills: getDefaultSkillsForRace('ゴブリン'),
+        name: '前列ゴブリン',
+      },
+      { ...protectedPartyState[1] },
+    ]
+    const enemies = [[createTestEnemy({
+      hp: 9999,
+      atk: 90,
+      def: 0,
+      spd: 100,
+      attackCount: 20,
+      accuracy: 999,
+      evasion: 0,
+    })]]
+
+    const protectedEngine = new ExpeditionEngine(7)
+    const plainEngine = new ExpeditionEngine(7)
+
+    const protectedCombat = (protectedEngine as any).resolveCombat(protectedPartyState, enemies, { areaLevel: 1 }, false)
+    const plainCombat = (plainEngine as any).resolveCombat(plainPartyState, [[createTestEnemy({
+      hp: 9999,
+      atk: 90,
+      def: 0,
+      spd: 100,
+      attackCount: 20,
+      accuracy: 999,
+      evasion: 0,
+    })]], { areaLevel: 1 }, false)
+
+    const protectedRear = protectedCombat.detailedLog.find((log: any) => log.action === '通常攻撃' && !log.isAlly)!.targets.find((target: any) => target.targetId === '2')
+    const plainRear = plainCombat.detailedLog.find((log: any) => log.action === '通常攻撃' && !log.isAlly)!.targets.find((target: any) => target.targetId === '2')
+
+    expect(protectedRear).toBeDefined()
+    expect(plainRear).toBeDefined()
+    expect(protectedRear.hitCount).toBe(plainRear.hitCount)
+    expect(protectedRear.totalDamage).toBeLessThan(plainRear.totalDamage)
+  })
 })
 
 // =========================================================================
@@ -604,6 +697,7 @@ describe('selectTarget — 隊列ターゲット選択', () => {
       rowSlot,
       level: 1,
       spellCharges: [],
+      skills: [],
     }
   }
 
