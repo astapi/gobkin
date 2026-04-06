@@ -46,6 +46,13 @@ export default function GoblinListScreen() {
     router.push({ pathname: '/goblin/detail', params: { goblinId: String(goblin.id) } })
   }, [])
 
+  const handlePendingGoblinPress = useCallback((goblin: Goblin) => {
+    router.push({
+      pathname: '/goblin/detail',
+      params: { goblinId: String(goblin.id), source: 'pending' },
+    })
+  }, [])
+
   const handleAddPending = useCallback(async (goblin: Goblin) => {
     await saveGoblin(goblin)
     await removePendingGoblin(goblin.id)
@@ -134,31 +141,37 @@ export default function GoblinListScreen() {
               return (
                 <View key={goblin.id} style={styles.pendingCard}>
                   <View style={styles.pendingRow}>
-                    <Image source={getGoblinImage(goblin.avatar)} style={styles.pendingAvatar} />
-                    <View style={styles.pendingInfo}>
-                      <Text style={styles.pendingName} numberOfLines={1}>{goblin.name}</Text>
-                      <Text style={styles.pendingStats}>
-                        HP{effectiveStats.hp} / A{effectiveStats.atk} / D{effectiveStats.def} / S{effectiveStats.spd} / SP{effectiveStats.sp}
-                      </Text>
-                      {goblin.mods && goblin.mods.length > 0 && (
-                        <View style={styles.modRow}>
-                          {goblin.mods.map((mod, index) => {
-                            const template = getModTemplate(mod.templateId)
-                            if (!template) return null
-                            const isPercent = template.stat.includes('percent') || template.stat === 'damage_reduction'
-                            const label = `${getStatLabel(template.stat)}+${mod.value}${isPercent ? '%' : ''}`
-                            const isPrefix = template.type === 'prefix'
-                            return (
-                              <View key={index} style={[styles.modBadge, isPrefix ? styles.modBadgeBlue : styles.modBadgePurple]}>
-                                <Text style={[styles.modBadgeText, isPrefix ? styles.modBadgeTextBlue : styles.modBadgeTextPurple]}>
-                                  {label}
-                                </Text>
-                              </View>
-                            )
-                          })}
-                        </View>
-                      )}
-                    </View>
+                    <TouchableOpacity
+                      style={styles.pendingPressable}
+                      activeOpacity={0.8}
+                      onPress={() => handlePendingGoblinPress(goblin)}
+                    >
+                      <Image source={getGoblinImage(goblin.avatar)} style={styles.pendingAvatar} />
+                      <View style={styles.pendingInfo}>
+                        <Text style={styles.pendingName} numberOfLines={1}>{goblin.name}</Text>
+                        <Text style={styles.pendingStats}>
+                          HP{effectiveStats.hp} / A{effectiveStats.atk} / D{effectiveStats.def} / S{effectiveStats.spd} / SP{effectiveStats.sp}
+                        </Text>
+                        {goblin.mods && goblin.mods.length > 0 && (
+                          <View style={styles.modRow}>
+                            {goblin.mods.map((mod, index) => {
+                              const template = getModTemplate(mod.templateId)
+                              if (!template) return null
+                              const isPercent = template.stat.includes('percent') || template.stat === 'damage_reduction'
+                              const label = `${getStatLabel(template.stat)}+${mod.value}${isPercent ? '%' : ''}`
+                              const isPrefix = template.type === 'prefix'
+                              return (
+                                <View key={index} style={[styles.modBadge, isPrefix ? styles.modBadgeBlue : styles.modBadgePurple]}>
+                                  <Text style={[styles.modBadgeText, isPrefix ? styles.modBadgeTextBlue : styles.modBadgeTextPurple]}>
+                                    {label}
+                                  </Text>
+                                </View>
+                              )
+                            })}
+                          </View>
+                        )}
+                      </View>
+                    </TouchableOpacity>
                     {hasCapacity && (
                       <TouchableOpacity
                         style={styles.addButton}
@@ -315,6 +328,12 @@ const styles = StyleSheet.create({
     borderBottomColor: '#E5E7EB',
   },
   pendingRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  pendingPressable: {
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
