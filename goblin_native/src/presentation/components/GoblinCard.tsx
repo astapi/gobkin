@@ -2,7 +2,24 @@ import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native'
 import { getGoblinImage } from '@/shared/utils/goblinImages'
 import { getFactorImage } from '@/shared/utils/factorImages'
 import { getEffectiveStats } from '@/shared/utils/goblinStats'
+import { getModTemplate } from '@/shared/data/modPoolLoader'
 import type { Goblin } from '@/shared/types'
+
+const STAT_LABELS: Record<string, string> = {
+  hp_percent: 'HP', hp_flat: 'HP',
+  atk_percent: 'ATK', atk_flat: 'ATK',
+  def_percent: 'DEF', def_flat: 'DEF',
+  spd_percent: 'SPD', spd_flat: 'SPD',
+  sp_percent: 'SP', sp_flat: 'SP',
+  attackCount_percent: '攻撃回数', attackCount_flat: '攻撃回数',
+  accuracy_percent: '命中精度', accuracy_flat: '命中精度',
+  evasion_percent: '回避', evasion_flat: '回避',
+  damage_reduction: '被ダメ軽減',
+}
+
+function getStatLabel(stat: string): string {
+  return STAT_LABELS[stat] || stat
+}
 
 interface GoblinCardProps {
   goblin: Goblin
@@ -46,6 +63,24 @@ export function GoblinCard({
             {FactorIcon2 && <FactorIcon2 width={16} height={16} />}
           </View>
         </View>
+        {goblin.mods && goblin.mods.length > 0 && (
+          <View style={styles.modRow}>
+            {goblin.mods.map((mod, index) => {
+              const template = getModTemplate(mod.templateId)
+              if (!template) return null
+              const isPercent = template.stat.includes('percent') || template.stat === 'damage_reduction'
+              const label = `${getStatLabel(template.stat)}+${mod.value}${isPercent ? '%' : ''}`
+              const isPrefix = template.type === 'prefix'
+              return (
+                <View key={index} style={[styles.modBadge, isPrefix ? styles.modBadgeBlue : styles.modBadgePurple]}>
+                  <Text style={[styles.modBadgeText, isPrefix ? styles.modBadgeTextBlue : styles.modBadgeTextPurple]}>
+                    {label}
+                  </Text>
+                </View>
+              )
+            })}
+          </View>
+        )}
       </View>
       <View style={styles.statsContainer}>
         <Text style={[styles.statText, isAssignedElsewhere && styles.statTextDisabled]}>
@@ -173,5 +208,35 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: 'bold',
     color: '#FFFFFF',
+  },
+  modRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 4,
+    marginTop: 2,
+  },
+  modBadge: {
+    paddingHorizontal: 5,
+    paddingVertical: 1,
+    borderRadius: 3,
+    borderWidth: 1,
+  },
+  modBadgeBlue: {
+    backgroundColor: '#EFF6FF',
+    borderColor: '#BFDBFE',
+  },
+  modBadgePurple: {
+    backgroundColor: '#F5F3FF',
+    borderColor: '#E9D5FF',
+  },
+  modBadgeText: {
+    fontSize: 9,
+    fontWeight: '600',
+  },
+  modBadgeTextBlue: {
+    color: '#1D4ED8',
+  },
+  modBadgeTextPurple: {
+    color: '#6D28D9',
   },
 })
