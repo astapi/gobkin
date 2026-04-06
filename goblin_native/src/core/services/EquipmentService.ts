@@ -1,7 +1,9 @@
 import type { Goblin } from '../../shared/types/Goblin'
+import type { CharacterSkill } from '../../shared/types/CharacterSkill'
 import type { EquipmentInstance, EquipmentStatBonus, EquipmentEffect } from '../../shared/types/Equipment'
 import { calculateSlotCount } from '../../shared/data/equipmentConfig'
 import { getEquipmentTemplate } from '../../shared/data/equipmentPoolLoader'
+import { cloneCharacterSkill } from '../../shared/data/characterSkills'
 
 /**
  * 装備の着脱・バリデーション・ステータスボーナス計算を担当するサービス
@@ -51,11 +53,13 @@ export class EquipmentService {
     let unequipped: EquipmentInstance | undefined
     if (existing) {
       unequipped = this.unequip(existing)
+      this.removeGrantedSkills(goblin, existing.templateId)
     }
 
     // 装備を装着
     equipment.goblinId = goblin.id
     equipment.slotIndex = slotIndex
+    this.addGrantedSkills(goblin, equipment.templateId)
 
     return { success: true, unequipped }
   }
@@ -63,7 +67,11 @@ export class EquipmentService {
   /**
    * 装備を外す（在庫に戻す）
    */
-  static unequip(equipment: EquipmentInstance): EquipmentInstance {
+  static unequip(equipment: EquipmentInstance, goblin?: Goblin): EquipmentInstance {
+    if (goblin) {
+      this.removeGrantedSkills(goblin, equipment.templateId)
+    }
+
     return {
       ...equipment,
       slotIndex: -1,
@@ -117,5 +125,45 @@ export class EquipmentService {
     }
 
     return effects
+  }
+
+  static collectGrantedSkills(equipped: EquipmentInstance[]): CharacterSkill[] {
+    const skills: CharacterSkill[] = []
+
+    for (const eq of equipped) {
+      const template = getEquipmentTemplate(eq.templateId)
+      if (!template?.grantedSkills) continue
+
+      for (const skill of template.grantedSkills) {
+        skills.push(cloneCharacterSkill(skill))
+      }
+    }
+
+    return skills
+  }
+
+  private static addGrantedSkills(goblin: Goblin, templateId: string): void {
+    const template = getEquipmentTemplate(templateId)
+    if (!template?.grantedSkills?.length) return
+
+    for (const skill of template.grantedSkills) {
+      goblin.skills.push(cloneCharacterSkill(skill))
+    }
+  }
+
+  private static removeGrantedSkills(goblin: Goblin, templateId: string): void {
+    const template = getEquipmentTemplate(templateId)
+    if (!template?.grantedSkills?.length) return
+
+    for (const grantedSkill of template.grantedSkills) {
+      const index = goblin.skills.findIndex((skill) => this.isSameSkill(skill, grantedSkill))
+      if (index >= 0) {
+        goblin.skills.splice(index, 1)
+      }
+    }
+  }
+
+  private static isSameSkill(a: CharacterSkill, b: CharacterSkill): boolean {
+    return JSON.stringify(a) === JSON.stringify(b)
   }
 }

@@ -1,5 +1,5 @@
 {
-  "version": "1.2.0",
+  "version": "1.4.0",
   "templates": [
     {
       "_comment": "===== 武器:剣 (melee) ====="
@@ -609,6 +609,303 @@
       "dropLevelMin": 120,
       "dropLevelMax": 150,
       "description": "アダマンタイトの矢を放つ究極の弓。貫けぬ物はない"
+    },
+    {
+      "_comment": "===== 防具:鎧 (armor) ====="
+    },
+    {
+      "id": "armor_tattered_cloth",
+      "name": "ボロぬの",
+      "category": "armor",
+      "statBonuses": [
+        {
+          "stat": "def_flat",
+          "value": 2
+        },
+        {
+          "stat": "hp_flat",
+          "value": 5
+        }
+      ],
+      "grantedSkills": [
+        {
+          "id": "armor_tattered_cloth_physical_reduction",
+          "name": "[-1%] 物理ダメージ軽減(%)",
+          "physicalDamageReductionPercent": 1
+        }
+      ],
+      "price": 5,
+      "unlockRank": 1,
+      "dropLevelMin": 1,
+      "dropLevelMax": 2,
+      "description": "破れた布を何重にも巻いただけの粗末な防具。無いよりは少しまし"
+    },
+    {
+      "id": "armor_leather_vest",
+      "name": "かわのベスト",
+      "category": "armor",
+      "statBonuses": [
+        {
+          "stat": "def_flat",
+          "value": 3
+        },
+        {
+          "stat": "hp_flat",
+          "value": 8
+        }
+      ],
+      "grantedSkills": [
+        {
+          "id": "armor_leather_vest_physical_reduction",
+          "name": "[-2%] 物理ダメージ軽減(%)",
+          "physicalDamageReductionPercent": 2
+        }
+      ],
+      "price": 15,
+      "unlockRank": 1,
+      "dropLevelMin": 4,
+      "dropLevelMax": 10,
+      "description": "獣皮を縫い合わせた簡素な革ベスト。軽くて動きやすい"
+    },
+    {
+      "id": "armor_fur_vest",
+      "name": "毛皮のベスト",
+      "category": "armor",
+      "statBonuses": [
+        {
+          "stat": "def_flat",
+          "value": 4
+        },
+        {
+          "stat": "hp_flat",
+          "value": 10
+        }
+      ],
+      "grantedSkills": [
+        {
+          "id": "armor_fur_vest_physical_reduction",
+          "name": "[-3%] 物理ダメージ軽減(%)",
+          "physicalDamageReductionPercent": 3
+        }
+      ],
+      "price": 30,
+      "unlockRank": 1,
+      "dropLevelMin": 8,
+      "dropLevelMax": 15,
+      "description": "厚手の毛皮で作られたベスト。寒さと打撃の両方に多少強い"
+    },
+    {
+      "id": "armor_armor",
+      "name": "アーマー",
+      "category": "armor",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -3
+        },
+        {
+          "stat": "def_flat",
+          "value": 10
+        },
+        {
+          "stat": "hp_flat",
+          "value": 15
+        }
+      ],
+      "grantedSkills": [
+        {
+          "id": "armor_armor_physical_reduction",
+          "name": "[-6%] 物理ダメージ軽減(%)",
+          "physicalDamageReductionPercent": 6
+        }
+      ],
+      "price": 100,
+      "unlockRank": 1,
+      "dropLevelMin": 12,
+      "dropLevelMax": 25,
+      "description": "厚い金属板で急所を守る基本鎧。初期装備向けの一着"
+    },
+    {
+      "id": "armor_mithril",
+      "name": "ミスリルアーマー",
+      "category": "armor",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -3
+        },
+        {
+          "stat": "def_flat",
+          "value": 15
+        },
+        {
+          "stat": "hp_flat",
+          "value": 22
+        }
+      ],
+      "grantedSkills": [
+        {
+          "id": "armor_mithril_physical_reduction",
+          "name": "[-7%] 物理ダメージ軽減(%)",
+          "physicalDamageReductionPercent": 7
+        }
+      ],
+      "price": 500,
+      "dropLevelMin": 20,
+      "dropLevelMax": 40,
+      "description": "軽くて丈夫なミスリル製の鎧。守りと機動性を両立する"
+    },
+    {
+      "id": "armor_royal",
+      "name": "ロイヤルアーマー",
+      "category": "armor",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -3
+        },
+        {
+          "stat": "def_flat",
+          "value": 20
+        },
+        {
+          "stat": "hp_flat",
+          "value": 30
+        }
+      ],
+      "grantedSkills": [
+        {
+          "id": "armor_royal_physical_reduction",
+          "name": "[-8%] 物理ダメージ軽減(%)",
+          "physicalDamageReductionPercent": 8
+        }
+      ],
+      "price": 2500,
+      "dropLevelMin": 35,
+      "dropLevelMax": 60,
+      "description": "王侯貴族の近衛も用いる高級鎧。堅牢で威厳がある"
+    },
+    {
+      "id": "armor_kaiser",
+      "name": "カイザーアーマー",
+      "category": "armor",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -3
+        },
+        {
+          "stat": "def_flat",
+          "value": 30
+        },
+        {
+          "stat": "hp_flat",
+          "value": 40
+        }
+      ],
+      "grantedSkills": [
+        {
+          "id": "armor_kaiser_physical_reduction",
+          "name": "[-9%] 物理ダメージ軽減(%)",
+          "physicalDamageReductionPercent": 9
+        }
+      ],
+      "price": 12500,
+      "unlockRank": 3,
+      "dropLevelMin": 50,
+      "dropLevelMax": 80,
+      "description": "皇帝の親衛隊に与えられる重装鎧。圧倒的な防護力を誇る"
+    },
+    {
+      "id": "armor_ancient",
+      "name": "エンシェントアーマー",
+      "category": "armor",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -3
+        },
+        {
+          "stat": "def_flat",
+          "value": 40
+        },
+        {
+          "stat": "hp_flat",
+          "value": 60
+        }
+      ],
+      "grantedSkills": [
+        {
+          "id": "armor_ancient_physical_reduction",
+          "name": "[-10%] 物理ダメージ軽減(%)",
+          "physicalDamageReductionPercent": 10
+        }
+      ],
+      "price": 60000,
+      "unlockRank": 5,
+      "dropLevelMin": 70,
+      "dropLevelMax": 105,
+      "description": "古代技術で精錬された装甲鎧。長き時を超えても性能は衰えない"
+    },
+    {
+      "id": "armor_dragon",
+      "name": "ドラゴンアーマー",
+      "category": "armor",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -3
+        },
+        {
+          "stat": "def_flat",
+          "value": 60
+        },
+        {
+          "stat": "hp_flat",
+          "value": 80
+        }
+      ],
+      "grantedSkills": [
+        {
+          "id": "armor_dragon_physical_reduction",
+          "name": "[-11%] 物理ダメージ軽減(%)",
+          "physicalDamageReductionPercent": 11
+        }
+      ],
+      "price": 240000,
+      "dropLevelMin": 95,
+      "dropLevelMax": 135,
+      "description": "竜鱗を張り合わせた伝説級の鎧。斬撃すら弾き返す"
+    },
+    {
+      "id": "armor_adamant",
+      "name": "アダマントアーマー",
+      "category": "armor",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -3
+        },
+        {
+          "stat": "def_flat",
+          "value": 80
+        },
+        {
+          "stat": "hp_flat",
+          "value": 120
+        }
+      ],
+      "grantedSkills": [
+        {
+          "id": "armor_adamant_physical_reduction",
+          "name": "[-12%] 物理ダメージ軽減(%)",
+          "physicalDamageReductionPercent": 12
+        }
+      ],
+      "price": 720000,
+      "dropLevelMin": 120,
+      "dropLevelMax": 150,
+      "description": "最硬の鉱石で鍛えられた究極の鎧。着る者を難攻不落に変える"
     }
   ]
 }

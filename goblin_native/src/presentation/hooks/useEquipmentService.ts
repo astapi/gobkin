@@ -3,12 +3,14 @@ import type { EquipmentInstance } from '../../shared/types'
 import { SQLiteEquipmentRepository } from '../../infrastructure/repositories/SQLiteEquipmentRepository'
 import { EquipmentService } from '../../core/services/EquipmentService'
 import type { Goblin } from '../../shared/types'
+import { useGoblinStore } from '../stores/useGoblinStore'
 
 export const useEquipmentService = () => {
   const [equippedItems, setEquippedItems] = useState<EquipmentInstance[]>([])
   const [inventoryItems, setInventoryItems] = useState<EquipmentInstance[]>([])
 
   const repository = useMemo(() => SQLiteEquipmentRepository.getInstance(), [])
+  const saveGoblin = useGoblinStore((state) => state.saveGoblin)
 
   const refreshEquipment = useCallback(
     async (goblinId: number) => {
@@ -30,19 +32,21 @@ export const useEquipmentService = () => {
       if (result.unequipped) {
         await repository.save(result.unequipped)
       }
+      await saveGoblin({ ...goblin })
       await refreshEquipment(goblin.id)
       return { success: true }
     },
-    [repository, equippedItems, refreshEquipment],
+    [repository, equippedItems, refreshEquipment, saveGoblin],
   )
 
   const unequipItem = useCallback(
-    async (goblinId: number, equipment: EquipmentInstance) => {
-      const unequipped = EquipmentService.unequip(equipment)
+    async (goblin: Goblin, equipment: EquipmentInstance) => {
+      const unequipped = EquipmentService.unequip(equipment, goblin)
       await repository.save(unequipped)
-      await refreshEquipment(goblinId)
+      await saveGoblin({ ...goblin })
+      await refreshEquipment(goblin.id)
     },
-    [repository, refreshEquipment],
+    [repository, refreshEquipment, saveGoblin],
   )
 
   return {

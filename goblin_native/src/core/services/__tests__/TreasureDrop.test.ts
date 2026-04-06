@@ -1,5 +1,5 @@
 import { ExpeditionEngine } from '../ExpeditionEngine'
-import { getEquipmentByDungeonLevel } from '../../../shared/data/equipmentPoolLoader'
+import { getEquipmentByDungeonLevel, getEquipmentTemplate } from '../../../shared/data/equipmentPoolLoader'
 import type { Enemy } from '../../../shared/types'
 
 /**
@@ -38,6 +38,36 @@ function createDummyEnemy(overrides?: Partial<Enemy>): Enemy {
 }
 
 describe('rollTreasureDrops', () => {
+  describe('防具プール', () => {
+    it('鎧が剣と同じティア帯でダンジョンレベルプールに含まれる', () => {
+      expect(getEquipmentTemplate('armor_tattered_cloth')?.dropLevelMin).toBe(1)
+      expect(getEquipmentTemplate('armor_tattered_cloth')?.dropLevelMax).toBe(2)
+      expect(getEquipmentTemplate('armor_leather_vest')?.dropLevelMin).toBe(4)
+      expect(getEquipmentTemplate('armor_leather_vest')?.dropLevelMax).toBe(10)
+      expect(getEquipmentTemplate('armor_fur_vest')?.dropLevelMin).toBe(8)
+      expect(getEquipmentTemplate('armor_fur_vest')?.dropLevelMax).toBe(15)
+      expect(getEquipmentTemplate('armor_armor')?.dropLevelMin).toBe(12)
+      expect(getEquipmentTemplate('armor_armor')?.dropLevelMax).toBe(25)
+      expect(getEquipmentTemplate('armor_mithril')?.dropLevelMin).toBe(20)
+      expect(getEquipmentTemplate('armor_royal')?.dropLevelMin).toBe(35)
+      expect(getEquipmentTemplate('armor_kaiser')?.dropLevelMin).toBe(50)
+      expect(getEquipmentTemplate('armor_ancient')?.dropLevelMin).toBe(70)
+      expect(getEquipmentTemplate('armor_dragon')?.dropLevelMin).toBe(95)
+      expect(getEquipmentTemplate('armor_adamant')?.dropLevelMin).toBe(120)
+
+      expect(getEquipmentByDungeonLevel(1).some((t) => t.id === 'armor_tattered_cloth')).toBe(true)
+      expect(getEquipmentByDungeonLevel(4).some((t) => t.id === 'armor_leather_vest')).toBe(true)
+      expect(getEquipmentByDungeonLevel(8).some((t) => t.id === 'armor_fur_vest')).toBe(true)
+      expect(getEquipmentByDungeonLevel(12).some((t) => t.id === 'armor_armor')).toBe(true)
+      expect(getEquipmentByDungeonLevel(20).some((t) => t.id === 'armor_mithril')).toBe(true)
+      expect(getEquipmentByDungeonLevel(35).some((t) => t.id === 'armor_royal')).toBe(true)
+      expect(getEquipmentByDungeonLevel(50).some((t) => t.id === 'armor_kaiser')).toBe(true)
+      expect(getEquipmentByDungeonLevel(70).some((t) => t.id === 'armor_ancient')).toBe(true)
+      expect(getEquipmentByDungeonLevel(95).some((t) => t.id === 'armor_dragon')).toBe(true)
+      expect(getEquipmentByDungeonLevel(120).some((t) => t.id === 'armor_adamant')).toBe(true)
+    })
+  })
+
   describe('ドロップ確率の基本動作', () => {
     it('一律25%のドロップ確率で装備がドロップする', () => {
       // areaLevel=1 にはひのきの棒(dropLevelMin=1,dropLevelMax=2)がある
