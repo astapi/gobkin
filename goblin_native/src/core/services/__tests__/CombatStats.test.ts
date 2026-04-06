@@ -2,6 +2,7 @@ import { GoblinBirthService } from '../GoblinBirthService'
 import { ModStatCalculator } from '../ModStatCalculator'
 import { BattleSystem, getDamageModifier, getAccuracyModifier, getRowWeight, selectTarget } from '../BattleSystem'
 import { getBloodlineCombatStats } from '../../../shared/data/equipmentConfig'
+import { EquipmentService } from '../EquipmentService'
 import type { Goblin, Enemy } from '../../../shared/types'
 
 /**
@@ -247,6 +248,42 @@ describe('ModStatCalculator — 戦闘ステータス計算', () => {
     expect(result.accuracy).toBe(150)  // 100 * 1.5
     expect(result.evasion).toBe(130)   // 100 * 1.3
   })
+
+  it('ウルフゴブリンは攻撃回数が+2される', () => {
+    const goblin = createTestGoblin({
+      race: 'ウルフゴブリン',
+      stats: { hp: 60, atk: 12, sp: 10, spd: 10, def: 10, attackCount: 3, accuracy: 20, evasion: 15 },
+    })
+    const result = ModStatCalculator.calculate(goblin)
+
+    expect(result.attackCount).toBe(5)
+  })
+
+  it('スライムゴブリンは鎧の能力値が1.3倍になる', () => {
+    const goblin = createTestGoblin({ race: 'スライムゴブリン' })
+    const result = ModStatCalculator.calculate(goblin, [
+      { stat: 'def_flat', value: 10, sourceCategory: 'armor' },
+    ])
+
+    expect(result.def).toBe(23)
+  })
+
+  it('ウルフゴブリンは装備の命中精度補正が2倍になる', () => {
+    const goblin = createTestGoblin({ race: 'ウルフゴブリン' })
+    const result = ModStatCalculator.calculate(goblin, [
+      { stat: 'accuracy_flat', value: 10, sourceCategory: 'weapon' },
+    ])
+
+    expect(result.accuracy).toBe(40)
+  })
+
+  it('EquipmentServiceは装備カテゴリをボーナスへ保持する', () => {
+    const bonuses = EquipmentService.calculateEquipmentBonuses([
+      { id: 'eq1', templateId: 'sword_cypress_stick', slotIndex: 0, goblinId: 1 },
+    ])
+
+    expect(bonuses[0].sourceCategory).toBe('weapon')
+  })
 })
 
 // =========================================================================
@@ -429,6 +466,88 @@ describe('BattleSystem — 命中判定と複数回攻撃', () => {
     for (const target of allyLog.targets) {
       expect(target.targetRow).toBeGreaterThanOrEqual(1)
     }
+  })
+
+  it('ウルフゴブリンの追加ダメージは通常攻撃へ固定値で加算される', () => {
+    const enemies = [[createTestEnemy({ hp: 9999, spd: 1, evasion: 0, def: 0 })]]
+    const rngA = createSeededRng(42)
+    const rngB = createSeededRng(42)
+
+    const normalResult = new BattleSystem().executeBattle([
+      createTestGoblin({
+        race: 'ゴブリン',
+        stats: { hp: 100, atk: 50, sp: 10, spd: 100, def: 10, attackCount: 3, accuracy: 999, evasion: 10 },
+      }),
+    ], [100], enemies, rngA, 1)
+    const wolfResult = new BattleSystem().executeBattle([
+      createTestGoblin({
+        race: 'ウルフゴブリン',
+        stats: { hp: 100, atk: 50, sp: 10, spd: 100, def: 10, attackCount: 1, accuracy: 999, evasion: 10 },
+      }),
+    ], [100], [[createTestEnemy({ hp: 9999, spd: 1, evasion: 0, def: 0 })]], rngB, 1)
+
+    const normalLog = normalResult.detailedLog.find(log => log.action === '通常攻撃' && log.isAlly)!
+    const wolfLog = wolfResult.detailedLog.find(log => log.action === '通常攻撃' && log.isAlly)!
+    const normalDamage = normalLog.targets[0].totalDamage
+    const wolfDamage = wolfLog.targets[0].totalDamage
+
+    expect(wolfLog.hitCount).toBe(normalLog.hitCount)
+    expect(wolfDamage - normalDamage).toBe(13 * wolfLog.hitCount)
+  })
+
+  it('スライムゴブリンより後列の仲間は通常攻撃ダメージが軽減される', () => {
+    const protectedAllies = [
+      createTestGoblin({
+        id: 1,
+        race: 'スライムゴブリン',
+        stats: { hp: 9999, atk: 1, sp: 10, spd: 10, def: 0, attackCount: 1, accuracy: 1, evasion: 0 },
+      }),
+      createTestGoblin({
+        id: 2,
+        race: 'ゴブリン',
+        stats: { hp: 9999, atk: 1, sp: 10, spd: 1, def: 0, attackCount: 1, accuracy: 1, evasion: 0 },
+      }),
+    ]
+    const plainAllies = [
+      createTestGoblin({
+        id: 1,
+        race: 'ゴブリン',
+        stats: { hp: 9999, atk: 1, sp: 10, spd: 10, def: 0, attackCount: 1, accuracy: 1, evasion: 0 },
+      }),
+      createTestGoblin({
+        id: 2,
+        race: 'ゴブリン',
+        stats: { hp: 9999, atk: 1, sp: 10, spd: 1, def: 0, attackCount: 1, accuracy: 1, evasion: 0 },
+      }),
+    ]
+    const enemies = [[createTestEnemy({
+      hp: 9999,
+      atk: 90,
+      def: 0,
+      spd: 100,
+      attackCount: 20,
+      accuracy: 999,
+      evasion: 0,
+    })]]
+
+    const protectedResult = new BattleSystem().executeBattle(protectedAllies, [9999, 9999], enemies, createSeededRng(7), 1)
+    const plainResult = new BattleSystem().executeBattle(plainAllies, [9999, 9999], [[createTestEnemy({
+      hp: 9999,
+      atk: 90,
+      def: 0,
+      spd: 100,
+      attackCount: 20,
+      accuracy: 999,
+      evasion: 0,
+    })]], createSeededRng(7), 1)
+
+    const protectedRear = protectedResult.detailedLog.find(log => log.action === '通常攻撃' && !log.isAlly)!.targets.find(target => target.targetId === '2')
+    const plainRear = plainResult.detailedLog.find(log => log.action === '通常攻撃' && !log.isAlly)!.targets.find(target => target.targetId === '2')
+
+    expect(protectedRear).toBeDefined()
+    expect(plainRear).toBeDefined()
+    expect(protectedRear!.hitCount).toBe(plainRear!.hitCount)
+    expect(protectedRear!.totalDamage).toBeLessThan(plainRear!.totalDamage)
   })
 })
 

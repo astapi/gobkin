@@ -10,6 +10,7 @@ import { getFactorImage } from '@/shared/utils/factorImages'
 import { ModStatCalculator } from '@/core/services/ModStatCalculator'
 import { getExpForNextLevel, getExpProgress } from '@/core/services/ExperienceSystem'
 import { getModTemplate } from '@/shared/data/modPoolLoader'
+import { describeRaceAbility, getRaceAbilities } from '@/shared/data/raceAbilities'
 
 const STAT_LABELS: Record<string, string> = {
   hp_percent: 'HP', hp_flat: 'HP',
@@ -52,6 +53,7 @@ export default function GoblinDetailScreen() {
   )
   const expForNext = goblin ? getExpForNextLevel(goblin.level) : 0
   const expProgress = goblin ? getExpProgress(goblin.level, goblin.experience) : 0
+  const raceAbilities = useMemo(() => goblin ? getRaceAbilities(goblin.race) : [], [goblin])
 
   const handleBanish = useCallback(() => {
     if (!goblin) return
@@ -97,7 +99,7 @@ export default function GoblinDetailScreen() {
 
         <View style={styles.detailSection}>
           <Text style={styles.sectionTitle}>ステータス</Text>
-          <View style={styles.statList}>
+          <View style={styles.statGrid}>
             {([
               { key: 'hp', label: 'HP' },
               { key: 'atk', label: 'ATK' },
@@ -108,13 +110,27 @@ export default function GoblinDetailScreen() {
               { key: 'accuracy', label: '命中精度' },
               { key: 'evasion', label: '回避' },
             ] as const).map(item => (
-              <View key={item.key} style={styles.statRow}>
-                <Text style={styles.statRowLabel}>{item.label}</Text>
-                <Text style={styles.statRowValue}>{effectiveStats[item.key]}</Text>
+              <View key={item.key} style={styles.statChip}>
+                <Text style={styles.statChipLabel}>{item.label}</Text>
+                <Text style={styles.statChipValue}>{effectiveStats[item.key]}</Text>
               </View>
             ))}
           </View>
         </View>
+
+        {raceAbilities.length > 0 && (
+          <View style={styles.detailSection}>
+            <Text style={styles.sectionTitle}>種族能力</Text>
+            <View style={styles.abilityList}>
+              {raceAbilities.map((ability, idx) => (
+                <View key={`${ability.name}-${idx}`} style={styles.abilityItem}>
+                  <Text style={styles.abilityName}>{ability.name}</Text>
+                  <Text style={styles.abilityDesc}>{describeRaceAbility(ability)}</Text>
+                </View>
+              ))}
+            </View>
+          </View>
+        )}
 
         <View style={styles.detailSection}>
           <Text style={styles.sectionTitle}>経験値</Text>
@@ -133,54 +149,57 @@ export default function GoblinDetailScreen() {
         {goblin.factors && goblin.factors.length > 0 && (
           <View style={styles.detailSection}>
             <Text style={styles.sectionTitle}>因子</Text>
-            {goblin.factors.map((factorId, idx) => {
-              const factor = getFactor(factorId)
-              if (!factor) return null
-              const FactorIcon = getFactorImage(factorId)
-              return (
-                <View key={idx} style={styles.factorItem}>
-                  <View style={styles.factorIconContainer}>
-                    <FactorIcon width={24} height={24} />
+            <View style={styles.compactList}>
+              {goblin.factors.map((factorId, idx) => {
+                const factor = getFactor(factorId)
+                if (!factor) return null
+                const FactorIcon = getFactorImage(factorId)
+                return (
+                  <View key={idx} style={styles.factorItem}>
+                    <View style={styles.factorIconContainer}>
+                      <FactorIcon width={20} height={20} />
+                    </View>
+                    <View style={styles.factorInfo}>
+                      <Text style={styles.factorName}>{factor.name}</Text>
+                      {factor.effects && factor.effects.length > 0 && (
+                        <View style={styles.factorEffectRow}>
+                          {factor.effects
+                            .filter(effect => effect.type === 'stat_bonus')
+                            .map((effect, effectIndex) => (
+                              <View key={`${factorId}-${effectIndex}`} style={styles.factorEffectBadge}>
+                                <Text style={styles.factorEffectText}>
+                                  {effect.target.toUpperCase()} +{effect.value}
+                                </Text>
+                              </View>
+                            ))}
+                        </View>
+                      )}
+                    </View>
                   </View>
-                  <View style={styles.factorInfo}>
-                    <Text style={styles.factorName}>{factor.name}</Text>
-                    <Text style={styles.factorDesc}>{factor.description}</Text>
-                    {factor.effects && factor.effects.length > 0 && (
-                      <View style={styles.factorEffectRow}>
-                        {factor.effects
-                          .filter(effect => effect.type === 'stat_bonus')
-                          .map((effect, effectIndex) => (
-                            <View key={`${factorId}-${effectIndex}`} style={styles.factorEffectBadge}>
-                              <Text style={styles.factorEffectText}>
-                                {effect.target.toUpperCase()} +{effect.value}
-                              </Text>
-                            </View>
-                          ))}
-                      </View>
-                    )}
-                  </View>
-                </View>
-              )
-            })}
+                )
+              })}
+            </View>
           </View>
         )}
 
         {goblin.mods && goblin.mods.length > 0 && (
           <View style={styles.detailSection}>
             <Text style={styles.sectionTitle}>Mod</Text>
-            {goblin.mods.map((mod, idx) => {
-              const template = getModTemplate(mod.templateId)
-              if (!template) return null
-              const isPercent = template.stat.includes('percent') || template.stat === 'damage_reduction'
-              const label = getStatLabel(template.stat)
-              const valueText = `${mod.value > 0 ? '+' : ''}${mod.value}${isPercent ? '%' : ''}`
-              return (
-                <View key={idx} style={styles.modItem}>
-                  <Text style={styles.modName}>{label}</Text>
-                  <Text style={styles.modEffect}>{valueText}</Text>
-                </View>
-              )
-            })}
+            <View style={styles.modList}>
+              {goblin.mods.map((mod, idx) => {
+                const template = getModTemplate(mod.templateId)
+                if (!template) return null
+                const isPercent = template.stat.includes('percent') || template.stat === 'damage_reduction'
+                const label = getStatLabel(template.stat)
+                const valueText = `${mod.value > 0 ? '+' : ''}${mod.value}${isPercent ? '%' : ''}`
+                return (
+                  <View key={idx} style={styles.modItem}>
+                    <Text style={styles.modName}>{label}</Text>
+                    <Text style={styles.modEffect}>{valueText}</Text>
+                  </View>
+                )
+              })}
+            </View>
           </View>
         )}
 
@@ -203,119 +222,140 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    padding: 16,
+    padding: 12,
   },
   profileCard: {
     backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 16,
+    borderRadius: 8,
+    padding: 12,
+    marginBottom: 8,
     borderWidth: 1,
-    borderColor: '#E5E7EB',
+    borderColor: '#F3F4F6',
   },
   profileRow: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   profileAvatar: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
-    borderWidth: 2,
-    borderColor: '#9CA3AF',
+    width: 54,
+    height: 54,
+    borderRadius: 27,
+    borderWidth: 1,
+    borderColor: '#D1D5DB',
     alignItems: 'center',
     justifyContent: 'center',
     overflow: 'hidden',
-    marginRight: 16,
+    marginRight: 12,
     backgroundColor: '#F3F4F6',
   },
   profileAvatarImage: {
-    width: 52,
-    height: 52,
+    width: 44,
+    height: 44,
     resizeMode: 'contain',
   },
   profileInfo: {
     flex: 1,
   },
   profileName: {
-    fontSize: 20,
+    fontSize: 17,
     fontWeight: '700',
     color: '#1F2937',
-    marginBottom: 4,
-  },
-  profileRace: {
-    fontSize: 14,
-    color: '#6B7280',
     marginBottom: 2,
   },
+  profileRace: {
+    fontSize: 12,
+    color: '#6B7280',
+    marginBottom: 1,
+  },
   profileLevel: {
-    fontSize: 16,
+    fontSize: 13,
     fontWeight: '600',
     color: '#1F2937',
   },
   detailSection: {
     backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 16,
+    borderRadius: 8,
+    padding: 10,
+    marginBottom: 6,
     borderWidth: 1,
-    borderColor: '#E5E7EB',
+    borderColor: '#F3F4F6',
   },
   sectionTitle: {
-    fontSize: 16,
+    fontSize: 12,
     fontWeight: 'bold',
     color: '#1F2937',
-    marginBottom: 12,
+    marginBottom: 6,
   },
-  statList: {
-    gap: 10,
-  },
-  statRow: {
+  statGrid: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 10,
-    paddingHorizontal: 12,
-    borderRadius: 10,
+    flexWrap: 'wrap',
+    gap: 6,
+  },
+  statChip: {
+    width: '48%',
+    paddingVertical: 7,
+    paddingHorizontal: 9,
+    borderRadius: 6,
     borderWidth: 1,
-    borderColor: '#E5E7EB',
-    backgroundColor: '#F9FAFB',
+    borderColor: '#F3F4F6',
+    backgroundColor: '#FFFFFF',
   },
-  statRowLabel: {
-    fontSize: 14,
+  statChipLabel: {
+    fontSize: 9,
     fontWeight: '600',
-    color: '#374151',
+    color: '#6B7280',
+    marginBottom: 1,
   },
-  statRowValue: {
-    fontSize: 16,
+  statChipValue: {
+    fontSize: 13,
     fontWeight: '700',
-    color: '#374151',
+    color: '#1F2937',
+  },
+  abilityList: {
+    gap: 6,
+  },
+  abilityItem: {
+    padding: 8,
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: '#F3F4F6',
+    backgroundColor: '#FFFFFF',
+  },
+  abilityName: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#1F2937',
+    marginBottom: 1,
+  },
+  abilityDesc: {
+    fontSize: 10,
+    color: '#6B7280',
   },
   expCard: {
-    borderRadius: 10,
+    borderRadius: 6,
     borderWidth: 1,
-    borderColor: '#E5E7EB',
-    backgroundColor: '#F9FAFB',
-    padding: 12,
+    borderColor: '#F3F4F6',
+    backgroundColor: '#FFFFFF',
+    padding: 8,
   },
   expRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 8,
+    marginBottom: 6,
   },
   expLabel: {
-    fontSize: 13,
+    fontSize: 10,
     fontWeight: '600',
     color: '#374151',
   },
   expValue: {
-    fontSize: 13,
+    fontSize: 10,
     color: '#6B7280',
   },
   expBarTrack: {
-    height: 8,
+    height: 6,
     backgroundColor: '#E5E7EB',
-    borderRadius: 8,
+    borderRadius: 999,
     overflow: 'hidden',
   },
   expBarFill: {
@@ -323,101 +363,102 @@ const styles = StyleSheet.create({
     backgroundColor: '#4B5563',
   },
   expHint: {
-    marginTop: 6,
-    fontSize: 12,
+    marginTop: 4,
+    fontSize: 10,
     color: '#6B7280',
     textAlign: 'right',
   },
+  compactList: {
+    gap: 6,
+  },
   factorItem: {
     flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 12,
-    padding: 12,
-    backgroundColor: '#F9FAFB',
-    borderRadius: 10,
+    alignItems: 'flex-start',
+    padding: 8,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 6,
     borderWidth: 1,
-    borderColor: '#E5E7EB',
+    borderColor: '#F3F4F6',
   },
   factorIconContainer: {
-    width: 32,
-    height: 32,
+    width: 20,
+    height: 20,
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: 12,
+    marginRight: 8,
+    marginTop: 1,
   },
   factorInfo: {
     flex: 1,
   },
   factorName: {
-    fontSize: 14,
+    fontSize: 11,
     fontWeight: '600',
     color: '#1F2937',
-  },
-  factorDesc: {
-    fontSize: 12,
-    color: '#6B7280',
-    marginTop: 2,
   },
   factorEffectRow: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 6,
-    marginTop: 8,
+    gap: 4,
+    marginTop: 4,
   },
   factorEffectBadge: {
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 6,
-    backgroundColor: '#DCFCE7',
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 999,
+    backgroundColor: '#ECFDF5',
   },
   factorEffectText: {
-    fontSize: 11,
+    fontSize: 9,
     color: '#166534',
     fontWeight: '600',
   },
-  modItem: {
+  modList: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 8,
-    padding: 12,
-    backgroundColor: '#F3F4F6',
-    borderRadius: 10,
+    flexWrap: 'wrap',
+    gap: 6,
+  },
+  modItem: {
+    width: '48%',
+    padding: 8,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 6,
     borderWidth: 1,
-    borderColor: '#DBEAFE',
+    borderColor: '#F3F4F6',
   },
   modName: {
-    fontSize: 14,
+    fontSize: 10,
     color: '#1F2937',
+    marginBottom: 2,
   },
   modEffect: {
-    fontSize: 14,
+    fontSize: 11,
     fontWeight: '600',
     color: '#1F2937',
   },
   equipmentButton: {
-    marginTop: 4,
-    marginBottom: 12,
+    marginTop: 2,
+    marginBottom: 8,
     backgroundColor: '#374151',
-    borderRadius: 10,
-    paddingVertical: 14,
+    borderRadius: 8,
+    paddingVertical: 11,
     alignItems: 'center',
   },
   equipmentButtonText: {
     color: '#FFFFFF',
     fontWeight: '700',
-    fontSize: 14,
+    fontSize: 12,
   },
   banishButton: {
-    marginBottom: 24,
-    backgroundColor: '#374151',
-    borderRadius: 10,
-    paddingVertical: 14,
+    marginBottom: 16,
+    backgroundColor: '#4B5563',
+    borderRadius: 8,
+    paddingVertical: 11,
     alignItems: 'center',
   },
   banishButtonText: {
     color: '#FFFFFF',
     fontWeight: '700',
-    fontSize: 14,
+    fontSize: 12,
   },
 })

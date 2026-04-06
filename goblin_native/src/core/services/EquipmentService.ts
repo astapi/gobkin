@@ -85,7 +85,10 @@ export class EquipmentService {
       if (!template) continue
 
       for (const bonus of template.statBonuses) {
-        bonuses.push(bonus)
+        bonuses.push({
+          ...bonus,
+          sourceCategory: template.category,
+        })
       }
     }
 
@@ -106,7 +109,10 @@ export class EquipmentService {
       if (!template?.effects) continue
 
       for (const effect of template.effects) {
-        effects.push(effect)
+        effects.push({
+          ...effect,
+          sourceCategory: template.category,
+        })
       }
     }
 

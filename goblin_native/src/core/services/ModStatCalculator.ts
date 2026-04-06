@@ -2,6 +2,11 @@ import type { Goblin, GoblinStats } from '../../shared/types/Goblin'
 import type { ModInstance } from '../../shared/types/Mod'
 import type { EquipmentStatBonus, EquipmentEffect } from '../../shared/types/Equipment'
 import { getModTemplate, getDamageReductionCap } from '../../shared/data/modPoolLoader'
+import {
+  applyRaceBonusToEquipmentBonuses,
+  applyRaceBonusToEquipmentEffects,
+  getRaceStatBonuses,
+} from '../../shared/data/raceAbilities'
 import { FactorInheritanceService } from './FactorInheritanceService'
 import { factorDatabase } from '../../shared/data/factors'
 
@@ -34,13 +39,16 @@ export class ModStatCalculator {
     const percentBonuses = this.aggregatePercentBonuses(mods)
 
     // 4. 装備ボーナスを集計
-    const equipFlat = this.aggregateEquipmentFlat(equipmentBonuses ?? [])
-    const equipPercent = this.aggregateEquipmentPercent(equipmentBonuses ?? [])
+    const raceBonuses = getRaceStatBonuses(goblin.race)
+    const adjustedEquipmentBonuses = applyRaceBonusToEquipmentBonuses(goblin.race, equipmentBonuses ?? [])
+    const adjustedEquipmentEffects = applyRaceBonusToEquipmentEffects(goblin.race, equipmentEffects ?? [])
+    const equipFlat = this.aggregateEquipmentFlat(adjustedEquipmentBonuses)
+    const equipPercent = this.aggregateEquipmentPercent(adjustedEquipmentBonuses)
 
     // 5. 計算: (基礎 + 因子 + Modフラット + 装備フラット) * (1 + (Mod% + 装備%)/100)
     const calc = (key: keyof GoblinStats) =>
       Math.floor(
-        (base[key] + factorBonuses[key] + flatBonuses[key] + equipFlat[key]) *
+        (base[key] + factorBonuses[key] + flatBonuses[key] + equipFlat[key] + (raceBonuses[key] ?? 0)) *
         (1 + (percentBonuses[key] + equipPercent[key]) / 100)
       )
 
@@ -56,7 +64,7 @@ export class ModStatCalculator {
     }
 
     // 6. 装備特殊効果を適用（ステータス確定後）
-    this.applyEquipmentEffects(result, equipmentEffects ?? [])
+    this.applyEquipmentEffects(result, adjustedEquipmentEffects)
 
     return result
   }
@@ -68,6 +76,7 @@ export class ModStatCalculator {
   static getDamageReduction(goblin: Goblin, equipmentBonuses?: EquipmentStatBonus[]): number {
     const mods = goblin.mods ?? []
     let total = 0
+    const adjustedEquipmentBonuses = applyRaceBonusToEquipmentBonuses(goblin.race, equipmentBonuses ?? [])
 
     for (const mod of mods) {
       const template = getModTemplate(mod.templateId)
@@ -77,7 +86,7 @@ export class ModStatCalculator {
     }
 
     // 装備の被ダメージ軽減を加算
-    for (const bonus of equipmentBonuses ?? []) {
+    for (const bonus of adjustedEquipmentBonuses) {
       if (bonus.stat === 'damage_reduction') {
         total += bonus.value
       }
