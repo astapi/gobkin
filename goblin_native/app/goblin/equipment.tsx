@@ -181,7 +181,7 @@ function EquipmentRow({
 
 export default function EquipmentScreenPage() {
   const { goblinId } = useLocalSearchParams<{ goblinId: string }>()
-  const { getGoblinById } = useGoblinStore()
+  const getGoblinById = useGoblinStore((state) => state.getGoblinById)
   const { equippedItems, inventoryItems, refreshEquipment, equipItem, unequipItem } =
     useEquipmentService()
   const [goblin, setGoblin] = useState<Goblin | null>(null)

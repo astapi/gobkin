@@ -1,5 +1,5 @@
-import { useCallback, useRef, useState } from 'react'
-import { View, Text, TouchableOpacity, Pressable, StyleSheet, ScrollView, ActivityIndicator, Image, Alert } from 'react-native'
+import { useCallback, useMemo, useRef, useState } from 'react'
+import { View, Text, TouchableOpacity, Pressable, StyleSheet, FlatList, ActivityIndicator, Image, Alert } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { router } from 'expo-router'
 import Swipeable from 'react-native-gesture-handler/Swipeable'
@@ -29,8 +29,12 @@ function getStatLabel(stat: string): string {
 }
 
 export default function GoblinListScreen() {
-  const { goblins, isLoading, saveGoblin, deleteGoblin } = useGoblinStore()
-  const { pendingGoblins, removePendingGoblin } = useBaseStore()
+  const goblins = useGoblinStore((state) => state.goblins)
+  const isLoading = useGoblinStore((state) => state.isLoading)
+  const saveGoblin = useGoblinStore((state) => state.saveGoblin)
+  const deleteGoblin = useGoblinStore((state) => state.deleteGoblin)
+  const pendingGoblins = useBaseStore((state) => state.pendingGoblins)
+  const removePendingGoblin = useBaseStore((state) => state.removePendingGoblin)
   const maxGoblins = useBaseStore(selectMaxGoblins)
   const swipeableRefs = useRef<Record<number, Swipeable | null>>({})
   const [openSwipeableId, setOpenSwipeableId] = useState<number | null>(null)
@@ -38,12 +42,14 @@ export default function GoblinListScreen() {
   const hasCapacity = goblins.length < maxGoblins
   const [sortKey, setSortKey] = useState<'level' | 'atk' | 'hp'>('level')
 
-  const sortedGoblins = [...goblins].sort((a, b) => {
-    if (sortKey === 'level') return b.level - a.level
-    const statsA = getEffectiveStats(a)
-    const statsB = getEffectiveStats(b)
-    return sortKey === 'atk' ? statsB.atk - statsA.atk : statsB.hp - statsA.hp
-  })
+  const sortedGoblins = useMemo(() => (
+    [...goblins].sort((a, b) => {
+      if (sortKey === 'level') return b.level - a.level
+      const statsA = getEffectiveStats(a)
+      const statsB = getEffectiveStats(b)
+      return sortKey === 'atk' ? statsB.atk - statsA.atk : statsB.hp - statsA.hp
+    })
+  ), [goblins, sortKey])
 
   const closeOpenSwipeable = useCallback(() => {
     if (openSwipeableId === null) return
@@ -139,6 +145,101 @@ export default function GoblinListScreen() {
     )
   }, [closeOpenSwipeable, removePendingGoblin])
 
+  const renderGoblinItem = useCallback(({ item: goblin }: { item: Goblin }) => (
+    <View style={styles.cardWrapper}>
+      <Swipeable
+        ref={(ref) => {
+          swipeableRefs.current[goblin.id] = ref
+        }}
+        friction={2}
+        overshootRight={false}
+        rightThreshold={40}
+        renderRightActions={() => renderRightActions(goblin)}
+        onSwipeableWillOpen={() => handleSwipeableWillOpen(goblin.id)}
+        onSwipeableClose={() => handleSwipeableClose(goblin.id)}
+      >
+        <Pressable onPress={() => handleGoblinPress(goblin)}>
+          <GoblinCard goblin={goblin} />
+        </Pressable>
+      </Swipeable>
+    </View>
+  ), [handleGoblinPress, handleSwipeableClose, handleSwipeableWillOpen, renderRightActions])
+
+  const renderPendingFooter = useCallback(() => {
+    if (pendingGoblins.length === 0) {
+      return <View style={styles.footerSpacer} />
+    }
+
+    return (
+      <View style={styles.pendingSection}>
+        <View style={styles.pendingSectionHeader}>
+          <Text style={styles.pendingSectionTitle}>産まれたゴブリン</Text>
+          <View style={styles.pendingBadge}>
+            <Text style={styles.pendingBadgeText}>{pendingGoblins.length}体</Text>
+          </View>
+        </View>
+        <Text style={styles.pendingSectionDesc}>
+          拠点がいっぱいのため待機中です。
+        </Text>
+        {pendingGoblins.map((goblin) => {
+          const effectiveStats = ModStatCalculator.calculate(goblin)
+          return (
+            <View key={goblin.id} style={styles.pendingCard}>
+              <View style={styles.pendingRow}>
+                <TouchableOpacity
+                  style={styles.pendingPressable}
+                  activeOpacity={0.8}
+                  onPress={() => handlePendingGoblinPress(goblin)}
+                >
+                  <Image source={getGoblinImage(goblin.avatar)} style={styles.pendingAvatar} />
+                  <View style={styles.pendingInfo}>
+                    <Text style={styles.pendingName} numberOfLines={1}>{goblin.name}</Text>
+                    <Text style={styles.pendingStats}>
+                      HP{effectiveStats.hp} / A{effectiveStats.atk} / D{effectiveStats.def} / S{effectiveStats.spd} / SP{effectiveStats.sp}
+                    </Text>
+                    {goblin.mods && goblin.mods.length > 0 && (
+                      <View style={styles.modRow}>
+                        {goblin.mods.map((mod, index) => {
+                          const template = getModTemplate(mod.templateId)
+                          if (!template) return null
+                          const isPercent = template.stat.includes('percent') || template.stat === 'damage_reduction'
+                          const label = `${getStatLabel(template.stat)}+${mod.value}${isPercent ? '%' : ''}`
+                          const isPrefix = template.type === 'prefix'
+                          return (
+                            <View key={index} style={[styles.modBadge, isPrefix ? styles.modBadgeBlue : styles.modBadgePurple]}>
+                              <Text style={[styles.modBadgeText, isPrefix ? styles.modBadgeTextBlue : styles.modBadgeTextPurple]}>
+                                {label}
+                              </Text>
+                            </View>
+                          )
+                        })}
+                      </View>
+                    )}
+                  </View>
+                </TouchableOpacity>
+                {hasCapacity && (
+                  <TouchableOpacity
+                    style={styles.addButton}
+                    onPress={() => handleAddPending(goblin)}
+                  >
+                    <Text style={styles.addButtonText}>追加</Text>
+                  </TouchableOpacity>
+                )}
+                <TouchableOpacity
+                  style={styles.dismissButton}
+                  onPress={() => handleDismissPending(goblin)}
+                >
+                  <Text style={styles.dismissButtonText}>解雇</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          )
+        })}
+        <View style={styles.footerSpacer} />
+      </View>
+    )
+  }, [handleAddPending, handleDismissPending, handlePendingGoblinPress, hasCapacity, pendingGoblins])
+
 
   if (isLoading) {
     return (
@@ -185,101 +286,15 @@ export default function GoblinListScreen() {
           ))}
         </View>
       </View>
-      <ScrollView
+      <FlatList
+        data={sortedGoblins}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={renderGoblinItem}
         contentContainerStyle={styles.scrollContent}
         onScrollBeginDrag={closeOpenSwipeable}
         keyboardShouldPersistTaps="handled"
-      >
-        <View style={styles.listContent}>
-          {sortedGoblins.map((goblin) => (
-            <View key={goblin.id} style={styles.cardWrapper}>
-              <Swipeable
-                ref={(ref) => {
-                  swipeableRefs.current[goblin.id] = ref
-                }}
-                friction={2}
-                overshootRight={false}
-                rightThreshold={40}
-                renderRightActions={() => renderRightActions(goblin)}
-                onSwipeableWillOpen={() => handleSwipeableWillOpen(goblin.id)}
-                onSwipeableClose={() => handleSwipeableClose(goblin.id)}
-              >
-                <Pressable onPress={() => handleGoblinPress(goblin)}>
-                  <GoblinCard goblin={goblin} />
-                </Pressable>
-              </Swipeable>
-            </View>
-          ))}
-        </View>
-
-        {pendingGoblins.length > 0 && (
-          <View style={styles.pendingSection}>
-            <View style={styles.pendingSectionHeader}>
-              <Text style={styles.pendingSectionTitle}>産まれたゴブリン</Text>
-              <View style={styles.pendingBadge}>
-                <Text style={styles.pendingBadgeText}>{pendingGoblins.length}体</Text>
-              </View>
-            </View>
-            <Text style={styles.pendingSectionDesc}>
-              拠点がいっぱいのため待機中です。
-            </Text>
-            {pendingGoblins.map((goblin) => {
-              const effectiveStats = ModStatCalculator.calculate(goblin)
-              return (
-                <View key={goblin.id} style={styles.pendingCard}>
-                  <View style={styles.pendingRow}>
-                    <TouchableOpacity
-                      style={styles.pendingPressable}
-                      activeOpacity={0.8}
-                      onPress={() => handlePendingGoblinPress(goblin)}
-                    >
-                      <Image source={getGoblinImage(goblin.avatar)} style={styles.pendingAvatar} />
-                      <View style={styles.pendingInfo}>
-                        <Text style={styles.pendingName} numberOfLines={1}>{goblin.name}</Text>
-                        <Text style={styles.pendingStats}>
-                          HP{effectiveStats.hp} / A{effectiveStats.atk} / D{effectiveStats.def} / S{effectiveStats.spd} / SP{effectiveStats.sp}
-                        </Text>
-                        {goblin.mods && goblin.mods.length > 0 && (
-                          <View style={styles.modRow}>
-                            {goblin.mods.map((mod, index) => {
-                              const template = getModTemplate(mod.templateId)
-                              if (!template) return null
-                              const isPercent = template.stat.includes('percent') || template.stat === 'damage_reduction'
-                              const label = `${getStatLabel(template.stat)}+${mod.value}${isPercent ? '%' : ''}`
-                              const isPrefix = template.type === 'prefix'
-                              return (
-                                <View key={index} style={[styles.modBadge, isPrefix ? styles.modBadgeBlue : styles.modBadgePurple]}>
-                                  <Text style={[styles.modBadgeText, isPrefix ? styles.modBadgeTextBlue : styles.modBadgeTextPurple]}>
-                                    {label}
-                                  </Text>
-                                </View>
-                              )
-                            })}
-                          </View>
-                        )}
-                      </View>
-                    </TouchableOpacity>
-                    {hasCapacity && (
-                      <TouchableOpacity
-                        style={styles.addButton}
-                        onPress={() => handleAddPending(goblin)}
-                      >
-                        <Text style={styles.addButtonText}>追加</Text>
-                      </TouchableOpacity>
-                    )}
-                    <TouchableOpacity
-                      style={styles.dismissButton}
-                      onPress={() => handleDismissPending(goblin)}
-                    >
-                      <Text style={styles.dismissButtonText}>解雇</Text>
-                    </TouchableOpacity>
-                  </View>
-                </View>
-              )
-            })}
-          </View>
-        )}
-      </ScrollView>
+        ListFooterComponent={renderPendingFooter}
+      />
     </SafeAreaView>
   )
 }
@@ -371,8 +386,6 @@ const styles = StyleSheet.create({
   scrollContent: {
     paddingBottom: 32,
   },
-  listContent: {
-  },
   cardWrapper: {
     backgroundColor: '#F9FAFB',
   },
@@ -390,6 +403,9 @@ const styles = StyleSheet.create({
   },
   pendingSection: {
     paddingTop: 8,
+  },
+  footerSpacer: {
+    height: 32,
   },
   pendingSectionHeader: {
     flexDirection: 'row',

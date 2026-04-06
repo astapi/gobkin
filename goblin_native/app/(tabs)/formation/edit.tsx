@@ -60,8 +60,13 @@ function PartySlot({ goblin, isEmpty, isSelected, onPress, onRemove }: SlotProps
 
 export default function PartyEditScreen() {
   const { partyId } = useLocalSearchParams<{ partyId: string }>()
-  const { parties, isLoading: partiesLoading, updateMembers, getPartyById, refresh: refreshParties } = usePartyStore()
-  const { goblins, isLoading: goblinsLoading } = useGoblinStore()
+  const parties = usePartyStore((state) => state.parties)
+  const partiesLoading = usePartyStore((state) => state.isLoading)
+  const updateMembers = usePartyStore((state) => state.updateMembers)
+  const getPartyById = usePartyStore((state) => state.getPartyById)
+  const refreshParties = usePartyStore((state) => state.refresh)
+  const goblins = useGoblinStore((state) => state.goblins)
+  const goblinsLoading = useGoblinStore((state) => state.isLoading)
   const [retryCount, setRetryCount] = useState(0)
   const [party, setParty] = useState<Party | null>(null)
 

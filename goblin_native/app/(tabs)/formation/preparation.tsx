@@ -62,8 +62,10 @@ export default function ExpeditionPreparationScreen() {
     setTargetFloor,
     refresh: refreshParties,
   } = usePartyStore()
-  const { goblins, isLoading: goblinsLoading } = useGoblinStore()
-  const { dungeons, isLoading: dungeonsLoading } = useDungeonStore()
+  const goblins = useGoblinStore((state) => state.goblins)
+  const goblinsLoading = useGoblinStore((state) => state.isLoading)
+  const dungeons = useDungeonStore((state) => state.dungeons)
+  const dungeonsLoading = useDungeonStore((state) => state.isLoading)
   const { startExpedition, estimateExplorationTime } = useExpeditionFlow()
   const [retryCount, setRetryCount] = useState(0)
   const [party, setParty] = useState<Party | null>(null)

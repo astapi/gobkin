@@ -33,8 +33,8 @@ const getEventColor = (type: LogEntry['type']): string => {
 export default function ExpeditionLogScreen() {
   const { partyId, dungeonId } = useLocalSearchParams<{ partyId: string; dungeonId?: string }>()
 
-  const { getPartyById } = usePartyStore()
-  const { dungeons } = useDungeonStore()
+  const getPartyById = usePartyStore((state) => state.getPartyById)
+  const dungeons = useDungeonStore((state) => state.dungeons)
 
   const [party, setParty] = useState<Awaited<ReturnType<typeof getPartyById>> | null>(null)
 

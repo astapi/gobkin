@@ -20,6 +20,7 @@ import { SQLiteEquipmentRepository } from '../../infrastructure/repositories/SQL
 interface UseExpeditionFlowParams {
   parties?: Party[]
   enableAutoCompletion?: boolean
+  currentTime?: Date
 }
 
 interface StartExpeditionInput {
@@ -44,27 +45,28 @@ export interface ExpeditionHistoryDisplay {
 export const useExpeditionFlow = ({
   parties,
   enableAutoCompletion = false,
+  currentTime: externalCurrentTime,
 }: UseExpeditionFlowParams = {}) => {
   const [isProcessing, setIsProcessing] = useState(false)
-  const [currentTime, setCurrentTime] = useState(new Date())
   const processedExpeditionsRef = useRef<Set<string>>(new Set())
+  const currentTime = externalCurrentTime ?? new Date()
 
   const partyRepository = getPartyRepository()
   const goblinRepository = getGoblinRepository()
-  const { goblins } = useGoblinStore()
-  const { pendingGoblins, addPendingGoblin, isLoading: isPendingLoading, getNextGoblinId } = useBaseStore()
+  const goblins = useGoblinStore((state) => state.goblins)
+  const pendingGoblins = useBaseStore((state) => state.pendingGoblins)
+  const addPendingGoblin = useBaseStore((state) => state.addPendingGoblin)
+  const isPendingLoading = useBaseStore((state) => state.isLoading)
+  const getNextGoblinId = useBaseStore((state) => state.getNextGoblinId)
   const rank = useBaseStore(s => s.baseState?.rank ?? 1)
   const maxGoblins = useBaseStore(s => s.baseState?.currentMaxGoblins ?? 10)
   const isBaseLoading = useBaseStore(s => s.isLoading)
   const baseStateRepository = getBaseStateRepository()
-  const { markDungeonCleared } = useDungeonStore()
-  const {
-    expeditionRecords,
-    getPartyExpeditionHistory,
-    saveExpeditionRecord,
-    completeExpeditionRecord,
-    refresh: refreshExpeditions,
-  } = useExpeditionStore()
+  const markDungeonCleared = useDungeonStore((state) => state.markDungeonCleared)
+  const expeditionRecords = useExpeditionStore((state) => state.expeditionRecords)
+  const getPartyExpeditionHistory = useExpeditionStore((state) => state.getPartyExpeditionHistory)
+  const saveExpeditionRecord = useExpeditionStore((state) => state.saveExpeditionRecord)
+  const completeExpeditionRecord = useExpeditionStore((state) => state.completeExpeditionRecord)
 
   const startExpeditionUseCase = useMemo(() => {
     return new StartExpeditionUseCase(
@@ -263,7 +265,6 @@ export const useExpeditionFlow = ({
       }
     }
   }, [
-    currentTime,
     expeditionRecords,
     completeExpeditionUseCase,
     completeExpeditionRecord,
@@ -336,15 +337,11 @@ export const useExpeditionFlow = ({
 
   useEffect(() => {
     if (!enableAutoCompletion) return
+    void completeDueExpeditions()
     const interval = setInterval(() => {
-      setCurrentTime(new Date())
+      void completeDueExpeditions()
     }, 1000)
     return () => clearInterval(interval)
-  }, [enableAutoCompletion])
-
-  useEffect(() => {
-    if (!enableAutoCompletion) return
-    void completeDueExpeditions()
   }, [enableAutoCompletion, completeDueExpeditions])
 
   return {

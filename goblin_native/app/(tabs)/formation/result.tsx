@@ -12,8 +12,10 @@ import type { ExpeditionRecord, Goblin, TimelineEvent } from '@/shared/types'
 export default function ExpeditionResultScreen() {
   const { expeditionId } = useLocalSearchParams<{ expeditionId?: string }>()
 
-  const { dungeons } = useDungeonStore()
-  const { progress, markDungeonCleared, markUnlockNotified } = useDungeonStore()
+  const dungeons = useDungeonStore((state) => state.dungeons)
+  const progress = useDungeonStore((state) => state.progress)
+  const markDungeonCleared = useDungeonStore((state) => state.markDungeonCleared)
+  const markUnlockNotified = useDungeonStore((state) => state.markUnlockNotified)
   const {
     expeditionRecords,
     getExpeditionById,

@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native'
 import { getGoblinImage } from '@/shared/utils/goblinImages'
 import { getFactorImage } from '@/shared/utils/factorImages'
@@ -29,7 +30,7 @@ interface GoblinCardProps {
   disabled?: boolean
 }
 
-export function GoblinCard({
+export const GoblinCard = memo(function GoblinCard({
   goblin,
   onPress,
   isAssigned = false,
@@ -113,7 +114,7 @@ export function GoblinCard({
   }
 
   return content
-}
+})
 
 const styles = StyleSheet.create({
   container: {

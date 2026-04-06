@@ -25,9 +25,10 @@ export default function ExpeditionPlaybackScreen() {
     expeditionId?: string
   }>()
 
-  const { getPartyById, isLoading: isPartyLoading } = usePartyStore()
-  const { isLoading: isGoblinLoading } = useGoblinStore()
-  const { dungeons } = useDungeonStore()
+  const getPartyById = usePartyStore((state) => state.getPartyById)
+  const isPartyLoading = usePartyStore((state) => state.isLoading)
+  const isGoblinLoading = useGoblinStore((state) => state.isLoading)
+  const dungeons = useDungeonStore((state) => state.dungeons)
   const {
     expeditionRecords,
     getExpeditionById,
