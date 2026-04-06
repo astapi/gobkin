@@ -373,7 +373,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   partyName: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
     color: '#1F2937',
   },

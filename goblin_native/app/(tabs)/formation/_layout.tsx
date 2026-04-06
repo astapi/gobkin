@@ -24,6 +24,20 @@ export default function FormationLayout() {
         }}
       />
       <Stack.Screen
+        name="equipment-list"
+        options={{
+          title: '装備アイテムの一覧',
+          presentation: 'card',
+        }}
+      />
+      <Stack.Screen
+        name="equipment"
+        options={{
+          title: '装備変更',
+          presentation: 'formSheet',
+        }}
+      />
+      <Stack.Screen
         name="playback"
         options={{
           title: 'Expedition',

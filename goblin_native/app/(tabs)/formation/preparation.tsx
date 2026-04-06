@@ -138,6 +138,13 @@ export default function ExpeditionPreparationScreen() {
     })
   }, [partyId])
 
+  const handleOpenEquipmentList = useCallback(() => {
+    router.push({
+      pathname: '/formation/equipment-list',
+      params: { partyId },
+    })
+  }, [partyId])
+
   const handleSelectDungeon = useCallback((dungeon: Dungeon) => {
     setSelectedDungeonId(dungeon.id)
     if (partyId) {
@@ -266,6 +273,10 @@ export default function ExpeditionPreparationScreen() {
 
             <TouchableOpacity style={styles.editButton} onPress={handleEditParty}>
               <Text style={styles.editButtonText}>メンバーを変更する</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.secondaryButton} onPress={handleOpenEquipmentList}>
+              <Text style={styles.secondaryButtonText}>装備アイテムの一覧</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -492,7 +503,7 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   partyName: {
-    fontSize: 20,
+    fontSize: 16,
     fontWeight: 'bold',
     color: '#1F2937',
     marginBottom: 16,
@@ -545,11 +556,25 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 14,
     alignItems: 'center',
+    marginBottom: 10,
   },
   editButtonText: {
     fontSize: 14,
     fontWeight: '600',
     color: '#4B5563',
+  },
+  secondaryButton: {
+    backgroundColor: '#EFF6FF',
+    borderRadius: 8,
+    padding: 14,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#BFDBFE',
+  },
+  secondaryButtonText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#1D4ED8',
   },
   settingItem: {
     marginBottom: 12,
