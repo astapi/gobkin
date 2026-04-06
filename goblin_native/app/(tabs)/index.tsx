@@ -1,7 +1,8 @@
-import { useCallback, useState } from 'react'
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView, ActivityIndicator, Image, Alert } from 'react-native'
+import { useCallback, useRef, useState } from 'react'
+import { View, Text, TouchableOpacity, Pressable, StyleSheet, ScrollView, ActivityIndicator, Image, Alert } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { router } from 'expo-router'
+import Swipeable from 'react-native-gesture-handler/Swipeable'
 import { useGoblinStore } from '@/presentation/stores/useGoblinStore'
 import { useBaseStore, selectMaxGoblins } from '@/presentation/stores/useBaseStore'
 import { GoblinCard } from '@/presentation/components/GoblinCard'
@@ -28,9 +29,11 @@ function getStatLabel(stat: string): string {
 }
 
 export default function GoblinListScreen() {
-  const { goblins, isLoading, saveGoblin } = useGoblinStore()
+  const { goblins, isLoading, saveGoblin, deleteGoblin } = useGoblinStore()
   const { pendingGoblins, removePendingGoblin } = useBaseStore()
   const maxGoblins = useBaseStore(selectMaxGoblins)
+  const swipeableRefs = useRef<Record<number, Swipeable | null>>({})
+  const [openSwipeableId, setOpenSwipeableId] = useState<number | null>(null)
 
   const hasCapacity = goblins.length < maxGoblins
   const [sortKey, setSortKey] = useState<'level' | 'atk' | 'hp'>('level')
@@ -42,23 +45,86 @@ export default function GoblinListScreen() {
     return sortKey === 'atk' ? statsB.atk - statsA.atk : statsB.hp - statsA.hp
   })
 
-  const handleGoblinPress = useCallback((goblin: Goblin) => {
-    router.push({ pathname: '/goblin/detail', params: { goblinId: String(goblin.id) } })
+  const closeOpenSwipeable = useCallback(() => {
+    if (openSwipeableId === null) return
+    swipeableRefs.current[openSwipeableId]?.close()
+    setOpenSwipeableId(null)
+  }, [openSwipeableId])
+
+  const handleSwipeableWillOpen = useCallback((goblinId: number) => {
+    if (openSwipeableId !== null && openSwipeableId !== goblinId) {
+      swipeableRefs.current[openSwipeableId]?.close()
+    }
+    setOpenSwipeableId(goblinId)
+  }, [openSwipeableId])
+
+  const handleSwipeableClose = useCallback((goblinId: number) => {
+    setOpenSwipeableId((currentId) => (currentId === goblinId ? null : currentId))
   }, [])
 
+  const handleGoblinPress = useCallback((goblin: Goblin) => {
+    if (openSwipeableId !== null) {
+      closeOpenSwipeable()
+      return
+    }
+    router.push({ pathname: '/goblin/detail', params: { goblinId: String(goblin.id) } })
+  }, [closeOpenSwipeable, openSwipeableId])
+
+  const handleDeleteGoblin = useCallback((goblin: Goblin) => {
+    Alert.alert(
+      '追放確認',
+      `${goblin.name}を追放しますか？`,
+      [
+        {
+          text: 'キャンセル',
+          style: 'cancel',
+          onPress: () => swipeableRefs.current[goblin.id]?.close(),
+        },
+        {
+          text: '追放する',
+          style: 'destructive',
+          onPress: () => {
+            void deleteGoblin(goblin.id)
+              .then(() => {
+                delete swipeableRefs.current[goblin.id]
+                setOpenSwipeableId((currentId) => (currentId === goblin.id ? null : currentId))
+              })
+              .catch(() => {
+                Alert.alert('削除エラー', `${goblin.name}の追放に失敗しました。`)
+                swipeableRefs.current[goblin.id]?.close()
+              })
+          },
+        },
+      ],
+    )
+  }, [deleteGoblin])
+
+  const renderRightActions = useCallback((goblin: Goblin) => (
+    <TouchableOpacity
+      style={styles.swipeDeleteAction}
+      activeOpacity={0.8}
+      onPress={() => handleDeleteGoblin(goblin)}
+    >
+      <Text style={styles.swipeDeleteActionText}>追放</Text>
+    </TouchableOpacity>
+  ), [handleDeleteGoblin])
+
   const handlePendingGoblinPress = useCallback((goblin: Goblin) => {
+    closeOpenSwipeable()
     router.push({
       pathname: '/goblin/detail',
       params: { goblinId: String(goblin.id), source: 'pending' },
     })
-  }, [])
+  }, [closeOpenSwipeable])
 
   const handleAddPending = useCallback(async (goblin: Goblin) => {
+    closeOpenSwipeable()
     await saveGoblin(goblin)
     await removePendingGoblin(goblin.id)
-  }, [saveGoblin, removePendingGoblin])
+  }, [closeOpenSwipeable, saveGoblin, removePendingGoblin])
 
   const handleDismissPending = useCallback((goblin: Goblin) => {
+    closeOpenSwipeable()
     Alert.alert(
       '解雇確認',
       `${goblin.name}を解雇しますか？`,
@@ -71,7 +137,7 @@ export default function GoblinListScreen() {
         },
       ],
     )
-  }, [removePendingGoblin])
+  }, [closeOpenSwipeable, removePendingGoblin])
 
 
   if (isLoading) {
@@ -107,7 +173,10 @@ export default function GoblinListScreen() {
             <TouchableOpacity
               key={key}
               style={[styles.sortButton, sortKey === key && styles.sortButtonActive]}
-              onPress={() => setSortKey(key)}
+              onPress={() => {
+                closeOpenSwipeable()
+                setSortKey(key)
+              }}
             >
               <Text style={[styles.sortButtonText, sortKey === key && styles.sortButtonTextActive]}>
                 {key === 'level' ? 'Lv' : key.toUpperCase()}
@@ -116,11 +185,29 @@ export default function GoblinListScreen() {
           ))}
         </View>
       </View>
-      <ScrollView contentContainerStyle={styles.scrollContent}>
+      <ScrollView
+        contentContainerStyle={styles.scrollContent}
+        onScrollBeginDrag={closeOpenSwipeable}
+        keyboardShouldPersistTaps="handled"
+      >
         <View style={styles.listContent}>
           {sortedGoblins.map((goblin) => (
             <View key={goblin.id} style={styles.cardWrapper}>
-              <GoblinCard goblin={goblin} onPress={() => handleGoblinPress(goblin)} />
+              <Swipeable
+                ref={(ref) => {
+                  swipeableRefs.current[goblin.id] = ref
+                }}
+                friction={2}
+                overshootRight={false}
+                rightThreshold={40}
+                renderRightActions={() => renderRightActions(goblin)}
+                onSwipeableWillOpen={() => handleSwipeableWillOpen(goblin.id)}
+                onSwipeableClose={() => handleSwipeableClose(goblin.id)}
+              >
+                <Pressable onPress={() => handleGoblinPress(goblin)}>
+                  <GoblinCard goblin={goblin} />
+                </Pressable>
+              </Swipeable>
             </View>
           ))}
         </View>
@@ -287,6 +374,19 @@ const styles = StyleSheet.create({
   listContent: {
   },
   cardWrapper: {
+    backgroundColor: '#F9FAFB',
+  },
+  swipeDeleteAction: {
+    width: 88,
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#DC2626',
+  },
+  swipeDeleteActionText: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#FFFFFF',
   },
   pendingSection: {
     paddingTop: 8,
