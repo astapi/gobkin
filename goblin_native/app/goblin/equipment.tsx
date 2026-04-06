@@ -9,6 +9,7 @@ import { EquipmentService } from '@/core/services/EquipmentService'
 import { getEquipmentTemplate, getEquipmentTemplates } from '@/shared/data/equipmentPoolLoader'
 import { EquipmentTitleService } from '@/core/services/EquipmentTitleService'
 import { EQUIPMENT_TITLE_DEFS } from '@/shared/data/equipmentTitleConfig'
+import { describeCharacterSkill } from '@/shared/data/characterSkills'
 import type { Goblin } from '@/shared/types'
 
 const CATEGORY_LABELS: Record<EquipmentCategory, string> = {
@@ -32,7 +33,6 @@ const STAT_LABELS: Record<string, string> = {
   attackCount_percent: '攻撃回数', attackCount_flat: '攻撃回数',
   accuracy_percent: '命中精度', accuracy_flat: '命中精度',
   evasion_percent: '回避', evasion_flat: '回避',
-  damage_reduction: '被ダメ軽減',
 }
 
 function getDisplayName(eq: EquipmentInstance, template: EquipmentTemplate): string {
@@ -104,6 +104,13 @@ function EquippedItemDetail({
                 </Text>
               </View>
             ))}
+            {template.grantedSkills?.map((skill, i) => (
+              <View key={`skill-${i}`} style={styles.bonusBadge}>
+                <Text style={styles.bonusBadgeText}>
+                  {describeCharacterSkill(skill)}
+                </Text>
+              </View>
+            ))}
           </View>
 
           {template.effects && template.effects.length > 0 && (
@@ -156,6 +163,13 @@ function EquipmentRow({
             <View key={i} style={styles.itemBonusBadge}>
               <Text style={styles.itemBonusText}>
                 {STAT_LABELS[bonus.stat] ?? bonus.stat} {formatBonus(bonus.stat, bonus.value)}
+              </Text>
+            </View>
+          ))}
+          {template.grantedSkills?.map((skill, i) => (
+            <View key={`skill-${i}`} style={styles.itemBonusBadge}>
+              <Text style={styles.itemBonusText}>
+                {describeCharacterSkill(skill)}
               </Text>
             </View>
           ))}
@@ -220,7 +234,7 @@ export default function EquipmentScreenPage() {
 
   const handleUnequip = useCallback(async () => {
     if (!selectedEquipped || !goblin) return
-    await unequipItem(goblin.id, selectedEquipped)
+    await unequipItem(goblin, selectedEquipped)
     setSelectedEquipped(null)
   }, [selectedEquipped, goblin, unequipItem])
 

@@ -25,6 +25,10 @@ export function cloneCharacterSkills(skills: CharacterSkill[]): CharacterSkill[]
 }
 
 export function describeCharacterSkill(skill: CharacterSkill): string {
+  if (skill.physicalDamageReductionPercent !== undefined) {
+    return `[-${skill.physicalDamageReductionPercent}%] 物理ダメージ軽減(%)`
+  }
+
   if (skill.additionalDamage !== undefined) {
     return `通常攻撃の各ヒットに固定で+${skill.additionalDamage}`
   }
@@ -71,6 +75,19 @@ export function getRearProtectionMultiplierFromSkills(skills: CharacterSkill[]):
     (product, skill) => product * (skill.protectRearAllyNormalAttackMultiplier ?? 1),
     1,
   )
+}
+
+export function getPhysicalDamageReductionFromSkills(skills: CharacterSkill[]): number {
+  const appliedSkillIds = new Set<string>()
+
+  return skills.reduce((sum, skill) => {
+    if (appliedSkillIds.has(skill.id)) {
+      return sum
+    }
+
+    appliedSkillIds.add(skill.id)
+    return sum + (skill.physicalDamageReductionPercent ?? 0)
+  }, 0)
 }
 
 function getEquipmentValueMultiplier(

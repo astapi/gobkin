@@ -1,4 +1,5 @@
 import type { EquipmentTitleId } from './EquipmentTitle'
+import type { CharacterSkill } from './CharacterSkill'
 
 /**
  * 装備の種別
@@ -35,6 +36,7 @@ export type EquipmentStat =
   | 'attackCount_percent'
   | 'accuracy_percent'
   | 'evasion_percent'
+  | 'critical_rate_percent'
   | 'damage_reduction'
 
 /**
@@ -78,6 +80,7 @@ export interface EquipmentTemplate {
   category: EquipmentCategory
   subCategory?: WeaponSubCategory
   statBonuses: EquipmentStatBonus[]
+  grantedSkills?: CharacterSkill[]
   weaponStats?: WeaponStats
   effects?: EquipmentEffect[]
   range?: WeaponRange

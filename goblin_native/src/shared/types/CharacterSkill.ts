@@ -7,6 +7,7 @@ export interface CharacterSkill {
   statBonuses?: Partial<Record<keyof GoblinStats, number>>
   equipmentCategoryMultiplier?: Partial<Record<EquipmentCategory, number>>
   equipmentStatMultipliers?: Partial<Record<EquipmentStat, number>>
+  physicalDamageReductionPercent?: number
   additionalDamage?: number
   protectRearAllyNormalAttackMultiplier?: number
 }

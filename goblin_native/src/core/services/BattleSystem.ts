@@ -1,6 +1,10 @@
 import type { AttackTargetDetail, BattleLogEntry, CharacterSkill, Enemy, Goblin, LearnedSpell } from '../../shared/types'
 import { SPELL_DEFS } from '../../shared/data/spells'
-import { getAdditionalDamageFromSkills, getRearProtectionMultiplierFromSkills } from '../../shared/data/characterSkills'
+import {
+  getAdditionalDamageFromSkills,
+  getPhysicalDamageReductionFromSkills,
+  getRearProtectionMultiplierFromSkills,
+} from '../../shared/data/characterSkills'
 import type { SpellDef } from '../../shared/types/Spell'
 import { CombatantManager } from './CombatantManager'
 import { DamageCalculator } from './DamageCalculator'
@@ -29,7 +33,8 @@ interface BattleUnit {
   evasion: number
   isAlly: boolean
   originalIndex: number
-  damageReduction: number  // 被ダメージ軽減率（0〜100）
+  damageReduction: number  // 汎用の被ダメージ軽減率（0〜100）
+  physicalDamageReduction: number  // 物理ダメージ軽減率（0〜100）
   row: number              // 隊列の列番号（0-based）
   rowSlot: number          // 列内のスロット番号（0-based）
   level: number            // 呪文のターゲット数計算用
@@ -266,12 +271,13 @@ export class BattleSystem {
             const dmgMod = getDamageModifier(atkIdx + 1)
             const additionalDamage = getAdditionalDamageFromSkills(unit.skills)
 
-            // 被ダメージ軽減を適用
+            // スキル由来の物理ダメージ軽減を適用
             const reductionFactor = 1 - target.damageReduction / 100
+            const physicalReductionFactor = 1 - target.physicalDamageReduction / 100
             const protectionFactor = this.getRearGuardReductionFactor(target, allyUnits)
             const damage = Math.max(
               1,
-              Math.floor((baseDamage * dmgMod + additionalDamage) * reductionFactor * protectionFactor),
+              Math.floor((baseDamage * dmgMod + additionalDamage) * reductionFactor * physicalReductionFactor * protectionFactor),
             )
 
             target.currentHP = Math.max(0, target.currentHP - damage)
@@ -428,8 +434,7 @@ export class BattleSystem {
           RACE_DICT, unit.combatant, target.combatant,
           spellSkill, DEFAULT_DAMAGE_OPTIONS, rng,
         )
-        const reductionFactor = 1 - target.damageReduction / 100
-        const damage = Math.max(1, Math.floor(baseDamage * reductionFactor))
+        const damage = Math.max(1, Math.floor(baseDamage))
 
         target.currentHP = Math.max(0, target.currentHP - damage)
         totalHitCount++
@@ -454,8 +459,7 @@ export class BattleSystem {
           RACE_DICT, unit.combatant, target.combatant,
           spellSkill, DEFAULT_DAMAGE_OPTIONS, rng,
         )
-        const reductionFactor = 1 - target.damageReduction / 100
-        const damage = Math.max(1, Math.floor(baseDamage * reductionFactor))
+        const damage = Math.max(1, Math.floor(baseDamage))
 
         target.currentHP = Math.max(0, target.currentHP - damage)
         totalHitCount++
@@ -497,6 +501,7 @@ export class BattleSystem {
     const effectiveStats = ModStatCalculator.calculate(goblin)
     const hp = initialHP ?? effectiveStats.hp
     const damageReduction = ModStatCalculator.getDamageReduction(goblin)
+    const physicalDamageReduction = getPhysicalDamageReductionFromSkills(goblin.skills)
     return {
       combatant,
       currentHP: hp,
@@ -509,6 +514,7 @@ export class BattleSystem {
       isAlly: true,
       originalIndex,
       damageReduction,
+      physicalDamageReduction,
       row: originalIndex,  // 味方は1列1体（配列順 = 列番号）
       rowSlot: 0,
       level: goblin.level,
@@ -531,6 +537,7 @@ export class BattleSystem {
       isAlly: false,
       originalIndex,
       damageReduction: 0,  // 敵は被ダメージ軽減なし
+      physicalDamageReduction: 0,
       row,
       rowSlot,
       level: enemy.level,

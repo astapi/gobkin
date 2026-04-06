@@ -288,6 +288,20 @@ describe('ModStatCalculator — 戦闘ステータス計算', () => {
 
     expect(bonuses[0].sourceCategory).toBe('weapon')
   })
+
+  it('EquipmentServiceは装備に応じた物理ダメージ軽減スキルを付与・解除する', () => {
+    const goblin = createTestGoblin({ skills: [] })
+    const equipment = { id: 'eq1', templateId: 'armor_armor', slotIndex: -1, goblinId: null }
+
+    const equipResult = EquipmentService.equip(goblin, equipment, 0, [])
+
+    expect(equipResult.success).toBe(true)
+    expect(goblin.skills.some((skill) => skill.physicalDamageReductionPercent === 6)).toBe(true)
+
+    EquipmentService.unequip(equipment, goblin)
+
+    expect(goblin.skills.some((skill) => skill.physicalDamageReductionPercent === 6)).toBe(false)
+  })
 })
 
 // =========================================================================
@@ -642,6 +656,92 @@ describe('BattleSystem — 命中判定と複数回攻撃', () => {
     expect(protectedRear.hitCount).toBe(plainRear.hitCount)
     expect(protectedRear.totalDamage).toBeLessThan(plainRear.totalDamage)
   })
+
+  it('物理ダメージ軽減スキルは通常攻撃ダメージを軽減する', () => {
+    const reducedAllies = [
+      createTestGoblin({
+        id: 1,
+        skills: [{ id: 'physical_reduction_10', name: '[-10%] 物理ダメージ軽減(%)', physicalDamageReductionPercent: 10 }],
+        stats: { hp: 9999, atk: 1, sp: 10, spd: 1, def: 0, attackCount: 1, accuracy: 1, evasion: 0 },
+      }),
+    ]
+    const plainAllies = [
+      createTestGoblin({
+        id: 1,
+        skills: [],
+        stats: { hp: 9999, atk: 1, sp: 10, spd: 1, def: 0, attackCount: 1, accuracy: 1, evasion: 0 },
+      }),
+    ]
+    const enemy = [[createTestEnemy({
+      hp: 9999,
+      atk: 100,
+      def: 0,
+      spd: 100,
+      attackCount: 1,
+      accuracy: 999,
+      evasion: 0,
+    })]]
+
+    const reducedResult = new BattleSystem().executeBattle(reducedAllies, [9999], enemy, createSeededRng(11), 1)
+    const plainResult = new BattleSystem().executeBattle(plainAllies, [9999], [[createTestEnemy({
+      hp: 9999,
+      atk: 100,
+      def: 0,
+      spd: 100,
+      attackCount: 1,
+      accuracy: 999,
+      evasion: 0,
+    })]], createSeededRng(11), 1)
+
+    const reducedDamage = reducedResult.detailedLog.find((log) => log.action === '通常攻撃' && !log.isAlly)!.targets[0].totalDamage
+    const plainDamage = plainResult.detailedLog.find((log) => log.action === '通常攻撃' && !log.isAlly)!.targets[0].totalDamage
+
+    expect(reducedDamage).toBeLessThan(plainDamage)
+  })
+
+  it('物理ダメージ軽減スキルは呪文ダメージを軽減しない', () => {
+    const reducedAllies = [
+      createTestGoblin({
+        id: 1,
+        skills: [{ id: 'physical_reduction_10', name: '[-10%] 物理ダメージ軽減(%)', physicalDamageReductionPercent: 10 }],
+        stats: { hp: 9999, atk: 1, sp: 10, spd: 1, def: 0, attackCount: 1, accuracy: 1, evasion: 0 },
+      }),
+    ]
+    const plainAllies = [
+      createTestGoblin({
+        id: 1,
+        skills: [],
+        stats: { hp: 9999, atk: 1, sp: 10, spd: 1, def: 0, attackCount: 1, accuracy: 1, evasion: 0 },
+      }),
+    ]
+    const caster = [[createTestEnemy({
+      hp: 9999,
+      atk: 100,
+      def: 0,
+      spd: 100,
+      attackCount: 1,
+      accuracy: 999,
+      evasion: 0,
+      spells: [{ spellId: 'magic_arrow' }],
+    })]]
+
+    const reducedResult = new BattleSystem().executeBattle(reducedAllies, [9999], caster, createSeededRng(17), 1)
+    const plainResult = new BattleSystem().executeBattle(plainAllies, [9999], [[createTestEnemy({
+      hp: 9999,
+      atk: 100,
+      def: 0,
+      spd: 100,
+      attackCount: 1,
+      accuracy: 999,
+      evasion: 0,
+      spells: [{ spellId: 'magic_arrow' }],
+    })]], createSeededRng(17), 1)
+
+    const reducedDamage = reducedResult.detailedLog.find((log) => log.action === 'マジックアロー' && !log.isAlly)!.targets[0].totalDamage
+    const plainDamage = plainResult.detailedLog.find((log) => log.action === 'マジックアロー' && !log.isAlly)!.targets[0].totalDamage
+
+    expect(reducedDamage).toBe(plainDamage)
+  })
 })
 
 // =========================================================================
@@ -693,6 +793,7 @@ describe('selectTarget — 隊列ターゲット選択', () => {
       isAlly: false,
       originalIndex: 0,
       damageReduction: 0,
+      physicalDamageReduction: 0,
       row,
       rowSlot,
       level: 1,
