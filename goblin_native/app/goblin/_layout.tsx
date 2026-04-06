@@ -13,7 +13,7 @@ export default function GoblinLayout() {
         options={{
           headerShown: true,
           title: '装備変更',
-          presentation: 'modal',
+          presentation: 'formSheet',
           headerStyle: { backgroundColor: '#FFFFFF' },
           headerTitleStyle: { color: '#1F2937', fontWeight: 'bold' },
           headerTintColor: '#6B7280',
