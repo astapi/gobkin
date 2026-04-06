@@ -13,14 +13,13 @@ function createEngine(seed: number): ExpeditionEngine {
 /** privateメソッドにアクセスするヘルパー */
 function callRollTreasureDrops(
   engine: ExpeditionEngine,
-  dropChance: number | undefined,
   dungeonLevel: number,
   enemies: Enemy[],
   droppedIds: Set<string>,
   titleMultiplier?: number
 ) {
   return (engine as any).rollTreasureDrops(
-    dropChance, dungeonLevel, enemies, droppedIds, titleMultiplier
+    dungeonLevel, enemies, droppedIds, titleMultiplier
   )
 }
 
@@ -40,44 +39,24 @@ function createDummyEnemy(overrides?: Partial<Enemy>): Enemy {
 
 describe('rollTreasureDrops', () => {
   describe('ドロップ確率の基本動作', () => {
-    it('dropChance=undefined の場合、装備プールからのドロップはない', () => {
-      const engine = createEngine(12345)
-      const result = callRollTreasureDrops(
-        engine, undefined, 1, [createDummyEnemy()], new Set()
-      )
-      expect(result).toEqual([])
-    })
-
-    it('dropChance=0 の場合、ドロップしない', () => {
-      const engine = createEngine(12345)
-      const iterations = 100
-      let dropCount = 0
-
-      for (let i = 0; i < iterations; i++) {
-        const eng = createEngine(i)
-        const result = callRollTreasureDrops(
-          eng, 0, 1, [createDummyEnemy()], new Set()
-        )
-        if (result.length > 0) dropCount++
-      }
-      expect(dropCount).toBe(0)
-    })
-
-    it('dropChance=1.0 の場合、装備プールに候補があれば必ずドロップする', () => {
+    it('一律25%のドロップ確率で装備がドロップする', () => {
       // areaLevel=1 にはひのきの棒(dropLevelMin=1,dropLevelMax=2)がある
       const pool = getEquipmentByDungeonLevel(1)
       if (pool.length === 0) return // プールが空なら skip
 
-      const iterations = 50
+      const iterations = 1000
       let dropCount = 0
       for (let i = 0; i < iterations; i++) {
         const eng = createEngine(i * 1000)
         const result = callRollTreasureDrops(
-          eng, 1.0, 1, [createDummyEnemy()], new Set()
+          eng, 1, [createDummyEnemy()], new Set()
         )
         if (result.length > 0) dropCount++
       }
-      expect(dropCount).toBe(iterations)
+      // 25%前後であることを確認（15%〜35%の範囲）
+      const rate = dropCount / iterations
+      expect(rate).toBeGreaterThan(0.15)
+      expect(rate).toBeLessThan(0.35)
     })
   })
 
@@ -86,10 +65,15 @@ describe('rollTreasureDrops', () => {
       const pool = getEquipmentByDungeonLevel(1)
       if (pool.length === 0) return
 
-      const engine = createEngine(42)
-      const result = callRollTreasureDrops(
-        engine, 1.0, 1, [createDummyEnemy()], new Set()
-      )
+      // 確実にドロップするシードを探す
+      let result: any[] = []
+      for (let seed = 0; seed < 100; seed++) {
+        const engine = createEngine(seed)
+        result = callRollTreasureDrops(
+          engine, 1, [createDummyEnemy()], new Set()
+        )
+        if (result.length > 0) break
+      }
 
       expect(result.length).toBeGreaterThan(0)
       expect(result[0]).toHaveProperty('templateId')
@@ -101,10 +85,10 @@ describe('rollTreasureDrops', () => {
     it('称号なしの場合、titleId/titleNameはundefined', () => {
       // 倍率1ではほぼ称号なし。多数試行してnoneを見つける
       let foundNone = false
-      for (let seed = 0; seed < 200; seed++) {
+      for (let seed = 0; seed < 500; seed++) {
         const engine = createEngine(seed)
         const result = callRollTreasureDrops(
-          engine, 1.0, 1, [createDummyEnemy()], new Set()
+          engine, 1, [createDummyEnemy()], new Set()
         )
         if (result.length > 0 && result[0].titleId === undefined) {
           expect(result[0].titleName).toBeUndefined()
@@ -121,7 +105,7 @@ describe('rollTreasureDrops', () => {
       for (let seed = 0; seed < 500; seed++) {
         const engine = createEngine(seed)
         const result = callRollTreasureDrops(
-          engine, 1.0, 1, [createDummyEnemy()], new Set(), 99
+          engine, 1, [createDummyEnemy()], new Set(), 99
         )
         if (result.length > 0 && result[0].titleId !== undefined) {
           expect(typeof result[0].titleId).toBe('string')
@@ -145,11 +129,15 @@ describe('rollTreasureDrops', () => {
       // 全候補をdroppedIdsに入れる
       const droppedIds = new Set(pool.map(t => t.id))
 
-      const engine = createEngine(42)
-      const result = callRollTreasureDrops(
-        engine, 1.0, 1, [createDummyEnemy()], droppedIds
-      )
-      expect(result).toEqual([])
+      // ドロップするシードを探して実行
+      for (let seed = 0; seed < 100; seed++) {
+        const engine = createEngine(seed)
+        const result = callRollTreasureDrops(
+          engine, 1, [createDummyEnemy()], droppedIds
+        )
+        // プールからのドロップは全て除外されるため空
+        expect(result).toEqual([])
+      }
     })
 
     it('ドロップしたアイテムがdroppedIdsに追加される', () => {
@@ -157,13 +145,17 @@ describe('rollTreasureDrops', () => {
       if (pool.length === 0) return
 
       const droppedIds = new Set<string>()
-      const engine = createEngine(42)
-      const result = callRollTreasureDrops(
-        engine, 1.0, 1, [createDummyEnemy()], droppedIds
-      )
 
-      if (result.length > 0) {
-        expect(droppedIds.has(result[0].templateId)).toBe(true)
+      // ドロップするシードを探す
+      for (let seed = 0; seed < 100; seed++) {
+        const engine = createEngine(seed)
+        const result = callRollTreasureDrops(
+          engine, 1, [createDummyEnemy()], droppedIds
+        )
+        if (result.length > 0) {
+          expect(droppedIds.has(result[0].templateId)).toBe(true)
+          return
+        }
       }
     })
 
@@ -178,7 +170,7 @@ describe('rollTreasureDrops', () => {
       for (let i = 0; i < 50; i++) {
         const engine = createEngine(i * 100)
         const result = callRollTreasureDrops(
-          engine, 1.0, 1, [createDummyEnemy()], droppedIds
+          engine, 1, [createDummyEnemy()], droppedIds
         )
         for (const drop of result) {
           allDroppedTemplates.push(drop.templateId)
@@ -200,7 +192,7 @@ describe('rollTreasureDrops', () => {
       for (let seed = 0; seed < iterations; seed++) {
         const engine = createEngine(seed)
         const result = callRollTreasureDrops(
-          engine, 1.0, 1, [createDummyEnemy()], new Set(), 1
+          engine, 1, [createDummyEnemy()], new Set(), 1
         )
         for (const drop of result) {
           totalDrops++
@@ -221,7 +213,7 @@ describe('rollTreasureDrops', () => {
       for (let seed = 0; seed < iterations; seed++) {
         const engine = createEngine(seed)
         const result = callRollTreasureDrops(
-          engine, 1.0, 1, [createDummyEnemy()], new Set(), 99
+          engine, 1, [createDummyEnemy()], new Set(), 99
         )
         for (const drop of result) {
           totalDrops++
@@ -244,14 +236,21 @@ describe('rollTreasureDrops', () => {
         ],
       })
 
-      // dropChance=0（プールからはドロップしない）で敵ドロップのみ
-      const engine = createEngine(42)
-      const result = callRollTreasureDrops(
-        engine, 0, 1, [enemy], new Set()
-      )
-
-      expect(result.length).toBe(1)
-      expect(result[0].templateId).toBe('sword_cypress_stick')
+      // 敵ドロップは装備プール抽選とは独立に判定される
+      let found = false
+      for (let seed = 0; seed < 100; seed++) {
+        const engine = createEngine(seed)
+        const result = callRollTreasureDrops(
+          engine, 1, [enemy], new Set()
+        )
+        const enemyDrop = result.find((d: any) => d.templateId === 'sword_cypress_stick')
+        if (enemyDrop) {
+          expect(enemyDrop.templateId).toBe('sword_cypress_stick')
+          found = true
+          break
+        }
+      }
+      expect(found).toBe(true)
     })
 
     it('敵ドロップにも称号が付与される', () => {
@@ -266,10 +265,11 @@ describe('rollTreasureDrops', () => {
 
         const engine = createEngine(seed)
         const result = callRollTreasureDrops(
-          engine, 0, 1, [enemy], new Set(), 99
+          engine, 1, [enemy], new Set(), 99
         )
 
-        if (result.length > 0 && result[0].titleId !== undefined) {
+        const enemyDrop = result.find((d: any) => d.templateId === 'sword_cypress_stick')
+        if (enemyDrop && enemyDrop.titleId !== undefined) {
           foundTitle = true
           break
         }

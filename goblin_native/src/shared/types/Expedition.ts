@@ -110,6 +110,5 @@ export interface AreaConfig {
     xpFloor: number[]
     xpBoss?: number
   }
-  dropChance?: number  // 戦闘勝利ごとの宝箱出現確率 (0.0〜1.0)、areaLevelに応じた装備がドロップ
   unlockNext?: string
 }
