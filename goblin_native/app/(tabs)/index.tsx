@@ -9,6 +9,23 @@ import type { Goblin } from '@/shared/types'
 import { getGoblinImage } from '@/shared/utils/goblinImages'
 import { getEffectiveStats } from '@/shared/utils/goblinStats'
 import { ModStatCalculator } from '@/core/services/ModStatCalculator'
+import { getModTemplate } from '@/shared/data/modPoolLoader'
+
+const STAT_LABELS: Record<string, string> = {
+  hp_percent: 'HP', hp_flat: 'HP',
+  atk_percent: 'ATK', atk_flat: 'ATK',
+  def_percent: 'DEF', def_flat: 'DEF',
+  spd_percent: 'SPD', spd_flat: 'SPD',
+  sp_percent: 'SP', sp_flat: 'SP',
+  attackCount_percent: '攻撃回数', attackCount_flat: '攻撃回数',
+  accuracy_percent: '命中精度', accuracy_flat: '命中精度',
+  evasion_percent: '回避', evasion_flat: '回避',
+  damage_reduction: '被ダメ軽減',
+}
+
+function getStatLabel(stat: string): string {
+  return STAT_LABELS[stat] || stat
+}
 
 export default function GoblinListScreen() {
   const { goblins, isLoading, saveGoblin } = useGoblinStore()
@@ -123,6 +140,24 @@ export default function GoblinListScreen() {
                       <Text style={styles.pendingStats}>
                         HP{effectiveStats.hp} / A{effectiveStats.atk} / D{effectiveStats.def} / S{effectiveStats.spd} / SP{effectiveStats.sp}
                       </Text>
+                      {goblin.mods && goblin.mods.length > 0 && (
+                        <View style={styles.modRow}>
+                          {goblin.mods.map((mod, index) => {
+                            const template = getModTemplate(mod.templateId)
+                            if (!template) return null
+                            const isPercent = template.stat.includes('percent') || template.stat === 'damage_reduction'
+                            const label = `${getStatLabel(template.stat)}+${mod.value}${isPercent ? '%' : ''}`
+                            const isPrefix = template.type === 'prefix'
+                            return (
+                              <View key={index} style={[styles.modBadge, isPrefix ? styles.modBadgeBlue : styles.modBadgePurple]}>
+                                <Text style={[styles.modBadgeText, isPrefix ? styles.modBadgeTextBlue : styles.modBadgeTextPurple]}>
+                                  {label}
+                                </Text>
+                              </View>
+                            )
+                          })}
+                        </View>
+                      )}
                     </View>
                     {hasCapacity && (
                       <TouchableOpacity
@@ -322,5 +357,35 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontWeight: '600',
     color: '#FFFFFF',
+  },
+  modRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 4,
+    marginTop: 3,
+  },
+  modBadge: {
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 4,
+    borderWidth: 1,
+  },
+  modBadgeBlue: {
+    backgroundColor: '#EFF6FF',
+    borderColor: '#BFDBFE',
+  },
+  modBadgePurple: {
+    backgroundColor: '#F5F3FF',
+    borderColor: '#E9D5FF',
+  },
+  modBadgeText: {
+    fontSize: 9,
+    fontWeight: '600',
+  },
+  modBadgeTextBlue: {
+    color: '#1D4ED8',
+  },
+  modBadgeTextPurple: {
+    color: '#6D28D9',
   },
 })
