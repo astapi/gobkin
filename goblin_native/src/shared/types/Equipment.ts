@@ -43,6 +43,7 @@ export type EquipmentStat =
 export interface EquipmentStatBonus {
   stat: EquipmentStat
   value: number
+  sourceCategory?: EquipmentCategory
 }
 
 /**
@@ -56,6 +57,7 @@ export type EquipmentEffectType = 'def_to_hp' | 'critical_damage_bonus' | 'accur
 export interface EquipmentEffect {
   type: EquipmentEffectType
   value: number // def_to_hp: %, critical_damage_bonus: %, accuracy_boost: フラット値
+  sourceCategory?: EquipmentCategory
 }
 
 /**
