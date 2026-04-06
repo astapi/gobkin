@@ -131,7 +131,7 @@ export default function ExpeditionResultScreen() {
   }, [unlockNext, isSuccess, progress, markUnlockNotified])
 
   const handleBackToList = useCallback(() => {
-    router.replace('/formation')
+    router.dismissAll()
   }, [])
 
   if (expeditionId && (isExpeditionLoading || (!expeditionRecord && !hasRetriedLoad))) {
