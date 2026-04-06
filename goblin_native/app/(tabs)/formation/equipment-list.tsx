@@ -20,8 +20,11 @@ function getDisplayName(eq: EquipmentInstance, template: EquipmentTemplate): str
 
 export default function PartyEquipmentListScreen() {
   const { partyId } = useLocalSearchParams<{ partyId: string }>()
-  const { parties, isLoading: partiesLoading, getPartyById } = usePartyStore()
-  const { goblins, isLoading: goblinsLoading } = useGoblinStore()
+  const parties = usePartyStore((state) => state.parties)
+  const partiesLoading = usePartyStore((state) => state.isLoading)
+  const getPartyById = usePartyStore((state) => state.getPartyById)
+  const goblins = useGoblinStore((state) => state.goblins)
+  const goblinsLoading = useGoblinStore((state) => state.isLoading)
   const [party, setParty] = useState<Party | null>(null)
   const [equipmentMap, setEquipmentMap] = useState<Record<number, EquipmentInstance[]>>({})
   const [isLoadingEquipment, setIsLoadingEquipment] = useState(true)

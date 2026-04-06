@@ -7,14 +7,16 @@ import { checkRankUpAvailable, BASE_RANK_CONFIGS } from '@/core/services/BaseRan
 import { areasData } from '@/shared/data'
 
 export default function BaseManagementScreen() {
-  const { isLoading: baseLoading, baseState, performRankUp } = useBaseStore()
+  const baseLoading = useBaseStore((state) => state.isLoading)
+  const baseState = useBaseStore((state) => state.baseState)
+  const performRankUp = useBaseStore((state) => state.performRankUp)
   const rank = useBaseStore(selectRank)
   const capacity = useBaseStore(selectCapacity)
   const maxParties = useBaseStore(selectMaxParties)
   const maxGoblins = useBaseStore(selectMaxGoblins)
   const ivBonus = useBaseStore(selectIvBonus)
   const gold = useBaseStore(selectGold)
-  const { goblins } = useGoblinStore()
+  const goblins = useGoblinStore((state) => state.goblins)
 
   const [isRankingUp, setIsRankingUp] = useState(false)
 

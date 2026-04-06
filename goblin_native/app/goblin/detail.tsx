@@ -31,7 +31,8 @@ function getStatLabel(stat: string): string {
 
 export default function GoblinDetailScreen() {
   const { goblinId, source } = useLocalSearchParams<{ goblinId: string, source?: string }>()
-  const { getGoblinById, deleteGoblin } = useGoblinStore()
+  const getGoblinById = useGoblinStore((state) => state.getGoblinById)
+  const deleteGoblin = useGoblinStore((state) => state.deleteGoblin)
   const pendingGoblins = useBaseStore((state) => state.pendingGoblins)
   const [goblin, setGoblin] = useState<Goblin | null>(null)
   const parentNav = useNavigation()

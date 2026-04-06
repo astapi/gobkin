@@ -1,11 +1,12 @@
-import { useMemo, useCallback } from 'react'
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet, ActivityIndicator, Image, useWindowDimensions } from 'react-native'
+import { memo, useMemo, useCallback } from 'react'
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, ActivityIndicator, Image, useWindowDimensions } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { router } from 'expo-router'
 import { usePartyStore } from '@/presentation/stores/usePartyStore'
 import { useGoblinStore } from '@/presentation/stores/useGoblinStore'
 import { useBaseStore, selectRank } from '@/presentation/stores/useBaseStore'
 import { useExpeditionFlow, type ExpeditionHistoryDisplay } from '@/presentation/hooks/useExpeditionFlow'
+import { useCurrentTime } from '@/presentation/hooks/useCurrentTime'
 import { getGoblinImage } from '@/shared/utils/goblinImages'
 import { getEffectiveStats } from '@/shared/utils/goblinStats'
 import type { Party, Goblin, ExpeditionRecord } from '@/shared/types'
@@ -19,7 +20,7 @@ interface MemberSlotProps {
   avatarSize: number
 }
 
-function MemberSlot({ goblin, isEmpty, slotSize, avatarSize }: MemberSlotProps) {
+const MemberSlot = memo(function MemberSlot({ goblin, isEmpty, slotSize, avatarSize }: MemberSlotProps) {
   if (isEmpty || !goblin) {
     return (
       <View style={[styles.memberSlot, { width: slotSize }]}>
@@ -39,7 +40,7 @@ function MemberSlot({ goblin, isEmpty, slotSize, avatarSize }: MemberSlotProps) 
       <Text style={styles.memberHp}>HP{stats.hp}</Text>
     </View>
   )
-}
+})
 
 interface PartyCardProps {
   party: Party
@@ -52,7 +53,7 @@ interface PartyCardProps {
   avatarSize: number
 }
 
-function PartyCard({
+const PartyCard = memo(function PartyCard({
   party,
   goblins,
   onPress,
@@ -123,19 +124,22 @@ function PartyCard({
       )}
     </View>
   )
-}
+})
 
 export default function FormationScreen() {
   const { width } = useWindowDimensions()
-  const { parties, isLoading: partiesLoading, createParty } = usePartyStore()
-  const { goblins, isLoading: goblinsLoading } = useGoblinStore()
-  const { isLoading: baseLoading } = useBaseStore()
+  const parties = usePartyStore((state) => state.parties)
+  const partiesLoading = usePartyStore((state) => state.isLoading)
+  const createParty = usePartyStore((state) => state.createParty)
+  const goblins = useGoblinStore((state) => state.goblins)
+  const goblinsLoading = useGoblinStore((state) => state.isLoading)
+  const baseLoading = useBaseStore((state) => state.isLoading)
   const rank = useBaseStore(selectRank)
+  const currentTime = useCurrentTime({ enabled: true })
   const {
-    completeDueExpeditions,
     partyHistories,
     partyHistoryDisplays,
-  } = useExpeditionFlow({ parties, enableAutoCompletion: true })
+  } = useExpeditionFlow({ parties, enableAutoCompletion: true, currentTime })
   const { slotSize, avatarSize } = useMemo(() => {
     const slotGap = 8
     const maxSlotWidth = 50
@@ -229,48 +233,49 @@ export default function FormationScreen() {
     )
   }
 
+  const renderPartyItem = useCallback(({ item, index }: { item: Party | null; index: number }) => {
+    if (item) {
+      return (
+        <PartyCard
+          party={item}
+          goblins={goblins}
+          onPress={() => handlePartyPress(item, index)}
+          historyDisplays={partyHistoryDisplays[item.id] ?? []}
+          onHistoryPress={handleHistoryPress}
+          onLogPress={handleLogPress}
+          slotSize={slotSize}
+          avatarSize={avatarSize}
+        />
+      )
+    }
+
+    return (
+      <TouchableOpacity
+        style={styles.partyCard}
+        onPress={() => handlePartyPress(null, index)}
+        activeOpacity={0.7}
+      >
+        <View style={styles.partyHeader}>
+          <Text style={styles.partyName}>PT{index + 1}</Text>
+        </View>
+        <View style={styles.membersRow}>
+          {Array.from({ length: MAX_PARTY_SLOTS }).map((_, slotIndex) => (
+            <MemberSlot key={slotIndex} isEmpty slotSize={slotSize} avatarSize={avatarSize} />
+          ))}
+        </View>
+      </TouchableOpacity>
+    )
+  }, [avatarSize, goblins, handleHistoryPress, handleLogPress, handlePartyPress, partyHistoryDisplays, slotSize])
+
   return (
     <SafeAreaView style={styles.container} edges={['left', 'right', 'bottom']}>
-      <ScrollView style={styles.scrollView} contentContainerStyle={styles.contentContainer}>
-        <Text style={styles.prepTitle}>冒険の準備</Text>
-
-        {displayParties.map((party, index) => {
-          if (party) {
-            return (
-              <PartyCard
-                key={party.id}
-                party={party}
-                goblins={goblins}
-                onPress={() => handlePartyPress(party, index)}
-                historyDisplays={partyHistoryDisplays[party.id] ?? []}
-                onHistoryPress={handleHistoryPress}
-                onLogPress={handleLogPress}
-                slotSize={slotSize}
-                avatarSize={avatarSize}
-              />
-            )
-          } else {
-            // 空のパーティ枠
-            return (
-              <TouchableOpacity
-                key={`empty-${index}`}
-                style={styles.partyCard}
-                onPress={() => handlePartyPress(null, index)}
-                activeOpacity={0.7}
-              >
-                <View style={styles.partyHeader}>
-                  <Text style={styles.partyName}>PT{index + 1}</Text>
-                </View>
-                <View style={styles.membersRow}>
-                  {Array.from({ length: MAX_PARTY_SLOTS }).map((_, slotIndex) => (
-                    <MemberSlot key={slotIndex} isEmpty slotSize={slotSize} avatarSize={avatarSize} />
-                  ))}
-                </View>
-              </TouchableOpacity>
-            )
-          }
-        })}
-      </ScrollView>
+      <FlatList
+        data={displayParties}
+        keyExtractor={(item, index) => item?.id.toString() ?? `empty-${index}`}
+        renderItem={renderPartyItem}
+        contentContainerStyle={styles.contentContainer}
+        ListHeaderComponent={<Text style={styles.prepTitle}>冒険の準備</Text>}
+      />
     </SafeAreaView>
   )
 }
@@ -279,9 +284,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F3F4F6',
-  },
-  scrollView: {
-    flex: 1,
   },
   contentContainer: {
     paddingHorizontal: 16,
@@ -304,12 +306,6 @@ const styles = StyleSheet.create({
     marginTop: 12,
     fontSize: 16,
     color: '#6B7280',
-  },
-  screenTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#1F2937',
-    marginBottom: 16,
   },
   partyCard: {
     backgroundColor: '#FFFFFF',
