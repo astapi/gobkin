@@ -94,6 +94,7 @@ export default function ExpeditionPlaybackScreen() {
   const processedEventIndexRef = useRef(0)
   const hasCompletedRef = useRef(false)
   const logIdRef = useRef(0)
+  const partyHpRef = useRef<number[]>([])
 
   const formatTime = useCallback((seconds: number): string => {
     const minutes = Math.floor(seconds / 60)
@@ -138,13 +139,12 @@ export default function ExpeditionPlaybackScreen() {
           goldGained: event.enemy.gold,
           members: partyMembers.map((memberId, idx) => {
             const goblin = partyGoblins[idx]
-            const allyLog = event.combat.detailedLog?.filter(e => e.isAlly && e.action !== 'turn_start')
-            const lastEntry = allyLog?.findLast(e => e.actorId === memberId)
+            const preHP = partyHpRef.current[idx] ?? (goblin ? ModStatCalculator.calculate(goblin).hp : 100)
             return {
               name: goblin?.name ?? `ID:${memberId}`,
-              currentHP: lastEntry?.actorHP ?? (event.combat.allyHPDelta[idx] !== undefined
-                ? (goblin ? ModStatCalculator.calculate(goblin).hp : 100) + event.combat.allyHPDelta[idx]
-                : 0),
+              currentHP: event.combat.allyHPDelta[idx] !== undefined
+                ? Math.max(0, preHP + event.combat.allyHPDelta[idx])
+                : 0,
               maxHP: goblin ? ModStatCalculator.calculate(goblin).hp : 100,
               level: goblin?.level ?? 1,
               xpEach: xpPerMember,
@@ -201,6 +201,7 @@ export default function ExpeditionPlaybackScreen() {
           event.combat.allyHPDelta.forEach((delta, idx) => {
             updated[idx] = Math.max(0, (updated[idx] ?? 0) + delta)
           })
+          partyHpRef.current = updated
           return updated
         })
       }
@@ -273,6 +274,7 @@ export default function ExpeditionPlaybackScreen() {
       return goblin ? ModStatCalculator.calculate(goblin).hp : 100
     })
     let tempHp = [...initialPartyHp]
+    partyHpRef.current = [...initialPartyHp]
     let tempFloor = 1
     const preloadedLogs: LogEntry[] = []
     let nextIndex = 0
@@ -297,6 +299,7 @@ export default function ExpeditionPlaybackScreen() {
           event.combat.allyHPDelta.forEach((delta, idx) => {
             tempHp[idx] = Math.max(0, (tempHp[idx] ?? 0) + delta)
           })
+          partyHpRef.current = [...tempHp]
         }
       }
       nextIndex += 1
