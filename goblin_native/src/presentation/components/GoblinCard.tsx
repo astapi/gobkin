@@ -34,15 +34,17 @@ export function GoblinCard({
         <Text style={[styles.name, isAssignedElsewhere && styles.nameDisabled]}>
           {goblin.name}
         </Text>
-        <Text style={[styles.race, isAssignedElsewhere && styles.raceDisabled]}>
-          {goblin.race}
-        </Text>
-        <Text style={[styles.level, isAssignedElsewhere && styles.levelDisabled]}>
-          Lv.{goblin.level}
-        </Text>
-        <View style={styles.factorIcons}>
-          {FactorIcon1 && <FactorIcon1 width={20} height={20} />}
-          {FactorIcon2 && <FactorIcon2 width={20} height={20} />}
+        <View style={styles.subRow}>
+          <Text style={[styles.race, isAssignedElsewhere && styles.raceDisabled]}>
+            {goblin.race}
+          </Text>
+          <Text style={[styles.level, isAssignedElsewhere && styles.levelDisabled]}>
+            Lv.{goblin.level}
+          </Text>
+          <View style={styles.factorIcons}>
+            {FactorIcon1 && <FactorIcon1 width={16} height={16} />}
+            {FactorIcon2 && <FactorIcon2 width={16} height={16} />}
+          </View>
         </View>
       </View>
       <View style={styles.statsContainer}>
@@ -83,24 +85,23 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    padding: 8,
-    borderWidth: 1,
-    borderColor: '#E5E7EB',
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: '#E5E7EB',
   },
   containerAssigned: {
     backgroundColor: '#EFF6FF',
-    borderColor: '#3B82F6',
   },
   containerDisabled: {
     backgroundColor: '#F9FAFB',
     opacity: 0.6,
   },
   avatar: {
-    width: 40,
-    height: 40,
-    borderRadius: 8,
-    marginRight: 10,
+    width: 32,
+    height: 32,
+    borderRadius: 6,
+    marginRight: 8,
   },
   info: {
     flex: 1,
@@ -114,10 +115,14 @@ const styles = StyleSheet.create({
   nameDisabled: {
     color: '#9CA3AF',
   },
+  subRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
   race: {
     fontSize: 11,
     color: '#6B7280',
-    marginBottom: 1,
   },
   raceDisabled: {
     color: '#9CA3AF',
@@ -126,24 +131,23 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontWeight: '600',
     color: '#374151',
-    marginBottom: 2,
   },
   levelDisabled: {
     color: '#9CA3AF',
   },
   factorIcons: {
     flexDirection: 'row',
-    gap: 4,
+    gap: 3,
   },
   statsContainer: {
     alignItems: 'flex-end',
     marginRight: 8,
   },
   statText: {
-    fontSize: 11,
+    fontSize: 10,
     fontWeight: '600',
     color: '#374151',
-    marginBottom: 2,
+    marginBottom: 1,
   },
   statTextDisabled: {
     color: '#9CA3AF',
