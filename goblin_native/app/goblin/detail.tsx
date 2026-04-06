@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, Alert } fr
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useLocalSearchParams, router, useNavigation } from 'expo-router'
 import { useGoblinStore } from '@/presentation/stores/useGoblinStore'
+import { useBaseStore } from '@/presentation/stores/useBaseStore'
 import type { Goblin } from '@/shared/types'
 import { getFactor } from '@/shared/data/factors'
 import { getGoblinImage } from '@/shared/utils/goblinImages'
@@ -29,17 +30,26 @@ function getStatLabel(stat: string): string {
 }
 
 export default function GoblinDetailScreen() {
-  const { goblinId } = useLocalSearchParams<{ goblinId: string }>()
+  const { goblinId, source } = useLocalSearchParams<{ goblinId: string, source?: string }>()
   const { getGoblinById, deleteGoblin } = useGoblinStore()
+  const pendingGoblins = useBaseStore((state) => state.pendingGoblins)
   const [goblin, setGoblin] = useState<Goblin | null>(null)
   const parentNav = useNavigation()
+  const isPendingGoblin = source === 'pending'
 
   useEffect(() => {
     if (!goblinId) return
-    void getGoblinById(parseInt(goblinId, 10))
+    const parsedGoblinId = parseInt(goblinId, 10)
+
+    if (isPendingGoblin) {
+      setGoblin(pendingGoblins.find((item) => item.id === parsedGoblinId) ?? null)
+      return
+    }
+
+    void getGoblinById(parsedGoblinId)
       .then(setGoblin)
       .catch(() => setGoblin(null))
-  }, [goblinId, getGoblinById])
+  }, [goblinId, getGoblinById, isPendingGoblin, pendingGoblins])
 
   useEffect(() => {
     if (goblin) {
@@ -203,13 +213,17 @@ export default function GoblinDetailScreen() {
           </View>
         )}
 
-        <TouchableOpacity style={styles.equipmentButton} onPress={handleOpenEquipment}>
-          <Text style={styles.equipmentButtonText}>装備変更</Text>
-        </TouchableOpacity>
+        {!isPendingGoblin && (
+          <>
+            <TouchableOpacity style={styles.equipmentButton} onPress={handleOpenEquipment}>
+              <Text style={styles.equipmentButtonText}>装備変更</Text>
+            </TouchableOpacity>
 
-        <TouchableOpacity style={styles.banishButton} onPress={handleBanish}>
-          <Text style={styles.banishButtonText}>このゴブリンを追放する</Text>
-        </TouchableOpacity>
+            <TouchableOpacity style={styles.banishButton} onPress={handleBanish}>
+              <Text style={styles.banishButtonText}>このゴブリンを追放する</Text>
+            </TouchableOpacity>
+          </>
+        )}
       </ScrollView>
     </SafeAreaView>
   )
