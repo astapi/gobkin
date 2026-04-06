@@ -19,6 +19,7 @@ interface GoblinRow {
   variant_factor_id: string | null
   individual_value: number | null
   mods_json: string | null
+  skills_json: string
   created_at: string
   updated_at: string
 }
@@ -51,8 +52,8 @@ export class SQLiteGoblinRepository implements IGoblinRepository {
       `INSERT OR REPLACE INTO goblins
        (id, name, race, level, experience, avatar, stats_json,
         effective_stats_json, factors_json, variant_factor_id,
-        individual_value, mods_json, updated_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))`,
+        individual_value, mods_json, skills_json, updated_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))`,
       [
         goblin.id,
         goblin.name,
@@ -66,6 +67,7 @@ export class SQLiteGoblinRepository implements IGoblinRepository {
         goblin.variantFactorId ?? null,
         goblin.individualValue ?? 1,
         goblin.mods ? JSON.stringify(goblin.mods) : null,
+        JSON.stringify(goblin.skills),
       ]
     )
   }
@@ -117,6 +119,7 @@ export class SQLiteGoblinRepository implements IGoblinRepository {
       mods: row.mods_json
         ? JSON.parse(row.mods_json)
         : undefined,
+      skills: JSON.parse(row.skills_json),
     }
   }
 }

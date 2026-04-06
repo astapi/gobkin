@@ -52,8 +52,8 @@ export type { SpellDef, SpellTargeting, LearnedSpell } from "./Spell"
 // Battle related types
 export type { AttackTargetDetail, BattleLogEntry, BattleLogMeta, CombatReplay } from "./Battle"
 
-// Race ability related types
-export type { RaceAbility } from "./RaceAbility"
+// Character skill related types
+export type { CharacterSkill } from "./CharacterSkill"
 
 // Expedition related types
 export type {

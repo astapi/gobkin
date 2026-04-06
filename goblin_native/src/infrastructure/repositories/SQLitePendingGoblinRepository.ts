@@ -19,6 +19,7 @@ interface PendingGoblinRow {
   variant_factor_id: string | null
   individual_value: number | null
   mods_json: string | null
+  skills_json: string
   created_at: string
 }
 
@@ -46,8 +47,8 @@ export class SQLitePendingGoblinRepository implements IPendingGoblinRepository {
       `INSERT OR REPLACE INTO pending_goblins
        (id, name, race, level, experience, avatar, stats_json,
         effective_stats_json, factors_json, variant_factor_id,
-        individual_value, mods_json)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        individual_value, mods_json, skills_json)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         goblin.id,
         goblin.name,
@@ -61,6 +62,7 @@ export class SQLitePendingGoblinRepository implements IPendingGoblinRepository {
         goblin.variantFactorId ?? null,
         goblin.individualValue ?? 1,
         goblin.mods ? JSON.stringify(goblin.mods) : null,
+        JSON.stringify(goblin.skills),
       ]
     )
   }
@@ -95,6 +97,7 @@ export class SQLitePendingGoblinRepository implements IPendingGoblinRepository {
       mods: row.mods_json
         ? JSON.parse(row.mods_json)
         : undefined,
+      skills: JSON.parse(row.skills_json),
     }
   }
 }

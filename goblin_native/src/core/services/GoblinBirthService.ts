@@ -4,6 +4,7 @@ import { ModStatCalculator } from './ModStatCalculator'
 import { FactorInheritanceService, type InheritanceResult } from './FactorInheritanceService'
 import { calculateIndividualValue } from './BaseRankSystem'
 import { getBloodlineCombatStats } from '../../shared/data/equipmentConfig'
+import { getDefaultSkillsForRace } from '../../shared/data/raceSkills'
 
 /** attackCount以外のランダム生成範囲（attackCountは血統固定値） */
 const STAT_RANGES: Record<Exclude<keyof GoblinStats, 'attackCount'>, { min: number; max: number }> = {
@@ -147,6 +148,7 @@ export class GoblinBirthService {
       effectiveStats: stats,  // 仮設定、後で計算
       individualValue: clampedIV,
       mods,  // 空配列もそのまま保存（Firestoreはundefinedを許容しない）
+      skills: getDefaultSkillsForRace(race),
       factors: inheritance?.inheritedFactors ?? [],
     }
 

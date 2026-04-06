@@ -46,6 +46,10 @@
 **亜種化時の追加効果:**
 - DEF +20
 
+**種族スキル:**
+- **[1.3倍]鎧装備**: 鎧カテゴリのアイテム装備時、その装備が持つ能力値補正・装備効果の数値が1.3倍になる。
+- **後列防護**: 自分より後列にいる味方が受ける通常攻撃ダメージを 2/3 に軽減する。
+
 **特徴:** HP特化の耐久型。亜種化するとさらに防御力も上がる。
 
 ---
@@ -65,6 +69,11 @@
 
 **亜種化時の追加効果:**
 - SPD +20
+
+**種族スキル:**
+- **[+2]攻撃回数アップ**: 攻撃回数 +2。
+- **[2.0倍]命中精度**: 装備由来の命中精度補正（`accuracy_flat` / `accuracy_percent`）が2.0倍になる。
+- **[+13]追加ダメージ**: 通常攻撃の各ヒットに固定で +13 ダメージを加算する。
 
 **特徴:** 全種族中唯一の攻撃回数3回。速度と攻撃力に優れるアタッカー型。
 
@@ -256,6 +265,8 @@
 |---------|------|
 | `src/shared/data/factors.ts` | 因子マスターデータ（全9種） |
 | `src/shared/data/equipmentConfig.ts` | 種族別装備スロット・攻撃回数設定 |
+| `src/shared/data/raceAbilities.ts` | 種族スキル定義 |
 | `src/core/services/GoblinBirthService.ts` | ゴブリン誕生ロジック |
 | `src/core/services/FactorInheritanceService.ts` | 因子引き継ぎ・亜種化判定 |
 | `src/core/services/ModStatCalculator.ts` | 因子ボーナス含む実効ステータス計算 |
+| `src/core/services/BattleSystem.ts` | 通常攻撃・後列防護・追加ダメージの戦闘処理 |

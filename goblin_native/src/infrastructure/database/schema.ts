@@ -18,6 +18,7 @@ export const SCHEMA = {
       variant_factor_id TEXT,
       individual_value INTEGER DEFAULT 1,
       mods_json TEXT,
+      skills_json TEXT NOT NULL DEFAULT '[]',
       created_at TEXT NOT NULL DEFAULT (datetime('now')),
       updated_at TEXT NOT NULL DEFAULT (datetime('now'))
     )
@@ -42,6 +43,7 @@ export const SCHEMA = {
       variant_factor_id TEXT,
       individual_value INTEGER DEFAULT 1,
       mods_json TEXT,
+      skills_json TEXT NOT NULL DEFAULT '[]',
       created_at TEXT NOT NULL DEFAULT (datetime('now'))
     )
   `,
@@ -149,8 +151,8 @@ export const SCHEMA = {
   `,
 
   goblinsInit: `
-    INSERT OR IGNORE INTO goblins (id, name, race, level, experience, avatar, stats_json)
+    INSERT OR IGNORE INTO goblins (id, name, race, level, experience, avatar, stats_json, skills_json)
     VALUES
-      (0, 'グラッシュ', 'ゴブリン', 1, 0, '/src/assets/goblin/goblin.png', '{"hp":68,"atk":13,"sp":10,"spd":11,"def":11,"attackCount":2,"accuracy":160,"evasion":15}')
+      (0, 'グラッシュ', 'ゴブリン', 1, 0, '/src/assets/goblin/goblin.png', '{"hp":68,"atk":13,"sp":10,"spd":11,"def":11,"attackCount":2,"accuracy":160,"evasion":15}', '[]')
   `,
 }

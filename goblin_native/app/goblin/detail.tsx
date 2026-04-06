@@ -10,7 +10,7 @@ import { getFactorImage } from '@/shared/utils/factorImages'
 import { ModStatCalculator } from '@/core/services/ModStatCalculator'
 import { getExpForNextLevel, getExpProgress } from '@/core/services/ExperienceSystem'
 import { getModTemplate } from '@/shared/data/modPoolLoader'
-import { describeRaceAbility, getRaceAbilities } from '@/shared/data/raceAbilities'
+import { describeCharacterSkill } from '@/shared/data/characterSkills'
 
 const STAT_LABELS: Record<string, string> = {
   hp_percent: 'HP', hp_flat: 'HP',
@@ -53,7 +53,7 @@ export default function GoblinDetailScreen() {
   )
   const expForNext = goblin ? getExpForNextLevel(goblin.level) : 0
   const expProgress = goblin ? getExpProgress(goblin.level, goblin.experience) : 0
-  const raceAbilities = useMemo(() => goblin ? getRaceAbilities(goblin.race) : [], [goblin])
+  const characterSkills = useMemo(() => goblin?.skills ?? [], [goblin])
 
   const handleBanish = useCallback(() => {
     if (!goblin) return
@@ -118,14 +118,14 @@ export default function GoblinDetailScreen() {
           </View>
         </View>
 
-        {raceAbilities.length > 0 && (
+        {characterSkills.length > 0 && (
           <View style={styles.detailSection}>
-            <Text style={styles.sectionTitle}>種族能力</Text>
+            <Text style={styles.sectionTitle}>スキル</Text>
             <View style={styles.abilityList}>
-              {raceAbilities.map((ability, idx) => (
-                <View key={`${ability.name}-${idx}`} style={styles.abilityItem}>
-                  <Text style={styles.abilityName}>{ability.name}</Text>
-                  <Text style={styles.abilityDesc}>{describeRaceAbility(ability)}</Text>
+              {characterSkills.map((skill, idx) => (
+                <View key={`${skill.id}-${idx}`} style={styles.abilityItem}>
+                  <Text style={styles.abilityName}>{skill.name}</Text>
+                  <Text style={styles.abilityDesc}>{describeCharacterSkill(skill)}</Text>
                 </View>
               ))}
             </View>
