@@ -102,12 +102,3 @@ export interface EquipmentInstance {
   titleId?: EquipmentTitleId   // 称号ID（未設定 = 称号なし）
   titleName?: string           // 称号の表示名（例: "伝説の"）
 }
-
-/**
- * 種族ごとのスロット設定
- */
-export interface RaceSlotConfig {
-  baseSlots: number      // Lv1時のスロット数
-  slotsPerLevel: number  // 何レベルごとに+1スロット
-  maxSlots: number       // 上限
-}
