@@ -21,6 +21,11 @@ const RETURN_POLICIES: { value: ReturnPolicy; label: string }[] = [
   { value: 'last_one', label: '最後の1人まで' },
 ]
 
+function formatDungeonLabel(dungeon: Dungeon): string {
+  if (dungeon.areaLevel === undefined) return dungeon.name
+  return `${dungeon.name} / エリアLv.${dungeon.areaLevel}`
+}
+
 interface MemberSlotProps {
   goblin?: Goblin
   isEmpty: boolean
@@ -297,7 +302,7 @@ export default function ExpeditionPreparationScreen() {
               >
                 {selectedDungeon ? (
                   <>
-                    <Text style={styles.settingValueText}>{selectedDungeon.name}</Text>
+                    <Text style={styles.settingValueText}>{formatDungeonLabel(selectedDungeon)}</Text>
                     <Text style={styles.settingValueDescription}>{selectedDungeon.description}</Text>
                   </>
                 ) : (
@@ -372,7 +377,7 @@ export default function ExpeditionPreparationScreen() {
                       styles.modalOptionTitle,
                       selectedDungeonId === dungeon.id && styles.modalOptionTitleSelected,
                     ]}>
-                      {dungeon.name}
+                      {formatDungeonLabel(dungeon)}
                     </Text>
                     <Text style={styles.modalOptionDescription}>{dungeon.description}</Text>
                   </TouchableOpacity>

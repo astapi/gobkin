@@ -14,7 +14,7 @@
     {
       "id": "forest_outskirts",
       "name": "周辺の森",
-      "areaLevel": 1,
+      "areaLevel": 4,
       "floors": 3,
       "exploration_time_sec_first": 60,
       "exploration_time_sec": 30,
@@ -25,7 +25,7 @@
     {
       "id": "goblin_village_1",
       "name": "ゴブリン集落・外縁",
-      "areaLevel": 2,
+      "areaLevel": 6,
       "floors": 2,
       "exploration_time_sec_first": 60,
       "exploration_time_sec": 30,
@@ -36,7 +36,7 @@
     {
       "id": "goblin_village_2",
       "name": "ゴブリン集落・内部",
-      "areaLevel": 2,
+      "areaLevel": 7,
       "floors": 2,
       "exploration_time_sec_first": 60,
       "exploration_time_sec": 35,
@@ -47,7 +47,7 @@
     {
       "id": "goblin_village_3",
       "name": "ゴブリン集落・中枢",
-      "areaLevel": 2,
+      "areaLevel": 8,
       "floors": 2,
       "exploration_time_sec_first": 1,
       "exploration_time_sec": 40,

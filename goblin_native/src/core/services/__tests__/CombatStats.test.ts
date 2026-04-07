@@ -302,6 +302,20 @@ describe('ModStatCalculator — 戦闘ステータス計算', () => {
 
     expect(goblin.skills.some((skill) => skill.physicalDamageReductionPercent === 6)).toBe(false)
   })
+
+  it('EquipmentServiceは爪装備に応じた攻撃回数スキルを付与・解除する', () => {
+    const goblin = createTestGoblin({ skills: [] })
+    const equipment = { id: 'eq1', templateId: 'claw_kaiser', slotIndex: -1, goblinId: null }
+
+    const equipResult = EquipmentService.equip(goblin, equipment, 0, [])
+
+    expect(equipResult.success).toBe(true)
+    expect(goblin.skills.some((skill) => skill.statBonuses?.attackCount === 8)).toBe(true)
+
+    EquipmentService.unequip(equipment, goblin)
+
+    expect(goblin.skills.some((skill) => skill.statBonuses?.attackCount === 8)).toBe(false)
+  })
 })
 
 // =========================================================================

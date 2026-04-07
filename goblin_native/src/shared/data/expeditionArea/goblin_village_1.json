@@ -1,7 +1,7 @@
 {
   "id": "goblin_village_1",
   "name": "ゴブリン集落・外縁",
-  "areaLevel": 2,
+  "areaLevel": 6,
   "floors": 2,
   "baseDurationSec": 30,
   "description": "ゴブリン集落の外縁部。雑兵ゴブリンやシーフが群れをなして徘徊している。",

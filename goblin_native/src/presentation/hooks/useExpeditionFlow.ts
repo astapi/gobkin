@@ -43,6 +43,11 @@ export interface ExpeditionHistoryDisplay {
   record: ExpeditionRecord
 }
 
+function formatDungeonLabel(dungeonName: string, areaLevel?: number): string {
+  if (areaLevel === undefined) return dungeonName
+  return `${dungeonName} / エリアLv.${areaLevel}`
+}
+
 export const useExpeditionFlow = ({
   parties,
   enableAutoCompletion = false,
@@ -301,6 +306,7 @@ export const useExpeditionFlow = ({
     const displays: Record<number, ExpeditionHistoryDisplay[]> = {}
     Object.entries(partyHistories).forEach(([partyId, history]) => {
       const items = history.map(record => {
+        const dungeon = areasData.find(area => area.id === record.dungeonId)
         const ongoing = isExpeditionOngoing(record, currentTime)
         const floorReached = record.replay?.summary.maxFloorReached ?? 0
         const remainingMinutes = ongoing && record.returnTime
@@ -312,7 +318,7 @@ export const useExpeditionFlow = ({
         return {
           id: record.id,
           title,
-          subtitle: record.dungeonName,
+          subtitle: formatDungeonLabel(record.dungeonName, dungeon?.areaLevel),
           ongoing,
           record,
         }
