@@ -2,6 +2,7 @@ import type { AttackTargetDetail, BattleLogEntry, CharacterSkill, Enemy, Goblin,
 import { SPELL_DEFS } from '../../shared/data/spells'
 import {
   getAdditionalDamageFromSkills,
+  getLearnedSpellsFromSkills,
   getPhysicalDamageReductionFromSkills,
   getRearProtectionMultiplierFromSkills,
 } from '../../shared/data/characterSkills'
@@ -162,6 +163,29 @@ export class BattleSystem {
   ) {
     this.combatantManager = combatantManager
     this.damageCalculator = damageCalculator
+  }
+
+  private mergeLearnedSpells(
+    explicitSpells: LearnedSpell[] | undefined,
+    skills: CharacterSkill[],
+  ): LearnedSpell[] | undefined {
+    const merged = new Map<string, LearnedSpell>()
+
+    for (const spell of explicitSpells ?? []) {
+      merged.set(spell.spellId, { ...spell })
+    }
+
+    for (const spell of getLearnedSpellsFromSkills(skills)) {
+      const existing = merged.get(spell.spellId)
+      if (!existing) {
+        merged.set(spell.spellId, { ...spell })
+        continue
+      }
+
+      existing.extraCharges = Math.max(existing.extraCharges ?? 0, spell.extraCharges ?? 0)
+    }
+
+    return merged.size > 0 ? [...merged.values()] : undefined
   }
 
   public executeBattle(
@@ -502,6 +526,7 @@ export class BattleSystem {
     const hp = initialHP ?? effectiveStats.hp
     const damageReduction = ModStatCalculator.getDamageReduction(goblin)
     const physicalDamageReduction = getPhysicalDamageReductionFromSkills(goblin.skills)
+    const learnedSpells = this.mergeLearnedSpells(goblin.spells, goblin.skills)
     return {
       combatant,
       currentHP: hp,
@@ -518,13 +543,15 @@ export class BattleSystem {
       row: originalIndex,  // 味方は1列1体（配列順 = 列番号）
       rowSlot: 0,
       level: goblin.level,
-      spellCharges: this.initSpellCharges(goblin.spells),
+      spellCharges: this.initSpellCharges(learnedSpells),
       skills: goblin.skills,
     }
   }
 
   private createEnemyUnit(enemy: Enemy, originalIndex: number, row: number, rowSlot: number): BattleUnit {
     const combatant = this.combatantManager.fromEnemy(enemy)
+    const skills = enemy.skills ?? []
+    const learnedSpells = this.mergeLearnedSpells(enemy.spells, skills)
     return {
       combatant,
       currentHP: enemy.hp,
@@ -537,12 +564,12 @@ export class BattleSystem {
       isAlly: false,
       originalIndex,
       damageReduction: 0,  // 敵は被ダメージ軽減なし
-      physicalDamageReduction: 0,
+      physicalDamageReduction: getPhysicalDamageReductionFromSkills(skills),
       row,
       rowSlot,
       level: enemy.level,
-      spellCharges: this.initSpellCharges(enemy.spells),
-      skills: [],
+      spellCharges: this.initSpellCharges(learnedSpells),
+      skills,
     }
   }
 

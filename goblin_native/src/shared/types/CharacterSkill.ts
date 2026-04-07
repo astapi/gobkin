@@ -10,4 +10,7 @@ export interface CharacterSkill {
   physicalDamageReductionPercent?: number
   additionalDamage?: number
   protectRearAllyNormalAttackMultiplier?: number
+  grantsSpellId?: string
+  spellChargeBonusForId?: string
+  extraSpellCharges?: number
 }

@@ -1,3 +1,4 @@
+import type { CharacterSkill } from './CharacterSkill'
 import type { FactorDropConfig } from './Factor'
 import type { LearnedSpell } from './Spell'
 
@@ -23,6 +24,7 @@ export interface Enemy {
   gold: number
   factorDrops?: FactorDropConfig[]      // この敵を倒すと得られる可能性のある因子
   equipmentDrops?: EquipmentDropConfig[] // この敵を倒すと得られる可能性のある装備
+  skills?: CharacterSkill[]              // パッシブ/呪文付与スキル
   spells?: LearnedSpell[]               // この敵が使える呪文リスト
 }
 

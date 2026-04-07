@@ -1,7 +1,7 @@
 {
   "id": "undead_ruins_1",
   "name": "忘れられた廃墟・入口",
-  "areaLevel": 2,
+  "areaLevel": 9,
   "floors": 2,
   "baseDurationSec": 30,
   "description": "廃墟の入口付近。スケルトンとゾンビが徘徊する薄暗い回廊。",

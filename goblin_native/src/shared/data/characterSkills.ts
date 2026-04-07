@@ -5,6 +5,7 @@ import type {
   EquipmentStat,
   EquipmentStatBonus,
   GoblinStats,
+  LearnedSpell,
 } from '../types'
 
 export function cloneCharacterSkill(skill: CharacterSkill): CharacterSkill {
@@ -94,6 +95,26 @@ export function getPhysicalDamageReductionFromSkills(skills: CharacterSkill[]): 
     (sum, skill) => sum + (skill.physicalDamageReductionPercent ?? 0),
     0,
   )
+}
+
+export function getLearnedSpellsFromSkills(skills: CharacterSkill[]): LearnedSpell[] {
+  const spellMap = new Map<string, LearnedSpell>()
+
+  for (const skill of getUniqueSkillsById(skills)) {
+    if (!skill.grantsSpellId) continue
+    if (!spellMap.has(skill.grantsSpellId)) {
+      spellMap.set(skill.grantsSpellId, { spellId: skill.grantsSpellId })
+    }
+  }
+
+  for (const skill of getUniqueSkillsById(skills)) {
+    if (!skill.spellChargeBonusForId || !skill.extraSpellCharges) continue
+    const spell = spellMap.get(skill.spellChargeBonusForId)
+    if (!spell) continue
+    spell.extraCharges = (spell.extraCharges ?? 0) + skill.extraSpellCharges
+  }
+
+  return [...spellMap.values()]
 }
 
 function getEquipmentValueMultiplier(

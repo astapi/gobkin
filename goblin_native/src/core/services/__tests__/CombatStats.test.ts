@@ -1009,6 +1009,38 @@ describe('selectTarget — 隊列ターゲット選択', () => {
 })
 
 // =========================================================================
+// 呪文チャージ
+// =========================================================================
+describe('spell charges', () => {
+  it('ファイヤーボール2回は1戦闘で2回使える', () => {
+    const battleSystem = new BattleSystem()
+    const ally = createTestGoblin({
+      level: 20,
+      stats: { hp: 400, atk: 12, sp: 10, spd: 1, def: 10, attackCount: 1, accuracy: 20, evasion: 15 },
+    })
+    const enemy = createTestEnemy({
+      id: 'B_LICH_TEST',
+      name: '死霊術師の残骸テスト',
+      level: 11,
+      hp: 999,
+      atk: 1,
+      def: 1,
+      spd: 50,
+      attackCount: 0,
+      skills: [
+        { id: 'fireball', name: 'ファイヤーボール', grantsSpellId: 'fireball' },
+        { id: 'fireball_twice', name: 'ファイヤーボール2回', spellChargeBonusForId: 'fireball', extraSpellCharges: 1 },
+      ],
+    })
+
+    const result = battleSystem.executeBattle([ally], [ally.stats.hp], [[enemy]], createSeededRng(42), 3)
+    const spellLogs = result.detailedLog.filter(log => log.actorId === 'B_LICH_TEST' && log.action === 'ファイヤーボール')
+
+    expect(spellLogs).toHaveLength(2)
+  })
+})
+
+// =========================================================================
 // 隊列システム — BattleSystem統合テスト
 // =========================================================================
 describe('BattleSystem — 隊列統合テスト', () => {
