@@ -1,12 +1,13 @@
-import { memo, useMemo, useCallback } from 'react'
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, ActivityIndicator, Image, useWindowDimensions } from 'react-native'
+import { memo, useMemo, useCallback, useState } from 'react'
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, ActivityIndicator, Image, useWindowDimensions, Alert } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { router } from 'expo-router'
+import { router, Stack } from 'expo-router'
 import { usePartyStore } from '@/presentation/stores/usePartyStore'
 import { useGoblinStore } from '@/presentation/stores/useGoblinStore'
 import { useBaseStore, selectRank } from '@/presentation/stores/useBaseStore'
 import { useExpeditionFlow, type ExpeditionHistoryDisplay } from '@/presentation/hooks/useExpeditionFlow'
 import { useCurrentTime } from '@/presentation/hooks/useCurrentTime'
+import { useDungeonStore } from '@/presentation/stores/useDungeonStore'
 import { getGoblinImage } from '@/shared/utils/goblinImages'
 import { getEffectiveStats } from '@/shared/utils/goblinStats'
 import type { Party, Goblin, ExpeditionRecord } from '@/shared/types'
@@ -133,13 +134,17 @@ export default function FormationScreen() {
   const createParty = usePartyStore((state) => state.createParty)
   const goblins = useGoblinStore((state) => state.goblins)
   const goblinsLoading = useGoblinStore((state) => state.isLoading)
+  const dungeons = useDungeonStore((state) => state.dungeons)
+  const dungeonsLoading = useDungeonStore((state) => state.isLoading)
   const baseLoading = useBaseStore((state) => state.isLoading)
   const rank = useBaseStore(selectRank)
   const currentTime = useCurrentTime({ enabled: true })
   const {
     partyHistories,
     partyHistoryDisplays,
+    startExpedition,
   } = useExpeditionFlow({ parties, enableAutoCompletion: true, currentTime })
+  const [isBulkLaunching, setIsBulkLaunching] = useState(false)
   const { slotSize, avatarSize } = useMemo(() => {
     const slotGap = 8
     const maxSlotWidth = 50
@@ -224,7 +229,78 @@ export default function FormationScreen() {
     })
   }, [])
 
-  if (partiesLoading || goblinsLoading || baseLoading) {
+  const handleBulkLaunch = useCallback(() => {
+    const doBulkLaunch = async () => {
+      setIsBulkLaunching(true)
+
+      let startedCount = 0
+      const skippedReasons: string[] = []
+
+      try {
+        for (const party of parties) {
+          if ((party.status ?? 'idle') === 'expedition') {
+            skippedReasons.push(`${party.name}: 遠征中です`)
+            continue
+          }
+
+          if (party.memberIds.length === 0) {
+            skippedReasons.push(`${party.name}: メンバーがいません`)
+            continue
+          }
+
+          if (!party.dungeonId) {
+            skippedReasons.push(`${party.name}: 遠征先が未設定です`)
+            continue
+          }
+
+          const dungeon = dungeons.find((item) => item.id === party.dungeonId)
+          if (!dungeon || !dungeon.unlocked) {
+            skippedReasons.push(`${party.name}: 遠征先に出撃できません`)
+            continue
+          }
+
+          try {
+            await startExpedition({
+              party,
+              dungeon,
+              returnPolicy: party.returnPolicy ?? 'never',
+            })
+            startedCount += 1
+          } catch (error) {
+            console.error('[Formation] Failed to start expedition in bulk launch', error)
+            skippedReasons.push(`${party.name}: 出撃に失敗しました`)
+          }
+        }
+      } finally {
+        setIsBulkLaunching(false)
+      }
+
+      if (startedCount === 0) {
+        Alert.alert('一括出撃できません', skippedReasons.join('\n') || '出撃可能なPTがありません')
+        return
+      }
+
+      const message = skippedReasons.length > 0
+        ? `${startedCount}PTを出撃させました。\n\n未出撃:\n${skippedReasons.join('\n')}`
+        : `${startedCount}PTを出撃させました。`
+
+      Alert.alert('一括出撃', message)
+    }
+
+    void doBulkLaunch()
+  }, [dungeons, parties, startExpedition])
+
+  const canBulkLaunch = useMemo(() => {
+    return parties.some((party) => {
+      if ((party.status ?? 'idle') === 'expedition') return false
+      if (party.memberIds.length === 0) return false
+      if (!party.dungeonId) return false
+      const dungeon = dungeons.find((item) => item.id === party.dungeonId)
+      return Boolean(dungeon?.unlocked)
+    })
+  }, [dungeons, parties])
+
+  if (partiesLoading || goblinsLoading || dungeonsLoading || baseLoading) {
     return (
       <SafeAreaView style={styles.loadingContainer} edges={['left', 'right', 'bottom']}>
         <ActivityIndicator size="large" color="#3B82F6" />
@@ -269,6 +345,21 @@ export default function FormationScreen() {
 
   return (
     <SafeAreaView style={styles.container} edges={['left', 'right', 'bottom']}>
+      <Stack.Screen
+        options={{
+          title: '',
+          headerRight: () => (
+            <TouchableOpacity onPress={handleBulkLaunch} disabled={!canBulkLaunch || isBulkLaunching}>
+              <Text style={[
+                styles.headerAction,
+                (!canBulkLaunch || isBulkLaunching) && styles.headerActionDisabled,
+              ]}>
+                {isBulkLaunching ? '出撃中...' : '一括出撃'}
+              </Text>
+            </TouchableOpacity>
+          ),
+        }}
+      />
       <FlatList
         data={displayParties}
         keyExtractor={(item, index) => item?.id.toString() ?? `empty-${index}`}
@@ -306,6 +397,14 @@ const styles = StyleSheet.create({
     marginTop: 12,
     fontSize: 16,
     color: '#6B7280',
+  },
+  headerAction: {
+    fontSize: 15,
+    fontWeight: '700',
+    color: '#2563EB',
+  },
+  headerActionDisabled: {
+    color: '#9CA3AF',
   },
   partyCard: {
     backgroundColor: '#FFFFFF',
