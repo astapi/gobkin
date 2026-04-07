@@ -21,7 +21,7 @@ import { ModStatCalculator } from './ModStatCalculator'
 import { EquipmentTitleService } from './EquipmentTitleService'
 
 /** 全エリア共通の宝箱ドロップ確率（戦闘勝利ごと） */
-const DROP_CHANCE = 0.25
+const DROP_CHANCE = 0.4
 
 export class ExpeditionEngine {
   private rng: () => number

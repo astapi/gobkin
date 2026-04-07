@@ -69,7 +69,7 @@ describe('rollTreasureDrops', () => {
   })
 
   describe('ドロップ確率の基本動作', () => {
-    it('一律25%のドロップ確率で装備がドロップする', () => {
+    it('一律40%のドロップ確率で装備がドロップする', () => {
       // areaLevel=1 にはひのきの棒(dropLevelMin=1,dropLevelMax=2)がある
       const pool = getEquipmentByDungeonLevel(1)
       if (pool.length === 0) return // プールが空なら skip
@@ -83,10 +83,10 @@ describe('rollTreasureDrops', () => {
         )
         if (result.length > 0) dropCount++
       }
-      // 25%前後であることを確認（15%〜35%の範囲）
+      // 40%前後であることを確認（30%〜50%の範囲）
       const rate = dropCount / iterations
-      expect(rate).toBeGreaterThan(0.15)
-      expect(rate).toBeLessThan(0.35)
+      expect(rate).toBeGreaterThan(0.3)
+      expect(rate).toBeLessThan(0.5)
     })
   })
 
