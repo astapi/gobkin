@@ -36,10 +36,12 @@ export default function GoblinListScreen() {
   const deleteGoblin = useGoblinStore((state) => state.deleteGoblin)
   const pendingGoblins = useBaseStore((state) => state.pendingGoblins)
   const removePendingGoblin = useBaseStore((state) => state.removePendingGoblin)
+  const clearPendingGoblins = useBaseStore((state) => state.clearPendingGoblins)
   const maxGoblins = useBaseStore(selectMaxGoblins)
   const parties = usePartyStore((state) => state.parties)
   const swipeableRefs = useRef<Record<number, Swipeable | null>>({})
   const [openSwipeableId, setOpenSwipeableId] = useState<number | null>(null)
+  const [isBulkDismissingPending, setIsBulkDismissingPending] = useState(false)
 
   const hasCapacity = goblins.length < maxGoblins
   const [sortKey, setSortKey] = useState<'level' | 'atk' | 'hp'>('level')
@@ -169,6 +171,32 @@ export default function GoblinListScreen() {
     )
   }, [closeOpenSwipeable, removePendingGoblin])
 
+  const handleDismissAllPending = useCallback(() => {
+    if (pendingGoblins.length === 0 || isBulkDismissingPending) return
+    closeOpenSwipeable()
+    Alert.alert(
+      '一括解雇確認',
+      `産まれたゴブリン${pendingGoblins.length}体をまとめて解雇しますか？`,
+      [
+        { text: 'キャンセル', style: 'cancel' },
+        {
+          text: 'まとめて解雇する',
+          style: 'destructive',
+          onPress: () => {
+            setIsBulkDismissingPending(true)
+            void clearPendingGoblins()
+              .catch(() => {
+                Alert.alert('解雇エラー', '一括解雇に失敗しました。')
+              })
+              .finally(() => {
+                setIsBulkDismissingPending(false)
+              })
+          },
+        },
+      ],
+    )
+  }, [clearPendingGoblins, closeOpenSwipeable, isBulkDismissingPending, pendingGoblins.length])
+
   const renderGoblinItem = useCallback(({ item: goblin }: { item: Goblin }) => (
     <View style={styles.cardWrapper}>
       <Swipeable
@@ -200,10 +228,21 @@ export default function GoblinListScreen() {
     return (
       <View style={styles.pendingSection}>
         <View style={styles.pendingSectionHeader}>
-          <Text style={styles.pendingSectionTitle}>産まれたゴブリン</Text>
-          <View style={styles.pendingBadge}>
-            <Text style={styles.pendingBadgeText}>{pendingGoblins.length}体</Text>
+          <View style={styles.pendingSectionHeaderLeft}>
+            <Text style={styles.pendingSectionTitle}>産まれたゴブリン</Text>
+            <View style={styles.pendingBadge}>
+              <Text style={styles.pendingBadgeText}>{pendingGoblins.length}体</Text>
+            </View>
           </View>
+          <TouchableOpacity
+            style={[styles.bulkDismissButton, isBulkDismissingPending && styles.bulkDismissButtonDisabled]}
+            onPress={handleDismissAllPending}
+            disabled={isBulkDismissingPending}
+          >
+            <Text style={styles.bulkDismissButtonText}>
+              {isBulkDismissingPending ? '処理中...' : 'まとめて解雇'}
+            </Text>
+          </TouchableOpacity>
         </View>
         <Text style={styles.pendingSectionDesc}>
           拠点がいっぱいのため待機中です。
@@ -265,7 +304,7 @@ export default function GoblinListScreen() {
         <View style={styles.footerSpacer} />
       </View>
     )
-  }, [handleAddPending, handleDismissPending, handlePendingGoblinPress, hasCapacity, pendingGoblins])
+  }, [handleAddPending, handleDismissAllPending, handleDismissPending, handlePendingGoblinPress, hasCapacity, isBulkDismissingPending, pendingGoblins])
 
 
   if (isLoading) {
@@ -277,7 +316,7 @@ export default function GoblinListScreen() {
     )
   }
 
-  if (goblins.length === 0) {
+  if (goblins.length === 0 && pendingGoblins.length === 0) {
     return (
       <SafeAreaView style={styles.emptyContainer} edges={['top', 'left', 'right', 'bottom']}>
         <Text style={styles.emptyIcon}>G</Text>
@@ -437,9 +476,14 @@ const styles = StyleSheet.create({
   pendingSectionHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
+    justifyContent: 'space-between',
     marginBottom: 4,
     paddingHorizontal: 12,
+  },
+  pendingSectionHeaderLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
   },
   pendingSectionTitle: {
     fontSize: 16,
@@ -462,6 +506,20 @@ const styles = StyleSheet.create({
     color: '#9CA3AF',
     marginBottom: 8,
     paddingHorizontal: 12,
+  },
+  bulkDismissButton: {
+    backgroundColor: '#991B1B',
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderRadius: 4,
+  },
+  bulkDismissButtonDisabled: {
+    backgroundColor: '#9CA3AF',
+  },
+  bulkDismissButtonText: {
+    fontSize: 11,
+    fontWeight: '600',
+    color: '#FFFFFF',
   },
   pendingCard: {
     paddingVertical: 8,
