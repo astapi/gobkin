@@ -27,6 +27,7 @@ interface GoblinCardProps {
   onPress?: () => void
   isAssigned?: boolean
   isAssignedElsewhere?: boolean
+  assignedPartyName?: string
   disabled?: boolean
 }
 
@@ -35,6 +36,7 @@ export const GoblinCard = memo(function GoblinCard({
   onPress,
   isAssigned = false,
   isAssignedElsewhere = false,
+  assignedPartyName,
   disabled = false
 }: GoblinCardProps) {
   const stats = getEffectiveStats(goblin)
@@ -84,6 +86,11 @@ export const GoblinCard = memo(function GoblinCard({
         )}
       </View>
       <View style={styles.statsContainer}>
+        {assignedPartyName && (
+          <Text style={styles.partyAssignment}>
+            {assignedPartyName}
+          </Text>
+        )}
         <Text style={[styles.statText, isAssignedElsewhere && styles.statTextDisabled]}>
           HP: {stats.hp}
         </Text>
@@ -162,6 +169,12 @@ const styles = StyleSheet.create({
   },
   raceDisabled: {
     color: '#9CA3AF',
+  },
+  partyAssignment: {
+    fontSize: 10,
+    fontWeight: '600',
+    color: '#2563EB',
+    marginBottom: 1,
   },
   level: {
     fontSize: 11,

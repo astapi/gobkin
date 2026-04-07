@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { useLocalSearchParams, router, useNavigation } from 'expo-router'
 import { useGoblinStore } from '@/presentation/stores/useGoblinStore'
 import { useBaseStore } from '@/presentation/stores/useBaseStore'
+import { usePartyStore } from '@/presentation/stores/usePartyStore'
 import type { Goblin } from '@/shared/types'
 import { getFactor } from '@/shared/data/factors'
 import { getGoblinImage } from '@/shared/utils/goblinImages'
@@ -34,6 +35,7 @@ export default function GoblinDetailScreen() {
   const getGoblinById = useGoblinStore((state) => state.getGoblinById)
   const deleteGoblin = useGoblinStore((state) => state.deleteGoblin)
   const pendingGoblins = useBaseStore((state) => state.pendingGoblins)
+  const parties = usePartyStore((state) => state.parties)
   const [goblin, setGoblin] = useState<Goblin | null>(null)
   const parentNav = useNavigation()
   const isPendingGoblin = source === 'pending'
@@ -65,25 +67,38 @@ export default function GoblinDetailScreen() {
   const expForNext = goblin ? getExpForNextLevel(goblin.level) : 0
   const expProgress = goblin ? getExpProgress(goblin.level, goblin.experience) : 0
   const characterSkills = useMemo(() => getUniqueSkillsById(goblin?.skills ?? []), [goblin])
+  const assignedParty = useMemo(() => (
+    goblin ? parties.find((party) => party.memberIds.includes(goblin.id)) ?? null : null
+  ), [goblin, parties])
 
   const handleBanish = useCallback(() => {
     if (!goblin) return
+    if (assignedParty) {
+      Alert.alert('追放できません', `${goblin.name}は${assignedParty.name}に編成中です。`)
+      return
+    }
     Alert.alert(
       '追放確認',
-      `${goblin.name}を追放しますか？`,
+      `${goblin.name}を追放しますか？\n追放時に装備は自動的に解除されます。`,
       [
         { text: 'キャンセル', style: 'cancel' },
         {
           text: '追放する',
           style: 'destructive',
           onPress: () => {
-            deleteGoblin(goblin.id)
-            router.back()
+            void deleteGoblin(goblin.id)
+              .then(() => {
+                router.back()
+              })
+              .catch((error: unknown) => {
+                const message = error instanceof Error ? error.message : `${goblin.name}の追放に失敗しました。`
+                Alert.alert('削除エラー', message)
+              })
           },
         },
       ],
     )
-  }, [goblin, deleteGoblin])
+  }, [assignedParty, goblin, deleteGoblin])
 
   const handleOpenEquipment = useCallback(() => {
     if (!goblin) return
