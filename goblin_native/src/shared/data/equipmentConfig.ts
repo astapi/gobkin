@@ -36,14 +36,24 @@ export function getBloodlineCombatStats(bloodline: string): BloodlineCombatStats
   return BLOODLINE_COMBAT_STATS[bloodline] ?? DEFAULT_COMBAT_STATS
 }
 
+function normalizeEquipmentLevel(level: unknown): number {
+  if (typeof level !== 'number' || !Number.isFinite(level)) {
+    return 1
+  }
+
+  return Math.max(1, Math.floor(level))
+}
+
 /**
  * ゴブリンのレベルからスロット数を計算
  */
+export function calculateSlotCount(level: number): number
 export function calculateSlotCount(level: number): number {
+  const normalizedLevel = normalizeEquipmentLevel(level)
   let unlockedSlots = 0
 
   for (const unlockLevel of EQUIPMENT_SLOT_LEVELS) {
-    if (level < unlockLevel) break
+    if (normalizedLevel < unlockLevel) break
     unlockedSlots++
   }
 
