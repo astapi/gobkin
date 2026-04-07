@@ -1,7 +1,11 @@
 import type { CharacterSkill } from '../../types'
 import {
   describeCharacterSkill,
+  getAdditionalDamageFromSkills,
   getPhysicalDamageReductionFromSkills,
+  getRearProtectionMultiplierFromSkills,
+  getSkillStatBonuses,
+  getUniqueSkillsById,
 } from '../characterSkills'
 
 describe('characterSkills - 物理ダメージ軽減', () => {
@@ -32,6 +36,43 @@ describe('characterSkills - 物理ダメージ軽減', () => {
     expect(getPhysicalDamageReductionFromSkills(skills)).toBe(1)
   })
 
+  it('同じidの攻撃回数スキルは重複計算しない', () => {
+    const skills: CharacterSkill[] = [
+      { id: 'claw_shared', name: '[+1]攻撃回数', statBonuses: { attackCount: 1 } },
+      { id: 'claw_shared', name: '[+1]攻撃回数', statBonuses: { attackCount: 1 } },
+    ]
+
+    expect(getSkillStatBonuses(skills).attackCount).toBe(1)
+  })
+
+  it('同じidの追加ダメージスキルは重複計算しない', () => {
+    const skills: CharacterSkill[] = [
+      { id: 'damage_shared', name: '[+13]追加ダメージ', additionalDamage: 13 },
+      { id: 'damage_shared', name: '[+13]追加ダメージ', additionalDamage: 13 },
+    ]
+
+    expect(getAdditionalDamageFromSkills(skills)).toBe(13)
+  })
+
+  it('同じidの後列保護スキルは重複計算しない', () => {
+    const skills: CharacterSkill[] = [
+      { id: 'rear_shared', name: '後列保護', protectRearAllyNormalAttackMultiplier: 0.8 },
+      { id: 'rear_shared', name: '後列保護', protectRearAllyNormalAttackMultiplier: 0.8 },
+    ]
+
+    expect(getRearProtectionMultiplierFromSkills(skills)).toBe(0.8)
+  })
+
+  it('スキル一覧取得時も同じidは1件にまとまる', () => {
+    const skills: CharacterSkill[] = [
+      { id: 'shared', name: 'A' },
+      { id: 'shared', name: 'A' },
+      { id: 'other', name: 'B' },
+    ]
+
+    expect(getUniqueSkillsById(skills)).toHaveLength(2)
+  })
+
   it('物理ダメージ軽減スキルの説明文を表記ルールどおり返す', () => {
     const skill: CharacterSkill = {
       id: 'physical_10',
@@ -49,6 +90,6 @@ describe('characterSkills - 物理ダメージ軽減', () => {
       statBonuses: { attackCount: 11 },
     }
 
-    expect(describeCharacterSkill(skill)).toBe('攻撃回数 +11')
+    expect(describeCharacterSkill(skill)).toBe('[+11]攻撃回数')
   })
 })
