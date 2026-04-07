@@ -9,7 +9,7 @@ export type EquipmentCategory = 'weapon' | 'armor' | 'accessory'
 /**
  * 武器のサブカテゴリ
  */
-export type WeaponSubCategory = 'sword' | 'axe' | 'spear' | 'bow' | 'staff'
+export type WeaponSubCategory = 'sword' | 'axe' | 'spear' | 'bow' | 'staff' | 'claw'
 
 /**
  * 武器の射程

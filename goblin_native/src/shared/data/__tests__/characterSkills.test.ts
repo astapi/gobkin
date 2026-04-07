@@ -41,4 +41,14 @@ describe('characterSkills - 物理ダメージ軽減', () => {
 
     expect(describeCharacterSkill(skill)).toBe('[-10%] 物理ダメージ軽減(%)')
   })
+
+  it('攻撃回数スキルの説明文を表記ルールどおり返す', () => {
+    const skill: CharacterSkill = {
+      id: 'attack_count_11',
+      name: '[+11]攻撃回数',
+      statBonuses: { attackCount: 11 },
+    }
+
+    expect(describeCharacterSkill(skill)).toBe('攻撃回数 +11')
+  })
 })

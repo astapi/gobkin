@@ -1,5 +1,5 @@
 {
-  "version": "1.4.0",
+  "version": "1.5.0",
   "templates": [
     {
       "_comment": "===== 武器:剣 (melee) ====="
@@ -335,6 +335,346 @@
       "dropLevelMin": 120,
       "dropLevelMax": 150,
       "description": "最硬の鉱石アダマンタイトで造られた剣。振るえる者は限られる"
+    },
+    {
+      "_comment": "===== 武器:爪 (melee) ====="
+    },
+    {
+      "id": "claw_sharp",
+      "name": "トゲ",
+      "category": "weapon",
+      "subCategory": "claw",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 1
+        }
+      ],
+      "grantedSkills": [
+        {
+          "id": "claw_sharp_attack_count_1",
+          "name": "[+1]攻撃回数",
+          "statBonuses": {
+            "attackCount": 1
+          }
+        }
+      ],
+      "weaponStats": {
+        "accuracy": 16,
+        "attackCountModifier": 0
+      },
+      "range": "melee",
+      "price": 5,
+      "unlockRank": 1,
+      "dropLevelMin": 4,
+      "dropLevelMax": 10,
+      "description": "トゲリスのトゲをそのまま握って使うだけの原始的な武器。まだ爪ですらない"
+    },
+    {
+      "id": "claw_beast",
+      "name": "ウルフの爪",
+      "category": "weapon",
+      "subCategory": "claw",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 3
+        }
+      ],
+      "grantedSkills": [
+        {
+          "id": "claw_beast_attack_count_2",
+          "name": "[+2]攻撃回数",
+          "statBonuses": {
+            "attackCount": 2
+          }
+        }
+      ],
+      "weaponStats": {
+        "accuracy": 24,
+        "attackCountModifier": 0
+      },
+      "range": "melee",
+      "price": 15,
+      "unlockRank": 1,
+      "dropLevelMin": 4,
+      "dropLevelMax": 10,
+      "description": "ウルフから剥ぎ取った爪をそのまま使う。荒削りだが獣らしい手数が出る"
+    },
+    {
+      "id": "claw_copper",
+      "name": "どうのツメ",
+      "category": "weapon",
+      "subCategory": "claw",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 5
+        }
+      ],
+      "grantedSkills": [
+        {
+          "id": "claw_copper_attack_count_3",
+          "name": "[+3]攻撃回数",
+          "statBonuses": {
+            "attackCount": 3
+          }
+        }
+      ],
+      "weaponStats": {
+        "accuracy": 32,
+        "attackCountModifier": 0
+      },
+      "range": "melee",
+      "price": 30,
+      "unlockRank": 1,
+      "dropLevelMin": 8,
+      "dropLevelMax": 15,
+      "description": "銅板を曲げて爪状にした簡易武器。素早い連撃向き"
+    },
+    {
+      "id": "claw_iron",
+      "name": "てつのツメ",
+      "category": "weapon",
+      "subCategory": "claw",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 7
+        }
+      ],
+      "grantedSkills": [
+        {
+          "id": "claw_iron_attack_count_4",
+          "name": "[+4]攻撃回数",
+          "statBonuses": {
+            "attackCount": 4
+          }
+        }
+      ],
+      "weaponStats": {
+        "accuracy": 40,
+        "attackCountModifier": 0
+      },
+      "range": "melee",
+      "price": 60,
+      "unlockRank": 1,
+      "dropLevelMin": 8,
+      "dropLevelMax": 15,
+      "description": "鉄で補強した爪。斬り刻むような攻撃に向く"
+    },
+    {
+      "id": "claw_steel",
+      "name": "はがねのツメ",
+      "category": "weapon",
+      "subCategory": "claw",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 10
+        }
+      ],
+      "grantedSkills": [
+        {
+          "id": "claw_steel_attack_count_5",
+          "name": "[+5]攻撃回数",
+          "statBonuses": {
+            "attackCount": 5
+          }
+        }
+      ],
+      "weaponStats": {
+        "accuracy": 56,
+        "attackCountModifier": 0
+      },
+      "range": "melee",
+      "price": 100,
+      "unlockRank": 1,
+      "dropLevelMin": 12,
+      "dropLevelMax": 25,
+      "description": "鋼の刃先を備えた爪。軽快さを保ったまま切れ味を増す"
+    },
+    {
+      "id": "claw_mithril",
+      "name": "ミスリルクロー",
+      "category": "weapon",
+      "subCategory": "claw",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 14
+        }
+      ],
+      "grantedSkills": [
+        {
+          "id": "claw_mithril_attack_count_6",
+          "name": "[+6]攻撃回数",
+          "statBonuses": {
+            "attackCount": 6
+          }
+        }
+      ],
+      "weaponStats": {
+        "accuracy": 80,
+        "attackCountModifier": 0
+      },
+      "range": "melee",
+      "price": 500,
+      "dropLevelMin": 20,
+      "dropLevelMax": 40,
+      "description": "ミスリルで鍛えた軽量の爪。鋭さと扱いやすさを両立する"
+    },
+    {
+      "id": "claw_royal",
+      "name": "ロイヤルクロー",
+      "category": "weapon",
+      "subCategory": "claw",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 18
+        }
+      ],
+      "grantedSkills": [
+        {
+          "id": "claw_royal_attack_count_7",
+          "name": "[+7]攻撃回数",
+          "statBonuses": {
+            "attackCount": 7
+          }
+        }
+      ],
+      "weaponStats": {
+        "accuracy": 104,
+        "attackCountModifier": 0
+      },
+      "range": "melee",
+      "price": 2500,
+      "dropLevelMin": 35,
+      "dropLevelMax": 60,
+      "description": "王侯の近衛が使う高級爪。狙った急所を外さない"
+    },
+    {
+      "id": "claw_kaiser",
+      "name": "カイザークロー",
+      "category": "weapon",
+      "subCategory": "claw",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 26
+        }
+      ],
+      "grantedSkills": [
+        {
+          "id": "claw_kaiser_attack_count_8",
+          "name": "[+8]攻撃回数",
+          "statBonuses": {
+            "attackCount": 8
+          }
+        }
+      ],
+      "weaponStats": {
+        "accuracy": 152,
+        "attackCountModifier": 0
+      },
+      "range": "melee",
+      "price": 12500,
+      "unlockRank": 3,
+      "dropLevelMin": 50,
+      "dropLevelMax": 80,
+      "description": "皇帝の闘技兵が使う爪。苛烈な連撃を叩き込む"
+    },
+    {
+      "id": "claw_ancient",
+      "name": "エンシェントクロー",
+      "category": "weapon",
+      "subCategory": "claw",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 34
+        }
+      ],
+      "grantedSkills": [
+        {
+          "id": "claw_ancient_attack_count_9",
+          "name": "[+9]攻撃回数",
+          "statBonuses": {
+            "attackCount": 9
+          }
+        }
+      ],
+      "weaponStats": {
+        "accuracy": 208,
+        "attackCountModifier": 0
+      },
+      "range": "melee",
+      "price": 60000,
+      "unlockRank": 5,
+      "dropLevelMin": 70,
+      "dropLevelMax": 105,
+      "description": "古代の加工技術で生まれた爪。吸い付くような精度を持つ"
+    },
+    {
+      "id": "claw_dragon",
+      "name": "ドラゴンクロー",
+      "category": "weapon",
+      "subCategory": "claw",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 48
+        }
+      ],
+      "grantedSkills": [
+        {
+          "id": "claw_dragon_attack_count_10",
+          "name": "[+10]攻撃回数",
+          "statBonuses": {
+            "attackCount": 10
+          }
+        }
+      ],
+      "weaponStats": {
+        "accuracy": 304,
+        "attackCountModifier": 0
+      },
+      "range": "melee",
+      "price": 240000,
+      "dropLevelMin": 95,
+      "dropLevelMax": 135,
+      "description": "竜の鉤爪を加工した凶器。嵐のような手数で切り裂く"
+    },
+    {
+      "id": "claw_adamant",
+      "name": "アダマントクロー",
+      "category": "weapon",
+      "subCategory": "claw",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 64
+        }
+      ],
+      "grantedSkills": [
+        {
+          "id": "claw_adamant_attack_count_11",
+          "name": "[+11]攻撃回数",
+          "statBonuses": {
+            "attackCount": 11
+          }
+        }
+      ],
+      "weaponStats": {
+        "accuracy": 400,
+        "attackCountModifier": 0
+      },
+      "range": "melee",
+      "price": 720000,
+      "dropLevelMin": 120,
+      "dropLevelMax": 150,
+      "description": "アダマンタイトで造られた究極の爪。連撃のすべてが致命傷になる"
     },
     {
       "_comment": "===== 武器:弓 (ranged) ====="
