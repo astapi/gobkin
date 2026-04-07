@@ -19,4 +19,8 @@ describe('equipmentConfig', () => {
     expect(calculateSlotCount(200)).toBe(23)
     expect(calculateSlotCount(250)).toBe(23)
   })
+
+  it('不正なレベル値でもNaNを返さない', () => {
+    expect(calculateSlotCount(Number.NaN)).toBe(1)
+  })
 })
