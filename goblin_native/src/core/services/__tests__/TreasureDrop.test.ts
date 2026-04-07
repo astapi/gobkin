@@ -69,7 +69,7 @@ describe('rollTreasureDrops', () => {
   })
 
   describe('ドロップ確率の基本動作', () => {
-    it('一律40%のドロップ確率で装備がドロップする', () => {
+    it('敵1体あたり15%のドロップ確率で装備がドロップする', () => {
       // areaLevel=1 にはひのきの棒(dropLevelMin=1,dropLevelMax=2)がある
       const pool = getEquipmentByDungeonLevel(1)
       if (pool.length === 0) return // プールが空なら skip
@@ -83,10 +83,27 @@ describe('rollTreasureDrops', () => {
         )
         if (result.length > 0) dropCount++
       }
-      // 40%前後であることを確認（30%〜50%の範囲）
+      // 15%前後であることを確認（10%〜20%の範囲）
       const rate = dropCount / iterations
-      expect(rate).toBeGreaterThan(0.3)
-      expect(rate).toBeLessThan(0.5)
+      expect(rate).toBeGreaterThan(0.1)
+      expect(rate).toBeLessThan(0.2)
+    })
+
+    it('敵数が増えると1戦闘で複数ドロップしうる', () => {
+      const enemies = Array.from({ length: 5 }, (_, i) => createDummyEnemy({ id: `enemy_${i}` }))
+
+      for (let seed = 0; seed < 2000; seed++) {
+        const engine = createEngine(seed)
+        const result = callRollTreasureDrops(
+          engine, 1, enemies, new Set()
+        )
+        if (result.length >= 2) {
+          expect(result.length).toBeGreaterThanOrEqual(2)
+          return
+        }
+      }
+
+      throw new Error('5体戦闘で複数ドロップになるシードが見つかりませんでした')
     })
   })
 
@@ -97,8 +114,8 @@ describe('rollTreasureDrops', () => {
 
       // 確実にドロップするシードを探す
       let result: any[] = []
-      for (let seed = 0; seed < 100; seed++) {
-        const engine = createEngine(seed)
+      for (let seed = 0; seed < 1000; seed++) {
+        const engine = createEngine(seed * 1000)
         result = callRollTreasureDrops(
           engine, 1, [createDummyEnemy()], new Set()
         )
@@ -115,8 +132,8 @@ describe('rollTreasureDrops', () => {
     it('称号なしの場合、titleId/titleNameはundefined', () => {
       // 倍率1ではほぼ称号なし。多数試行してnoneを見つける
       let foundNone = false
-      for (let seed = 0; seed < 500; seed++) {
-        const engine = createEngine(seed)
+      for (let seed = 0; seed < 5000; seed++) {
+        const engine = createEngine(seed * 1000)
         const result = callRollTreasureDrops(
           engine, 1, [createDummyEnemy()], new Set()
         )
@@ -132,8 +149,8 @@ describe('rollTreasureDrops', () => {
     it('称号ありの場合、titleIdとtitleNameが設定される', () => {
       // 倍率99で多数試行して称号付きを見つける
       let foundTitle = false
-      for (let seed = 0; seed < 500; seed++) {
-        const engine = createEngine(seed)
+      for (let seed = 0; seed < 5000; seed++) {
+        const engine = createEngine(seed * 1000)
         const result = callRollTreasureDrops(
           engine, 1, [createDummyEnemy()], new Set(), 99
         )
@@ -305,6 +322,58 @@ describe('rollTreasureDrops', () => {
         }
       }
       expect(foundTitle).toBe(true)
+    })
+
+    it('同一戦闘内なら同じ敵ドロップが複数回発生しうる', () => {
+      const duplicatedEnemies = [
+        createDummyEnemy({
+          id: 'enemy_a',
+          equipmentDrops: [
+            { templateId: 'sword_cypress_stick', probability: 1.0 },
+          ],
+        }),
+        createDummyEnemy({
+          id: 'enemy_b',
+          equipmentDrops: [
+            { templateId: 'sword_cypress_stick', probability: 1.0 },
+          ],
+        }),
+      ]
+
+      const result = callRollTreasureDrops(
+        createEngine(1), 1, duplicatedEnemies, new Set()
+      )
+
+      const duplicatedDrops = result.filter((d: any) => d.templateId === 'sword_cypress_stick')
+      expect(duplicatedDrops).toHaveLength(2)
+    })
+
+    it('同じアイテムは戦闘をまたぐと再ドロップしない', () => {
+      const duplicatedEnemies = [
+        createDummyEnemy({
+          id: 'enemy_a',
+          equipmentDrops: [
+            { templateId: 'sword_cypress_stick', probability: 1.0 },
+          ],
+        }),
+        createDummyEnemy({
+          id: 'enemy_b',
+          equipmentDrops: [
+            { templateId: 'sword_cypress_stick', probability: 1.0 },
+          ],
+        }),
+      ]
+      const droppedIds = new Set<string>()
+
+      const firstBattle = callRollTreasureDrops(
+        createEngine(1), 1, duplicatedEnemies, droppedIds
+      )
+      const secondBattle = callRollTreasureDrops(
+        createEngine(2), 1, duplicatedEnemies, droppedIds
+      )
+
+      expect(firstBattle.filter((d: any) => d.templateId === 'sword_cypress_stick')).toHaveLength(2)
+      expect(secondBattle.filter((d: any) => d.templateId === 'sword_cypress_stick')).toHaveLength(0)
     })
   })
 })

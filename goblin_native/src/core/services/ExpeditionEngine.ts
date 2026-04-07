@@ -20,8 +20,8 @@ import { BattleSystem } from './BattleSystem'
 import { ModStatCalculator } from './ModStatCalculator'
 import { EquipmentTitleService } from './EquipmentTitleService'
 
-/** 全エリア共通の宝箱ドロップ確率（戦闘勝利ごと） */
-const DROP_CHANCE = 0.4
+/** 全エリア共通の宝箱ドロップ確率（敵1体ごと） */
+const DROP_CHANCE = 0.15
 
 export class ExpeditionEngine {
   private rng: () => number
@@ -519,9 +519,11 @@ export class ExpeditionEngine {
 
   /**
    * 宝箱ドロップを判定（同一遠征中に同じアイテムは1個まで）
-   * 1. ダンジョンレベルに対応する装備プールから均等抽選
-   * 2. 敵個別の equipmentDrops でレアアイテムを抽選
-   * 3. ドロップ時に称号を抽選して付与
+   * 1. 敵1体ごとにダンジョンレベル対応の装備プールを15%で抽選
+   * 2. 同一戦闘内では同じアイテムの重複を許可する
+   * 3. 敵個別の equipmentDrops も同じ戦闘内では重複を許可する
+   * 4. 戦闘終了後、ドロップしたtemplateIdを遠征全体の重複防止に登録する
+   * 5. ドロップ時に称号を抽選して付与
    */
   private rollTreasureDrops(
     dungeonLevel: number,
@@ -530,13 +532,14 @@ export class ExpeditionEngine {
     titleMultiplier: number = 1
   ): TreasureDrop[] {
     const drops: TreasureDrop[] = []
+    const expeditionDroppedIds = new Set(droppedIds)
+    const pendingDroppedIds = new Set<string>()
+    const pool = getEquipmentByDungeonLevel(dungeonLevel)
+    const candidates = pool.filter(t => !expeditionDroppedIds.has(t.id))
 
-    // ダンジョンレベルに応じた装備プールから抽選
-    if (this.rng() < DROP_CHANCE) {
-      const pool = getEquipmentByDungeonLevel(dungeonLevel)
-      const candidates = pool.filter(t => !droppedIds.has(t.id))
-
-      if (candidates.length > 0) {
+    // ダンジョンレベルに応じた装備プールから敵1体ごとに抽選
+    for (const _enemy of enemies) {
+      if (this.rng() < DROP_CHANCE && candidates.length > 0) {
         const index = Math.floor(this.rng() * candidates.length)
         const selected = candidates[index]
 
@@ -550,7 +553,7 @@ export class ExpeditionEngine {
           titleId: title.titleId !== 'none' ? title.titleId : undefined,
           titleName: title.titleName || undefined,
         })
-        droppedIds.add(selected.id)
+        pendingDroppedIds.add(selected.id)
       }
     }
 
@@ -558,7 +561,7 @@ export class ExpeditionEngine {
     for (const enemy of enemies) {
       if (!enemy.equipmentDrops) continue
       for (const drop of enemy.equipmentDrops) {
-        if (droppedIds.has(drop.templateId)) continue
+        if (expeditionDroppedIds.has(drop.templateId)) continue
         if (this.rng() < drop.probability) {
           const template = getEquipmentTemplate(drop.templateId)
           if (template) {
@@ -572,10 +575,14 @@ export class ExpeditionEngine {
               titleId: title.titleId !== 'none' ? title.titleId : undefined,
               titleName: title.titleName || undefined,
             })
-            droppedIds.add(drop.templateId)
+            pendingDroppedIds.add(drop.templateId)
           }
         }
       }
+    }
+
+    for (const templateId of pendingDroppedIds) {
+      droppedIds.add(templateId)
     }
 
     return drops
