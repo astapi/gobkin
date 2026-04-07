@@ -24,6 +24,18 @@ export function cloneCharacterSkills(skills: CharacterSkill[]): CharacterSkill[]
   return skills.map(cloneCharacterSkill)
 }
 
+export function getUniqueSkillsById(skills: CharacterSkill[]): CharacterSkill[] {
+  const seen = new Set<string>()
+
+  return skills.filter((skill) => {
+    if (seen.has(skill.id)) {
+      return false
+    }
+    seen.add(skill.id)
+    return true
+  })
+}
+
 export function describeCharacterSkill(skill: CharacterSkill): string {
   if (skill.physicalDamageReductionPercent !== undefined) {
     return `[-${skill.physicalDamageReductionPercent}%] 物理ダメージ軽減(%)`
@@ -47,7 +59,7 @@ export function describeCharacterSkill(skill: CharacterSkill): string {
   }
 
   if (skill.statBonuses?.attackCount !== undefined) {
-    return `攻撃回数 +${skill.statBonuses.attackCount}`
+    return `[+${skill.statBonuses.attackCount}]攻撃回数`
   }
 
   return skill.name
@@ -56,7 +68,7 @@ export function describeCharacterSkill(skill: CharacterSkill): string {
 export function getSkillStatBonuses(skills: CharacterSkill[]): Partial<Record<keyof GoblinStats, number>> {
   const bonuses: Partial<Record<keyof GoblinStats, number>> = {}
 
-  for (const skill of skills) {
+  for (const skill of getUniqueSkillsById(skills)) {
     for (const [key, value] of Object.entries(skill.statBonuses ?? {})) {
       const statKey = key as keyof GoblinStats
       bonuses[statKey] = (bonuses[statKey] ?? 0) + (value ?? 0)
@@ -67,27 +79,21 @@ export function getSkillStatBonuses(skills: CharacterSkill[]): Partial<Record<ke
 }
 
 export function getAdditionalDamageFromSkills(skills: CharacterSkill[]): number {
-  return skills.reduce((sum, skill) => sum + (skill.additionalDamage ?? 0), 0)
+  return getUniqueSkillsById(skills).reduce((sum, skill) => sum + (skill.additionalDamage ?? 0), 0)
 }
 
 export function getRearProtectionMultiplierFromSkills(skills: CharacterSkill[]): number {
-  return skills.reduce(
+  return getUniqueSkillsById(skills).reduce(
     (product, skill) => product * (skill.protectRearAllyNormalAttackMultiplier ?? 1),
     1,
   )
 }
 
 export function getPhysicalDamageReductionFromSkills(skills: CharacterSkill[]): number {
-  const appliedSkillIds = new Set<string>()
-
-  return skills.reduce((sum, skill) => {
-    if (appliedSkillIds.has(skill.id)) {
-      return sum
-    }
-
-    appliedSkillIds.add(skill.id)
-    return sum + (skill.physicalDamageReductionPercent ?? 0)
-  }, 0)
+  return getUniqueSkillsById(skills).reduce(
+    (sum, skill) => sum + (skill.physicalDamageReductionPercent ?? 0),
+    0,
+  )
 }
 
 function getEquipmentValueMultiplier(
@@ -95,7 +101,7 @@ function getEquipmentValueMultiplier(
   category: EquipmentCategory | undefined,
   stat: EquipmentStat | undefined,
 ): number {
-  return skills.reduce((product, skill) => {
+  return getUniqueSkillsById(skills).reduce((product, skill) => {
     let next = product
 
     if (category) {

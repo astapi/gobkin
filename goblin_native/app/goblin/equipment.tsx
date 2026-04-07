@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from 'react'
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Modal, Alert } from 'react-native'
-import { SafeAreaView } from 'react-native-safe-area-context'
+import { View, Text, TouchableOpacity, StyleSheet, FlatList, Modal, Alert } from 'react-native'
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useLocalSearchParams } from 'expo-router'
 import type { EquipmentInstance, EquipmentTemplate, EquipmentCategory } from '@/shared/types'
 import { useGoblinStore } from '@/presentation/stores/useGoblinStore'
@@ -42,6 +42,13 @@ function getDisplayName(eq: EquipmentInstance, template: EquipmentTemplate): str
   return template.name
 }
 
+type InventoryGroup = {
+  key: string
+  equipment: EquipmentInstance
+  template: EquipmentTemplate
+  count: number
+}
+
 function formatBonus(stat: string, value: number): string {
   const isPercent = stat.includes('percent') || stat === 'damage_reduction'
   return `${value > 0 ? '+' : ''}${value}${isPercent ? '%' : ''}`
@@ -65,6 +72,31 @@ function sortEquipment(items: EquipmentInstance[]): EquipmentInstance[] {
     const titleB = titleOrder.get(b.titleId ?? 'none') ?? 0
     return titleA - titleB
   })
+}
+
+function groupInventory(items: EquipmentInstance[]): InventoryGroup[] {
+  const grouped = new Map<string, InventoryGroup>()
+
+  for (const eq of sortEquipment(items)) {
+    const template = getEquipmentTemplate(eq.templateId)
+    if (!template) continue
+
+    const key = `${eq.templateId}::${eq.titleId ?? 'none'}`
+    const existing = grouped.get(key)
+    if (existing) {
+      existing.count += 1
+      continue
+    }
+
+    grouped.set(key, {
+      key,
+      equipment: eq,
+      template,
+      count: 1,
+    })
+  }
+
+  return Array.from(grouped.values())
 }
 
 /** 装備済みアイテムの詳細モーダル */
@@ -143,11 +175,13 @@ function EquipmentRow({
   template,
   onPress,
   highlighted,
+  count,
 }: {
   eq: EquipmentInstance
   template: EquipmentTemplate
   onPress: () => void
   highlighted?: boolean
+  count?: number
 }) {
   return (
     <TouchableOpacity
@@ -156,7 +190,7 @@ function EquipmentRow({
     >
       <View style={styles.itemInfo}>
         <Text style={styles.itemName} numberOfLines={1}>
-          {getDisplayName(eq, template)}
+          {count && count > 1 ? `x${count} ${getDisplayName(eq, template)}` : getDisplayName(eq, template)}
         </Text>
         <View style={styles.itemBonusRow}>
           {template.statBonuses.map((bonus, i) => (
@@ -181,6 +215,7 @@ function EquipmentRow({
 
 export default function EquipmentScreenPage() {
   const { goblinId } = useLocalSearchParams<{ goblinId: string }>()
+  const insets = useSafeAreaInsets()
   const getGoblinById = useGoblinStore((state) => state.getGoblinById)
   const { equippedItems, inventoryItems, refreshEquipment, equipItem, unequipItem } =
     useEquipmentService()
@@ -206,7 +241,7 @@ export default function EquipmentScreenPage() {
   }, [goblin, refreshEquipment])
 
   const sortedEquipped = useMemo(() => sortEquipment(equippedItems), [equippedItems])
-  const sortedInventory = useMemo(() => sortEquipment(inventoryItems), [inventoryItems])
+  const groupedInventory = useMemo(() => groupInventory(inventoryItems), [inventoryItems])
   const emptySlots = maxSlots - equippedItems.length
 
   const handleEquip = useCallback(
@@ -227,6 +262,7 @@ export default function EquipmentScreenPage() {
       const result = await equipItem(goblin, equipment, targetSlot)
       if (!result.success) {
         Alert.alert('装備エラー', result.error ?? '装備できませんでした')
+        return
       }
     },
     [equippedItems, maxSlots, goblin, equipItem],
@@ -246,57 +282,60 @@ export default function EquipmentScreenPage() {
 
   return (
     <SafeAreaView style={styles.container} edges={['left', 'right', 'bottom']}>
-      <ScrollView
+      <FlatList
         style={styles.content}
-        contentContainerStyle={styles.contentContainer}
+        contentContainerStyle={[styles.contentContainer, { paddingBottom: 32 + insets.bottom + 16 }]}
         showsVerticalScrollIndicator={true}
-      >
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>装備枠 ({equippedItems.length}/{maxSlots})</Text>
-          <View style={styles.slotList}>
-            {sortedEquipped.map(eq => {
-              const template = getEquipmentTemplate(eq.templateId)
-              if (!template) return null
-              return (
-                <EquipmentRow
-                  key={eq.id}
-                  eq={eq}
-                  template={template}
-                  onPress={() => setSelectedEquipped(eq)}
-                />
-              )
-            })}
-            {Array.from({ length: emptySlots }).map((_, i) => (
-              <View key={`empty-${i}`} style={styles.emptySlot}>
-                <Text style={styles.emptySlotText}>空きスロット</Text>
+        data={groupedInventory}
+        keyExtractor={(item) => item.key}
+        renderItem={({ item }) => (
+          <EquipmentRow
+            eq={item.equipment}
+            template={item.template}
+            onPress={() => handleEquip(item.equipment)}
+            highlighted={emptySlots > 0}
+            count={item.count}
+          />
+        )}
+        ListHeaderComponent={(
+          <>
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>装備枠 ({equippedItems.length}/{maxSlots})</Text>
+              <View style={styles.slotList}>
+                {sortedEquipped.map(eq => {
+                  const template = getEquipmentTemplate(eq.templateId)
+                  if (!template) return null
+                  return (
+                    <EquipmentRow
+                      key={eq.id}
+                      eq={eq}
+                      template={template}
+                      onPress={() => setSelectedEquipped(eq)}
+                    />
+                  )
+                })}
+                {Array.from({ length: emptySlots }).map((_, i) => (
+                  <View key={`empty-${i}`} style={styles.emptySlot}>
+                    <Text style={styles.emptySlotText}>空きスロット</Text>
+                  </View>
+                ))}
               </View>
-            ))}
-          </View>
-        </View>
+            </View>
 
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>所持アイテム</Text>
-          {sortedInventory.length === 0 ? (
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>所持アイテム</Text>
+            </View>
+          </>
+        )}
+        ListEmptyComponent={(
+          <View style={[styles.section, styles.inventoryEmptySection]}>
             <View style={styles.emptyInventory}>
               <Text style={styles.emptyInventoryText}>所持アイテムがありません</Text>
             </View>
-          ) : (
-            sortedInventory.map(eq => {
-              const template = getEquipmentTemplate(eq.templateId)
-              if (!template) return null
-              return (
-                <EquipmentRow
-                  key={eq.id}
-                  eq={eq}
-                  template={template}
-                  onPress={() => handleEquip(eq)}
-                  highlighted={emptySlots > 0}
-                />
-              )
-            })
-          )}
-        </View>
-      </ScrollView>
+          </View>
+        )}
+        ItemSeparatorComponent={() => <View style={styles.itemSeparator} />}
+      />
 
       {selectedEquipped && selectedEquippedTemplate && (
         <EquippedItemDetail
@@ -349,7 +388,12 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#E5E7EB',
     backgroundColor: '#F9FAFB',
-    marginBottom: 8,
+  },
+  itemSeparator: {
+    height: 8,
+  },
+  inventoryEmptySection: {
+    marginTop: -16,
   },
   itemRowHighlighted: {
     borderColor: '#93C5FD',

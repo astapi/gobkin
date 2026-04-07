@@ -11,7 +11,7 @@ import { getFactorImage } from '@/shared/utils/factorImages'
 import { ModStatCalculator } from '@/core/services/ModStatCalculator'
 import { getExpForNextLevel, getExpProgress } from '@/core/services/ExperienceSystem'
 import { getModTemplate } from '@/shared/data/modPoolLoader'
-import { describeCharacterSkill } from '@/shared/data/characterSkills'
+import { describeCharacterSkill, getUniqueSkillsById } from '@/shared/data/characterSkills'
 
 const STAT_LABELS: Record<string, string> = {
   hp_percent: 'HP', hp_flat: 'HP',
@@ -64,7 +64,7 @@ export default function GoblinDetailScreen() {
   )
   const expForNext = goblin ? getExpForNextLevel(goblin.level) : 0
   const expProgress = goblin ? getExpProgress(goblin.level, goblin.experience) : 0
-  const characterSkills = useMemo(() => goblin?.skills ?? [], [goblin])
+  const characterSkills = useMemo(() => getUniqueSkillsById(goblin?.skills ?? []), [goblin])
 
   const handleBanish = useCallback(() => {
     if (!goblin) return
