@@ -13,7 +13,7 @@ export class EquipmentService {
    * ゴブリンが利用可能なスロット数を取得
    */
   static getAvailableSlots(goblin: Goblin): number {
-    return calculateSlotCount(goblin.race, goblin.level)
+    return calculateSlotCount(goblin.level)
   }
 
   /**

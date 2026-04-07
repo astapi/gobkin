@@ -1,13 +1,11 @@
-import type { RaceSlotConfig } from '../types/Equipment'
-
 /**
- * 種族ごとの装備スロット設定
- * スロット数 = baseSlots + floor((level - 1) / slotsPerLevel)、maxSlots上限
+ * 装備枠の解放レベル表
+ * index 0 が1枠目、index 1 が2枠目を表す
  */
-export const RACE_SLOT_CONFIGS: Record<string, RaceSlotConfig> = {
-  'ゴブリン': { baseSlots: 2, slotsPerLevel: 5, maxSlots: 6 },
-  '魔獣': { baseSlots: 1, slotsPerLevel: 7, maxSlots: 4 },
-}
+export const EQUIPMENT_SLOT_LEVELS = [
+  1, 3, 6, 9, 12, 16, 20, 25, 30, 36, 42, 49,
+  58, 67, 77, 89, 102, 118, 134, 150, 166, 183, 200,
+] as const
 
 /**
  * 血統別の戦闘ステータス初期値
@@ -38,17 +36,16 @@ export function getBloodlineCombatStats(bloodline: string): BloodlineCombatStats
   return BLOODLINE_COMBAT_STATS[bloodline] ?? DEFAULT_COMBAT_STATS
 }
 
-const DEFAULT_SLOT_CONFIG: RaceSlotConfig = {
-  baseSlots: 2,
-  slotsPerLevel: 5,
-  maxSlots: 6,
-}
-
 /**
- * ゴブリンのレベルと種族からスロット数を計算
+ * ゴブリンのレベルからスロット数を計算
  */
-export function calculateSlotCount(race: string, level: number): number {
-  const config = RACE_SLOT_CONFIGS[race] ?? DEFAULT_SLOT_CONFIG
-  const bonusSlots = Math.floor((level - 1) / config.slotsPerLevel)
-  return Math.min(config.baseSlots + bonusSlots, config.maxSlots)
+export function calculateSlotCount(level: number): number {
+  let unlockedSlots = 0
+
+  for (const unlockLevel of EQUIPMENT_SLOT_LEVELS) {
+    if (level < unlockLevel) break
+    unlockedSlots++
+  }
+
+  return Math.max(1, unlockedSlots)
 }

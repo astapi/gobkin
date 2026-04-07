@@ -43,7 +43,6 @@ export type {
   WeaponStats,
   EquipmentTemplate,
   EquipmentInstance,
-  RaceSlotConfig,
 } from "./Equipment"
 
 // Spell related types
