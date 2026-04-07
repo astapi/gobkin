@@ -63,7 +63,7 @@
       "evasion": 13,
       "exp": 18,
       "gold": 15,
-      "spells": [{ "spellId": "fireball" }]
+      "skills": [{ "id": "fireball", "name": "ファイヤーボール", "grantsSpellId": "fireball" }]
     },
     {
       "id": "GOB005",

@@ -1,10 +1,10 @@
 {
   "id": "orc_camp_2",
   "name": "オークの野営地・陣営",
-  "areaLevel": 3,
+  "areaLevel": 13,
   "floors": 2,
   "baseDurationSec": 40,
-  "description": "野営地の陣営部。アーチャーやシャーマンが待ち構え、組織的な抵抗が激しくなる。",
+  "description": "野営地の陣営部。前に出るブルートを壁に、兵たちが厚く控える。",
   "encounter": {
     "perFloorEvents": 3,
     "eventWeights": {

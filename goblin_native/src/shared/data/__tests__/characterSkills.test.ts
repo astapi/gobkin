@@ -2,6 +2,7 @@ import type { CharacterSkill } from '../../types'
 import {
   describeCharacterSkill,
   getAdditionalDamageFromSkills,
+  getLearnedSpellsFromSkills,
   getPhysicalDamageReductionFromSkills,
   getRearProtectionMultiplierFromSkills,
   getSkillStatBonuses,
@@ -91,5 +92,24 @@ describe('characterSkills - 物理ダメージ軽減', () => {
     }
 
     expect(describeCharacterSkill(skill)).toBe('[+11]攻撃回数')
+  })
+
+  it('呪文付与スキルからLearnedSpellへ変換できる', () => {
+    const skills: CharacterSkill[] = [
+      { id: 'fireball', name: 'ファイヤーボール', grantsSpellId: 'fireball' },
+      { id: 'fireball_twice', name: 'ファイヤーボール2回', spellChargeBonusForId: 'fireball', extraSpellCharges: 1 },
+    ]
+
+    expect(getLearnedSpellsFromSkills(skills)).toEqual([
+      { spellId: 'fireball', extraCharges: 1 },
+    ])
+  })
+
+  it('基礎呪文がない場合、追加回数スキルだけではLearnedSpellにならない', () => {
+    const skills: CharacterSkill[] = [
+      { id: 'fireball_twice', name: 'ファイヤーボール2回', spellChargeBonusForId: 'fireball', extraSpellCharges: 1 },
+    ]
+
+    expect(getLearnedSpellsFromSkills(skills)).toEqual([])
   })
 })

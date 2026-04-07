@@ -20,4 +20,16 @@ export const SPELL_DEFS: Record<string, SpellDef> = {
     },
     defaultCharges: 1,
   },
+  fireball_twice: {
+    id: 'fireball_twice',
+    name: 'ファイヤーボール2回',
+    power: 1.2,
+    targeting: {
+      type: 'multi_target',
+      baseTargets: 6,
+      scalePerLevel: 1,
+      scaleLevelInterval: 12,
+    },
+    defaultCharges: 2,
+  },
 }
