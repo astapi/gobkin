@@ -5,6 +5,7 @@ import { router } from 'expo-router'
 import Swipeable from 'react-native-gesture-handler/Swipeable'
 import { useGoblinStore } from '@/presentation/stores/useGoblinStore'
 import { useBaseStore, selectMaxGoblins } from '@/presentation/stores/useBaseStore'
+import { usePartyStore } from '@/presentation/stores/usePartyStore'
 import { GoblinCard } from '@/presentation/components/GoblinCard'
 import type { Goblin } from '@/shared/types'
 import { getGoblinImage } from '@/shared/utils/goblinImages'
@@ -36,6 +37,7 @@ export default function GoblinListScreen() {
   const pendingGoblins = useBaseStore((state) => state.pendingGoblins)
   const removePendingGoblin = useBaseStore((state) => state.removePendingGoblin)
   const maxGoblins = useBaseStore(selectMaxGoblins)
+  const parties = usePartyStore((state) => state.parties)
   const swipeableRefs = useRef<Record<number, Swipeable | null>>({})
   const [openSwipeableId, setOpenSwipeableId] = useState<number | null>(null)
 
@@ -50,6 +52,20 @@ export default function GoblinListScreen() {
       return sortKey === 'atk' ? statsB.atk - statsA.atk : statsB.hp - statsA.hp
     })
   ), [goblins, sortKey])
+
+  const partyNameByGoblinId = useMemo(() => {
+    const mapping = new Map<number, string>()
+    parties.forEach((party) => {
+      party.memberIds.forEach((memberId) => {
+        mapping.set(memberId, party.name)
+      })
+    })
+    return mapping
+  }, [parties])
+
+  const getAssignedPartyName = useCallback((goblinId: number) => (
+    partyNameByGoblinId.get(goblinId)
+  ), [partyNameByGoblinId])
 
   const closeOpenSwipeable = useCallback(() => {
     if (openSwipeableId === null) return
@@ -77,9 +93,16 @@ export default function GoblinListScreen() {
   }, [closeOpenSwipeable, openSwipeableId])
 
   const handleDeleteGoblin = useCallback((goblin: Goblin) => {
+    const assignedPartyName = getAssignedPartyName(goblin.id)
+    if (assignedPartyName) {
+      Alert.alert('追放できません', `${goblin.name}は${assignedPartyName}に編成中です。`)
+      swipeableRefs.current[goblin.id]?.close()
+      return
+    }
+
     Alert.alert(
       '追放確認',
-      `${goblin.name}を追放しますか？`,
+      `${goblin.name}を追放しますか？\n追放時に装備は自動的に解除されます。`,
       [
         {
           text: 'キャンセル',
@@ -95,15 +118,16 @@ export default function GoblinListScreen() {
                 delete swipeableRefs.current[goblin.id]
                 setOpenSwipeableId((currentId) => (currentId === goblin.id ? null : currentId))
               })
-              .catch(() => {
-                Alert.alert('削除エラー', `${goblin.name}の追放に失敗しました。`)
+              .catch((error: unknown) => {
+                const message = error instanceof Error ? error.message : `${goblin.name}の追放に失敗しました。`
+                Alert.alert('削除エラー', message)
                 swipeableRefs.current[goblin.id]?.close()
               })
           },
         },
       ],
     )
-  }, [deleteGoblin])
+  }, [deleteGoblin, getAssignedPartyName])
 
   const renderRightActions = useCallback((goblin: Goblin) => (
     <TouchableOpacity
@@ -159,11 +183,14 @@ export default function GoblinListScreen() {
         onSwipeableClose={() => handleSwipeableClose(goblin.id)}
       >
         <Pressable onPress={() => handleGoblinPress(goblin)}>
-          <GoblinCard goblin={goblin} />
+          <GoblinCard
+            goblin={goblin}
+            assignedPartyName={partyNameByGoblinId.get(goblin.id)}
+          />
         </Pressable>
       </Swipeable>
     </View>
-  ), [handleGoblinPress, handleSwipeableClose, handleSwipeableWillOpen, renderRightActions])
+  ), [handleGoblinPress, handleSwipeableClose, handleSwipeableWillOpen, partyNameByGoblinId, renderRightActions])
 
   const renderPendingFooter = useCallback(() => {
     if (pendingGoblins.length === 0) {
