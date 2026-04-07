@@ -266,7 +266,7 @@ goldGained = Σ(各戦闘の enemy.gold)
 #### ダンジョンレベル準拠ドロップ
 
 ```
-1. 一律25%（DROP_CHANCE定数）で判定
+1. 一律40%（DROP_CHANCE定数）で判定
 2. areaLevelに対応する装備プールから候補取得
 3. 同一遠征で既にドロップした装備は除外
 4. 候補から均等抽選
@@ -307,7 +307,7 @@ goldGained = Σ(各戦闘の enemy.gold)
     xpFloor: [8, 10, 12],   // フロアごとの戦闘経験値
     xpBoss: 30               // ボス戦経験値
   },
-  // 宝箱ドロップ率は全エリア一律25%（ExpeditionEngine.DROP_CHANCE定数）
+  // 宝箱ドロップ率は全エリア一律40%（ExpeditionEngine.DROP_CHANCE定数）
   unlockNext: "goblin_village_1"  // 制圧時に解放されるダンジョン
 }
 ```

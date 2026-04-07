@@ -16,6 +16,7 @@ import { useExpeditionStore } from '../stores/useExpeditionStore'
 import { useBaseStore, getBaseStateRepository } from '../stores/useBaseStore'
 import { useDungeonStore } from '../stores/useDungeonStore'
 import { SQLiteEquipmentRepository } from '../../infrastructure/repositories/SQLiteEquipmentRepository'
+import { useDebugSettingsStore } from '../stores/useDebugSettingsStore'
 
 interface UseExpeditionFlowParams {
   parties?: Party[]
@@ -67,6 +68,7 @@ export const useExpeditionFlow = ({
   const getPartyExpeditionHistory = useExpeditionStore((state) => state.getPartyExpeditionHistory)
   const saveExpeditionRecord = useExpeditionStore((state) => state.saveExpeditionRecord)
   const completeExpeditionRecord = useExpeditionStore((state) => state.completeExpeditionRecord)
+  const instantDungeonExploration = useDebugSettingsStore((state) => state.instantDungeonExploration)
 
   const startExpeditionUseCase = useMemo(() => {
     return new StartExpeditionUseCase(
@@ -126,6 +128,10 @@ export const useExpeditionFlow = ({
     dungeon: Dungeon,
     returnPolicy: ExpeditionRequest['returnPolicy'],
   ): number => {
+    if (instantDungeonExploration) {
+      return 1
+    }
+
     const baseTime = dungeon.cleared
       ? dungeon.exploration_time_sec
       : dungeon.exploration_time_sec_first
@@ -139,7 +145,7 @@ export const useExpeditionFlow = ({
     }
     const multiplier = multiplierMap[returnPolicy] ?? 1.0
     return Math.floor(baseTime * multiplier)
-  }, [])
+  }, [instantDungeonExploration])
 
   const formatTime = useCallback((date: Date) => {
     const hours = String(date.getHours()).padStart(2, '0')

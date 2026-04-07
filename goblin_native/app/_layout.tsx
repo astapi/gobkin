@@ -12,6 +12,7 @@ import { usePartyStore } from '@/presentation/stores/usePartyStore'
 import { useBaseStore } from '@/presentation/stores/useBaseStore'
 import { useDungeonStore } from '@/presentation/stores/useDungeonStore'
 import { useExpeditionStore } from '@/presentation/stores/useExpeditionStore'
+import { useDebugSettingsStore } from '@/presentation/stores/useDebugSettingsStore'
 
 export default function RootLayout() {
   const { ready, error, resetAndReinitialize } = useDatabaseInit()
@@ -26,6 +27,7 @@ export default function RootLayout() {
         useBaseStore.getState().initialize(),
         useDungeonStore.getState().initialize(),
         useExpeditionStore.getState().initialize(),
+        useDebugSettingsStore.getState().initialize(),
       ])
       setStoresReady(true)
     }

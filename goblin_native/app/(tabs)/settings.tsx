@@ -1,11 +1,14 @@
 import { useState } from 'react'
-import { View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native'
+import { View, Text, TouchableOpacity, StyleSheet, Alert, Switch } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useReset } from '@/presentation/contexts/ResetContext'
+import { useDebugSettingsStore } from '@/presentation/stores/useDebugSettingsStore'
 
 export default function SettingsScreen() {
   const [isResetting, setIsResetting] = useState(false)
   const { resetAndReinitialize } = useReset()
+  const instantDungeonExploration = useDebugSettingsStore((state) => state.instantDungeonExploration)
+  const setInstantDungeonExploration = useDebugSettingsStore((state) => state.setInstantDungeonExploration)
 
   const handleResetData = () => {
     Alert.alert(
@@ -34,6 +37,21 @@ export default function SettingsScreen() {
       <View style={styles.content}>
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Debug</Text>
+          <View style={styles.settingRow}>
+            <View style={styles.settingTextBlock}>
+              <Text style={styles.settingTitle}>探索時間を1秒にする</Text>
+              <Text style={styles.settingDescription}>
+                ON の間は、すべてのダンジョンの探索時間が 1 秒になります。
+              </Text>
+            </View>
+            <Switch
+              value={instantDungeonExploration}
+              onValueChange={(value) => {
+                void setInstantDungeonExploration(value)
+              }}
+            />
+          </View>
+
           <TouchableOpacity
             style={styles.dangerButton}
             onPress={handleResetData}
@@ -83,6 +101,27 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#1F2937',
     marginBottom: 12,
+  },
+  settingRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 12,
+    marginBottom: 16,
+  },
+  settingTextBlock: {
+    flex: 1,
+  },
+  settingTitle: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#1F2937',
+    marginBottom: 4,
+  },
+  settingDescription: {
+    fontSize: 12,
+    color: '#6B7280',
+    lineHeight: 18,
   },
   dangerButton: {
     backgroundColor: '#DC2626',

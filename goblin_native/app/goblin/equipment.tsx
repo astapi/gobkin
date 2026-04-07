@@ -246,7 +246,11 @@ export default function EquipmentScreenPage() {
 
   return (
     <SafeAreaView style={styles.container} edges={['left', 'right', 'bottom']}>
-      <ScrollView style={styles.content}>
+      <ScrollView
+        style={styles.content}
+        contentContainerStyle={styles.contentContainer}
+        showsVerticalScrollIndicator={true}
+      >
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>装備枠 ({equippedItems.length}/{maxSlots})</Text>
           <View style={styles.slotList}>
@@ -314,7 +318,11 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
+  },
+  contentContainer: {
     padding: 16,
+    paddingBottom: 32,
+    flexGrow: 1,
   },
   section: {
     backgroundColor: '#FFFFFF',
