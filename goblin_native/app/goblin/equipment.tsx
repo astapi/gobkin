@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo } from 'react'
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import { View, Text, TouchableOpacity, StyleSheet, FlatList, Modal, Alert } from 'react-native'
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useLocalSearchParams } from 'expo-router'
@@ -216,6 +216,10 @@ function EquipmentRow({
 export default function EquipmentScreenPage() {
   const { goblinId } = useLocalSearchParams<{ goblinId: string }>()
   const insets = useSafeAreaInsets()
+  const listRef = useRef<FlatList<InventoryGroup>>(null)
+  const scrollOffsetRef = useRef(0)
+  const headerHeightRef = useRef(0)
+  const pendingScrollRestoreRef = useRef(false)
   const getGoblinById = useGoblinStore((state) => state.getGoblinById)
   const { equippedItems, inventoryItems, refreshEquipment, equipItem, unequipItem } =
     useEquipmentService()
@@ -243,6 +247,28 @@ export default function EquipmentScreenPage() {
   const sortedEquipped = useMemo(() => sortEquipment(equippedItems), [equippedItems])
   const groupedInventory = useMemo(() => groupInventory(inventoryItems), [inventoryItems])
   const emptySlots = maxSlots - equippedItems.length
+  const listBottomSpacerHeight = useMemo(
+    () => insets.bottom + 56,
+    [insets.bottom],
+  )
+
+  const restoreScrollPosition = useCallback((nextHeaderHeight: number) => {
+    if (!pendingScrollRestoreRef.current) {
+      headerHeightRef.current = nextHeaderHeight
+      return
+    }
+
+    const headerDelta = nextHeaderHeight - headerHeightRef.current
+    const nextOffset = Math.max(0, scrollOffsetRef.current + headerDelta)
+
+    requestAnimationFrame(() => {
+      listRef.current?.scrollToOffset({ offset: nextOffset, animated: false })
+    })
+
+    scrollOffsetRef.current = nextOffset
+    headerHeightRef.current = nextHeaderHeight
+    pendingScrollRestoreRef.current = false
+  }, [])
 
   const handleEquip = useCallback(
     async (equipment: EquipmentInstance) => {
@@ -259,8 +285,10 @@ export default function EquipmentScreenPage() {
         Alert.alert('空きスロットなし', '先に装備を外してください')
         return
       }
+      pendingScrollRestoreRef.current = true
       const result = await equipItem(goblin, equipment, targetSlot)
       if (!result.success) {
+        pendingScrollRestoreRef.current = false
         Alert.alert('装備エラー', result.error ?? '装備できませんでした')
         return
       }
@@ -270,6 +298,7 @@ export default function EquipmentScreenPage() {
 
   const handleUnequip = useCallback(async () => {
     if (!selectedEquipped || !goblin) return
+    pendingScrollRestoreRef.current = true
     await unequipItem(goblin, selectedEquipped)
     setSelectedEquipped(null)
   }, [selectedEquipped, goblin, unequipItem])
@@ -283,9 +312,14 @@ export default function EquipmentScreenPage() {
   return (
     <SafeAreaView style={styles.container} edges={['left', 'right', 'bottom']}>
       <FlatList
+        ref={listRef}
         style={styles.content}
-        contentContainerStyle={[styles.contentContainer, { paddingBottom: 32 + insets.bottom + 16 }]}
+        contentContainerStyle={styles.contentContainer}
         showsVerticalScrollIndicator={true}
+        scrollEventThrottle={16}
+        onScroll={(event) => {
+          scrollOffsetRef.current = event.nativeEvent.contentOffset.y
+        }}
         data={groupedInventory}
         keyExtractor={(item) => item.key}
         renderItem={({ item }) => (
@@ -299,7 +333,12 @@ export default function EquipmentScreenPage() {
         )}
         ListHeaderComponent={(
           <>
-            <View style={styles.section}>
+            <View
+              style={styles.section}
+              onLayout={(event) => {
+                restoreScrollPosition(event.nativeEvent.layout.height)
+              }}
+            >
               <Text style={styles.sectionTitle}>装備枠 ({equippedItems.length}/{maxSlots})</Text>
               <View style={styles.slotList}>
                 {sortedEquipped.map(eq => {
@@ -334,6 +373,7 @@ export default function EquipmentScreenPage() {
             </View>
           </View>
         )}
+        ListFooterComponent={<View style={{ height: listBottomSpacerHeight }} />}
         ItemSeparatorComponent={() => <View style={styles.itemSeparator} />}
       />
 
