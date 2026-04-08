@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { router } from 'expo-router'
 import Swipeable from 'react-native-gesture-handler/Swipeable'
 import { useGoblinStore } from '@/presentation/stores/useGoblinStore'
-import { useBaseStore, selectMaxGoblins } from '@/presentation/stores/useBaseStore'
+import { useBaseStore, selectMaxGoblins, selectRank } from '@/presentation/stores/useBaseStore'
 import { usePartyStore } from '@/presentation/stores/usePartyStore'
 import { GoblinCard } from '@/presentation/components/GoblinCard'
 import type { Goblin } from '@/shared/types'
@@ -38,12 +38,14 @@ export default function GoblinListScreen() {
   const removePendingGoblin = useBaseStore((state) => state.removePendingGoblin)
   const clearPendingGoblins = useBaseStore((state) => state.clearPendingGoblins)
   const maxGoblins = useBaseStore(selectMaxGoblins)
+  const rank = useBaseStore(selectRank)
   const parties = usePartyStore((state) => state.parties)
   const swipeableRefs = useRef<Record<number, Swipeable | null>>({})
   const [openSwipeableId, setOpenSwipeableId] = useState<number | null>(null)
   const [isBulkDismissingPending, setIsBulkDismissingPending] = useState(false)
 
   const hasCapacity = goblins.length < maxGoblins
+  const maxPendingGoblins = rank * 5
   const [sortKey, setSortKey] = useState<'level' | 'atk' | 'hp'>('level')
 
   const sortedGoblins = useMemo(() => (
@@ -231,7 +233,7 @@ export default function GoblinListScreen() {
           <View style={styles.pendingSectionHeaderLeft}>
             <Text style={styles.pendingSectionTitle}>産まれたゴブリン</Text>
             <View style={styles.pendingBadge}>
-              <Text style={styles.pendingBadgeText}>{pendingGoblins.length}体</Text>
+              <Text style={styles.pendingBadgeText}>{pendingGoblins.length} / {maxPendingGoblins}</Text>
             </View>
           </View>
           <TouchableOpacity
@@ -244,9 +246,6 @@ export default function GoblinListScreen() {
             </Text>
           </TouchableOpacity>
         </View>
-        <Text style={styles.pendingSectionDesc}>
-          拠点がいっぱいのため待機中です。
-        </Text>
         {pendingGoblins.map((goblin) => {
           const effectiveStats = ModStatCalculator.calculate(goblin)
           return (
@@ -304,7 +303,7 @@ export default function GoblinListScreen() {
         <View style={styles.footerSpacer} />
       </View>
     )
-  }, [handleAddPending, handleDismissAllPending, handleDismissPending, handlePendingGoblinPress, hasCapacity, isBulkDismissingPending, pendingGoblins])
+  }, [handleAddPending, handleDismissAllPending, handleDismissPending, handlePendingGoblinPress, hasCapacity, isBulkDismissingPending, maxPendingGoblins, pendingGoblins])
 
 
   if (isLoading) {
@@ -500,12 +499,6 @@ const styles = StyleSheet.create({
     fontSize: 11,
     color: '#4B5563',
     fontWeight: '600',
-  },
-  pendingSectionDesc: {
-    fontSize: 12,
-    color: '#9CA3AF',
-    marginBottom: 8,
-    paddingHorizontal: 12,
   },
   bulkDismissButton: {
     backgroundColor: '#991B1B',
