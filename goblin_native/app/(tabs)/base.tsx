@@ -1,7 +1,7 @@
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { router } from 'expo-router'
-import { useBaseStore, selectRank, selectMaxParties, selectMaxGoblins, selectIvBonus, selectGold } from '@/presentation/stores/useBaseStore'
+import { useBaseStore, selectRank, selectMaxParties, selectMaxGoblins, selectIvBonus } from '@/presentation/stores/useBaseStore'
 import { useGoblinStore } from '@/presentation/stores/useGoblinStore'
 
 const BASE_LOCATION_NAMES: Record<number, string> = {
@@ -20,7 +20,6 @@ export default function BaseManagementScreen() {
   const maxParties = useBaseStore(selectMaxParties)
   const maxGoblins = useBaseStore(selectMaxGoblins)
   const ivBonus = useBaseStore(selectIvBonus)
-  const gold = useBaseStore(selectGold)
   const goblins = useGoblinStore((state) => state.goblins)
   const baseLocationName = BASE_LOCATION_NAMES[rank] ?? '未設定'
 
@@ -68,11 +67,7 @@ export default function BaseManagementScreen() {
             <Text style={styles.menuButtonArrow}>›</Text>
           </TouchableOpacity>
         </View>
-
       </ScrollView>
-      <View style={styles.goldBadge} pointerEvents="none">
-        <Text style={styles.goldBadgeText}>{gold}G</Text>
-      </View>
     </SafeAreaView>
   )
 }
@@ -192,18 +187,5 @@ const styles = StyleSheet.create({
     fontSize: 26,
     lineHeight: 26,
     color: '#9CA3AF',
-  },
-  goldBadge: {
-    position: 'absolute',
-    left: 12,
-    bottom: 12,
-    backgroundColor: 'rgba(17, 24, 39, 0.8)',
-    paddingHorizontal: 10,
-    paddingVertical: 6,
-    borderRadius: 8,
-  },
-  goldBadgeText: {
-    fontSize: 11,
-    color: '#F9FAFB',
   },
 })

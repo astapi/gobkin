@@ -6,6 +6,7 @@ import ListIcon from '../../assets/list.svg'
 import HenseiIcon from '../../assets/hensei.svg'
 import BaseIcon from '../../assets/base.svg'
 import { CurrentTimeBadge } from '@/presentation/components/CurrentTimeBadge'
+import { GoldBadge } from '@/presentation/components/GoldBadge'
 
 interface TabIconProps {
   Icon: React.FC<{ width: number; height: number; fill?: string }>
@@ -93,6 +94,7 @@ export default function TabLayout() {
       />
     </Tabs>
     <CurrentTimeBadge bottom={baseHeight + safeAreaPadding + 8} />
+    <GoldBadge bottom={baseHeight + safeAreaPadding + 8} />
     </View>
   )
 }
