@@ -14,6 +14,16 @@ const CHARACTER_SKILL_LIBRARY: Record<string, CharacterSkill> = {
     name: '後列防護',
     protectRearAllyNormalAttackMultiplier: 2 / 3,
   },
+  hobgoblinInspire: {
+    id: 'hobgoblin_inspire',
+    name: '鼓舞',
+    rearAllyDamageMultiplier: 1.5,
+  },
+  hobgoblinGuts: {
+    id: 'hobgoblin_guts',
+    name: '気合い',
+    surviveLethalDamageAtHp1: true,
+  },
   wolfAttackCountUp: {
     id: 'wolf_attack_count_up',
     name: '[+2]攻撃回数アップ',
@@ -45,6 +55,10 @@ const RACE_DEFAULT_SKILLS: Record<string, CharacterSkill[]> = {
     CHARACTER_SKILL_LIBRARY.wolfAttackCountUp,
     CHARACTER_SKILL_LIBRARY.wolfAccuracyBoost,
     CHARACTER_SKILL_LIBRARY.wolfAdditionalDamage,
+  ],
+  'ホブゴブリン': [
+    CHARACTER_SKILL_LIBRARY.hobgoblinInspire,
+    CHARACTER_SKILL_LIBRARY.hobgoblinGuts,
   ],
 }
 

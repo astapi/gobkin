@@ -43,6 +43,10 @@ export function describeCharacterSkill(skill: CharacterSkill): string {
     return 'HPが半分以下の味方への通常攻撃を代わりに受ける'
   }
 
+  if (skill.surviveLethalDamageAtHp1) {
+    return 'HPが0になる攻撃を受けてもHP1で耐える'
+  }
+
   if (skill.physicalDamageReductionPercent !== undefined) {
     return `[-${skill.physicalDamageReductionPercent}%] 物理ダメージ軽減(%)`
   }
@@ -130,6 +134,10 @@ export function getRearAllyDamageMultiplierFromSkills(skills: CharacterSkill[]):
 
 export function hasCoverLowHpAllySkill(skills: CharacterSkill[]): boolean {
   return getUniqueSkillsById(skills).some((skill) => skill.coverLowHpAlly)
+}
+
+export function hasSurviveLethalDamageAtHp1Skill(skills: CharacterSkill[]): boolean {
+  return getUniqueSkillsById(skills).some((skill) => skill.surviveLethalDamageAtHp1)
 }
 
 export function getPhysicalDamageReductionFromSkills(skills: CharacterSkill[]): number {
