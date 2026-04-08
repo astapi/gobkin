@@ -4,8 +4,11 @@ import {
   getAdditionalDamageFromSkills,
   getLearnedSpellsFromSkills,
   getPhysicalDamageReductionFromSkills,
+  getRearAllyDamageMultiplierFromSkills,
   getRearProtectionMultiplierFromSkills,
   getSkillStatBonuses,
+  getSkillStatMultipliers,
+  hasCoverLowHpAllySkill,
   getUniqueSkillsById,
 } from '../characterSkills'
 
@@ -64,6 +67,33 @@ describe('characterSkills - 物理ダメージ軽減', () => {
     expect(getRearProtectionMultiplierFromSkills(skills)).toBe(0.8)
   })
 
+  it('同じidの後列与ダメージ上昇スキルは重複計算しない', () => {
+    const skills: CharacterSkill[] = [
+      { id: 'inspire_shared', name: '鼓舞', rearAllyDamageMultiplier: 1.5 },
+      { id: 'inspire_shared', name: '鼓舞', rearAllyDamageMultiplier: 1.5 },
+    ]
+
+    expect(getRearAllyDamageMultiplierFromSkills(skills)).toBe(1.5)
+  })
+
+  it('ステータス倍率スキルを集計できる', () => {
+    const skills: CharacterSkill[] = [
+      { id: 'spd_up', name: '先制攻撃', statMultipliers: { spd: 1.2 } },
+      { id: 'evasion_up', name: '回避適正', statMultipliers: { evasion: 1.5 } },
+    ]
+
+    expect(getSkillStatMultipliers(skills).spd).toBeCloseTo(1.2)
+    expect(getSkillStatMultipliers(skills).evasion).toBeCloseTo(1.5)
+  })
+
+  it('かばうスキルを判定できる', () => {
+    const skills: CharacterSkill[] = [
+      { id: 'cover', name: 'かばう', coverLowHpAlly: true },
+    ]
+
+    expect(hasCoverLowHpAllySkill(skills)).toBe(true)
+  })
+
   it('スキル一覧取得時も同じidは1件にまとまる', () => {
     const skills: CharacterSkill[] = [
       { id: 'shared', name: 'A' },
@@ -92,6 +122,16 @@ describe('characterSkills - 物理ダメージ軽減', () => {
     }
 
     expect(describeCharacterSkill(skill)).toBe('[+11]攻撃回数')
+  })
+
+  it('SPD倍率スキルの説明文を返す', () => {
+    const skill: CharacterSkill = {
+      id: 'spd_up',
+      name: '先制攻撃',
+      statMultipliers: { spd: 1.2 },
+    }
+
+    expect(describeCharacterSkill(skill)).toBe('SPDが×1.2')
   })
 
   it('呪文付与スキルからLearnedSpellへ変換できる', () => {

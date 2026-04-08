@@ -1038,6 +1038,79 @@ describe('spell charges', () => {
 
     expect(spellLogs).toHaveLength(2)
   })
+
+  it('ブリザードはレベル15メイジ相当で使用できる', () => {
+    const battleSystem = new BattleSystem()
+    const enemy = createTestEnemy({
+      id: 'ICE_MAGE',
+      name: '氷術師',
+      level: 15,
+      hp: 999,
+      atk: 1,
+      def: 1,
+      spd: 50,
+      attackCount: 0,
+      skills: [
+        { id: 'blizzard', name: 'ブリザード', grantsSpellId: 'blizzard' },
+      ],
+    })
+    const ally = createTestGoblin({
+      stats: { hp: 400, atk: 12, sp: 10, spd: 1, def: 10, attackCount: 1, accuracy: 20, evasion: 15 },
+    })
+
+    const result = battleSystem.executeBattle([ally], [ally.stats.hp], [[enemy]], createSeededRng(7), 2)
+    const spellLogs = result.detailedLog.filter(log => log.actorId === 'ICE_MAGE' && log.action === 'ブリザード')
+
+    expect(spellLogs).toHaveLength(1)
+  })
+})
+
+describe('BattleSystem — ジョブ系スキル', () => {
+  it('かばう持ちはHP半分以下の後列への通常攻撃を肩代わりする', () => {
+    const battleSystem = new BattleSystem()
+    const guard = createTestGoblin({
+      id: 1,
+      skills: [{ id: 'cover', name: 'かばう', coverLowHpAlly: true }],
+      stats: { hp: 120, atk: 5, sp: 0, spd: 20, def: 20, attackCount: 1, accuracy: 999, evasion: 0 },
+    })
+    const rear = createTestGoblin({
+      id: 2,
+      name: '後衛',
+      stats: { hp: 100, atk: 5, sp: 0, spd: 10, def: 5, attackCount: 1, accuracy: 0, evasion: 0 },
+    })
+    const enemy = createTestEnemy({
+      atk: 50,
+      spd: 100,
+      accuracy: 999,
+      evasion: 0,
+    })
+
+    const result = battleSystem.executeBattle([guard, rear], [guard.stats.hp, 40], [[enemy]], createSeededRng(3), 1)
+    const enemyAttackLog = result.detailedLog.find(log => log.actorId === enemy.id && log.action === '通常攻撃')
+
+    expect(enemyAttackLog?.targets[0]?.targetId).toBe(String(guard.id))
+  })
+
+  it('鼓舞持ちの後列はダメージが上がる', () => {
+    const battleSystem = new BattleSystem()
+    const warrior = createTestGoblin({
+      id: 1,
+      stats: { hp: 120, atk: 5, sp: 0, spd: 20, def: 20, attackCount: 1, accuracy: 999, evasion: 0 },
+      skills: [{ id: 'inspire', name: '鼓舞', rearAllyDamageMultiplier: 1.5 }],
+    })
+    const attacker = createTestGoblin({
+      id: 2,
+      name: '後衛',
+      stats: { hp: 100, atk: 40, sp: 0, spd: 100, def: 5, attackCount: 1, accuracy: 999, evasion: 0 },
+      skills: [],
+    })
+    const enemy = createTestEnemy({ hp: 200, def: 1, evasion: 0, spd: 1 })
+
+    const result = battleSystem.executeBattle([warrior, attacker], [warrior.stats.hp, attacker.stats.hp], [[enemy]], createSeededRng(1), 1)
+    const attackerLog = result.detailedLog.find(log => log.actorId === String(attacker.id) && log.action === '通常攻撃')
+
+    expect((attackerLog?.targets[0]?.totalDamage ?? 0)).toBeGreaterThan(50)
+  })
 })
 
 // =========================================================================

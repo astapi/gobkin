@@ -5,11 +5,14 @@ export interface CharacterSkill {
   id: string
   name: string
   statBonuses?: Partial<Record<keyof GoblinStats, number>>
+  statMultipliers?: Partial<Record<keyof GoblinStats, number>>
   equipmentCategoryMultiplier?: Partial<Record<EquipmentCategory, number>>
   equipmentStatMultipliers?: Partial<Record<EquipmentStat, number>>
   physicalDamageReductionPercent?: number
   additionalDamage?: number
   protectRearAllyNormalAttackMultiplier?: number
+  rearAllyDamageMultiplier?: number
+  coverLowHpAlly?: boolean
   grantsSpellId?: string
   spellChargeBonusForId?: string
   extraSpellCharges?: number

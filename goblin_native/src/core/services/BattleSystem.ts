@@ -2,9 +2,11 @@ import type { AttackTargetDetail, BattleLogEntry, CharacterSkill, Enemy, Goblin,
 import { SPELL_DEFS } from '../../shared/data/spells'
 import {
   getAdditionalDamageFromSkills,
+  getRearAllyDamageMultiplierFromSkills,
   getLearnedSpellsFromSkills,
   getPhysicalDamageReductionFromSkills,
   getRearProtectionMultiplierFromSkills,
+  hasCoverLowHpAllySkill,
 } from '../../shared/data/characterSkills'
 import type { SpellDef } from '../../shared/types/Spell'
 import { CombatantManager } from './CombatantManager'
@@ -240,7 +242,11 @@ export class BattleSystem {
         if (spellAction) {
           // 呪文実行
           const { targetDetails, totalHitCount } = this.executeSpell(
-            unit, spellAction, targetGroup, rng,
+            unit,
+            spellAction,
+            targetGroup,
+            unit.isAlly ? allyUnits : enemyUnits,
+            rng,
           )
 
           // チャージ消費
@@ -271,7 +277,11 @@ export class BattleSystem {
             const aliveTargets = targetGroup.filter(target => target.currentHP > 0)
             if (aliveTargets.length === 0) break
 
-            const target = selectTarget(aliveTargets, rng)
+            const initialTarget = selectTarget(aliveTargets, rng)
+            const target = this.resolveCoverTarget(
+              initialTarget,
+              unit.isAlly ? enemyUnits : allyUnits,
+            )
 
             // 命中判定
             const hitRate = this.calculateHitRate(unit, target, atkIdx + 1, rng)
@@ -294,6 +304,10 @@ export class BattleSystem {
             // ダメージ補正: n<=2 → 1.0, n>=3 → 0.9^(n-2)
             const dmgMod = getDamageModifier(atkIdx + 1)
             const additionalDamage = getAdditionalDamageFromSkills(unit.skills)
+            const rearDamageMultiplier = this.getRearDamageMultiplier(
+              unit,
+              unit.isAlly ? allyUnits : enemyUnits,
+            )
 
             // スキル由来の物理ダメージ軽減を適用
             const reductionFactor = 1 - target.damageReduction / 100
@@ -301,7 +315,7 @@ export class BattleSystem {
             const protectionFactor = this.getRearGuardReductionFactor(target, allyUnits)
             const damage = Math.max(
               1,
-              Math.floor((baseDamage * dmgMod + additionalDamage) * reductionFactor * physicalReductionFactor * protectionFactor),
+              Math.floor((baseDamage * dmgMod * rearDamageMultiplier + additionalDamage) * reductionFactor * physicalReductionFactor * protectionFactor),
             )
 
             target.currentHP = Math.max(0, target.currentHP - damage)
@@ -433,6 +447,7 @@ export class BattleSystem {
     unit: BattleUnit,
     spellDef: SpellDef,
     targetGroup: BattleUnit[],
+    sourceGroup: BattleUnit[],
     rng: () => number,
   ): { targetDetails: Map<string, AttackTargetDetail>; totalHitCount: number } {
     const targetDetails: Map<string, AttackTargetDetail> = new Map()
@@ -458,7 +473,8 @@ export class BattleSystem {
           RACE_DICT, unit.combatant, target.combatant,
           spellSkill, DEFAULT_DAMAGE_OPTIONS, rng,
         )
-        const damage = Math.max(1, Math.floor(baseDamage))
+        const rearDamageMultiplier = this.getRearDamageMultiplier(unit, sourceGroup)
+        const damage = Math.max(1, Math.floor(baseDamage * rearDamageMultiplier))
 
         target.currentHP = Math.max(0, target.currentHP - damage)
         totalHitCount++
@@ -483,7 +499,8 @@ export class BattleSystem {
           RACE_DICT, unit.combatant, target.combatant,
           spellSkill, DEFAULT_DAMAGE_OPTIONS, rng,
         )
-        const damage = Math.max(1, Math.floor(baseDamage))
+        const rearDamageMultiplier = this.getRearDamageMultiplier(unit, sourceGroup)
+        const damage = Math.max(1, Math.floor(baseDamage * rearDamageMultiplier))
 
         target.currentHP = Math.max(0, target.currentHP - damage)
         totalHitCount++
@@ -582,6 +599,32 @@ export class BattleSystem {
       }
       return factor * getRearProtectionMultiplierFromSkills(ally.skills)
     }, 1)
+  }
+
+  private getRearDamageMultiplier(unit: BattleUnit, groupUnits: BattleUnit[]): number {
+    return groupUnits.reduce((factor, ally) => {
+      if (ally.currentHP <= 0 || ally.row >= unit.row) {
+        return factor
+      }
+      return factor * getRearAllyDamageMultiplierFromSkills(ally.skills)
+    }, 1)
+  }
+
+  private resolveCoverTarget(target: BattleUnit, defendingGroup: BattleUnit[]): BattleUnit {
+    if (target.currentHP <= 0 || target.currentHP > Math.floor(target.maxHP / 2)) {
+      return target
+    }
+
+    const candidates = defendingGroup
+      .filter((unit) => (
+        unit.currentHP > 0 &&
+        unit.combatant.id !== target.combatant.id &&
+        unit.row < target.row &&
+        hasCoverLowHpAllySkill(unit.skills)
+      ))
+      .sort((a, b) => b.row - a.row)
+
+    return candidates[0] ?? target
   }
 
   private createTurnStartLog(

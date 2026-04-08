@@ -13,6 +13,7 @@ import { ModStatCalculator } from '@/core/services/ModStatCalculator'
 import { getExpForNextLevel, getExpProgress } from '@/core/services/ExperienceSystem'
 import { getModTemplate } from '@/shared/data/modPoolLoader'
 import { describeCharacterSkill, getUniqueSkillsById } from '@/shared/data/characterSkills'
+import { getGoblinJobDefinition } from '@/shared/data/goblinJobs'
 
 const STAT_LABELS: Record<string, string> = {
   hp_percent: 'HP', hp_flat: 'HP',
@@ -70,6 +71,7 @@ export default function GoblinDetailScreen() {
   const assignedParty = useMemo(() => (
     goblin ? parties.find((party) => party.memberIds.includes(goblin.id)) ?? null : null
   ), [goblin, parties])
+  const jobLabel = goblin?.job ? getGoblinJobDefinition(goblin.job).name : null
 
   const handleBanish = useCallback(() => {
     if (!goblin) return
@@ -118,6 +120,7 @@ export default function GoblinDetailScreen() {
             <View style={styles.profileInfo}>
               <Text style={styles.profileName}>{goblin.name}</Text>
               <Text style={styles.profileRace}>{goblin.race}</Text>
+              {jobLabel && <Text style={styles.profileJob}>{jobLabel}</Text>}
               <Text style={styles.profileLevel}>Lv.{goblin.level}</Text>
             </View>
           </View>
@@ -295,6 +298,12 @@ const styles = StyleSheet.create({
   profileRace: {
     fontSize: 12,
     color: '#6B7280',
+    marginBottom: 1,
+  },
+  profileJob: {
+    fontSize: 12,
+    color: '#1D4ED8',
+    fontWeight: '600',
     marginBottom: 1,
   },
   profileLevel: {

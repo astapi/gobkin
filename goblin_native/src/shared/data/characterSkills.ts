@@ -12,6 +12,7 @@ export function cloneCharacterSkill(skill: CharacterSkill): CharacterSkill {
   return {
     ...skill,
     statBonuses: skill.statBonuses ? { ...skill.statBonuses } : undefined,
+    statMultipliers: skill.statMultipliers ? { ...skill.statMultipliers } : undefined,
     equipmentCategoryMultiplier: skill.equipmentCategoryMultiplier
       ? { ...skill.equipmentCategoryMultiplier }
       : undefined,
@@ -38,8 +39,16 @@ export function getUniqueSkillsById(skills: CharacterSkill[]): CharacterSkill[] 
 }
 
 export function describeCharacterSkill(skill: CharacterSkill): string {
+  if (skill.coverLowHpAlly) {
+    return 'HPが半分以下の味方への通常攻撃を代わりに受ける'
+  }
+
   if (skill.physicalDamageReductionPercent !== undefined) {
     return `[-${skill.physicalDamageReductionPercent}%] 物理ダメージ軽減(%)`
+  }
+
+  if (skill.rearAllyDamageMultiplier !== undefined) {
+    return `自分より後列の仲間のダメージが×${skill.rearAllyDamageMultiplier.toFixed(1)}`
   }
 
   if (skill.additionalDamage !== undefined) {
@@ -53,6 +62,14 @@ export function describeCharacterSkill(skill: CharacterSkill): string {
 
   if (skill.equipmentCategoryMultiplier?.armor !== undefined) {
     return `鎧カテゴリ装備の能力値が×${skill.equipmentCategoryMultiplier.armor.toFixed(1)}`
+  }
+
+  if (skill.statMultipliers?.spd !== undefined) {
+    return `SPDが×${skill.statMultipliers.spd.toFixed(1)}`
+  }
+
+  if (skill.statMultipliers?.evasion !== undefined) {
+    return `回避が×${skill.statMultipliers.evasion.toFixed(1)}`
   }
 
   if (skill.equipmentStatMultipliers?.accuracy_flat !== undefined) {
@@ -79,6 +96,20 @@ export function getSkillStatBonuses(skills: CharacterSkill[]): Partial<Record<ke
   return bonuses
 }
 
+export function getSkillStatMultipliers(skills: CharacterSkill[]): Partial<Record<keyof GoblinStats, number>> {
+  const multipliers: Partial<Record<keyof GoblinStats, number>> = {}
+
+  for (const skill of getUniqueSkillsById(skills)) {
+    for (const [key, value] of Object.entries(skill.statMultipliers ?? {})) {
+      if (value === undefined) continue
+      const statKey = key as keyof GoblinStats
+      multipliers[statKey] = (multipliers[statKey] ?? 1) * value
+    }
+  }
+
+  return multipliers
+}
+
 export function getAdditionalDamageFromSkills(skills: CharacterSkill[]): number {
   return getUniqueSkillsById(skills).reduce((sum, skill) => sum + (skill.additionalDamage ?? 0), 0)
 }
@@ -88,6 +119,17 @@ export function getRearProtectionMultiplierFromSkills(skills: CharacterSkill[]):
     (product, skill) => product * (skill.protectRearAllyNormalAttackMultiplier ?? 1),
     1,
   )
+}
+
+export function getRearAllyDamageMultiplierFromSkills(skills: CharacterSkill[]): number {
+  return getUniqueSkillsById(skills).reduce(
+    (product, skill) => product * (skill.rearAllyDamageMultiplier ?? 1),
+    1,
+  )
+}
+
+export function hasCoverLowHpAllySkill(skills: CharacterSkill[]): boolean {
+  return getUniqueSkillsById(skills).some((skill) => skill.coverLowHpAlly)
 }
 
 export function getPhysicalDamageReductionFromSkills(skills: CharacterSkill[]): number {
