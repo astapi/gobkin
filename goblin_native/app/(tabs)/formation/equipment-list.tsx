@@ -8,7 +8,7 @@ import { SQLiteEquipmentRepository } from '@/infrastructure/repositories/SQLiteE
 import { EquipmentService } from '@/core/services/EquipmentService'
 import { EquipmentTitleService } from '@/core/services/EquipmentTitleService'
 import { getEquipmentTemplate } from '@/shared/data/equipmentPoolLoader'
-import { getGoblinImage } from '@/shared/utils/goblinImages'
+import { getGoblinDisplayImage } from '@/shared/utils/goblinImages'
 import type { EquipmentInstance, EquipmentTemplate, Goblin, Party } from '@/shared/types'
 
 function getDisplayName(eq: EquipmentInstance, template: EquipmentTemplate): string {
@@ -128,7 +128,7 @@ export default function PartyEquipmentListScreen() {
                 activeOpacity={0.85}
               >
                 <View style={styles.memberHeader}>
-                  <Image source={getGoblinImage(member.avatar)} style={styles.avatar} />
+                  <Image source={getGoblinDisplayImage(member)} style={styles.avatar} />
                   <View style={styles.memberMeta}>
                     <Text style={styles.memberName}>{member.name}</Text>
                     <Text style={styles.memberSubText}>

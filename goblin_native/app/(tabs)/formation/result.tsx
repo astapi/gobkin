@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { router, useLocalSearchParams } from 'expo-router'
 import { useDungeonStore } from '@/presentation/stores/useDungeonStore'
 import { useExpeditionStore } from '@/presentation/stores/useExpeditionStore'
-import { getGoblinImage } from '@/shared/utils/goblinImages'
+import { getGoblinDisplayImage } from '@/shared/utils/goblinImages'
 import { areasData } from '@/shared/data'
 import { ModStatCalculator } from '@/core/services/ModStatCalculator'
 import type { ExpeditionRecord, Goblin, TimelineEvent } from '@/shared/types'
@@ -186,7 +186,7 @@ export default function ExpeditionResultScreen() {
               <View key={goblin.id} style={styles.memberRow}>
                 <View style={styles.memberAvatar}>
                   <Image
-                    source={getGoblinImage(goblin.avatar)}
+                    source={getGoblinDisplayImage(goblin)}
                     style={[styles.memberAvatarImage, dead && styles.memberAvatarDead]}
                   />
                 </View>

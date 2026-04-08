@@ -8,7 +8,7 @@ import { useBaseStore, selectMaxGoblins, selectRank } from '@/presentation/store
 import { usePartyStore } from '@/presentation/stores/usePartyStore'
 import { GoblinCard } from '@/presentation/components/GoblinCard'
 import type { Goblin } from '@/shared/types'
-import { getGoblinImage } from '@/shared/utils/goblinImages'
+import { getGoblinDisplayImage } from '@/shared/utils/goblinImages'
 import { getEffectiveStats } from '@/shared/utils/goblinStats'
 import { ModStatCalculator } from '@/core/services/ModStatCalculator'
 import { getModTemplate } from '@/shared/data/modPoolLoader'
@@ -256,7 +256,7 @@ export default function GoblinListScreen() {
                   activeOpacity={0.8}
                   onPress={() => handlePendingGoblinPress(goblin)}
                 >
-                  <Image source={getGoblinImage(goblin.avatar)} style={styles.pendingAvatar} />
+                  <Image source={getGoblinDisplayImage(goblin)} style={styles.pendingAvatar} />
                   <View style={styles.pendingInfo}>
                     <Text style={styles.pendingName} numberOfLines={1}>{goblin.name}</Text>
                     <Text style={styles.pendingStats}>

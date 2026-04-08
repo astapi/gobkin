@@ -7,7 +7,7 @@ import { usePartyStore } from '@/presentation/stores/usePartyStore'
 import { describeCharacterSkill } from '@/shared/data/characterSkills'
 import { applyGoblinJob, canTrainGoblin, formatGoblinJobSkillName, getGoblinJobDefinitions, getGoblinJobDefinition, getGoblinJobSkillEntries, GOBLIN_TRAINING_UNLOCK_RANK } from '@/shared/data/goblinJobs'
 import type { GoblinJob } from '@/shared/types'
-import { getGoblinImage } from '@/shared/utils/goblinImages'
+import { getGoblinDisplayImage } from '@/shared/utils/goblinImages'
 
 export default function BaseTrainingScreen() {
   const rank = useBaseStore(selectRank)
@@ -116,7 +116,7 @@ export default function BaseTrainingScreen() {
                     onPress={() => setIsGoblinModalVisible(true)}
                   >
                     <View style={styles.selectedGoblinSummary}>
-                      <Image source={getGoblinImage(activeGoblin.avatar)} style={styles.selectedGoblinAvatar} />
+                      <Image source={getGoblinDisplayImage({ ...activeGoblin, job: effectiveSelectedJob })} style={styles.selectedGoblinAvatar} />
                       <View style={styles.selectedGoblinSummaryText}>
                         <Text style={styles.settingValueText}>{activeGoblin.name}</Text>
                         <Text style={styles.settingValueDescription}>
@@ -200,7 +200,7 @@ export default function BaseTrainingScreen() {
                         setIsGoblinModalVisible(false)
                       }}
                     >
-                      <Image source={getGoblinImage(goblin.avatar)} style={styles.modalAvatar} />
+                      <Image source={getGoblinDisplayImage(goblin)} style={styles.modalAvatar} />
                       <View style={styles.modalOptionBody}>
                         <Text style={[styles.modalOptionTitle, isSelected && styles.modalOptionTitleSelected]}>
                           {goblin.name}

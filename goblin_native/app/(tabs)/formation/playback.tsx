@@ -9,7 +9,7 @@ import { useExpeditionStore } from '@/presentation/stores/useExpeditionStore'
 import type { TimelineEvent, ExpeditionReplay, ExpeditionRecord, ExpeditionEndReason, Party } from '@/shared/types'
 import type { BattleLogEntry, BattleLogMeta } from '@/shared/types'
 import { storeBattleLog } from '@/presentation/contexts/battleLogStore'
-import { getGoblinImage } from '@/shared/utils/goblinImages'
+import { getGoblinDisplayImage } from '@/shared/utils/goblinImages'
 import { ModStatCalculator } from '@/core/services/ModStatCalculator'
 
 interface LogEntry {
@@ -430,7 +430,7 @@ export default function ExpeditionPlaybackScreen() {
               <View style={styles.partyHeader}>
                 <View style={styles.partyAvatar}>
                   {goblin ? (
-                    <Image source={getGoblinImage(goblin.avatar)} style={styles.partyAvatarImage} />
+                    <Image source={getGoblinDisplayImage(goblin)} style={styles.partyAvatarImage} />
                   ) : (
                     <Text style={styles.partyAvatarFallback}>?</Text>
                   )}
