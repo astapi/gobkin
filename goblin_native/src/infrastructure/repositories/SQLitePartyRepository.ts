@@ -2,6 +2,9 @@
  * SQLiteを使用したパーティリポジトリ実装
  * DBから直接読み書きする設計
  */
+import {
+  normalizePartyRewardMultipliers,
+} from '../../shared/types'
 import type { Party, PartyStatus, ExpeditionRequest } from '../../shared/types'
 import type { IPartyRepository } from '../../core/repositories/IPartyRepository'
 import { getDatabase } from '../database'
@@ -14,6 +17,9 @@ interface PartyRow {
   dungeon_id: string | null
   target_floor: number | null
   return_policy: string | null
+  gold_multiplier: number | null
+  rare_multiplier: number | null
+  title_multiplier: number | null
   created_at: string
   updated_at: string
 }
@@ -42,10 +48,12 @@ export class SQLitePartyRepository implements IPartyRepository {
 
   async saveParty(party: Party): Promise<void> {
     const db = await getDatabase()
+    const rewardMultipliers = normalizePartyRewardMultipliers(party.rewardMultipliers)
     await db.runAsync(
       `INSERT OR REPLACE INTO parties
-       (id, name, member_ids_json, status, dungeon_id, target_floor, return_policy, updated_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, datetime('now'))`,
+       (id, name, member_ids_json, status, dungeon_id, target_floor, return_policy,
+        gold_multiplier, rare_multiplier, title_multiplier, updated_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))`,
       [
         party.id,
         party.name,
@@ -54,6 +62,9 @@ export class SQLitePartyRepository implements IPartyRepository {
         party.dungeonId ?? null,
         party.targetFloor ?? null,
         party.returnPolicy ?? null,
+        rewardMultipliers.gold,
+        rewardMultipliers.rare,
+        rewardMultipliers.title,
       ]
     )
   }
@@ -110,6 +121,11 @@ export class SQLitePartyRepository implements IPartyRepository {
       dungeonId: row.dungeon_id ?? undefined,
       targetFloor: row.target_floor ?? undefined,
       returnPolicy: (row.return_policy as ExpeditionRequest['returnPolicy']) ?? undefined,
+      rewardMultipliers: normalizePartyRewardMultipliers({
+        gold: row.gold_multiplier ?? undefined,
+        rare: row.rare_multiplier ?? undefined,
+        title: row.title_multiplier ?? undefined,
+      }),
     }
   }
 }

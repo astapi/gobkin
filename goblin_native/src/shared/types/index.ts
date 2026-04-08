@@ -2,7 +2,8 @@
 export type { Goblin, GoblinStats, GoblinJob } from "./Goblin"
 
 // Party related types
-export type { Party, PartyStatus, PartyState } from "./Party"
+export type { Party, PartyStatus, PartyState, PartyRewardMultipliers } from "./Party"
+export { DEFAULT_PARTY_REWARD_MULTIPLIERS, normalizePartyRewardMultipliers } from "./Party"
 
 // Enemy related types
 export type { Enemy, EnemyPattern, EnemyDatabase, EnemySnap, EquipmentDropConfig } from "./Enemy"

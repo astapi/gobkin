@@ -1,4 +1,7 @@
-import type { ExpeditionRequest, Party } from '../../shared/types'
+import {
+  normalizePartyRewardMultipliers,
+} from '../../shared/types'
+import type { ExpeditionRequest, Party, PartyRewardMultipliers } from '../../shared/types'
 import type { IPartyRepository } from '../repositories'
 
 export interface CreatePartyInput {
@@ -6,6 +9,7 @@ export interface CreatePartyInput {
   memberIds: number[]
   dungeonId?: string
   returnPolicy?: ExpeditionRequest['returnPolicy']
+  rewardMultipliers?: Partial<PartyRewardMultipliers>
 }
 
 export class CreatePartyUseCase {
@@ -29,6 +33,7 @@ export class CreatePartyUseCase {
       status: 'idle',
       dungeonId: input.dungeonId,
       returnPolicy: input.returnPolicy,
+      rewardMultipliers: normalizePartyRewardMultipliers(input.rewardMultipliers),
     }
 
     await this.partyRepository.saveParty(party)

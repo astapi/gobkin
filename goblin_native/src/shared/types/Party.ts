@@ -5,6 +5,35 @@ import type { LearnedSpell } from "./Spell"
 
 export type PartyStatus = "idle" | "expedition"
 
+export interface PartyRewardMultipliers {
+  gold: number
+  rare: number
+  title: number
+}
+
+export const DEFAULT_PARTY_REWARD_MULTIPLIERS: PartyRewardMultipliers = {
+  gold: 1.0,
+  rare: 1.0,
+  title: 1.0,
+}
+
+export function normalizePartyRewardMultipliers(
+  multipliers?: Partial<PartyRewardMultipliers> | null
+): PartyRewardMultipliers {
+  const normalize = (value: number | undefined, fallback: number): number => {
+    if (typeof value !== 'number' || !Number.isFinite(value) || value <= 0) {
+      return fallback
+    }
+    return value
+  }
+
+  return {
+    gold: normalize(multipliers?.gold, DEFAULT_PARTY_REWARD_MULTIPLIERS.gold),
+    rare: normalize(multipliers?.rare, DEFAULT_PARTY_REWARD_MULTIPLIERS.rare),
+    title: normalize(multipliers?.title, DEFAULT_PARTY_REWARD_MULTIPLIERS.title),
+  }
+}
+
 export type Party = {
   id: number
   name: string
@@ -13,6 +42,7 @@ export type Party = {
   dungeonId?: string
   targetFloor?: number | null  // null = どこまでも進む
   returnPolicy?: ExpeditionRequest["returnPolicy"]
+  rewardMultipliers?: PartyRewardMultipliers
 }
 
 export interface PartyState {
