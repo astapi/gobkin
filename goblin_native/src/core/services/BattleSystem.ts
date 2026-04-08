@@ -7,6 +7,7 @@ import {
   getPhysicalDamageReductionFromSkills,
   getRearProtectionMultiplierFromSkills,
   hasCoverLowHpAllySkill,
+  hasSurviveLethalDamageAtHp1Skill,
 } from '../../shared/data/characterSkills'
 import type { SpellDef } from '../../shared/types/Spell'
 import { CombatantManager } from './CombatantManager'
@@ -321,7 +322,7 @@ export class BattleSystem {
               Math.floor((baseDamage * dmgMod * rearDamageMultiplier + additionalDamage) * reductionFactor * physicalReductionFactor * protectionFactor),
             )
 
-            target.currentHP = Math.max(0, target.currentHP - damage)
+            this.applyDamage(target, damage)
 
             // ターゲットごとの結果を集約
             this.accumulateTargetDetail(targetDetails, target, damage)
@@ -463,7 +464,7 @@ export class BattleSystem {
         const rearDamageMultiplier = this.getRearDamageMultiplier(unit, sourceGroup)
         const damage = Math.max(1, Math.floor(baseDamage * rearDamageMultiplier))
 
-        target.currentHP = Math.max(0, target.currentHP - damage)
+        this.applyDamage(target, damage)
         totalHitCount++
 
         this.accumulateTargetDetail(targetDetails, target, damage)
@@ -489,7 +490,7 @@ export class BattleSystem {
         const rearDamageMultiplier = this.getRearDamageMultiplier(unit, sourceGroup)
         const damage = Math.max(1, Math.floor(baseDamage * rearDamageMultiplier))
 
-        target.currentHP = Math.max(0, target.currentHP - damage)
+        this.applyDamage(target, damage)
         totalHitCount++
 
         this.accumulateTargetDetail(targetDetails, target, damage)
@@ -522,6 +523,17 @@ export class BattleSystem {
         targetHP: target.currentHP,
       })
     }
+  }
+
+  private applyDamage(target: BattleUnit, damage: number): void {
+    const nextHP = target.currentHP - damage
+
+    if (nextHP <= 0 && target.currentHP > 0 && hasSurviveLethalDamageAtHp1Skill(target.skills)) {
+      target.currentHP = 1
+      return
+    }
+
+    target.currentHP = Math.max(0, nextHP)
   }
 
   private createAllyUnit(goblin: Goblin, initialHP: number | undefined, originalIndex: number): BattleUnit {
@@ -583,21 +595,41 @@ export class BattleSystem {
   private getRearGuardReductionFactor(target: BattleUnit, allyUnits: BattleUnit[]): number {
     if (!target.isAlly || target.currentHP <= 0) return 1
 
-    return allyUnits.reduce((factor, ally) => {
-      if (ally.currentHP <= 0 || ally.row >= target.row) {
-        return factor
-      }
-      return factor * getRearProtectionMultiplierFromSkills(ally.skills)
-    }, 1)
+    const frontmostRearGuardUnit = allyUnits
+      .filter((ally) => (
+        ally.currentHP > 0 &&
+        ally.row < target.row &&
+        getRearProtectionMultiplierFromSkills(ally.skills) !== 1
+      ))
+      .sort((a, b) => {
+        if (a.row !== b.row) return a.row - b.row
+        return a.rowSlot - b.rowSlot
+      })[0]
+
+    if (!frontmostRearGuardUnit) {
+      return 1
+    }
+
+    return getRearProtectionMultiplierFromSkills(frontmostRearGuardUnit.skills)
   }
 
   private getRearDamageMultiplier(unit: BattleUnit, groupUnits: BattleUnit[]): number {
-    return groupUnits.reduce((factor, ally) => {
-      if (ally.currentHP <= 0 || ally.row >= unit.row) {
-        return factor
-      }
-      return factor * getRearAllyDamageMultiplierFromSkills(ally.skills)
-    }, 1)
+    const frontmostInspireUnit = groupUnits
+      .filter((ally) => (
+        ally.currentHP > 0 &&
+        ally.row < unit.row &&
+        getRearAllyDamageMultiplierFromSkills(ally.skills) !== 1
+      ))
+      .sort((a, b) => {
+        if (a.row !== b.row) return a.row - b.row
+        return a.rowSlot - b.rowSlot
+      })[0]
+
+    if (!frontmostInspireUnit) {
+      return 1
+    }
+
+    return getRearAllyDamageMultiplierFromSkills(frontmostInspireUnit.skills)
   }
 
   private resolveCoverTarget(target: BattleUnit, defendingGroup: BattleUnit[]): BattleUnit {

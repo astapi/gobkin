@@ -9,6 +9,7 @@ import {
   getSkillStatBonuses,
   getSkillStatMultipliers,
   hasCoverLowHpAllySkill,
+  hasSurviveLethalDamageAtHp1Skill,
   getUniqueSkillsById,
 } from '../characterSkills'
 
@@ -94,6 +95,14 @@ describe('characterSkills - 物理ダメージ軽減', () => {
     expect(hasCoverLowHpAllySkill(skills)).toBe(true)
   })
 
+  it('気合いスキルを判定できる', () => {
+    const skills: CharacterSkill[] = [
+      { id: 'guts', name: '気合い', surviveLethalDamageAtHp1: true },
+    ]
+
+    expect(hasSurviveLethalDamageAtHp1Skill(skills)).toBe(true)
+  })
+
   it('スキル一覧取得時も同じidは1件にまとまる', () => {
     const skills: CharacterSkill[] = [
       { id: 'shared', name: 'A' },
@@ -132,6 +141,16 @@ describe('characterSkills - 物理ダメージ軽減', () => {
     }
 
     expect(describeCharacterSkill(skill)).toBe('SPDが×1.2')
+  })
+
+  it('気合いスキルの説明文を返す', () => {
+    const skill: CharacterSkill = {
+      id: 'guts',
+      name: '気合い',
+      surviveLethalDamageAtHp1: true,
+    }
+
+    expect(describeCharacterSkill(skill)).toBe('HPが0になる攻撃を受けてもHP1で耐える')
   })
 
   it('呪文付与スキルからLearnedSpellへ変換できる', () => {

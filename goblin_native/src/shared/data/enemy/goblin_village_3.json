@@ -96,6 +96,10 @@
       "evasion": 18,
       "exp": 80,
       "gold": 70,
+      "skills": [
+        { "id": "hobgoblin_inspire", "name": "鼓舞", "rearAllyDamageMultiplier": 1.5 },
+        { "id": "hobgoblin_guts", "name": "気合い", "surviveLethalDamageAtHp1": true }
+      ],
       "factorDrops": [
         { "factorId": "hobgoblin", "probability": 1 }
       ]

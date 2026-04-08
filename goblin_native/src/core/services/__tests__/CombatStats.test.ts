@@ -582,6 +582,41 @@ describe('BattleSystem — 命中判定と複数回攻撃', () => {
     expect(protectedRear!.totalDamage).toBeLessThan(plainRear!.totalDamage)
   })
 
+  it('後列防護持ちが複数いても最前列の1体分だけ適用する', () => {
+    const allies = [
+      createTestGoblin({
+        id: 1,
+        skills: [{ id: 'rear_guard_front', name: '後列防護', protectRearAllyNormalAttackMultiplier: 2 / 3 }],
+        stats: { hp: 9999, atk: 1, sp: 10, spd: 10, def: 0, attackCount: 1, accuracy: 1, evasion: 0 },
+      }),
+      createTestGoblin({
+        id: 2,
+        skills: [{ id: 'rear_guard_middle', name: '後列防護', protectRearAllyNormalAttackMultiplier: 2 / 3 }],
+        stats: { hp: 9999, atk: 1, sp: 10, spd: 5, def: 0, attackCount: 1, accuracy: 1, evasion: 0 },
+      }),
+      createTestGoblin({
+        id: 3,
+        skills: [],
+        stats: { hp: 9999, atk: 1, sp: 10, spd: 1, def: 0, attackCount: 1, accuracy: 1, evasion: 0 },
+      }),
+    ]
+    const enemy = createTestEnemy({
+      hp: 9999,
+      atk: 90,
+      def: 0,
+      spd: 100,
+      attackCount: 20,
+      accuracy: 999,
+      evasion: 0,
+    })
+
+    const result = new BattleSystem().executeBattle(allies, [9999, 9999, 9999], [[enemy]], createSeededRng(7), 1)
+    const rear = result.detailedLog.find(log => log.action === '通常攻撃' && !log.isAlly)!.targets.find(target => target.targetId === '3')
+
+    expect(rear).toBeDefined()
+    expect(rear!.totalDamage).toBe(201)
+  })
+
   it('遠征戦闘でもスライムゴブリンの後列防護が適用される', () => {
     const protectedPartyState = [
       {
@@ -1175,6 +1210,58 @@ describe('BattleSystem — ジョブ系スキル', () => {
     const attackerLog = result.detailedLog.find(log => log.actorId === String(attacker.id) && log.action === '通常攻撃')
 
     expect((attackerLog?.targets[0]?.totalDamage ?? 0)).toBeGreaterThan(50)
+  })
+
+  it('鼓舞持ちが複数いても最前列の1体分だけ適用する', () => {
+    const battleSystem = new BattleSystem()
+    const frontInspire = createTestGoblin({
+      id: 1,
+      skills: [{ id: 'inspire_front', name: '鼓舞', rearAllyDamageMultiplier: 1.5 }],
+      stats: { hp: 120, atk: 5, sp: 0, spd: 20, def: 20, attackCount: 1, accuracy: 999, evasion: 0 },
+    })
+    const middleInspire = createTestGoblin({
+      id: 2,
+      skills: [{ id: 'inspire_middle', name: '鼓舞', rearAllyDamageMultiplier: 1.5 }],
+      stats: { hp: 120, atk: 5, sp: 0, spd: 15, def: 20, attackCount: 1, accuracy: 999, evasion: 0 },
+    })
+    const attacker = createTestGoblin({
+      id: 3,
+      name: '後衛',
+      skills: [],
+      stats: { hp: 100, atk: 40, sp: 0, spd: 100, def: 5, attackCount: 1, accuracy: 999, evasion: 0 },
+    })
+    const enemy = createTestEnemy({ hp: 200, def: 1, evasion: 0, spd: 1 })
+
+    const result = battleSystem.executeBattle(
+      [frontInspire, middleInspire, attacker],
+      [frontInspire.stats.hp, middleInspire.stats.hp, attacker.stats.hp],
+      [[enemy]],
+      createSeededRng(1),
+      1,
+    )
+    const attackerLog = result.detailedLog.find(log => log.actorId === String(attacker.id) && log.action === '通常攻撃')
+
+    expect(attackerLog?.targets[0]?.totalDamage).toBe(58)
+  })
+
+  it('気合い持ちは致死ダメージを受けてもHP1で耐える', () => {
+    const battleSystem = new BattleSystem()
+    const hobgoblin = createTestGoblin({
+      id: 1,
+      race: 'ホブゴブリン',
+      stats: { hp: 100, atk: 10, sp: 0, spd: 50, def: 10, attackCount: 1, accuracy: 999, evasion: 0 },
+    })
+    const enemy = createTestEnemy({
+      atk: 999,
+      accuracy: 999,
+      evasion: 0,
+      spd: 100,
+    })
+
+    const result = battleSystem.executeBattle([hobgoblin], [hobgoblin.stats.hp], [[enemy]], createSeededRng(2), 1)
+
+    expect(result.allyHPDelta[0]).toBe(1 - hobgoblin.stats.hp)
+    expect(result.outcome).not.toBe('lose')
   })
 })
 
