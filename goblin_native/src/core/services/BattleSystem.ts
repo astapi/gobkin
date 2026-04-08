@@ -26,7 +26,9 @@ interface SpellCharge {
 }
 
 interface BattleUnit {
+  instanceId?: string
   combatant: Combatant
+  logName?: string
   currentHP: number
   maxHP: number
   initialHP: number
@@ -209,6 +211,7 @@ export class BattleSystem {
         enemyIdx++
       }
     }
+    this.assignEnemyLogNames(enemyUnits)
 
     const detailedLog: BattleLogEntry[] = []
     let currentTurn = 0
@@ -256,7 +259,7 @@ export class BattleSystem {
           detailedLog.push({
             turn: currentTurn,
             actorId: unit.combatant.id,
-            actorName: unit.combatant.name,
+            actorName: this.getLogName(unit),
             actorRow: unit.row + 1,
             action: spellAction.name,
             attackCount: totalHitCount,
@@ -321,29 +324,13 @@ export class BattleSystem {
             target.currentHP = Math.max(0, target.currentHP - damage)
 
             // ターゲットごとの結果を集約
-            const existing = targetDetails.get(target.combatant.id)
-            if (existing) {
-              existing.totalDamage += damage
-              existing.hitCount++
-              existing.defeated = target.currentHP <= 0
-              existing.targetHP = target.currentHP
-            } else {
-              targetDetails.set(target.combatant.id, {
-                targetId: target.combatant.id,
-                targetName: target.combatant.name,
-                targetRow: target.row + 1,
-                totalDamage: damage,
-                hitCount: 1,
-                defeated: target.currentHP <= 0,
-                targetHP: target.currentHP,
-              })
-            }
+            this.accumulateTargetDetail(targetDetails, target, damage)
           }
 
           detailedLog.push({
             turn: currentTurn,
             actorId: unit.combatant.id,
-            actorName: unit.combatant.name,
+            actorName: this.getLogName(unit),
             actorRow: unit.row + 1,
             action: BASIC_ATTACK_SKILL.name,
             attackCount: unit.attackCount,
@@ -517,16 +504,17 @@ export class BattleSystem {
     target: BattleUnit,
     damage: number,
   ): void {
-    const existing = details.get(target.combatant.id)
+    const targetKey = this.getUnitKey(target)
+    const existing = details.get(targetKey)
     if (existing) {
       existing.totalDamage += damage
       existing.hitCount++
       existing.defeated = target.currentHP <= 0
       existing.targetHP = target.currentHP
     } else {
-      details.set(target.combatant.id, {
+      details.set(targetKey, {
         targetId: target.combatant.id,
-        targetName: target.combatant.name,
+        targetName: this.getLogName(target),
         targetRow: target.row + 1,
         totalDamage: damage,
         hitCount: 1,
@@ -545,6 +533,7 @@ export class BattleSystem {
     const physicalDamageReduction = getPhysicalDamageReductionFromSkills(goblin.skills)
     const learnedSpells = this.mergeLearnedSpells(goblin.spells, goblin.skills)
     return {
+      instanceId: `ally:${combatant.id}`,
       combatant,
       currentHP: hp,
       maxHP: effectiveStats.hp,
@@ -570,6 +559,7 @@ export class BattleSystem {
     const skills = enemy.skills ?? []
     const learnedSpells = this.mergeLearnedSpells(enemy.spells, skills)
     return {
+      instanceId: `enemy:${combatant.id}:${originalIndex}`,
       combatant,
       currentHP: enemy.hp,
       maxHP: enemy.hp,
@@ -618,7 +608,7 @@ export class BattleSystem {
     const candidates = defendingGroup
       .filter((unit) => (
         unit.currentHP > 0 &&
-        unit.combatant.id !== target.combatant.id &&
+        this.getUnitKey(unit) !== this.getUnitKey(target) &&
         unit.row < target.row &&
         hasCoverLowHpAllySkill(unit.skills)
       ))
@@ -647,13 +637,13 @@ export class BattleSystem {
       turnState: {
         allies: allyUnits.map(unit => ({
           id: unit.combatant.id,
-          name: unit.combatant.name,
+          name: this.getLogName(unit),
           currentHP: unit.currentHP,
           maxHP: unit.maxHP,
         })),
         enemies: enemyUnits.map(unit => ({
           id: unit.combatant.id,
-          name: unit.combatant.name,
+          name: this.getLogName(unit),
           currentHP: unit.currentHP,
           maxHP: unit.maxHP,
         })),
@@ -678,5 +668,46 @@ export class BattleSystem {
       enemyDefeated,
       detailedLog,
     }
+  }
+
+  private getUnitKey(unit: BattleUnit): string {
+    return unit.instanceId ?? unit.combatant.id
+  }
+
+  private getLogName(unit: BattleUnit): string {
+    return unit.logName ?? unit.combatant.name
+  }
+
+  private assignEnemyLogNames(enemyUnits: BattleUnit[]): void {
+    const groups = new Map<string, BattleUnit[]>()
+
+    for (const unit of enemyUnits) {
+      const group = groups.get(unit.combatant.id) ?? []
+      group.push(unit)
+      groups.set(unit.combatant.id, group)
+    }
+
+    for (const group of groups.values()) {
+      if (group.length === 1) {
+        group[0].logName = group[0].combatant.name
+        continue
+      }
+
+      group.forEach((unit, index) => {
+        unit.logName = `${unit.combatant.name}${this.toAlphabetLabel(index)}`
+      })
+    }
+  }
+
+  private toAlphabetLabel(index: number): string {
+    let n = index
+    let label = ''
+
+    do {
+      label = String.fromCharCode(65 + (n % 26)) + label
+      n = Math.floor(n / 26) - 1
+    } while (n >= 0)
+
+    return label
   }
 }
