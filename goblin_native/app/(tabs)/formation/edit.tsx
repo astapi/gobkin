@@ -10,6 +10,7 @@ import type { Goblin, Party } from '@/shared/types'
 const MAX_PARTY_SIZE = 6
 
 interface SlotProps {
+  label: string
   goblin?: Goblin
   isEmpty: boolean
   isSelected: boolean
@@ -17,7 +18,7 @@ interface SlotProps {
   onRemove?: () => void
 }
 
-function PartySlot({ goblin, isEmpty, isSelected, onPress, onRemove }: SlotProps) {
+function PartySlot({ label, goblin, isEmpty, isSelected, onPress, onRemove }: SlotProps) {
   if (isEmpty || !goblin) {
     return (
       <TouchableOpacity
@@ -25,6 +26,9 @@ function PartySlot({ goblin, isEmpty, isSelected, onPress, onRemove }: SlotProps
         onPress={onPress}
         activeOpacity={0.7}
       >
+        <View style={styles.slotLabelBadge}>
+          <Text style={styles.slotLabelText}>{label}</Text>
+        </View>
         <View style={styles.emptySlot}>
           <Text style={styles.emptySlotPlus}>+</Text>
           <Text style={styles.emptySlotText}>空き</Text>
@@ -39,6 +43,9 @@ function PartySlot({ goblin, isEmpty, isSelected, onPress, onRemove }: SlotProps
       onPress={onPress}
       activeOpacity={0.7}
     >
+      <View style={styles.slotLabelBadge}>
+        <Text style={styles.slotLabelText}>{label}</Text>
+      </View>
       <Image source={getGoblinDisplayImage(goblin)} style={styles.slotAvatar} />
       <Text style={styles.slotName} numberOfLines={1}>{goblin.name}</Text>
       <Text style={styles.slotLevel}>Lv.{goblin.level}</Text>
@@ -57,6 +64,9 @@ function PartySlot({ goblin, isEmpty, isSelected, onPress, onRemove }: SlotProps
   )
 }
 
+function getSlotLabel(index: number): string {
+  return `${index + 1}`
+}
 
 export default function PartyEditScreen() {
   const { partyId } = useLocalSearchParams<{ partyId: string }>()
@@ -129,8 +139,25 @@ export default function PartyEditScreen() {
   }, [goblins, assignedToOtherParty])
 
   const handleSlotPress = useCallback((index: number) => {
+    if (selectedSlotIndex !== null && selectedSlotIndex !== index) {
+      const sourceMemberId = selectedMemberIds[selectedSlotIndex]
+      const targetMemberId = selectedMemberIds[index]
+
+      if (sourceMemberId !== undefined && targetMemberId !== undefined) {
+        setSelectedMemberIds(prev => {
+          const newIds = [...prev]
+          const temp = newIds[selectedSlotIndex]
+          newIds[selectedSlotIndex] = newIds[index]
+          newIds[index] = temp
+          return newIds
+        })
+        setSelectedSlotIndex(null)
+        return
+      }
+    }
+
     setSelectedSlotIndex(prev => prev === index ? null : index)
-  }, [])
+  }, [selectedMemberIds, selectedSlotIndex])
 
   const handleRemoveMember = useCallback((index: number) => {
     setSelectedMemberIds(prev => {
@@ -226,10 +253,14 @@ export default function PartyEditScreen() {
         {/* パーティメンバースロット */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>パーティメンバー（最大{MAX_PARTY_SIZE}人）</Text>
+          <Text style={styles.sectionDescription}>
+            スロットを選んでから別の編成済みスロットをタップすると、隊列を入れ替えられます。
+          </Text>
           <View style={styles.slotsGrid}>
             {slots.map((goblin, index) => (
               <PartySlot
                 key={index}
+                label={getSlotLabel(index)}
                 goblin={goblin}
                 isEmpty={!goblin}
                 isSelected={selectedSlotIndex === index}
@@ -321,6 +352,12 @@ const styles = StyleSheet.create({
     color: '#374151',
     marginBottom: 12,
   },
+  sectionDescription: {
+    fontSize: 13,
+    color: '#6B7280',
+    marginBottom: 12,
+    lineHeight: 18,
+  },
   slotsGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
@@ -337,6 +374,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     padding: 8,
+    position: 'relative',
   },
   filledSlot: {
     borderStyle: 'solid',
@@ -360,6 +398,20 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#9CA3AF',
     marginTop: 4,
+  },
+  slotLabelBadge: {
+    position: 'absolute',
+    top: 6,
+    left: 6,
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 999,
+    backgroundColor: '#E5E7EB',
+  },
+  slotLabelText: {
+    fontSize: 10,
+    fontWeight: '600',
+    color: '#4B5563',
   },
   slotAvatar: {
     width: 40,
