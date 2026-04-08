@@ -1012,6 +1012,71 @@ describe('selectTarget — 隊列ターゲット選択', () => {
 // 呪文チャージ
 // =========================================================================
 describe('spell charges', () => {
+  it('ファイヤーボールは同じ敵IDの別個体を別ターゲットとして記録する', () => {
+    const battleSystem = new BattleSystem()
+    const caster = createTestEnemy({
+      id: 'FIRE_CASTER',
+      name: '火術師',
+      level: 1,
+      hp: 999,
+      atk: 1,
+      def: 1,
+      spd: 100,
+      attackCount: 0,
+      skills: [
+        { id: 'fireball', name: 'ファイヤーボール', grantsSpellId: 'fireball' },
+      ],
+    })
+    const allyA = createTestGoblin({
+      id: 1,
+      name: '前衛A',
+      stats: { hp: 120, atk: 10, sp: 0, spd: 1, def: 10, attackCount: 1, accuracy: 20, evasion: 0 },
+    })
+    const allyB = createTestGoblin({
+      id: 2,
+      name: '前衛B',
+      stats: { hp: 120, atk: 10, sp: 0, spd: 1, def: 10, attackCount: 1, accuracy: 20, evasion: 0 },
+    })
+
+    const result = battleSystem.executeBattle([allyA, allyB], [allyA.stats.hp, allyB.stats.hp], [[caster]], createSeededRng(1), 1)
+    const spellLog = result.detailedLog.find(log => log.actorId === 'FIRE_CASTER' && log.action === 'ファイヤーボール')
+
+    expect(spellLog?.targets).toHaveLength(2)
+    expect(spellLog?.targets.map(target => target.targetId).sort()).toEqual(['1', '2'])
+    expect(spellLog?.targets.every(target => target.hitCount === 1)).toBe(true)
+  })
+
+  it('同じ敵IDが複数いる場合はログ表示名にA/Bサフィックスを付ける', () => {
+    const battleSystem = new BattleSystem()
+    const attacker = createTestGoblin({
+      id: 1,
+      stats: { hp: 120, atk: 40, sp: 0, spd: 100, def: 10, attackCount: 1, accuracy: 999, evasion: 0 },
+    })
+    const enemyA = createTestEnemy({
+      id: 'ORC002',
+      name: 'オーク兵',
+      hp: 60,
+      def: 1,
+      spd: 1,
+      evasion: 0,
+    })
+    const enemyB = createTestEnemy({
+      id: 'ORC002',
+      name: 'オーク兵',
+      hp: 60,
+      def: 1,
+      spd: 1,
+      evasion: 0,
+    })
+
+    const result = battleSystem.executeBattle([attacker], [attacker.stats.hp], [[enemyA, enemyB]], createSeededRng(1), 1)
+    const turnStartLog = result.detailedLog.find(log => log.action === 'turn_start')
+    const attackLog = result.detailedLog.find(log => log.actorId === '1' && log.action === '通常攻撃')
+
+    expect(turnStartLog?.turnState?.enemies.map(enemy => enemy.name)).toEqual(['オーク兵A', 'オーク兵B'])
+    expect(attackLog?.targets[0]?.targetName).toBe('オーク兵A')
+  })
+
   it('ファイヤーボール2回は1戦闘で2回使える', () => {
     const battleSystem = new BattleSystem()
     const ally = createTestGoblin({
