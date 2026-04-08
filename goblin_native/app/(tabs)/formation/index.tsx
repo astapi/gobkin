@@ -8,7 +8,7 @@ import { useBaseStore, selectRank } from '@/presentation/stores/useBaseStore'
 import { useExpeditionFlow, type ExpeditionHistoryDisplay } from '@/presentation/hooks/useExpeditionFlow'
 import { useCurrentTime } from '@/presentation/hooks/useCurrentTime'
 import { useDungeonStore } from '@/presentation/stores/useDungeonStore'
-import { getGoblinImage } from '@/shared/utils/goblinImages'
+import { getGoblinDisplayImage } from '@/shared/utils/goblinImages'
 import { getEffectiveStats } from '@/shared/utils/goblinStats'
 import type { Party, Goblin, ExpeditionRecord } from '@/shared/types'
 
@@ -37,7 +37,7 @@ const MemberSlot = memo(function MemberSlot({ goblin, isEmpty, slotSize, avatarS
   return (
     <View style={[styles.memberSlot, { width: slotSize }]}>
       <Text style={styles.memberLevel}>Lv{goblin.level}</Text>
-      <Image source={getGoblinImage(goblin.avatar)} style={[styles.memberAvatar, { width: avatarSize, height: avatarSize }]} />
+      <Image source={getGoblinDisplayImage(goblin)} style={[styles.memberAvatar, { width: avatarSize, height: avatarSize }]} />
       <Text style={styles.memberHp}>HP{stats.hp}</Text>
     </View>
   )

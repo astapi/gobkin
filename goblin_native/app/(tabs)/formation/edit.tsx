@@ -3,7 +3,7 @@ import { View, Text, FlatList, TouchableOpacity, StyleSheet, ActivityIndicator, 
 import { router, useLocalSearchParams, Stack } from 'expo-router'
 import { usePartyStore } from '@/presentation/stores/usePartyStore'
 import { useGoblinStore } from '@/presentation/stores/useGoblinStore'
-import { getGoblinImage } from '@/shared/utils/goblinImages'
+import { getGoblinDisplayImage } from '@/shared/utils/goblinImages'
 import { GoblinCard } from '@/presentation/components/GoblinCard'
 import type { Goblin, Party } from '@/shared/types'
 
@@ -39,7 +39,7 @@ function PartySlot({ goblin, isEmpty, isSelected, onPress, onRemove }: SlotProps
       onPress={onPress}
       activeOpacity={0.7}
     >
-      <Image source={getGoblinImage(goblin.avatar)} style={styles.slotAvatar} />
+      <Image source={getGoblinDisplayImage(goblin)} style={styles.slotAvatar} />
       <Text style={styles.slotName} numberOfLines={1}>{goblin.name}</Text>
       <Text style={styles.slotLevel}>Lv.{goblin.level}</Text>
       {onRemove && (

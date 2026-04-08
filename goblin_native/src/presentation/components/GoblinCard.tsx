@@ -1,6 +1,6 @@
 import { memo } from 'react'
 import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native'
-import { getGoblinImage } from '@/shared/utils/goblinImages'
+import { getGoblinDisplayImage } from '@/shared/utils/goblinImages'
 import { getFactorImage } from '@/shared/utils/factorImages'
 import { getEffectiveStats } from '@/shared/utils/goblinStats'
 import { getModTemplate } from '@/shared/data/modPoolLoader'
@@ -49,7 +49,7 @@ export const GoblinCard = memo(function GoblinCard({
       isAssigned && styles.containerAssigned,
       isAssignedElsewhere && styles.containerDisabled,
     ]}>
-      <Image source={getGoblinImage(goblin.avatar)} style={styles.avatar} />
+      <Image source={getGoblinDisplayImage(goblin)} style={styles.avatar} />
       <View style={styles.info}>
         <Text style={[styles.name, isAssignedElsewhere && styles.nameDisabled]}>
           {goblin.name}

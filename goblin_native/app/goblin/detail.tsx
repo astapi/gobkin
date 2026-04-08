@@ -7,7 +7,7 @@ import { useBaseStore } from '@/presentation/stores/useBaseStore'
 import { usePartyStore } from '@/presentation/stores/usePartyStore'
 import type { Goblin } from '@/shared/types'
 import { getFactor } from '@/shared/data/factors'
-import { getGoblinImage } from '@/shared/utils/goblinImages'
+import { getGoblinDisplayImage } from '@/shared/utils/goblinImages'
 import { getFactorImage } from '@/shared/utils/factorImages'
 import { ModStatCalculator } from '@/core/services/ModStatCalculator'
 import { getExpForNextLevel, getExpProgress } from '@/core/services/ExperienceSystem'
@@ -115,7 +115,7 @@ export default function GoblinDetailScreen() {
         <View style={styles.profileCard}>
           <View style={styles.profileRow}>
             <View style={styles.profileAvatar}>
-              <Image source={getGoblinImage(goblin.avatar)} style={styles.profileAvatarImage} />
+              <Image source={getGoblinDisplayImage(goblin)} style={styles.profileAvatarImage} />
             </View>
             <View style={styles.profileInfo}>
               <Text style={styles.profileName}>{goblin.name}</Text>
