@@ -5,9 +5,10 @@
 import * as SQLite from 'expo-sqlite'
 import { migrateV1 } from './migrations/v1'
 import { migrateV2 } from './migrations/v2'
+import { migrateV3 } from './migrations/v3'
 
 const DB_NAME = 'goblin_kingdom.db'
-const CURRENT_SCHEMA_VERSION = 2
+const CURRENT_SCHEMA_VERSION = 3
 
 let db: SQLite.SQLiteDatabase | null = null
 let initializationPromise: Promise<SQLite.SQLiteDatabase> | null = null
@@ -82,6 +83,13 @@ const runMigrations = async (database: SQLite.SQLiteDatabase): Promise<void> => 
     await migrateV2(database)
     await setSchemaVersion(database, 2)
     console.log('[DB] Migration v2 completed')
+  }
+
+  if (currentVersion < 3) {
+    console.log('[DB] Running migration v3...')
+    await migrateV3(database)
+    await setSchemaVersion(database, 3)
+    console.log('[DB] Migration v3 completed')
   }
 }
 

@@ -32,4 +32,16 @@ export const SPELL_DEFS: Record<string, SpellDef> = {
     },
     defaultCharges: 2,
   },
+  blizzard: {
+    id: 'blizzard',
+    name: 'ブリザード',
+    power: 0.9,
+    targeting: {
+      type: 'multi_target',
+      baseTargets: 8,
+      scalePerLevel: 1,
+      scaleLevelInterval: 8,
+    },
+    defaultCharges: 1,
+  },
 }

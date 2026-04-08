@@ -66,6 +66,28 @@ export default function RootLayout() {
               <Stack screenOptions={{ headerShown: false }}>
                 <Stack.Screen name="(tabs)" />
                 <Stack.Screen
+                  name="base/upgrade"
+                  options={{
+                    headerShown: true,
+                    headerStyle: { backgroundColor: '#FFFFFF' },
+                    headerTitleStyle: { color: '#1F2937', fontWeight: 'bold' },
+                    headerTintColor: '#6B7280',
+                    headerBackTitle: '戻る',
+                    title: '拠点拡張',
+                  }}
+                />
+                <Stack.Screen
+                  name="base/training"
+                  options={{
+                    headerShown: true,
+                    headerStyle: { backgroundColor: '#FFFFFF' },
+                    headerTitleStyle: { color: '#1F2937', fontWeight: 'bold' },
+                    headerTintColor: '#6B7280',
+                    headerBackTitle: '戻る',
+                    title: '訓練所',
+                  }}
+                />
+                <Stack.Screen
                   name="goblin"
                   options={{
                     headerShown: true,

@@ -6,6 +6,7 @@ import {
   applySkillBonusesToEquipmentBonuses,
   applySkillBonusesToEquipmentEffects,
   getSkillStatBonuses,
+  getSkillStatMultipliers,
 } from '../../shared/data/characterSkills'
 import { FactorInheritanceService } from './FactorInheritanceService'
 import { factorDatabase } from '../../shared/data/factors'
@@ -40,6 +41,7 @@ export class ModStatCalculator {
 
     // 4. 装備ボーナスを集計
     const skillBonuses = getSkillStatBonuses(goblin.skills)
+    const skillMultipliers = getSkillStatMultipliers(goblin.skills)
     const adjustedEquipmentBonuses = applySkillBonusesToEquipmentBonuses(goblin.skills, equipmentBonuses ?? [])
     const adjustedEquipmentEffects = applySkillBonusesToEquipmentEffects(goblin.skills, equipmentEffects ?? [])
     const equipFlat = this.aggregateEquipmentFlat(adjustedEquipmentBonuses)
@@ -52,15 +54,17 @@ export class ModStatCalculator {
         (1 + (percentBonuses[key] + equipPercent[key]) / 100)
       )
 
+    const withMultiplier = (key: keyof GoblinStats) => Math.floor(calc(key) * (skillMultipliers[key] ?? 1))
+
     const result: GoblinStats = {
-      hp: calc('hp'),
-      atk: calc('atk'),
-      def: calc('def'),
-      sp: calc('sp'),
-      spd: calc('spd'),
-      attackCount: calc('attackCount'),
-      accuracy: calc('accuracy'),
-      evasion: calc('evasion'),
+      hp: withMultiplier('hp'),
+      atk: withMultiplier('atk'),
+      def: withMultiplier('def'),
+      sp: withMultiplier('sp'),
+      spd: withMultiplier('spd'),
+      attackCount: withMultiplier('attackCount'),
+      accuracy: withMultiplier('accuracy'),
+      evasion: withMultiplier('evasion'),
     }
 
     // 6. 装備特殊効果を適用（ステータス確定後）

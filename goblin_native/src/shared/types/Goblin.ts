@@ -13,10 +13,13 @@ export type GoblinStats = {
   evasion: number      // 回避能力
 }
 
+export type GoblinJob = 'guard' | 'thief' | 'mage' | 'warrior'
+
 export type Goblin = {
   id: number
   name: string
   race: string
+  job?: GoblinJob
   level: number
   experience: number
   avatar: string

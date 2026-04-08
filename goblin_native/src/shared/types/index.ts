@@ -1,5 +1,5 @@
 // Goblin related types
-export type { Goblin, GoblinStats } from "./Goblin"
+export type { Goblin, GoblinStats, GoblinJob } from "./Goblin"
 
 // Party related types
 export type { Party, PartyStatus, PartyState } from "./Party"
