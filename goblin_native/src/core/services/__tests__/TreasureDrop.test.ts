@@ -1,6 +1,6 @@
 import { ExpeditionEngine } from '../ExpeditionEngine'
 import { getEquipmentByDungeonLevel, getEquipmentTemplate } from '../../../shared/data/equipmentPoolLoader'
-import type { Enemy } from '../../../shared/types'
+import type { Enemy, PartyRewardMultipliers } from '../../../shared/types'
 
 /**
  * ExpeditionEngine の private メソッド rollTreasureDrops をテストするため、
@@ -16,10 +16,10 @@ function callRollTreasureDrops(
   dungeonLevel: number,
   enemies: Enemy[],
   droppedIds: Set<string>,
-  titleMultiplier?: number
+  rewardMultipliers?: Partial<PartyRewardMultipliers>
 ) {
   return (engine as any).rollTreasureDrops(
-    dungeonLevel, enemies, droppedIds, titleMultiplier
+    dungeonLevel, enemies, droppedIds, rewardMultipliers
   )
 }
 
@@ -152,7 +152,7 @@ describe('rollTreasureDrops', () => {
       for (let seed = 0; seed < 5000; seed++) {
         const engine = createEngine(seed * 1000)
         const result = callRollTreasureDrops(
-          engine, 1, [createDummyEnemy()], new Set(), 99
+          engine, 1, [createDummyEnemy()], new Set(), { title: 99 }
         )
         if (result.length > 0 && result[0].titleId !== undefined) {
           expect(typeof result[0].titleId).toBe('string')
@@ -239,7 +239,7 @@ describe('rollTreasureDrops', () => {
       for (let seed = 0; seed < iterations; seed++) {
         const engine = createEngine(seed)
         const result = callRollTreasureDrops(
-          engine, 1, [createDummyEnemy()], new Set(), 1
+          engine, 1, [createDummyEnemy()], new Set(), { title: 1 }
         )
         for (const drop of result) {
           totalDrops++
@@ -260,7 +260,7 @@ describe('rollTreasureDrops', () => {
       for (let seed = 0; seed < iterations; seed++) {
         const engine = createEngine(seed)
         const result = callRollTreasureDrops(
-          engine, 1, [createDummyEnemy()], new Set(), 99
+          engine, 1, [createDummyEnemy()], new Set(), { title: 99 }
         )
         for (const drop of result) {
           totalDrops++
@@ -312,7 +312,7 @@ describe('rollTreasureDrops', () => {
 
         const engine = createEngine(seed)
         const result = callRollTreasureDrops(
-          engine, 1, [enemy], new Set(), 99
+          engine, 1, [enemy], new Set(), { title: 99 }
         )
 
         const enemyDrop = result.find((d: any) => d.templateId === 'sword_cypress_stick')
@@ -374,6 +374,44 @@ describe('rollTreasureDrops', () => {
 
       expect(firstBattle.filter((d: any) => d.templateId === 'sword_cypress_stick')).toHaveLength(2)
       expect(secondBattle.filter((d: any) => d.templateId === 'sword_cypress_stick')).toHaveLength(0)
+    })
+
+    it('rareMultiplier が敵個別ドロップ確率に乗る', () => {
+      const enemy = createDummyEnemy({
+        equipmentDrops: [
+          { templateId: 'sword_cypress_stick', probability: 0.2 },
+        ],
+      })
+
+      let baseDrops = 0
+      let boostedDrops = 0
+      const iterations = 1000
+
+      for (let seed = 0; seed < iterations; seed++) {
+        const baseResult = callRollTreasureDrops(
+          createEngine(seed),
+          1,
+          [enemy],
+          new Set(),
+          { rare: 1 }
+        )
+        const boostedResult = callRollTreasureDrops(
+          createEngine(seed),
+          1,
+          [enemy],
+          new Set(),
+          { rare: 2 }
+        )
+
+        if (baseResult.some((d: any) => d.templateId === 'sword_cypress_stick')) {
+          baseDrops++
+        }
+        if (boostedResult.some((d: any) => d.templateId === 'sword_cypress_stick')) {
+          boostedDrops++
+        }
+      }
+
+      expect(boostedDrops).toBeGreaterThan(baseDrops)
     })
   })
 })

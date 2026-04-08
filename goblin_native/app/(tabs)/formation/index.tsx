@@ -10,9 +10,14 @@ import { useCurrentTime } from '@/presentation/hooks/useCurrentTime'
 import { useDungeonStore } from '@/presentation/stores/useDungeonStore'
 import { getGoblinDisplayImage } from '@/shared/utils/goblinImages'
 import { getEffectiveStats } from '@/shared/utils/goblinStats'
+import { normalizePartyRewardMultipliers } from '@/shared/types'
 import type { Party, Goblin, ExpeditionRecord } from '@/shared/types'
 
 const MAX_PARTY_SLOTS = 6
+
+function formatMultiplier(value: number): string {
+  return value.toFixed(1)
+}
 
 interface MemberSlotProps {
   goblin?: Goblin
@@ -70,6 +75,11 @@ const PartyCard = memo(function PartyCard({
       .filter((g): g is Goblin => g !== undefined)
   }, [party.memberIds, goblins])
 
+  const partyRewardText = useMemo(() => {
+    const multipliers = normalizePartyRewardMultipliers(party.rewardMultipliers)
+    return `G ${formatMultiplier(multipliers.gold)}倍  レア ${formatMultiplier(multipliers.rare)}倍  称号 ${formatMultiplier(multipliers.title)}倍`
+  }, [party.rewardMultipliers])
+
   // 6スロット分の配列を作成
   const slots = useMemo(() => {
     const result: (Goblin | undefined)[] = []
@@ -91,6 +101,8 @@ const PartyCard = memo(function PartyCard({
             </View>
           )}
         </View>
+
+        <Text style={styles.partyRewardText}>{partyRewardText}</Text>
 
         <View style={styles.membersRow}>
           {slots.map((goblin, index) => (
@@ -494,6 +506,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     color: '#1F2937',
+  },
+  partyRewardText: {
+    fontSize: 13,
+    color: '#6B7280',
+    marginBottom: 12,
   },
   expeditionBadge: {
     backgroundColor: '#3B82F6',

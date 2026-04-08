@@ -12,6 +12,7 @@ import type {
   PartyState,
   ExpeditionEndReason,
   AreaConfig,
+  PartyRewardMultipliers,
 } from '../../shared/types'
 import { getAreaConfig } from '../../shared/data/expeditionArea'
 import { getEnemyDatabase } from '../../shared/data/enemy'
@@ -19,6 +20,7 @@ import { getEquipmentTemplate, getEquipmentByDungeonLevel } from '../../shared/d
 import { BattleSystem } from './BattleSystem'
 import { ModStatCalculator } from './ModStatCalculator'
 import { EquipmentTitleService } from './EquipmentTitleService'
+import { normalizePartyRewardMultipliers } from '../../shared/types'
 
 /** 全エリア共通の宝箱ドロップ確率（敵1体ごと） */
 const DROP_CHANCE = 0.15
@@ -47,8 +49,13 @@ export class ExpeditionEngine {
     }
   }
 
-  public async generateExpedition(request: ExpeditionRequest, party: Goblin[]): Promise<ExpeditionReplay> {
+  public async generateExpedition(
+    request: ExpeditionRequest,
+    party: Goblin[],
+    rewardMultipliers?: PartyRewardMultipliers
+  ): Promise<ExpeditionReplay> {
     console.log('ExpeditionEngine: Starting generateExpedition', { request, partySize: party.length })
+    const normalizedRewardMultipliers = normalizePartyRewardMultipliers(rewardMultipliers)
     // ダンジョンIDからエリアIDにマッピング
     const dungeonToAreaMap: Record<string, string> = {
       "1": "forest_outskirts",
@@ -140,7 +147,12 @@ export class ExpeditionEngine {
             }
 
             // 宝箱ドロップ判定（勝利時のみ）
-            const treasureDrops = this.rollTreasureDrops(area.areaLevel, enemies.flat(), droppedTemplateIds)
+            const treasureDrops = this.rollTreasureDrops(
+              area.areaLevel,
+              enemies.flat(),
+              droppedTemplateIds,
+              normalizedRewardMultipliers
+            )
             if (treasureDrops.length > 0) {
               events.push({
                 type: "treasure",
@@ -196,7 +208,12 @@ export class ExpeditionEngine {
             }
 
             // 宝箱ドロップ判定（勝利時のみ）
-            const defaultTreasure = this.rollTreasureDrops(area.areaLevel, enemies.flat(), droppedTemplateIds)
+            const defaultTreasure = this.rollTreasureDrops(
+              area.areaLevel,
+              enemies.flat(),
+              droppedTemplateIds,
+              normalizedRewardMultipliers
+            )
             if (defaultTreasure.length > 0) {
               events.push({
                 type: "treasure",
@@ -260,7 +277,12 @@ export class ExpeditionEngine {
 
         // ボス戦勝利時の宝箱ドロップ判定
         if (bossCombat.outcome === 'win') {
-          const bossTreasure = this.rollTreasureDrops(area.areaLevel, bossEnemies.flat(), droppedTemplateIds)
+          const bossTreasure = this.rollTreasureDrops(
+            area.areaLevel,
+            bossEnemies.flat(),
+            droppedTemplateIds,
+            normalizedRewardMultipliers
+          )
           if (bossTreasure.length > 0) {
             events.push({
               type: "treasure",
@@ -289,7 +311,7 @@ export class ExpeditionEngine {
     }
 
     console.log('ExpeditionEngine: Generated events:', events.length)
-    const summary = this.calculateRewardSummary(events, partyState)
+    const summary = this.calculateRewardSummary(events, partyState, normalizedRewardMultipliers)
     console.log('ExpeditionEngine: Expedition complete', summary)
 
     return {
@@ -301,6 +323,7 @@ export class ExpeditionEngine {
         baseDurationSec: adjustedDuration,
         party: party.map(g => g.id.toString()),
         partySnapshot: party.map(g => ({ ...g })),
+        partyRewardMultipliers: normalizedRewardMultipliers,
         returnPolicy: request.returnPolicy,
         seed: this.seed
       },
@@ -529,8 +552,9 @@ export class ExpeditionEngine {
     dungeonLevel: number,
     enemies: Enemy[],
     droppedIds: Set<string>,
-    titleMultiplier: number = 1
+    rewardMultipliers?: PartyRewardMultipliers
   ): TreasureDrop[] {
+    const { title: titleMultiplier, rare: rareMultiplier } = normalizePartyRewardMultipliers(rewardMultipliers)
     const drops: TreasureDrop[] = []
     const expeditionDroppedIds = new Set(droppedIds)
     const pendingDroppedIds = new Set<string>()
@@ -562,7 +586,8 @@ export class ExpeditionEngine {
       if (!enemy.equipmentDrops) continue
       for (const drop of enemy.equipmentDrops) {
         if (expeditionDroppedIds.has(drop.templateId)) continue
-        if (this.rng() < drop.probability) {
+        const dropProbability = Math.min(1, drop.probability * rareMultiplier)
+        if (this.rng() < dropProbability) {
           const template = getEquipmentTemplate(drop.templateId)
           if (template) {
             // 称号を抽選
@@ -588,16 +613,21 @@ export class ExpeditionEngine {
     return drops
   }
 
-  private calculateRewardSummary(events: TimelineEvent[], partyState: PartyState[]): RewardSummary {
+  private calculateRewardSummary(
+    events: TimelineEvent[],
+    partyState: PartyState[],
+    rewardMultipliers?: PartyRewardMultipliers
+  ): RewardSummary {
+    const { gold: goldMultiplier } = normalizePartyRewardMultipliers(rewardMultipliers)
     let xpGained = 0
-    let goldGained = 0
+    let baseGoldGained = 0
     let maxFloorReached = 1
     const treasureDrops: TreasureDrop[] = []
 
     for (const event of events) {
       if (event.type === "battle" || event.type === "boss") {
         xpGained += event.xp
-        goldGained += event.enemy.gold
+        baseGoldGained += event.enemy.gold
         maxFloorReached = Math.max(maxFloorReached, event.floor)
       } else if (event.type === "floor_up") {
         maxFloorReached = Math.max(maxFloorReached, event.to)
@@ -616,6 +646,8 @@ export class ExpeditionEngine {
       event.reason !== undefined &&
       successReasons.has(event.reason)
     )
+
+    const goldGained = Math.floor(baseGoldGained * goldMultiplier)
 
     return {
       success,

@@ -4,6 +4,7 @@ import type {
   Goblin,
   Party,
 } from '../../shared/types'
+import { normalizePartyRewardMultipliers } from '../../shared/types'
 import { GoblinEntity, PartyEntity } from '../domain'
 import type { IGoblinRepository, IPartyRepository } from '../repositories'
 import { ExpeditionEngine } from '../services'
@@ -44,7 +45,11 @@ export class StartExpeditionUseCase {
       throw new Error('遠征可能なメンバーがいません')
     }
 
-    const replay = await this.expeditionEngine.generateExpedition(request, goblins)
+    const replay = await this.expeditionEngine.generateExpedition(
+      request,
+      goblins,
+      normalizePartyRewardMultipliers(party.rewardMultipliers)
+    )
     await this.partyRepository.updatePartyStatus(partyId, 'expedition')
     return replay
   }

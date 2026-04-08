@@ -1,6 +1,7 @@
 import { CompleteExpeditionUseCase } from '../CompleteExpeditionUseCase'
 import type { IGoblinRepository, IPartyRepository, IBaseStateRepository } from '../../repositories'
 import { getDefaultSkillsForRace } from '../../../shared/data/raceSkills'
+import { DEFAULT_PARTY_REWARD_MULTIPLIERS } from '../../../shared/types'
 import type { Goblin, GoblinStats, Party, BaseState, ExpeditionReplay, TimelineEvent } from '../../../shared/types'
 
 // --- テストヘルパー ---
@@ -72,6 +73,7 @@ function createTestReplay(overrides: Partial<ExpeditionReplay> = {}): Expedition
       floors: 3,
       baseDurationSec: 60,
       party: ['1'],
+      partyRewardMultipliers: DEFAULT_PARTY_REWARD_MULTIPLIERS,
       returnPolicy: 'never',
       seed: 12345,
     },
@@ -168,7 +170,17 @@ describe('CompleteExpeditionUseCase', () => {
         { type: 'return', at: 60, reason: 'completed' },
       ]
       const replay = createTestReplay({
-        meta: { expeditionId: 'exp-1', areaId: 'dungeon_1', areaName: 'テスト', floors: 3, baseDurationSec: 60, party: ['1', '2'], returnPolicy: 'never', seed: 12345 },
+        meta: {
+          expeditionId: 'exp-1',
+          areaId: 'dungeon_1',
+          areaName: 'テスト',
+          floors: 3,
+          baseDurationSec: 60,
+          party: ['1', '2'],
+          partyRewardMultipliers: DEFAULT_PARTY_REWARD_MULTIPLIERS,
+          returnPolicy: 'never',
+          seed: 12345,
+        },
         events,
         summary: { success: true, maxFloorReached: 3, xpGained: 100, goldGained: 50, casualties: ['1'] },
       })
@@ -329,7 +341,17 @@ describe('CompleteExpeditionUseCase', () => {
         { type: 'return', at: 60, reason: 'completed' },
       ]
       const replay = createTestReplay({
-        meta: { expeditionId: 'exp-1', areaId: 'dungeon_1', areaName: 'テスト', floors: 3, baseDurationSec: 60, party: ['1', '2', '3'], returnPolicy: 'never', seed: 12345 },
+        meta: {
+          expeditionId: 'exp-1',
+          areaId: 'dungeon_1',
+          areaName: 'テスト',
+          floors: 3,
+          baseDurationSec: 60,
+          party: ['1', '2', '3'],
+          partyRewardMultipliers: DEFAULT_PARTY_REWARD_MULTIPLIERS,
+          returnPolicy: 'never',
+          seed: 12345,
+        },
         events,
         summary: { success: true, maxFloorReached: 3, xpGained: 9, goldGained: 0, casualties: [] },
       })
@@ -364,7 +386,17 @@ describe('CompleteExpeditionUseCase', () => {
         { type: 'return', at: 60, reason: 'completed' },
       ]
       const replay = createTestReplay({
-        meta: { expeditionId: 'exp-1', areaId: 'dungeon_1', areaName: 'テスト', floors: 3, baseDurationSec: 60, party: ['1', '2', '3'], returnPolicy: 'never', seed: 12345 },
+        meta: {
+          expeditionId: 'exp-1',
+          areaId: 'dungeon_1',
+          areaName: 'テスト',
+          floors: 3,
+          baseDurationSec: 60,
+          party: ['1', '2', '3'],
+          partyRewardMultipliers: DEFAULT_PARTY_REWARD_MULTIPLIERS,
+          returnPolicy: 'never',
+          seed: 12345,
+        },
         events,
         summary: { success: true, maxFloorReached: 3, xpGained: 17, goldGained: 0, casualties: ['1'] },
       })

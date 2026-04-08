@@ -59,6 +59,9 @@ export const SCHEMA = {
       dungeon_id TEXT,
       target_floor INTEGER,
       return_policy TEXT,
+      gold_multiplier REAL NOT NULL DEFAULT 1.0,
+      rare_multiplier REAL NOT NULL DEFAULT 1.0,
+      title_multiplier REAL NOT NULL DEFAULT 1.0,
       created_at TEXT NOT NULL DEFAULT (datetime('now')),
       updated_at TEXT NOT NULL DEFAULT (datetime('now'))
     )

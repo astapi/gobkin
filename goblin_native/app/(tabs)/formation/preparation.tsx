@@ -8,6 +8,7 @@ import { useDungeonStore } from '@/presentation/stores/useDungeonStore'
 import { useExpeditionFlow } from '@/presentation/hooks/useExpeditionFlow'
 import { getGoblinDisplayImage } from '@/shared/utils/goblinImages'
 import { getEffectiveStats } from '@/shared/utils/goblinStats'
+import { normalizePartyRewardMultipliers } from '@/shared/types'
 import type { ExpeditionRequest, Goblin, Dungeon, Party } from '@/shared/types'
 
 type ReturnPolicy = ExpeditionRequest['returnPolicy']
@@ -25,6 +26,10 @@ const RETURN_POLICIES: { value: ReturnPolicy; label: string }[] = [
 function formatDungeonLabel(dungeon: Dungeon): string {
   if (dungeon.areaLevel === undefined) return dungeon.name
   return `${dungeon.name} / エリアLv.${dungeon.areaLevel}`
+}
+
+function formatMultiplier(value: number): string {
+  return value.toFixed(1)
 }
 
 interface MemberSlotProps {
@@ -118,6 +123,12 @@ export default function ExpeditionPreparationScreen() {
       .map(id => goblins.find(g => g.id === id))
       .filter((g): g is Goblin => g !== undefined)
   }, [party, goblins])
+
+  const partyRewardText = useMemo(() => {
+    if (!party) return ''
+    const multipliers = normalizePartyRewardMultipliers(party.rewardMultipliers)
+    return `G ${formatMultiplier(multipliers.gold)}倍  レア ${formatMultiplier(multipliers.rare)}倍  称号 ${formatMultiplier(multipliers.title)}倍`
+  }, [party])
 
   // 6スロット分の配列を作成
   const slots = useMemo(() => {
@@ -289,6 +300,7 @@ export default function ExpeditionPreparationScreen() {
           <Text style={styles.sectionTitle}>パーティ</Text>
           <View style={styles.card}>
             <Text style={styles.partyName}>{party.name}</Text>
+            <Text style={styles.partyRewardText}>{partyRewardText}</Text>
 
             <View style={styles.membersRow}>
               {slots.map((goblin, index) => (
@@ -531,6 +543,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     color: '#1F2937',
+    marginBottom: 6,
+  },
+  partyRewardText: {
+    fontSize: 13,
+    color: '#6B7280',
     marginBottom: 16,
   },
   membersRow: {
