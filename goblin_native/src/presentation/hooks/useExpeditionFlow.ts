@@ -60,12 +60,10 @@ export const useExpeditionFlow = ({
   const partyRepository = getPartyRepository()
   const goblinRepository = getGoblinRepository()
   const goblins = useGoblinStore((state) => state.goblins)
-  const pendingGoblins = useBaseStore((state) => state.pendingGoblins)
   const addPendingGoblin = useBaseStore((state) => state.addPendingGoblin)
   const isPendingLoading = useBaseStore((state) => state.isLoading)
   const getNextGoblinId = useBaseStore((state) => state.getNextGoblinId)
   const rank = useBaseStore(s => s.baseState?.rank ?? 1)
-  const maxGoblins = useBaseStore(s => s.baseState?.currentMaxGoblins ?? 10)
   const isBaseLoading = useBaseStore(s => s.isLoading)
   const baseStateRepository = getBaseStateRepository()
   const markDungeonCleared = useDungeonStore((state) => state.markDungeonCleared)
@@ -110,22 +108,18 @@ export const useExpeditionFlow = ({
       rank
     )
 
-    if (goblins.length < maxGoblins) {
-      await useGoblinStore.getState().saveGoblin(newGoblin)
-    } else {
-      const maxPending = rank * 5
-      if (pendingGoblins.length >= maxPending) return
-      await addPendingGoblin(newGoblin)
-    }
+    await useBaseStore.getState().refreshPendingGoblins()
+    const latestPendingGoblins = useBaseStore.getState().pendingGoblins
+    const maxPending = rank * 5
+    if (latestPendingGoblins.length >= maxPending) return
+    await addPendingGoblin(newGoblin)
   }, [
     addPendingGoblin,
     getNextGoblinId,
     goblins,
-    maxGoblins,
     isBaseLoading,
     isPendingLoading,
     markDungeonCleared,
-    pendingGoblins.length,
     rank,
   ])
 

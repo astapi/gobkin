@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet, ScrollView, ActivityIndicator
 import { router, useLocalSearchParams, Stack } from 'expo-router'
 import { usePartyStore } from '@/presentation/stores/usePartyStore'
 import { useGoblinStore } from '@/presentation/stores/useGoblinStore'
+import { useBaseStore, selectRank } from '@/presentation/stores/useBaseStore'
 import { useDungeonStore } from '@/presentation/stores/useDungeonStore'
 import { useExpeditionFlow } from '@/presentation/hooks/useExpeditionFlow'
 import { getGoblinImage } from '@/shared/utils/goblinImages'
@@ -69,6 +70,8 @@ export default function ExpeditionPreparationScreen() {
   } = usePartyStore()
   const goblins = useGoblinStore((state) => state.goblins)
   const goblinsLoading = useGoblinStore((state) => state.isLoading)
+  const pendingGoblins = useBaseStore((state) => state.pendingGoblins)
+  const rank = useBaseStore(selectRank)
   const dungeons = useDungeonStore((state) => state.dungeons)
   const dungeonsLoading = useDungeonStore((state) => state.isLoading)
   const { startExpedition, estimateExplorationTime } = useExpeditionFlow()
@@ -197,9 +200,24 @@ export default function ExpeditionPreparationScreen() {
       }
     }
 
+    const maxPendingGoblins = rank * 5
+    if (pendingGoblins.length >= maxPendingGoblins) {
+      Alert.alert(
+        '確認',
+        '待機枠がいっぱいです。遠征に成功してゴブリンが追加された場合、受け取れず破棄される可能性があります。出撃しますか？',
+        [
+          { text: 'キャンセル', style: 'cancel' },
+          { text: '出撃する', onPress: () => void doStartExpedition() },
+        ],
+      )
+      return
+    }
+
     void doStartExpedition()
   }, [
+    pendingGoblins.length,
     party,
+    rank,
     selectedDungeon,
     selectedDungeonId,
     selectedReturnPolicy,

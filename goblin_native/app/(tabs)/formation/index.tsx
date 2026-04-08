@@ -137,6 +137,7 @@ export default function FormationScreen() {
   const dungeons = useDungeonStore((state) => state.dungeons)
   const dungeonsLoading = useDungeonStore((state) => state.isLoading)
   const baseLoading = useBaseStore((state) => state.isLoading)
+  const pendingGoblins = useBaseStore((state) => state.pendingGoblins)
   const rank = useBaseStore(selectRank)
   const currentTime = useCurrentTime({ enabled: true })
   const {
@@ -287,8 +288,30 @@ export default function FormationScreen() {
       Alert.alert('一括出撃', message)
     }
 
+    const launchableParties = parties.filter((party) => {
+      if ((party.status ?? 'idle') === 'expedition') return false
+      if (party.memberIds.length === 0) return false
+      if (!party.dungeonId) return false
+      const dungeon = dungeons.find((item) => item.id === party.dungeonId)
+      return Boolean(dungeon?.unlocked)
+    })
+
+    const maxPendingGoblins = rank * 5
+    const remainingPendingSlots = Math.max(0, maxPendingGoblins - pendingGoblins.length)
+    if (launchableParties.length > remainingPendingSlots) {
+      Alert.alert(
+        '確認',
+        `待機枠が不足しています。${launchableParties.length}PT出撃すると、遠征成功時に追加されるゴブリンを受け取れず破棄する可能性があります。出撃しますか？`,
+        [
+          { text: 'キャンセル', style: 'cancel' },
+          { text: '出撃する', onPress: () => void doBulkLaunch() },
+        ],
+      )
+      return
+    }
+
     void doBulkLaunch()
-  }, [dungeons, parties, startExpedition])
+  }, [dungeons, parties, pendingGoblins.length, rank, startExpedition])
 
   const canBulkLaunch = useMemo(() => {
     return parties.some((party) => {
