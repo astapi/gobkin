@@ -13,7 +13,6 @@ function createGoblin(overrides: Partial<Goblin> = {}): Goblin {
     stats: overrides.stats ?? {
       hp: 50,
       atk: 12,
-      sp: 8,
       spd: 10,
       def: 8,
       attackCount: 2,

@@ -1,6 +1,6 @@
 /**
  * Modの種別
- * - prefix: ステータス増加系（HP%, ATK%, DEF%, SPD%, SP%, フラット増加）
+ * - prefix: ステータス増加系（HP%, ATK%, DEF%, SPD%, フラット増加）
  * - suffix: 軽減・特殊効果系（被ダメージ軽減など）
  */
 export type ModType = 'prefix' | 'suffix'
@@ -16,8 +16,6 @@ export type ModStat =
   | 'def_percent'
   | 'def_flat'
   | 'spd_percent'
-  | 'sp_percent'
-  | 'sp_flat'
   | 'spd_flat'
   | 'attackCount_flat'
   | 'attackCount_percent'

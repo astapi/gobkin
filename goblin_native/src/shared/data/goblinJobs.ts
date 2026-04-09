@@ -80,7 +80,7 @@ const GOBLIN_JOB_DEFINITIONS: Record<GoblinJob, GoblinJobDefinition> = {
     name: 'ゴブリンメイジ',
     shortLabel: '魔法',
     accentColor: '#B91C1C',
-    summary: 'SPを底上げし、ファイヤーボールを扱えるようになる。',
+    summary: '呪文を習得し、範囲攻撃を扱えるようになる。',
     description: '呪文訓練を施し、魔力と範囲攻撃を扱える後衛に変えます。',
     skills: [
       {

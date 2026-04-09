@@ -350,7 +350,6 @@ export class ExpeditionEngine {
         atk: goblin.stats.atk,
         def: goblin.stats.def,
         spd: goblin.stats.spd,
-        sp: goblin.stats.sp,
         attackCount: goblin.stats.attackCount,
         accuracy: goblin.stats.accuracy,
         evasion: goblin.stats.evasion,
@@ -459,7 +458,6 @@ export class ExpeditionEngine {
       stats: {
         hp: member.baseHP,  // 基礎HPを使用（ModStatCalculatorが因子・Modを適用）
         atk: member.atk,
-        sp: member.sp,
         spd: member.spd,
         def: member.def,
         attackCount: member.attackCount ?? 2,

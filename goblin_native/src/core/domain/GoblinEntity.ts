@@ -55,7 +55,7 @@ export class GoblinEntity {
    */
   public calculateCombatPower(): number {
     const stats = this.effectiveStats
-    const rawPower = stats.atk * 1.5 + stats.def * 1.2 + stats.sp + stats.spd + stats.hp / 10
+    const rawPower = stats.atk * 1.5 + stats.def * 1.2 + stats.spd + stats.hp / 10
     return Math.round(rawPower)
   }
 
@@ -104,7 +104,6 @@ export class GoblinEntity {
         hp: this.stats.hp + 5,
         atk: this.stats.atk + 2,
         def: this.stats.def + 1,
-        sp: this.stats.sp + 1,
         spd: this.stats.spd + 1,
       }
     }

@@ -116,7 +116,6 @@ bonus  = BASE_RANK_BONUS[拠点ランク]
 |-----------|------|------|------|
 | HP | 55 | 80 | |
 | ATK | 10 | 16 | |
-| SP | 7 | 13 | |
 | SPD | 8 | 14 | |
 | DEF | 8 | 14 | |
 | 命中精度 | 120 | 200 | |
@@ -165,8 +164,6 @@ modSeed = goblinId × 1000 + Date.now() % 1000
 | def_percent | DEF %増加 | prefix |
 | def_flat | DEF フラット増加 | prefix |
 | spd_percent | SPD %増加 | prefix |
-| sp_percent | SP %増加 | prefix |
-| sp_flat | SP フラット増加 | prefix |
 | damage_reduction | ダメージ軽減 | suffix |
 
 ### Tier と個体値要件

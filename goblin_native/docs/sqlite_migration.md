@@ -46,7 +46,7 @@ type Goblin = {
   level: number
   experience: number
   avatar: string
-  stats: GoblinStats      // { hp, atk, sp, spd, def }
+  stats: GoblinStats      // { hp, atk, def, spd, attackCount, accuracy, evasion }
   effectiveStats?: GoblinStats
   factors?: string[]
   variantFactorId?: string
