@@ -208,7 +208,7 @@ BattleSystem の隊列重み付け（前列50% → 25% → ...）がそのまま
   currentHP: number,  // 戦闘ごとに減少・引き継ぎ
   maxHP: number,      // 因子・Mod適用後の最大HP
   baseHP: number,     // 基礎HP（戦闘時のGoblin再構築用）
-  atk, def, spd, sp, attackCount, accuracy, evasion,
+  atk, def, spd, attackCount, accuracy, evasion,
   isKO: boolean,      // 戦闘不能
   isDead: boolean,    // 死亡
   mods, factors, variantFactorId,

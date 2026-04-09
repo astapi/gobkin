@@ -36,7 +36,6 @@ describe('ExpeditionEngine reward multipliers', () => {
         atk: 5,
         def: 5,
         spd: 5,
-        sp: 5,
         attackCount: 1,
         accuracy: 10,
         evasion: 5,

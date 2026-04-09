@@ -54,7 +54,6 @@ while (currentTurn < maxTurns) {
 | `hp` | 最大HP | 55 - 80 |
 | `atk` | 攻撃力 | 10 - 16 |
 | `def` | 防御力 | 8 - 14 |
-| `sp` | スペシャル（未実装） | 7 - 13 |
 | `spd` | 素早さ | 8 - 14 |
 | `attackCount` | 攻撃回数 | 血統で決定 |
 | `accuracy` | 命中精度（×8スケール） | 120 - 200 |

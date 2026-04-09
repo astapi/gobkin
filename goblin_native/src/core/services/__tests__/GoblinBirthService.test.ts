@@ -93,7 +93,6 @@ describe('GoblinBirthService', () => {
       expect(goblin.stats.hp).toBeGreaterThan(0)
       expect(goblin.stats.atk).toBeGreaterThan(0)
       expect(goblin.stats.def).toBeGreaterThan(0)
-      expect(goblin.stats.sp).toBeGreaterThan(0)
       expect(goblin.stats.spd).toBeGreaterThan(0)
     })
 
@@ -108,8 +107,6 @@ describe('GoblinBirthService', () => {
         expect(goblin.stats.hp).toBeLessThanOrEqual(80)
         expect(goblin.stats.atk).toBeGreaterThanOrEqual(10)
         expect(goblin.stats.atk).toBeLessThanOrEqual(16)
-        expect(goblin.stats.sp).toBeGreaterThanOrEqual(7)
-        expect(goblin.stats.sp).toBeLessThanOrEqual(13)
         expect(goblin.stats.spd).toBeGreaterThanOrEqual(8)
         expect(goblin.stats.spd).toBeLessThanOrEqual(14)
         expect(goblin.stats.def).toBeGreaterThanOrEqual(8)

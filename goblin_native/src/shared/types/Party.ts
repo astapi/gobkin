@@ -57,7 +57,6 @@ export interface PartyState {
   atk: number
   def: number
   spd: number
-  sp: number
   attackCount: number
   accuracy: number
   evasion: number

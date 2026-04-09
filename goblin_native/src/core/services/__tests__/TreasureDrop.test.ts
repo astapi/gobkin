@@ -29,7 +29,7 @@ function createDummyEnemy(overrides?: Partial<Enemy>): Enemy {
     id: 'test_enemy',
     name: 'テスト敵',
     level: 1,
-    stats: { hp: 10, atk: 5, def: 3, spd: 3, sp: 2 },
+    stats: { hp: 10, atk: 5, def: 3, spd: 3 },
     gold: 10,
     xp: 5,
     skills: [],

@@ -30,7 +30,7 @@ function createTestGoblin(overrides: Partial<Goblin> = {}): Goblin {
     level: 1,
     experience: 0,
     avatar: '/test.png',
-    stats: { hp: 60, atk: 12, sp: 10, spd: 10, def: 10, attackCount: 2, accuracy: 20, evasion: 15 },
+    stats: { hp: 60, atk: 12, spd: 10, def: 10, attackCount: 2, accuracy: 20, evasion: 15 },
     mods: [],
     skills: overrides.skills ?? getDefaultSkillsForRace(race),
     factors: [],
@@ -51,7 +51,6 @@ function createTestEnemy(overrides: Partial<Enemy> = {}): Enemy {
     atk: 5,
     def: 5,
     spd: 5,
-    sp: 0,
     attackCount: 1,
     accuracy: 20,
     evasion: 10,
@@ -241,7 +240,7 @@ describe('ModStatCalculator — 戦闘ステータス計算', () => {
 
   it('装備の%ボーナスが乗算される', () => {
     const goblin = createTestGoblin({
-      stats: { hp: 60, atk: 12, sp: 10, spd: 10, def: 10, attackCount: 2, accuracy: 100, evasion: 100 },
+      stats: { hp: 60, atk: 12, spd: 10, def: 10, attackCount: 2, accuracy: 100, evasion: 100 },
     })
     const bonuses = [
       { stat: 'accuracy_percent' as const, value: 50 },
@@ -256,7 +255,7 @@ describe('ModStatCalculator — 戦闘ステータス計算', () => {
   it('ウルフゴブリンは攻撃回数が+2される', () => {
     const goblin = createTestGoblin({
       race: 'ウルフゴブリン',
-      stats: { hp: 60, atk: 12, sp: 10, spd: 10, def: 10, attackCount: 3, accuracy: 20, evasion: 15 },
+      stats: { hp: 60, atk: 12, spd: 10, def: 10, attackCount: 3, accuracy: 20, evasion: 15 },
     })
     const result = ModStatCalculator.calculate(goblin)
 
@@ -324,7 +323,7 @@ describe('ModStatCalculator — 戦闘ステータス計算', () => {
 describe('BattleSystem — 命中判定と複数回攻撃', () => {
   it('攻撃回数3の場合、1つのログエントリにまとまる', () => {
     const allies = [createTestGoblin({
-      stats: { hp: 100, atk: 50, sp: 10, spd: 100, def: 10, attackCount: 3, accuracy: 999, evasion: 10 },
+      stats: { hp: 100, atk: 50, spd: 100, def: 10, attackCount: 3, accuracy: 999, evasion: 10 },
     })]
     const enemies = [[createTestEnemy({ hp: 9999, spd: 1, evasion: 0 })]]
 
@@ -340,7 +339,7 @@ describe('BattleSystem — 命中判定と複数回攻撃', () => {
 
   it('集約ログにattackCount, hitCount, targetsが含まれる', () => {
     const allies = [createTestGoblin({
-      stats: { hp: 100, atk: 50, sp: 10, spd: 100, def: 10, attackCount: 3, accuracy: 999, evasion: 10 },
+      stats: { hp: 100, atk: 50, spd: 100, def: 10, attackCount: 3, accuracy: 999, evasion: 10 },
     })]
     const enemies = [[createTestEnemy({ hp: 9999, spd: 1, evasion: 0 })]]
 
@@ -358,7 +357,7 @@ describe('BattleSystem — 命中判定と複数回攻撃', () => {
 
   it('命中精度0・回避極大でほぼ全ミスになる', () => {
     const allies = [createTestGoblin({
-      stats: { hp: 100, atk: 50, sp: 10, spd: 100, def: 10, attackCount: 1, accuracy: 0, evasion: 10 },
+      stats: { hp: 100, atk: 50, spd: 100, def: 10, attackCount: 1, accuracy: 0, evasion: 10 },
     })]
     const enemies = [[createTestEnemy({ hp: 9999, spd: 1, evasion: 999 })]]
 
@@ -376,7 +375,7 @@ describe('BattleSystem — 命中判定と複数回攻撃', () => {
 
   it('命中精度極大・回避0でほぼ全ヒットになる', () => {
     const allies = [createTestGoblin({
-      stats: { hp: 100, atk: 50, sp: 10, spd: 100, def: 10, attackCount: 1, accuracy: 999, evasion: 10 },
+      stats: { hp: 100, atk: 50, spd: 100, def: 10, attackCount: 1, accuracy: 999, evasion: 10 },
     })]
     const enemies = [[createTestEnemy({ hp: 9999, spd: 1, evasion: 0 })]]
 
@@ -395,7 +394,7 @@ describe('BattleSystem — 命中判定と複数回攻撃', () => {
   it('全ミス時はhitCount=0でtargetsが空になる', () => {
     // accuracy=0, evasion=999で強制的に全ミス状態を作る
     const allies = [createTestGoblin({
-      stats: { hp: 100, atk: 50, sp: 10, spd: 100, def: 10, attackCount: 1, accuracy: 0, evasion: 10 },
+      stats: { hp: 100, atk: 50, spd: 100, def: 10, attackCount: 1, accuracy: 0, evasion: 10 },
     })]
     const enemies = [[createTestEnemy({ hp: 9999, spd: 1, evasion: 999 })]]
 
@@ -412,7 +411,7 @@ describe('BattleSystem — 命中判定と複数回攻撃', () => {
 
   it('敵も複数回攻撃でき、1つのログにまとまる', () => {
     const allies = [createTestGoblin({
-      stats: { hp: 9999, atk: 5, sp: 10, spd: 1, def: 10, attackCount: 1, accuracy: 20, evasion: 0 },
+      stats: { hp: 9999, atk: 5, spd: 1, def: 10, attackCount: 1, accuracy: 20, evasion: 0 },
     })]
     const enemies = [[createTestEnemy({ hp: 9999, spd: 100, attackCount: 3, accuracy: 999, evasion: 10 })]]
 
@@ -429,7 +428,7 @@ describe('BattleSystem — 命中判定と複数回攻撃', () => {
   })
 
   it('残りHP低下で回避率が下がる（HP1 vs 全快で比較）', () => {
-    const statsBase = { hp: 100, atk: 5, sp: 10, spd: 1, def: 10, attackCount: 1, accuracy: 20, evasion: 30 }
+    const statsBase = { hp: 100, atk: 5, spd: 1, def: 10, attackCount: 1, accuracy: 20, evasion: 30 }
 
     // 全快ケース
     let hitCountFull = 0
@@ -468,7 +467,7 @@ describe('BattleSystem — 命中判定と複数回攻撃', () => {
 
   it('actorRowが正しく記録される', () => {
     const allies = [createTestGoblin({
-      stats: { hp: 100, atk: 50, sp: 10, spd: 100, def: 10, attackCount: 1, accuracy: 999, evasion: 10 },
+      stats: { hp: 100, atk: 50, spd: 100, def: 10, attackCount: 1, accuracy: 999, evasion: 10 },
     })]
     const enemies = [[createTestEnemy({ hp: 9999, spd: 1, evasion: 0 })]]
 
@@ -482,7 +481,7 @@ describe('BattleSystem — 命中判定と複数回攻撃', () => {
 
   it('ターゲットのtargetRowが正しく記録される', () => {
     const allies = [createTestGoblin({
-      stats: { hp: 100, atk: 50, sp: 10, spd: 100, def: 10, attackCount: 1, accuracy: 999, evasion: 10 },
+      stats: { hp: 100, atk: 50, spd: 100, def: 10, attackCount: 1, accuracy: 999, evasion: 10 },
     })]
     const enemies = [
       [createTestEnemy({ id: 'E1', name: '前列敵', hp: 9999, spd: 1, evasion: 0 })],
@@ -508,13 +507,13 @@ describe('BattleSystem — 命中判定と複数回攻撃', () => {
     const normalResult = new BattleSystem().executeBattle([
       createTestGoblin({
         race: 'ゴブリン',
-        stats: { hp: 100, atk: 50, sp: 10, spd: 100, def: 10, attackCount: 3, accuracy: 999, evasion: 10 },
+        stats: { hp: 100, atk: 50, spd: 100, def: 10, attackCount: 3, accuracy: 999, evasion: 10 },
       }),
     ], [100], enemies, rngA, 1)
     const wolfResult = new BattleSystem().executeBattle([
       createTestGoblin({
         race: 'ウルフゴブリン',
-        stats: { hp: 100, atk: 50, sp: 10, spd: 100, def: 10, attackCount: 1, accuracy: 999, evasion: 10 },
+        stats: { hp: 100, atk: 50, spd: 100, def: 10, attackCount: 1, accuracy: 999, evasion: 10 },
       }),
     ], [100], [[createTestEnemy({ hp: 9999, spd: 1, evasion: 0, def: 0 })]], rngB, 1)
 
@@ -532,24 +531,24 @@ describe('BattleSystem — 命中判定と複数回攻撃', () => {
       createTestGoblin({
         id: 1,
         race: 'スライムゴブリン',
-        stats: { hp: 9999, atk: 1, sp: 10, spd: 10, def: 0, attackCount: 1, accuracy: 1, evasion: 0 },
+        stats: { hp: 9999, atk: 1, spd: 10, def: 0, attackCount: 1, accuracy: 1, evasion: 0 },
       }),
       createTestGoblin({
         id: 2,
         race: 'ゴブリン',
-        stats: { hp: 9999, atk: 1, sp: 10, spd: 1, def: 0, attackCount: 1, accuracy: 1, evasion: 0 },
+        stats: { hp: 9999, atk: 1, spd: 1, def: 0, attackCount: 1, accuracy: 1, evasion: 0 },
       }),
     ]
     const plainAllies = [
       createTestGoblin({
         id: 1,
         race: 'ゴブリン',
-        stats: { hp: 9999, atk: 1, sp: 10, spd: 10, def: 0, attackCount: 1, accuracy: 1, evasion: 0 },
+        stats: { hp: 9999, atk: 1, spd: 10, def: 0, attackCount: 1, accuracy: 1, evasion: 0 },
       }),
       createTestGoblin({
         id: 2,
         race: 'ゴブリン',
-        stats: { hp: 9999, atk: 1, sp: 10, spd: 1, def: 0, attackCount: 1, accuracy: 1, evasion: 0 },
+        stats: { hp: 9999, atk: 1, spd: 1, def: 0, attackCount: 1, accuracy: 1, evasion: 0 },
       }),
     ]
     const enemies = [[createTestEnemy({
@@ -587,17 +586,17 @@ describe('BattleSystem — 命中判定と複数回攻撃', () => {
       createTestGoblin({
         id: 1,
         skills: [{ id: 'rear_guard_front', name: '後列防護', protectRearAllyNormalAttackMultiplier: 2 / 3 }],
-        stats: { hp: 9999, atk: 1, sp: 10, spd: 10, def: 0, attackCount: 1, accuracy: 1, evasion: 0 },
+        stats: { hp: 9999, atk: 1, spd: 10, def: 0, attackCount: 1, accuracy: 1, evasion: 0 },
       }),
       createTestGoblin({
         id: 2,
         skills: [{ id: 'rear_guard_middle', name: '後列防護', protectRearAllyNormalAttackMultiplier: 2 / 3 }],
-        stats: { hp: 9999, atk: 1, sp: 10, spd: 5, def: 0, attackCount: 1, accuracy: 1, evasion: 0 },
+        stats: { hp: 9999, atk: 1, spd: 5, def: 0, attackCount: 1, accuracy: 1, evasion: 0 },
       }),
       createTestGoblin({
         id: 3,
         skills: [],
-        stats: { hp: 9999, atk: 1, sp: 10, spd: 1, def: 0, attackCount: 1, accuracy: 1, evasion: 0 },
+        stats: { hp: 9999, atk: 1, spd: 1, def: 0, attackCount: 1, accuracy: 1, evasion: 0 },
       }),
     ]
     const enemy = createTestEnemy({
@@ -629,7 +628,6 @@ describe('BattleSystem — 命中判定と複数回攻撃', () => {
         atk: 1,
         def: 0,
         spd: 10,
-        sp: 10,
         attackCount: 1,
         accuracy: 1,
         evasion: 0,
@@ -651,7 +649,6 @@ describe('BattleSystem — 命中判定と複数回攻撃', () => {
         atk: 1,
         def: 0,
         spd: 1,
-        sp: 10,
         attackCount: 1,
         accuracy: 1,
         evasion: 0,
@@ -711,14 +708,14 @@ describe('BattleSystem — 命中判定と複数回攻撃', () => {
       createTestGoblin({
         id: 1,
         skills: [{ id: 'physical_reduction_10', name: '[-10%] 物理ダメージ軽減(%)', physicalDamageReductionPercent: 10 }],
-        stats: { hp: 9999, atk: 1, sp: 10, spd: 1, def: 0, attackCount: 1, accuracy: 1, evasion: 0 },
+        stats: { hp: 9999, atk: 1, spd: 1, def: 0, attackCount: 1, accuracy: 1, evasion: 0 },
       }),
     ]
     const plainAllies = [
       createTestGoblin({
         id: 1,
         skills: [],
-        stats: { hp: 9999, atk: 1, sp: 10, spd: 1, def: 0, attackCount: 1, accuracy: 1, evasion: 0 },
+        stats: { hp: 9999, atk: 1, spd: 1, def: 0, attackCount: 1, accuracy: 1, evasion: 0 },
       }),
     ]
     const enemy = [[createTestEnemy({
@@ -753,14 +750,14 @@ describe('BattleSystem — 命中判定と複数回攻撃', () => {
       createTestGoblin({
         id: 1,
         skills: [{ id: 'physical_reduction_10', name: '[-10%] 物理ダメージ軽減(%)', physicalDamageReductionPercent: 10 }],
-        stats: { hp: 9999, atk: 1, sp: 10, spd: 1, def: 0, attackCount: 1, accuracy: 1, evasion: 0 },
+        stats: { hp: 9999, atk: 1, spd: 1, def: 0, attackCount: 1, accuracy: 1, evasion: 0 },
       }),
     ]
     const plainAllies = [
       createTestGoblin({
         id: 1,
         skills: [],
-        stats: { hp: 9999, atk: 1, sp: 10, spd: 1, def: 0, attackCount: 1, accuracy: 1, evasion: 0 },
+        stats: { hp: 9999, atk: 1, spd: 1, def: 0, attackCount: 1, accuracy: 1, evasion: 0 },
       }),
     ]
     const caster = [[createTestEnemy({
@@ -1065,12 +1062,12 @@ describe('spell charges', () => {
     const allyA = createTestGoblin({
       id: 1,
       name: '前衛A',
-      stats: { hp: 120, atk: 10, sp: 0, spd: 1, def: 10, attackCount: 1, accuracy: 20, evasion: 0 },
+      stats: { hp: 120, atk: 10, spd: 1, def: 10, attackCount: 1, accuracy: 20, evasion: 0 },
     })
     const allyB = createTestGoblin({
       id: 2,
       name: '前衛B',
-      stats: { hp: 120, atk: 10, sp: 0, spd: 1, def: 10, attackCount: 1, accuracy: 20, evasion: 0 },
+      stats: { hp: 120, atk: 10, spd: 1, def: 10, attackCount: 1, accuracy: 20, evasion: 0 },
     })
 
     const result = battleSystem.executeBattle([allyA, allyB], [allyA.stats.hp, allyB.stats.hp], [[caster]], createSeededRng(1), 1)
@@ -1085,7 +1082,7 @@ describe('spell charges', () => {
     const battleSystem = new BattleSystem()
     const attacker = createTestGoblin({
       id: 1,
-      stats: { hp: 120, atk: 40, sp: 0, spd: 100, def: 10, attackCount: 1, accuracy: 999, evasion: 0 },
+      stats: { hp: 120, atk: 40, spd: 100, def: 10, attackCount: 1, accuracy: 999, evasion: 0 },
     })
     const enemyA = createTestEnemy({
       id: 'ORC002',
@@ -1116,7 +1113,7 @@ describe('spell charges', () => {
     const battleSystem = new BattleSystem()
     const ally = createTestGoblin({
       level: 20,
-      stats: { hp: 400, atk: 12, sp: 10, spd: 1, def: 10, attackCount: 1, accuracy: 20, evasion: 15 },
+      stats: { hp: 400, atk: 12, spd: 1, def: 10, attackCount: 1, accuracy: 20, evasion: 15 },
     })
     const enemy = createTestEnemy({
       id: 'B_LICH_TEST',
@@ -1155,7 +1152,7 @@ describe('spell charges', () => {
       ],
     })
     const ally = createTestGoblin({
-      stats: { hp: 400, atk: 12, sp: 10, spd: 1, def: 10, attackCount: 1, accuracy: 20, evasion: 15 },
+      stats: { hp: 400, atk: 12, spd: 1, def: 10, attackCount: 1, accuracy: 20, evasion: 15 },
     })
 
     const result = battleSystem.executeBattle([ally], [ally.stats.hp], [[enemy]], createSeededRng(7), 2)
@@ -1171,12 +1168,12 @@ describe('BattleSystem — ジョブ系スキル', () => {
     const guard = createTestGoblin({
       id: 1,
       skills: [{ id: 'cover', name: 'かばう', coverLowHpAlly: true }],
-      stats: { hp: 120, atk: 5, sp: 0, spd: 20, def: 20, attackCount: 1, accuracy: 999, evasion: 0 },
+      stats: { hp: 120, atk: 5, spd: 20, def: 20, attackCount: 1, accuracy: 999, evasion: 0 },
     })
     const rear = createTestGoblin({
       id: 2,
       name: '後衛',
-      stats: { hp: 100, atk: 5, sp: 0, spd: 10, def: 5, attackCount: 1, accuracy: 0, evasion: 0 },
+      stats: { hp: 100, atk: 5, spd: 10, def: 5, attackCount: 1, accuracy: 0, evasion: 0 },
     })
     const enemy = createTestEnemy({
       atk: 50,
@@ -1195,13 +1192,13 @@ describe('BattleSystem — ジョブ系スキル', () => {
     const battleSystem = new BattleSystem()
     const warrior = createTestGoblin({
       id: 1,
-      stats: { hp: 120, atk: 5, sp: 0, spd: 20, def: 20, attackCount: 1, accuracy: 999, evasion: 0 },
+      stats: { hp: 120, atk: 5, spd: 20, def: 20, attackCount: 1, accuracy: 999, evasion: 0 },
       skills: [{ id: 'inspire', name: '鼓舞', rearAllyDamageMultiplier: 1.5 }],
     })
     const attacker = createTestGoblin({
       id: 2,
       name: '後衛',
-      stats: { hp: 100, atk: 40, sp: 0, spd: 100, def: 5, attackCount: 1, accuracy: 999, evasion: 0 },
+      stats: { hp: 100, atk: 40, spd: 100, def: 5, attackCount: 1, accuracy: 999, evasion: 0 },
       skills: [],
     })
     const enemy = createTestEnemy({ hp: 200, def: 1, evasion: 0, spd: 1 })
@@ -1217,18 +1214,18 @@ describe('BattleSystem — ジョブ系スキル', () => {
     const frontInspire = createTestGoblin({
       id: 1,
       skills: [{ id: 'inspire_front', name: '鼓舞', rearAllyDamageMultiplier: 1.5 }],
-      stats: { hp: 120, atk: 5, sp: 0, spd: 20, def: 20, attackCount: 1, accuracy: 999, evasion: 0 },
+      stats: { hp: 120, atk: 5, spd: 20, def: 20, attackCount: 1, accuracy: 999, evasion: 0 },
     })
     const middleInspire = createTestGoblin({
       id: 2,
       skills: [{ id: 'inspire_middle', name: '鼓舞', rearAllyDamageMultiplier: 1.5 }],
-      stats: { hp: 120, atk: 5, sp: 0, spd: 15, def: 20, attackCount: 1, accuracy: 999, evasion: 0 },
+      stats: { hp: 120, atk: 5, spd: 15, def: 20, attackCount: 1, accuracy: 999, evasion: 0 },
     })
     const attacker = createTestGoblin({
       id: 3,
       name: '後衛',
       skills: [],
-      stats: { hp: 100, atk: 40, sp: 0, spd: 100, def: 5, attackCount: 1, accuracy: 999, evasion: 0 },
+      stats: { hp: 100, atk: 40, spd: 100, def: 5, attackCount: 1, accuracy: 999, evasion: 0 },
     })
     const enemy = createTestEnemy({ hp: 200, def: 1, evasion: 0, spd: 1 })
 
@@ -1249,7 +1246,7 @@ describe('BattleSystem — ジョブ系スキル', () => {
     const hobgoblin = createTestGoblin({
       id: 1,
       race: 'ホブゴブリン',
-      stats: { hp: 100, atk: 10, sp: 0, spd: 50, def: 10, attackCount: 1, accuracy: 999, evasion: 0 },
+      stats: { hp: 100, atk: 10, spd: 50, def: 10, attackCount: 1, accuracy: 999, evasion: 0 },
     })
     const enemy = createTestEnemy({
       atk: 999,
@@ -1271,7 +1268,7 @@ describe('BattleSystem — ジョブ系スキル', () => {
 describe('BattleSystem — 隊列統合テスト', () => {
   it('2D敵配列で戦闘が正常に実行される', () => {
     const allies = [createTestGoblin({
-      stats: { hp: 100, atk: 50, sp: 10, spd: 100, def: 10, attackCount: 1, accuracy: 999, evasion: 10 },
+      stats: { hp: 100, atk: 50, spd: 100, def: 10, attackCount: 1, accuracy: 999, evasion: 10 },
     })]
     // 2列の敵: 列0=[敵A], 列1=[敵B]
     const enemies: Enemy[][] = [
@@ -1288,7 +1285,7 @@ describe('BattleSystem — 隊列統合テスト', () => {
 
   it('同一列に複数敵を配置して戦闘が正常に動作する', () => {
     const allies = [createTestGoblin({
-      stats: { hp: 200, atk: 50, sp: 10, spd: 100, def: 10, attackCount: 2, accuracy: 999, evasion: 10 },
+      stats: { hp: 200, atk: 50, spd: 100, def: 10, attackCount: 2, accuracy: 999, evasion: 10 },
     })]
     // 列0に2体の敵
     const enemies: Enemy[][] = [
@@ -1312,7 +1309,7 @@ describe('BattleSystem — 隊列統合テスト', () => {
 
     for (let seed = 0; seed < 100; seed++) {
       const allies = [createTestGoblin({
-        stats: { hp: 9999, atk: 10, sp: 10, spd: 100, def: 10, attackCount: 1, accuracy: 999, evasion: 999 },
+        stats: { hp: 9999, atk: 10, spd: 100, def: 10, attackCount: 1, accuracy: 999, evasion: 999 },
       })]
       const enemies: Enemy[][] = [
         [createTestEnemy({ id: 'F', name: '前列', hp: 9999, spd: 1, evasion: 0, atk: 1, accuracy: 1 })],

@@ -13,7 +13,10 @@
       "type": "prefix",
       "stat": "hp_percent",
       "tier": 6,
-      "valueRange": [5, 8],
+      "valueRange": [
+        5,
+        8
+      ],
       "weight": 1000,
       "requiredIndividual": 1
     },
@@ -24,7 +27,10 @@
       "type": "prefix",
       "stat": "hp_percent",
       "tier": 5,
-      "valueRange": [9, 12],
+      "valueRange": [
+        9,
+        12
+      ],
       "weight": 800,
       "requiredIndividual": 8
     },
@@ -35,7 +41,10 @@
       "type": "prefix",
       "stat": "hp_percent",
       "tier": 4,
-      "valueRange": [13, 16],
+      "valueRange": [
+        13,
+        16
+      ],
       "weight": 600,
       "requiredIndividual": 16
     },
@@ -46,7 +55,10 @@
       "type": "prefix",
       "stat": "hp_percent",
       "tier": 3,
-      "valueRange": [17, 20],
+      "valueRange": [
+        17,
+        20
+      ],
       "weight": 400,
       "requiredIndividual": 28
     },
@@ -57,7 +69,10 @@
       "type": "prefix",
       "stat": "hp_percent",
       "tier": 2,
-      "valueRange": [21, 25],
+      "valueRange": [
+        21,
+        25
+      ],
       "weight": 200,
       "requiredIndividual": 44
     },
@@ -68,7 +83,10 @@
       "type": "prefix",
       "stat": "hp_percent",
       "tier": 1,
-      "valueRange": [26, 30],
+      "valueRange": [
+        26,
+        30
+      ],
       "weight": 80,
       "requiredIndividual": 60
     },
@@ -79,7 +97,10 @@
       "type": "prefix",
       "stat": "hp_flat",
       "tier": 6,
-      "valueRange": [1, 2],
+      "valueRange": [
+        1,
+        2
+      ],
       "weight": 1200,
       "requiredIndividual": 1
     },
@@ -90,7 +111,10 @@
       "type": "prefix",
       "stat": "hp_flat",
       "tier": 5,
-      "valueRange": [3, 4],
+      "valueRange": [
+        3,
+        4
+      ],
       "weight": 1000,
       "requiredIndividual": 6
     },
@@ -101,7 +125,10 @@
       "type": "prefix",
       "stat": "hp_flat",
       "tier": 4,
-      "valueRange": [5, 6],
+      "valueRange": [
+        5,
+        6
+      ],
       "weight": 700,
       "requiredIndividual": 14
     },
@@ -112,7 +139,10 @@
       "type": "prefix",
       "stat": "hp_flat",
       "tier": 3,
-      "valueRange": [7, 8],
+      "valueRange": [
+        7,
+        8
+      ],
       "weight": 400,
       "requiredIndividual": 26
     },
@@ -123,7 +153,10 @@
       "type": "prefix",
       "stat": "hp_flat",
       "tier": 2,
-      "valueRange": [9, 11],
+      "valueRange": [
+        9,
+        11
+      ],
       "weight": 200,
       "requiredIndividual": 42
     },
@@ -134,7 +167,10 @@
       "type": "prefix",
       "stat": "hp_flat",
       "tier": 1,
-      "valueRange": [12, 15],
+      "valueRange": [
+        12,
+        15
+      ],
       "weight": 100,
       "requiredIndividual": 58
     },
@@ -145,7 +181,10 @@
       "type": "prefix",
       "stat": "atk_percent",
       "tier": 6,
-      "valueRange": [5, 8],
+      "valueRange": [
+        5,
+        8
+      ],
       "weight": 1000,
       "requiredIndividual": 1
     },
@@ -156,7 +195,10 @@
       "type": "prefix",
       "stat": "atk_percent",
       "tier": 5,
-      "valueRange": [9, 12],
+      "valueRange": [
+        9,
+        12
+      ],
       "weight": 800,
       "requiredIndividual": 8
     },
@@ -167,7 +209,10 @@
       "type": "prefix",
       "stat": "atk_percent",
       "tier": 4,
-      "valueRange": [13, 16],
+      "valueRange": [
+        13,
+        16
+      ],
       "weight": 600,
       "requiredIndividual": 16
     },
@@ -178,7 +223,10 @@
       "type": "prefix",
       "stat": "atk_percent",
       "tier": 3,
-      "valueRange": [17, 20],
+      "valueRange": [
+        17,
+        20
+      ],
       "weight": 400,
       "requiredIndividual": 28
     },
@@ -189,7 +237,10 @@
       "type": "prefix",
       "stat": "atk_percent",
       "tier": 2,
-      "valueRange": [21, 25],
+      "valueRange": [
+        21,
+        25
+      ],
       "weight": 200,
       "requiredIndividual": 44
     },
@@ -200,7 +251,10 @@
       "type": "prefix",
       "stat": "atk_percent",
       "tier": 1,
-      "valueRange": [26, 30],
+      "valueRange": [
+        26,
+        30
+      ],
       "weight": 80,
       "requiredIndividual": 60
     },
@@ -211,7 +265,10 @@
       "type": "prefix",
       "stat": "atk_flat",
       "tier": 6,
-      "valueRange": [1, 2],
+      "valueRange": [
+        1,
+        2
+      ],
       "weight": 1200,
       "requiredIndividual": 1
     },
@@ -222,7 +279,10 @@
       "type": "prefix",
       "stat": "atk_flat",
       "tier": 5,
-      "valueRange": [3, 4],
+      "valueRange": [
+        3,
+        4
+      ],
       "weight": 1000,
       "requiredIndividual": 6
     },
@@ -233,7 +293,10 @@
       "type": "prefix",
       "stat": "atk_flat",
       "tier": 4,
-      "valueRange": [5, 6],
+      "valueRange": [
+        5,
+        6
+      ],
       "weight": 700,
       "requiredIndividual": 14
     },
@@ -244,7 +307,10 @@
       "type": "prefix",
       "stat": "atk_flat",
       "tier": 3,
-      "valueRange": [7, 8],
+      "valueRange": [
+        7,
+        8
+      ],
       "weight": 400,
       "requiredIndividual": 26
     },
@@ -255,7 +321,10 @@
       "type": "prefix",
       "stat": "atk_flat",
       "tier": 2,
-      "valueRange": [9, 11],
+      "valueRange": [
+        9,
+        11
+      ],
       "weight": 200,
       "requiredIndividual": 42
     },
@@ -266,7 +335,10 @@
       "type": "prefix",
       "stat": "atk_flat",
       "tier": 1,
-      "valueRange": [12, 15],
+      "valueRange": [
+        12,
+        15
+      ],
       "weight": 100,
       "requiredIndividual": 58
     },
@@ -277,7 +349,10 @@
       "type": "prefix",
       "stat": "def_percent",
       "tier": 6,
-      "valueRange": [5, 8],
+      "valueRange": [
+        5,
+        8
+      ],
       "weight": 1000,
       "requiredIndividual": 1
     },
@@ -288,7 +363,10 @@
       "type": "prefix",
       "stat": "def_percent",
       "tier": 5,
-      "valueRange": [9, 12],
+      "valueRange": [
+        9,
+        12
+      ],
       "weight": 800,
       "requiredIndividual": 8
     },
@@ -299,7 +377,10 @@
       "type": "prefix",
       "stat": "def_percent",
       "tier": 4,
-      "valueRange": [13, 16],
+      "valueRange": [
+        13,
+        16
+      ],
       "weight": 600,
       "requiredIndividual": 16
     },
@@ -310,7 +391,10 @@
       "type": "prefix",
       "stat": "def_percent",
       "tier": 3,
-      "valueRange": [17, 20],
+      "valueRange": [
+        17,
+        20
+      ],
       "weight": 400,
       "requiredIndividual": 28
     },
@@ -321,7 +405,10 @@
       "type": "prefix",
       "stat": "def_percent",
       "tier": 2,
-      "valueRange": [21, 25],
+      "valueRange": [
+        21,
+        25
+      ],
       "weight": 200,
       "requiredIndividual": 44
     },
@@ -332,7 +419,10 @@
       "type": "prefix",
       "stat": "def_percent",
       "tier": 1,
-      "valueRange": [26, 30],
+      "valueRange": [
+        26,
+        30
+      ],
       "weight": 80,
       "requiredIndividual": 60
     },
@@ -343,7 +433,10 @@
       "type": "prefix",
       "stat": "def_flat",
       "tier": 6,
-      "valueRange": [1, 2],
+      "valueRange": [
+        1,
+        2
+      ],
       "weight": 1200,
       "requiredIndividual": 1
     },
@@ -354,7 +447,10 @@
       "type": "prefix",
       "stat": "def_flat",
       "tier": 5,
-      "valueRange": [3, 4],
+      "valueRange": [
+        3,
+        4
+      ],
       "weight": 1000,
       "requiredIndividual": 6
     },
@@ -365,7 +461,10 @@
       "type": "prefix",
       "stat": "def_flat",
       "tier": 4,
-      "valueRange": [5, 6],
+      "valueRange": [
+        5,
+        6
+      ],
       "weight": 700,
       "requiredIndividual": 14
     },
@@ -376,7 +475,10 @@
       "type": "prefix",
       "stat": "def_flat",
       "tier": 3,
-      "valueRange": [7, 8],
+      "valueRange": [
+        7,
+        8
+      ],
       "weight": 400,
       "requiredIndividual": 26
     },
@@ -387,7 +489,10 @@
       "type": "prefix",
       "stat": "def_flat",
       "tier": 2,
-      "valueRange": [9, 11],
+      "valueRange": [
+        9,
+        11
+      ],
       "weight": 200,
       "requiredIndividual": 42
     },
@@ -398,7 +503,10 @@
       "type": "prefix",
       "stat": "def_flat",
       "tier": 1,
-      "valueRange": [12, 15],
+      "valueRange": [
+        12,
+        15
+      ],
       "weight": 100,
       "requiredIndividual": 58
     },
@@ -409,7 +517,10 @@
       "type": "prefix",
       "stat": "spd_percent",
       "tier": 6,
-      "valueRange": [5, 8],
+      "valueRange": [
+        5,
+        8
+      ],
       "weight": 700,
       "requiredIndividual": 1
     },
@@ -420,7 +531,10 @@
       "type": "prefix",
       "stat": "spd_percent",
       "tier": 5,
-      "valueRange": [9, 12],
+      "valueRange": [
+        9,
+        12
+      ],
       "weight": 560,
       "requiredIndividual": 8
     },
@@ -431,7 +545,10 @@
       "type": "prefix",
       "stat": "spd_percent",
       "tier": 4,
-      "valueRange": [13, 16],
+      "valueRange": [
+        13,
+        16
+      ],
       "weight": 420,
       "requiredIndividual": 16
     },
@@ -442,7 +559,10 @@
       "type": "prefix",
       "stat": "spd_percent",
       "tier": 3,
-      "valueRange": [17, 20],
+      "valueRange": [
+        17,
+        20
+      ],
       "weight": 280,
       "requiredIndividual": 28
     },
@@ -453,7 +573,10 @@
       "type": "prefix",
       "stat": "spd_percent",
       "tier": 2,
-      "valueRange": [21, 25],
+      "valueRange": [
+        21,
+        25
+      ],
       "weight": 140,
       "requiredIndividual": 44
     },
@@ -464,141 +587,12 @@
       "type": "prefix",
       "stat": "spd_percent",
       "tier": 1,
-      "valueRange": [26, 30],
+      "valueRange": [
+        26,
+        30
+      ],
       "weight": 56,
       "requiredIndividual": 60
-    },
-    {
-      "id": "sp_percent_t6",
-      "name": "魔力の",
-      "group": "sp_percent",
-      "type": "prefix",
-      "stat": "sp_percent",
-      "tier": 6,
-      "valueRange": [5, 8],
-      "weight": 700,
-      "requiredIndividual": 1
-    },
-    {
-      "id": "sp_percent_t5",
-      "name": "秘術の",
-      "group": "sp_percent",
-      "type": "prefix",
-      "stat": "sp_percent",
-      "tier": 5,
-      "valueRange": [9, 12],
-      "weight": 560,
-      "requiredIndividual": 8
-    },
-    {
-      "id": "sp_percent_t4",
-      "name": "神秘の",
-      "group": "sp_percent",
-      "type": "prefix",
-      "stat": "sp_percent",
-      "tier": 4,
-      "valueRange": [13, 16],
-      "weight": 420,
-      "requiredIndividual": 16
-    },
-    {
-      "id": "sp_percent_t3",
-      "name": "魔導の",
-      "group": "sp_percent",
-      "type": "prefix",
-      "stat": "sp_percent",
-      "tier": 3,
-      "valueRange": [17, 20],
-      "weight": 280,
-      "requiredIndividual": 28
-    },
-    {
-      "id": "sp_percent_t2",
-      "name": "賢者の",
-      "group": "sp_percent",
-      "type": "prefix",
-      "stat": "sp_percent",
-      "tier": 2,
-      "valueRange": [21, 25],
-      "weight": 140,
-      "requiredIndividual": 44
-    },
-    {
-      "id": "sp_percent_t1",
-      "name": "大魔導の",
-      "group": "sp_percent",
-      "type": "prefix",
-      "stat": "sp_percent",
-      "tier": 1,
-      "valueRange": [26, 30],
-      "weight": 56,
-      "requiredIndividual": 60
-    },
-    {
-      "id": "sp_flat_t6",
-      "name": "魔素の",
-      "group": "sp_flat",
-      "type": "prefix",
-      "stat": "sp_flat",
-      "tier": 6,
-      "valueRange": [1, 2],
-      "weight": 840,
-      "requiredIndividual": 1
-    },
-    {
-      "id": "sp_flat_t5",
-      "name": "精霊の",
-      "group": "sp_flat",
-      "type": "prefix",
-      "stat": "sp_flat",
-      "tier": 5,
-      "valueRange": [3, 4],
-      "weight": 700,
-      "requiredIndividual": 6
-    },
-    {
-      "id": "sp_flat_t4",
-      "name": "妖精の",
-      "group": "sp_flat",
-      "type": "prefix",
-      "stat": "sp_flat",
-      "tier": 4,
-      "valueRange": [5, 6],
-      "weight": 490,
-      "requiredIndividual": 14
-    },
-    {
-      "id": "sp_flat_t3",
-      "name": "聖霊の",
-      "group": "sp_flat",
-      "type": "prefix",
-      "stat": "sp_flat",
-      "tier": 3,
-      "valueRange": [7, 8],
-      "weight": 280,
-      "requiredIndividual": 26
-    },
-    {
-      "id": "sp_flat_t2",
-      "name": "天使の",
-      "group": "sp_flat",
-      "type": "prefix",
-      "stat": "sp_flat",
-      "tier": 2,
-      "valueRange": [9, 11],
-      "weight": 140,
-      "requiredIndividual": 42
-    },
-    {
-      "id": "sp_flat_t1",
-      "name": "神霊の",
-      "group": "sp_flat",
-      "type": "prefix",
-      "stat": "sp_flat",
-      "tier": 1,
-      "valueRange": [12, 15],
-      "weight": 70,
-      "requiredIndividual": 58
     },
     {
       "id": "damage_reduction_t5",
@@ -607,7 +601,10 @@
       "type": "suffix",
       "stat": "damage_reduction",
       "tier": 5,
-      "valueRange": [2, 3],
+      "valueRange": [
+        2,
+        3
+      ],
       "weight": 300,
       "requiredIndividual": 20
     },
@@ -618,7 +615,10 @@
       "type": "suffix",
       "stat": "damage_reduction",
       "tier": 4,
-      "valueRange": [4, 5],
+      "valueRange": [
+        4,
+        5
+      ],
       "weight": 200,
       "requiredIndividual": 30
     },
@@ -629,7 +629,10 @@
       "type": "suffix",
       "stat": "damage_reduction",
       "tier": 3,
-      "valueRange": [6, 7],
+      "valueRange": [
+        6,
+        7
+      ],
       "weight": 120,
       "requiredIndividual": 42
     },
@@ -640,7 +643,10 @@
       "type": "suffix",
       "stat": "damage_reduction",
       "tier": 2,
-      "valueRange": [8, 9],
+      "valueRange": [
+        8,
+        9
+      ],
       "weight": 60,
       "requiredIndividual": 54
     },
@@ -651,7 +657,10 @@
       "type": "suffix",
       "stat": "damage_reduction",
       "tier": 1,
-      "valueRange": [10, 12],
+      "valueRange": [
+        10,
+        12
+      ],
       "weight": 25,
       "requiredIndividual": 62
     }

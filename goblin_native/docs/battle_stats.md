@@ -17,7 +17,6 @@ goblin_native の戦闘システムで使用されるステータスの仕様書
 | atk | number | 攻撃力。ダメージ計算の基礎値 |
 | def | number | 防御力。被ダメージの軽減率に使用 |
 | spd | number | 速度。ターン内の行動順序を決定（高い順） |
-| sp | number | スペシャルポイント。特殊スキル用リソース（現在未使用） |
 | attackCount | number | 攻撃回数。1ターンに攻撃できる回数（血統基本値） |
 | accuracy | number | 命中精度。命中率計算の攻撃側パラメータ |
 | evasion | number | 回避能力。命中率計算の防御側パラメータ |
@@ -52,7 +51,6 @@ attackCount 以外のステータスはランダム範囲で生成される。
 | atk | 10 | 16 |
 | def | 8 | 14 |
 | spd | 8 | 14 |
-| sp | 7 | 13 |
 | accuracy | 15 | 25 |
 | evasion | 10 | 20 |
 
@@ -79,7 +77,6 @@ attackCount 以外のステータスはランダム範囲で生成される。
 | atk_flat / atk_percent | 攻撃力 |
 | def_flat / def_percent | 防御力 |
 | spd_flat / spd_percent | 速度 |
-| sp_flat / sp_percent | スペシャル |
 | attackCount_flat / attackCount_percent | 攻撃回数 |
 | accuracy_flat / accuracy_percent | 命中精度 |
 | evasion_flat / evasion_percent | 回避能力 |

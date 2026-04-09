@@ -12,8 +12,8 @@ Mod（モッド）はゴブリン誕生時にランダムに付与されるパ�
 |------|-----|
 | 付与数 | 0〜4個（ランダム） |
 | 付与タイミング | ゴブリン誕生時のみ |
-| テンプレート総数 | 59個（prefix 54個 + suffix 5個） |
-| グループ数 | 10種類 |
+| テンプレート総数 | 47個（prefix 42個 + suffix 5個） |
+| グループ数 | 8種類 |
 | Tier数 | 各グループ5〜6段階 |
 | 同グループ排他 | 1グループにつき最大1個 |
 | ダメージ軽減上限 | 75% |
@@ -22,7 +22,7 @@ Mod（モッド）はゴブリン誕生時にランダムに付与されるパ�
 
 ### prefix（ステータス増加系）
 
-UIでは**青色バッジ**で表示。9グループ、各6 Tier = 54テンプレート。
+UIでは**青色バッジ**で表示。7グループ、各6 Tier = 42テンプレート。
 
 ### suffix（軽減・特殊効果系）
 
@@ -136,30 +136,6 @@ modSeed = goblinId × 1000 + Date.now() % 1000
 
 ※ HP/ATK/DEF系より Weight が低い（出現しにくい）
 
-### sp_percent — SP%増加（prefix）
-
-| Tier | 名前 | 値の範囲 | Weight | 必要個体値 |
-|------|------|---------|--------|----------|
-| 6 | 魔力の | 5〜8% | 700 | 1 |
-| 5 | 秘術の | 9〜12% | 560 | 8 |
-| 4 | 神秘の | 13〜16% | 420 | 16 |
-| 3 | 魔導の | 17〜20% | 280 | 28 |
-| 2 | 賢者の | 21〜25% | 140 | 44 |
-| 1 | 大魔導の | 26〜30% | 56 | 60 |
-
-※ SPD系と同じく Weight が低い
-
-### sp_flat — SPフラット増加（prefix）
-
-| Tier | 名前 | 値の範囲 | Weight | 必要個体値 |
-|------|------|---------|--------|----------|
-| 6 | 魔素の | +1〜2 | 840 | 1 |
-| 5 | 精霊の | +3〜4 | 700 | 6 |
-| 4 | 妖精の | +5〜6 | 490 | 14 |
-| 3 | 聖霊の | +7〜8 | 280 | 26 |
-| 2 | 天使の | +9〜11 | 140 | 42 |
-| 1 | 神霊の | +12〜15 | 70 | 58 |
-
 ### damage_reduction — 被ダメージ軽減（suffix）
 
 | Tier | 名前 | 値の範囲 | Weight | 必要個体値 |
@@ -180,8 +156,7 @@ modSeed = goblinId × 1000 + Date.now() % 1000
 |------------|---------|-------------|
 | 最も出やすい | hp_flat, atk_flat, def_flat | 1200 |
 | 出やすい | hp_percent, atk_percent, def_percent | 1000 |
-| やや出にくい | sp_flat | 840 |
-| 出にくい | spd_percent, sp_percent | 700 |
+| 出にくい | spd_percent | 700 |
 | 最も出にくい | damage_reduction | 300（Tier5から） |
 
 ## ステータス計算への適用
@@ -252,7 +227,6 @@ Mod
 | atk_percent / atk_flat | ATK |
 | def_percent / def_flat | DEF |
 | spd_percent / spd_flat | SPD |
-| sp_percent / sp_flat | SP |
 | attackCount_percent / attackCount_flat | 攻撃回数 |
 | accuracy_percent / accuracy_flat | 命中精度 |
 | evasion_percent / evasion_flat | 回避 |
@@ -299,8 +273,8 @@ interface ModTemplate {
 
 ### ModStat（全17種）
 
-フラット: `hp_flat`, `atk_flat`, `def_flat`, `spd_flat`, `sp_flat`, `attackCount_flat`, `accuracy_flat`, `evasion_flat`
-パーセント: `hp_percent`, `atk_percent`, `def_percent`, `spd_percent`, `sp_percent`, `attackCount_percent`, `accuracy_percent`, `evasion_percent`
+フラット: `hp_flat`, `atk_flat`, `def_flat`
+パーセント: `hp_percent`, `atk_percent`, `def_percent`, `spd_percent`
 特殊: `damage_reduction`
 
 ※ 現在テンプレートが定義されているのは10グループのみ。attackCount, accuracy, evasion 系はテンプレート未定義。

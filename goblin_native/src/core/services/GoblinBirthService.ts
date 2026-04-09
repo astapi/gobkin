@@ -10,7 +10,6 @@ import { getDefaultSkillsForRace } from '../../shared/data/raceSkills'
 const STAT_RANGES: Record<Exclude<keyof GoblinStats, 'attackCount'>, { min: number; max: number }> = {
   hp: { min: 55, max: 80 },
   atk: { min: 10, max: 16 },
-  sp: { min: 7, max: 13 },
   spd: { min: 8, max: 14 },
   def: { min: 8, max: 14 },
   accuracy: { min: 120, max: 200 },
@@ -180,7 +179,6 @@ export class GoblinBirthService {
     return {
       hp: this.randomInRange('hp'),
       atk: this.randomInRange('atk'),
-      sp: this.randomInRange('sp'),
       spd: this.randomInRange('spd'),
       def: this.randomInRange('def'),
       attackCount: combatStats.attackCount,

@@ -16,7 +16,6 @@ export interface Enemy {
   atk: number
   def: number
   spd: number
-  sp: number
   attackCount: number  // 攻撃回数
   accuracy: number     // 命中精度
   evasion: number      // 回避能力

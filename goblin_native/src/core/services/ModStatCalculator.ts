@@ -60,7 +60,6 @@ export class ModStatCalculator {
       hp: withMultiplier('hp'),
       atk: withMultiplier('atk'),
       def: withMultiplier('def'),
-      sp: withMultiplier('sp'),
       spd: withMultiplier('spd'),
       attackCount: withMultiplier('attackCount'),
       accuracy: withMultiplier('accuracy'),
@@ -101,7 +100,7 @@ export class ModStatCalculator {
   }
 
   private static readonly ZERO_STATS: Record<keyof GoblinStats, number> = {
-    hp: 0, atk: 0, def: 0, sp: 0, spd: 0, attackCount: 0, accuracy: 0, evasion: 0,
+    hp: 0, atk: 0, def: 0, spd: 0, attackCount: 0, accuracy: 0, evasion: 0,
   }
 
   /** stat名からGoblinStatsのキーを抽出（例: 'hp_flat' → 'hp'） */
