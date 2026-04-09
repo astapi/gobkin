@@ -29,7 +29,7 @@ goblin_native の戦闘システムで使用されるステータスの仕様書
 | row | number | 隊列の行番号（0-based）。前列ほど狙われやすい |
 | rowSlot | number | 行内のスロット番号（0-based） |
 
-## 血統別初期値
+## 血統別攻撃回数補正
 
 攻撃回数の血統差分だけが血統ごとの固定補正として残る。
 `accuracy` と `evasion` は固定値ではなく、後述の基本能力値とLv依存式から算出する。
@@ -288,5 +288,5 @@ hitRate = accuracy × 命中補正(n) × 乱数A − evasion × HP補正 × 乱�
 | `src/core/services/DamageCalculator.ts` | ダメージ計算 |
 | `src/core/services/ModStatCalculator.ts` | 最終ステータス計算 |
 | `src/core/services/CombatantManager.ts` | ユニット変換 |
-| `src/shared/data/equipmentConfig.ts` | 血統別初期値 |
+| `src/shared/data/equipmentConfig.ts` | 血統別攻撃回数補正 |
 | `src/shared/data/factors.ts` | 因子マスターデータ |

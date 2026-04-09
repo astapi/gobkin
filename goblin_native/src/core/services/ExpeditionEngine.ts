@@ -460,9 +460,9 @@ export class ExpeditionEngine {
         hp: member.baseHP,  // 基礎HPを使用（ModStatCalculatorが因子・Modを適用）
         atk: member.atk,
         def: member.def,
-        attackCount: member.attackCount ?? 2,
-        accuracy: member.accuracy ?? 20,
-        evasion: member.evasion ?? 15,
+        attackCount: member.attackCount,
+        accuracy: member.accuracy,
+        evasion: member.evasion,
       },
       agility: member.agility,
       mods: member.mods,
