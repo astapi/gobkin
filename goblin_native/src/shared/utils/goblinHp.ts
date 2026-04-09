@@ -1,4 +1,4 @@
-import { getBloodlineCombatStats } from '../data/equipmentConfig'
+import { getBloodlineAttackCountBonus } from '../data/equipmentConfig'
 import type { Goblin, GoblinBaseAttributes, GoblinStats } from '../types'
 
 const RACE_BASE_ATTRIBUTES: Record<string, GoblinBaseAttributes> = {
@@ -142,13 +142,13 @@ export function calculateGoblinBaseAttackCount(level: number, goblin: GoblinStat
   const attributes = getGoblinBaseAttributes(goblin)
   const levelScale = getGoblinStatLevelScale(level, goblin.race)
   const coefficient = getGoblinStatCoefficient(goblin)
-  const baseAttackCount = getBloodlineCombatStats(goblin.race).attackCount
+  const bloodlineAttackCountBonus = getBloodlineAttackCountBonus(goblin.race)
   const agilityScale = (attributes.agility / 10) * (1 + levelScale * 0.025 * coefficient) * 0.5
   const primary = Math.round(agilityScale + 0.1)
   const secondary = Math.round(agilityScale - 0.3)
   const combined = Math.max(1, primary + secondary)
 
-  return Math.round(combined * 2 + Math.max(0, baseAttackCount - 2))
+  return Math.round(combined * 2 + bloodlineAttackCountBonus)
 }
 
 export function calculateGoblinDerivedStats(

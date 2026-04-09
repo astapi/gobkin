@@ -3,7 +3,7 @@ import { ModStatCalculator } from '../ModStatCalculator'
 import { BattleSystem, getDamageModifier, getAccuracyModifier, getRowWeight, selectTarget } from '../BattleSystem'
 import { ExpeditionEngine } from '../ExpeditionEngine'
 import { getDefaultSkillsForRace } from '../../../shared/data/raceSkills'
-import { getBloodlineCombatStats } from '../../../shared/data/equipmentConfig'
+import { getBloodlineAttackCountBonus } from '../../../shared/data/equipmentConfig'
 import { EquipmentService } from '../EquipmentService'
 import { getEquipmentTemplate } from '../../../shared/data/equipmentPoolLoader'
 import type { Goblin, Enemy } from '../../../shared/types'
@@ -116,39 +116,37 @@ describe('getAccuracyModifier', () => {
 })
 
 // =========================================================================
-// 血統別戦闘ステータス初期値
+// 血統別攻撃回数補正
 // =========================================================================
-describe('getBloodlineCombatStats', () => {
-  it('ゴブリンの攻撃回数は2', () => {
-    const stats = getBloodlineCombatStats('ゴブリン')
-    expect(stats.attackCount).toBe(2)
+describe('getBloodlineAttackCountBonus', () => {
+  it('ゴブリンの攻撃回数補正は0', () => {
+    const bonus = getBloodlineAttackCountBonus('ゴブリン')
+    expect(bonus).toBe(0)
   })
 
-  it('ウルフゴブリンの攻撃回数は3', () => {
-    const stats = getBloodlineCombatStats('ウルフゴブリン')
-    expect(stats.attackCount).toBe(3)
+  it('ウルフゴブリンの攻撃回数補正は1', () => {
+    const bonus = getBloodlineAttackCountBonus('ウルフゴブリン')
+    expect(bonus).toBe(1)
   })
 
-  it('スライムゴブリンの攻撃回数は2', () => {
-    const stats = getBloodlineCombatStats('スライムゴブリン')
-    expect(stats.attackCount).toBe(2)
+  it('スライムゴブリンの攻撃回数補正は0', () => {
+    const bonus = getBloodlineAttackCountBonus('スライムゴブリン')
+    expect(bonus).toBe(0)
   })
 
-  it('オークゴブリンの攻撃回数は2', () => {
-    const stats = getBloodlineCombatStats('オークゴブリン')
-    expect(stats.attackCount).toBe(2)
+  it('オークゴブリンの攻撃回数補正は0', () => {
+    const bonus = getBloodlineAttackCountBonus('オークゴブリン')
+    expect(bonus).toBe(0)
   })
 
-  it('ホブゴブリンの攻撃回数は2', () => {
-    const stats = getBloodlineCombatStats('ホブゴブリン')
-    expect(stats.attackCount).toBe(2)
+  it('ホブゴブリンの攻撃回数補正は0', () => {
+    const bonus = getBloodlineAttackCountBonus('ホブゴブリン')
+    expect(bonus).toBe(0)
   })
 
-  it('未定義血統はデフォルト値を返す', () => {
-    const stats = getBloodlineCombatStats('未知の血統')
-    expect(stats.attackCount).toBe(2)
-    expect(stats.accuracy).toBe(20)
-    expect(stats.evasion).toBe(15)
+  it('未定義血統は補正0を返す', () => {
+    const bonus = getBloodlineAttackCountBonus('未知の血統')
+    expect(bonus).toBe(0)
   })
 })
 
@@ -166,7 +164,7 @@ describe('GoblinBirthService — 戦闘ステータス生成', () => {
     expect(goblin.stats.evasion).toBeDefined()
   })
 
-  it('ゴブリンのattackCountは血統初期値2', () => {
+  it('ゴブリンのattackCountは算出式で2になる', () => {
     const rng = createSeededRng(200)
     const service = new GoblinBirthService(rng)
     const goblin = service.createNewGoblin(1)

@@ -8,32 +8,22 @@ export const EQUIPMENT_SLOT_LEVELS = [
 ] as const
 
 /**
- * 血統別の戦闘ステータス初期値
- * 血統: ゴブリンの派生（スライムゴブリン、ウルフゴブリンなど）
+ * 血統別の攻撃回数補正
+ * 攻撃回数は敏捷ベースで算出し、血統差分のみ最終補正として加算する
  */
-export interface BloodlineCombatStats {
-  attackCount: number  // 攻撃回数の初期値
-  accuracy: number     // 命中精度の基準値（実際はランダム範囲で生成）
-  evasion: number      // 回避能力の基準値（実際はランダム範囲で生成）
-}
-
-export const BLOODLINE_COMBAT_STATS: Record<string, BloodlineCombatStats> = {
-  'ゴブリン':         { attackCount: 2, accuracy: 20, evasion: 15 },
-  'スライムゴブリン': { attackCount: 2, accuracy: 20, evasion: 15 },
-  'ウルフゴブリン':   { attackCount: 3, accuracy: 20, evasion: 15 },
-  'オークゴブリン':   { attackCount: 2, accuracy: 20, evasion: 15 },
-  'ホブゴブリン':     { attackCount: 2, accuracy: 20, evasion: 15 },
-}
-
-const DEFAULT_COMBAT_STATS: BloodlineCombatStats = {
-  attackCount: 2, accuracy: 20, evasion: 15,
+export const BLOODLINE_ATTACK_COUNT_BONUS: Record<string, number> = {
+  'ゴブリン': 0,
+  'スライムゴブリン': 0,
+  'ウルフゴブリン': 1,
+  'オークゴブリン': 0,
+  'ホブゴブリン': 0,
 }
 
 /**
- * 血統の戦闘ステータス初期値を取得
+ * 血統の攻撃回数補正を取得
  */
-export function getBloodlineCombatStats(bloodline: string): BloodlineCombatStats {
-  return BLOODLINE_COMBAT_STATS[bloodline] ?? DEFAULT_COMBAT_STATS
+export function getBloodlineAttackCountBonus(bloodline: string): number {
+  return BLOODLINE_ATTACK_COUNT_BONUS[bloodline] ?? 0
 }
 
 function normalizeEquipmentLevel(level: unknown): number {
