@@ -10,6 +10,7 @@ import {
 } from '../../shared/data/characterSkills'
 import { FactorInheritanceService } from './FactorInheritanceService'
 import { factorDatabase } from '../../shared/data/factors'
+import { calculateGoblinBaseHp } from '../../shared/utils/goblinHp'
 
 /**
  * 因子・Modを適用した最終ステータスを計算するサービス
@@ -26,7 +27,7 @@ export class ModStatCalculator {
     equipmentBonuses?: EquipmentStatBonus[],
     equipmentEffects?: EquipmentEffect[]
   ): GoblinStats {
-    const base = { ...goblin.stats }
+    const base = { ...goblin.stats, hp: calculateGoblinBaseHp(goblin.level, goblin) }
     const mods = goblin.mods ?? []
 
     // 1. 因子ボーナスを計算（亜種の追加効果も含む）
@@ -47,17 +48,24 @@ export class ModStatCalculator {
     const equipFlat = this.aggregateEquipmentFlat(adjustedEquipmentBonuses)
     const equipPercent = this.aggregateEquipmentPercent(adjustedEquipmentBonuses)
 
-    // 5. 計算: (基礎 + 因子 + Modフラット + 装備フラット) * (1 + (Mod% + 装備%)/100)
+    // 5. 計算: 通常は (基礎 + 因子 + Modフラット + 装備フラット) * %
+    // HPのみ、因子を最後に加算する
     const calc = (key: keyof GoblinStats) =>
       Math.floor(
         (base[key] + factorBonuses[key] + flatBonuses[key] + equipFlat[key] + (skillBonuses[key] ?? 0)) *
         (1 + (percentBonuses[key] + equipPercent[key]) / 100)
       )
 
+    const calcHp = () =>
+      Math.floor(
+        (base.hp + flatBonuses.hp + equipFlat.hp + (skillBonuses.hp ?? 0)) *
+        (1 + (percentBonuses.hp + equipPercent.hp) / 100)
+      ) + factorBonuses.hp
+
     const withMultiplier = (key: keyof GoblinStats) => Math.floor(calc(key) * (skillMultipliers[key] ?? 1))
 
     const result: GoblinStats = {
-      hp: withMultiplier('hp'),
+      hp: Math.floor(calcHp() * (skillMultipliers.hp ?? 1)),
       atk: withMultiplier('atk'),
       def: withMultiplier('def'),
       spd: withMultiplier('spd'),

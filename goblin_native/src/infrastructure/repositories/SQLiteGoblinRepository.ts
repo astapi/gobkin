@@ -6,6 +6,8 @@ import type { Goblin, GoblinJob, GoblinStats } from '../../shared/types'
 import type { IGoblinRepository } from '../../core/repositories/IGoblinRepository'
 import { getDatabase } from '../database'
 import { normalizeGoblinJobSkills } from '../../shared/data/goblinJobs'
+import { syncGoblinDerivedStats } from '../../shared/utils/goblinStats'
+import { ModStatCalculator } from '../../core/services/ModStatCalculator'
 
 interface GoblinRow {
   id: number
@@ -49,7 +51,11 @@ export class SQLiteGoblinRepository implements IGoblinRepository {
   }
 
   async saveGoblin(goblin: Goblin): Promise<void> {
-    const normalizedGoblin = normalizeGoblinJobSkills(goblin)
+    const normalizedGoblin = syncGoblinDerivedStats(normalizeGoblinJobSkills(goblin))
+    const persistedGoblin: Goblin = {
+      ...normalizedGoblin,
+      effectiveStats: ModStatCalculator.calculate(normalizedGoblin),
+    }
     const db = await getDatabase()
     await db.runAsync(
       `INSERT OR REPLACE INTO goblins
@@ -58,20 +64,20 @@ export class SQLiteGoblinRepository implements IGoblinRepository {
         individual_value, mods_json, skills_json, updated_at)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))`,
       [
-        normalizedGoblin.id,
-        normalizedGoblin.name,
-        normalizedGoblin.race,
-        normalizedGoblin.level,
-        normalizedGoblin.experience,
-        normalizedGoblin.avatar,
-        JSON.stringify(normalizedGoblin.stats),
-        normalizedGoblin.effectiveStats ? JSON.stringify(normalizedGoblin.effectiveStats) : null,
-        normalizedGoblin.factors ? JSON.stringify(normalizedGoblin.factors) : null,
-        normalizedGoblin.variantFactorId ?? null,
-        normalizedGoblin.job ?? null,
-        normalizedGoblin.individualValue ?? 1,
-        normalizedGoblin.mods ? JSON.stringify(normalizedGoblin.mods) : null,
-        JSON.stringify(normalizedGoblin.skills),
+        persistedGoblin.id,
+        persistedGoblin.name,
+        persistedGoblin.race,
+        persistedGoblin.level,
+        persistedGoblin.experience,
+        persistedGoblin.avatar,
+        JSON.stringify(persistedGoblin.stats),
+        persistedGoblin.effectiveStats ? JSON.stringify(persistedGoblin.effectiveStats) : null,
+        persistedGoblin.factors ? JSON.stringify(persistedGoblin.factors) : null,
+        persistedGoblin.variantFactorId ?? null,
+        persistedGoblin.job ?? null,
+        persistedGoblin.individualValue ?? 1,
+        persistedGoblin.mods ? JSON.stringify(persistedGoblin.mods) : null,
+        JSON.stringify(persistedGoblin.skills),
       ]
     )
   }
@@ -104,7 +110,7 @@ export class SQLiteGoblinRepository implements IGoblinRepository {
   }
 
   private rowToGoblin(row: GoblinRow): Goblin {
-    return normalizeGoblinJobSkills({
+    const goblin = normalizeGoblinJobSkills({
       id: row.id,
       name: row.name,
       race: row.race,
@@ -126,5 +132,11 @@ export class SQLiteGoblinRepository implements IGoblinRepository {
         : undefined,
       skills: JSON.parse(row.skills_json),
     })
+
+    const normalizedGoblin = syncGoblinDerivedStats(goblin)
+    return {
+      ...normalizedGoblin,
+      effectiveStats: ModStatCalculator.calculate(normalizedGoblin),
+    }
   }
 }

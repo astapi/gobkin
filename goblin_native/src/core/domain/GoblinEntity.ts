@@ -1,6 +1,7 @@
 import type { Goblin, GoblinStats } from '../../shared/types'
 import { addExperience, type LevelUpResult } from '../services/ExperienceSystem'
 import { ModStatCalculator } from '../services/ModStatCalculator'
+import { calculateGoblinBaseHp, getGoblinBaseAttributes } from '../../shared/utils/goblinHp'
 
 export class GoblinEntity {
   private readonly base: Goblin
@@ -11,6 +12,7 @@ export class GoblinEntity {
   constructor(goblin: Goblin) {
     this.base = {
       ...goblin,
+      baseAttributes: getGoblinBaseAttributes(goblin),
       stats: { ...goblin.stats },
     }
     this.stats = { ...goblin.stats }
@@ -85,6 +87,7 @@ export class GoblinEntity {
       ...this.base,
       level: this.level,
       experience: this.experience,
+      baseAttributes: this.base.baseAttributes,
       stats: { ...this.stats },
       effectiveStats: { ...this.stats }, // 仮設定
     }
@@ -101,11 +104,15 @@ export class GoblinEntity {
     for (let i = 0; i < levelsGained; i++) {
       this.stats = {
         ...this.stats,
-        hp: this.stats.hp + 5,
         atk: this.stats.atk + 2,
         def: this.stats.def + 1,
         spd: this.stats.spd + 1,
       }
     }
+
+    this.stats.hp = calculateGoblinBaseHp(this.level, {
+      race: this.base.race,
+      job: this.base.job,
+    })
   }
 }

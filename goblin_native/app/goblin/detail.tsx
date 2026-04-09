@@ -14,6 +14,7 @@ import { getExpForNextLevel, getExpProgress } from '@/core/services/ExperienceSy
 import { getModTemplate } from '@/shared/data/modPoolLoader'
 import { describeCharacterSkill, getUniqueSkillsById } from '@/shared/data/characterSkills'
 import { getGoblinJobDefinition } from '@/shared/data/goblinJobs'
+import { getGoblinBaseAttributes } from '@/shared/utils/goblinHp'
 
 const STAT_LABELS: Record<string, string> = {
   hp_percent: 'HP', hp_flat: 'HP',
@@ -67,6 +68,10 @@ export default function GoblinDetailScreen() {
   const expForNext = goblin ? getExpForNextLevel(goblin.level) : 0
   const expProgress = goblin ? getExpProgress(goblin.level, goblin.experience) : 0
   const characterSkills = useMemo(() => getUniqueSkillsById(goblin?.skills ?? []), [goblin])
+  const baseAttributes = useMemo(
+    () => goblin ? getGoblinBaseAttributes(goblin) : null,
+    [goblin]
+  )
   const assignedParty = useMemo(() => (
     goblin ? parties.find((party) => party.memberIds.includes(goblin.id)) ?? null : null
   ), [goblin, parties])
@@ -144,6 +149,28 @@ export default function GoblinDetailScreen() {
             ))}
           </View>
         </View>
+
+        {baseAttributes && (
+          <View style={styles.detailSection}>
+            <Text style={styles.sectionTitle}>基本能力値</Text>
+            <View style={styles.baseAttributeList}>
+              {([
+                { key: 'power', label: '力' },
+                { key: 'wisdom', label: '知恵' },
+                { key: 'spirit', label: '精神' },
+                { key: 'vitality', label: '体力' },
+                { key: 'agility', label: '敏捷' },
+                { key: 'luck', label: '運' },
+              ] as const).map(item => (
+                <View key={item.key} style={styles.baseAttributeRow}>
+                  <Text style={styles.baseAttributeLabel}>{item.label}</Text>
+                  <Text style={styles.baseAttributeValue}>{baseAttributes[item.key]}</Text>
+                  <Text style={styles.baseAttributeDelta}>(+0)</Text>
+                </View>
+              ))}
+            </View>
+          </View>
+        )}
 
         {characterSkills.length > 0 && (
           <View style={styles.detailSection}>
@@ -347,6 +374,36 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: '700',
     color: '#1F2937',
+  },
+  baseAttributeList: {
+    gap: 4,
+  },
+  baseAttributeRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 4,
+    paddingHorizontal: 2,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F3F4F6',
+  },
+  baseAttributeLabel: {
+    fontSize: 10,
+    fontWeight: '500',
+    color: '#6B7280',
+    width: 34,
+  },
+  baseAttributeValue: {
+    fontSize: 11,
+    fontWeight: '600',
+    color: '#1F2937',
+    width: 28,
+    textAlign: 'right',
+    marginLeft: 8,
+  },
+  baseAttributeDelta: {
+    fontSize: 10,
+    color: '#9CA3AF',
+    marginLeft: 6,
   },
   abilityList: {
     gap: 6,

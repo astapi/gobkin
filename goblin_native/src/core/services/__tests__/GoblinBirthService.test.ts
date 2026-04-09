@@ -1,5 +1,7 @@
 import { GoblinBirthService } from '../GoblinBirthService'
 import { calculateIndividualValue, AREA_LEVEL_IV_RANGES, BASE_RANK_BONUS } from '../BaseRankSystem'
+import { applyGoblinJob } from '../../../shared/data/goblinJobs'
+import { calculateGoblinBaseHp, getGoblinBaseAttributes, getGoblinHpLevelScale } from '../../../shared/utils/goblinHp'
 
 /**
  * シード付き乱数生成器（テスト再現性のため）
@@ -103,8 +105,7 @@ describe('GoblinBirthService', () => {
         const service = new GoblinBirthService(rng)
         const goblin = service.createNewGoblin(i)
 
-        expect(goblin.stats.hp).toBeGreaterThanOrEqual(55)
-        expect(goblin.stats.hp).toBeLessThanOrEqual(80)
+        expect(goblin.stats.hp).toBe(19)
         expect(goblin.stats.atk).toBeGreaterThanOrEqual(10)
         expect(goblin.stats.atk).toBeLessThanOrEqual(16)
         expect(goblin.stats.spd).toBeGreaterThanOrEqual(8)
@@ -112,6 +113,56 @@ describe('GoblinBirthService', () => {
         expect(goblin.stats.def).toBeGreaterThanOrEqual(8)
         expect(goblin.stats.def).toBeLessThanOrEqual(14)
       }
+    })
+
+    it('種族ごとの基本能力値が設定される', () => {
+      const rng = createSeededRng(701)
+      const service = new GoblinBirthService(rng)
+
+      expect(service.createNewGoblin(1).baseAttributes).toEqual({
+        power: 10,
+        wisdom: 10,
+        spirit: 10,
+        vitality: 10,
+        agility: 10,
+        luck: 10,
+      })
+      expect(getGoblinBaseAttributes({ race: 'スライムゴブリン' }).vitality).toBe(13)
+      expect(getGoblinBaseAttributes({ race: 'ウルフゴブリン' }).agility).toBe(13)
+      expect(getGoblinBaseAttributes({ race: 'ホブゴブリン' }).power).toBe(13)
+      expect(getGoblinBaseAttributes({ race: 'オークゴブリン' }).vitality).toBe(15)
+    })
+
+    it('種族ごとのLv1HPが新計算式で決まる', () => {
+      const rng = createSeededRng(702)
+      const service = new GoblinBirthService(rng)
+      const goblin = service.createNewGoblin(1)
+
+      expect(goblin.stats.hp).toBe(19)
+      expect(calculateGoblinBaseHp(1, { race: 'スライムゴブリン' })).toBe(29)
+      expect(calculateGoblinBaseHp(1, { race: 'ウルフゴブリン' })).toBe(20)
+      expect(calculateGoblinBaseHp(1, { race: 'ホブゴブリン' })).toBe(25)
+      expect(calculateGoblinBaseHp(1, { race: 'オークゴブリン' })).toBe(38)
+    })
+
+    it('純ゴブリンはジョブ変更時にジョブ係数でHPが変わる', () => {
+      const rng = createSeededRng(703)
+      const service = new GoblinBirthService(rng)
+      const goblin = service.createNewGoblin(1)
+
+      expect(applyGoblinJob(goblin, 'guard').stats.hp).toBe(22)
+      expect(applyGoblinJob(goblin, 'warrior').stats.hp).toBe(23)
+      expect(applyGoblinJob(goblin, 'thief').stats.hp).toBe(19)
+      expect(applyGoblinJob(goblin, 'mage').stats.hp).toBe(18)
+    })
+
+    it('Lv依存式は指定された区分で変化する', () => {
+      expect(getGoblinHpLevelScale(30, 'ゴブリン')).toBeCloseTo(3)
+      expect(getGoblinHpLevelScale(31, 'ゴブリン')).toBeCloseTo(3.15)
+      expect(getGoblinHpLevelScale(80, 'ゴブリン')).toBeCloseTo(12)
+      expect(getGoblinHpLevelScale(81, 'スライムゴブリン')).toBeCloseTo(12.45)
+      expect(getGoblinHpLevelScale(120, 'ゴブリン')).toBeCloseTo(18.75)
+      expect(getGoblinHpLevelScale(120, 'ホブゴブリン')).toBeCloseTo(30)
     })
 
     it('個体値は1〜64にクランプされる', () => {
