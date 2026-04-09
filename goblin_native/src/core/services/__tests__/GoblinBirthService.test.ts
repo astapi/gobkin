@@ -1,7 +1,16 @@
 import { GoblinBirthService } from '../GoblinBirthService'
 import { calculateIndividualValue, AREA_LEVEL_IV_RANGES, BASE_RANK_BONUS } from '../BaseRankSystem'
 import { applyGoblinJob } from '../../../shared/data/goblinJobs'
-import { calculateGoblinBaseHp, getGoblinBaseAttributes, getGoblinHpLevelScale } from '../../../shared/utils/goblinHp'
+import {
+  calculateGoblinBaseAccuracy,
+  calculateGoblinBaseAtk,
+  calculateGoblinBaseAttackCount,
+  calculateGoblinBaseDef,
+  calculateGoblinBaseEvasion,
+  calculateGoblinBaseHp,
+  getGoblinBaseAttributes,
+  getGoblinHpLevelScale,
+} from '../../../shared/utils/goblinHp'
 
 /**
  * シード付き乱数生成器（テスト再現性のため）
@@ -95,10 +104,9 @@ describe('GoblinBirthService', () => {
       expect(goblin.stats.hp).toBeGreaterThan(0)
       expect(goblin.stats.atk).toBeGreaterThan(0)
       expect(goblin.stats.def).toBeGreaterThan(0)
-      expect(goblin.stats.spd).toBeGreaterThan(0)
     })
 
-    it('ステータスが定義された範囲内に収まる', () => {
+    it('Lv1の基礎ステータス式がそのまま反映される', () => {
       const iterations = 100
       for (let i = 0; i < iterations; i++) {
         const rng = createSeededRng(i * 13)
@@ -106,12 +114,11 @@ describe('GoblinBirthService', () => {
         const goblin = service.createNewGoblin(i)
 
         expect(goblin.stats.hp).toBe(19)
-        expect(goblin.stats.atk).toBeGreaterThanOrEqual(10)
-        expect(goblin.stats.atk).toBeLessThanOrEqual(16)
-        expect(goblin.stats.spd).toBeGreaterThanOrEqual(8)
-        expect(goblin.stats.spd).toBeLessThanOrEqual(14)
-        expect(goblin.stats.def).toBeGreaterThanOrEqual(8)
-        expect(goblin.stats.def).toBeLessThanOrEqual(14)
+        expect(goblin.stats.atk).toBe(11)
+        expect(goblin.stats.def).toBe(11)
+        expect(goblin.stats.attackCount).toBe(2)
+        expect(goblin.stats.accuracy).toBe(62)
+        expect(goblin.stats.evasion).toBe(11)
       }
     })
 
@@ -143,6 +150,38 @@ describe('GoblinBirthService', () => {
       expect(calculateGoblinBaseHp(1, { race: 'ウルフゴブリン' })).toBe(20)
       expect(calculateGoblinBaseHp(1, { race: 'ホブゴブリン' })).toBe(25)
       expect(calculateGoblinBaseHp(1, { race: 'オークゴブリン' })).toBe(38)
+    })
+
+    it('種族ごとのLv1基礎ステータスが式どおり決まる', () => {
+      expect(calculateGoblinBaseAtk(1, { race: 'ゴブリン' })).toBe(11)
+      expect(calculateGoblinBaseAtk(1, { race: 'スライムゴブリン' })).toBe(9)
+      expect(calculateGoblinBaseAtk(1, { race: 'ウルフゴブリン' })).toBe(12)
+      expect(calculateGoblinBaseAtk(1, { race: 'ホブゴブリン' })).toBe(15)
+      expect(calculateGoblinBaseAtk(1, { race: 'オークゴブリン' })).toBe(17)
+
+      expect(calculateGoblinBaseDef(1, { race: 'ゴブリン' })).toBe(11)
+      expect(calculateGoblinBaseDef(1, { race: 'スライムゴブリン' })).toBe(15)
+      expect(calculateGoblinBaseDef(1, { race: 'ウルフゴブリン' })).toBe(11)
+      expect(calculateGoblinBaseDef(1, { race: 'ホブゴブリン' })).toBe(12)
+      expect(calculateGoblinBaseDef(1, { race: 'オークゴブリン' })).toBe(17)
+
+      expect(calculateGoblinBaseAccuracy(1, { race: 'ゴブリン' })).toBe(62)
+      expect(calculateGoblinBaseAccuracy(1, { race: 'スライムゴブリン' })).toBe(60)
+      expect(calculateGoblinBaseAccuracy(1, { race: 'ウルフゴブリン' })).toBe(64)
+      expect(calculateGoblinBaseAccuracy(1, { race: 'ホブゴブリン' })).toBe(65)
+      expect(calculateGoblinBaseAccuracy(1, { race: 'オークゴブリン' })).toBe(64)
+
+      expect(calculateGoblinBaseEvasion(1, { race: 'ゴブリン' })).toBe(11)
+      expect(calculateGoblinBaseEvasion(1, { race: 'スライムゴブリン' })).toBe(10)
+      expect(calculateGoblinBaseEvasion(1, { race: 'ウルフゴブリン' })).toBe(14)
+      expect(calculateGoblinBaseEvasion(1, { race: 'ホブゴブリン' })).toBe(12)
+      expect(calculateGoblinBaseEvasion(1, { race: 'オークゴブリン' })).toBe(9)
+
+      expect(calculateGoblinBaseAttackCount(1, { race: 'ゴブリン' })).toBe(2)
+      expect(calculateGoblinBaseAttackCount(1, { race: 'スライムゴブリン' })).toBe(2)
+      expect(calculateGoblinBaseAttackCount(1, { race: 'ウルフゴブリン' })).toBe(3)
+      expect(calculateGoblinBaseAttackCount(1, { race: 'ホブゴブリン' })).toBe(2)
+      expect(calculateGoblinBaseAttackCount(1, { race: 'オークゴブリン' })).toBe(2)
     })
 
     it('純ゴブリンはジョブ変更時にジョブ係数でHPが変わる', () => {

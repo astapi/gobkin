@@ -39,6 +39,22 @@ export function getUniqueSkillsById(skills: CharacterSkill[]): CharacterSkill[] 
 }
 
 export function describeCharacterSkill(skill: CharacterSkill): string {
+  if (skill.actionOrderMultiplier !== undefined) {
+    if (skill.actionOrderMultiplier === 2) {
+      return '行動順を決める速さが2.0倍に上昇する'
+    }
+    if (skill.actionOrderMultiplier === 1.5) {
+      return '行動順を決める速さが1.5倍に上昇する'
+    }
+    if (skill.actionOrderMultiplier === 2 / 3) {
+      return '行動順を決める速さが2/3に減少する'
+    }
+    if (skill.actionOrderMultiplier === 0.5) {
+      return '行動順を決める速さが1/2に減少する'
+    }
+    return `行動順を決める速さが×${skill.actionOrderMultiplier.toFixed(2)}`
+  }
+
   if (skill.coverLowHpAlly) {
     return 'HPが半分以下の味方への通常攻撃を代わりに受ける'
   }
@@ -66,10 +82,6 @@ export function describeCharacterSkill(skill: CharacterSkill): string {
 
   if (skill.equipmentCategoryMultiplier?.armor !== undefined) {
     return `鎧カテゴリ装備の能力値が×${skill.equipmentCategoryMultiplier.armor.toFixed(1)}`
-  }
-
-  if (skill.statMultipliers?.spd !== undefined) {
-    return `SPDが×${skill.statMultipliers.spd.toFixed(1)}`
   }
 
   if (skill.statMultipliers?.evasion !== undefined) {
@@ -112,6 +124,13 @@ export function getSkillStatMultipliers(skills: CharacterSkill[]): Partial<Recor
   }
 
   return multipliers
+}
+
+export function getActionOrderMultiplierFromSkills(skills: CharacterSkill[]): number {
+  return getUniqueSkillsById(skills).reduce(
+    (product, skill) => product * (skill.actionOrderMultiplier ?? 1),
+    1,
+  )
 }
 
 export function getAdditionalDamageFromSkills(skills: CharacterSkill[]): number {

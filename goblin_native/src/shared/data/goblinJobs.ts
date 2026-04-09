@@ -63,8 +63,8 @@ const GOBLIN_JOB_DEFINITIONS: Record<GoblinJob, GoblinJobDefinition> = {
       {
         skill: {
           id: 'goblin_job_thief_initiative',
-          name: '先制攻撃',
-          statMultipliers: { spd: 1.2 },
+          name: '[戦術] 先制攻撃',
+          actionOrderMultiplier: 1.5,
         },
       },
       {

@@ -1,5 +1,6 @@
 import type { CharacterSkill } from '../../types'
 import {
+  getActionOrderMultiplierFromSkills,
   describeCharacterSkill,
   getAdditionalDamageFromSkills,
   getLearnedSpellsFromSkills,
@@ -108,12 +109,12 @@ describe('characterSkills - 物理ダメージ軽減', () => {
 
   it('ステータス倍率スキルを集計できる', () => {
     const skills: CharacterSkill[] = [
-      { id: 'spd_up', name: '先制攻撃', statMultipliers: { spd: 1.2 } },
+      { id: 'initiative', name: '[戦術] 先制攻撃', actionOrderMultiplier: 1.5 },
       { id: 'evasion_up', name: '回避適正', statMultipliers: { evasion: 1.5 } },
     ]
 
-    expect(getSkillStatMultipliers(skills).spd).toBeCloseTo(1.2)
     expect(getSkillStatMultipliers(skills).evasion).toBeCloseTo(1.5)
+    expect(getActionOrderMultiplierFromSkills(skills)).toBeCloseTo(1.5)
   })
 
   it('かばうスキルを判定できる', () => {
@@ -162,14 +163,14 @@ describe('characterSkills - 物理ダメージ軽減', () => {
     expect(describeCharacterSkill(skill)).toBe('[+11]攻撃回数')
   })
 
-  it('SPD倍率スキルの説明文を返す', () => {
+  it('行動順倍率スキルの説明文を返す', () => {
     const skill: CharacterSkill = {
-      id: 'spd_up',
-      name: '先制攻撃',
-      statMultipliers: { spd: 1.2 },
+      id: 'initiative',
+      name: '[戦術] 先制攻撃',
+      actionOrderMultiplier: 1.5,
     }
 
-    expect(describeCharacterSkill(skill)).toBe('SPDが×1.2')
+    expect(describeCharacterSkill(skill)).toBe('行動順を決める速さが1.5倍に上昇する')
   })
 
   it('気合いスキルの説明文を返す', () => {

@@ -14,7 +14,6 @@ function createGoblin(overrides: Partial<Goblin> = {}): Goblin {
     stats: overrides.stats ?? {
       hp: 50,
       atk: 12,
-      spd: 10,
       def: 8,
       attackCount: 2,
       accuracy: 100,
@@ -72,7 +71,6 @@ describe('goblinJobs', () => {
       stats: {
         hp: 1,
         atk: 12,
-        spd: 10,
         def: 8,
         attackCount: 2,
         accuracy: 100,

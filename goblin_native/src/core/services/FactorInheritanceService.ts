@@ -151,7 +151,7 @@ export class FactorInheritanceService {
     factorIds: string[],
     variantFactor?: Factor
   ): GoblinStats {
-    const bonuses: GoblinStats = { hp: 0, atk: 0, def: 0, spd: 0, attackCount: 0, accuracy: 0, evasion: 0 }
+    const bonuses: GoblinStats = { hp: 0, atk: 0, def: 0, attackCount: 0, accuracy: 0, evasion: 0 }
 
     // 各因子のeffectsを合算
     for (const factorId of factorIds) {

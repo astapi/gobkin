@@ -3,90 +3,258 @@
     {
       "id": "ELF001",
       "name": "森の斥候",
-      "raceTags": ["elf"],
+      "raceTags": [
+        "elf"
+      ],
       "level": 14,
       "hp": 50,
       "atk": 22,
       "def": 8,
-      "spd": 12,
       "attackCount": 1,
       "accuracy": 380,
       "evasion": 24,
       "exp": 45,
-      "gold": 40
+      "gold": 40,
+      "agility": 12
     },
     {
       "id": "ELF002",
       "name": "森の射手",
-      "raceTags": ["elf"],
+      "raceTags": [
+        "elf"
+      ],
       "level": 15,
       "hp": 55,
       "atk": 30,
       "def": 7,
-      "spd": 11,
       "attackCount": 1,
       "accuracy": 395,
       "evasion": 25,
       "exp": 50,
-      "gold": 44
+      "gold": 44,
+      "agility": 11
     },
     {
       "id": "ELF003",
       "name": "精霊使い",
-      "raceTags": ["elf"],
+      "raceTags": [
+        "elf"
+      ],
       "level": 16,
       "hp": 60,
       "atk": 32,
       "def": 10,
-      "spd": 9,
       "attackCount": 1,
       "accuracy": 410,
       "evasion": 24,
       "exp": 55,
-      "gold": 48
+      "gold": 48,
+      "agility": 9
     },
     {
       "id": "ELF004",
       "name": "月の衛士",
-      "raceTags": ["elf"],
+      "raceTags": [
+        "elf"
+      ],
       "level": 16,
       "hp": 80,
       "atk": 25,
       "def": 16,
-      "spd": 10,
       "attackCount": 1,
       "accuracy": 410,
       "evasion": 26,
       "exp": 52,
-      "gold": 46
+      "gold": 46,
+      "agility": 10
     },
     {
       "id": "ELF005",
       "name": "古樹の戦士",
-      "raceTags": ["elf", "treant"],
+      "raceTags": [
+        "elf",
+        "treant"
+      ],
       "level": 17,
       "hp": 100,
       "atk": 28,
       "def": 20,
-      "spd": 6,
       "attackCount": 1,
       "accuracy": 425,
       "evasion": 22,
       "exp": 58,
-      "gold": 50
+      "gold": 50,
+      "agility": 6
     }
   ],
   "patterns": [
-    { "id": "EF1_001", "floors": [1], "enemies": [["ELF001", "ELF001"]] },
-    { "id": "EF1_002", "floors": [1], "enemies": [["ELF001", "ELF002"], ["ELF001"]] },
-    { "id": "EF1_003", "floors": [1], "enemies": [["ELF001", "ELF002"], ["ELF001", "ELF002"]] },
-    { "id": "EF1_004", "floors": [1], "enemies": [["ELF002", "ELF001", "ELF002"], ["ELF001", "ELF001"]] },
-    { "id": "EF1_005", "floors": [1], "enemies": [["ELF001", "ELF002", "ELF001"], ["ELF002", "ELF001"], ["ELF001", "ELF002"]] },
-
-    { "id": "EF1_006", "floors": [2], "enemies": [["ELF001", "ELF002", "ELF001"]] },
-    { "id": "EF1_007", "floors": [2], "enemies": [["ELF002", "ELF001"], ["ELF001", "ELF002"]] },
-    { "id": "EF1_008", "floors": [2], "enemies": [["ELF001", "ELF002", "ELF001"], ["ELF002", "ELF001"]] },
-    { "id": "EF1_009", "floors": [2], "enemies": [["ELF002", "ELF001", "ELF002"], ["ELF001", "ELF002"], ["ELF001"]] },
-    { "id": "EF1_010", "floors": [2], "enemies": [["ELF002", "ELF001", "ELF002"], ["ELF001", "ELF002", "ELF001"], ["ELF001"]] }
+    {
+      "id": "EF1_001",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "ELF001",
+          "ELF001"
+        ]
+      ]
+    },
+    {
+      "id": "EF1_002",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "ELF001",
+          "ELF002"
+        ],
+        [
+          "ELF001"
+        ]
+      ]
+    },
+    {
+      "id": "EF1_003",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "ELF001",
+          "ELF002"
+        ],
+        [
+          "ELF001",
+          "ELF002"
+        ]
+      ]
+    },
+    {
+      "id": "EF1_004",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "ELF002",
+          "ELF001",
+          "ELF002"
+        ],
+        [
+          "ELF001",
+          "ELF001"
+        ]
+      ]
+    },
+    {
+      "id": "EF1_005",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "ELF001",
+          "ELF002",
+          "ELF001"
+        ],
+        [
+          "ELF002",
+          "ELF001"
+        ],
+        [
+          "ELF001",
+          "ELF002"
+        ]
+      ]
+    },
+    {
+      "id": "EF1_006",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "ELF001",
+          "ELF002",
+          "ELF001"
+        ]
+      ]
+    },
+    {
+      "id": "EF1_007",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "ELF002",
+          "ELF001"
+        ],
+        [
+          "ELF001",
+          "ELF002"
+        ]
+      ]
+    },
+    {
+      "id": "EF1_008",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "ELF001",
+          "ELF002",
+          "ELF001"
+        ],
+        [
+          "ELF002",
+          "ELF001"
+        ]
+      ]
+    },
+    {
+      "id": "EF1_009",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "ELF002",
+          "ELF001",
+          "ELF002"
+        ],
+        [
+          "ELF001",
+          "ELF002"
+        ],
+        [
+          "ELF001"
+        ]
+      ]
+    },
+    {
+      "id": "EF1_010",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "ELF002",
+          "ELF001",
+          "ELF002"
+        ],
+        [
+          "ELF001",
+          "ELF002",
+          "ELF001"
+        ],
+        [
+          "ELF001"
+        ]
+      ]
+    }
   ]
 }

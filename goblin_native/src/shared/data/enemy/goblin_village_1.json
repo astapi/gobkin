@@ -3,12 +3,14 @@
     {
       "id": "GOB001",
       "name": "ゴブリン",
-      "raceTags": ["goblin"],
+      "raceTags": [
+        "goblin"
+      ],
       "level": 3,
       "hp": 50,
       "atk": 6,
       "def": 3,
-      "spd": 3,
+      "agility": 8,
       "attackCount": 2,
       "accuracy": 200,
       "evasion": 11,
@@ -18,12 +20,14 @@
     {
       "id": "GOB002",
       "name": "ゴブリンシーフ",
-      "raceTags": ["goblin"],
+      "raceTags": [
+        "goblin"
+      ],
       "level": 4,
       "hp": 45,
       "atk": 7,
       "def": 2,
-      "spd": 18,
+      "agility": 11,
       "attackCount": 2,
       "accuracy": 215,
       "evasion": 12,
@@ -33,12 +37,14 @@
     {
       "id": "GOB003",
       "name": "ゴブリンウォリアー",
-      "raceTags": ["goblin"],
+      "raceTags": [
+        "goblin"
+      ],
       "level": 5,
       "hp": 120,
       "atk": 20,
       "def": 6,
-      "spd": 3,
+      "agility": 8,
       "attackCount": 2,
       "accuracy": 230,
       "evasion": 13,
@@ -48,28 +54,38 @@
     {
       "id": "GOB004",
       "name": "ゴブリンメイジ",
-      "raceTags": ["goblin"],
+      "raceTags": [
+        "goblin"
+      ],
       "level": 5,
       "hp": 45,
       "atk": 9,
       "def": 3,
-      "spd": 4,
+      "agility": 7,
       "attackCount": 2,
       "accuracy": 230,
       "evasion": 13,
       "exp": 18,
       "gold": 15,
-      "skills": [{ "id": "fireball", "name": "ファイヤーボール", "grantsSpellId": "fireball" }]
+      "skills": [
+        {
+          "id": "fireball",
+          "name": "ファイヤーボール",
+          "grantsSpellId": "fireball"
+        }
+      ]
     },
     {
       "id": "GOB005",
       "name": "ゴブリンガード",
-      "raceTags": ["goblin"],
+      "raceTags": [
+        "goblin"
+      ],
       "level": 6,
       "hp": 80,
       "atk": 7,
       "def": 30,
-      "spd": 2,
+      "agility": 6,
       "attackCount": 2,
       "accuracy": 240,
       "evasion": 14,
@@ -78,16 +94,217 @@
     }
   ],
   "patterns": [
-    { "id": "GV1_001", "floors": [1], "enemies": [["GOB001", "GOB001", "GOB001", "GOB001"], ["GOB001", "GOB001", "GOB002", "GOB002"]] },
-    { "id": "GV1_002", "floors": [1], "enemies": [["GOB001", "GOB001", "GOB001", "GOB001", "GOB001"], ["GOB002", "GOB002", "GOB002"]] },
-    { "id": "GV1_003", "floors": [1], "enemies": [["GOB001", "GOB001", "GOB001", "GOB001"], ["GOB002", "GOB002", "GOB002", "GOB002"]] },
-    { "id": "GV1_004", "floors": [1], "enemies": [["GOB001", "GOB001", "GOB001", "GOB001", "GOB001", "GOB001"], ["GOB002", "GOB002"]] },
-    { "id": "GV1_005", "floors": [1], "enemies": [["GOB001", "GOB001", "GOB001", "GOB001", "GOB001"], ["GOB001", "GOB001", "GOB002", "GOB002"]] },
-
-    { "id": "GV1_006", "floors": [2], "enemies": [["GOB001", "GOB001", "GOB001", "GOB001", "GOB001"], ["GOB002", "GOB002", "GOB002", "GOB002"]] },
-    { "id": "GV1_007", "floors": [2], "enemies": [["GOB001", "GOB001", "GOB001", "GOB001", "GOB001", "GOB001"], ["GOB002", "GOB002", "GOB002", "GOB002"]] },
-    { "id": "GV1_008", "floors": [2], "enemies": [["GOB001", "GOB001", "GOB001", "GOB001"], ["GOB002", "GOB002", "GOB002", "GOB002", "GOB002"]] },
-    { "id": "GV1_009", "floors": [2], "enemies": [["GOB001", "GOB001", "GOB001", "GOB001", "GOB001", "GOB001"], ["GOB002", "GOB002", "GOB002", "GOB002", "GOB002"]] },
-    { "id": "GV1_010", "floors": [2], "enemies": [["GOB001", "GOB001", "GOB001", "GOB001", "GOB001", "GOB001"], ["GOB001", "GOB001", "GOB002", "GOB002", "GOB002", "GOB002"]] }
+    {
+      "id": "GV1_001",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "GOB001",
+          "GOB001",
+          "GOB001",
+          "GOB001"
+        ],
+        [
+          "GOB001",
+          "GOB001",
+          "GOB002",
+          "GOB002"
+        ]
+      ]
+    },
+    {
+      "id": "GV1_002",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "GOB001",
+          "GOB001",
+          "GOB001",
+          "GOB001",
+          "GOB001"
+        ],
+        [
+          "GOB002",
+          "GOB002",
+          "GOB002"
+        ]
+      ]
+    },
+    {
+      "id": "GV1_003",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "GOB001",
+          "GOB001",
+          "GOB001",
+          "GOB001"
+        ],
+        [
+          "GOB002",
+          "GOB002",
+          "GOB002",
+          "GOB002"
+        ]
+      ]
+    },
+    {
+      "id": "GV1_004",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "GOB001",
+          "GOB001",
+          "GOB001",
+          "GOB001",
+          "GOB001",
+          "GOB001"
+        ],
+        [
+          "GOB002",
+          "GOB002"
+        ]
+      ]
+    },
+    {
+      "id": "GV1_005",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "GOB001",
+          "GOB001",
+          "GOB001",
+          "GOB001",
+          "GOB001"
+        ],
+        [
+          "GOB001",
+          "GOB001",
+          "GOB002",
+          "GOB002"
+        ]
+      ]
+    },
+    {
+      "id": "GV1_006",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "GOB001",
+          "GOB001",
+          "GOB001",
+          "GOB001",
+          "GOB001"
+        ],
+        [
+          "GOB002",
+          "GOB002",
+          "GOB002",
+          "GOB002"
+        ]
+      ]
+    },
+    {
+      "id": "GV1_007",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "GOB001",
+          "GOB001",
+          "GOB001",
+          "GOB001",
+          "GOB001",
+          "GOB001"
+        ],
+        [
+          "GOB002",
+          "GOB002",
+          "GOB002",
+          "GOB002"
+        ]
+      ]
+    },
+    {
+      "id": "GV1_008",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "GOB001",
+          "GOB001",
+          "GOB001",
+          "GOB001"
+        ],
+        [
+          "GOB002",
+          "GOB002",
+          "GOB002",
+          "GOB002",
+          "GOB002"
+        ]
+      ]
+    },
+    {
+      "id": "GV1_009",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "GOB001",
+          "GOB001",
+          "GOB001",
+          "GOB001",
+          "GOB001",
+          "GOB001"
+        ],
+        [
+          "GOB002",
+          "GOB002",
+          "GOB002",
+          "GOB002",
+          "GOB002"
+        ]
+      ]
+    },
+    {
+      "id": "GV1_010",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "GOB001",
+          "GOB001",
+          "GOB001",
+          "GOB001",
+          "GOB001",
+          "GOB001"
+        ],
+        [
+          "GOB001",
+          "GOB001",
+          "GOB002",
+          "GOB002",
+          "GOB002",
+          "GOB002"
+        ]
+      ]
+    }
   ]
 }

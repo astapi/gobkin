@@ -3,12 +3,14 @@
     {
       "id": "ORC002",
       "name": "オーク兵",
-      "raceTags": ["orc"],
+      "raceTags": [
+        "orc"
+      ],
       "level": 6,
       "hp": 300,
       "atk": 70,
       "def": 10,
-      "spd": 55,
+      "agility": 8,
       "attackCount": 1,
       "accuracy": 215,
       "evasion": 12,
@@ -18,12 +20,14 @@
     {
       "id": "ORC005",
       "name": "オークブルート",
-      "raceTags": ["orc"],
+      "raceTags": [
+        "orc"
+      ],
       "level": 8,
       "hp": 550,
       "atk": 100,
       "def": 16,
-      "spd": 55,
+      "agility": 7,
       "attackCount": 1,
       "accuracy": 205,
       "evasion": 13,
@@ -32,16 +36,188 @@
     }
   ],
   "patterns": [
-    { "id": "OC2_001", "floors": [1], "enemies": [["ORC005"], ["ORC002", "ORC002", "ORC002"]] },
-    { "id": "OC2_002", "floors": [1], "enemies": [["ORC005", "ORC005"], ["ORC002", "ORC002"]] },
-    { "id": "OC2_003", "floors": [1], "enemies": [["ORC005"], ["ORC002", "ORC002", "ORC002"], ["ORC002"]] },
-    { "id": "OC2_004", "floors": [1], "enemies": [["ORC005", "ORC005"], ["ORC002", "ORC002", "ORC002"]] },
-    { "id": "OC2_005", "floors": [1], "enemies": [["ORC005"], ["ORC002", "ORC002", "ORC002", "ORC002"], ["ORC002"]] },
-
-    { "id": "OC2_006", "floors": [2], "enemies": [["ORC005", "ORC005"], ["ORC002", "ORC002", "ORC002"]] },
-    { "id": "OC2_007", "floors": [2], "enemies": [["ORC005"], ["ORC002", "ORC002", "ORC002", "ORC002"]] },
-    { "id": "OC2_008", "floors": [2], "enemies": [["ORC005", "ORC005"], ["ORC002", "ORC002"], ["ORC002", "ORC002"]] },
-    { "id": "OC2_009", "floors": [2], "enemies": [["ORC005"], ["ORC002", "ORC002", "ORC002", "ORC002"], ["ORC002"]] },
-    { "id": "OC2_010", "floors": [2], "enemies": [["ORC005", "ORC005"], ["ORC002", "ORC002", "ORC002"], ["ORC002", "ORC002"]] }
+    {
+      "id": "OC2_001",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "ORC005"
+        ],
+        [
+          "ORC002",
+          "ORC002",
+          "ORC002"
+        ]
+      ]
+    },
+    {
+      "id": "OC2_002",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "ORC005",
+          "ORC005"
+        ],
+        [
+          "ORC002",
+          "ORC002"
+        ]
+      ]
+    },
+    {
+      "id": "OC2_003",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "ORC005"
+        ],
+        [
+          "ORC002",
+          "ORC002",
+          "ORC002"
+        ],
+        [
+          "ORC002"
+        ]
+      ]
+    },
+    {
+      "id": "OC2_004",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "ORC005",
+          "ORC005"
+        ],
+        [
+          "ORC002",
+          "ORC002",
+          "ORC002"
+        ]
+      ]
+    },
+    {
+      "id": "OC2_005",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "ORC005"
+        ],
+        [
+          "ORC002",
+          "ORC002",
+          "ORC002",
+          "ORC002"
+        ],
+        [
+          "ORC002"
+        ]
+      ]
+    },
+    {
+      "id": "OC2_006",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "ORC005",
+          "ORC005"
+        ],
+        [
+          "ORC002",
+          "ORC002",
+          "ORC002"
+        ]
+      ]
+    },
+    {
+      "id": "OC2_007",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "ORC005"
+        ],
+        [
+          "ORC002",
+          "ORC002",
+          "ORC002",
+          "ORC002"
+        ]
+      ]
+    },
+    {
+      "id": "OC2_008",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "ORC005",
+          "ORC005"
+        ],
+        [
+          "ORC002",
+          "ORC002"
+        ],
+        [
+          "ORC002",
+          "ORC002"
+        ]
+      ]
+    },
+    {
+      "id": "OC2_009",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "ORC005"
+        ],
+        [
+          "ORC002",
+          "ORC002",
+          "ORC002",
+          "ORC002"
+        ],
+        [
+          "ORC002"
+        ]
+      ]
+    },
+    {
+      "id": "OC2_010",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "ORC005",
+          "ORC005"
+        ],
+        [
+          "ORC002",
+          "ORC002",
+          "ORC002"
+        ],
+        [
+          "ORC002",
+          "ORC002"
+        ]
+      ]
+    }
   ]
 }

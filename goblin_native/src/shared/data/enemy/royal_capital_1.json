@@ -3,90 +3,297 @@
     {
       "id": "ROY001",
       "name": "近衛騎士",
-      "raceTags": ["human"],
+      "raceTags": [
+        "human"
+      ],
       "level": 28,
       "hp": 160,
       "atk": 48,
       "def": 32,
-      "spd": 9,
       "attackCount": 1,
       "accuracy": 640,
       "evasion": 33,
       "exp": 105,
-      "gold": 95
+      "gold": 95,
+      "agility": 9
     },
     {
       "id": "ROY002",
       "name": "大魔導師",
-      "raceTags": ["human"],
+      "raceTags": [
+        "human"
+      ],
       "level": 30,
       "hp": 120,
       "atk": 60,
       "def": 18,
-      "spd": 10,
       "attackCount": 1,
       "accuracy": 670,
       "evasion": 35,
       "exp": 115,
-      "gold": 105
+      "gold": 105,
+      "agility": 10
     },
     {
       "id": "ROY003",
       "name": "聖騎士",
-      "raceTags": ["human"],
+      "raceTags": [
+        "human"
+      ],
       "level": 31,
       "hp": 200,
       "atk": 54,
       "def": 38,
-      "spd": 7,
       "attackCount": 1,
       "accuracy": 685,
       "evasion": 34,
       "exp": 120,
-      "gold": 110
+      "gold": 110,
+      "agility": 7
     },
     {
       "id": "ROY004",
       "name": "王国禁衛隊",
-      "raceTags": ["human"],
+      "raceTags": [
+        "human"
+      ],
       "level": 32,
       "hp": 220,
       "atk": 56,
       "def": 36,
-      "spd": 8,
       "attackCount": 2,
       "accuracy": 700,
       "evasion": 36,
       "exp": 130,
-      "gold": 120
+      "gold": 120,
+      "agility": 8
     },
     {
       "id": "ROY005",
       "name": "勇者",
-      "raceTags": ["human"],
+      "raceTags": [
+        "human"
+      ],
       "level": 33,
       "hp": 260,
       "atk": 66,
       "def": 34,
-      "spd": 12,
       "attackCount": 2,
       "accuracy": 720,
       "evasion": 38,
       "exp": 150,
-      "gold": 140
+      "gold": 140,
+      "agility": 12
     }
   ],
   "patterns": [
-    { "id": "RC1_001", "floors": [1], "enemies": [["ROY001"], ["ROY002"], ["ROY001"]] },
-    { "id": "RC1_002", "floors": [1], "enemies": [["ROY001"], ["ROY002"], ["ROY001"], ["ROY002"]] },
-    { "id": "RC1_003", "floors": [1], "enemies": [["ROY002"], ["ROY001", "ROY001"], ["ROY001"], ["ROY002"]] },
-    { "id": "RC1_004", "floors": [1], "enemies": [["ROY001", "ROY002"], ["ROY001"], ["ROY003"], ["ROY001", "ROY002"]] },
-    { "id": "RC1_005", "floors": [1], "enemies": [["ROY001", "ROY001"], ["ROY002", "ROY002"], ["ROY001", "ROY001"], ["ROY003", "ROY001"]] },
-
-    { "id": "RC1_006", "floors": [2], "enemies": [["ROY001"], ["ROY002"], ["ROY001"]] },
-    { "id": "RC1_007", "floors": [2], "enemies": [["ROY002"], ["ROY001"], ["ROY002"], ["ROY001"]] },
-    { "id": "RC1_008", "floors": [2], "enemies": [["ROY001"], ["ROY003"], ["ROY002"], ["ROY001", "ROY002"]] },
-    { "id": "RC1_009", "floors": [2], "enemies": [["ROY003"], ["ROY001", "ROY002"], ["ROY001"], ["ROY001", "ROY002"]] },
-    { "id": "RC1_010", "floors": [2], "enemies": [["ROY001", "ROY001"], ["ROY002", "ROY003"], ["ROY001", "ROY002"], ["ROY001", "ROY002"]] }
+    {
+      "id": "RC1_001",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "ROY001"
+        ],
+        [
+          "ROY002"
+        ],
+        [
+          "ROY001"
+        ]
+      ]
+    },
+    {
+      "id": "RC1_002",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "ROY001"
+        ],
+        [
+          "ROY002"
+        ],
+        [
+          "ROY001"
+        ],
+        [
+          "ROY002"
+        ]
+      ]
+    },
+    {
+      "id": "RC1_003",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "ROY002"
+        ],
+        [
+          "ROY001",
+          "ROY001"
+        ],
+        [
+          "ROY001"
+        ],
+        [
+          "ROY002"
+        ]
+      ]
+    },
+    {
+      "id": "RC1_004",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "ROY001",
+          "ROY002"
+        ],
+        [
+          "ROY001"
+        ],
+        [
+          "ROY003"
+        ],
+        [
+          "ROY001",
+          "ROY002"
+        ]
+      ]
+    },
+    {
+      "id": "RC1_005",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "ROY001",
+          "ROY001"
+        ],
+        [
+          "ROY002",
+          "ROY002"
+        ],
+        [
+          "ROY001",
+          "ROY001"
+        ],
+        [
+          "ROY003",
+          "ROY001"
+        ]
+      ]
+    },
+    {
+      "id": "RC1_006",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "ROY001"
+        ],
+        [
+          "ROY002"
+        ],
+        [
+          "ROY001"
+        ]
+      ]
+    },
+    {
+      "id": "RC1_007",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "ROY002"
+        ],
+        [
+          "ROY001"
+        ],
+        [
+          "ROY002"
+        ],
+        [
+          "ROY001"
+        ]
+      ]
+    },
+    {
+      "id": "RC1_008",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "ROY001"
+        ],
+        [
+          "ROY003"
+        ],
+        [
+          "ROY002"
+        ],
+        [
+          "ROY001",
+          "ROY002"
+        ]
+      ]
+    },
+    {
+      "id": "RC1_009",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "ROY003"
+        ],
+        [
+          "ROY001",
+          "ROY002"
+        ],
+        [
+          "ROY001"
+        ],
+        [
+          "ROY001",
+          "ROY002"
+        ]
+      ]
+    },
+    {
+      "id": "RC1_010",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "ROY001",
+          "ROY001"
+        ],
+        [
+          "ROY002",
+          "ROY003"
+        ],
+        [
+          "ROY001",
+          "ROY002"
+        ],
+        [
+          "ROY001",
+          "ROY002"
+        ]
+      ]
+    }
   ]
 }

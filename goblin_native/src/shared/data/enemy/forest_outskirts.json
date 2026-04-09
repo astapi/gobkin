@@ -3,104 +3,339 @@
     {
       "id": "E001",
       "name": "スライム",
-      "raceTags": ["beast"],
+      "raceTags": [
+        "beast"
+      ],
       "level": 1,
       "hp": 10,
       "atk": 4,
       "def": 2,
-      "spd": 2,
       "attackCount": 1,
       "accuracy": 170,
       "evasion": 9,
       "exp": 4,
-      "gold": 5
+      "gold": 5,
+      "agility": 2
     },
     {
       "id": "E002",
       "name": "森ネズミ",
-      "raceTags": ["beast"],
+      "raceTags": [
+        "beast"
+      ],
       "level": 2,
       "hp": 10,
       "atk": 7,
       "def": 2,
-      "spd": 8,
       "attackCount": 1,
       "accuracy": 190,
       "evasion": 10,
       "exp": 6,
-      "gold": 6
+      "gold": 6,
+      "agility": 8
     },
     {
       "id": "E003",
       "name": "ウルフ",
-      "raceTags": ["beast"],
+      "raceTags": [
+        "beast"
+      ],
       "level": 3,
       "hp": 20,
       "atk": 9,
       "def": 4,
-      "spd": 8,
       "attackCount": 1,
       "accuracy": 210,
       "evasion": 11,
       "exp": 10,
-      "gold": 9
+      "gold": 9,
+      "agility": 8
     },
     {
       "id": "E004",
       "name": "トゲリス",
-      "raceTags": ["beast"],
+      "raceTags": [
+        "beast"
+      ],
       "level": 4,
       "hp": 20,
       "atk": 11,
       "def": 6,
-      "spd": 8,
       "attackCount": 1,
       "accuracy": 225,
       "evasion": 12,
       "exp": 12,
-      "gold": 10
+      "gold": 10,
+      "agility": 8
     },
     {
       "id": "B001",
       "name": "グレイウルフ",
-      "raceTags": ["beast"],
+      "raceTags": [
+        "beast"
+      ],
       "level": 8,
       "hp": 100,
       "atk": 18,
       "def": 10,
-      "spd": 15,
       "attackCount": 2,
       "accuracy": 270,
       "evasion": 16,
       "exp": 50,
       "gold": 50,
       "factorDrops": [
-        { "factorId": "wolf", "probability": 1 }
-      ]
+        {
+          "factorId": "wolf",
+          "probability": 1
+        }
+      ],
+      "agility": 15
     }
   ],
   "patterns": [
-    { "id": "FO_001", "floors": [1], "enemies": [["E001", "E001"]] },
-    { "id": "FO_002", "floors": [1], "enemies": [["E001", "E001", "E001"]] },
-    { "id": "FO_003", "floors": [1], "enemies": [["E002", "E002"]] },
-    { "id": "FO_004", "floors": [1], "enemies": [["E001", "E001"], ["E002"]] },
-    { "id": "FO_005", "floors": [1], "enemies": [["E001", "E001", "E001"], ["E002", "E002"]] },
-
-    { "id": "FO_006", "floors": [2], "enemies": [["E002", "E002", "E002"]] },
-    { "id": "FO_007", "floors": [2], "enemies": [["E001", "E001"], ["E003"]] },
-    { "id": "FO_008", "floors": [2], "enemies": [["E003", "E003"]] },
-    { "id": "FO_009", "floors": [2], "enemies": [["E002", "E002"], ["E003"]] },
-    { "id": "FO_010", "floors": [2], "enemies": [["E003", "E003"], ["E002", "E002", "E002"]] },
-
-    { "id": "FO_011", "floors": [3], "enemies": [["E003", "E003", "E003"]] },
-    { "id": "FO_012", "floors": [3], "enemies": [["E003", "E003"], ["E004"]] },
-    { "id": "FO_013", "floors": [3], "enemies": [["E003", "E003"], ["E002", "E002"]] },
-    { "id": "FO_014", "floors": [3], "enemies": [["E003", "E003", "E003"], ["E004", "E004"]] },
-    { "id": "FO_015", "floors": [3], "enemies": [["E003", "E003", "E003", "E003"], ["E004", "E004", "E004"]] },
+    {
+      "id": "FO_001",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "E001",
+          "E001"
+        ]
+      ]
+    },
+    {
+      "id": "FO_002",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "E001",
+          "E001",
+          "E001"
+        ]
+      ]
+    },
+    {
+      "id": "FO_003",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "E002",
+          "E002"
+        ]
+      ]
+    },
+    {
+      "id": "FO_004",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "E001",
+          "E001"
+        ],
+        [
+          "E002"
+        ]
+      ]
+    },
+    {
+      "id": "FO_005",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "E001",
+          "E001",
+          "E001"
+        ],
+        [
+          "E002",
+          "E002"
+        ]
+      ]
+    },
+    {
+      "id": "FO_006",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "E002",
+          "E002",
+          "E002"
+        ]
+      ]
+    },
+    {
+      "id": "FO_007",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "E001",
+          "E001"
+        ],
+        [
+          "E003"
+        ]
+      ]
+    },
+    {
+      "id": "FO_008",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "E003",
+          "E003"
+        ]
+      ]
+    },
+    {
+      "id": "FO_009",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "E002",
+          "E002"
+        ],
+        [
+          "E003"
+        ]
+      ]
+    },
+    {
+      "id": "FO_010",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "E003",
+          "E003"
+        ],
+        [
+          "E002",
+          "E002",
+          "E002"
+        ]
+      ]
+    },
+    {
+      "id": "FO_011",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "E003",
+          "E003",
+          "E003"
+        ]
+      ]
+    },
+    {
+      "id": "FO_012",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "E003",
+          "E003"
+        ],
+        [
+          "E004"
+        ]
+      ]
+    },
+    {
+      "id": "FO_013",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "E003",
+          "E003"
+        ],
+        [
+          "E002",
+          "E002"
+        ]
+      ]
+    },
+    {
+      "id": "FO_014",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "E003",
+          "E003",
+          "E003"
+        ],
+        [
+          "E004",
+          "E004"
+        ]
+      ]
+    },
+    {
+      "id": "FO_015",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "E003",
+          "E003",
+          "E003",
+          "E003"
+        ],
+        [
+          "E004",
+          "E004",
+          "E004"
+        ]
+      ]
+    },
     {
       "id": "BOSS",
-      "floors": [3],
-      "enemies": [["E003", "E003", "E003", "E003", "E003"], ["E004", "E004", "E004"], ["B001"]],
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "E003",
+          "E003",
+          "E003",
+          "E003",
+          "E003"
+        ],
+        [
+          "E004",
+          "E004",
+          "E004"
+        ],
+        [
+          "B001"
+        ]
+      ],
       "isBoss": true
     }
   ]

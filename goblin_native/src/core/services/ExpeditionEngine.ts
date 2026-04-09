@@ -21,6 +21,7 @@ import { BattleSystem } from './BattleSystem'
 import { ModStatCalculator } from './ModStatCalculator'
 import { EquipmentTitleService } from './EquipmentTitleService'
 import { normalizePartyRewardMultipliers } from '../../shared/types'
+import { getGoblinBaseAttributes } from '../../shared/utils/goblinHp'
 
 /** 全エリア共通の宝箱ドロップ確率（敵1体ごと） */
 const DROP_CHANCE = 0.15
@@ -349,7 +350,7 @@ export class ExpeditionEngine {
         baseHP: goblin.stats.hp,
         atk: goblin.stats.atk,
         def: goblin.stats.def,
-        spd: goblin.stats.spd,
+        agility: getGoblinBaseAttributes(goblin).agility,
         attackCount: goblin.stats.attackCount,
         accuracy: goblin.stats.accuracy,
         evasion: goblin.stats.evasion,
@@ -458,18 +459,18 @@ export class ExpeditionEngine {
       stats: {
         hp: member.baseHP,  // 基礎HPを使用（ModStatCalculatorが因子・Modを適用）
         atk: member.atk,
-        spd: member.spd,
         def: member.def,
         attackCount: member.attackCount ?? 2,
         accuracy: member.accuracy ?? 20,
         evasion: member.evasion ?? 15,
       },
+      agility: member.agility,
       mods: member.mods,
       skills: member.skills,
       factors: member.factors,
       variantFactorId: member.variantFactorId,
       spells: member.spells,
-    }))
+    } as Goblin))
 
     // 各メンバーの現在HPを配列で渡す
     const currentHP = partyState.map(member => member.currentHP)

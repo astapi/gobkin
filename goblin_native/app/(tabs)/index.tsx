@@ -17,7 +17,6 @@ const STAT_LABELS: Record<string, string> = {
   hp_percent: 'HP', hp_flat: 'HP',
   atk_percent: 'ATK', atk_flat: 'ATK',
   def_percent: 'DEF', def_flat: 'DEF',
-  spd_percent: 'SPD', spd_flat: 'SPD',
   attackCount_percent: '攻撃回数', attackCount_flat: '攻撃回数',
   accuracy_percent: '命中精度', accuracy_flat: '命中精度',
   evasion_percent: '回避', evasion_flat: '回避',
@@ -259,7 +258,7 @@ export default function GoblinListScreen() {
                   <View style={styles.pendingInfo}>
                     <Text style={styles.pendingName} numberOfLines={1}>{goblin.name}</Text>
                     <Text style={styles.pendingStats}>
-                      HP{effectiveStats.hp} / A{effectiveStats.atk} / D{effectiveStats.def} / S{effectiveStats.spd}
+                      HP{effectiveStats.hp} / A{effectiveStats.atk} / D{effectiveStats.def} / 命{effectiveStats.accuracy}
                     </Text>
                     {goblin.mods && goblin.mods.length > 0 && (
                       <View style={styles.modRow}>
