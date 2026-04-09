@@ -530,7 +530,7 @@ export class BattleSystem {
   private applyDamage(target: BattleUnit, damage: number): void {
     const nextHP = target.currentHP - damage
 
-    if (nextHP <= 0 && target.currentHP > 0 && hasSurviveLethalDamageAtHp1Skill(target.skills)) {
+    if (nextHP <= 0 && target.currentHP > 1 && hasSurviveLethalDamageAtHp1Skill(target.skills)) {
       target.currentHP = 1
       return
     }
