@@ -77,7 +77,7 @@ const PartyCard = memo(function PartyCard({
 
   const partyRewardText = useMemo(() => {
     const multipliers = normalizePartyRewardMultipliers(party.rewardMultipliers)
-    return `G ${formatMultiplier(multipliers.gold)}倍  レア ${formatMultiplier(multipliers.rare)}倍  称号 ${formatMultiplier(multipliers.title)}倍`
+    return `G${formatMultiplier(multipliers.gold)}倍　レア${formatMultiplier(multipliers.rare)}倍　称号${formatMultiplier(multipliers.title)}倍`
   }, [party.rewardMultipliers])
 
   // 6スロット分の配列を作成
@@ -444,8 +444,8 @@ const styles = StyleSheet.create({
   partyCard: {
     backgroundColor: '#FFFFFF',
     borderRadius: 12,
-    padding: 16,
-    marginBottom: 16,
+    padding: 12,
+    marginBottom: 12,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
@@ -500,17 +500,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 16,
+    marginBottom: 6,
   },
   partyName: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: 'bold',
     color: '#1F2937',
   },
   partyRewardText: {
     fontSize: 13,
     color: '#6B7280',
-    marginBottom: 12,
+    marginBottom: 6,
   },
   expeditionBadge: {
     backgroundColor: '#3B82F6',

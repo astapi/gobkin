@@ -127,7 +127,7 @@ export default function ExpeditionPreparationScreen() {
   const partyRewardText = useMemo(() => {
     if (!party) return ''
     const multipliers = normalizePartyRewardMultipliers(party.rewardMultipliers)
-    return `G ${formatMultiplier(multipliers.gold)}倍  レア ${formatMultiplier(multipliers.rare)}倍  称号 ${formatMultiplier(multipliers.title)}倍`
+    return `G${formatMultiplier(multipliers.gold)}倍　レア${formatMultiplier(multipliers.rare)}倍　称号${formatMultiplier(multipliers.title)}倍`
   }, [party])
 
   // 6スロット分の配列を作成
@@ -532,7 +532,7 @@ const styles = StyleSheet.create({
   card: {
     backgroundColor: '#FFFFFF',
     borderRadius: 12,
-    padding: 16,
+    padding: 12,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
@@ -540,22 +540,22 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   partyName: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: 'bold',
     color: '#1F2937',
-    marginBottom: 6,
+    marginBottom: 4,
   },
   partyRewardText: {
     fontSize: 13,
     color: '#6B7280',
-    marginBottom: 16,
+    marginBottom: 6,
   },
   membersRow: {
     flexDirection: 'row',
     justifyContent: 'flex-start',
     flexWrap: 'wrap',
     gap: 8,
-    marginBottom: 16,
+    marginBottom: 12,
   },
   memberSlot: {
     alignItems: 'center',
