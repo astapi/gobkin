@@ -3,10 +3,11 @@ import { cloneCharacterSkills } from './characterSkills'
 import { getDefaultSkillsForRace } from './raceSkills'
 import { syncGoblinDerivedStats } from '../utils/goblinStats'
 import { getGoblinBaseAttributes } from '../utils/goblinHp'
+import { getCharacterSkill, type CharacterSkillId } from './skillCatalog'
 
 type GoblinJobSkill = {
   unlockLevel?: number
-  skill: CharacterSkill
+  skillId: CharacterSkillId
 }
 
 type GoblinJobDefinition = {
@@ -29,26 +30,14 @@ const GOBLIN_JOB_DEFINITIONS: Record<GoblinJob, GoblinJobDefinition> = {
     description: '盾役として鍛え上げ、打たれ強さと防御能力を伸ばします。',
     skills: [
       {
-        skill: {
-          id: 'goblin_job_guard_armor',
-          name: '[1.5倍]鎧装備',
-          equipmentCategoryMultiplier: { armor: 1.5 },
-        },
+        skillId: 'armor_mastery_150',
       },
       {
-        skill: {
-          id: 'goblin_job_guard_wall',
-          name: '[-5%]物理ダメージ軽減(%)',
-          physicalDamageReductionPercent: 5,
-        },
+        skillId: 'physical_reduction_5',
       },
       {
         unlockLevel: 15,
-        skill: {
-          id: 'goblin_job_guard_cover',
-          name: 'かばう',
-          coverLowHpAlly: true,
-        },
+        skillId: 'cover_low_hp_ally',
       },
     ],
   },
@@ -61,19 +50,11 @@ const GOBLIN_JOB_DEFINITIONS: Record<GoblinJob, GoblinJobDefinition> = {
     description: '斥候として鍛え上げ、素早さと回避能力を高めます。',
     skills: [
       {
-        skill: {
-          id: 'goblin_job_thief_initiative',
-          name: '[戦術] 先制攻撃',
-          actionOrderMultiplier: 1.5,
-        },
+        skillId: 'action_order_150',
       },
       {
         unlockLevel: 15,
-        skill: {
-          id: 'goblin_job_thief_evasion',
-          name: '回避適正',
-          statMultipliers: { evasion: 1.5 },
-        },
+        skillId: 'evasion_150',
       },
     ],
   },
@@ -86,26 +67,14 @@ const GOBLIN_JOB_DEFINITIONS: Record<GoblinJob, GoblinJobDefinition> = {
     description: '呪文訓練を施し、魔力と範囲攻撃を扱える後衛に変えます。',
     skills: [
       {
-        skill: {
-          id: 'goblin_job_mage_fireball',
-          name: 'ファイヤーボール',
-          grantsSpellId: 'fireball',
-        },
+        skillId: 'grant_fireball',
       },
       {
-        skill: {
-          id: 'goblin_job_mage_magic_arrow',
-          name: 'マジックアロー',
-          grantsSpellId: 'magic_arrow',
-        },
+        skillId: 'grant_magic_arrow',
       },
       {
         unlockLevel: 15,
-        skill: {
-          id: 'goblin_job_mage_blizzard',
-          name: 'ブリザード',
-          grantsSpellId: 'blizzard',
-        },
+        skillId: 'grant_blizzard',
       },
     ],
   },
@@ -118,27 +87,18 @@ const GOBLIN_JOB_DEFINITIONS: Record<GoblinJob, GoblinJobDefinition> = {
     description: '武闘訓練を施し、攻撃力と手数を前線向けに強化します。',
     skills: [
       {
-        skill: {
-          id: 'goblin_job_warrior_armor',
-          name: '[1.2倍]鎧装備',
-          equipmentCategoryMultiplier: { armor: 1.2 },
-        },
+        skillId: 'armor_mastery_120',
       },
       {
-        skill: {
-          id: 'goblin_job_warrior_inspire',
-          name: '鼓舞',
-          rearAllyDamageMultiplier: 1.5,
-        },
+        skillId: 'inspire_150',
       },
     ],
   },
 }
 
-const GOBLIN_JOB_SKILL_IDS = new Set(
+const GOBLIN_JOB_SKILL_IDS = new Set<string>(
   Object.values(GOBLIN_JOB_DEFINITIONS)
-    .flatMap((job) => job.skills.map((entry) => entry.skill))
-    .map((skill) => skill.id)
+    .flatMap((job) => job.skills.map((entry) => entry.skillId))
 )
 
 export const GOBLIN_TRAINING_UNLOCK_RANK = 2
@@ -162,15 +122,14 @@ export function canTrainGoblin(goblin: Goblin): boolean {
 export function getGoblinJobSkills(job: GoblinJob, level: number): CharacterSkill[] {
   return GOBLIN_JOB_DEFINITIONS[job].skills
     .filter((entry) => (entry.unlockLevel ?? 1) <= level)
-    .map((entry) => entry.skill)
-    .map((skill) => ({ ...skill }))
+    .map((entry) => getCharacterSkill(entry.skillId))
 }
 
 export function normalizeGoblinJobSkills(goblin: Goblin): Goblin {
   const raceDefaultSkills = getDefaultSkillsForRace(goblin.race)
-  const raceDefaultSkillIds = new Set(raceDefaultSkills.map((skill) => skill.id))
+  const raceDefaultSkillIds = new Set<string>(raceDefaultSkills.map((skill) => skill.id))
   const preservedSkills = goblin.skills.filter((skill) => (
-    !raceDefaultSkillIds.has(skill.id) && !GOBLIN_JOB_SKILL_IDS.has(skill.id)
+    !raceDefaultSkillIds.has(skill.id) && !GOBLIN_JOB_SKILL_IDS.has(skill.id as string)
   ))
   const jobSkills = goblin.job ? cloneCharacterSkills(getGoblinJobSkills(goblin.job, goblin.level)) : []
 
@@ -189,13 +148,14 @@ export function applyGoblinJob(goblin: Goblin, job?: GoblinJob): Goblin {
 }
 
 export function formatGoblinJobSkillName(jobSkill: GoblinJobSkill): string {
-  if (!jobSkill.unlockLevel || jobSkill.unlockLevel <= 1) return jobSkill.skill.name
-  return `Lv${jobSkill.unlockLevel} ${jobSkill.skill.name}`
+  const skill = getCharacterSkill(jobSkill.skillId)
+  if (!jobSkill.unlockLevel || jobSkill.unlockLevel <= 1) return skill.name
+  return `Lv${jobSkill.unlockLevel} ${skill.name}`
 }
 
 export function getGoblinJobSkillEntries(job: GoblinJob): GoblinJobSkill[] {
   return GOBLIN_JOB_DEFINITIONS[job].skills.map((entry) => ({
     unlockLevel: entry.unlockLevel,
-    skill: { ...entry.skill },
+    skillId: entry.skillId,
   }))
 }

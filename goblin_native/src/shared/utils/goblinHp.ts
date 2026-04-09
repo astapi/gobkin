@@ -1,23 +1,12 @@
 import { getBloodlineAttackCountBonus } from '../data/equipmentConfig'
+import {
+  BASE_GOBLIN_BASE_ATTRIBUTES,
+  BASE_GOBLIN_HP_COEFFICIENT,
+  getGoblinVariantByRace,
+} from '../data/goblinVariants'
 import type { Goblin, GoblinBaseAttributes, GoblinStats } from '../types'
 
-const RACE_BASE_ATTRIBUTES: Record<string, GoblinBaseAttributes> = {
-  'ゴブリン': { power: 10, wisdom: 10, spirit: 10, vitality: 10, agility: 10, luck: 10 },
-  'スライムゴブリン': { power: 8, wisdom: 8, spirit: 13, vitality: 13, agility: 8, luck: 10 },
-  'ウルフゴブリン': { power: 11, wisdom: 9, spirit: 10, vitality: 10, agility: 13, luck: 12 },
-  'ホブゴブリン': { power: 13, wisdom: 11, spirit: 11, vitality: 11, agility: 11, luck: 10 },
-  'オークゴブリン': { power: 15, wisdom: 8, spirit: 9, vitality: 15, agility: 7, luck: 8 },
-}
-
-const DEFAULT_BASE_ATTRIBUTES: GoblinBaseAttributes = RACE_BASE_ATTRIBUTES['ゴブリン']
-
-const RACE_HP_COEFFICIENTS: Record<string, number> = {
-  'ゴブリン': 0.8,
-  'スライムゴブリン': 1.2,
-  'ウルフゴブリン': 0.9,
-  'ホブゴブリン': 1.2,
-  'オークゴブリン': 1.5,
-}
+const DEFAULT_BASE_ATTRIBUTES: GoblinBaseAttributes = BASE_GOBLIN_BASE_ATTRIBUTES
 
 const GOBLIN_JOB_HP_COEFFICIENTS: Record<NonNullable<Goblin['job']>, number> = {
   guard: 1.1,
@@ -31,7 +20,7 @@ export function getGoblinBaseAttributes(goblin: Pick<Goblin, 'race' | 'baseAttri
     return { ...goblin.baseAttributes }
   }
 
-  return { ...(RACE_BASE_ATTRIBUTES[goblin.race] ?? DEFAULT_BASE_ATTRIBUTES) }
+  return { ...(getGoblinVariantByRace(goblin.race)?.baseAttributes ?? DEFAULT_BASE_ATTRIBUTES) }
 }
 
 export function getGoblinHpCoefficient(goblin: Pick<Goblin, 'race' | 'job'>): number {
@@ -39,7 +28,11 @@ export function getGoblinHpCoefficient(goblin: Pick<Goblin, 'race' | 'job'>): nu
     return GOBLIN_JOB_HP_COEFFICIENTS[goblin.job]
   }
 
-  return RACE_HP_COEFFICIENTS[goblin.race] ?? 1.0
+  if (goblin.race === 'ゴブリン') {
+    return BASE_GOBLIN_HP_COEFFICIENT
+  }
+
+  return getGoblinVariantByRace(goblin.race)?.hpCoefficient ?? 1.0
 }
 
 export function getGoblinStatCoefficient(goblin: Pick<Goblin, 'race' | 'job'>): number {

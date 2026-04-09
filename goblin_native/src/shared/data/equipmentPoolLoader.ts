@@ -1,6 +1,7 @@
 import type { CharacterSkill } from '../types/CharacterSkill'
 import type { EquipmentTemplate, WeaponRange } from '../types/Equipment'
 import equipmentPoolJson from './equipmentPool.json'
+import { getCharacterSkill } from './skillCatalog'
 
 interface EquipmentPoolData {
   version: string
@@ -9,17 +10,9 @@ interface EquipmentPoolData {
 
 const data = equipmentPoolJson as EquipmentPoolData
 
-const WEAPON_RANGE_SKILLS: Record<WeaponRange, CharacterSkill> = {
-  melee: {
-    id: 'weapon_melee_attack',
-    name: '[武器]近距離攻撃',
-    enablesMeleeRowDamagePenalty: true,
-  },
-  ranged: {
-    id: 'weapon_ranged_attack',
-    name: '[武器]遠距離攻撃',
-    enablesRangedRowDamagePenalty: true,
-  },
+const WEAPON_RANGE_SKILLS: Record<WeaponRange, 'weapon_melee_attack' | 'weapon_ranged_attack'> = {
+  melee: 'weapon_melee_attack',
+  ranged: 'weapon_ranged_attack',
 }
 
 function cloneSkill(skill: CharacterSkill): CharacterSkill {
@@ -37,10 +30,14 @@ function cloneSkill(skill: CharacterSkill): CharacterSkill {
 }
 
 function buildGrantedSkills(template: EquipmentTemplate): CharacterSkill[] | undefined {
-  const grantedSkills = template.grantedSkills?.map(cloneSkill) ?? []
+  const grantedSkills = (template.grantedSkillIds ?? []).map((skillId) => getCharacterSkill(skillId))
+
+  if (template.grantedSkills?.length) {
+    grantedSkills.push(...template.grantedSkills.map(cloneSkill))
+  }
 
   if (template.category === 'weapon' && template.range) {
-    grantedSkills.unshift(cloneSkill(WEAPON_RANGE_SKILLS[template.range]))
+    grantedSkills.unshift(getCharacterSkill(WEAPON_RANGE_SKILLS[template.range]))
   }
 
   return grantedSkills.length > 0 ? grantedSkills : undefined

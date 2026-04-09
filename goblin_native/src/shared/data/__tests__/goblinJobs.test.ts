@@ -40,8 +40,8 @@ describe('goblinJobs', () => {
     const goblin = createGoblin({
       job: 'guard',
       skills: [
-        { id: 'goblin_job_guard_armor', name: '[1.5倍]鎧装備', equipmentCategoryMultiplier: { armor: 1.5 } },
-        { id: 'goblin_job_guard_wall', name: '盾壁', physicalDamageReductionPercent: 12 },
+        { id: 'armor_mastery_150', name: '[1.5倍]鎧装備', equipmentCategoryMultiplier: { armor: 1.5 } },
+        { id: 'physical_reduction_5', name: '盾壁', physicalDamageReductionPercent: 12 },
         { id: 'equipment_bonus', name: '装備スキル', statBonuses: { atk: 3 } },
       ],
     })
@@ -49,20 +49,20 @@ describe('goblinJobs', () => {
     const trained = applyGoblinJob(goblin, 'mage')
 
     expect(trained.job).toBe('mage')
-    expect(trained.skills.some((skill) => skill.id === 'goblin_job_mage_fireball')).toBe(true)
-    expect(trained.skills.some((skill) => skill.id === 'goblin_job_mage_magic_arrow')).toBe(true)
-    expect(trained.skills.some((skill) => skill.id === 'goblin_job_guard_armor')).toBe(false)
+    expect(trained.skills.some((skill) => skill.id === 'grant_fireball')).toBe(true)
+    expect(trained.skills.some((skill) => skill.id === 'grant_magic_arrow')).toBe(true)
+    expect(trained.skills.some((skill) => skill.id === 'armor_mastery_150')).toBe(false)
     expect(trained.skills.some((skill) => skill.id === 'equipment_bonus')).toBe(true)
   })
 
   it('レベル15未満ではレベル習得スキルを持たない', () => {
     const trained = applyGoblinJob(createGoblin({ level: 14 }), 'guard')
-    expect(trained.skills.some((skill) => skill.id === 'goblin_job_guard_cover')).toBe(false)
+    expect(trained.skills.some((skill) => skill.id === 'cover_low_hp_ally')).toBe(false)
   })
 
   it('レベル15以上ではレベル習得スキルを持つ', () => {
     const trained = applyGoblinJob(createGoblin({ level: 15 }), 'mage')
-    expect(trained.skills.some((skill) => skill.id === 'goblin_job_mage_blizzard')).toBe(true)
+    expect(trained.skills.some((skill) => skill.id === 'grant_blizzard')).toBe(true)
   })
 
   it('ジョブ変更時にHPが基本能力値ベースで再計算される', () => {

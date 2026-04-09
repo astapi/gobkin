@@ -1,5 +1,6 @@
 import { ImageSourcePropType } from 'react-native'
 import type { Goblin } from '@/shared/types'
+import { getGoblinVariantByRace } from '@/shared/data/goblinVariants'
 
 // ゴブリン画像のマッピング
 const goblinImages: Record<string, ImageSourcePropType> = {
@@ -7,6 +8,9 @@ const goblinImages: Record<string, ImageSourcePropType> = {
   hobgoblin: require('../../../assets/goblin/hobgoblin.png'),
   wolf_goblin: require('../../../assets/goblin/wolf_goblin.png'),
   slime_goblin: require('../../../assets/goblin/slime_goblin.png'),
+  orc_goblin: require('../../../assets/goblin/orc_goblin.png'),
+  skelton_goblin: require('../../../assets/goblin/skelton_goblin.png'),
+  troll_goblin: require('../../../assets/goblin/troll_goblin.png'),
   goblin_guard: require('../../../assets/goblin/goblin_guard.png'),
   goblin_thief: require('../../../assets/goblin/goblin_thief.png'),
   goblin_mage: require('../../../assets/goblin/goblin_mage.png'),
@@ -44,17 +48,12 @@ export function getGoblinImage(avatarPath: string | undefined): ImageSourcePropT
  * @returns ImageSourcePropType
  */
 export function getGoblinImageByRace(race: string): ImageSourcePropType {
-  switch (race) {
-    case 'ホブゴブリン':
-      return goblinImages.hobgoblin
-    case 'ウルフゴブリン':
-      return goblinImages.wolf_goblin
-    case 'スライムゴブリン':
-      return goblinImages.slime_goblin
-    case 'ゴブリン':
-    default:
-      return goblinImages.goblin
+  const variant = getGoblinVariantByRace(race)
+  if (variant && variant.imageKey in goblinImages) {
+    return goblinImages[variant.imageKey]
   }
+
+  return goblinImages.goblin
 }
 
 /**

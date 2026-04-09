@@ -164,6 +164,6 @@ export class EquipmentService {
   }
 
   private static isSameSkill(a: CharacterSkill, b: CharacterSkill): boolean {
-    return JSON.stringify(a) === JSON.stringify(b)
+    return a.id === b.id
   }
 }
