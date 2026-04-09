@@ -1,5 +1,5 @@
 import { useState, useCallback, useMemo, useEffect } from 'react'
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView, ActivityIndicator, Alert, Image, useWindowDimensions, Modal, Pressable } from 'react-native'
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, ActivityIndicator, Alert, Image, useWindowDimensions, Modal, Pressable, TextInput } from 'react-native'
 import { router, useLocalSearchParams, Stack } from 'expo-router'
 import { usePartyStore } from '@/presentation/stores/usePartyStore'
 import { useGoblinStore } from '@/presentation/stores/useGoblinStore'
@@ -71,6 +71,7 @@ export default function ExpeditionPreparationScreen() {
     setDungeon,
     setReturnPolicy,
     setTargetFloor,
+    updateName,
     refresh: refreshParties,
   } = usePartyStore()
   const goblins = useGoblinStore((state) => state.goblins)
@@ -107,6 +108,9 @@ export default function ExpeditionPreparationScreen() {
   const [selectedTargetFloor, setSelectedTargetFloor] = useState<number | null>(party?.targetFloor ?? null)
   const [isDungeonModalVisible, setIsDungeonModalVisible] = useState(false)
   const [isReturnPolicyModalVisible, setIsReturnPolicyModalVisible] = useState(false)
+  const [isPartyNameModalVisible, setIsPartyNameModalVisible] = useState(false)
+  const [editingPartyName, setEditingPartyName] = useState('')
+  const [isSavingPartyName, setIsSavingPartyName] = useState(false)
 
   // partyが非同期取得された後にローカルstateを同期
   useEffect(() => {
@@ -114,6 +118,7 @@ export default function ExpeditionPreparationScreen() {
       setSelectedDungeonId(party.dungeonId)
       setSelectedReturnPolicy(party.returnPolicy ?? 'never')
       setSelectedTargetFloor(party.targetFloor ?? null)
+      setEditingPartyName(party.name)
     }
   }, [party])
 
@@ -165,6 +170,33 @@ export default function ExpeditionPreparationScreen() {
       params: { partyId },
     })
   }, [partyId])
+
+  const handleOpenPartyNameModal = useCallback(() => {
+    if (!party) return
+    setEditingPartyName(party.name)
+    setIsPartyNameModalVisible(true)
+  }, [party])
+
+  const handleSavePartyName = useCallback(async () => {
+    if (!partyId) return
+
+    const trimmedPartyName = editingPartyName.trim()
+    if (!trimmedPartyName) {
+      Alert.alert('パーティ名を入力してください', '空のパーティ名は保存できません')
+      return
+    }
+
+    try {
+      setIsSavingPartyName(true)
+      await updateName(parseInt(partyId, 10), trimmedPartyName)
+      setIsPartyNameModalVisible(false)
+    } catch (error) {
+      console.error('[Preparation] Failed to update party name', error)
+      Alert.alert('パーティ名を変更できませんでした', '時間をおいて再度お試しください')
+    } finally {
+      setIsSavingPartyName(false)
+    }
+  }, [editingPartyName, partyId, updateName])
 
   const handleSelectDungeon = useCallback((dungeon: Dungeon) => {
     setSelectedDungeonId(dungeon.id)
@@ -315,6 +347,10 @@ export default function ExpeditionPreparationScreen() {
             <TouchableOpacity style={styles.secondaryButton} onPress={handleOpenEquipmentList}>
               <Text style={styles.secondaryButtonText}>装備アイテムの一覧</Text>
             </TouchableOpacity>
+
+            <TouchableOpacity style={styles.secondaryButton} onPress={handleOpenPartyNameModal}>
+              <Text style={styles.secondaryButtonText}>パーティ名を変更する</Text>
+            </TouchableOpacity>
           </View>
         </View>
 
@@ -418,6 +454,61 @@ export default function ExpeditionPreparationScreen() {
               <Text style={styles.modalCloseButtonText}>閉じる</Text>
             </TouchableOpacity>
           </View>
+        </Pressable>
+      </Modal>
+
+      <Modal
+        transparent
+        visible={isPartyNameModalVisible}
+        animationType="fade"
+        onRequestClose={() => {
+          if (!isSavingPartyName) {
+            setIsPartyNameModalVisible(false)
+          }
+        }}
+      >
+        <Pressable
+          style={styles.modalOverlay}
+          onPress={() => {
+            if (!isSavingPartyName) {
+              setIsPartyNameModalVisible(false)
+            }
+          }}
+        >
+          <Pressable style={styles.modalContent} onPress={() => undefined}>
+            <Text style={styles.modalTitle}>パーティ名を変更</Text>
+            <TextInput
+              value={editingPartyName}
+              onChangeText={setEditingPartyName}
+              placeholder="パーティ名を入力"
+              maxLength={30}
+              editable={!isSavingPartyName}
+              style={styles.partyNameInput}
+              autoFocus
+              returnKeyType="done"
+              onSubmitEditing={() => {
+                void handleSavePartyName()
+              }}
+            />
+            <View style={styles.modalActionRow}>
+              <TouchableOpacity
+                style={[styles.modalActionButton, styles.modalCancelButton]}
+                onPress={() => setIsPartyNameModalVisible(false)}
+                disabled={isSavingPartyName}
+              >
+                <Text style={styles.modalCancelButtonText}>キャンセル</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.modalActionButton, styles.modalPrimaryButton, isSavingPartyName && styles.modalPrimaryButtonDisabled]}
+                onPress={() => void handleSavePartyName()}
+                disabled={isSavingPartyName}
+              >
+                <Text style={styles.modalPrimaryButtonText}>
+                  {isSavingPartyName ? '保存中...' : '保存'}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </Pressable>
         </Pressable>
       </Modal>
 
@@ -612,6 +703,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderWidth: 1,
     borderColor: '#BFDBFE',
+    marginTop: 10,
   },
   secondaryButtonText: {
     fontSize: 14,
@@ -708,5 +800,45 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
     color: '#374151',
+  },
+  partyNameInput: {
+    backgroundColor: '#F9FAFB',
+    borderWidth: 1,
+    borderColor: '#D1D5DB',
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    fontSize: 16,
+    color: '#111827',
+    marginBottom: 16,
+  },
+  modalActionRow: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  modalActionButton: {
+    flex: 1,
+    paddingVertical: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  modalCancelButton: {
+    backgroundColor: '#E5E7EB',
+  },
+  modalCancelButtonText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#374151',
+  },
+  modalPrimaryButton: {
+    backgroundColor: '#2563EB',
+  },
+  modalPrimaryButtonDisabled: {
+    backgroundColor: '#93C5FD',
+  },
+  modalPrimaryButtonText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#FFFFFF',
   },
 })

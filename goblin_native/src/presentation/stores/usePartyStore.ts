@@ -30,6 +30,7 @@ interface PartyActions {
   refresh: () => Promise<void>
   getPartyById: (partyId: number) => Promise<Party | null>
   createParty: (input: CreatePartyInput) => Promise<Party>
+  updateName: (partyId: number, name: string) => Promise<Party>
   updateMembers: (partyId: number, memberIds: number[]) => Promise<Party>
   addMember: (partyId: number, goblinId: number) => Promise<Party>
   removeMember: (partyId: number, goblinId: number) => Promise<Party>
@@ -63,6 +64,12 @@ export const usePartyStore = create<PartyState & PartyActions>()((set) => {
       const created = await createPartyUseCase.execute(input)
       await refresh()
       return created
+    },
+
+    updateName: async (partyId: number, name: string) => {
+      const updated = await configurePartyUseCase.setName(partyId, name)
+      await refresh()
+      return updated
     },
 
     updateMembers: async (partyId: number, memberIds: number[]) => {
