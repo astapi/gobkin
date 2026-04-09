@@ -2,6 +2,7 @@ import { memo } from 'react'
 import { Tabs } from 'expo-router'
 import { View, Text, StyleSheet } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { useTranslation } from 'react-i18next'
 import ListIcon from '../../assets/list.svg'
 import HenseiIcon from '../../assets/hensei.svg'
 import BaseIcon from '../../assets/base.svg'
@@ -22,6 +23,7 @@ const TabIcon = memo(function TabIcon({ Icon, color }: TabIconProps) {
 })
 
 export default function TabLayout() {
+  const { t } = useTranslation()
   const insets = useSafeAreaInsets()
   const basePadding = 8
   const baseHeight = 60
@@ -56,8 +58,8 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: 'List',
-          headerTitle: 'Goblin List',
+          title: t('ui.tabs.goblinList'),
+          headerTitle: t('ui.tabs.goblinList'),
           headerShown: false,
           tabBarIcon: ({ color }) => <TabIcon Icon={ListIcon} color={color} />,
         }}
@@ -65,8 +67,8 @@ export default function TabLayout() {
       <Tabs.Screen
         name="formation"
         options={{
-          title: 'Formation',
-          headerTitle: 'Party Formation',
+          title: t('ui.tabs.formation'),
+          headerTitle: t('ui.tabs.formation'),
           headerShown: false,
           tabBarIcon: ({ color }) => <TabIcon Icon={HenseiIcon} color={color} />,
         }}
@@ -74,8 +76,8 @@ export default function TabLayout() {
       <Tabs.Screen
         name="base"
         options={{
-          title: 'Base',
-          headerTitle: 'Base Management',
+          title: t('ui.tabs.base'),
+          headerTitle: t('ui.tabs.base'),
           headerShown: false,
           tabBarIcon: ({ color }) => <TabIcon Icon={BaseIcon} color={color} />,
         }}
@@ -83,7 +85,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="settings"
         options={{
-          title: 'Settings',
+          title: t('ui.tabs.settings'),
           headerShown: false,
           tabBarIcon: ({ color }) => (
             <View style={styles.iconContainer}>

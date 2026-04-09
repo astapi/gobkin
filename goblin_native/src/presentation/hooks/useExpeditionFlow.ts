@@ -17,6 +17,7 @@ import { useBaseStore, getBaseStateRepository } from '../stores/useBaseStore'
 import { useDungeonStore } from '../stores/useDungeonStore'
 import { SQLiteEquipmentRepository } from '../../infrastructure/repositories/SQLiteEquipmentRepository'
 import { useDebugSettingsStore } from '../stores/useDebugSettingsStore'
+import { getDungeonName } from '../../shared/i18n/entityLocalization'
 
 interface UseExpeditionFlowParams {
   parties?: Party[]
@@ -254,7 +255,7 @@ export const useExpeditionFlow = ({
           if (dungeon?.isBaseCapture) {
             Alert.alert(
               'ダンジョン制圧！',
-              `「${dungeon.name}」を制圧しました！\n\n拠点管理画面でランクアップが可能になりました。`,
+              `「${getDungeonName(dungeon)}」を制圧しました！\n\n拠点管理画面でランクアップが可能になりました。`,
               [{ text: 'OK' }]
             )
           }
@@ -312,7 +313,7 @@ export const useExpeditionFlow = ({
         return {
           id: record.id,
           title,
-          subtitle: formatDungeonLabel(record.dungeonName, dungeon?.areaLevel),
+          subtitle: formatDungeonLabel(dungeon ? getDungeonName(dungeon) : record.dungeonName, dungeon?.areaLevel),
           ongoing,
           record,
         }

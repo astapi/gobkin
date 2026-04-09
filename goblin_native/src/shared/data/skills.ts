@@ -1,7 +1,8 @@
-import type { Skill } from '../../core/services/DamageCalculator';
+import type { Skill } from '../../core/services/DamageCalculator'
+import i18n from '../i18n'
 
 export const normalAttack: Skill = {
   id: 'normal',
-  name: '通常攻撃',
+  name: i18n.t('battle.normalAttack'),
   power: 1.0,
-};
+}

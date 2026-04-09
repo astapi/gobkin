@@ -1,10 +1,12 @@
 import { useState } from 'react'
 import { View, Text, TouchableOpacity, StyleSheet, Alert, Switch } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import { useTranslation } from 'react-i18next'
 import { useReset } from '@/presentation/contexts/ResetContext'
 import { useDebugSettingsStore } from '@/presentation/stores/useDebugSettingsStore'
 
 export default function SettingsScreen() {
+  const { t } = useTranslation()
   const [isResetting, setIsResetting] = useState(false)
   const { resetAndReinitialize } = useReset()
   const instantDungeonExploration = useDebugSettingsStore((state) => state.instantDungeonExploration)
@@ -12,12 +14,12 @@ export default function SettingsScreen() {
 
   const handleResetData = () => {
     Alert.alert(
-      'データリセット',
-      'すべてのデータを初期化します。この操作は取り消せません。',
+      t('ui.settings.resetConfirmTitle'),
+      t('ui.settings.resetConfirmBody'),
       [
-        { text: 'キャンセル', style: 'cancel' },
+        { text: t('ui.common.cancel'), style: 'cancel' },
         {
-          text: 'リセット',
+          text: t('ui.settings.resetAction'),
           style: 'destructive',
           onPress: () => {
             setIsResetting(true)
@@ -31,18 +33,16 @@ export default function SettingsScreen() {
   return (
     <SafeAreaView style={styles.container} edges={['top', 'left', 'right', 'bottom']}>
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Settings</Text>
+        <Text style={styles.headerTitle}>{t('ui.settings.title')}</Text>
       </View>
 
       <View style={styles.content}>
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Debug</Text>
+          <Text style={styles.sectionTitle}>{t('ui.settings.debug')}</Text>
           <View style={styles.settingRow}>
             <View style={styles.settingTextBlock}>
-              <Text style={styles.settingTitle}>探索時間を1秒にする</Text>
-              <Text style={styles.settingDescription}>
-                ON の間は、すべてのダンジョンの探索時間が 1 秒になります。
-              </Text>
+              <Text style={styles.settingTitle}>{t('ui.settings.instantExplorationTitle')}</Text>
+              <Text style={styles.settingDescription}>{t('ui.settings.instantExplorationDescription')}</Text>
             </View>
             <Switch
               value={instantDungeonExploration}
@@ -58,12 +58,10 @@ export default function SettingsScreen() {
             disabled={isResetting}
           >
             <Text style={styles.dangerButtonText}>
-              {isResetting ? 'リセット中...' : 'データリセット（SQLite）'}
+              {isResetting ? t('ui.settings.resetting') : t('ui.settings.resetButton')}
             </Text>
           </TouchableOpacity>
-          <Text style={styles.hint}>
-            すべてのゴブリン・パーティ・遠征データを削除し、初期状態に戻します。
-          </Text>
+          <Text style={styles.hint}>{t('ui.settings.resetHint')}</Text>
         </View>
       </View>
     </SafeAreaView>

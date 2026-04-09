@@ -1,6 +1,8 @@
 import type { GoblinBaseAttributes } from '../types'
 import type { FactorEffect } from '../types/Factor'
 import type { CharacterSkillId } from './skillCatalog'
+import type { GoblinRaceId } from '../types/Race'
+import { normalizeGoblinRaceId } from '../types/Race'
 
 export interface GoblinCombatStats {
   attackCount: number
@@ -15,6 +17,7 @@ export interface GoblinVariantDefinition {
   inheritProbability: number
   factorEffects: FactorEffect[]
   variantProbability: number
+  raceId: GoblinRaceId
   raceName: string
   avatar: string
   imageKey: string
@@ -52,6 +55,7 @@ export const goblinVariantDefinitions: Record<string, GoblinVariantDefinition> =
       { type: 'stat_bonus', target: 'hp', value: 100 },
     ],
     variantProbability: 0.2,
+    raceId: 'slime',
     raceName: 'スライムゴブリン',
     avatar: '/src/assets/goblin/slime_goblin.png',
     imageKey: 'slime_goblin',
@@ -75,6 +79,7 @@ export const goblinVariantDefinitions: Record<string, GoblinVariantDefinition> =
       { type: 'stat_bonus', target: 'atk', value: 15 },
     ],
     variantProbability: 0.15,
+    raceId: 'wolf',
     raceName: 'ウルフゴブリン',
     avatar: '/src/assets/goblin/wolf_goblin.png',
     imageKey: 'wolf_goblin',
@@ -98,6 +103,7 @@ export const goblinVariantDefinitions: Record<string, GoblinVariantDefinition> =
       { type: 'stat_bonus', target: 'def', value: 20 },
     ],
     variantProbability: 0.1,
+    raceId: 'orc',
     raceName: 'オークゴブリン',
     avatar: '/src/assets/goblin/orc_goblin.png',
     imageKey: 'orc_goblin',
@@ -120,6 +126,7 @@ export const goblinVariantDefinitions: Record<string, GoblinVariantDefinition> =
       { type: 'stat_bonus', target: 'def', value: 15 },
     ],
     variantProbability: 0.15,
+    raceId: 'undead',
     raceName: 'アンデッドゴブリン',
     avatar: '/src/assets/goblin/skelton_goblin.png',
     imageKey: 'skelton_goblin',
@@ -139,6 +146,7 @@ export const goblinVariantDefinitions: Record<string, GoblinVariantDefinition> =
       { type: 'stat_bonus', target: 'def', value: 10 },
     ],
     variantProbability: 0.2,
+    raceId: 'hobgoblin',
     raceName: 'ホブゴブリン',
     avatar: '/src/assets/goblin/hobgoblin.png',
     imageKey: 'hobgoblin',
@@ -164,6 +172,7 @@ export const goblinVariantDefinitions: Record<string, GoblinVariantDefinition> =
       { type: 'stat_bonus', target: 'hp', value: 60 },
     ],
     variantProbability: 0.1,
+    raceId: 'dwarf',
     raceName: 'ドワーフゴブリン',
     avatar: '/src/assets/goblin/dwarf_goblin.png',
     imageKey: 'dwarf_goblin',
@@ -182,6 +191,7 @@ export const goblinVariantDefinitions: Record<string, GoblinVariantDefinition> =
       { type: 'stat_bonus', target: 'def', value: 15 },
     ],
     variantProbability: 0.1,
+    raceId: 'elf',
     raceName: 'エルフゴブリン',
     avatar: '/src/assets/goblin/elf_goblin.png',
     imageKey: 'elf_goblin',
@@ -201,6 +211,7 @@ export const goblinVariantDefinitions: Record<string, GoblinVariantDefinition> =
       { type: 'stat_bonus', target: 'atk', value: 10 },
     ],
     variantProbability: 0.1,
+    raceId: 'lizardman',
     raceName: 'リザードゴブリン',
     avatar: '/src/assets/goblin/lizard_goblin.png',
     imageKey: 'lizard_goblin',
@@ -219,6 +230,7 @@ export const goblinVariantDefinitions: Record<string, GoblinVariantDefinition> =
       { type: 'stat_bonus', target: 'def', value: 15 },
     ],
     variantProbability: 0.08,
+    raceId: 'troll',
     raceName: 'トロルゴブリン',
     avatar: '/src/assets/goblin/troll_goblin.png',
     imageKey: 'troll_goblin',
@@ -237,6 +249,11 @@ export function getGoblinVariantByFactorId(factorId: string): GoblinVariantDefin
   return goblinVariantDefinitions[factorId]
 }
 
+export function getGoblinVariantByRaceId(raceId: string): GoblinVariantDefinition | undefined {
+  const normalizedRaceId = normalizeGoblinRaceId(raceId)
+  return Object.values(goblinVariantDefinitions).find((variant) => variant.raceId === normalizedRaceId)
+}
+
 export function getGoblinVariantByRace(race: string): GoblinVariantDefinition | undefined {
-  return Object.values(goblinVariantDefinitions).find((variant) => variant.raceName === race)
+  return getGoblinVariantByRaceId(race)
 }

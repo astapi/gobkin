@@ -1,6 +1,7 @@
 import type { Goblin, GoblinStats } from '../types'
 import { ModStatCalculator } from '@/core/services/ModStatCalculator'
 import { calculateGoblinDerivedStats, getGoblinBaseAttributes } from './goblinHp'
+import { getLegacyRaceName, normalizeGoblinRaceId } from '../types/Race'
 
 /**
  * ゴブリンの実効ステータス（因子+MOD適用後）を取得
@@ -14,11 +15,16 @@ export function getEffectiveStats(goblin: Goblin): GoblinStats {
 }
 
 export function syncGoblinDerivedStats<T extends Goblin>(goblin: T): T {
+  const raceId = normalizeGoblinRaceId(goblin.raceId ?? goblin.race)
   return {
     ...goblin,
+    raceId,
+    race: getLegacyRaceName(raceId),
     baseAttributes: getGoblinBaseAttributes(goblin),
     stats: calculateGoblinDerivedStats(goblin.level, {
       ...goblin,
+      raceId,
+      race: getLegacyRaceName(raceId),
       baseAttributes: getGoblinBaseAttributes(goblin),
       stats: goblin.stats,
     }),

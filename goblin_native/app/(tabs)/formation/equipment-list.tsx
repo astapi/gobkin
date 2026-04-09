@@ -2,23 +2,18 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { ActivityIndicator, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { Stack, router, useLocalSearchParams } from 'expo-router'
 import { useFocusEffect } from '@react-navigation/native'
+import { useTranslation } from 'react-i18next'
 import { usePartyStore } from '@/presentation/stores/usePartyStore'
 import { useGoblinStore } from '@/presentation/stores/useGoblinStore'
 import { SQLiteEquipmentRepository } from '@/infrastructure/repositories/SQLiteEquipmentRepository'
 import { EquipmentService } from '@/core/services/EquipmentService'
-import { EquipmentTitleService } from '@/core/services/EquipmentTitleService'
 import { getEquipmentTemplate } from '@/shared/data/equipmentPoolLoader'
 import { getGoblinDisplayImage } from '@/shared/utils/goblinImages'
 import type { EquipmentInstance, EquipmentTemplate, Goblin, Party } from '@/shared/types'
-
-function getDisplayName(eq: EquipmentInstance, template: EquipmentTemplate): string {
-  if (eq.titleName) {
-    return EquipmentTitleService.formatTitledName(eq.titleName, template.name)
-  }
-  return template.name
-}
+import { getEquipmentDisplayName } from '@/shared/i18n/entityLocalization'
 
 export default function PartyEquipmentListScreen() {
+  const { t } = useTranslation()
   const { partyId } = useLocalSearchParams<{ partyId: string }>()
   const parties = usePartyStore((state) => state.parties)
   const partiesLoading = usePartyStore((state) => state.isLoading)
@@ -85,7 +80,7 @@ export default function PartyEquipmentListScreen() {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#10B981" />
-        <Text style={styles.loadingText}>装備情報を読み込み中...</Text>
+        <Text style={styles.loadingText}>{t('ui.equipmentList.loading')}</Text>
       </View>
     )
   }
@@ -93,7 +88,7 @@ export default function PartyEquipmentListScreen() {
   if (!party) {
     return (
       <View style={styles.errorContainer}>
-        <Text style={styles.errorText}>パーティが見つかりません</Text>
+        <Text style={styles.errorText}>{t('ui.equipmentList.partyNotFound')}</Text>
       </View>
     )
   }
@@ -102,18 +97,18 @@ export default function PartyEquipmentListScreen() {
     <>
       <Stack.Screen
         options={{
-          title: '装備アイテムの一覧',
+          title: t('ui.equipmentList.title'),
         }}
       />
       <ScrollView style={styles.container} contentContainerStyle={styles.content}>
         <View style={styles.headerCard}>
           <Text style={styles.partyName}>{party.name}</Text>
-          <Text style={styles.description}>メンバーを選ぶと、そのまま装備変更画面を開きます。</Text>
+          <Text style={styles.description}>{t('ui.equipmentList.description')}</Text>
         </View>
 
         {partyMembers.length === 0 ? (
           <View style={styles.emptyCard}>
-            <Text style={styles.emptyText}>パーティメンバーがいません</Text>
+            <Text style={styles.emptyText}>{t('ui.equipmentList.noMembers')}</Text>
           </View>
         ) : (
           partyMembers.map(member => {
@@ -132,14 +127,14 @@ export default function PartyEquipmentListScreen() {
                   <View style={styles.memberMeta}>
                     <Text style={styles.memberName}>{member.name}</Text>
                     <Text style={styles.memberSubText}>
-                      装備 {equippedItems.length}/{maxSlots}
+                      {t('ui.equipmentList.equippedCount', { equipped: equippedItems.length, max: maxSlots })}
                     </Text>
                   </View>
-                  <Text style={styles.changeLink}>変更する</Text>
+                  <Text style={styles.changeLink}>{t('ui.equipmentList.change')}</Text>
                 </View>
 
                 {equippedItems.length === 0 ? (
-                  <Text style={styles.emptyEquipmentText}>装備中のアイテムはありません</Text>
+                  <Text style={styles.emptyEquipmentText}>{t('ui.equipmentList.emptyEquipment')}</Text>
                 ) : (
                   <View style={styles.equipmentList}>
                     {equippedItems.map(item => {
@@ -149,7 +144,7 @@ export default function PartyEquipmentListScreen() {
                       return (
                         <View key={item.id} style={styles.equipmentChip}>
                           <Text style={styles.equipmentChipText} numberOfLines={1}>
-                            {getDisplayName(item, template)}
+                            {getEquipmentDisplayName(item, template)}
                           </Text>
                         </View>
                       )

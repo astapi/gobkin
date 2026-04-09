@@ -5,6 +5,7 @@
 import type { EquipmentInstance } from '../../shared/types'
 import type { IEquipmentRepository } from '../../core/repositories/IEquipmentRepository'
 import { getDatabase } from '../database'
+import { getEquipmentTitleLabel } from '../../shared/i18n/entityLocalization'
 
 interface EquipmentRow {
   id: string
@@ -60,7 +61,7 @@ export class SQLiteEquipmentRepository implements IEquipmentRepository {
         equipment.slotIndex,
         equipment.goblinId,
         equipment.titleId ?? null,
-        equipment.titleName ?? null,
+        null,
       ]
     )
   }
@@ -71,13 +72,14 @@ export class SQLiteEquipmentRepository implements IEquipmentRepository {
   }
 
   private rowToEquipment(row: EquipmentRow): EquipmentInstance {
+    const titleId = row.title_id as EquipmentInstance['titleId']
     return {
       id: row.id,
       templateId: row.template_id,
       slotIndex: row.slot_index,
       goblinId: row.goblin_id,
-      titleId: row.title_id as EquipmentInstance['titleId'],
-      titleName: row.title_name ?? undefined,
+      titleId,
+      titleName: titleId ? getEquipmentTitleLabel(titleId) : (row.title_name ?? undefined),
     }
   }
 }

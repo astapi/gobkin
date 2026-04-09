@@ -4,6 +4,7 @@ import { Stack } from 'expo-router'
 import { StatusBar } from 'expo-status-bar'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
+import { useTranslation } from 'react-i18next'
 import { AuthProvider } from '@/presentation/contexts/AuthContext'
 import { ResetProvider } from '@/presentation/contexts/ResetContext'
 import { useDatabaseInit } from '@/presentation/hooks/useDatabaseInit'
@@ -13,8 +14,10 @@ import { useBaseStore } from '@/presentation/stores/useBaseStore'
 import { useDungeonStore } from '@/presentation/stores/useDungeonStore'
 import { useExpeditionStore } from '@/presentation/stores/useExpeditionStore'
 import { useDebugSettingsStore } from '@/presentation/stores/useDebugSettingsStore'
+import '@/shared/i18n'
 
 export default function RootLayout() {
+  const { t } = useTranslation()
   const { ready, error, resetAndReinitialize } = useDatabaseInit()
   const [storesReady, setStoresReady] = useState(false)
 
@@ -40,7 +43,7 @@ export default function RootLayout() {
         <View style={styles.loadingContainer}>
           <Text style={styles.errorText}>DB init error: {error}</Text>
           <Pressable style={styles.resetButton} onPress={() => void resetAndReinitialize()}>
-            <Text style={styles.resetButtonText}>Reset Database</Text>
+            <Text style={styles.resetButtonText}>{t('ui.root.resetDatabase')}</Text>
           </Pressable>
         </View>
       </SafeAreaProvider>
@@ -52,7 +55,7 @@ export default function RootLayout() {
       <SafeAreaProvider>
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color="#3B82F6" />
-          <Text style={styles.loadingText}>読み込み中...</Text>
+          <Text style={styles.loadingText}>{t('ui.common.loading')}</Text>
         </View>
       </SafeAreaProvider>
     )
@@ -72,8 +75,8 @@ export default function RootLayout() {
                     headerStyle: { backgroundColor: '#FFFFFF' },
                     headerTitleStyle: { color: '#1F2937', fontWeight: 'bold' },
                     headerTintColor: '#6B7280',
-                    headerBackTitle: '戻る',
-                    title: '拠点拡張',
+                    headerBackTitle: t('ui.common.back'),
+                    title: t('ui.root.baseUpgrade'),
                   }}
                 />
                 <Stack.Screen
@@ -83,8 +86,8 @@ export default function RootLayout() {
                     headerStyle: { backgroundColor: '#FFFFFF' },
                     headerTitleStyle: { color: '#1F2937', fontWeight: 'bold' },
                     headerTintColor: '#6B7280',
-                    headerBackTitle: '戻る',
-                    title: '訓練所',
+                    headerBackTitle: t('ui.common.back'),
+                    title: t('ui.root.training'),
                   }}
                 />
                 <Stack.Screen
@@ -94,8 +97,8 @@ export default function RootLayout() {
                     headerStyle: { backgroundColor: '#FFFFFF' },
                     headerTitleStyle: { color: '#1F2937', fontWeight: 'bold' },
                     headerTintColor: '#6B7280',
-                    headerBackTitle: '戻る',
-                    title: 'ゴブリン詳細',
+                    headerBackTitle: t('ui.common.back'),
+                    title: t('ui.root.goblinDetail'),
                   }}
                 />
               </Stack>

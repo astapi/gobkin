@@ -16,6 +16,8 @@ import { CombatantManager } from './CombatantManager'
 import { DamageCalculator } from './DamageCalculator'
 import { ModStatCalculator } from './ModStatCalculator'
 import { getGoblinBaseAttributes } from '../../shared/utils/goblinHp'
+import i18n from '../../shared/i18n'
+import { getSpellLabel } from '../../shared/i18n/entityLocalization'
 import type {
   Combatant,
   DamageOptions,
@@ -71,7 +73,7 @@ const RACE_DICT: RaceDict = {
 
 const BASIC_ATTACK_SKILL: Skill = {
   id: 'basic_attack',
-  name: '通常攻撃',
+  name: i18n.t('battle.normalAttack'),
   power: 1.0,
 }
 
@@ -474,7 +476,7 @@ export class BattleSystem {
 
     const spellSkill: Skill = {
       id: spellDef.id,
-      name: spellDef.name,
+      name: getSpellLabel(spellDef),
       power: spellDef.power,
     }
 

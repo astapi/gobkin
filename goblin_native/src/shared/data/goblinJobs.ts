@@ -4,6 +4,14 @@ import { getDefaultSkillsForRace } from './raceSkills'
 import { syncGoblinDerivedStats } from '../utils/goblinStats'
 import { getGoblinBaseAttributes } from '../utils/goblinHp'
 import { getCharacterSkill, type CharacterSkillId } from './skillCatalog'
+import { normalizeGoblinRaceId } from '../types/Race'
+import {
+  getGoblinJobDescription,
+  getGoblinJobLabel,
+  getGoblinJobShortLabel,
+  getGoblinJobSummary,
+  getSkillLabel,
+} from '../i18n/entityLocalization'
 
 type GoblinJobSkill = {
   unlockLevel?: number
@@ -23,11 +31,11 @@ type GoblinJobDefinition = {
 const GOBLIN_JOB_DEFINITIONS: Record<GoblinJob, GoblinJobDefinition> = {
   guard: {
     id: 'guard',
-    name: 'ゴブリンガード',
-    shortLabel: '防御',
+    name: getGoblinJobLabel('guard'),
+    shortLabel: getGoblinJobShortLabel('guard'),
     accentColor: '#2563EB',
-    summary: '耐久と防御を強化し、前線維持に寄せる。',
-    description: '盾役として鍛え上げ、打たれ強さと防御能力を伸ばします。',
+    summary: getGoblinJobSummary('guard'),
+    description: getGoblinJobDescription('guard'),
     skills: [
       {
         skillId: 'armor_mastery_150',
@@ -43,11 +51,11 @@ const GOBLIN_JOB_DEFINITIONS: Record<GoblinJob, GoblinJobDefinition> = {
   },
   thief: {
     id: 'thief',
-    name: 'ゴブリンシーフ',
-    shortLabel: '速さ',
+    name: getGoblinJobLabel('thief'),
+    shortLabel: getGoblinJobShortLabel('thief'),
     accentColor: '#059669',
-    summary: '速度と回避を伸ばし、手数と奇襲に寄せる。',
-    description: '斥候として鍛え上げ、素早さと回避能力を高めます。',
+    summary: getGoblinJobSummary('thief'),
+    description: getGoblinJobDescription('thief'),
     skills: [
       {
         skillId: 'action_order_150',
@@ -60,11 +68,11 @@ const GOBLIN_JOB_DEFINITIONS: Record<GoblinJob, GoblinJobDefinition> = {
   },
   mage: {
     id: 'mage',
-    name: 'ゴブリンメイジ',
-    shortLabel: '魔法',
+    name: getGoblinJobLabel('mage'),
+    shortLabel: getGoblinJobShortLabel('mage'),
     accentColor: '#B91C1C',
-    summary: '呪文を習得し、範囲攻撃を扱えるようになる。',
-    description: '呪文訓練を施し、魔力と範囲攻撃を扱える後衛に変えます。',
+    summary: getGoblinJobSummary('mage'),
+    description: getGoblinJobDescription('mage'),
     skills: [
       {
         skillId: 'grant_fireball',
@@ -80,11 +88,11 @@ const GOBLIN_JOB_DEFINITIONS: Record<GoblinJob, GoblinJobDefinition> = {
   },
   warrior: {
     id: 'warrior',
-    name: 'ゴブリンウォリアー',
-    shortLabel: '攻撃',
+    name: getGoblinJobLabel('warrior'),
+    shortLabel: getGoblinJobShortLabel('warrior'),
     accentColor: '#EA580C',
-    summary: '攻撃性能を大きく伸ばし、殴り合いに強くする。',
-    description: '武闘訓練を施し、攻撃力と手数を前線向けに強化します。',
+    summary: getGoblinJobSummary('warrior'),
+    description: getGoblinJobDescription('warrior'),
     skills: [
       {
         skillId: 'armor_mastery_120',
@@ -112,7 +120,7 @@ export function getGoblinJobDefinition(job: GoblinJob): GoblinJobDefinition {
 }
 
 export function isPureGoblin(goblin: Goblin): boolean {
-  return goblin.race === 'ゴブリン'
+  return normalizeGoblinRaceId(goblin.raceId ?? goblin.race) === 'goblin'
 }
 
 export function canTrainGoblin(goblin: Goblin): boolean {
@@ -149,8 +157,9 @@ export function applyGoblinJob(goblin: Goblin, job?: GoblinJob): Goblin {
 
 export function formatGoblinJobSkillName(jobSkill: GoblinJobSkill): string {
   const skill = getCharacterSkill(jobSkill.skillId)
-  if (!jobSkill.unlockLevel || jobSkill.unlockLevel <= 1) return skill.name
-  return `Lv${jobSkill.unlockLevel} ${skill.name}`
+  const label = getSkillLabel(skill)
+  if (!jobSkill.unlockLevel || jobSkill.unlockLevel <= 1) return label
+  return `Lv${jobSkill.unlockLevel} ${label}`
 }
 
 export function getGoblinJobSkillEntries(job: GoblinJob): GoblinJobSkill[] {

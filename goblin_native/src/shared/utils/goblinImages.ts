@@ -1,6 +1,7 @@
 import { ImageSourcePropType } from 'react-native'
 import type { Goblin } from '@/shared/types'
 import { getGoblinVariantByRace } from '@/shared/data/goblinVariants'
+import { normalizeGoblinRaceId } from '@/shared/types/Race'
 
 // ゴブリン画像のマッピング
 const goblinImages: Record<string, ImageSourcePropType> = {
@@ -48,7 +49,7 @@ export function getGoblinImage(avatarPath: string | undefined): ImageSourcePropT
  * @returns ImageSourcePropType
  */
 export function getGoblinImageByRace(race: string): ImageSourcePropType {
-  const variant = getGoblinVariantByRace(race)
+  const variant = getGoblinVariantByRace(normalizeGoblinRaceId(race))
   if (variant && variant.imageKey in goblinImages) {
     return goblinImages[variant.imageKey]
   }
@@ -60,8 +61,8 @@ export function getGoblinImageByRace(race: string): ImageSourcePropType {
  * 表示用のゴブリン画像を取得
  * 純ゴブリンはジョブに応じた画像を優先して表示する
  */
-export function getGoblinDisplayImage(goblin: Pick<Goblin, 'avatar' | 'race' | 'job'>): ImageSourcePropType {
-  if (goblin.race === 'ゴブリン' && goblin.job) {
+export function getGoblinDisplayImage(goblin: Pick<Goblin, 'avatar' | 'race' | 'job' | 'raceId'>): ImageSourcePropType {
+  if (normalizeGoblinRaceId(goblin.raceId ?? goblin.race) === 'goblin' && goblin.job) {
     switch (goblin.job) {
       case 'guard':
         return goblinImages.goblin_guard

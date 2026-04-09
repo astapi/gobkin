@@ -1,3 +1,5 @@
+import type { GoblinRaceId } from './Race'
+
 /**
  * 因子の基本定義
  */
@@ -24,6 +26,7 @@ export interface FactorEffect {
  */
 export interface FactorVariantConfig {
   probability: number  // 亜種発生確率 (0.0 ~ 1.0)
+  raceId: GoblinRaceId
   raceName: string     // 亜種の種族名 例: "スライムゴブリン"
   avatar: string       // 亜種専用アバター画像パス
   additionalEffects?: FactorEffect[]  // 亜種限定の追加効果

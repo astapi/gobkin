@@ -13,6 +13,7 @@ import {
   calculateGoblinBaseHp,
   getGoblinBaseAttributes,
 } from '../../shared/utils/goblinHp'
+import { getLegacyRaceName, normalizeGoblinRaceId } from '../../shared/types/Race'
 
 const GOBLIN_NAMES = [
   'グリム', 'ゴブタ', 'ボブ', 'ゴロー', 'クロ', 'シロ', 'アカ', 'アオ',
@@ -119,9 +120,10 @@ export class GoblinBirthService {
     const clampedIV = Math.max(1, Math.min(64, individualValue))
 
     // 種族とアバターを決定
-    const race = inheritance?.isVariant
-      ? inheritance.variantRace!
-      : 'ゴブリン'
+    const raceId = inheritance?.isVariant
+      ? normalizeGoblinRaceId(inheritance.variantRaceId ?? inheritance.variantRace)
+      : 'goblin'
+    const race = getLegacyRaceName(raceId)
 
     // 基本ステータスを生成（因子ボーナスはModStatCalculatorで計算時に適用）
     const stats = this.generateStats(race)
@@ -138,15 +140,16 @@ export class GoblinBirthService {
       id,
       name,
       race,
+      raceId,
       level: 1,
       experience: 0,
       avatar,
       stats,
-      baseAttributes: getGoblinBaseAttributes({ race }),
+      baseAttributes: getGoblinBaseAttributes({ race, raceId }),
       effectiveStats: stats,  // 仮設定、後で計算
       individualValue: clampedIV,
       mods,  // 空配列もそのまま保存（Firestoreはundefinedを許容しない）
-      skills: getDefaultSkillsForRace(race),
+      skills: getDefaultSkillsForRace(raceId),
       factors: inheritance?.inheritedFactors ?? [],
     }
 
@@ -175,12 +178,12 @@ export class GoblinBirthService {
    */
   private generateStats(bloodline: string): GoblinStats {
     return {
-      hp: calculateGoblinBaseHp(1, { race: bloodline }),
-      atk: calculateGoblinBaseAtk(1, { race: bloodline }),
-      def: calculateGoblinBaseDef(1, { race: bloodline }),
-      attackCount: calculateGoblinBaseAttackCount(1, { race: bloodline }),
-      accuracy: calculateGoblinBaseAccuracy(1, { race: bloodline }),
-      evasion: calculateGoblinBaseEvasion(1, { race: bloodline }),
+      hp: calculateGoblinBaseHp(1, { race: bloodline, raceId: normalizeGoblinRaceId(bloodline) }),
+      atk: calculateGoblinBaseAtk(1, { race: bloodline, raceId: normalizeGoblinRaceId(bloodline) }),
+      def: calculateGoblinBaseDef(1, { race: bloodline, raceId: normalizeGoblinRaceId(bloodline) }),
+      attackCount: calculateGoblinBaseAttackCount(1, { race: bloodline, raceId: normalizeGoblinRaceId(bloodline) }),
+      accuracy: calculateGoblinBaseAccuracy(1, { race: bloodline, raceId: normalizeGoblinRaceId(bloodline) }),
+      evasion: calculateGoblinBaseEvasion(1, { race: bloodline, raceId: normalizeGoblinRaceId(bloodline) }),
     }
   }
 }

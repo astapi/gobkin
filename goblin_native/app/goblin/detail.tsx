@@ -2,6 +2,7 @@ import { useMemo, useCallback, useEffect, useState } from 'react'
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, Alert } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useLocalSearchParams, router, useNavigation } from 'expo-router'
+import { useTranslation } from 'react-i18next'
 import { useGoblinStore } from '@/presentation/stores/useGoblinStore'
 import { useBaseStore } from '@/presentation/stores/useBaseStore'
 import { usePartyStore } from '@/presentation/stores/usePartyStore'
@@ -15,22 +16,10 @@ import { getModTemplate } from '@/shared/data/modPoolLoader'
 import { describeCharacterSkill, getUniqueSkillsById } from '@/shared/data/characterSkills'
 import { getGoblinJobDefinition } from '@/shared/data/goblinJobs'
 import { getGoblinBaseAttributes } from '@/shared/utils/goblinHp'
-
-const STAT_LABELS: Record<string, string> = {
-  hp_percent: 'HP', hp_flat: 'HP',
-  atk_percent: 'ATK', atk_flat: 'ATK',
-  def_percent: 'DEF', def_flat: 'DEF',
-  attackCount_percent: '攻撃回数', attackCount_flat: '攻撃回数',
-  accuracy_percent: '命中精度', accuracy_flat: '命中精度',
-  evasion_percent: '回避', evasion_flat: '回避',
-  damage_reduction: '被ダメ軽減',
-}
-
-function getStatLabel(stat: string): string {
-  return STAT_LABELS[stat] || stat
-}
+import { getFactorName, getRaceLabel, getSkillLabel, getStatLabel } from '@/shared/i18n/entityLocalization'
 
 export default function GoblinDetailScreen() {
+  const { t } = useTranslation()
   const { goblinId, source } = useLocalSearchParams<{ goblinId: string, source?: string }>()
   const getGoblinById = useGoblinStore((state) => state.getGoblinById)
   const deleteGoblin = useGoblinStore((state) => state.deleteGoblin)
@@ -79,16 +68,16 @@ export default function GoblinDetailScreen() {
   const handleBanish = useCallback(() => {
     if (!goblin) return
     if (assignedParty) {
-      Alert.alert('追放できません', `${goblin.name}は${assignedParty.name}に編成中です。`)
+      Alert.alert(t('ui.goblin.banishBlocked'), `${goblin.name}は${assignedParty.name}に編成中です。`)
       return
     }
     Alert.alert(
-      '追放確認',
-      `${goblin.name}を追放しますか？\n追放時に装備は自動的に解除されます。`,
+      t('ui.goblin.banishConfirmTitle'),
+      t('ui.goblin.banishConfirmBody', { name: goblin.name }),
       [
-        { text: 'キャンセル', style: 'cancel' },
+        { text: t('ui.common.cancel'), style: 'cancel' },
         {
-          text: '追放する',
+          text: t('ui.goblin.banishAction'),
           style: 'destructive',
           onPress: () => {
             void deleteGoblin(goblin.id)
@@ -97,13 +86,13 @@ export default function GoblinDetailScreen() {
               })
               .catch((error: unknown) => {
                 const message = error instanceof Error ? error.message : `${goblin.name}の追放に失敗しました。`
-                Alert.alert('削除エラー', message)
+                Alert.alert(t('ui.goblin.deleteErrorTitle'), message)
               })
           },
         },
       ],
     )
-  }, [assignedParty, goblin, deleteGoblin])
+  }, [assignedParty, goblin, deleteGoblin, t])
 
   const handleOpenEquipment = useCallback(() => {
     if (!goblin) return
@@ -122,23 +111,23 @@ export default function GoblinDetailScreen() {
             </View>
             <View style={styles.profileInfo}>
               <Text style={styles.profileName}>{goblin.name}</Text>
-              <Text style={styles.profileRace}>{goblin.race}</Text>
+              <Text style={styles.profileRace}>{getRaceLabel(goblin.raceId ?? goblin.race)}</Text>
               {jobLabel && <Text style={styles.profileJob}>{jobLabel}</Text>}
-              <Text style={styles.profileLevel}>Lv.{goblin.level}</Text>
+              <Text style={styles.profileLevel}>{t('ui.common.levelShort')}{goblin.level}</Text>
             </View>
           </View>
         </View>
 
         <View style={styles.detailSection}>
-          <Text style={styles.sectionTitle}>ステータス</Text>
+          <Text style={styles.sectionTitle}>{t('ui.goblin.stats')}</Text>
           <View style={styles.statGrid}>
             {([
-              { key: 'hp', label: 'HP' },
-              { key: 'atk', label: 'ATK' },
-              { key: 'def', label: 'DEF' },
-              { key: 'attackCount', label: '攻撃回数' },
-              { key: 'accuracy', label: '命中精度' },
-              { key: 'evasion', label: '回避' },
+              { key: 'hp', label: getStatLabel('hp') },
+              { key: 'atk', label: getStatLabel('atk') },
+              { key: 'def', label: getStatLabel('def') },
+              { key: 'attackCount', label: getStatLabel('attackCount') },
+              { key: 'accuracy', label: getStatLabel('accuracy') },
+              { key: 'evasion', label: getStatLabel('evasion') },
             ] as const).map(item => (
               <View key={item.key} style={styles.statChip}>
                 <Text style={styles.statChipLabel}>{item.label}</Text>
@@ -150,15 +139,15 @@ export default function GoblinDetailScreen() {
 
         {baseAttributes && (
           <View style={styles.detailSection}>
-            <Text style={styles.sectionTitle}>基本能力値</Text>
+            <Text style={styles.sectionTitle}>{t('ui.goblin.baseAttributes')}</Text>
             <View style={styles.baseAttributeList}>
               {([
-                { key: 'power', label: '力' },
-                { key: 'wisdom', label: '知恵' },
-                { key: 'spirit', label: '精神' },
-                { key: 'vitality', label: '体力' },
-                { key: 'agility', label: '敏捷' },
-                { key: 'luck', label: '運' },
+                { key: 'power', label: getStatLabel('power') },
+                { key: 'wisdom', label: getStatLabel('wisdom') },
+                { key: 'spirit', label: getStatLabel('spirit') },
+                { key: 'vitality', label: getStatLabel('vitality') },
+                { key: 'agility', label: getStatLabel('agility') },
+                { key: 'luck', label: getStatLabel('luck') },
               ] as const).map(item => (
                 <View key={item.key} style={styles.baseAttributeRow}>
                   <Text style={styles.baseAttributeLabel}>{item.label}</Text>
@@ -172,11 +161,11 @@ export default function GoblinDetailScreen() {
 
         {characterSkills.length > 0 && (
           <View style={styles.detailSection}>
-            <Text style={styles.sectionTitle}>スキル</Text>
+            <Text style={styles.sectionTitle}>{t('ui.goblin.skills')}</Text>
             <View style={styles.abilityList}>
               {characterSkills.map((skill, idx) => (
                 <View key={`${skill.id}-${idx}`} style={styles.abilityItem}>
-                  <Text style={styles.abilityName}>{skill.name}</Text>
+                  <Text style={styles.abilityName}>{getSkillLabel(skill)}</Text>
                   <Text style={styles.abilityDesc}>{describeCharacterSkill(skill)}</Text>
                 </View>
               ))}
@@ -185,22 +174,22 @@ export default function GoblinDetailScreen() {
         )}
 
         <View style={styles.detailSection}>
-          <Text style={styles.sectionTitle}>経験値</Text>
+          <Text style={styles.sectionTitle}>{t('ui.goblin.experience')}</Text>
           <View style={styles.expCard}>
             <View style={styles.expRow}>
-              <Text style={styles.expLabel}>EXP</Text>
+              <Text style={styles.expLabel}>{t('ui.goblin.exp')}</Text>
               <Text style={styles.expValue}>{goblin.experience} / {expForNext}</Text>
             </View>
             <View style={styles.expBarTrack}>
               <View style={[styles.expBarFill, { width: `${Math.max(0, Math.min(1, expProgress)) * 100}%` }]} />
             </View>
-            <Text style={styles.expHint}>次のレベルまで: {Math.max(0, expForNext - goblin.experience)}</Text>
+            <Text style={styles.expHint}>{t('ui.goblin.nextLevel', { value: Math.max(0, expForNext - goblin.experience) })}</Text>
           </View>
         </View>
 
         {goblin.factors && goblin.factors.length > 0 && (
           <View style={styles.detailSection}>
-            <Text style={styles.sectionTitle}>因子</Text>
+            <Text style={styles.sectionTitle}>{t('ui.goblin.factors')}</Text>
             <View style={styles.compactList}>
               {goblin.factors.map((factorId, idx) => {
                 const factor = getFactor(factorId)
@@ -212,7 +201,7 @@ export default function GoblinDetailScreen() {
                       <FactorIcon width={20} height={20} />
                     </View>
                     <View style={styles.factorInfo}>
-                      <Text style={styles.factorName}>{factor.name}</Text>
+                      <Text style={styles.factorName}>{getFactorName(factor)}</Text>
                       {factor.effects && factor.effects.length > 0 && (
                         <View style={styles.factorEffectRow}>
                           {factor.effects
@@ -236,7 +225,7 @@ export default function GoblinDetailScreen() {
 
         {goblin.mods && goblin.mods.length > 0 && (
           <View style={styles.detailSection}>
-            <Text style={styles.sectionTitle}>Mod</Text>
+            <Text style={styles.sectionTitle}>{t('ui.goblin.mods')}</Text>
             <View style={styles.modList}>
               {goblin.mods.map((mod, idx) => {
                 const template = getModTemplate(mod.templateId)
@@ -258,11 +247,11 @@ export default function GoblinDetailScreen() {
         {!isPendingGoblin && (
           <>
             <TouchableOpacity style={styles.equipmentButton} onPress={handleOpenEquipment}>
-              <Text style={styles.equipmentButtonText}>装備変更</Text>
+              <Text style={styles.equipmentButtonText}>{t('ui.goblin.equipmentChange')}</Text>
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.banishButton} onPress={handleBanish}>
-              <Text style={styles.banishButtonText}>このゴブリンを追放する</Text>
+              <Text style={styles.banishButtonText}>{t('ui.goblin.banishButton')}</Text>
             </TouchableOpacity>
           </>
         )}

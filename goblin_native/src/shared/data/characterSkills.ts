@@ -7,6 +7,8 @@ import type {
   GoblinStats,
   LearnedSpell,
 } from '../types'
+import i18n from '../i18n'
+import { getSkillLabel } from '../i18n/entityLocalization'
 
 export function cloneCharacterSkill(skill: CharacterSkill): CharacterSkill {
   return {
@@ -41,62 +43,62 @@ export function getUniqueSkillsById(skills: CharacterSkill[]): CharacterSkill[] 
 export function describeCharacterSkill(skill: CharacterSkill): string {
   if (skill.actionOrderMultiplier !== undefined) {
     if (skill.actionOrderMultiplier === 2) {
-      return '行動順を決める速さが2.0倍に上昇する'
+      return i18n.t('battle.actionOrderFast2')
     }
     if (skill.actionOrderMultiplier === 1.5) {
-      return '行動順を決める速さが1.5倍に上昇する'
+      return i18n.t('battle.actionOrderFast15')
     }
     if (skill.actionOrderMultiplier === 2 / 3) {
-      return '行動順を決める速さが2/3に減少する'
+      return i18n.t('battle.actionOrderSlow23')
     }
     if (skill.actionOrderMultiplier === 0.5) {
-      return '行動順を決める速さが1/2に減少する'
+      return i18n.t('battle.actionOrderSlow05')
     }
-    return `行動順を決める速さが×${skill.actionOrderMultiplier.toFixed(2)}`
+    return i18n.t('battle.actionOrderGeneric', { value: skill.actionOrderMultiplier.toFixed(2) })
   }
 
   if (skill.coverLowHpAlly) {
-    return 'HPが半分以下の味方への通常攻撃を代わりに受ける'
+    return i18n.t('battle.coverLowHp')
   }
 
   if (skill.surviveLethalDamageAtHp1) {
-    return 'HPが0になる攻撃を受けてもHP1で耐える'
+    return i18n.t('battle.surviveLethal')
   }
 
   if (skill.physicalDamageReductionPercent !== undefined) {
-    return `[-${skill.physicalDamageReductionPercent}%] 物理ダメージ軽減(%)`
+    return i18n.t('battle.physicalReduction', { value: skill.physicalDamageReductionPercent })
   }
 
   if (skill.rearAllyDamageMultiplier !== undefined) {
-    return `自分より後列の仲間のダメージが×${skill.rearAllyDamageMultiplier.toFixed(1)}`
+    return i18n.t('battle.rearAllyDamage', { value: skill.rearAllyDamageMultiplier.toFixed(1) })
   }
 
   if (skill.additionalDamage !== undefined) {
-    return `通常攻撃の各ヒットに固定で+${skill.additionalDamage}`
+    return i18n.t('battle.additionalDamage', { value: skill.additionalDamage })
   }
 
   if (skill.protectRearAllyNormalAttackMultiplier !== undefined) {
     const reducedRate = Math.round((1 - skill.protectRearAllyNormalAttackMultiplier) * 100)
-    return `自分より後列の仲間が受ける通常攻撃ダメージを${reducedRate}%軽減`
+    return i18n.t('battle.rearProtection', { value: reducedRate })
   }
 
   if (skill.equipmentCategoryMultiplier?.armor !== undefined) {
-    return `鎧カテゴリ装備の能力値が×${skill.equipmentCategoryMultiplier.armor.toFixed(1)}`
+    return i18n.t('battle.armorMultiplier', { value: skill.equipmentCategoryMultiplier.armor.toFixed(1) })
   }
 
   if (skill.statMultipliers?.evasion !== undefined) {
-    return `回避が×${skill.statMultipliers.evasion.toFixed(1)}`
+    return i18n.t('battle.evasionMultiplier', { value: skill.statMultipliers.evasion.toFixed(1) })
   }
 
   if (skill.equipmentStatMultipliers?.accuracy_flat !== undefined) {
-    return `装備由来の命中精度補正が×${skill.equipmentStatMultipliers.accuracy_flat.toFixed(1)}`
+    return i18n.t('battle.accuracyMultiplier', { value: skill.equipmentStatMultipliers.accuracy_flat.toFixed(1) })
   }
 
   if (skill.statBonuses?.attackCount !== undefined) {
-    return `[+${skill.statBonuses.attackCount}]攻撃回数`
+    return i18n.t('battle.attackCountBonus', { value: skill.statBonuses.attackCount })
   }
 
-  return skill.name
+  return getSkillLabel(skill)
 }
 
 export function getSkillStatBonuses(skills: CharacterSkill[]): Partial<Record<keyof GoblinStats, number>> {
