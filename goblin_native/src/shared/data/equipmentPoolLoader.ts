@@ -1,4 +1,5 @@
-import type { EquipmentTemplate } from '../types/Equipment'
+import type { CharacterSkill } from '../types/CharacterSkill'
+import type { EquipmentTemplate, WeaponRange } from '../types/Equipment'
 import equipmentPoolJson from './equipmentPool.json'
 
 interface EquipmentPoolData {
@@ -8,8 +9,57 @@ interface EquipmentPoolData {
 
 const data = equipmentPoolJson as EquipmentPoolData
 
+const WEAPON_RANGE_SKILLS: Record<WeaponRange, CharacterSkill> = {
+  melee: {
+    id: 'weapon_melee_attack',
+    name: '[武器]近距離攻撃',
+    enablesMeleeRowDamagePenalty: true,
+  },
+  ranged: {
+    id: 'weapon_ranged_attack',
+    name: '[武器]遠距離攻撃',
+    enablesRangedRowDamagePenalty: true,
+  },
+}
+
+function cloneSkill(skill: CharacterSkill): CharacterSkill {
+  return {
+    ...skill,
+    statBonuses: skill.statBonuses ? { ...skill.statBonuses } : undefined,
+    statMultipliers: skill.statMultipliers ? { ...skill.statMultipliers } : undefined,
+    equipmentCategoryMultiplier: skill.equipmentCategoryMultiplier
+      ? { ...skill.equipmentCategoryMultiplier }
+      : undefined,
+    equipmentStatMultipliers: skill.equipmentStatMultipliers
+      ? { ...skill.equipmentStatMultipliers }
+      : undefined,
+  }
+}
+
+function buildGrantedSkills(template: EquipmentTemplate): CharacterSkill[] | undefined {
+  const grantedSkills = template.grantedSkills?.map(cloneSkill) ?? []
+
+  if (template.category === 'weapon' && template.range) {
+    grantedSkills.unshift(cloneSkill(WEAPON_RANGE_SKILLS[template.range]))
+  }
+
+  return grantedSkills.length > 0 ? grantedSkills : undefined
+}
+
+function normalizeTemplate(template: EquipmentTemplate): EquipmentTemplate {
+  return {
+    ...template,
+    statBonuses: template.statBonuses.map((bonus) => ({ ...bonus })),
+    weaponStats: template.weaponStats ? { ...template.weaponStats } : undefined,
+    effects: template.effects?.map((effect) => ({ ...effect })),
+    grantedSkills: buildGrantedSkills(template),
+  }
+}
+
 // コメント行を除外し、IDで高速検索するためのマップを構築
-const templates = data.templates.filter((t) => t.id !== undefined)
+const templates = data.templates
+  .filter((t) => t.id !== undefined)
+  .map(normalizeTemplate)
 const templateMap = new Map<string, EquipmentTemplate>(
   templates.map((t) => [t.id, t])
 )

@@ -6,6 +6,7 @@ import {
   getLearnedSpellsFromSkills,
   getPhysicalDamageReductionFromSkills,
   getRearProtectionMultiplierFromSkills,
+  getRowDamageMultiplierFromSkills,
   hasCoverLowHpAllySkill,
   hasSurviveLethalDamageAtHp1Skill,
 } from '../../shared/data/characterSkills'
@@ -312,6 +313,7 @@ export class BattleSystem {
               unit,
               unit.isAlly ? allyUnits : enemyUnits,
             )
+            const rowDamageMultiplier = getRowDamageMultiplierFromSkills(unit.skills, unit.row)
 
             // スキル由来の物理ダメージ軽減を適用
             const reductionFactor = 1 - target.damageReduction / 100
@@ -319,7 +321,7 @@ export class BattleSystem {
             const protectionFactor = this.getRearGuardReductionFactor(target, allyUnits)
             const damage = Math.max(
               1,
-              Math.floor((baseDamage * dmgMod * rearDamageMultiplier + additionalDamage) * reductionFactor * physicalReductionFactor * protectionFactor),
+              Math.floor((baseDamage * dmgMod * rearDamageMultiplier * rowDamageMultiplier + additionalDamage) * reductionFactor * physicalReductionFactor * protectionFactor),
             )
 
             this.applyDamage(target, damage)

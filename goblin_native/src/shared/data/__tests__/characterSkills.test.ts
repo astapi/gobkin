@@ -6,6 +6,7 @@ import {
   getPhysicalDamageReductionFromSkills,
   getRearAllyDamageMultiplierFromSkills,
   getRearProtectionMultiplierFromSkills,
+  getRowDamageMultiplierFromSkills,
   getSkillStatBonuses,
   getSkillStatMultipliers,
   hasCoverLowHpAllySkill,
@@ -75,6 +76,34 @@ describe('characterSkills - 物理ダメージ軽減', () => {
     ]
 
     expect(getRearAllyDamageMultiplierFromSkills(skills)).toBe(1.5)
+  })
+
+  it('近距離攻撃スキルは前列ほど高い隊列補正を返す', () => {
+    const skills: CharacterSkill[] = [
+      { id: 'weapon_melee_attack', name: '[武器]近距離攻撃', enablesMeleeRowDamagePenalty: true },
+    ]
+
+    expect(getRowDamageMultiplierFromSkills(skills, 0)).toBeCloseTo(1.0)
+    expect(getRowDamageMultiplierFromSkills(skills, 5)).toBeCloseTo(0.44)
+  })
+
+  it('遠距離攻撃スキルは後列ほど高い隊列補正を返す', () => {
+    const skills: CharacterSkill[] = [
+      { id: 'weapon_ranged_attack', name: '[武器]遠距離攻撃', enablesRangedRowDamagePenalty: true },
+    ]
+
+    expect(getRowDamageMultiplierFromSkills(skills, 0)).toBeCloseTo(0.44)
+    expect(getRowDamageMultiplierFromSkills(skills, 5)).toBeCloseTo(1.0)
+  })
+
+  it('遠近両方ある場合は全列で0.44倍になる', () => {
+    const skills: CharacterSkill[] = [
+      { id: 'weapon_melee_attack', name: '[武器]近距離攻撃', enablesMeleeRowDamagePenalty: true },
+      { id: 'weapon_ranged_attack', name: '[武器]遠距離攻撃', enablesRangedRowDamagePenalty: true },
+    ]
+
+    expect(getRowDamageMultiplierFromSkills(skills, 0)).toBeCloseTo(0.44)
+    expect(getRowDamageMultiplierFromSkills(skills, 5)).toBeCloseTo(0.44)
   })
 
   it('ステータス倍率スキルを集計できる', () => {
