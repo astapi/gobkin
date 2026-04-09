@@ -5,6 +5,7 @@ import { ExpeditionEngine } from '../ExpeditionEngine'
 import { getDefaultSkillsForRace } from '../../../shared/data/raceSkills'
 import { getBloodlineCombatStats } from '../../../shared/data/equipmentConfig'
 import { EquipmentService } from '../EquipmentService'
+import { getEquipmentTemplate } from '../../../shared/data/equipmentPoolLoader'
 import type { Goblin, Enemy } from '../../../shared/types'
 
 /**
@@ -314,6 +315,18 @@ describe('ModStatCalculator — 戦闘ステータス計算', () => {
     EquipmentService.unequip(equipment, goblin)
 
     expect(goblin.skills.some((skill) => skill.statBonuses?.attackCount === 8)).toBe(false)
+  })
+
+  it('melee武器には[武器]近距離攻撃スキルが付与される', () => {
+    const template = getEquipmentTemplate('sword_cypress_stick')
+
+    expect(template?.grantedSkills?.some((skill) => skill.id === 'weapon_melee_attack')).toBe(true)
+  })
+
+  it('ranged武器には[武器]遠距離攻撃スキルが付与される', () => {
+    const template = getEquipmentTemplate('bow_short')
+
+    expect(template?.grantedSkills?.some((skill) => skill.id === 'weapon_ranged_attack')).toBe(true)
   })
 })
 
@@ -787,6 +800,125 @@ describe('BattleSystem — 命中判定と複数回攻撃', () => {
     const plainDamage = plainResult.detailedLog.find((log) => log.action === 'マジックアロー' && !log.isAlly)!.targets[0].totalDamage
 
     expect(reducedDamage).toBe(plainDamage)
+  })
+
+  it('近距離攻撃持ちは後列ほど通常攻撃ダメージが下がる', () => {
+    const enemy = [[createTestEnemy({ hp: 9999, def: 0, spd: 1, evasion: 0 })]]
+    const frontAttacker = createTestGoblin({
+      id: 1,
+      skills: [{ id: 'weapon_melee_attack', name: '[武器]近距離攻撃', enablesMeleeRowDamagePenalty: true }],
+      stats: { hp: 100, atk: 100, spd: 100, def: 10, attackCount: 1, accuracy: 999, evasion: 0 },
+    })
+    const rearAttacker = createTestGoblin({
+      id: 2,
+      skills: [{ id: 'weapon_melee_attack', name: '[武器]近距離攻撃', enablesMeleeRowDamagePenalty: true }],
+      stats: { hp: 100, atk: 100, spd: 100, def: 10, attackCount: 1, accuracy: 999, evasion: 0 },
+    })
+
+    const frontResult = new BattleSystem().executeBattle([frontAttacker], [100], enemy, createSeededRng(21), 1)
+    const rearResult = new BattleSystem().executeBattle(
+      [
+        createTestGoblin({ id: 99, stats: { hp: 1, atk: 1, spd: 1, def: 999, attackCount: 0, accuracy: 0, evasion: 999 } }),
+        createTestGoblin({ id: 98, stats: { hp: 1, atk: 1, spd: 1, def: 999, attackCount: 0, accuracy: 0, evasion: 999 } }),
+        createTestGoblin({ id: 97, stats: { hp: 1, atk: 1, spd: 1, def: 999, attackCount: 0, accuracy: 0, evasion: 999 } }),
+        createTestGoblin({ id: 96, stats: { hp: 1, atk: 1, spd: 1, def: 999, attackCount: 0, accuracy: 0, evasion: 999 } }),
+        createTestGoblin({ id: 95, stats: { hp: 1, atk: 1, spd: 1, def: 999, attackCount: 0, accuracy: 0, evasion: 999 } }),
+        rearAttacker,
+      ],
+      [1, 1, 1, 1, 1, 100],
+      [[createTestEnemy({ hp: 9999, def: 0, spd: 1, evasion: 0 })]],
+      createSeededRng(21),
+      1,
+    )
+
+    const frontDamage = frontResult.detailedLog.find((log) => log.actorId === '1' && log.action === '通常攻撃')!.targets[0].totalDamage
+    const rearDamage = rearResult.detailedLog.find((log) => log.actorId === '2' && log.action === '通常攻撃')!.targets[0].totalDamage
+
+    expect(rearDamage).toBeLessThan(frontDamage)
+  })
+
+  it('遠距離攻撃持ちは後列ほど通常攻撃ダメージが上がる', () => {
+    const frontAttacker = createTestGoblin({
+      id: 1,
+      skills: [{ id: 'weapon_ranged_attack', name: '[武器]遠距離攻撃', enablesRangedRowDamagePenalty: true }],
+      stats: { hp: 100, atk: 100, spd: 100, def: 10, attackCount: 1, accuracy: 999, evasion: 0 },
+    })
+    const rearAttacker = createTestGoblin({
+      id: 2,
+      skills: [{ id: 'weapon_ranged_attack', name: '[武器]遠距離攻撃', enablesRangedRowDamagePenalty: true }],
+      stats: { hp: 100, atk: 100, spd: 100, def: 10, attackCount: 1, accuracy: 999, evasion: 0 },
+    })
+
+    const frontResult = new BattleSystem().executeBattle(
+      [frontAttacker],
+      [100],
+      [[createTestEnemy({ hp: 9999, def: 0, spd: 1, evasion: 0 })]],
+      createSeededRng(22),
+      1,
+    )
+    const rearResult = new BattleSystem().executeBattle(
+      [
+        createTestGoblin({ id: 99, stats: { hp: 1, atk: 1, spd: 1, def: 999, attackCount: 0, accuracy: 0, evasion: 999 } }),
+        createTestGoblin({ id: 98, stats: { hp: 1, atk: 1, spd: 1, def: 999, attackCount: 0, accuracy: 0, evasion: 999 } }),
+        createTestGoblin({ id: 97, stats: { hp: 1, atk: 1, spd: 1, def: 999, attackCount: 0, accuracy: 0, evasion: 999 } }),
+        createTestGoblin({ id: 96, stats: { hp: 1, atk: 1, spd: 1, def: 999, attackCount: 0, accuracy: 0, evasion: 999 } }),
+        createTestGoblin({ id: 95, stats: { hp: 1, atk: 1, spd: 1, def: 999, attackCount: 0, accuracy: 0, evasion: 999 } }),
+        rearAttacker,
+      ],
+      [1, 1, 1, 1, 1, 100],
+      [[createTestEnemy({ hp: 9999, def: 0, spd: 1, evasion: 0 })]],
+      createSeededRng(22),
+      1,
+    )
+
+    const frontDamage = frontResult.detailedLog.find((log) => log.actorId === '1' && log.action === '通常攻撃')!.targets[0].totalDamage
+    const rearDamage = rearResult.detailedLog.find((log) => log.actorId === '2' && log.action === '通常攻撃')!.targets[0].totalDamage
+
+    expect(rearDamage).toBeGreaterThan(frontDamage)
+  })
+
+  it('遠近両方持ちは全列で同じ通常攻撃ダメージ補正になる', () => {
+    const dualSkills = [
+      { id: 'weapon_melee_attack', name: '[武器]近距離攻撃', enablesMeleeRowDamagePenalty: true },
+      { id: 'weapon_ranged_attack', name: '[武器]遠距離攻撃', enablesRangedRowDamagePenalty: true },
+    ]
+    const frontAttacker = createTestGoblin({
+      id: 1,
+      skills: dualSkills,
+      stats: { hp: 100, atk: 100, spd: 100, def: 10, attackCount: 1, accuracy: 999, evasion: 0 },
+    })
+    const rearAttacker = createTestGoblin({
+      id: 2,
+      skills: dualSkills,
+      stats: { hp: 100, atk: 100, spd: 100, def: 10, attackCount: 1, accuracy: 999, evasion: 0 },
+    })
+
+    const frontResult = new BattleSystem().executeBattle(
+      [frontAttacker],
+      [100],
+      [[createTestEnemy({ hp: 9999, def: 0, spd: 1, evasion: 0 })]],
+      createSeededRng(23),
+      1,
+    )
+    const rearResult = new BattleSystem().executeBattle(
+      [
+        createTestGoblin({ id: 99, stats: { hp: 1, atk: 1, spd: 1, def: 999, attackCount: 0, accuracy: 0, evasion: 999 } }),
+        createTestGoblin({ id: 98, stats: { hp: 1, atk: 1, spd: 1, def: 999, attackCount: 0, accuracy: 0, evasion: 999 } }),
+        createTestGoblin({ id: 97, stats: { hp: 1, atk: 1, spd: 1, def: 999, attackCount: 0, accuracy: 0, evasion: 999 } }),
+        createTestGoblin({ id: 96, stats: { hp: 1, atk: 1, spd: 1, def: 999, attackCount: 0, accuracy: 0, evasion: 999 } }),
+        createTestGoblin({ id: 95, stats: { hp: 1, atk: 1, spd: 1, def: 999, attackCount: 0, accuracy: 0, evasion: 999 } }),
+        rearAttacker,
+      ],
+      [1, 1, 1, 1, 1, 100],
+      [[createTestEnemy({ hp: 9999, def: 0, spd: 1, evasion: 0 })]],
+      createSeededRng(23),
+      1,
+    )
+
+    const frontDamage = frontResult.detailedLog.find((log) => log.actorId === '1' && log.action === '通常攻撃')!.targets[0].totalDamage
+    const rearDamage = rearResult.detailedLog.find((log) => log.actorId === '2' && log.action === '通常攻撃')!.targets[0].totalDamage
+
+    expect(rearDamage).toBe(frontDamage)
   })
 })
 

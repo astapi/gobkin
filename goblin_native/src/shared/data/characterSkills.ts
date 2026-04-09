@@ -118,6 +118,29 @@ export function getAdditionalDamageFromSkills(skills: CharacterSkill[]): number 
   return getUniqueSkillsById(skills).reduce((sum, skill) => sum + (skill.additionalDamage ?? 0), 0)
 }
 
+const MELEE_ROW_DAMAGE_MULTIPLIERS = [1.0, 0.85, 0.72, 0.61, 0.52, 0.44] as const
+const RANGED_ROW_DAMAGE_MULTIPLIERS = [...MELEE_ROW_DAMAGE_MULTIPLIERS].reverse() as readonly number[]
+const BOTH_RANGE_ROW_DAMAGE_MULTIPLIER = 0.44
+
+export function getRowDamageMultiplierFromSkills(skills: CharacterSkill[], row: number): number {
+  const uniqueSkills = getUniqueSkillsById(skills)
+  const hasMelee = uniqueSkills.some((skill) => skill.enablesMeleeRowDamagePenalty)
+  const hasRanged = uniqueSkills.some((skill) => skill.enablesRangedRowDamagePenalty)
+
+  if (hasMelee && hasRanged) {
+    return BOTH_RANGE_ROW_DAMAGE_MULTIPLIER
+  }
+
+  if (!hasMelee && !hasRanged) {
+    return 1
+  }
+
+  const clampedRow = Math.max(0, Math.min(row, MELEE_ROW_DAMAGE_MULTIPLIERS.length - 1))
+  return hasMelee
+    ? MELEE_ROW_DAMAGE_MULTIPLIERS[clampedRow]
+    : RANGED_ROW_DAMAGE_MULTIPLIERS[clampedRow]
+}
+
 export function getRearProtectionMultiplierFromSkills(skills: CharacterSkill[]): number {
   return getUniqueSkillsById(skills).reduce(
     (product, skill) => product * (skill.protectRearAllyNormalAttackMultiplier ?? 1),

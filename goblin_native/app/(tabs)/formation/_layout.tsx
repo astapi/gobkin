@@ -31,6 +31,13 @@ export default function FormationLayout() {
         }}
       />
       <Stack.Screen
+        name="party-info"
+        options={{
+          title: 'PTの情報',
+          presentation: 'card',
+        }}
+      />
+      <Stack.Screen
         name="equipment"
         options={{
           title: '装備変更',

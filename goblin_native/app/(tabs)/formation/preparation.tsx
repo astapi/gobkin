@@ -164,6 +164,13 @@ export default function ExpeditionPreparationScreen() {
     })
   }, [partyId])
 
+  const handleOpenPartyInfo = useCallback(() => {
+    router.push({
+      pathname: '/formation/party-info',
+      params: { partyId },
+    })
+  }, [partyId])
+
   const handleOpenEquipmentList = useCallback(() => {
     router.push({
       pathname: '/formation/equipment-list',
@@ -331,14 +338,16 @@ export default function ExpeditionPreparationScreen() {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>パーティ</Text>
           <View style={styles.card}>
-            <Text style={styles.partyName}>{party.name}</Text>
-            <Text style={styles.partyRewardText}>{partyRewardText}</Text>
+            <TouchableOpacity style={styles.partyInfoButton} onPress={handleOpenPartyInfo} activeOpacity={0.8}>
+              <Text style={styles.partyName}>{party.name}</Text>
+              <Text style={styles.partyRewardText}>{partyRewardText}</Text>
 
-            <View style={styles.membersRow}>
-              {slots.map((goblin, index) => (
-                <MemberSlot key={index} goblin={goblin} isEmpty={!goblin} slotSize={slotSize} avatarSize={avatarSize} />
-              ))}
-            </View>
+              <View style={styles.membersRow}>
+                {slots.map((goblin, index) => (
+                  <MemberSlot key={index} goblin={goblin} isEmpty={!goblin} slotSize={slotSize} avatarSize={avatarSize} />
+                ))}
+              </View>
+            </TouchableOpacity>
 
             <TouchableOpacity style={styles.editButton} onPress={handleEditParty}>
               <Text style={styles.editButtonText}>メンバーを変更する</Text>
@@ -629,6 +638,9 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 2,
     elevation: 2,
+  },
+  partyInfoButton: {
+    marginBottom: 4,
   },
   partyName: {
     fontSize: 14,
