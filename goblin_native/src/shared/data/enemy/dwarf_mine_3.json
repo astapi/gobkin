@@ -3,113 +3,331 @@
     {
       "id": "DWF001",
       "name": "ドワーフ坑夫",
-      "raceTags": ["dwarf"],
+      "raceTags": [
+        "dwarf"
+      ],
       "level": 12,
       "hp": 65,
       "atk": 22,
       "def": 14,
-      "spd": 3,
       "attackCount": 1,
       "accuracy": 360,
       "evasion": 20,
       "exp": 38,
-      "gold": 32
+      "gold": 32,
+      "agility": 3
     },
     {
       "id": "DWF002",
       "name": "ドワーフ戦士",
-      "raceTags": ["dwarf"],
+      "raceTags": [
+        "dwarf"
+      ],
       "level": 13,
       "hp": 80,
       "atk": 28,
       "def": 18,
-      "spd": 4,
       "attackCount": 1,
       "accuracy": 380,
       "evasion": 21,
       "exp": 44,
-      "gold": 38
+      "gold": 38,
+      "agility": 4
     },
     {
       "id": "DWF003",
       "name": "ルーン鍛冶師",
-      "raceTags": ["dwarf"],
+      "raceTags": [
+        "dwarf"
+      ],
       "level": 14,
       "hp": 55,
       "atk": 30,
       "def": 10,
-      "spd": 5,
       "attackCount": 1,
       "accuracy": 395,
       "evasion": 22,
       "exp": 48,
-      "gold": 42
+      "gold": 42,
+      "agility": 5
     },
     {
       "id": "DWF004",
       "name": "坑道守護者",
-      "raceTags": ["dwarf"],
+      "raceTags": [
+        "dwarf"
+      ],
       "level": 15,
       "hp": 110,
       "atk": 34,
       "def": 22,
-      "spd": 3,
       "attackCount": 1,
       "accuracy": 410,
       "evasion": 23,
       "exp": 55,
-      "gold": 48
+      "gold": 48,
+      "agility": 3
     },
     {
       "id": "DWF005",
       "name": "ドワーフ擲弾兵",
-      "raceTags": ["dwarf"],
+      "raceTags": [
+        "dwarf"
+      ],
       "level": 14,
       "hp": 70,
       "atk": 35,
       "def": 12,
-      "spd": 4,
       "attackCount": 1,
       "accuracy": 395,
       "evasion": 22,
       "exp": 50,
-      "gold": 44
+      "gold": 44,
+      "agility": 4
     },
     {
       "id": "B_FORGEKING",
       "name": "鍛冶王",
-      "raceTags": ["dwarf"],
+      "raceTags": [
+        "dwarf"
+      ],
       "level": 18,
       "hp": 500,
       "atk": 55,
       "def": 32,
-      "spd": 5,
       "attackCount": 2,
       "accuracy": 470,
       "evasion": 26,
       "exp": 220,
       "gold": 200,
       "factorDrops": [
-        { "factorId": "dwarf", "probability": 1 }
-      ]
+        {
+          "factorId": "dwarf",
+          "probability": 1
+        }
+      ],
+      "agility": 5
     }
   ],
   "patterns": [
-    { "id": "DM3_001", "floors": [1], "enemies": [["DWF004", "DWF003"], ["DWF005", "DWF003"]] },
-    { "id": "DM3_002", "floors": [1], "enemies": [["DWF005", "DWF003"], ["DWF004", "DWF005"], ["DWF003"]] },
-    { "id": "DM3_003", "floors": [1], "enemies": [["DWF004", "DWF005"], ["DWF003", "DWF004"], ["DWF005", "DWF003"]] },
-    { "id": "DM3_004", "floors": [1], "enemies": [["DWF005", "DWF004", "DWF003"], ["DWF004", "DWF005"], ["DWF003", "DWF004"]] },
-    { "id": "DM3_005", "floors": [1], "enemies": [["DWF004", "DWF005", "DWF003"], ["DWF005", "DWF004"], ["DWF003", "DWF005", "DWF004"]] },
-
-    { "id": "DM3_006", "floors": [2], "enemies": [["DWF004", "DWF005"], ["DWF003", "DWF004"]] },
-    { "id": "DM3_007", "floors": [2], "enemies": [["DWF005", "DWF004"], ["DWF003", "DWF005"], ["DWF004"]] },
-    { "id": "DM3_008", "floors": [2], "enemies": [["DWF004", "DWF005", "DWF003"], ["DWF005", "DWF004"], ["DWF003"]] },
-    { "id": "DM3_009", "floors": [2], "enemies": [["DWF004", "DWF005", "DWF003"], ["DWF005", "DWF004"], ["DWF003", "DWF005"]] },
-    { "id": "DM3_010", "floors": [2], "enemies": [["DWF005", "DWF004", "DWF003"], ["DWF004", "DWF005"], ["DWF003", "DWF004", "DWF005"]] },
+    {
+      "id": "DM3_001",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "DWF004",
+          "DWF003"
+        ],
+        [
+          "DWF005",
+          "DWF003"
+        ]
+      ]
+    },
+    {
+      "id": "DM3_002",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "DWF005",
+          "DWF003"
+        ],
+        [
+          "DWF004",
+          "DWF005"
+        ],
+        [
+          "DWF003"
+        ]
+      ]
+    },
+    {
+      "id": "DM3_003",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "DWF004",
+          "DWF005"
+        ],
+        [
+          "DWF003",
+          "DWF004"
+        ],
+        [
+          "DWF005",
+          "DWF003"
+        ]
+      ]
+    },
+    {
+      "id": "DM3_004",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "DWF005",
+          "DWF004",
+          "DWF003"
+        ],
+        [
+          "DWF004",
+          "DWF005"
+        ],
+        [
+          "DWF003",
+          "DWF004"
+        ]
+      ]
+    },
+    {
+      "id": "DM3_005",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "DWF004",
+          "DWF005",
+          "DWF003"
+        ],
+        [
+          "DWF005",
+          "DWF004"
+        ],
+        [
+          "DWF003",
+          "DWF005",
+          "DWF004"
+        ]
+      ]
+    },
+    {
+      "id": "DM3_006",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "DWF004",
+          "DWF005"
+        ],
+        [
+          "DWF003",
+          "DWF004"
+        ]
+      ]
+    },
+    {
+      "id": "DM3_007",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "DWF005",
+          "DWF004"
+        ],
+        [
+          "DWF003",
+          "DWF005"
+        ],
+        [
+          "DWF004"
+        ]
+      ]
+    },
+    {
+      "id": "DM3_008",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "DWF004",
+          "DWF005",
+          "DWF003"
+        ],
+        [
+          "DWF005",
+          "DWF004"
+        ],
+        [
+          "DWF003"
+        ]
+      ]
+    },
+    {
+      "id": "DM3_009",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "DWF004",
+          "DWF005",
+          "DWF003"
+        ],
+        [
+          "DWF005",
+          "DWF004"
+        ],
+        [
+          "DWF003",
+          "DWF005"
+        ]
+      ]
+    },
+    {
+      "id": "DM3_010",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "DWF005",
+          "DWF004",
+          "DWF003"
+        ],
+        [
+          "DWF004",
+          "DWF005"
+        ],
+        [
+          "DWF003",
+          "DWF004",
+          "DWF005"
+        ]
+      ]
+    },
     {
       "id": "BOSS",
-      "floors": [2],
-      "enemies": [["B_FORGEKING", "DWF004", "DWF004"], ["DWF005", "DWF003", "DWF005"], ["DWF004", "DWF003", "DWF004"]],
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "B_FORGEKING",
+          "DWF004",
+          "DWF004"
+        ],
+        [
+          "DWF005",
+          "DWF003",
+          "DWF005"
+        ],
+        [
+          "DWF004",
+          "DWF003",
+          "DWF004"
+        ]
+      ],
       "isBoss": true
     }
   ]

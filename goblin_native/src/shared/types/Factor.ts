@@ -15,7 +15,7 @@ export interface Factor {
  */
 export interface FactorEffect {
   type: 'stat_bonus' | 'resistance' | 'skill_unlock'
-  target: 'hp' | 'atk' | 'def' | 'spd' | 'attackCount' | 'accuracy' | 'evasion'
+  target: 'hp' | 'atk' | 'def' | 'attackCount' | 'accuracy' | 'evasion'
   value: number  // フラット値（+100など）
 }
 

@@ -27,16 +27,13 @@ export const factorDatabase: Record<string, Factor> = {
     description: 'ウルフの特性を宿した因子。敏捷性が増す。',
     inheritProbability: 0.25,  // 25%で引き継ぎ
     effects: [
-      { type: 'stat_bonus', target: 'spd', value: 30 },
       { type: 'stat_bonus', target: 'atk', value: 15 }
     ],
     variantConfig: {
       probability: 0.15,
       raceName: 'ウルフゴブリン',
       avatar: '/src/assets/goblin/wolf_goblin.png',
-      additionalEffects: [
-        { type: 'stat_bonus', target: 'spd', value: 20 }
-      ]
+      additionalEffects: []
     }
   },
   orc: {
@@ -84,8 +81,7 @@ export const factorDatabase: Record<string, Factor> = {
     inheritProbability: 0.25,  // 25%で引き継ぎ
     effects: [
       { type: 'stat_bonus', target: 'atk', value: 15 },
-      { type: 'stat_bonus', target: 'def', value: 10 },
-      { type: 'stat_bonus', target: 'spd', value: 10 }
+      { type: 'stat_bonus', target: 'def', value: 10 }
     ],
     variantConfig: {
       probability: 0.2,  // 因子引き継ぎ時20%で亜種化
@@ -122,7 +118,6 @@ export const factorDatabase: Record<string, Factor> = {
     description: 'エルフの特性を宿した因子。敏捷性と精神力が増す。',
     inheritProbability: 0.2,
     effects: [
-      { type: 'stat_bonus', target: 'spd', value: 35 },
       { type: 'stat_bonus', target: 'def', value: 15 }
     ],
     variantConfig: {
@@ -130,7 +125,6 @@ export const factorDatabase: Record<string, Factor> = {
       raceName: 'エルフゴブリン',
       avatar: '/src/assets/goblin/elf_goblin.png',
       additionalEffects: [
-        { type: 'stat_bonus', target: 'spd', value: 20 },
         { type: 'stat_bonus', target: 'atk', value: 10 }
       ]
     }
@@ -150,8 +144,7 @@ export const factorDatabase: Record<string, Factor> = {
       raceName: 'リザードゴブリン',
       avatar: '/src/assets/goblin/lizard_goblin.png',
       additionalEffects: [
-        { type: 'stat_bonus', target: 'def', value: 15 },
-        { type: 'stat_bonus', target: 'spd', value: 10 }
+        { type: 'stat_bonus', target: 'def', value: 15 }
       ]
     }
   },

@@ -5,7 +5,6 @@ import type { LearnedSpell } from './Spell'
 export type GoblinStats = {
   hp: number
   atk: number
-  spd: number
   def: number
   attackCount: number  // 攻撃回数（種族基本値、ゴブリン=2）
   accuracy: number     // 命中精度

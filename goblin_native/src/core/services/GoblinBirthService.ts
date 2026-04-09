@@ -3,18 +3,16 @@ import { ModGeneratorService } from './ModGeneratorService'
 import { ModStatCalculator } from './ModStatCalculator'
 import { FactorInheritanceService, type InheritanceResult } from './FactorInheritanceService'
 import { calculateIndividualValue } from './BaseRankSystem'
-import { getBloodlineCombatStats } from '../../shared/data/equipmentConfig'
 import { getDefaultSkillsForRace } from '../../shared/data/raceSkills'
-import { calculateGoblinBaseHp, getGoblinBaseAttributes } from '../../shared/utils/goblinHp'
-
-/** HPとattackCount以外のランダム生成範囲（HPは式、attackCountは血統固定値） */
-const STAT_RANGES: Record<Exclude<keyof GoblinStats, 'attackCount' | 'hp'>, { min: number; max: number }> = {
-  atk: { min: 10, max: 16 },
-  spd: { min: 8, max: 14 },
-  def: { min: 8, max: 14 },
-  accuracy: { min: 120, max: 200 },
-  evasion: { min: 10, max: 20 },
-}
+import {
+  calculateGoblinBaseAccuracy,
+  calculateGoblinBaseAtk,
+  calculateGoblinBaseAttackCount,
+  calculateGoblinBaseDef,
+  calculateGoblinBaseEvasion,
+  calculateGoblinBaseHp,
+  getGoblinBaseAttributes,
+} from '../../shared/utils/goblinHp'
 
 const GOBLIN_NAMES = [
   'グリム', 'ゴブタ', 'ボブ', 'ゴロー', 'クロ', 'シロ', 'アカ', 'アオ',
@@ -172,28 +170,17 @@ export class GoblinBirthService {
   }
 
   /**
-   * ランダムなステータスを生成
-   * @param bloodline 血統名（attackCountの初期値に使用）
+   * 初期ステータスを生成
+   * @param bloodline 血統名
    */
   private generateStats(bloodline: string): GoblinStats {
-    const combatStats = getBloodlineCombatStats(bloodline)
     return {
       hp: calculateGoblinBaseHp(1, { race: bloodline }),
-      atk: this.randomInRange('atk'),
-      spd: this.randomInRange('spd'),
-      def: this.randomInRange('def'),
-      attackCount: combatStats.attackCount,
-      accuracy: this.randomInRange('accuracy'),
-      evasion: this.randomInRange('evasion'),
+      atk: calculateGoblinBaseAtk(1, { race: bloodline }),
+      def: calculateGoblinBaseDef(1, { race: bloodline }),
+      attackCount: calculateGoblinBaseAttackCount(1, { race: bloodline }),
+      accuracy: calculateGoblinBaseAccuracy(1, { race: bloodline }),
+      evasion: calculateGoblinBaseEvasion(1, { race: bloodline }),
     }
-  }
-
-  /**
-   * 指定されたステータスの範囲内でランダムな値を生成
-   */
-  private randomInRange(key: Exclude<keyof GoblinStats, 'attackCount' | 'hp'>): number {
-    const { min, max } = STAT_RANGES[key]
-    const value = min + (max - min) * this.random()
-    return Math.round(value)
   }
 }

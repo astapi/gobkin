@@ -1,6 +1,7 @@
 import type { AttackTargetDetail, BattleLogEntry, CharacterSkill, Enemy, Goblin, LearnedSpell } from '../../shared/types'
 import { SPELL_DEFS } from '../../shared/data/spells'
 import {
+  getActionOrderMultiplierFromSkills,
   getAdditionalDamageFromSkills,
   getRearAllyDamageMultiplierFromSkills,
   getLearnedSpellsFromSkills,
@@ -14,6 +15,7 @@ import type { SpellDef } from '../../shared/types/Spell'
 import { CombatantManager } from './CombatantManager'
 import { DamageCalculator } from './DamageCalculator'
 import { ModStatCalculator } from './ModStatCalculator'
+import { getGoblinBaseAttributes } from '../../shared/utils/goblinHp'
 import type {
   Combatant,
   DamageOptions,
@@ -34,7 +36,7 @@ interface BattleUnit {
   currentHP: number
   maxHP: number
   initialHP: number
-  spd: number
+  agility: number
   attackCount: number
   accuracy: number
   evasion: number
@@ -77,6 +79,19 @@ const DEFAULT_DAMAGE_OPTIONS: DamageOptions = {
   defConstant: 100,
   randomMin: 0.95,
   randomMax: 1.05,
+}
+
+// 差5程度なら低敏捷側にも約10%の先行余地を持たせるため、広めの乗算乱数を使う
+const ACTION_ORDER_RANDOM_MIN = 0.21
+const ACTION_ORDER_RANDOM_MAX = 1.0
+
+function getActionOrderRandomFactor(rng: () => number): number {
+  return ACTION_ORDER_RANDOM_MIN + rng() * (ACTION_ORDER_RANDOM_MAX - ACTION_ORDER_RANDOM_MIN)
+}
+
+export function getActionOrderValue(agility: number, actionOrderMultiplier: number, randomB: number): number {
+  const normalizedAgility = Math.max(1, agility)
+  return normalizedAgility * normalizedAgility * actionOrderMultiplier * randomB
 }
 
 /**
@@ -233,8 +248,21 @@ export class BattleSystem {
 
       detailedLog.push(this.createTurnStartLog(currentTurn, allyUnits, enemyUnits))
 
-      const actingUnits = [...allyUnits, ...enemyUnits].filter(unit => unit.currentHP > 0)
-      actingUnits.sort((a, b) => b.spd - a.spd)
+      const actingUnits = [...allyUnits, ...enemyUnits]
+        .filter(unit => unit.currentHP > 0)
+        .map((unit) => ({
+          unit,
+          actionOrder: getActionOrderValue(
+            unit.agility,
+            getActionOrderMultiplierFromSkills(unit.skills),
+            getActionOrderRandomFactor(rng),
+          ),
+        }))
+        .sort((a, b) => {
+          if (b.actionOrder !== a.actionOrder) return b.actionOrder - a.actionOrder
+          return a.unit.originalIndex - b.unit.originalIndex
+        })
+        .map(({ unit }) => unit)
 
       for (const unit of actingUnits) {
         if (unit.currentHP <= 0) continue
@@ -540,6 +568,7 @@ export class BattleSystem {
 
   private createAllyUnit(goblin: Goblin, initialHP: number | undefined, originalIndex: number): BattleUnit {
     const combatant = this.combatantManager.fromGoblin(goblin)
+    const actionOrderAgility = (goblin as Goblin & { agility?: number }).agility
     // Mod適用後のステータスを使用
     const effectiveStats = ModStatCalculator.calculate(goblin)
     const hp = initialHP ?? effectiveStats.hp
@@ -552,7 +581,7 @@ export class BattleSystem {
       currentHP: hp,
       maxHP: effectiveStats.hp,
       initialHP: hp,
-      spd: effectiveStats.spd,
+      agility: actionOrderAgility ?? getGoblinBaseAttributes(goblin).agility,
       attackCount: effectiveStats.attackCount,
       accuracy: effectiveStats.accuracy,
       evasion: effectiveStats.evasion,
@@ -578,7 +607,7 @@ export class BattleSystem {
       currentHP: enemy.hp,
       maxHP: enemy.hp,
       initialHP: enemy.hp,
-      spd: enemy.spd,
+      agility: enemy.agility,
       attackCount: enemy.attackCount,
       accuracy: enemy.accuracy,
       evasion: enemy.evasion,

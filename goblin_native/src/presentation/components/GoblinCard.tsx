@@ -10,7 +10,6 @@ const STAT_LABELS: Record<string, string> = {
   hp_percent: 'HP', hp_flat: 'HP',
   atk_percent: 'ATK', atk_flat: 'ATK',
   def_percent: 'DEF', def_flat: 'DEF',
-  spd_percent: 'SPD', spd_flat: 'SPD',
   attackCount_percent: '攻撃回数', attackCount_flat: '攻撃回数',
   accuracy_percent: '命中精度', accuracy_flat: '命中精度',
   evasion_percent: '回避', evasion_flat: '回避',

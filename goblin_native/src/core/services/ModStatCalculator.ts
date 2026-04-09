@@ -10,7 +10,14 @@ import {
 } from '../../shared/data/characterSkills'
 import { FactorInheritanceService } from './FactorInheritanceService'
 import { factorDatabase } from '../../shared/data/factors'
-import { calculateGoblinBaseHp } from '../../shared/utils/goblinHp'
+import {
+  calculateGoblinBaseAccuracy,
+  calculateGoblinBaseAtk,
+  calculateGoblinBaseAttackCount,
+  calculateGoblinBaseDef,
+  calculateGoblinBaseEvasion,
+  calculateGoblinBaseHp,
+} from '../../shared/utils/goblinHp'
 
 /**
  * 因子・Modを適用した最終ステータスを計算するサービス
@@ -27,7 +34,15 @@ export class ModStatCalculator {
     equipmentBonuses?: EquipmentStatBonus[],
     equipmentEffects?: EquipmentEffect[]
   ): GoblinStats {
-    const base = { ...goblin.stats, hp: calculateGoblinBaseHp(goblin.level, goblin) }
+    const base = {
+      ...goblin.stats,
+      hp: calculateGoblinBaseHp(goblin.level, goblin),
+      atk: calculateGoblinBaseAtk(goblin.level, goblin),
+      def: calculateGoblinBaseDef(goblin.level, goblin),
+      attackCount: calculateGoblinBaseAttackCount(goblin.level, goblin),
+      accuracy: calculateGoblinBaseAccuracy(goblin.level, goblin),
+      evasion: calculateGoblinBaseEvasion(goblin.level, goblin),
+    }
     const mods = goblin.mods ?? []
 
     // 1. 因子ボーナスを計算（亜種の追加効果も含む）
@@ -68,7 +83,6 @@ export class ModStatCalculator {
       hp: Math.floor(calcHp() * (skillMultipliers.hp ?? 1)),
       atk: withMultiplier('atk'),
       def: withMultiplier('def'),
-      spd: withMultiplier('spd'),
       attackCount: withMultiplier('attackCount'),
       accuracy: withMultiplier('accuracy'),
       evasion: withMultiplier('evasion'),
@@ -108,7 +122,7 @@ export class ModStatCalculator {
   }
 
   private static readonly ZERO_STATS: Record<keyof GoblinStats, number> = {
-    hp: 0, atk: 0, def: 0, spd: 0, attackCount: 0, accuracy: 0, evasion: 0,
+    hp: 0, atk: 0, def: 0, attackCount: 0, accuracy: 0, evasion: 0,
   }
 
   /** stat名からGoblinStatsのキーを抽出（例: 'hp_flat' → 'hp'） */

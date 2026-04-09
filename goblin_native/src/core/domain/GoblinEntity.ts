@@ -1,7 +1,15 @@
 import type { Goblin, GoblinStats } from '../../shared/types'
 import { addExperience, type LevelUpResult } from '../services/ExperienceSystem'
 import { ModStatCalculator } from '../services/ModStatCalculator'
-import { calculateGoblinBaseHp, getGoblinBaseAttributes } from '../../shared/utils/goblinHp'
+import {
+  calculateGoblinBaseAccuracy,
+  calculateGoblinBaseAtk,
+  calculateGoblinBaseAttackCount,
+  calculateGoblinBaseDef,
+  calculateGoblinBaseEvasion,
+  calculateGoblinBaseHp,
+  getGoblinBaseAttributes,
+} from '../../shared/utils/goblinHp'
 
 export class GoblinEntity {
   private readonly base: Goblin
@@ -57,7 +65,8 @@ export class GoblinEntity {
    */
   public calculateCombatPower(): number {
     const stats = this.effectiveStats
-    const rawPower = stats.atk * 1.5 + stats.def * 1.2 + stats.spd + stats.hp / 10
+    const agility = this.base.baseAttributes?.agility ?? getGoblinBaseAttributes(this.base).agility
+    const rawPower = stats.atk * 1.5 + stats.def * 1.2 + agility + stats.hp / 10
     return Math.round(rawPower)
   }
 
@@ -98,21 +107,22 @@ export class GoblinEntity {
 
   /**
    * レベルアップ時のステータス上昇処理
-   * TODO: 種族ごとの成長率を設定する
    */
   private applyLevelUpBonus(levelsGained: number): void {
-    for (let i = 0; i < levelsGained; i++) {
-      this.stats = {
-        ...this.stats,
-        atk: this.stats.atk + 2,
-        def: this.stats.def + 1,
-        spd: this.stats.spd + 1,
-      }
-    }
-
-    this.stats.hp = calculateGoblinBaseHp(this.level, {
+    const statContext = {
       race: this.base.race,
       job: this.base.job,
-    })
+      baseAttributes: this.base.baseAttributes,
+    }
+
+    this.stats = {
+      ...this.stats,
+      hp: calculateGoblinBaseHp(this.level, statContext),
+      atk: calculateGoblinBaseAtk(this.level, statContext),
+      def: calculateGoblinBaseDef(this.level, statContext),
+      attackCount: calculateGoblinBaseAttackCount(this.level, statContext),
+      accuracy: calculateGoblinBaseAccuracy(this.level, statContext),
+      evasion: calculateGoblinBaseEvasion(this.level, statContext),
+    }
   }
 }

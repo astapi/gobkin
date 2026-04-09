@@ -3,12 +3,14 @@
     {
       "id": "UND001",
       "name": "スケルトン兵",
-      "raceTags": ["undead"],
+      "raceTags": [
+        "undead"
+      ],
       "level": 5,
       "hp": 120,
       "atk": 20,
       "def": 6,
-      "spd": 3,
+      "agility": 7,
       "attackCount": 2,
       "accuracy": 230,
       "evasion": 13,
@@ -18,12 +20,14 @@
     {
       "id": "UND002",
       "name": "ゾンビ",
-      "raceTags": ["undead"],
+      "raceTags": [
+        "undead"
+      ],
       "level": 6,
       "hp": 100,
       "atk": 12,
       "def": 4,
-      "spd": 2,
+      "agility": 6,
       "attackCount": 1,
       "accuracy": 240,
       "evasion": 14,
@@ -33,12 +37,14 @@
     {
       "id": "UND003",
       "name": "ゴースト",
-      "raceTags": ["undead"],
+      "raceTags": [
+        "undead"
+      ],
       "level": 6,
       "hp": 100,
       "atk": 14,
       "def": 2,
-      "spd": 10,
+      "agility": 9,
       "attackCount": 1,
       "accuracy": 240,
       "evasion": 16,
@@ -48,12 +54,14 @@
     {
       "id": "UND004",
       "name": "骨弓兵",
-      "raceTags": ["undead"],
+      "raceTags": [
+        "undead"
+      ],
       "level": 7,
       "hp": 60,
       "atk": 15,
       "def": 5,
-      "spd": 5,
+      "agility": 10,
       "attackCount": 1,
       "accuracy": 255,
       "evasion": 15,
@@ -63,12 +71,14 @@
     {
       "id": "UND005",
       "name": "屍鬼",
-      "raceTags": ["undead"],
+      "raceTags": [
+        "undead"
+      ],
       "level": 8,
       "hp": 55,
       "atk": 50,
       "def": 10,
-      "spd": 3,
+      "agility": 5,
       "attackCount": 1,
       "accuracy": 180,
       "evasion": 16,
@@ -77,16 +87,150 @@
     }
   ],
   "patterns": [
-    { "id": "UR2_001", "floors": [1], "enemies": [["UND001", "UND001"], ["UND003"]] },
-    { "id": "UR2_002", "floors": [1], "enemies": [["UND002", "UND002"]] },
-    { "id": "UR2_003", "floors": [1], "enemies": [["UND003", "UND003"]] },
-    { "id": "UR2_004", "floors": [1], "enemies": [["UND001", "UND001", "UND001"], ["UND002"]] },
-    { "id": "UR2_005", "floors": [1], "enemies": [["UND002", "UND002"], ["UND003", "UND003"]] },
-
-    { "id": "UR2_006", "floors": [2], "enemies": [["UND002", "UND002"], ["UND003"]] },
-    { "id": "UR2_007", "floors": [2], "enemies": [["UND003", "UND003"], ["UND004"]] },
-    { "id": "UR2_008", "floors": [2], "enemies": [["UND004", "UND004"]] },
-    { "id": "UR2_009", "floors": [2], "enemies": [["UND002", "UND002"], ["UND004"]] },
-    { "id": "UR2_010", "floors": [2], "enemies": [["UND003", "UND003", "UND003"], ["UND004", "UND004"]] }
+    {
+      "id": "UR2_001",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "UND001",
+          "UND001"
+        ],
+        [
+          "UND003"
+        ]
+      ]
+    },
+    {
+      "id": "UR2_002",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "UND002",
+          "UND002"
+        ]
+      ]
+    },
+    {
+      "id": "UR2_003",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "UND003",
+          "UND003"
+        ]
+      ]
+    },
+    {
+      "id": "UR2_004",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "UND001",
+          "UND001",
+          "UND001"
+        ],
+        [
+          "UND002"
+        ]
+      ]
+    },
+    {
+      "id": "UR2_005",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "UND002",
+          "UND002"
+        ],
+        [
+          "UND003",
+          "UND003"
+        ]
+      ]
+    },
+    {
+      "id": "UR2_006",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "UND002",
+          "UND002"
+        ],
+        [
+          "UND003"
+        ]
+      ]
+    },
+    {
+      "id": "UR2_007",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "UND003",
+          "UND003"
+        ],
+        [
+          "UND004"
+        ]
+      ]
+    },
+    {
+      "id": "UR2_008",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "UND004",
+          "UND004"
+        ]
+      ]
+    },
+    {
+      "id": "UR2_009",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "UND002",
+          "UND002"
+        ],
+        [
+          "UND004"
+        ]
+      ]
+    },
+    {
+      "id": "UR2_010",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "UND003",
+          "UND003",
+          "UND003"
+        ],
+        [
+          "UND004",
+          "UND004"
+        ]
+      ]
+    }
   ]
 }

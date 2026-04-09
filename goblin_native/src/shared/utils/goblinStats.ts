@@ -1,6 +1,6 @@
 import type { Goblin, GoblinStats } from '../types'
 import { ModStatCalculator } from '@/core/services/ModStatCalculator'
-import { calculateGoblinBaseHp, getGoblinBaseAttributes } from './goblinHp'
+import { calculateGoblinDerivedStats, getGoblinBaseAttributes } from './goblinHp'
 
 /**
  * ゴブリンの実効ステータス（因子+MOD適用後）を取得
@@ -17,9 +17,10 @@ export function syncGoblinDerivedStats<T extends Goblin>(goblin: T): T {
   return {
     ...goblin,
     baseAttributes: getGoblinBaseAttributes(goblin),
-    stats: {
-      ...goblin.stats,
-      hp: calculateGoblinBaseHp(goblin.level, goblin),
-    },
+    stats: calculateGoblinDerivedStats(goblin.level, {
+      ...goblin,
+      baseAttributes: getGoblinBaseAttributes(goblin),
+      stats: goblin.stats,
+    }),
   }
 }
