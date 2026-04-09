@@ -350,15 +350,6 @@
           "value": 1
         }
       ],
-      "grantedSkills": [
-        {
-          "id": "claw_sharp_attack_count_1",
-          "name": "[+1]攻撃回数",
-          "statBonuses": {
-            "attackCount": 1
-          }
-        }
-      ],
       "weaponStats": {
         "accuracy": 16,
         "attackCountModifier": 0
@@ -368,7 +359,10 @@
       "unlockRank": 1,
       "dropLevelMin": 4,
       "dropLevelMax": 10,
-      "description": "トゲリスのトゲをそのまま握って使うだけの原始的な武器。まだ爪ですらない"
+      "description": "トゲリスのトゲをそのまま握って使うだけの原始的な武器。まだ爪ですらない",
+      "grantedSkillIds": [
+        "attack_count_up_1"
+      ]
     },
     {
       "id": "claw_beast",
@@ -381,15 +375,6 @@
           "value": 3
         }
       ],
-      "grantedSkills": [
-        {
-          "id": "claw_beast_attack_count_2",
-          "name": "[+2]攻撃回数",
-          "statBonuses": {
-            "attackCount": 2
-          }
-        }
-      ],
       "weaponStats": {
         "accuracy": 24,
         "attackCountModifier": 0
@@ -399,7 +384,10 @@
       "unlockRank": 1,
       "dropLevelMin": 4,
       "dropLevelMax": 10,
-      "description": "ウルフから剥ぎ取った爪をそのまま使う。荒削りだが獣らしい手数が出る"
+      "description": "ウルフから剥ぎ取った爪をそのまま使う。荒削りだが獣らしい手数が出る",
+      "grantedSkillIds": [
+        "attack_count_up_2"
+      ]
     },
     {
       "id": "claw_copper",
@@ -412,15 +400,6 @@
           "value": 5
         }
       ],
-      "grantedSkills": [
-        {
-          "id": "claw_copper_attack_count_3",
-          "name": "[+3]攻撃回数",
-          "statBonuses": {
-            "attackCount": 3
-          }
-        }
-      ],
       "weaponStats": {
         "accuracy": 32,
         "attackCountModifier": 0
@@ -430,7 +409,10 @@
       "unlockRank": 1,
       "dropLevelMin": 8,
       "dropLevelMax": 15,
-      "description": "銅板を曲げて爪状にした簡易武器。素早い連撃向き"
+      "description": "銅板を曲げて爪状にした簡易武器。素早い連撃向き",
+      "grantedSkillIds": [
+        "attack_count_up_3"
+      ]
     },
     {
       "id": "claw_iron",
@@ -443,15 +425,6 @@
           "value": 7
         }
       ],
-      "grantedSkills": [
-        {
-          "id": "claw_iron_attack_count_4",
-          "name": "[+4]攻撃回数",
-          "statBonuses": {
-            "attackCount": 4
-          }
-        }
-      ],
       "weaponStats": {
         "accuracy": 40,
         "attackCountModifier": 0
@@ -461,7 +434,10 @@
       "unlockRank": 1,
       "dropLevelMin": 8,
       "dropLevelMax": 15,
-      "description": "鉄で補強した爪。斬り刻むような攻撃に向く"
+      "description": "鉄で補強した爪。斬り刻むような攻撃に向く",
+      "grantedSkillIds": [
+        "attack_count_up_4"
+      ]
     },
     {
       "id": "claw_steel",
@@ -474,15 +450,6 @@
           "value": 10
         }
       ],
-      "grantedSkills": [
-        {
-          "id": "claw_steel_attack_count_5",
-          "name": "[+5]攻撃回数",
-          "statBonuses": {
-            "attackCount": 5
-          }
-        }
-      ],
       "weaponStats": {
         "accuracy": 56,
         "attackCountModifier": 0
@@ -492,7 +459,10 @@
       "unlockRank": 1,
       "dropLevelMin": 12,
       "dropLevelMax": 25,
-      "description": "鋼の刃先を備えた爪。軽快さを保ったまま切れ味を増す"
+      "description": "鋼の刃先を備えた爪。軽快さを保ったまま切れ味を増す",
+      "grantedSkillIds": [
+        "attack_count_up_5"
+      ]
     },
     {
       "id": "claw_mithril",
@@ -505,15 +475,6 @@
           "value": 14
         }
       ],
-      "grantedSkills": [
-        {
-          "id": "claw_mithril_attack_count_6",
-          "name": "[+6]攻撃回数",
-          "statBonuses": {
-            "attackCount": 6
-          }
-        }
-      ],
       "weaponStats": {
         "accuracy": 80,
         "attackCountModifier": 0
@@ -522,7 +483,10 @@
       "price": 500,
       "dropLevelMin": 20,
       "dropLevelMax": 40,
-      "description": "ミスリルで鍛えた軽量の爪。鋭さと扱いやすさを両立する"
+      "description": "ミスリルで鍛えた軽量の爪。鋭さと扱いやすさを両立する",
+      "grantedSkillIds": [
+        "attack_count_up_6"
+      ]
     },
     {
       "id": "claw_royal",
@@ -535,15 +499,6 @@
           "value": 18
         }
       ],
-      "grantedSkills": [
-        {
-          "id": "claw_royal_attack_count_7",
-          "name": "[+7]攻撃回数",
-          "statBonuses": {
-            "attackCount": 7
-          }
-        }
-      ],
       "weaponStats": {
         "accuracy": 104,
         "attackCountModifier": 0
@@ -552,7 +507,10 @@
       "price": 2500,
       "dropLevelMin": 35,
       "dropLevelMax": 60,
-      "description": "王侯の近衛が使う高級爪。狙った急所を外さない"
+      "description": "王侯の近衛が使う高級爪。狙った急所を外さない",
+      "grantedSkillIds": [
+        "attack_count_up_7"
+      ]
     },
     {
       "id": "claw_kaiser",
@@ -565,15 +523,6 @@
           "value": 26
         }
       ],
-      "grantedSkills": [
-        {
-          "id": "claw_kaiser_attack_count_8",
-          "name": "[+8]攻撃回数",
-          "statBonuses": {
-            "attackCount": 8
-          }
-        }
-      ],
       "weaponStats": {
         "accuracy": 152,
         "attackCountModifier": 0
@@ -583,7 +532,10 @@
       "unlockRank": 3,
       "dropLevelMin": 50,
       "dropLevelMax": 80,
-      "description": "皇帝の闘技兵が使う爪。苛烈な連撃を叩き込む"
+      "description": "皇帝の闘技兵が使う爪。苛烈な連撃を叩き込む",
+      "grantedSkillIds": [
+        "attack_count_up_8"
+      ]
     },
     {
       "id": "claw_ancient",
@@ -596,15 +548,6 @@
           "value": 34
         }
       ],
-      "grantedSkills": [
-        {
-          "id": "claw_ancient_attack_count_9",
-          "name": "[+9]攻撃回数",
-          "statBonuses": {
-            "attackCount": 9
-          }
-        }
-      ],
       "weaponStats": {
         "accuracy": 208,
         "attackCountModifier": 0
@@ -614,7 +557,10 @@
       "unlockRank": 5,
       "dropLevelMin": 70,
       "dropLevelMax": 105,
-      "description": "古代の加工技術で生まれた爪。吸い付くような精度を持つ"
+      "description": "古代の加工技術で生まれた爪。吸い付くような精度を持つ",
+      "grantedSkillIds": [
+        "attack_count_up_9"
+      ]
     },
     {
       "id": "claw_dragon",
@@ -627,15 +573,6 @@
           "value": 48
         }
       ],
-      "grantedSkills": [
-        {
-          "id": "claw_dragon_attack_count_10",
-          "name": "[+10]攻撃回数",
-          "statBonuses": {
-            "attackCount": 10
-          }
-        }
-      ],
       "weaponStats": {
         "accuracy": 304,
         "attackCountModifier": 0
@@ -644,7 +581,10 @@
       "price": 240000,
       "dropLevelMin": 95,
       "dropLevelMax": 135,
-      "description": "竜の鉤爪を加工した凶器。嵐のような手数で切り裂く"
+      "description": "竜の鉤爪を加工した凶器。嵐のような手数で切り裂く",
+      "grantedSkillIds": [
+        "attack_count_up_10"
+      ]
     },
     {
       "id": "claw_adamant",
@@ -657,15 +597,6 @@
           "value": 64
         }
       ],
-      "grantedSkills": [
-        {
-          "id": "claw_adamant_attack_count_11",
-          "name": "[+11]攻撃回数",
-          "statBonuses": {
-            "attackCount": 11
-          }
-        }
-      ],
       "weaponStats": {
         "accuracy": 400,
         "attackCountModifier": 0
@@ -674,7 +605,10 @@
       "price": 720000,
       "dropLevelMin": 120,
       "dropLevelMax": 150,
-      "description": "アダマンタイトで造られた究極の爪。連撃のすべてが致命傷になる"
+      "description": "アダマンタイトで造られた究極の爪。連撃のすべてが致命傷になる",
+      "grantedSkillIds": [
+        "attack_count_up_11"
+      ]
     },
     {
       "_comment": "===== 武器:弓 (ranged) ====="
@@ -967,18 +901,14 @@
           "value": 5
         }
       ],
-      "grantedSkills": [
-        {
-          "id": "armor_tattered_cloth_physical_reduction",
-          "name": "[-1%] 物理ダメージ軽減(%)",
-          "physicalDamageReductionPercent": 1
-        }
-      ],
       "price": 5,
       "unlockRank": 1,
       "dropLevelMin": 1,
       "dropLevelMax": 2,
-      "description": "破れた布を何重にも巻いただけの粗末な防具。無いよりは少しまし"
+      "description": "破れた布を何重にも巻いただけの粗末な防具。無いよりは少しまし",
+      "grantedSkillIds": [
+        "physical_reduction_1"
+      ]
     },
     {
       "id": "armor_leather_vest",
@@ -994,18 +924,14 @@
           "value": 8
         }
       ],
-      "grantedSkills": [
-        {
-          "id": "armor_leather_vest_physical_reduction",
-          "name": "[-2%] 物理ダメージ軽減(%)",
-          "physicalDamageReductionPercent": 2
-        }
-      ],
       "price": 15,
       "unlockRank": 1,
       "dropLevelMin": 4,
       "dropLevelMax": 10,
-      "description": "獣皮を縫い合わせた簡素な革ベスト。軽くて動きやすい"
+      "description": "獣皮を縫い合わせた簡素な革ベスト。軽くて動きやすい",
+      "grantedSkillIds": [
+        "physical_reduction_2"
+      ]
     },
     {
       "id": "armor_fur_vest",
@@ -1021,18 +947,14 @@
           "value": 10
         }
       ],
-      "grantedSkills": [
-        {
-          "id": "armor_fur_vest_physical_reduction",
-          "name": "[-3%] 物理ダメージ軽減(%)",
-          "physicalDamageReductionPercent": 3
-        }
-      ],
       "price": 30,
       "unlockRank": 1,
       "dropLevelMin": 8,
       "dropLevelMax": 15,
-      "description": "厚手の毛皮で作られたベスト。寒さと打撃の両方に多少強い"
+      "description": "厚手の毛皮で作られたベスト。寒さと打撃の両方に多少強い",
+      "grantedSkillIds": [
+        "physical_reduction_3"
+      ]
     },
     {
       "id": "armor_armor",
@@ -1052,18 +974,14 @@
           "value": 15
         }
       ],
-      "grantedSkills": [
-        {
-          "id": "armor_armor_physical_reduction",
-          "name": "[-6%] 物理ダメージ軽減(%)",
-          "physicalDamageReductionPercent": 6
-        }
-      ],
       "price": 100,
       "unlockRank": 1,
       "dropLevelMin": 12,
       "dropLevelMax": 25,
-      "description": "厚い金属板で急所を守る基本鎧。初期装備向けの一着"
+      "description": "厚い金属板で急所を守る基本鎧。初期装備向けの一着",
+      "grantedSkillIds": [
+        "physical_reduction_6"
+      ]
     },
     {
       "id": "armor_mithril",
@@ -1083,17 +1001,13 @@
           "value": 22
         }
       ],
-      "grantedSkills": [
-        {
-          "id": "armor_mithril_physical_reduction",
-          "name": "[-7%] 物理ダメージ軽減(%)",
-          "physicalDamageReductionPercent": 7
-        }
-      ],
       "price": 500,
       "dropLevelMin": 20,
       "dropLevelMax": 40,
-      "description": "軽くて丈夫なミスリル製の鎧。守りと機動性を両立する"
+      "description": "軽くて丈夫なミスリル製の鎧。守りと機動性を両立する",
+      "grantedSkillIds": [
+        "physical_reduction_7"
+      ]
     },
     {
       "id": "armor_royal",
@@ -1113,17 +1027,13 @@
           "value": 30
         }
       ],
-      "grantedSkills": [
-        {
-          "id": "armor_royal_physical_reduction",
-          "name": "[-8%] 物理ダメージ軽減(%)",
-          "physicalDamageReductionPercent": 8
-        }
-      ],
       "price": 2500,
       "dropLevelMin": 35,
       "dropLevelMax": 60,
-      "description": "王侯貴族の近衛も用いる高級鎧。堅牢で威厳がある"
+      "description": "王侯貴族の近衛も用いる高級鎧。堅牢で威厳がある",
+      "grantedSkillIds": [
+        "physical_reduction_8"
+      ]
     },
     {
       "id": "armor_kaiser",
@@ -1143,18 +1053,14 @@
           "value": 40
         }
       ],
-      "grantedSkills": [
-        {
-          "id": "armor_kaiser_physical_reduction",
-          "name": "[-9%] 物理ダメージ軽減(%)",
-          "physicalDamageReductionPercent": 9
-        }
-      ],
       "price": 12500,
       "unlockRank": 3,
       "dropLevelMin": 50,
       "dropLevelMax": 80,
-      "description": "皇帝の親衛隊に与えられる重装鎧。圧倒的な防護力を誇る"
+      "description": "皇帝の親衛隊に与えられる重装鎧。圧倒的な防護力を誇る",
+      "grantedSkillIds": [
+        "physical_reduction_9"
+      ]
     },
     {
       "id": "armor_ancient",
@@ -1174,18 +1080,14 @@
           "value": 60
         }
       ],
-      "grantedSkills": [
-        {
-          "id": "armor_ancient_physical_reduction",
-          "name": "[-10%] 物理ダメージ軽減(%)",
-          "physicalDamageReductionPercent": 10
-        }
-      ],
       "price": 60000,
       "unlockRank": 5,
       "dropLevelMin": 70,
       "dropLevelMax": 105,
-      "description": "古代技術で精錬された装甲鎧。長き時を超えても性能は衰えない"
+      "description": "古代技術で精錬された装甲鎧。長き時を超えても性能は衰えない",
+      "grantedSkillIds": [
+        "physical_reduction_10"
+      ]
     },
     {
       "id": "armor_dragon",
@@ -1205,17 +1107,13 @@
           "value": 80
         }
       ],
-      "grantedSkills": [
-        {
-          "id": "armor_dragon_physical_reduction",
-          "name": "[-11%] 物理ダメージ軽減(%)",
-          "physicalDamageReductionPercent": 11
-        }
-      ],
       "price": 240000,
       "dropLevelMin": 95,
       "dropLevelMax": 135,
-      "description": "竜鱗を張り合わせた伝説級の鎧。斬撃すら弾き返す"
+      "description": "竜鱗を張り合わせた伝説級の鎧。斬撃すら弾き返す",
+      "grantedSkillIds": [
+        "physical_reduction_11"
+      ]
     },
     {
       "id": "armor_adamant",
@@ -1235,17 +1133,13 @@
           "value": 120
         }
       ],
-      "grantedSkills": [
-        {
-          "id": "armor_adamant_physical_reduction",
-          "name": "[-12%] 物理ダメージ軽減(%)",
-          "physicalDamageReductionPercent": 12
-        }
-      ],
       "price": 720000,
       "dropLevelMin": 120,
       "dropLevelMax": 150,
-      "description": "最硬の鉱石で鍛えられた究極の鎧。着る者を難攻不落に変える"
+      "description": "最硬の鉱石で鍛えられた究極の鎧。着る者を難攻不落に変える",
+      "grantedSkillIds": [
+        "physical_reduction_12"
+      ]
     }
   ]
 }

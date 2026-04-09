@@ -1,3 +1,17 @@
+import { getGoblinVariantByRace } from './goblinVariants'
+
+export interface BloodlineCombatStats {
+  attackCount: number
+  accuracy: number
+  evasion: number
+}
+
+const DEFAULT_COMBAT_STATS: BloodlineCombatStats = {
+  attackCount: 2,
+  accuracy: 20,
+  evasion: 15,
+}
+
 /**
  * 装備枠の解放レベル表
  * index 0 が1枠目、index 1 が2枠目を表す
@@ -11,19 +25,19 @@ export const EQUIPMENT_SLOT_LEVELS = [
  * 血統別の攻撃回数補正
  * 攻撃回数は敏捷ベースで算出し、血統差分のみ最終補正として加算する
  */
-export const BLOODLINE_ATTACK_COUNT_BONUS: Record<string, number> = {
-  'ゴブリン': 0,
-  'スライムゴブリン': 0,
-  'ウルフゴブリン': 1,
-  'オークゴブリン': 0,
-  'ホブゴブリン': 0,
-}
-
 /**
  * 血統の攻撃回数補正を取得
  */
 export function getBloodlineAttackCountBonus(bloodline: string): number {
-  return BLOODLINE_ATTACK_COUNT_BONUS[bloodline] ?? 0
+  return getBloodlineCombatStats(bloodline).attackCount - DEFAULT_COMBAT_STATS.attackCount
+}
+
+export function getBloodlineCombatStats(bloodline: string): BloodlineCombatStats {
+  if (bloodline === 'ゴブリン') {
+    return DEFAULT_COMBAT_STATS
+  }
+
+  return getGoblinVariantByRace(bloodline)?.combatStats ?? DEFAULT_COMBAT_STATS
 }
 
 function normalizeEquipmentLevel(level: unknown): number {

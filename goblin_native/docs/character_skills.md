@@ -10,6 +10,7 @@
 - 装備によって付与されるスキル
 
 現在は、種族ごとの固有能力に加えて、防具が付与する「物理ダメージ軽減(%)」も `CharacterSkill` として処理している。
+スキル本体の一次定義は `src/shared/data/skillCatalog.ts` に集約し、種族・職業・装備はスキル ID を参照する。
 
 ## データ構造
 
@@ -51,8 +52,8 @@ interface CharacterSkill {
 
 ### 1. 種族固有スキル
 
-種族ごとの初期スキルは `src/shared/data/raceSkills.ts` で定義する。
-ゴブリン生成時に `getDefaultSkillsForRace()` を通して個体へ付与される。
+種族ごとの初期スキル ID は `src/shared/data/goblinVariants.ts` の `defaultSkillIds` で定義する。
+スキル本体は `src/shared/data/skillCatalog.ts` から解決し、ゴブリン生成時に `getDefaultSkillsForRace()` を通して個体へ付与される。
 
 現在実装されている代表例:
 
@@ -66,8 +67,8 @@ interface CharacterSkill {
 
 ### 2. 装備付与スキル
 
-装備テンプレートは `grantedSkills` を持てる。
-この配列に設定した `CharacterSkill` が、装備中のゴブリンへ付与される。
+装備テンプレートは `grantedSkillIds` を持てる。
+この配列に設定したスキル ID が `skillCatalog.ts` から解決され、装備中のゴブリンへ付与される。
 
 例:
 
@@ -81,19 +82,15 @@ interface CharacterSkill {
     { stat: 'def_flat', value: 10 },
     { stat: 'hp_flat', value: 15 },
   ],
-  grantedSkills: [
-    {
-      id: 'armor_armor_physical_reduction',
-      name: '[-6%] 物理ダメージ軽減(%)',
-      physicalDamageReductionPercent: 6,
-    },
+  grantedSkillIds: [
+    'physical_reduction_6',
   ],
 }
 ```
 
 ## 防具スキル仕様
 
-現在、防具は `damage_reduction` のような装備ステータスではなく、`grantedSkills` によるスキル付与として物理軽減を表現している。
+現在、防具は `damage_reduction` のような装備ステータスではなく、`grantedSkillIds` によるスキル付与として物理軽減を表現している。
 
 表記ルールは以下で統一:
 
@@ -120,11 +117,11 @@ interface CharacterSkill {
 
 ### 装備時
 
-装備時は `EquipmentService.equip()` が呼ばれ、対象装備の `grantedSkills` がゴブリンの `skills` に追加される。
+装備時は `EquipmentService.equip()` が呼ばれ、対象装備の `grantedSkillIds` から解決されたスキルがゴブリンの `skills` に追加される。
 
 ### 解除時
 
-装備解除時は `EquipmentService.unequip()` が呼ばれ、対象装備の `grantedSkills` がゴブリンの `skills` から除去される。
+装備解除時は `EquipmentService.unequip()` が呼ばれ、対象装備の `grantedSkillIds` から解決されたスキルがゴブリンの `skills` から除去される。
 
 ### 永続化
 
@@ -165,13 +162,13 @@ finalDamage =
 - 攻撃回数加算
 - 上記に該当しない場合は `skill.name`
 
-装備画面では `statBonuses` に加えて `grantedSkills` も表示する。
+装備画面では `statBonuses` に加えて、解決後の `grantedSkills` も表示する。
 
 ## 実装上の注意
 
 ### 1. 物理軽減は防具スキルであり、装備ステータスではない
 
-今後、防具に軽減効果を追加する場合は `statBonuses` に `damage_reduction` を入れず、`grantedSkills` に `physicalDamageReductionPercent` を定義すること。
+今後、防具に軽減効果を追加する場合は `statBonuses` に `damage_reduction` を入れず、`skillCatalog.ts` にスキルを追加したうえで `grantedSkillIds` にその ID を定義すること。
 
 ### 2. 物理軽減は加算合計
 
@@ -197,6 +194,7 @@ finalDamage =
 
 - `src/shared/types/CharacterSkill.ts`
 - `src/shared/data/characterSkills.ts`
+- `src/shared/data/skillCatalog.ts`
 - `src/shared/data/raceSkills.ts`
 - `src/shared/data/equipmentPool.json`
 - `src/core/services/EquipmentService.ts`

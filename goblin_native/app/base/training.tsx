@@ -6,6 +6,7 @@ import { useGoblinStore } from '@/presentation/stores/useGoblinStore'
 import { usePartyStore } from '@/presentation/stores/usePartyStore'
 import { describeCharacterSkill } from '@/shared/data/characterSkills'
 import { applyGoblinJob, canTrainGoblin, formatGoblinJobSkillName, getGoblinJobDefinitions, getGoblinJobDefinition, getGoblinJobSkillEntries, GOBLIN_TRAINING_UNLOCK_RANK } from '@/shared/data/goblinJobs'
+import { getCharacterSkill } from '@/shared/data/skillCatalog'
 import type { GoblinJob } from '@/shared/types'
 import { getGoblinDisplayImage } from '@/shared/utils/goblinImages'
 
@@ -86,7 +87,7 @@ export default function BaseTrainingScreen() {
   const handleShowJobTips = useCallback((job: GoblinJob) => {
     const jobDefinition = getGoblinJobDefinition(job)
     const tipLines = getGoblinJobSkillEntries(job)
-      .map((jobSkill) => `・${formatGoblinJobSkillName(jobSkill)}\n${describeCharacterSkill(jobSkill.skill)}`)
+      .map((jobSkill) => `・${formatGoblinJobSkillName(jobSkill)}\n${describeCharacterSkill(getCharacterSkill(jobSkill.skillId))}`)
       .join('\n\n')
 
     Alert.alert(jobDefinition.name, tipLines)

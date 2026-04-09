@@ -76,6 +76,7 @@ export interface EquipmentTemplate {
   category: EquipmentCategory
   subCategory?: WeaponSubCategory
   statBonuses: EquipmentStatBonus[]
+  grantedSkillIds?: string[]
   grantedSkills?: CharacterSkill[]
   weaponStats?: WeaponStats
   effects?: EquipmentEffect[]
