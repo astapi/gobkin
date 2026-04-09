@@ -1392,6 +1392,26 @@ describe('BattleSystem — ジョブ系スキル', () => {
     expect(result.allyHPDelta[0]).toBe(1 - hobgoblin.stats.hp)
     expect(result.outcome).not.toBe('lose')
   })
+
+  it('気合い持ちでもHP1の状態で致死ダメージを受けたら倒れる', () => {
+    const battleSystem = new BattleSystem()
+    const hobgoblin = createTestGoblin({
+      id: 1,
+      race: 'ホブゴブリン',
+      stats: { hp: 100, atk: 10, spd: 50, def: 10, attackCount: 1, accuracy: 999, evasion: 0 },
+    })
+    const enemy = createTestEnemy({
+      atk: 999,
+      accuracy: 999,
+      evasion: 0,
+      spd: 100,
+    })
+
+    const result = battleSystem.executeBattle([hobgoblin], [1], [[enemy]], createSeededRng(2), 1)
+
+    expect(result.allyHPDelta[0]).toBe(-1)
+    expect(result.outcome).toBe('lose')
+  })
 })
 
 // =========================================================================
