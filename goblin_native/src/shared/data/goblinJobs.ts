@@ -1,6 +1,8 @@
 import type { CharacterSkill, Goblin, GoblinJob } from '../types'
 import { cloneCharacterSkills } from './characterSkills'
 import { getDefaultSkillsForRace } from './raceSkills'
+import { syncGoblinDerivedStats } from '../utils/goblinStats'
+import { getGoblinBaseAttributes } from '../utils/goblinHp'
 
 type GoblinJobSkill = {
   unlockLevel?: number
@@ -179,10 +181,11 @@ export function normalizeGoblinJobSkills(goblin: Goblin): Goblin {
 }
 
 export function applyGoblinJob(goblin: Goblin, job?: GoblinJob): Goblin {
-  return normalizeGoblinJobSkills({
+  return syncGoblinDerivedStats(normalizeGoblinJobSkills({
     ...goblin,
+    baseAttributes: getGoblinBaseAttributes(goblin),
     job,
-  })
+  }))
 }
 
 export function formatGoblinJobSkillName(jobSkill: GoblinJobSkill): string {

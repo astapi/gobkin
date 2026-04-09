@@ -12,6 +12,15 @@ export type GoblinStats = {
   evasion: number      // 回避能力
 }
 
+export type GoblinBaseAttributes = {
+  power: number
+  wisdom: number
+  spirit: number
+  vitality: number
+  agility: number
+  luck: number
+}
+
 export type GoblinJob = 'guard' | 'thief' | 'mage' | 'warrior'
 
 export type Goblin = {
@@ -23,6 +32,7 @@ export type Goblin = {
   experience: number
   avatar: string
   stats: GoblinStats  // 基本ステータス（レベルアップで増加）
+  baseAttributes?: GoblinBaseAttributes  // 基本能力値（力、知恵、精神、体力、敏捷、運）
   effectiveStats?: GoblinStats  // 実効ステータス（stats + 因子 + Mod適用後）、未設定時はModStatCalculatorで計算
   factors?: string[]  // 獲得した因子IDの配列
   variantFactorId?: string  // 亜種として生まれた因子ID（亜種の追加効果適用に使用）

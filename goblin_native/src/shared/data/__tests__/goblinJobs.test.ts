@@ -10,6 +10,7 @@ function createGoblin(overrides: Partial<Goblin> = {}): Goblin {
     level: overrides.level ?? 1,
     experience: overrides.experience ?? 0,
     avatar: overrides.avatar ?? '/src/assets/goblin/goblin.png',
+    baseAttributes: overrides.baseAttributes,
     stats: overrides.stats ?? {
       hp: 50,
       atk: 12,
@@ -63,5 +64,25 @@ describe('goblinJobs', () => {
   it('レベル15以上ではレベル習得スキルを持つ', () => {
     const trained = applyGoblinJob(createGoblin({ level: 15 }), 'mage')
     expect(trained.skills.some((skill) => skill.id === 'goblin_job_mage_blizzard')).toBe(true)
+  })
+
+  it('ジョブ変更時にHPが基本能力値ベースで再計算される', () => {
+    const goblin = createGoblin({
+      level: 3,
+      stats: {
+        hp: 1,
+        atk: 12,
+        spd: 10,
+        def: 8,
+        attackCount: 2,
+        accuracy: 100,
+        evasion: 5,
+      },
+    })
+
+    expect(applyGoblinJob(goblin, 'guard').stats.hp).toBe(44)
+    expect(applyGoblinJob(goblin, 'warrior').stats.hp).toBe(47)
+    expect(applyGoblinJob(goblin, 'thief').stats.hp).toBe(35)
+    expect(applyGoblinJob(goblin, 'mage').stats.hp).toBe(32)
   })
 })

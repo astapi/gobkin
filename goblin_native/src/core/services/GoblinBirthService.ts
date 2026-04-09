@@ -5,10 +5,10 @@ import { FactorInheritanceService, type InheritanceResult } from './FactorInheri
 import { calculateIndividualValue } from './BaseRankSystem'
 import { getBloodlineCombatStats } from '../../shared/data/equipmentConfig'
 import { getDefaultSkillsForRace } from '../../shared/data/raceSkills'
+import { calculateGoblinBaseHp, getGoblinBaseAttributes } from '../../shared/utils/goblinHp'
 
-/** attackCount以外のランダム生成範囲（attackCountは血統固定値） */
-const STAT_RANGES: Record<Exclude<keyof GoblinStats, 'attackCount'>, { min: number; max: number }> = {
-  hp: { min: 55, max: 80 },
+/** HPとattackCount以外のランダム生成範囲（HPは式、attackCountは血統固定値） */
+const STAT_RANGES: Record<Exclude<keyof GoblinStats, 'attackCount' | 'hp'>, { min: number; max: number }> = {
   atk: { min: 10, max: 16 },
   spd: { min: 8, max: 14 },
   def: { min: 8, max: 14 },
@@ -144,6 +144,7 @@ export class GoblinBirthService {
       experience: 0,
       avatar,
       stats,
+      baseAttributes: getGoblinBaseAttributes({ race }),
       effectiveStats: stats,  // 仮設定、後で計算
       individualValue: clampedIV,
       mods,  // 空配列もそのまま保存（Firestoreはundefinedを許容しない）
@@ -177,7 +178,7 @@ export class GoblinBirthService {
   private generateStats(bloodline: string): GoblinStats {
     const combatStats = getBloodlineCombatStats(bloodline)
     return {
-      hp: this.randomInRange('hp'),
+      hp: calculateGoblinBaseHp(1, { race: bloodline }),
       atk: this.randomInRange('atk'),
       spd: this.randomInRange('spd'),
       def: this.randomInRange('def'),
@@ -190,7 +191,7 @@ export class GoblinBirthService {
   /**
    * 指定されたステータスの範囲内でランダムな値を生成
    */
-  private randomInRange(key: Exclude<keyof GoblinStats, 'attackCount'>): number {
+  private randomInRange(key: Exclude<keyof GoblinStats, 'attackCount' | 'hp'>): number {
     const { min, max } = STAT_RANGES[key]
     const value = min + (max - min) * this.random()
     return Math.round(value)
