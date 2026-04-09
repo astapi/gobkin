@@ -17,6 +17,7 @@ export interface ParentSelection {
 export interface InheritanceResult {
   inheritedFactors: string[]   // 引き継いだ因子ID
   isVariant: boolean           // 亜種かどうか
+  variantRaceId?: string       // 亜種の場合の種族ID
   variantRace?: string         // 亜種の場合の種族名
   variantAvatar?: string       // 亜種の場合のアバター
   variantFactorId?: string     // 亜種の元となった因子ID（追加効果適用に使用）
@@ -116,6 +117,7 @@ export class FactorInheritanceService {
 
     // 亜種判定（最初に引き継いだ因子のvariantConfigを使用）
     let isVariant = false
+    let variantRaceId: string | undefined
     let variantRace: string | undefined
     let variantAvatar: string | undefined
     let variantFactorId: string | undefined
@@ -125,6 +127,7 @@ export class FactorInheritanceService {
       if (factor?.variantConfig) {
         if (rng() < factor.variantConfig.probability) {
           isVariant = true
+          variantRaceId = factor.variantConfig.raceId
           variantRace = factor.variantConfig.raceName
           variantAvatar = factor.variantConfig.avatar
           variantFactorId = factorId
@@ -136,6 +139,7 @@ export class FactorInheritanceService {
     return {
       inheritedFactors,
       isVariant,
+      variantRaceId,
       variantRace,
       variantAvatar,
       variantFactorId,

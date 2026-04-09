@@ -1,6 +1,7 @@
 import type { ModInstance } from './Mod'
 import type { CharacterSkill } from './CharacterSkill'
 import type { LearnedSpell } from './Spell'
+import type { GoblinRaceId } from './Race'
 
 export type GoblinStats = {
   hp: number
@@ -26,6 +27,7 @@ export type Goblin = {
   id: number
   name: string
   race: string
+  raceId?: GoblinRaceId
   job?: GoblinJob
   level: number
   experience: number

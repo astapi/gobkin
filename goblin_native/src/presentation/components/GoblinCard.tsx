@@ -1,24 +1,12 @@
 import { memo } from 'react'
 import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native'
+import { useTranslation } from 'react-i18next'
 import { getGoblinDisplayImage } from '@/shared/utils/goblinImages'
 import { getFactorImage } from '@/shared/utils/factorImages'
 import { getEffectiveStats } from '@/shared/utils/goblinStats'
 import { getModTemplate } from '@/shared/data/modPoolLoader'
 import type { Goblin } from '@/shared/types'
-
-const STAT_LABELS: Record<string, string> = {
-  hp_percent: 'HP', hp_flat: 'HP',
-  atk_percent: 'ATK', atk_flat: 'ATK',
-  def_percent: 'DEF', def_flat: 'DEF',
-  attackCount_percent: '攻撃回数', attackCount_flat: '攻撃回数',
-  accuracy_percent: '命中精度', accuracy_flat: '命中精度',
-  evasion_percent: '回避', evasion_flat: '回避',
-  damage_reduction: '被ダメ軽減',
-}
-
-function getStatLabel(stat: string): string {
-  return STAT_LABELS[stat] || stat
-}
+import { getRaceLabel, getStatLabel } from '@/shared/i18n/entityLocalization'
 
 interface GoblinCardProps {
   goblin: Goblin
@@ -37,6 +25,7 @@ export const GoblinCard = memo(function GoblinCard({
   assignedPartyName,
   disabled = false
 }: GoblinCardProps) {
+  const { t } = useTranslation()
   const stats = getEffectiveStats(goblin)
   const FactorIcon1 = goblin.factors?.[0] ? getFactorImage(goblin.factors[0]) : null
   const FactorIcon2 = goblin.factors?.[1] ? getFactorImage(goblin.factors[1]) : null
@@ -54,10 +43,10 @@ export const GoblinCard = memo(function GoblinCard({
         </Text>
         <View style={styles.subRow}>
           <Text style={[styles.race, isAssignedElsewhere && styles.raceDisabled]}>
-            {goblin.race}
+            {getRaceLabel(goblin.raceId ?? goblin.race)}
           </Text>
           <Text style={[styles.level, isAssignedElsewhere && styles.levelDisabled]}>
-            Lv.{goblin.level}
+            {t('ui.common.levelShort')}{goblin.level}
           </Text>
           <View style={styles.factorIcons}>
             {FactorIcon1 && <FactorIcon1 width={16} height={16} />}

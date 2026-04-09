@@ -1,5 +1,6 @@
 import type { EquipmentTitleId, EquipmentTitleInstance } from '../../shared/types/EquipmentTitle'
 import { EQUIPMENT_TITLE_DEFS } from '../../shared/data/equipmentTitleConfig'
+import { getEquipmentTitleLabel } from '../../shared/i18n/entityLocalization'
 
 /**
  * 装備の称号を抽選するサービス
@@ -34,13 +35,13 @@ export class EquipmentTitleService {
       if (roll < cumulative) {
         return {
           titleId: def.id,
-          titleName: def.name,
+          titleName: getEquipmentTitleLabel(def.id),
         }
       }
     }
 
     // フォールバック（到達しないはず）
-    return { titleId: 'none', titleName: '' }
+    return { titleId: 'none', titleName: getEquipmentTitleLabel('none') }
   }
 
   /**

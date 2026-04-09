@@ -8,11 +8,13 @@ import { getDatabase } from '../database'
 import { normalizeGoblinJobSkills } from '../../shared/data/goblinJobs'
 import { syncGoblinDerivedStats } from '../../shared/utils/goblinStats'
 import { ModStatCalculator } from '../../core/services/ModStatCalculator'
+import { normalizeGoblinRaceId } from '../../shared/types/Race'
 
 interface GoblinRow {
   id: number
   name: string
   race: string
+  race_id: string | null
   job_id: GoblinJob | null
   level: number
   experience: number
@@ -59,14 +61,15 @@ export class SQLiteGoblinRepository implements IGoblinRepository {
     const db = await getDatabase()
     await db.runAsync(
       `INSERT OR REPLACE INTO goblins
-       (id, name, race, level, experience, avatar, stats_json,
+       (id, name, race, race_id, level, experience, avatar, stats_json,
         effective_stats_json, factors_json, variant_factor_id, job_id,
         individual_value, mods_json, skills_json, updated_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))`,
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))`,
       [
         persistedGoblin.id,
         persistedGoblin.name,
         persistedGoblin.race,
+        normalizeGoblinRaceId(persistedGoblin.raceId ?? persistedGoblin.race),
         persistedGoblin.level,
         persistedGoblin.experience,
         persistedGoblin.avatar,
@@ -114,6 +117,7 @@ export class SQLiteGoblinRepository implements IGoblinRepository {
       id: row.id,
       name: row.name,
       race: row.race,
+      raceId: normalizeGoblinRaceId(row.race_id ?? row.race),
       job: row.job_id ?? undefined,
       level: row.level,
       experience: row.experience,

@@ -1,6 +1,8 @@
 import { Stack } from 'expo-router'
+import { useTranslation } from 'react-i18next'
 
 export default function GoblinLayout() {
+  const { t } = useTranslation()
   return (
     <Stack
       screenOptions={{
@@ -12,7 +14,7 @@ export default function GoblinLayout() {
         name="equipment"
         options={{
           headerShown: true,
-          title: '装備変更',
+          title: t('ui.root.equipmentChange'),
           presentation: 'formSheet',
           headerStyle: { backgroundColor: '#FFFFFF' },
           headerTitleStyle: { color: '#1F2937', fontWeight: 'bold' },

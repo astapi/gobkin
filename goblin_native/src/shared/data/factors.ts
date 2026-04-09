@@ -15,6 +15,7 @@ export const factorDatabase: Record<string, Factor> = Object.fromEntries(
       effects: variant.factorEffects,
       variantConfig: {
         probability: variant.variantProbability,
+        raceId: variant.raceId,
         raceName: variant.raceName,
         avatar: variant.avatar,
         additionalEffects: variant.additionalEffects,

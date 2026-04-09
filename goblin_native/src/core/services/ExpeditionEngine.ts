@@ -22,6 +22,7 @@ import { ModStatCalculator } from './ModStatCalculator'
 import { EquipmentTitleService } from './EquipmentTitleService'
 import { normalizePartyRewardMultipliers } from '../../shared/types'
 import { getGoblinBaseAttributes } from '../../shared/utils/goblinHp'
+import { getEquipmentDisplayName } from '../../shared/i18n/entityLocalization'
 
 /** 全エリア共通の宝箱ドロップ確率（敵1体ごと） */
 const DROP_CHANCE = 0.15
@@ -568,7 +569,7 @@ export class ExpeditionEngine {
 
         // 称号を抽選
         const title = EquipmentTitleService.rollTitle(titleMultiplier, this.rng)
-        const displayName = EquipmentTitleService.formatTitledName(title.titleName, selected.name)
+        const displayName = getEquipmentDisplayName(title, selected)
 
         drops.push({
           templateId: selected.id,
@@ -591,7 +592,7 @@ export class ExpeditionEngine {
           if (template) {
             // 称号を抽選
             const title = EquipmentTitleService.rollTitle(titleMultiplier, this.rng)
-            const displayName = EquipmentTitleService.formatTitledName(title.titleName, template.name)
+            const displayName = getEquipmentDisplayName(title, template)
 
             drops.push({
               templateId: drop.templateId,

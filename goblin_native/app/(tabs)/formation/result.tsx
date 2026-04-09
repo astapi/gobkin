@@ -2,14 +2,17 @@ import { useMemo, useCallback, useEffect, useState } from 'react'
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Image, ActivityIndicator } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { router, useLocalSearchParams } from 'expo-router'
+import { useTranslation } from 'react-i18next'
 import { useDungeonStore } from '@/presentation/stores/useDungeonStore'
 import { useExpeditionStore } from '@/presentation/stores/useExpeditionStore'
 import { getGoblinDisplayImage } from '@/shared/utils/goblinImages'
 import { areasData } from '@/shared/data'
 import { ModStatCalculator } from '@/core/services/ModStatCalculator'
 import type { ExpeditionRecord, Goblin, TimelineEvent } from '@/shared/types'
+import { getDungeonName } from '@/shared/i18n/entityLocalization'
 
 export default function ExpeditionResultScreen() {
+  const { t } = useTranslation()
   const { expeditionId } = useLocalSearchParams<{ expeditionId?: string }>()
 
   const dungeons = useDungeonStore((state) => state.dungeons)
@@ -86,21 +89,21 @@ export default function ExpeditionResultScreen() {
   const getResultText = () => {
     if (!replay) return ''
     if (replay.summary.casualties.length === replay.meta.party.length) {
-      return 'パーティは全滅しました。'
+      return t('ui.result.partyDefeated')
     }
-    return 'パーティは帰還しました。'
+    return t('ui.result.partyReturned')
   }
 
   const getHeaderText = () => {
     if (!replay) return ''
     const area = areasData.find(a => a.id === replay.meta.areaId)
     if (replay.summary.success && replay.summary.maxFloorReached === area?.floors) {
-      return 'ダンジョンを踏破しました。'
+      return t('ui.result.completed')
     }
     if (replay.summary.success) {
-      return '目標階層を突破しました。'
+      return t('ui.result.reachedGoal')
     }
-    return '帰還しました。'
+    return t('ui.result.returned')
   }
 
   const isSuccess = replay?.summary.success ?? false
@@ -141,7 +144,7 @@ export default function ExpeditionResultScreen() {
       <SafeAreaView style={styles.container}>
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color="#3B82F6" />
-          <Text style={styles.loadingText}>読み込み中...</Text>
+          <Text style={styles.loadingText}>{t('ui.result.loading')}</Text>
         </View>
       </SafeAreaView>
     )
@@ -151,7 +154,7 @@ export default function ExpeditionResultScreen() {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.loadingContainer}>
-          <Text style={styles.loadingText}>遠征結果が見つかりません</Text>
+          <Text style={styles.loadingText}>{t('ui.result.loadingMissing')}</Text>
         </View>
       </SafeAreaView>
     )
@@ -161,16 +164,16 @@ export default function ExpeditionResultScreen() {
     <SafeAreaView style={styles.container}>
       <View style={styles.navBar}>
         <TouchableOpacity onPress={() => router.back()}>
-          <Text style={styles.navBack}>← 戻る</Text>
+          <Text style={styles.navBack}>← {t('ui.common.back')}</Text>
         </TouchableOpacity>
-        <Text style={styles.navTitle}>遠征結果</Text>
+        <Text style={styles.navTitle}>{t('ui.result.title')}</Text>
         <View style={styles.navSpacer} />
       </View>
 
       <ScrollView style={styles.scrollView}>
         <View style={styles.headerSection}>
           <Text style={styles.headerTitle}>
-            {dungeon?.name || '遠征'}: {getHeaderText()}
+            {dungeon ? getDungeonName(dungeon) : t('ui.result.expeditionFallback')}: {getHeaderText()}
           </Text>
           <Text style={styles.headerSubtitle}>{getResultText()}</Text>
         </View>
@@ -207,13 +210,13 @@ export default function ExpeditionResultScreen() {
         </View>
 
         <View style={styles.section}>
-          <Text style={styles.summaryText}>経験値 {expGained.toLocaleString()} XP</Text>
-          <Text style={styles.summaryText}>{goldGained.toLocaleString()} Gold を獲得</Text>
+          <Text style={styles.summaryText}>{t('ui.result.gainedXp', { value: expGained.toLocaleString() })}</Text>
+          <Text style={styles.summaryText}>{t('ui.result.gainedGold', { value: goldGained.toLocaleString() })}</Text>
         </View>
 
         {treasureDrops.length > 0 && (
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>獲得アイテム</Text>
+            <Text style={styles.sectionTitle}>{t('ui.result.items')}</Text>
             {treasureDrops.map((drop, idx) => (
               <Text key={idx} style={styles.summaryText}>{drop.name}</Text>
             ))}
@@ -222,13 +225,13 @@ export default function ExpeditionResultScreen() {
 
         {nextAreaName && isSuccess && showUnlockNotice && (
           <View style={styles.section}>
-            <Text style={styles.summaryText}>次のエリア「{nextAreaName}」が解放されました</Text>
+            <Text style={styles.summaryText}>{t('ui.result.unlockedArea', { name: nextAreaName })}</Text>
           </View>
         )}
 
         <View style={styles.bottomSection}>
           <TouchableOpacity style={styles.menuButton} onPress={handleBackToList}>
-            <Text style={styles.menuButtonText}>メニューに戻る</Text>
+            <Text style={styles.menuButtonText}>{t('ui.result.backToMenu')}</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>

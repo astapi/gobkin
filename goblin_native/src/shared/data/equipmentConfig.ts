@@ -1,4 +1,5 @@
 import { getGoblinVariantByRace } from './goblinVariants'
+import { normalizeGoblinRaceId } from '../types/Race'
 
 export interface BloodlineCombatStats {
   attackCount: number
@@ -33,11 +34,11 @@ export function getBloodlineAttackCountBonus(bloodline: string): number {
 }
 
 export function getBloodlineCombatStats(bloodline: string): BloodlineCombatStats {
-  if (bloodline === 'ゴブリン') {
+  if (normalizeGoblinRaceId(bloodline) === 'goblin') {
     return DEFAULT_COMBAT_STATS
   }
 
-  return getGoblinVariantByRace(bloodline)?.combatStats ?? DEFAULT_COMBAT_STATS
+  return getGoblinVariantByRace(normalizeGoblinRaceId(bloodline))?.combatStats ?? DEFAULT_COMBAT_STATS
 }
 
 function normalizeEquipmentLevel(level: unknown): number {
