@@ -70,15 +70,15 @@ export function getFactorDescription(factor: Pick<Factor, 'id' | 'description'>)
 }
 
 export function getEquipmentLabel(template: Pick<EquipmentTemplate, 'id' | 'name'>): string {
-  return translateWithFallback(`entities.equipment.${template.id}.name`, template.name)
+  return i18n.t(`entities.equipment.${template.id}.name`)
 }
 
 export function getEquipmentDescription(template: Pick<EquipmentTemplate, 'id' | 'description'>): string {
-  return translateWithFallback(`entities.equipment.${template.id}.description`, template.description ?? '')
+  return i18n.t(`entities.equipment.${template.id}.description`)
 }
 
 export function getEquipmentTitleLabel(titleId: EquipmentTitleId): string {
-  return translateWithFallback(`entities.title.${titleId}`, '')
+  return i18n.t(`entities.title.${titleId}`)
 }
 
 export function getResolvedEquipmentTitle(
@@ -87,7 +87,7 @@ export function getResolvedEquipmentTitle(
   if (equipment.titleId) {
     return getEquipmentTitleLabel(equipment.titleId)
   }
-  return equipment.titleName ?? ''
+  return ''
 }
 
 export function getEquipmentDisplayName(

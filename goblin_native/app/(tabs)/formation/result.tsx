@@ -8,8 +8,17 @@ import { useExpeditionStore } from '@/presentation/stores/useExpeditionStore'
 import { getGoblinDisplayImage } from '@/shared/utils/goblinImages'
 import { areasData } from '@/shared/data'
 import { ModStatCalculator } from '@/core/services/ModStatCalculator'
-import type { ExpeditionRecord, Goblin, TimelineEvent } from '@/shared/types'
-import { getDungeonName } from '@/shared/i18n/entityLocalization'
+import type { ExpeditionRecord, Goblin, TimelineEvent, TreasureDrop } from '@/shared/types'
+import { getDungeonName, getEquipmentDisplayName } from '@/shared/i18n/entityLocalization'
+import { getEquipmentTemplate } from '@/shared/data/equipmentPoolLoader'
+
+function resolveTreasureName(drop: TreasureDrop): string {
+  const template = getEquipmentTemplate(drop.templateId)
+  if (!template) {
+    throw new Error(`Unknown equipment template: ${drop.templateId}`)
+  }
+  return getEquipmentDisplayName(drop, template)
+}
 
 export default function ExpeditionResultScreen() {
   const { t } = useTranslation()
@@ -221,7 +230,7 @@ export default function ExpeditionResultScreen() {
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>{t('ui.result.items')}</Text>
             {treasureDrops.map((drop, idx) => (
-              <Text key={idx} style={styles.summaryText}>{drop.name}</Text>
+              <Text key={idx} style={styles.summaryText}>{resolveTreasureName(drop)}</Text>
             ))}
           </View>
         )}

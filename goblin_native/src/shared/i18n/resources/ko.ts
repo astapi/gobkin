@@ -1,3 +1,5 @@
+import { equipmentKo } from './equipment'
+
 const ko = {
   ui: {
     common: {
@@ -389,6 +391,7 @@ const ko = {
       lizardman: { name: '리자드맨 인자', description: '리자드맨의 특성을 지닌 인자. 전반적인 저항성과 HP가 증가합니다.' },
       troll: { name: '트롤 인자', description: '트롤의 특성을 지닌 인자. HP가 크게 증가하고 방어력도 상승합니다.' },
     },
+    equipment: equipmentKo,
     job: {
       guard: { name: '고블린 가드', shortLabel: '방어', summary: '내구와 방어를 강화해 전열 유지에 특화합니다.', description: '방패 역할로 단련해 맷집과 방어 능력을 높입니다.' },
       thief: { name: '고블린 시프', shortLabel: '속도', summary: '속도와 회피를 높여 수와 기습에 특화합니다.', description: '정찰 역할로 단련해 민첩성과 회피 능력을 높입니다.' },

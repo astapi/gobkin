@@ -1,3 +1,5 @@
+import { equipmentEn } from './equipment'
+
 const en = {
   ui: {
     common: {
@@ -389,6 +391,7 @@ const en = {
       lizardman: { name: 'Lizardman Factor', description: 'A factor infused with lizardman traits. Improves overall resistance and HP.' },
       troll: { name: 'Troll Factor', description: 'A factor infused with troll traits. Greatly increases HP and also raises defense.' },
     },
+    equipment: equipmentEn,
     job: {
       guard: { name: 'Goblin Guard', shortLabel: 'Guard', summary: 'Improves durability and defense for frontline sustain.', description: 'Trains the goblin as a shield unit and raises toughness and defensive ability.' },
       thief: { name: 'Goblin Thief', shortLabel: 'Speed', summary: 'Improves speed and evasion for hit count and ambushes.', description: 'Trains the goblin as a scout and improves speed and evasion.' },
