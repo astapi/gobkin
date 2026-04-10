@@ -1,12 +1,14 @@
 import { useCallback, useMemo, useState } from 'react'
 import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import { useTranslation } from 'react-i18next'
 import { useBaseStore, selectGold, selectIvBonus, selectMaxGoblins, selectMaxParties, selectRank } from '@/presentation/stores/useBaseStore'
 import { BASE_RANK_CONFIGS } from '@/core/services/BaseRankSystem'
 import { areasData } from '@/shared/data'
 import { getDungeonName } from '@/shared/i18n/entityLocalization'
 
 export default function BaseUpgradeScreen() {
+  const { t } = useTranslation()
   const baseState = useBaseStore((state) => state.baseState)
   const performRankUp = useBaseStore((state) => state.performRankUp)
   const rank = useBaseStore(selectRank)
@@ -39,12 +41,16 @@ export default function BaseUpgradeScreen() {
     if (!nextRankInfo) return
 
     Alert.alert(
-      'ランクアップ確認',
-      `拠点をランク${nextRankInfo.nextRank}にランクアップしますか？\n\n引っ越し資金: ${nextRankInfo.upgradeCost}G\n所持ゴールド: ${gold}G`,
+      t('ui.baseUpgrade.confirmTitle'),
+      t('ui.baseUpgrade.confirmBody', {
+        nextRank: nextRankInfo.nextRank,
+        upgradeCost: nextRankInfo.upgradeCost,
+        gold,
+      }),
       [
-        { text: 'キャンセル', style: 'cancel' },
+        { text: t('ui.common.cancel'), style: 'cancel' },
         {
-          text: 'ランクアップ',
+          text: t('ui.baseUpgrade.rankUpAction'),
           onPress: async () => {
             setIsRankingUp(true)
             const result = await performRankUp()
@@ -52,42 +58,42 @@ export default function BaseUpgradeScreen() {
 
             if (result.success) {
               Alert.alert(
-                'ランクアップ成功',
-                `拠点がランク${nextRankInfo.nextRank}になりました。\n新しい施設機能が解放されています。`
+                t('ui.baseUpgrade.successTitle'),
+                t('ui.baseUpgrade.successBody', { nextRank: nextRankInfo.nextRank })
               )
             } else {
-              Alert.alert('ランクアップ失敗', result.error)
+              Alert.alert(t('ui.baseUpgrade.failureTitle'), result.error)
             }
           },
         },
       ]
     )
-  }, [gold, nextRankInfo, performRankUp])
+  }, [gold, nextRankInfo, performRankUp, t])
 
   return (
     <SafeAreaView style={styles.container} edges={['left', 'right', 'bottom']}>
       <ScrollView contentContainerStyle={styles.content}>
         <View style={styles.summaryCard}>
-          <Text style={styles.summaryEyebrow}>現在の拠点</Text>
-          <Text style={styles.summaryRank}>ランク {rank}</Text>
-          <Text style={styles.summaryGold}>所持ゴールド {gold}G</Text>
+          <Text style={styles.summaryEyebrow}>{t('ui.baseUpgrade.summaryEyebrow')}</Text>
+          <Text style={styles.summaryRank}>{t('ui.baseUpgrade.rankValue', { rank })}</Text>
+          <Text style={styles.summaryGold}>{t('ui.baseUpgrade.goldValue', { gold })}</Text>
         </View>
 
         <View style={styles.card}>
-          <Text style={styles.cardTitle}>拡張計画</Text>
+          <Text style={styles.cardTitle}>{t('ui.baseUpgrade.planTitle')}</Text>
           {nextRankInfo ? (
             <>
               <View style={styles.upgradeSummary}>
                 <View style={styles.upgradeItem}>
-                  <Text style={styles.upgradeLabel}>目標ランク</Text>
-                  <Text style={styles.upgradeValue}>ランク {nextRankInfo.nextRank}</Text>
+                  <Text style={styles.upgradeLabel}>{t('ui.baseUpgrade.targetRankLabel')}</Text>
+                  <Text style={styles.upgradeValue}>{t('ui.baseUpgrade.rankValue', { rank: nextRankInfo.nextRank })}</Text>
                 </View>
                 <View style={styles.upgradeItem}>
-                  <Text style={styles.upgradeLabel}>必要資金</Text>
-                  <Text style={styles.upgradeValue}>{nextRankInfo.upgradeCost}G</Text>
+                  <Text style={styles.upgradeLabel}>{t('ui.baseUpgrade.costLabel')}</Text>
+                  <Text style={styles.upgradeValue}>{t('ui.baseUpgrade.costValue', { cost: nextRankInfo.upgradeCost })}</Text>
                 </View>
                 <View style={styles.upgradeItemWide}>
-                  <Text style={styles.upgradeLabel}>必要な制圧</Text>
+                  <Text style={styles.upgradeLabel}>{t('ui.baseUpgrade.requiredCaptureLabel')}</Text>
                   <Text style={[styles.upgradeRequirement, nextRankInfo.isCaptured && styles.upgradeRequirementDone]}>
                     {nextRankInfo.dungeonName}
                   </Text>
@@ -95,9 +101,9 @@ export default function BaseUpgradeScreen() {
               </View>
 
               <View style={styles.benefitList}>
-                <Text style={styles.benefitItem}>最大PT数 {maxParties} → {nextRankInfo.maxParties}</Text>
-                <Text style={styles.benefitItem}>収容数 {maxGoblins} → {nextRankInfo.maxGoblins}</Text>
-                <Text style={styles.benefitItem}>個体値補正 +{ivBonus} → +{nextRankInfo.ivBonus}</Text>
+                <Text style={styles.benefitItem}>{t('ui.baseUpgrade.maxPartiesBenefit', { current: maxParties, next: nextRankInfo.maxParties })}</Text>
+                <Text style={styles.benefitItem}>{t('ui.baseUpgrade.capacityBenefit', { current: maxGoblins, next: nextRankInfo.maxGoblins })}</Text>
+                <Text style={styles.benefitItem}>{t('ui.baseUpgrade.ivBonusBenefit', { current: ivBonus, next: nextRankInfo.ivBonus })}</Text>
               </View>
 
               <TouchableOpacity
@@ -109,19 +115,19 @@ export default function BaseUpgradeScreen() {
                 disabled={!nextRankInfo.isCaptured || gold < nextRankInfo.upgradeCost || isRankingUp}
               >
                 <Text style={styles.primaryButtonText}>
-                  {isRankingUp ? '実行中...' : `ランク${nextRankInfo.nextRank}へ拡張する`}
+                  {isRankingUp ? t('ui.baseUpgrade.processing') : t('ui.baseUpgrade.rankUpButton', { nextRank: nextRankInfo.nextRank })}
                 </Text>
               </TouchableOpacity>
 
               {!nextRankInfo.isCaptured && (
-                <Text style={styles.helperText}>まずは {nextRankInfo.dungeonName} を制圧してください。</Text>
+                <Text style={styles.helperText}>{t('ui.baseUpgrade.captureRequiredHelp', { dungeonName: nextRankInfo.dungeonName })}</Text>
               )}
               {nextRankInfo.isCaptured && gold < nextRankInfo.upgradeCost && (
-                <Text style={styles.helperText}>資金が足りません。必要額は {nextRankInfo.upgradeCost}G です。</Text>
+                <Text style={styles.helperText}>{t('ui.baseUpgrade.insufficientGoldHelp', { upgradeCost: nextRankInfo.upgradeCost })}</Text>
               )}
             </>
           ) : (
-            <Text style={styles.helperText}>現在の拠点は最大ランクです。</Text>
+            <Text style={styles.helperText}>{t('ui.baseUpgrade.maxRankHelp')}</Text>
           )}
         </View>
       </ScrollView>

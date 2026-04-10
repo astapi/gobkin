@@ -1,6 +1,7 @@
 import { useState, useCallback, useMemo } from 'react'
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Alert, Modal, Pressable, Image } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import { useTranslation } from 'react-i18next'
 import { useBaseStore, selectRank } from '@/presentation/stores/useBaseStore'
 import { useGoblinStore } from '@/presentation/stores/useGoblinStore'
 import { usePartyStore } from '@/presentation/stores/usePartyStore'
@@ -8,9 +9,11 @@ import { describeCharacterSkill } from '@/shared/data/characterSkills'
 import { applyGoblinJob, canTrainGoblin, formatGoblinJobSkillName, getGoblinJobDefinitions, getGoblinJobDefinition, getGoblinJobSkillEntries, GOBLIN_TRAINING_UNLOCK_RANK } from '@/shared/data/goblinJobs'
 import { getCharacterSkill } from '@/shared/data/skillCatalog'
 import type { GoblinJob } from '@/shared/types'
+import { getGoblinJobLabel, getRaceLabel } from '@/shared/i18n/entityLocalization'
 import { getGoblinDisplayImage } from '@/shared/utils/goblinImages'
 
 export default function BaseTrainingScreen() {
+  const { t, i18n } = useTranslation()
   const rank = useBaseStore(selectRank)
   const goblins = useGoblinStore((state) => state.goblins)
   const saveGoblin = useGoblinStore((state) => state.saveGoblin)
@@ -22,7 +25,7 @@ export default function BaseTrainingScreen() {
   const [isGoblinModalVisible, setIsGoblinModalVisible] = useState(false)
 
   const trainingUnlocked = rank >= GOBLIN_TRAINING_UNLOCK_RANK
-  const jobDefinitions = useMemo(() => getGoblinJobDefinitions(), [])
+  const jobDefinitions = useMemo(() => getGoblinJobDefinitions(), [i18n.resolvedLanguage])
 
   const trainableGoblins = useMemo(() => {
     return goblins
@@ -45,36 +48,36 @@ export default function BaseTrainingScreen() {
 
   const trainingStatusText = useMemo(() => {
     if (!trainingUnlocked) {
-      return `拠点ランク${GOBLIN_TRAINING_UNLOCK_RANK}で訓練所が稼働します。`
+      return t('ui.training.statusLocked', { rank: GOBLIN_TRAINING_UNLOCK_RANK })
     }
     if (trainableGoblins.length === 0) {
-      return '訓練できる純ゴブリンがまだいません。'
+      return t('ui.training.statusNoTrainable')
     }
     if (selectedGoblinEntry?.isExpedition) {
-      return `${selectedGoblinEntry.goblin.name}は遠征中のため訓練できません。`
+      return t('ui.training.statusExpedition', { name: selectedGoblinEntry.goblin.name })
     }
-    return '純ゴブリンに専門役を与えられます。装備由来のスキルは維持されます。'
-  }, [selectedGoblinEntry, trainableGoblins.length, trainingUnlocked])
+    return t('ui.training.statusReady')
+  }, [selectedGoblinEntry, t, trainableGoblins.length, trainingUnlocked])
 
   const handleTrainGoblin = useCallback(() => {
     if (!activeGoblin || !effectiveSelectedJob || selectedGoblinEntry?.isExpedition) return
 
     const nextJob = getGoblinJobDefinition(effectiveSelectedJob)
     Alert.alert(
-      '訓練確認',
-      `${activeGoblin.name}を${nextJob.name}として訓練しますか？`,
+      t('ui.training.confirmTitle'),
+      t('ui.training.confirmBody', { name: activeGoblin.name, jobName: nextJob.name }),
       [
-        { text: 'キャンセル', style: 'cancel' },
+        { text: t('ui.common.cancel'), style: 'cancel' },
         {
-          text: '訓練する',
+          text: t('ui.training.trainAction'),
           onPress: async () => {
             setIsTraining(true)
             try {
               await saveGoblin(applyGoblinJob(activeGoblin, effectiveSelectedJob))
-              Alert.alert('訓練完了', `${activeGoblin.name}は${nextJob.name}として訓練を終えました。`)
+              Alert.alert(t('ui.training.successTitle'), t('ui.training.successBody', { name: activeGoblin.name, jobName: nextJob.name }))
             } catch (error) {
-              const message = error instanceof Error ? error.message : '訓練に失敗しました。'
-              Alert.alert('訓練失敗', message)
+              const message = error instanceof Error ? error.message : t('ui.training.failureBody')
+              Alert.alert(t('ui.training.failureTitle'), message)
             } finally {
               setIsTraining(false)
             }
@@ -82,36 +85,36 @@ export default function BaseTrainingScreen() {
         },
       ]
     )
-  }, [activeGoblin, effectiveSelectedJob, saveGoblin, selectedGoblinEntry?.isExpedition])
+  }, [activeGoblin, effectiveSelectedJob, saveGoblin, selectedGoblinEntry?.isExpedition, t])
 
   const handleShowJobTips = useCallback((job: GoblinJob) => {
     const jobDefinition = getGoblinJobDefinition(job)
     const tipLines = getGoblinJobSkillEntries(job)
-      .map((jobSkill) => `・${formatGoblinJobSkillName(jobSkill)}\n${describeCharacterSkill(getCharacterSkill(jobSkill.skillId))}`)
+      .map((jobSkill) => `${t('ui.training.jobTipBullet')} ${formatGoblinJobSkillName(jobSkill)}\n${describeCharacterSkill(getCharacterSkill(jobSkill.skillId))}`)
       .join('\n\n')
 
     Alert.alert(jobDefinition.name, tipLines)
-  }, [])
+  }, [t])
 
   return (
     <SafeAreaView style={styles.container} edges={['left', 'right', 'bottom']}>
       <ScrollView contentContainerStyle={styles.content}>
         <View style={styles.headerCard}>
-          <Text style={styles.headerEyebrow}>訓練所</Text>
-          <Text style={styles.headerBody}>ゴブリンが訓練を行いジョブを得る事ができます</Text>
+          <Text style={styles.headerEyebrow}>{t('ui.training.title')}</Text>
+          <Text style={styles.headerBody}>{t('ui.training.headerBody')}</Text>
         </View>
 
         {!trainingUnlocked ? (
           <View style={styles.lockedPanel}>
-            <Text style={styles.lockedTitle}>未開放</Text>
-            <Text style={styles.lockedBody}>ゴブリン集落を制圧した後、拠点をランク2へ拡張すると専門訓練が可能になります。</Text>
+            <Text style={styles.lockedTitle}>{t('ui.training.lockedTitle')}</Text>
+            <Text style={styles.lockedBody}>{t('ui.training.lockedBody')}</Text>
           </View>
         ) : (
           <View style={styles.card}>
             {activeGoblin ? (
               <>
                 <View style={styles.settingItem}>
-                  <Text style={styles.settingLabel}>訓練対象</Text>
+                  <Text style={styles.settingLabel}>{t('ui.training.targetLabel')}</Text>
                   <TouchableOpacity
                     style={styles.settingValue}
                     onPress={() => setIsGoblinModalVisible(true)}
@@ -121,7 +124,10 @@ export default function BaseTrainingScreen() {
                       <View style={styles.selectedGoblinSummaryText}>
                         <Text style={styles.settingValueText}>{activeGoblin.name}</Text>
                         <Text style={styles.settingValueDescription}>
-                          {activeGoblin.race} / 現在: {selectedGoblinCurrentJob?.name ?? '未設定'}
+                          {t('ui.training.currentJobLine', {
+                            race: getRaceLabel(activeGoblin.raceId ?? activeGoblin.race),
+                            jobName: selectedGoblinCurrentJob?.name ?? t('ui.training.unassigned'),
+                          })}
                         </Text>
                       </View>
                     </View>
@@ -143,7 +149,7 @@ export default function BaseTrainingScreen() {
                             style={styles.jobTipsButton}
                             onPress={() => handleShowJobTips(job.id)}
                           >
-                            <Text style={styles.jobTipsButtonText}>i</Text>
+                            <Text style={styles.jobTipsButtonText}>{t('ui.training.jobTipsButton')}</Text>
                           </TouchableOpacity>
                         </View>
                       </TouchableOpacity>
@@ -160,18 +166,22 @@ export default function BaseTrainingScreen() {
                   disabled={!effectiveSelectedJob || selectedGoblinEntry?.isExpedition || isTraining}
                 >
                   <Text style={styles.primaryButtonText}>
-                    {isTraining ? '訓練中...' : effectiveSelectedJob ? `${activeGoblin.name}を訓練する` : 'ジョブを選択してください'}
+                    {isTraining
+                      ? t('ui.training.processing')
+                      : effectiveSelectedJob
+                        ? t('ui.training.trainButton', { name: activeGoblin.name })
+                        : t('ui.training.selectJobPlaceholder')}
                   </Text>
                 </TouchableOpacity>
               </>
             ) : (
-              <Text style={styles.helperText}>純ゴブリンが拠点にいれば、ここで専門役に育成できます。</Text>
+              <Text style={styles.helperText}>{trainingStatusText}</Text>
             )}
           </View>
         )}
 
         <View style={styles.noteCard}>
-          <Text style={styles.noteText}>・訓練はゴブリンのみ対象です。スライムゴブリン、ウルフゴブリンは訓練できません。</Text>
+          <Text style={styles.noteText}>{t('ui.training.noteGoblinOnly')}</Text>
         </View>
       </ScrollView>
 
@@ -183,14 +193,14 @@ export default function BaseTrainingScreen() {
       >
         <Pressable style={styles.modalOverlay} onPress={() => setIsGoblinModalVisible(false)}>
           <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>訓練対象を選択</Text>
+            <Text style={styles.modalTitle}>{t('ui.training.modalTitle')}</Text>
             <ScrollView style={styles.modalList} contentContainerStyle={styles.modalListContent}>
               {trainableGoblins.length === 0 ? (
-                <Text style={styles.modalEmptyText}>選択できるゴブリンがいません</Text>
+                <Text style={styles.modalEmptyText}>{t('ui.training.modalEmpty')}</Text>
               ) : (
                 trainableGoblins.map(({ goblin, assignedParty, isExpedition }) => {
                   const isSelected = activeGoblin?.id === goblin.id
-                  const jobName = goblin.job ? getGoblinJobDefinition(goblin.job).name : '未設定'
+                  const jobName = goblin.job ? getGoblinJobLabel(goblin.job) : t('ui.training.unassigned')
                   return (
                     <TouchableOpacity
                       key={goblin.id}
@@ -207,11 +217,16 @@ export default function BaseTrainingScreen() {
                           {goblin.name}
                         </Text>
                         <Text style={styles.modalOptionDescription}>
-                          {goblin.race} / {jobName}
+                          {t('ui.training.modalGoblinLine', {
+                            race: getRaceLabel(goblin.raceId ?? goblin.race),
+                            jobName,
+                          })}
                         </Text>
                         {assignedParty && (
                           <Text style={styles.modalOptionDescription}>
-                            {isExpedition ? `${assignedParty.name} で遠征中` : `${assignedParty.name} に編成中`}
+                            {isExpedition
+                              ? t('ui.training.partyExpeditionStatus', { partyName: assignedParty.name })
+                              : t('ui.training.partyAssignedStatus', { partyName: assignedParty.name })}
                           </Text>
                         )}
                       </View>
@@ -221,7 +236,7 @@ export default function BaseTrainingScreen() {
               )}
             </ScrollView>
             <TouchableOpacity style={styles.modalCloseButton} onPress={() => setIsGoblinModalVisible(false)}>
-              <Text style={styles.modalCloseButtonText}>閉じる</Text>
+              <Text style={styles.modalCloseButtonText}>{t('ui.common.close')}</Text>
             </TouchableOpacity>
           </View>
         </Pressable>

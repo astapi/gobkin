@@ -53,6 +53,10 @@ export function getDungeonDescription(dungeon: Pick<Dungeon, 'id' | 'description
   return translateWithFallback(`entities.dungeon.${dungeon.id}.description`, dungeon.description)
 }
 
+export function getBaseLocationName(rank: number): string {
+  return translateWithFallback(`entities.baseLocation.rank${rank}`, '')
+}
+
 export function getEnemyName(enemy: Pick<Enemy, 'id' | 'name'>): string {
   return translateWithFallback(`entities.enemy.${enemy.id}.name`, enemy.name)
 }

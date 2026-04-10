@@ -28,14 +28,16 @@ type GoblinJobDefinition = {
   skills: GoblinJobSkill[]
 }
 
-const GOBLIN_JOB_DEFINITIONS: Record<GoblinJob, GoblinJobDefinition> = {
+type GoblinJobDefinitionSeed = {
+  id: GoblinJob
+  accentColor: string
+  skills: GoblinJobSkill[]
+}
+
+const GOBLIN_JOB_DEFINITION_SEEDS: Record<GoblinJob, GoblinJobDefinitionSeed> = {
   guard: {
     id: 'guard',
-    name: getGoblinJobLabel('guard'),
-    shortLabel: getGoblinJobShortLabel('guard'),
     accentColor: '#2563EB',
-    summary: getGoblinJobSummary('guard'),
-    description: getGoblinJobDescription('guard'),
     skills: [
       {
         skillId: 'armor_mastery_150',
@@ -51,11 +53,7 @@ const GOBLIN_JOB_DEFINITIONS: Record<GoblinJob, GoblinJobDefinition> = {
   },
   thief: {
     id: 'thief',
-    name: getGoblinJobLabel('thief'),
-    shortLabel: getGoblinJobShortLabel('thief'),
     accentColor: '#059669',
-    summary: getGoblinJobSummary('thief'),
-    description: getGoblinJobDescription('thief'),
     skills: [
       {
         skillId: 'action_order_150',
@@ -68,11 +66,7 @@ const GOBLIN_JOB_DEFINITIONS: Record<GoblinJob, GoblinJobDefinition> = {
   },
   mage: {
     id: 'mage',
-    name: getGoblinJobLabel('mage'),
-    shortLabel: getGoblinJobShortLabel('mage'),
     accentColor: '#B91C1C',
-    summary: getGoblinJobSummary('mage'),
-    description: getGoblinJobDescription('mage'),
     skills: [
       {
         skillId: 'grant_fireball',
@@ -88,11 +82,7 @@ const GOBLIN_JOB_DEFINITIONS: Record<GoblinJob, GoblinJobDefinition> = {
   },
   warrior: {
     id: 'warrior',
-    name: getGoblinJobLabel('warrior'),
-    shortLabel: getGoblinJobShortLabel('warrior'),
     accentColor: '#EA580C',
-    summary: getGoblinJobSummary('warrior'),
-    description: getGoblinJobDescription('warrior'),
     skills: [
       {
         skillId: 'armor_mastery_120',
@@ -104,19 +94,29 @@ const GOBLIN_JOB_DEFINITIONS: Record<GoblinJob, GoblinJobDefinition> = {
   },
 }
 
+function buildGoblinJobDefinition(seed: GoblinJobDefinitionSeed): GoblinJobDefinition {
+  return {
+    ...seed,
+    name: getGoblinJobLabel(seed.id),
+    shortLabel: getGoblinJobShortLabel(seed.id),
+    summary: getGoblinJobSummary(seed.id),
+    description: getGoblinJobDescription(seed.id),
+  }
+}
+
 const GOBLIN_JOB_SKILL_IDS = new Set<string>(
-  Object.values(GOBLIN_JOB_DEFINITIONS)
+  Object.values(GOBLIN_JOB_DEFINITION_SEEDS)
     .flatMap((job) => job.skills.map((entry) => entry.skillId))
 )
 
 export const GOBLIN_TRAINING_UNLOCK_RANK = 2
 
 export function getGoblinJobDefinitions(): GoblinJobDefinition[] {
-  return Object.values(GOBLIN_JOB_DEFINITIONS)
+  return Object.values(GOBLIN_JOB_DEFINITION_SEEDS).map(buildGoblinJobDefinition)
 }
 
 export function getGoblinJobDefinition(job: GoblinJob): GoblinJobDefinition {
-  return GOBLIN_JOB_DEFINITIONS[job]
+  return buildGoblinJobDefinition(GOBLIN_JOB_DEFINITION_SEEDS[job])
 }
 
 export function isPureGoblin(goblin: Goblin): boolean {
@@ -128,7 +128,7 @@ export function canTrainGoblin(goblin: Goblin): boolean {
 }
 
 export function getGoblinJobSkills(job: GoblinJob, level: number): CharacterSkill[] {
-  return GOBLIN_JOB_DEFINITIONS[job].skills
+  return GOBLIN_JOB_DEFINITION_SEEDS[job].skills
     .filter((entry) => (entry.unlockLevel ?? 1) <= level)
     .map((entry) => getCharacterSkill(entry.skillId))
 }
@@ -163,7 +163,7 @@ export function formatGoblinJobSkillName(jobSkill: GoblinJobSkill): string {
 }
 
 export function getGoblinJobSkillEntries(job: GoblinJob): GoblinJobSkill[] {
-  return GOBLIN_JOB_DEFINITIONS[job].skills.map((entry) => ({
+  return GOBLIN_JOB_DEFINITION_SEEDS[job].skills.map((entry) => ({
     unlockLevel: entry.unlockLevel,
     skillId: entry.skillId,
   }))
