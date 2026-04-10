@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { useBaseStore, selectGold, selectIvBonus, selectMaxGoblins, selectMaxParties, selectRank } from '@/presentation/stores/useBaseStore'
 import { BASE_RANK_CONFIGS } from '@/core/services/BaseRankSystem'
 import { areasData } from '@/shared/data'
+import { getDungeonName } from '@/shared/i18n/entityLocalization'
 
 export default function BaseUpgradeScreen() {
   const baseState = useBaseStore((state) => state.baseState)
@@ -25,7 +26,7 @@ export default function BaseUpgradeScreen() {
 
     return {
       nextRank: nextConfig.rank,
-      dungeonName: targetDungeon?.name || nextConfig.unlockCondition.dungeonId,
+      dungeonName: targetDungeon ? getDungeonName(targetDungeon) : nextConfig.unlockCondition.dungeonId,
       isCaptured,
       maxParties: nextConfig.maxParties,
       maxGoblins: nextConfig.maxGoblins,

@@ -122,7 +122,10 @@ export default function ExpeditionResultScreen() {
   const area = replay ? areasData.find(a => a.id === replay.meta.areaId) : dungeon
   const unlockNext = area?.unlockNext
   const nextAreaName = unlockNext
-    ? areasData.find(a => a.id === unlockNext)?.name || unlockNext
+    ? (() => {
+        const nextArea = areasData.find(a => a.id === unlockNext)
+        return nextArea ? getDungeonName(nextArea) : unlockNext
+      })()
     : null
   const [showUnlockNotice, setShowUnlockNotice] = useState(false)
 
