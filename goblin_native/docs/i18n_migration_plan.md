@@ -46,10 +46,10 @@
   - 呪文名
   - ダンジョン名 / 説明
   - 因子名 / 説明
-  - 装備名 / 説明
+  - 装備名
   - 装備称号名
   - 称号付き装備名
-- 翻訳キーが未定義のデータは、既存 `name` / `description` をフォールバック表示する。
+- 翻訳キーが未定義のデータは、既存 `name` / `description` をフォールバック表示する。装備は説明文を持たないため、名称のみを対象にする。
 
 ### 主要画面の i18n 化
 
@@ -80,7 +80,7 @@
 
 ### マスターデータの完全辞書化
 
-- 現状は `enemy/*.json`, `expeditionArea/*.json`, `equipmentPool.json`, `modPool.json` の `name` / `description` をフォールバックとして利用している。
+- 現状は `enemy/*.json`, `expeditionArea/*.json`, `modPool.json` の `name` / `description` と、`equipmentPool.json` の `name` をフォールバックとして利用している。
 - 将来的にはこれらも翻訳キー参照に寄せ、ロケールごとの辞書管理へ統一する。
 
 ### 保存形式の完全正規化

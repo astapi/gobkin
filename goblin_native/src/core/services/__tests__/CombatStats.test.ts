@@ -661,12 +661,12 @@ describe('BattleSystem — 命中判定と複数回攻撃', () => {
     const allies = [
       createTestGoblin({
         id: 1,
-        skills: [{ id: 'rear_guard_front', name: '後列防護', protectRearAllyNormalAttackMultiplier: 2 / 3 }],
+        skills: [{ id: 'rear_guard_front', protectRearAllyNormalAttackMultiplier: 2 / 3 }],
         stats: { hp: 9999, atk: 1, agility: 10, def: 0, attackCount: 1, accuracy: 1, evasion: 0 },
       }),
       createTestGoblin({
         id: 2,
-        skills: [{ id: 'rear_guard_middle', name: '後列防護', protectRearAllyNormalAttackMultiplier: 2 / 3 }],
+        skills: [{ id: 'rear_guard_middle', protectRearAllyNormalAttackMultiplier: 2 / 3 }],
         stats: { hp: 9999, atk: 1, agility: 5, def: 0, attackCount: 1, accuracy: 1, evasion: 0 },
       }),
       createTestGoblin({
@@ -783,7 +783,7 @@ describe('BattleSystem — 命中判定と複数回攻撃', () => {
     const reducedAllies = [
       createTestGoblin({
         id: 1,
-        skills: [{ id: 'physical_reduction_10', name: '[-10%] 物理ダメージ軽減(%)', physicalDamageReductionPercent: 10 }],
+        skills: [{ id: 'physical_reduction_10', physicalDamageReductionPercent: 10 }],
         stats: { hp: 9999, atk: 1, agility: 1, def: 0, attackCount: 1, accuracy: 1, evasion: 0 },
       }),
     ]
@@ -825,7 +825,7 @@ describe('BattleSystem — 命中判定と複数回攻撃', () => {
     const reducedAllies = [
       createTestGoblin({
         id: 1,
-        skills: [{ id: 'physical_reduction_10', name: '[-10%] 物理ダメージ軽減(%)', physicalDamageReductionPercent: 10 }],
+        skills: [{ id: 'physical_reduction_10', physicalDamageReductionPercent: 10 }],
         stats: { hp: 9999, atk: 1, agility: 1, def: 0, attackCount: 1, accuracy: 1, evasion: 0 },
       }),
     ]
@@ -869,12 +869,12 @@ describe('BattleSystem — 命中判定と複数回攻撃', () => {
     const enemy = [[createTestEnemy({ hp: 9999, def: 0, agility: 1, evasion: 0 })]]
     const frontAttacker = createTestGoblin({
       id: 1,
-      skills: [{ id: 'weapon_melee_attack', name: '[武器]近距離攻撃', enablesMeleeRowDamagePenalty: true }],
+      skills: [{ id: 'weapon_melee_attack', enablesMeleeRowDamagePenalty: true }],
       stats: { hp: 100, atk: 100, agility: 100, def: 10, attackCount: 1, accuracy: 999, evasion: 0 },
     })
     const rearAttacker = createTestGoblin({
       id: 2,
-      skills: [{ id: 'weapon_melee_attack', name: '[武器]近距離攻撃', enablesMeleeRowDamagePenalty: true }],
+      skills: [{ id: 'weapon_melee_attack', enablesMeleeRowDamagePenalty: true }],
       stats: { hp: 100, atk: 100, agility: 100, def: 10, attackCount: 1, accuracy: 999, evasion: 0 },
     })
 
@@ -903,12 +903,12 @@ describe('BattleSystem — 命中判定と複数回攻撃', () => {
   it('遠距離攻撃持ちは後列ほど通常攻撃ダメージが上がる', () => {
     const frontAttacker = createTestGoblin({
       id: 1,
-      skills: [{ id: 'weapon_ranged_attack', name: '[武器]遠距離攻撃', enablesRangedRowDamagePenalty: true }],
+      skills: [{ id: 'weapon_ranged_attack', enablesRangedRowDamagePenalty: true }],
       stats: { hp: 100, atk: 100, agility: 100, def: 10, attackCount: 1, accuracy: 999, evasion: 0 },
     })
     const rearAttacker = createTestGoblin({
       id: 2,
-      skills: [{ id: 'weapon_ranged_attack', name: '[武器]遠距離攻撃', enablesRangedRowDamagePenalty: true }],
+      skills: [{ id: 'weapon_ranged_attack', enablesRangedRowDamagePenalty: true }],
       stats: { hp: 100, atk: 100, agility: 100, def: 10, attackCount: 1, accuracy: 999, evasion: 0 },
     })
 
@@ -942,8 +942,8 @@ describe('BattleSystem — 命中判定と複数回攻撃', () => {
 
   it('遠近両方持ちは全列で同じ通常攻撃ダメージ補正になる', () => {
     const dualSkills = [
-      { id: 'weapon_melee_attack', name: '[武器]近距離攻撃', enablesMeleeRowDamagePenalty: true },
-      { id: 'weapon_ranged_attack', name: '[武器]遠距離攻撃', enablesRangedRowDamagePenalty: true },
+      { id: 'weapon_melee_attack', enablesMeleeRowDamagePenalty: true },
+      { id: 'weapon_ranged_attack', enablesRangedRowDamagePenalty: true },
     ]
     const frontAttacker = createTestGoblin({
       id: 1,
@@ -1251,7 +1251,7 @@ describe('spell charges', () => {
       agility: 100,
       attackCount: 0,
       skills: [
-        { id: 'fireball', name: 'ファイヤーボール', grantsSpellId: 'fireball' },
+        { id: 'fireball', grantsSpellId: 'fireball' },
       ],
     })
     const allyA = createTestGoblin({
@@ -1320,8 +1320,8 @@ describe('spell charges', () => {
       agility: 50,
       attackCount: 0,
       skills: [
-        { id: 'fireball', name: 'ファイヤーボール', grantsSpellId: 'fireball' },
-        { id: 'fireball_twice', name: 'ファイヤーボール2回', spellChargeBonusForId: 'fireball', extraSpellCharges: 1 },
+        { id: 'fireball', grantsSpellId: 'fireball' },
+        { id: 'fireball_twice', spellChargeBonusForId: 'fireball', extraSpellCharges: 1 },
       ],
     })
 
@@ -1343,7 +1343,7 @@ describe('spell charges', () => {
       agility: 50,
       attackCount: 0,
       skills: [
-        { id: 'blizzard', name: 'ブリザード', grantsSpellId: 'blizzard' },
+        { id: 'blizzard', grantsSpellId: 'blizzard' },
       ],
     })
     const ally = createTestGoblin({
@@ -1362,7 +1362,7 @@ describe('BattleSystem — ジョブ系スキル', () => {
     const battleSystem = new BattleSystem()
     const guard = createTestGoblin({
       id: 1,
-      skills: [{ id: 'cover', name: 'かばう', coverLowHpAlly: true }],
+      skills: [{ id: 'cover', coverLowHpAlly: true }],
       stats: { hp: 120, atk: 5, agility: 20, def: 20, attackCount: 1, accuracy: 999, evasion: 0 },
     })
     const rear = createTestGoblin({
@@ -1388,7 +1388,7 @@ describe('BattleSystem — ジョブ系スキル', () => {
     const warrior = createTestGoblin({
       id: 1,
       stats: { hp: 120, atk: 5, agility: 20, def: 20, attackCount: 1, accuracy: 999, evasion: 0 },
-      skills: [{ id: 'inspire', name: '鼓舞', rearAllyDamageMultiplier: 1.5 }],
+      skills: [{ id: 'inspire', rearAllyDamageMultiplier: 1.5 }],
     })
     const attacker = createTestGoblin({
       id: 2,
@@ -1408,12 +1408,12 @@ describe('BattleSystem — ジョブ系スキル', () => {
     const battleSystem = new BattleSystem()
     const frontInspire = createTestGoblin({
       id: 1,
-      skills: [{ id: 'inspire_front', name: '鼓舞', rearAllyDamageMultiplier: 1.5 }],
+      skills: [{ id: 'inspire_front', rearAllyDamageMultiplier: 1.5 }],
       stats: { hp: 120, atk: 5, agility: 20, def: 20, attackCount: 1, accuracy: 999, evasion: 0 },
     })
     const middleInspire = createTestGoblin({
       id: 2,
-      skills: [{ id: 'inspire_middle', name: '鼓舞', rearAllyDamageMultiplier: 1.5 }],
+      skills: [{ id: 'inspire_middle', rearAllyDamageMultiplier: 1.5 }],
       stats: { hp: 120, atk: 5, agility: 15, def: 20, attackCount: 1, accuracy: 999, evasion: 0 },
     })
     const attacker = createTestGoblin({

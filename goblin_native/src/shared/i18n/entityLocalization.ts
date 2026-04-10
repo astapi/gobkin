@@ -37,8 +37,39 @@ export function getReturnPolicyLabel(policy: string): string {
   return translateWithFallback(`entities.returnPolicy.${policy}`, policy)
 }
 
-export function getSkillLabel(skill: Pick<CharacterSkill, 'id' | 'name'>): string {
-  return translateWithFallback(`entities.skill.${skill.id}.name`, skill.name)
+export function getSkillLabel(skill: CharacterSkill): string {
+  const key = `entities.skill.${skill.id}.name`
+  if (i18n.exists(key)) {
+    return i18n.t(key)
+  }
+
+  if (skill.defToHpPercent !== undefined) {
+    return i18n.t('battle.defToHp', { value: skill.defToHpPercent })
+  }
+
+  if (skill.criticalDamageBonusPercent !== undefined) {
+    return i18n.t('battle.criticalDamageBonus', { value: skill.criticalDamageBonusPercent })
+  }
+
+  if (skill.physicalDamageReductionPercent !== undefined) {
+    return i18n.t('battle.physicalReduction', { value: skill.physicalDamageReductionPercent })
+  }
+
+  if (skill.statBonuses?.attackCount !== undefined) {
+    return i18n.t('battle.attackCountBonus', { value: skill.statBonuses.attackCount })
+  }
+
+  if (skill.additionalDamage !== undefined) {
+    return i18n.t('battle.additionalDamage', { value: skill.additionalDamage })
+  }
+
+  return skill.id
+}
+
+export function getSkillDescription(skill: Pick<CharacterSkill, 'descriptionKey'>): string | undefined {
+  return skill.descriptionKey && i18n.exists(skill.descriptionKey)
+    ? i18n.t(skill.descriptionKey)
+    : undefined
 }
 
 export function getSpellLabel(spell: Pick<SpellDef, 'id' | 'name'>): string {
@@ -71,10 +102,6 @@ export function getFactorDescription(factor: Pick<Factor, 'id' | 'description'>)
 
 export function getEquipmentLabel(template: Pick<EquipmentTemplate, 'id' | 'name'>): string {
   return i18n.t(`entities.equipment.${template.id}.name`)
-}
-
-export function getEquipmentDescription(template: Pick<EquipmentTemplate, 'id' | 'description'>): string {
-  return i18n.t(`entities.equipment.${template.id}.description`)
 }
 
 export function getEquipmentTitleLabel(titleId: EquipmentTitleId): string {

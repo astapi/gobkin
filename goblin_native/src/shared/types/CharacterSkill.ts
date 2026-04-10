@@ -3,7 +3,7 @@ import type { GoblinStats } from './Goblin'
 
 export interface CharacterSkill {
   id: string
-  name: string
+  descriptionKey?: string
   statBonuses?: Partial<Record<keyof GoblinStats, number>>
   statMultipliers?: Partial<Record<keyof GoblinStats, number>>
   defToHpPercent?: number

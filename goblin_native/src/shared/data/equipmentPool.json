@@ -23,8 +23,7 @@
       "price": 5,
       "unlockRank": 1,
       "dropLevelMin": 1,
-      "dropLevelMax": 2,
-      "description": "その辺に落ちていた棒切れ。無いよりはマシ"
+      "dropLevelMax": 2
     },
     {
       "id": "sword_club",
@@ -53,8 +52,7 @@
       "price": 15,
       "unlockRank": 1,
       "dropLevelMin": 4,
-      "dropLevelMax": 10,
-      "description": "木を削って作った棍棒。ゴブリンの定番武器"
+      "dropLevelMax": 10
     },
     {
       "id": "sword_copper",
@@ -86,8 +84,7 @@
       "price": 30,
       "unlockRank": 1,
       "dropLevelMin": 8,
-      "dropLevelMax": 15,
-      "description": "銅で鍛えた初めてのまともな剣"
+      "dropLevelMax": 15
     },
     {
       "id": "sword_broad",
@@ -119,8 +116,7 @@
       "price": 60,
       "unlockRank": 1,
       "dropLevelMin": 8,
-      "dropLevelMax": 15,
-      "description": "幅広の刃を持つ片手剣。攻守のバランスが良い"
+      "dropLevelMax": 15
     },
     {
       "id": "sword_long",
@@ -152,8 +148,7 @@
       "price": 100,
       "unlockRank": 1,
       "dropLevelMin": 12,
-      "dropLevelMax": 25,
-      "description": "標準的な長剣。扱いやすく初心者向き"
+      "dropLevelMax": 25
     },
     {
       "id": "sword_mithril",
@@ -184,8 +179,7 @@
       "range": "melee",
       "price": 500,
       "dropLevelMin": 20,
-      "dropLevelMax": 40,
-      "description": "ミスリル銀で鍛えられた剣。軽く鋭い"
+      "dropLevelMax": 40
     },
     {
       "id": "sword_royal",
@@ -216,8 +210,7 @@
       "range": "melee",
       "price": 2500,
       "dropLevelMin": 35,
-      "dropLevelMax": 60,
-      "description": "王家に伝わる名剣。気品ある輝きを放つ"
+      "dropLevelMax": 60
     },
     {
       "id": "sword_kaiser",
@@ -249,8 +242,7 @@
       "price": 12500,
       "unlockRank": 3,
       "dropLevelMin": 50,
-      "dropLevelMax": 80,
-      "description": "皇帝の威光を宿す剣。圧倒的な切れ味"
+      "dropLevelMax": 80
     },
     {
       "id": "sword_ancient",
@@ -282,8 +274,7 @@
       "price": 60000,
       "unlockRank": 5,
       "dropLevelMin": 70,
-      "dropLevelMax": 105,
-      "description": "古代文明の技術で造られた剣。失われた力が宿る"
+      "dropLevelMax": 105
     },
     {
       "id": "sword_dragon",
@@ -314,8 +305,7 @@
       "range": "melee",
       "price": 240000,
       "dropLevelMin": 95,
-      "dropLevelMax": 135,
-      "description": "竜の骨から鍛造された大剣。重く、振るうには相応の力が要る"
+      "dropLevelMax": 135
     },
     {
       "id": "sword_adamant",
@@ -346,8 +336,7 @@
       "range": "melee",
       "price": 720000,
       "dropLevelMin": 120,
-      "dropLevelMax": 150,
-      "description": "最硬の鉱石アダマンタイトで造られた剣。振るえる者は限られる"
+      "dropLevelMax": 150
     },
     {
       "_comment": "===== 武器:爪 (melee) ====="
@@ -372,7 +361,6 @@
       "unlockRank": 1,
       "dropLevelMin": 4,
       "dropLevelMax": 10,
-      "description": "トゲリスのトゲをそのまま握って使うだけの原始的な武器。まだ爪ですらない",
       "grantedSkillIds": [
         "attack_count_up_1"
       ]
@@ -397,7 +385,6 @@
       "unlockRank": 1,
       "dropLevelMin": 4,
       "dropLevelMax": 10,
-      "description": "ウルフから剥ぎ取った爪をそのまま使う。荒削りだが獣らしい手数が出る",
       "grantedSkillIds": [
         "attack_count_up_2"
       ]
@@ -422,7 +409,6 @@
       "unlockRank": 1,
       "dropLevelMin": 8,
       "dropLevelMax": 15,
-      "description": "銅板を曲げて爪状にした簡易武器。素早い連撃向き",
       "grantedSkillIds": [
         "attack_count_up_3"
       ]
@@ -447,7 +433,6 @@
       "unlockRank": 1,
       "dropLevelMin": 8,
       "dropLevelMax": 15,
-      "description": "鉄で補強した爪。斬り刻むような攻撃に向く",
       "grantedSkillIds": [
         "attack_count_up_4"
       ]
@@ -472,7 +457,6 @@
       "unlockRank": 1,
       "dropLevelMin": 12,
       "dropLevelMax": 25,
-      "description": "鋼の刃先を備えた爪。軽快さを保ったまま切れ味を増す",
       "grantedSkillIds": [
         "attack_count_up_5"
       ]
@@ -496,7 +480,6 @@
       "price": 500,
       "dropLevelMin": 20,
       "dropLevelMax": 40,
-      "description": "ミスリルで鍛えた軽量の爪。鋭さと扱いやすさを両立する",
       "grantedSkillIds": [
         "attack_count_up_6"
       ]
@@ -520,7 +503,6 @@
       "price": 2500,
       "dropLevelMin": 35,
       "dropLevelMax": 60,
-      "description": "王侯の近衛が使う高級爪。狙った急所を外さない",
       "grantedSkillIds": [
         "attack_count_up_7"
       ]
@@ -545,7 +527,6 @@
       "unlockRank": 3,
       "dropLevelMin": 50,
       "dropLevelMax": 80,
-      "description": "皇帝の闘技兵が使う爪。苛烈な連撃を叩き込む",
       "grantedSkillIds": [
         "attack_count_up_8"
       ]
@@ -570,7 +551,6 @@
       "unlockRank": 5,
       "dropLevelMin": 70,
       "dropLevelMax": 105,
-      "description": "古代の加工技術で生まれた爪。吸い付くような精度を持つ",
       "grantedSkillIds": [
         "attack_count_up_9"
       ]
@@ -594,7 +574,6 @@
       "price": 240000,
       "dropLevelMin": 95,
       "dropLevelMax": 135,
-      "description": "竜の鉤爪を加工した凶器。嵐のような手数で切り裂く",
       "grantedSkillIds": [
         "attack_count_up_10"
       ]
@@ -618,7 +597,6 @@
       "price": 720000,
       "dropLevelMin": 120,
       "dropLevelMax": 150,
-      "description": "アダマンタイトで造られた究極の爪。連撃のすべてが致命傷になる",
       "grantedSkillIds": [
         "attack_count_up_11"
       ]
@@ -645,8 +623,7 @@
       "price": 10,
       "unlockRank": 1,
       "dropLevelMin": 1,
-      "dropLevelMax": 2,
-      "description": "Y字の枝とゴム紐で作った投石器。小石を飛ばす"
+      "dropLevelMax": 2
     },
     {
       "id": "bow_short",
@@ -671,8 +648,7 @@
       "price": 40,
       "unlockRank": 1,
       "dropLevelMin": 4,
-      "dropLevelMax": 10,
-      "description": "小型の弓。取り回しが良く、後衛から援護できる"
+      "dropLevelMax": 10
     },
     {
       "id": "bow_long",
@@ -704,8 +680,7 @@
       "price": 1000,
       "unlockRank": 1,
       "dropLevelMin": 12,
-      "dropLevelMax": 25,
-      "description": "本格的な長弓。遠距離から正確に射抜く"
+      "dropLevelMax": 25
     },
     {
       "id": "bow_mithril",
@@ -736,8 +711,7 @@
       "range": "ranged",
       "price": 5000,
       "dropLevelMin": 20,
-      "dropLevelMax": 40,
-      "description": "ミスリル銀で補強された弓。軽く、矢の飛距離が伸びる"
+      "dropLevelMax": 40
     },
     {
       "id": "bow_royal",
@@ -768,8 +742,7 @@
       "range": "ranged",
       "price": 25000,
       "dropLevelMin": 35,
-      "dropLevelMax": 60,
-      "description": "王室御用達の名弓。精密な射撃が可能"
+      "dropLevelMax": 60
     },
     {
       "id": "bow_kaiser",
@@ -801,8 +774,7 @@
       "price": 125000,
       "unlockRank": 3,
       "dropLevelMin": 50,
-      "dropLevelMax": 80,
-      "description": "皇帝の狩猟弓。一矢で大型獣をも貫く"
+      "dropLevelMax": 80
     },
     {
       "id": "bow_ancient",
@@ -834,8 +806,7 @@
       "price": 500000,
       "unlockRank": 5,
       "dropLevelMin": 70,
-      "dropLevelMax": 105,
-      "description": "古代遺跡から発掘された弓。矢が自ら標的を追う"
+      "dropLevelMax": 105
     },
     {
       "id": "bow_dragon",
@@ -866,8 +837,7 @@
       "range": "ranged",
       "price": 1500000,
       "dropLevelMin": 95,
-      "dropLevelMax": 135,
-      "description": "竜の腱を弦にした弓。放たれた矢は風を裂く"
+      "dropLevelMax": 135
     },
     {
       "id": "bow_adamant",
@@ -898,8 +868,7 @@
       "range": "ranged",
       "price": 3000000,
       "dropLevelMin": 120,
-      "dropLevelMax": 150,
-      "description": "アダマンタイトの矢を放つ究極の弓。貫けぬ物はない"
+      "dropLevelMax": 150
     },
     {
       "_comment": "===== 防具:鎧 (armor) ====="
@@ -922,7 +891,6 @@
       "unlockRank": 1,
       "dropLevelMin": 1,
       "dropLevelMax": 2,
-      "description": "破れた布を何重にも巻いただけの粗末な防具。無いよりは少しまし",
       "grantedSkillIds": [
         "physical_reduction_1"
       ]
@@ -945,7 +913,6 @@
       "unlockRank": 1,
       "dropLevelMin": 4,
       "dropLevelMax": 10,
-      "description": "獣皮を縫い合わせた簡素な革ベスト。軽くて動きやすい",
       "grantedSkillIds": [
         "physical_reduction_2"
       ]
@@ -968,7 +935,6 @@
       "unlockRank": 1,
       "dropLevelMin": 8,
       "dropLevelMax": 15,
-      "description": "厚手の毛皮で作られたベスト。寒さと打撃の両方に多少強い",
       "grantedSkillIds": [
         "physical_reduction_3"
       ]
@@ -995,7 +961,6 @@
       "unlockRank": 1,
       "dropLevelMin": 12,
       "dropLevelMax": 25,
-      "description": "厚い金属板で急所を守る基本鎧。初期装備向けの一着",
       "grantedSkillIds": [
         "physical_reduction_6"
       ]
@@ -1021,7 +986,6 @@
       "price": 500,
       "dropLevelMin": 20,
       "dropLevelMax": 40,
-      "description": "軽くて丈夫なミスリル製の鎧。守りと機動性を両立する",
       "grantedSkillIds": [
         "physical_reduction_7"
       ]
@@ -1047,7 +1011,6 @@
       "price": 2500,
       "dropLevelMin": 35,
       "dropLevelMax": 60,
-      "description": "王侯貴族の近衛も用いる高級鎧。堅牢で威厳がある",
       "grantedSkillIds": [
         "physical_reduction_8"
       ]
@@ -1074,7 +1037,6 @@
       "unlockRank": 3,
       "dropLevelMin": 50,
       "dropLevelMax": 80,
-      "description": "皇帝の親衛隊に与えられる重装鎧。圧倒的な防護力を誇る",
       "grantedSkillIds": [
         "physical_reduction_9"
       ]
@@ -1101,7 +1063,6 @@
       "unlockRank": 5,
       "dropLevelMin": 70,
       "dropLevelMax": 105,
-      "description": "古代技術で精錬された装甲鎧。長き時を超えても性能は衰えない",
       "grantedSkillIds": [
         "physical_reduction_10"
       ]
@@ -1127,7 +1088,6 @@
       "price": 240000,
       "dropLevelMin": 95,
       "dropLevelMax": 135,
-      "description": "竜鱗を張り合わせた伝説級の鎧。斬撃すら弾き返す",
       "grantedSkillIds": [
         "physical_reduction_11"
       ]
@@ -1153,7 +1113,6 @@
       "price": 720000,
       "dropLevelMin": 120,
       "dropLevelMax": 150,
-      "description": "最硬の鉱石で鍛えられた究極の鎧。着る者を難攻不落に変える",
       "grantedSkillIds": [
         "physical_reduction_12"
       ]

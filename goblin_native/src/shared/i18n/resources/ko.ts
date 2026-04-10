@@ -448,8 +448,14 @@ const ko = {
       inspire_150: { name: '고무' },
       rear_guard: { name: '후열 보호' },
       survive_lethal_hp1: { name: '근성' },
-      weapon_melee_attack: { name: '[무기] 근접 공격' },
-      weapon_ranged_attack: { name: '[무기] 원거리 공격' },
+      weapon_melee_attack: {
+        name: '[무기] 근접 공격',
+        description: '대열에서 뒤쪽으로 갈수록 일반 공격 피해가 감소합니다.',
+      },
+      weapon_ranged_attack: {
+        name: '[무기] 원거리 공격',
+        description: '대열에서 앞쪽으로 갈수록 일반 공격 피해가 감소합니다.',
+      },
     },
     spell: {
       magic_arrow: '매직 애로우',
@@ -481,6 +487,8 @@ const ko = {
     physicalReduction: '[-{{value}}%] 물리 피해 감소',
     rearAllyDamage: '뒤에 있는 아군이 받는 피해가 x{{value}}가 된다',
     additionalDamage: '일반 공격 각 타격에 +{{value}} 고정 피해',
+    defToHp: '[{{value}}%] DEF->HP',
+    criticalDamageBonus: '치명타 위력 +{{value}}%',
     rearProtection: '뒤에 있는 아군이 받는 일반 공격 피해를 {{value}}% 감소',
     armorMultiplier: '갑옷 장비 능력치가 x{{value}}가 된다',
     evasionMultiplier: '회피가 x{{value}}가 된다',

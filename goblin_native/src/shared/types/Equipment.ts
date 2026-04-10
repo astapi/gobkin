@@ -60,7 +60,6 @@ export interface EquipmentTemplate {
   unlockRank?: number  // 店売り解放に必要な拠点ランク（未設定=店売りなし）
   dropLevelMin?: number  // 宝箱ドロップするダンジョンレベル下限（未設定=ドロップなし）
   dropLevelMax?: number  // 宝箱ドロップするダンジョンレベル上限
-  description?: string
 }
 
 /**

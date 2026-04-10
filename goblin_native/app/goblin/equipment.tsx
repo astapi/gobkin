@@ -9,7 +9,7 @@ import { EquipmentService } from '@/core/services/EquipmentService'
 import { getEquipmentTemplate, getEquipmentTemplates } from '@/shared/data/equipmentPoolLoader'
 import { EQUIPMENT_TITLE_DEFS } from '@/shared/data/equipmentTitleConfig'
 import { describeCharacterSkill, getCharacterSkillDescription } from '@/shared/data/characterSkills'
-import { getEquipmentDescription, getEquipmentDisplayName } from '@/shared/i18n/entityLocalization'
+import { getEquipmentDisplayName } from '@/shared/i18n/entityLocalization'
 import type { Goblin } from '@/shared/types'
 
 const CATEGORY_ORDER: Record<EquipmentCategory, number> = {
@@ -29,10 +29,6 @@ const STAT_LABELS: Record<string, string> = {
 
 function getDisplayName(eq: EquipmentInstance, template: EquipmentTemplate): string {
   return getEquipmentDisplayName(eq, template)
-}
-
-function getDisplayDescription(template: EquipmentTemplate): string {
-  return getEquipmentDescription(template)
 }
 
 type InventoryGroup = {
@@ -147,9 +143,6 @@ function ItemDetail({
             <Text style={styles.detailName}>
               {getDisplayName(equipment, template)}
             </Text>
-            {getDisplayDescription(template) && (
-              <Text style={styles.detailDescription}>{getDisplayDescription(template)}</Text>
-            )}
 
             <View style={styles.detailList}>
               {displayBonuses.map((bonus, i) => (
@@ -539,12 +532,6 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: '#1F2937',
     marginBottom: 12,
-  },
-  detailDescription: {
-    fontSize: 13,
-    color: '#4B5563',
-    marginBottom: 6,
-    lineHeight: 18,
   },
   detailList: {
     marginBottom: 10,
