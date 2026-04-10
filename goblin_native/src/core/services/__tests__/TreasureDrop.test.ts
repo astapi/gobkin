@@ -115,7 +115,7 @@ describe('rollTreasureDrops', () => {
   })
 
   describe('ドロップ結果の構造', () => {
-    it('ドロップにtemplateId, name が含まれる', () => {
+    it('ドロップにtemplateId が含まれる', () => {
       const pool = getEquipmentByDungeonLevel(1)
       if (pool.length === 0) return
 
@@ -131,12 +131,10 @@ describe('rollTreasureDrops', () => {
 
       expect(result.length).toBeGreaterThan(0)
       expect(result[0]).toHaveProperty('templateId')
-      expect(result[0]).toHaveProperty('name')
       expect(typeof result[0].templateId).toBe('string')
-      expect(typeof result[0].name).toBe('string')
     })
 
-    it('称号なしの場合、titleId/titleNameはundefined', () => {
+    it('称号なしの場合、titleIdはundefined', () => {
       // 倍率1ではほぼ称号なし。多数試行してnoneを見つける
       let foundNone = false
       for (let seed = 0; seed < 5000; seed++) {
@@ -145,7 +143,6 @@ describe('rollTreasureDrops', () => {
           engine, 1, [createDummyEnemy()], new Set()
         )
         if (result.length > 0 && result[0].titleId === undefined) {
-          expect(result[0].titleName).toBeUndefined()
           foundNone = true
           break
         }
@@ -153,7 +150,7 @@ describe('rollTreasureDrops', () => {
       expect(foundNone).toBe(true)
     })
 
-    it('称号ありの場合、titleIdとtitleNameが設定される', () => {
+    it('称号ありの場合、titleIdが設定される', () => {
       // 倍率99で多数試行して称号付きを見つける
       let foundTitle = false
       for (let seed = 0; seed < 5000; seed++) {
@@ -163,10 +160,6 @@ describe('rollTreasureDrops', () => {
         )
         if (result.length > 0 && result[0].titleId !== undefined) {
           expect(typeof result[0].titleId).toBe('string')
-          expect(typeof result[0].titleName).toBe('string')
-          expect(result[0].titleName!.length).toBeGreaterThan(0)
-          // 装備名に称号が接頭辞として含まれる
-          expect(result[0].name).toContain(result[0].titleName!)
           foundTitle = true
           break
         }

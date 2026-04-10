@@ -7,9 +7,9 @@ import { useGoblinStore } from '@/presentation/stores/useGoblinStore'
 import { useEquipmentService } from '@/presentation/hooks/useEquipmentService'
 import { EquipmentService } from '@/core/services/EquipmentService'
 import { getEquipmentTemplate, getEquipmentTemplates } from '@/shared/data/equipmentPoolLoader'
-import { EquipmentTitleService } from '@/core/services/EquipmentTitleService'
 import { EQUIPMENT_TITLE_DEFS } from '@/shared/data/equipmentTitleConfig'
 import { describeCharacterSkill } from '@/shared/data/characterSkills'
+import { getEquipmentDescription, getEquipmentDisplayName } from '@/shared/i18n/entityLocalization'
 import type { Goblin } from '@/shared/types'
 
 const CATEGORY_LABELS: Record<EquipmentCategory, string> = {
@@ -34,10 +34,11 @@ const STAT_LABELS: Record<string, string> = {
 }
 
 function getDisplayName(eq: EquipmentInstance, template: EquipmentTemplate): string {
-  if (eq.titleName) {
-    return EquipmentTitleService.formatTitledName(eq.titleName, template.name)
-  }
-  return template.name
+  return getEquipmentDisplayName(eq, template)
+}
+
+function getDisplayDescription(template: EquipmentTemplate): string {
+  return getEquipmentDescription(template)
 }
 
 type InventoryGroup = {
@@ -122,8 +123,8 @@ function EquippedItemDetail({
             {CATEGORY_LABELS[template.category]}
           </Text>
 
-          {template.description && (
-            <Text style={styles.detailDescription}>{template.description}</Text>
+          {getDisplayDescription(template) && (
+            <Text style={styles.detailDescription}>{getDisplayDescription(template)}</Text>
           )}
 
           <View style={styles.detailBonuses}>

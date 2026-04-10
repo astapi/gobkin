@@ -170,7 +170,6 @@ export class CompleteExpeditionUseCase {
           slotIndex: -1,
           goblinId: null,
           titleId: drop.titleId,
-          titleName: drop.titleName,
         })
       }
     }

@@ -1,3 +1,5 @@
+import { equipmentJa } from './equipment'
+
 const ja = {
   ui: {
     common: {
@@ -389,6 +391,7 @@ const ja = {
       lizardman: { name: 'リザードマン因子', description: 'リザードマンの特性を宿した因子。全体的な耐性とHPが増す。' },
       troll: { name: 'トロル因子', description: 'トロルの特性を宿した因子。HPが大幅に増し、防御力も上がる。' },
     },
+    equipment: equipmentJa,
     job: {
       guard: { name: 'ゴブリンガード', shortLabel: '防御', summary: '耐久と防御を強化し、前線維持に寄せる。', description: '盾役として鍛え上げ、打たれ強さと防御能力を伸ばします。' },
       thief: { name: 'ゴブリンシーフ', shortLabel: '速さ', summary: '速度と回避を伸ばし、手数と奇襲に寄せる。', description: '斥候として鍛え上げ、素早さと回避能力を高めます。' },

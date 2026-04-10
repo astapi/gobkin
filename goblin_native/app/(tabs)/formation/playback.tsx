@@ -7,18 +7,27 @@ import { usePartyStore } from '@/presentation/stores/usePartyStore'
 import { useGoblinStore } from '@/presentation/stores/useGoblinStore'
 import { useDungeonStore } from '@/presentation/stores/useDungeonStore'
 import { useExpeditionStore } from '@/presentation/stores/useExpeditionStore'
-import type { TimelineEvent, ExpeditionReplay, ExpeditionRecord, ExpeditionEndReason, Party } from '@/shared/types'
+import type { TimelineEvent, ExpeditionReplay, ExpeditionRecord, ExpeditionEndReason, Party, TreasureDrop } from '@/shared/types'
 import type { BattleLogEntry, BattleLogMeta } from '@/shared/types'
 import { storeBattleLog } from '@/presentation/contexts/battleLogStore'
 import { getGoblinDisplayImage } from '@/shared/utils/goblinImages'
 import { ModStatCalculator } from '@/core/services/ModStatCalculator'
-import { getDungeonName } from '@/shared/i18n/entityLocalization'
+import { getDungeonName, getEquipmentDisplayName } from '@/shared/i18n/entityLocalization'
+import { getEquipmentTemplate } from '@/shared/data/equipmentPoolLoader'
 
 interface LogEntry {
   id: string
   text: string
   detail?: BattleLogEntry[]
   meta?: BattleLogMeta
+}
+
+function resolveTreasureName(item: TreasureDrop): string {
+  const template = getEquipmentTemplate(item.templateId)
+  if (!template) {
+    throw new Error(`Unknown equipment template: ${item.templateId}`)
+  }
+  return getEquipmentDisplayName(item, template)
 }
 
 export default function ExpeditionPlaybackScreen() {
@@ -171,7 +180,7 @@ export default function ExpeditionPlaybackScreen() {
       case 'treasure': {
         const entries: LogEntry[] = [createEntry(t('ui.formation.playback.treasureFound'))]
         for (const item of event.items) {
-          entries.push(createEntry(t('ui.formation.playback.treasureItem', { name: item.name })))
+          entries.push(createEntry(t('ui.formation.playback.treasureItem', { name: resolveTreasureName(item) })))
         }
         return entries
       }
