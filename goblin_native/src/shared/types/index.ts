@@ -40,9 +40,6 @@ export type {
   WeaponRange,
   EquipmentStat,
   EquipmentStatBonus,
-  EquipmentEffectType,
-  EquipmentEffect,
-  WeaponStats,
   EquipmentTemplate,
   EquipmentInstance,
 } from "./Equipment"

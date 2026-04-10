@@ -1,6 +1,6 @@
 import { GoblinBirthService } from '../GoblinBirthService'
 import { ModStatCalculator } from '../ModStatCalculator'
-import { BattleSystem, getDamageModifier, getAccuracyModifier, getRowWeight, selectTarget } from '../BattleSystem'
+import { BattleSystem, getDamageModifier, getAccuracyModifier, getHitRateRandomModifier, getRowWeight, selectTarget } from '../BattleSystem'
 import { ExpeditionEngine } from '../ExpeditionEngine'
 import { getDefaultSkillsForRace } from '../../../shared/data/raceSkills'
 import { getBloodlineAttackCountBonus } from '../../../shared/data/equipmentConfig'
@@ -112,6 +112,20 @@ describe('getAccuracyModifier', () => {
 
   it('10回目は0.6 * 0.9^8 ≈ 0.2583', () => {
     expect(getAccuracyModifier(10)).toBeCloseTo(0.6 * Math.pow(0.9, 8), 4)
+  })
+})
+
+describe('getHitRateRandomModifier', () => {
+  it('rng=0 のとき 0.95 になる', () => {
+    expect(getHitRateRandomModifier(() => 0)).toBeCloseTo(0.95, 5)
+  })
+
+  it('rng=0.5 のとき 1.0 になる', () => {
+    expect(getHitRateRandomModifier(() => 0.5)).toBeCloseTo(1.0, 5)
+  })
+
+  it('rng が 1 未満なら 1.05 未満に収まる', () => {
+    expect(getHitRateRandomModifier(() => 0.999999)).toBeLessThan(1.05)
   })
 })
 
@@ -317,13 +331,24 @@ describe('ModStatCalculator — 戦闘ステータス計算', () => {
     ]))
   })
 
-  it('EquipmentServiceは称号付き装備の特殊効果にも倍率適用する', () => {
-    const effects = EquipmentService.collectEquipmentEffects([
+  it('EquipmentServiceは武器能力値を通常ボーナスとして扱う', () => {
+    const bonuses = EquipmentService.calculateEquipmentBonuses([
+      { id: 'eq1', templateId: 'sword_broad', slotIndex: 0, goblinId: 1 },
+    ])
+
+    expect(bonuses).toEqual(expect.arrayContaining([
+      expect.objectContaining({ stat: 'accuracy_flat', value: 32, sourceCategory: 'weapon' }),
+      expect.objectContaining({ stat: 'attackCount_flat', value: -0.2, sourceCategory: 'weapon' }),
+    ]))
+  })
+
+  it('EquipmentServiceは称号付き装備のパッシブスキルにも倍率適用する', () => {
+    const skills = EquipmentService.collectGrantedSkills([
       { id: 'eq1', templateId: 'sword_broad', slotIndex: 0, goblinId: 1, titleId: 'masterwork' },
     ])
 
-    expect(effects).toEqual(expect.arrayContaining([
-      expect.objectContaining({ type: 'def_to_hp', value: 2, sourceCategory: 'weapon' }),
+    expect(skills).toEqual(expect.arrayContaining([
+      expect.objectContaining({ defToHpPercent: 2 }),
     ]))
   })
 
@@ -664,7 +689,7 @@ describe('BattleSystem — 命中判定と複数回攻撃', () => {
     const rear = result.detailedLog.find(log => log.action === '通常攻撃' && !log.isAlly)!.targets.find(target => target.targetId === '3')
 
     expect(rear).toBeDefined()
-    expect(rear!.totalDamage).toBe(203)
+    expect(rear!.totalDamage).toBe(239)
   })
 
   it('遠征戦闘でもスライムゴブリンの後列防護が適用される', () => {

@@ -24,6 +24,22 @@ function createAttackCountUpSkill(value: number): CharacterSkill {
   }
 }
 
+function createDefToHpSkill(value: number): CharacterSkill {
+  return {
+    id: `def_to_hp_${value}`,
+    name: `防御力の${value}%をHPに加算`,
+    defToHpPercent: value,
+  }
+}
+
+function createCriticalDamageBonusSkill(value: number): CharacterSkill {
+  return {
+    id: `critical_damage_bonus_${value}`,
+    name: `会心威力+${value}%`,
+    criticalDamageBonusPercent: value,
+  }
+}
+
 function createPhysicalReductionSkill(value: number): CharacterSkill {
   return {
     id: `physical_reduction_${value}`,
@@ -78,6 +94,24 @@ export const CHARACTER_SKILL_CATALOG = {
     name: 'かばう',
     coverLowHpAlly: true,
   },
+
+  critical_damage_bonus_6: createCriticalDamageBonusSkill(6),
+  critical_damage_bonus_7: createCriticalDamageBonusSkill(7),
+  critical_damage_bonus_8: createCriticalDamageBonusSkill(8),
+  critical_damage_bonus_9: createCriticalDamageBonusSkill(9),
+  critical_damage_bonus_10: createCriticalDamageBonusSkill(10),
+  critical_damage_bonus_11: createCriticalDamageBonusSkill(11),
+  critical_damage_bonus_12: createCriticalDamageBonusSkill(12),
+
+  def_to_hp_1: createDefToHpSkill(1),
+  def_to_hp_2: createDefToHpSkill(2),
+  def_to_hp_3: createDefToHpSkill(3),
+  def_to_hp_4: createDefToHpSkill(4),
+  def_to_hp_5: createDefToHpSkill(5),
+  def_to_hp_6: createDefToHpSkill(6),
+  def_to_hp_7: createDefToHpSkill(7),
+  def_to_hp_8: createDefToHpSkill(8),
+  def_to_hp_9: createDefToHpSkill(9),
 
   equipment_accuracy_200: {
     id: 'equipment_accuracy_200',

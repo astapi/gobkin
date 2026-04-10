@@ -47,8 +47,6 @@ function normalizeTemplate(template: EquipmentTemplate): EquipmentTemplate {
   return {
     ...template,
     statBonuses: template.statBonuses.map((bonus) => ({ ...bonus })),
-    weaponStats: template.weaponStats ? { ...template.weaponStats } : undefined,
-    effects: template.effects?.map((effect) => ({ ...effect })),
     grantedSkills: buildGrantedSkills(template),
   }
 }

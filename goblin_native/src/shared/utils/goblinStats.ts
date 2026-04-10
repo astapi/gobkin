@@ -9,8 +9,11 @@ export function calculateGoblinEffectiveStats(
   equippedItems: EquipmentInstance[] = [],
 ): GoblinStats {
   const equipmentBonuses = EquipmentService.calculateEquipmentBonuses(equippedItems)
-  const equipmentEffects = EquipmentService.collectEquipmentEffects(equippedItems)
-  return ModStatCalculator.calculate(goblin, equipmentBonuses, equipmentEffects)
+  const equipmentSkills = EquipmentService.collectGrantedSkills(equippedItems)
+  return ModStatCalculator.calculate({
+    ...goblin,
+    skills: [...goblin.skills, ...equipmentSkills],
+  }, equipmentBonuses)
 }
 
 /**

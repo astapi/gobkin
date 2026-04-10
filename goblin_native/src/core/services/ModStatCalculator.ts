@@ -1,10 +1,11 @@
 import type { Goblin, GoblinStats } from '../../shared/types/Goblin'
 import type { ModInstance } from '../../shared/types/Mod'
-import type { EquipmentStatBonus, EquipmentEffect } from '../../shared/types/Equipment'
+import type { CharacterSkill } from '../../shared/types/CharacterSkill'
+import type { EquipmentStatBonus } from '../../shared/types/Equipment'
 import { getModTemplate, getDamageReductionCap } from '../../shared/data/modPoolLoader'
 import {
   applySkillBonusesToEquipmentBonuses,
-  applySkillBonusesToEquipmentEffects,
+  getUniqueSkillsById,
   getSkillStatBonuses,
   getSkillStatMultipliers,
 } from '../../shared/data/characterSkills'
@@ -32,7 +33,6 @@ export class ModStatCalculator {
   static calculate(
     goblin: Goblin,
     equipmentBonuses?: EquipmentStatBonus[],
-    equipmentEffects?: EquipmentEffect[]
   ): GoblinStats {
     const base = {
       ...goblin.stats,
@@ -59,7 +59,6 @@ export class ModStatCalculator {
     const skillBonuses = getSkillStatBonuses(goblin.skills)
     const skillMultipliers = getSkillStatMultipliers(goblin.skills)
     const adjustedEquipmentBonuses = applySkillBonusesToEquipmentBonuses(goblin.skills, equipmentBonuses ?? [])
-    const adjustedEquipmentEffects = applySkillBonusesToEquipmentEffects(goblin.skills, equipmentEffects ?? [])
     const equipFlat = this.aggregateEquipmentFlat(adjustedEquipmentBonuses)
     const equipPercent = this.aggregateEquipmentPercent(adjustedEquipmentBonuses)
 
@@ -88,8 +87,8 @@ export class ModStatCalculator {
       evasion: withMultiplier('evasion'),
     }
 
-    // 6. 装備特殊効果を適用（ステータス確定後）
-    this.applyEquipmentEffects(result, adjustedEquipmentEffects)
+    // 6. パッシブスキル由来の最終効果を適用（ステータス確定後）
+    this.applyPassiveSkillEffects(result, goblin.skills)
 
     return result
   }
@@ -217,21 +216,13 @@ export class ModStatCalculator {
     return result
   }
 
-  /**
-   * 装備特殊効果をステータス確定後に適用
-   * - def_to_hp: 最終防御力のX%をHPに加算
-   * - critical_damage_bonus / accuracy_boost: BattleSystem側で処理（ステータス計算には影響しない）
-   */
-  private static applyEquipmentEffects(
+  private static applyPassiveSkillEffects(
     stats: GoblinStats,
-    effects: EquipmentEffect[]
+    skills: CharacterSkill[],
   ): void {
-    for (const effect of effects) {
-      switch (effect.type) {
-        case 'def_to_hp':
-          stats.hp += Math.floor(stats.def * effect.value / 100)
-          break
-        // critical_damage_bonus, accuracy_boost は戦闘時に参照（BattleSystem未実装）
+    for (const skill of getUniqueSkillsById(skills)) {
+      if (skill.defToHpPercent !== undefined) {
+        stats.hp += Math.floor(stats.def * skill.defToHpPercent / 100)
       }
     }
   }
