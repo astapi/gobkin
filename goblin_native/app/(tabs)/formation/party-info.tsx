@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState, useCallback } from 'react'
 import { ActivityIndicator, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { Stack, router, useLocalSearchParams } from 'expo-router'
+import { useTranslation } from 'react-i18next'
 import { usePartyStore } from '@/presentation/stores/usePartyStore'
 import { useGoblinStore } from '@/presentation/stores/useGoblinStore'
 import { getGoblinDisplayImage } from '@/shared/utils/goblinImages'
@@ -10,19 +11,19 @@ import { SQLiteEquipmentRepository } from '@/infrastructure/repositories/SQLiteE
 import { EquipmentService } from '@/core/services/EquipmentService'
 import type { CharacterSkill, Goblin, Party } from '@/shared/types'
 
-function getExpRateText(): string {
-  return '1.00倍'
+function getExpRateText(t: (key: string, options?: Record<string, unknown>) => string): string {
+  return t('ui.formation.partyInfo.expRate')
 }
 
-function getAttackTypeLabel(skills: CharacterSkill[]): string {
+function getAttackTypeLabel(skills: CharacterSkill[], t: (key: string) => string): string {
   const uniqueSkills = getUniqueSkillsById(skills)
   const hasMelee = uniqueSkills.some((skill) => skill.enablesMeleeRowDamagePenalty)
   const hasRanged = uniqueSkills.some((skill) => skill.enablesRangedRowDamagePenalty)
 
-  if (hasMelee && hasRanged) return '遠距離武器'
-  if (hasMelee) return '近接武器'
-  if (hasRanged) return '遠距離武器'
-  return 'スキルなし'
+  if (hasMelee && hasRanged) return t('ui.formation.partyInfo.rangedWeapon')
+  if (hasMelee) return t('ui.formation.partyInfo.meleeWeapon')
+  if (hasRanged) return t('ui.formation.partyInfo.rangedWeapon')
+  return t('ui.formation.partyInfo.noSkill')
 }
 
 function formatPercent(value: number): string {
@@ -30,6 +31,7 @@ function formatPercent(value: number): string {
 }
 
 export default function PartyInfoScreen() {
+  const { t } = useTranslation()
   const { partyId } = useLocalSearchParams<{ partyId: string }>()
   const { parties, isLoading: partiesLoading, getPartyById } = usePartyStore()
   const goblins = useGoblinStore((state) => state.goblins)
@@ -99,7 +101,7 @@ export default function PartyInfoScreen() {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#10B981" />
-        <Text style={styles.loadingText}>読み込み中...</Text>
+        <Text style={styles.loadingText}>{t('ui.common.loading')}</Text>
       </View>
     )
   }
@@ -107,9 +109,9 @@ export default function PartyInfoScreen() {
   if (!party) {
     return (
       <View style={styles.loadingContainer}>
-        <Text style={styles.errorText}>パーティが見つかりません</Text>
+        <Text style={styles.errorText}>{t('ui.formation.common.partyNotFound')}</Text>
         <TouchableOpacity style={styles.backButton} onPress={handleBack}>
-          <Text style={styles.backButtonText}>戻る</Text>
+          <Text style={styles.backButtonText}>{t('ui.formation.common.back')}</Text>
         </TouchableOpacity>
       </View>
     )
@@ -119,10 +121,10 @@ export default function PartyInfoScreen() {
     <>
       <Stack.Screen
         options={{
-          title: 'PTの情報',
+          title: t('ui.formation.partyInfo.title'),
           headerLeft: () => (
             <TouchableOpacity onPress={handleBack}>
-              <Text style={styles.headerButton}>← 戻る</Text>
+              <Text style={styles.headerButton}>← {t('ui.formation.common.back')}</Text>
             </TouchableOpacity>
           ),
         }}
@@ -131,7 +133,7 @@ export default function PartyInfoScreen() {
         <Text style={styles.partyName}>{party.name}</Text>
 
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Lv / 次のLvに必要な経験値</Text>
+          <Text style={styles.sectionTitle}>{t('ui.formation.partyInfo.levelSectionTitle')}</Text>
           {partyMembers.map((goblin) => {
             const expForNext = getExpForNextLevel(goblin.level)
             const remainingExp = Math.max(0, expForNext - goblin.experience)
@@ -142,7 +144,7 @@ export default function PartyInfoScreen() {
                 <View style={styles.memberInfo}>
                   <Text style={styles.memberName}>{goblin.name}</Text>
                   <Text style={styles.memberSubText}>
-                    {`Lv${goblin.level} 次のLvまで ${remainingExp} (${getExpRateText()})`}
+                    {t('ui.formation.partyInfo.levelLine', { level: goblin.level, remaining: remainingExp, rate: getExpRateText(t) })}
                   </Text>
                 </View>
               </View>
@@ -151,11 +153,11 @@ export default function PartyInfoScreen() {
         </View>
 
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>隊列による攻撃能力補正</Text>
+          <Text style={styles.sectionTitle}>{t('ui.formation.partyInfo.rowDamageTitle')}</Text>
           {partyMembers.map((goblin, index) => {
             const memberSkills = memberSkillsById[goblin.id] ?? goblin.skills
             const multiplier = getRowDamageMultiplierFromSkills(memberSkills, index)
-            const attackTypeLabel = getAttackTypeLabel(memberSkills)
+            const attackTypeLabel = getAttackTypeLabel(memberSkills, t)
 
             return (
               <View key={`row-${goblin.id}`} style={styles.memberRow}>
@@ -163,7 +165,7 @@ export default function PartyInfoScreen() {
                 <View style={styles.attackInfoRow}>
                   <Text style={styles.memberName}>{goblin.name}</Text>
                   <Text style={styles.attackModifierText}>
-                    {`補正: ${formatPercent(multiplier)} (${attackTypeLabel})`}
+                    {t('ui.formation.partyInfo.modifierLine', { percent: formatPercent(multiplier), type: attackTypeLabel })}
                   </Text>
                 </View>
               </View>

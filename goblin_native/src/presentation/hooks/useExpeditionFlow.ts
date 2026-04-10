@@ -18,6 +18,7 @@ import { useDungeonStore } from '../stores/useDungeonStore'
 import { SQLiteEquipmentRepository } from '../../infrastructure/repositories/SQLiteEquipmentRepository'
 import { useDebugSettingsStore } from '../stores/useDebugSettingsStore'
 import { getDungeonName } from '../../shared/i18n/entityLocalization'
+import i18n from '../../shared/i18n'
 
 interface UseExpeditionFlowParams {
   parties?: Party[]
@@ -46,7 +47,7 @@ export interface ExpeditionHistoryDisplay {
 
 function formatDungeonLabel(dungeonName: string, areaLevel?: number): string {
   if (areaLevel === undefined) return dungeonName
-  return `${dungeonName} / エリアLv.${areaLevel}`
+  return `${dungeonName} / Area Lv.${areaLevel}`
 }
 
 export const useExpeditionFlow = ({
@@ -254,8 +255,8 @@ export const useExpeditionFlow = ({
           const dungeon = areasData.find(d => d.id === result.newDungeonCaptured)
           if (dungeon?.isBaseCapture) {
             Alert.alert(
-              'ダンジョン制圧！',
-              `「${getDungeonName(dungeon)}」を制圧しました！\n\n拠点管理画面でランクアップが可能になりました。`,
+              i18n.t('ui.result.completed'),
+              i18n.t('ui.result.unlockedArea', { name: getDungeonName(dungeon) }),
               [{ text: 'OK' }]
             )
           }
@@ -308,8 +309,8 @@ export const useExpeditionFlow = ({
           ? getRemainingMinutes(record.returnTime, currentTime)
           : 0
         const title = ongoing && record.returnTime
-          ? `[${floorReached}F]: 帰還予定 ${formatTime(record.returnTime)} 残り${remainingMinutes}分`
-          : `[${floorReached}F]: ${formatFullDateTime(record.startTime)}`
+          ? i18n.t('ui.formation.index.historyOngoing', { floor: floorReached, time: formatTime(record.returnTime), minutes: remainingMinutes })
+          : i18n.t('ui.formation.index.historyCompleted', { floor: floorReached, time: formatFullDateTime(record.startTime) })
         return {
           id: record.id,
           title,

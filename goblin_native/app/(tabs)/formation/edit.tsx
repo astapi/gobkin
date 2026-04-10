@@ -1,6 +1,7 @@
 import { useState, useCallback, useMemo, useEffect } from 'react'
 import { View, Text, FlatList, TouchableOpacity, StyleSheet, ActivityIndicator, Image, ScrollView } from 'react-native'
 import { router, useLocalSearchParams, Stack } from 'expo-router'
+import { useTranslation } from 'react-i18next'
 import { usePartyStore } from '@/presentation/stores/usePartyStore'
 import { useGoblinStore } from '@/presentation/stores/useGoblinStore'
 import { getGoblinDisplayImage } from '@/shared/utils/goblinImages'
@@ -19,6 +20,7 @@ interface SlotProps {
 }
 
 function PartySlot({ label, goblin, isEmpty, isSelected, onPress, onRemove }: SlotProps) {
+  const { t } = useTranslation()
   if (isEmpty || !goblin) {
     return (
       <TouchableOpacity
@@ -31,7 +33,7 @@ function PartySlot({ label, goblin, isEmpty, isSelected, onPress, onRemove }: Sl
         </View>
         <View style={styles.emptySlot}>
           <Text style={styles.emptySlotPlus}>+</Text>
-          <Text style={styles.emptySlotText}>空き</Text>
+          <Text style={styles.emptySlotText}>{t('ui.formation.edit.emptySlot')}</Text>
         </View>
       </TouchableOpacity>
     )
@@ -69,6 +71,7 @@ function getSlotLabel(index: number): string {
 }
 
 export default function PartyEditScreen() {
+  const { t } = useTranslation()
   const { partyId } = useLocalSearchParams<{ partyId: string }>()
   const parties = usePartyStore((state) => state.parties)
   const partiesLoading = usePartyStore((state) => state.isLoading)
@@ -216,7 +219,7 @@ export default function PartyEditScreen() {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#3B82F6" />
-        <Text style={styles.loadingText}>読み込み中...</Text>
+        <Text style={styles.loadingText}>{t('ui.common.loading')}</Text>
       </View>
     )
   }
@@ -224,9 +227,9 @@ export default function PartyEditScreen() {
   if (!party) {
     return (
       <View style={styles.errorContainer}>
-        <Text style={styles.errorText}>パーティが見つかりません</Text>
+        <Text style={styles.errorText}>{t('ui.formation.common.partyNotFound')}</Text>
         <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-          <Text style={styles.backButtonText}>戻る</Text>
+          <Text style={styles.backButtonText}>{t('ui.formation.common.back')}</Text>
         </TouchableOpacity>
       </View>
     )
@@ -238,23 +241,23 @@ export default function PartyEditScreen() {
         options={{
           headerLeft: () => (
             <TouchableOpacity onPress={() => router.back()}>
-              <Text style={styles.headerButton}>キャンセル</Text>
+              <Text style={styles.headerButton}>{t('ui.formation.edit.cancel')}</Text>
             </TouchableOpacity>
           ),
           headerRight: () => (
             <TouchableOpacity onPress={handleSave}>
-              <Text style={[styles.headerButton, styles.headerButtonPrimary]}>保存</Text>
+              <Text style={[styles.headerButton, styles.headerButtonPrimary]}>{t('ui.formation.common.save')}</Text>
             </TouchableOpacity>
           ),
-          title: 'メンバー編集',
+          title: t('ui.formation.edit.title'),
         }}
       />
       <ScrollView style={styles.container}>
         {/* パーティメンバースロット */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>パーティメンバー（最大{MAX_PARTY_SIZE}人）</Text>
+          <Text style={styles.sectionTitle}>{t('ui.formation.edit.memberSlotsTitle', { max: MAX_PARTY_SIZE })}</Text>
           <Text style={styles.sectionDescription}>
-            スロットを選んでから別の編成済みスロットをタップすると、隊列を入れ替えられます。
+            {t('ui.formation.edit.memberSlotsDescription')}
           </Text>
           <View style={styles.slotsGrid}>
             {slots.map((goblin, index) => (
@@ -273,10 +276,10 @@ export default function PartyEditScreen() {
 
         {/* 利用可能なゴブリン */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>利用可能なゴブリン</Text>
+          <Text style={styles.sectionTitle}>{t('ui.formation.edit.availableGoblins')}</Text>
           {availableGoblins.length === 0 ? (
             <View style={styles.emptyGoblins}>
-              <Text style={styles.emptyGoblinsText}>利用可能なゴブリンがいません</Text>
+              <Text style={styles.emptyGoblinsText}>{t('ui.formation.edit.noAvailableGoblins')}</Text>
             </View>
           ) : (
             <View style={styles.goblinList}>

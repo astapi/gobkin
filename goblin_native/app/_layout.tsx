@@ -14,7 +14,7 @@ import { useBaseStore } from '@/presentation/stores/useBaseStore'
 import { useDungeonStore } from '@/presentation/stores/useDungeonStore'
 import { useExpeditionStore } from '@/presentation/stores/useExpeditionStore'
 import { useDebugSettingsStore } from '@/presentation/stores/useDebugSettingsStore'
-import '@/shared/i18n'
+import { initializeI18n } from '@/shared/i18n'
 
 export default function RootLayout() {
   const { t } = useTranslation()
@@ -25,6 +25,7 @@ export default function RootLayout() {
     if (!ready) return
     const init = async () => {
       await Promise.all([
+        initializeI18n(),
         useGoblinStore.getState().initialize(),
         usePartyStore.getState().initialize(),
         useBaseStore.getState().initialize(),
