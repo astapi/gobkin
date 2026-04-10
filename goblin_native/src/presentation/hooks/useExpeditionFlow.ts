@@ -207,7 +207,7 @@ export const useExpeditionFlow = ({
           partyId: party.id,
           partyName: party.name,
           dungeonId: dungeon.id,
-          dungeonName: dungeon.name,
+          dungeonName: getDungeonName(dungeon),
           startTime,
           returnTime,
           status: 'ongoing',
