@@ -53,6 +53,14 @@ function formatBonus(stat: string, value: number): string {
   return `${value > 0 ? '+' : ''}${value}${isPercent ? '%' : ''}`
 }
 
+function getDisplayBonuses(eq: EquipmentInstance) {
+  return EquipmentService.calculateEquipmentBonuses([eq])
+}
+
+function getDisplayEffects(eq: EquipmentInstance) {
+  return EquipmentService.collectEquipmentEffects([eq])
+}
+
 /** カテゴリ→定義順→称号レア度（低→高）でソート */
 function sortEquipment(items: EquipmentInstance[]): EquipmentInstance[] {
   const allTemplates = getEquipmentTemplates()
@@ -112,6 +120,9 @@ function EquippedItemDetail({
   onClose: () => void
   onUnequip: () => void
 }) {
+  const displayBonuses = getDisplayBonuses(equipment)
+  const displayEffects = getDisplayEffects(equipment)
+
   return (
     <Modal visible={visible} animationType="fade" transparent onRequestClose={onClose}>
       <View style={styles.overlayBackground}>
@@ -128,7 +139,7 @@ function EquippedItemDetail({
           )}
 
           <View style={styles.detailBonuses}>
-            {template.statBonuses.map((bonus, i) => (
+            {displayBonuses.map((bonus, i) => (
               <View key={i} style={styles.bonusBadge}>
                 <Text style={styles.bonusBadgeText}>
                   {STAT_LABELS[bonus.stat] ?? bonus.stat} {formatBonus(bonus.stat, bonus.value)}
@@ -144,9 +155,9 @@ function EquippedItemDetail({
             ))}
           </View>
 
-          {template.effects && template.effects.length > 0 && (
+          {displayEffects.length > 0 && (
             <View style={styles.detailEffects}>
-              {template.effects.map((effect, i) => (
+              {displayEffects.map((effect, i) => (
                 <Text key={i} style={styles.effectText}>
                   {effect.type}: {effect.value}
                 </Text>
@@ -182,6 +193,8 @@ function EquipmentRow({
   highlighted?: boolean
   count?: number
 }) {
+  const displayBonuses = getDisplayBonuses(eq)
+
   return (
     <TouchableOpacity
       style={[styles.itemRow, highlighted && styles.itemRowHighlighted]}
@@ -192,7 +205,7 @@ function EquipmentRow({
           {count && count > 1 ? `x${count} ${getDisplayName(eq, template)}` : getDisplayName(eq, template)}
         </Text>
         <View style={styles.itemBonusRow}>
-          {template.statBonuses.map((bonus, i) => (
+          {displayBonuses.map((bonus, i) => (
             <View key={i} style={styles.itemBonusBadge}>
               <Text style={styles.itemBonusText}>
                 {STAT_LABELS[bonus.stat] ?? bonus.stat} {formatBonus(bonus.stat, bonus.value)}

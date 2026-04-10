@@ -294,6 +294,39 @@ describe('ModStatCalculator — 戦闘ステータス計算', () => {
     expect(bonuses[0].sourceCategory).toBe('weapon')
   })
 
+  it('EquipmentServiceは称号付き装備のプラス補正を倍率適用する', () => {
+    const bonuses = EquipmentService.calculateEquipmentBonuses([
+      { id: 'eq1', templateId: 'sword_broad', slotIndex: 0, goblinId: 1, titleId: 'masterwork' },
+    ])
+
+    expect(bonuses).toEqual(expect.arrayContaining([
+      expect.objectContaining({ stat: 'atk_flat', value: 15, sourceCategory: 'weapon' }),
+      expect.objectContaining({ stat: 'def_flat', value: 3, sourceCategory: 'weapon' }),
+    ]))
+  })
+
+  it('EquipmentServiceは称号付き装備のマイナス補正を倍率適用する', () => {
+    const bonuses = EquipmentService.calculateEquipmentBonuses([
+      { id: 'eq1', templateId: 'armor_armor', slotIndex: 0, goblinId: 1, titleId: 'masterwork' },
+    ])
+
+    expect(bonuses).toEqual(expect.arrayContaining([
+      expect.objectContaining({ stat: 'critical_rate_percent', value: -2, sourceCategory: 'armor' }),
+      expect.objectContaining({ stat: 'def_flat', value: 13, sourceCategory: 'armor' }),
+      expect.objectContaining({ stat: 'hp_flat', value: 19, sourceCategory: 'armor' }),
+    ]))
+  })
+
+  it('EquipmentServiceは称号付き装備の特殊効果にも倍率適用する', () => {
+    const effects = EquipmentService.collectEquipmentEffects([
+      { id: 'eq1', templateId: 'sword_broad', slotIndex: 0, goblinId: 1, titleId: 'masterwork' },
+    ])
+
+    expect(effects).toEqual(expect.arrayContaining([
+      expect.objectContaining({ type: 'def_to_hp', value: 2, sourceCategory: 'weapon' }),
+    ]))
+  })
+
   it('EquipmentServiceは装備に応じた物理ダメージ軽減スキルを付与・解除する', () => {
     const goblin = createTestGoblin({ skills: [] })
     const equipment = { id: 'eq1', templateId: 'armor_armor', slotIndex: -1, goblinId: null }

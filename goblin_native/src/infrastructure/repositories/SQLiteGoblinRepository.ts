@@ -56,7 +56,7 @@ export class SQLiteGoblinRepository implements IGoblinRepository {
     const normalizedGoblin = syncGoblinDerivedStats(normalizeGoblinJobSkills(goblin))
     const persistedGoblin: Goblin = {
       ...normalizedGoblin,
-      effectiveStats: ModStatCalculator.calculate(normalizedGoblin),
+      effectiveStats: normalizedGoblin.effectiveStats ?? ModStatCalculator.calculate(normalizedGoblin),
     }
     const db = await getDatabase()
     await db.runAsync(
@@ -140,7 +140,7 @@ export class SQLiteGoblinRepository implements IGoblinRepository {
     const normalizedGoblin = syncGoblinDerivedStats(goblin)
     return {
       ...normalizedGoblin,
-      effectiveStats: ModStatCalculator.calculate(normalizedGoblin),
+      effectiveStats: normalizedGoblin.effectiveStats ?? ModStatCalculator.calculate(normalizedGoblin),
     }
   }
 }

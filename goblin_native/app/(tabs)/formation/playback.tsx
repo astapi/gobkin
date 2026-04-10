@@ -11,7 +11,7 @@ import type { TimelineEvent, ExpeditionReplay, ExpeditionRecord, ExpeditionEndRe
 import type { BattleLogEntry, BattleLogMeta } from '@/shared/types'
 import { storeBattleLog } from '@/presentation/contexts/battleLogStore'
 import { getGoblinDisplayImage } from '@/shared/utils/goblinImages'
-import { ModStatCalculator } from '@/core/services/ModStatCalculator'
+import { getEffectiveStats } from '@/shared/utils/goblinStats'
 import { getDungeonName, getEquipmentDisplayName } from '@/shared/i18n/entityLocalization'
 import { getEquipmentTemplate } from '@/shared/data/equipmentPoolLoader'
 
@@ -152,13 +152,13 @@ export default function ExpeditionPlaybackScreen() {
           goldGained: event.enemy.gold,
           members: partyMembers.map((memberId, idx) => {
             const goblin = partyGoblins[idx]
-            const preHP = partyHpRef.current[idx] ?? (goblin ? ModStatCalculator.calculate(goblin).hp : 100)
+            const preHP = partyHpRef.current[idx] ?? (goblin ? getEffectiveStats(goblin).hp : 100)
             return {
               name: goblin?.name ?? `ID:${memberId}`,
               currentHP: event.combat.allyHPDelta[idx] !== undefined
                 ? Math.max(0, preHP + event.combat.allyHPDelta[idx])
                 : 0,
-              maxHP: goblin ? ModStatCalculator.calculate(goblin).hp : 100,
+              maxHP: goblin ? getEffectiveStats(goblin).hp : 100,
               level: goblin?.level ?? 1,
               xpEach: xpPerMember,
               expMultiplier: 1,
@@ -284,7 +284,7 @@ export default function ExpeditionPlaybackScreen() {
     }
 
     const initialPartyHp = partyGoblins.map(goblin => {
-      return goblin ? ModStatCalculator.calculate(goblin).hp : 100
+      return goblin ? getEffectiveStats(goblin).hp : 100
     })
     let tempHp = [...initialPartyHp]
     partyHpRef.current = [...initialPartyHp]
@@ -435,7 +435,7 @@ export default function ExpeditionPlaybackScreen() {
       <View style={styles.partyGrid}>
         {replay.meta.party.map((memberId, index) => {
           const goblin = partyGoblins[index]
-          const maxHp = goblin ? ModStatCalculator.calculate(goblin).hp : 100
+          const maxHp = goblin ? getEffectiveStats(goblin).hp : 100
           const currentHp = partyHp[index] ?? maxHp
           return (
             <View key={memberId} style={styles.partyCard}>

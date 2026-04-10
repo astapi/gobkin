@@ -11,7 +11,6 @@ import { GoblinCard } from '@/presentation/components/GoblinCard'
 import type { Goblin } from '@/shared/types'
 import { getGoblinDisplayImage } from '@/shared/utils/goblinImages'
 import { getEffectiveStats } from '@/shared/utils/goblinStats'
-import { ModStatCalculator } from '@/core/services/ModStatCalculator'
 import { getModTemplate } from '@/shared/data/modPoolLoader'
 
 const STAT_LABELS: Record<string, string> = {
@@ -247,7 +246,7 @@ export default function GoblinListScreen() {
           </TouchableOpacity>
         </View>
         {pendingGoblins.map((goblin) => {
-          const effectiveStats = ModStatCalculator.calculate(goblin)
+          const effectiveStats = getEffectiveStats(goblin)
           return (
             <View key={goblin.id} style={styles.pendingCard}>
               <View style={styles.pendingRow}>

@@ -4,11 +4,29 @@ import type { EquipmentInstance, EquipmentStatBonus, EquipmentEffect } from '../
 import { calculateSlotCount } from '../../shared/data/equipmentConfig'
 import { getEquipmentTemplate } from '../../shared/data/equipmentPoolLoader'
 import { cloneCharacterSkill } from '../../shared/data/characterSkills'
+import { EquipmentTitleService } from './EquipmentTitleService'
 
 /**
  * 装備の着脱・バリデーション・ステータスボーナス計算を担当するサービス
  */
 export class EquipmentService {
+  private static scaleValueByTitle(value: number, equipment: EquipmentInstance): number {
+    if (value === 0 || !equipment.titleId) {
+      return value
+    }
+
+    const titleDef = EquipmentTitleService.getTitleDef(equipment.titleId)
+    if (!titleDef) {
+      return value
+    }
+
+    if (value > 0) {
+      return Math.floor(value * titleDef.plusMultiplier)
+    }
+
+    return -Math.floor(Math.abs(value) * titleDef.minusMultiplier)
+  }
+
   /**
    * ゴブリンが利用可能なスロット数を取得
    */
@@ -95,6 +113,7 @@ export class EquipmentService {
       for (const bonus of template.statBonuses) {
         bonuses.push({
           ...bonus,
+          value: this.scaleValueByTitle(bonus.value, eq),
           sourceCategory: template.category,
         })
       }
@@ -119,6 +138,7 @@ export class EquipmentService {
       for (const effect of template.effects) {
         effects.push({
           ...effect,
+          value: this.scaleValueByTitle(effect.value, eq),
           sourceCategory: template.category,
         })
       }
