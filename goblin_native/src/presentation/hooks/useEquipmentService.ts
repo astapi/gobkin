@@ -4,6 +4,7 @@ import { SQLiteEquipmentRepository } from '../../infrastructure/repositories/SQL
 import { EquipmentService } from '../../core/services/EquipmentService'
 import type { Goblin } from '../../shared/types'
 import { useGoblinStore } from '../stores/useGoblinStore'
+import { calculateGoblinEffectiveStats } from '../../shared/utils/goblinStats'
 
 export const useEquipmentService = () => {
   const [equippedItems, setEquippedItems] = useState<EquipmentInstance[]>([])
@@ -32,7 +33,11 @@ export const useEquipmentService = () => {
       if (result.unequipped) {
         await repository.save(result.unequipped)
       }
-      await saveGoblin({ ...goblin })
+      const updatedEquipped = await repository.getByGoblinId(goblin.id)
+      await saveGoblin({
+        ...goblin,
+        effectiveStats: calculateGoblinEffectiveStats(goblin, updatedEquipped),
+      })
       await refreshEquipment(goblin.id)
       return { success: true }
     },
@@ -43,7 +48,11 @@ export const useEquipmentService = () => {
     async (goblin: Goblin, equipment: EquipmentInstance) => {
       const unequipped = EquipmentService.unequip(equipment, goblin)
       await repository.save(unequipped)
-      await saveGoblin({ ...goblin })
+      const updatedEquipped = await repository.getByGoblinId(goblin.id)
+      await saveGoblin({
+        ...goblin,
+        effectiveStats: calculateGoblinEffectiveStats(goblin, updatedEquipped),
+      })
       await refreshEquipment(goblin.id)
     },
     [repository, refreshEquipment, saveGoblin],

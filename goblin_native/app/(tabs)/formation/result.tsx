@@ -7,7 +7,7 @@ import { useDungeonStore } from '@/presentation/stores/useDungeonStore'
 import { useExpeditionStore } from '@/presentation/stores/useExpeditionStore'
 import { getGoblinDisplayImage } from '@/shared/utils/goblinImages'
 import { areasData } from '@/shared/data'
-import { ModStatCalculator } from '@/core/services/ModStatCalculator'
+import { getEffectiveStats } from '@/shared/utils/goblinStats'
 import type { ExpeditionRecord, Goblin, TimelineEvent, TreasureDrop } from '@/shared/types'
 import { getDungeonName, getEquipmentDisplayName } from '@/shared/i18n/entityLocalization'
 import { getEquipmentTemplate } from '@/shared/data/equipmentPoolLoader'
@@ -69,7 +69,7 @@ export default function ExpeditionResultScreen() {
   const endHpMap = useMemo(() => {
     if (!replay || partySnapshot.length === 0) return new Map<number, number>()
 
-    const hpValues = partySnapshot.map(g => ModStatCalculator.calculate(g).hp)
+    const hpValues = partySnapshot.map(g => getEffectiveStats(g).hp)
 
     for (const event of replay.events) {
       if ((event.type === 'battle' || event.type === 'boss') && event.combat.allyHPDelta) {
@@ -192,7 +192,7 @@ export default function ExpeditionResultScreen() {
 
         <View style={styles.section}>
           {partySnapshot.map(goblin => {
-            const maxHp = ModStatCalculator.calculate(goblin).hp
+            const maxHp = getEffectiveStats(goblin).hp
             const currentHp = endHpMap.get(goblin.id) ?? maxHp
             const levelUp = levelUpMap.get(goblin.id)
             const dead = currentHp === 0

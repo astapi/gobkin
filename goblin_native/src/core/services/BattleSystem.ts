@@ -16,6 +16,7 @@ import { CombatantManager } from './CombatantManager'
 import { DamageCalculator } from './DamageCalculator'
 import { ModStatCalculator } from './ModStatCalculator'
 import { getGoblinBaseAttributes } from '../../shared/utils/goblinHp'
+import { getEffectiveStats } from '../../shared/utils/goblinStats'
 import i18n from '../../shared/i18n'
 import { getSpellLabel } from '../../shared/i18n/entityLocalization'
 import type {
@@ -572,7 +573,7 @@ export class BattleSystem {
     const combatant = this.combatantManager.fromGoblin(goblin)
     const actionOrderAgility = (goblin as Goblin & { agility?: number }).agility
     // Mod適用後のステータスを使用
-    const effectiveStats = ModStatCalculator.calculate(goblin)
+    const effectiveStats = getEffectiveStats(goblin)
     const hp = initialHP ?? effectiveStats.hp
     const damageReduction = ModStatCalculator.getDamageReduction(goblin)
     const physicalDamageReduction = getPhysicalDamageReductionFromSkills(goblin.skills)

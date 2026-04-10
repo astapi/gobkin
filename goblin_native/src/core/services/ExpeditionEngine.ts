@@ -22,6 +22,7 @@ import { ModStatCalculator } from './ModStatCalculator'
 import { EquipmentTitleService } from './EquipmentTitleService'
 import { normalizePartyRewardMultipliers } from '../../shared/types'
 import { getGoblinBaseAttributes } from '../../shared/utils/goblinHp'
+import { getEffectiveStats } from '../../shared/utils/goblinStats'
 
 /** 全エリア共通の宝箱ドロップ確率（敵1体ごと） */
 const DROP_CHANCE = 0.15
@@ -338,7 +339,7 @@ export class ExpeditionEngine {
     return party.map(goblin => {
       // 基礎ステータスを保存（因子・Mod適用はModStatCalculatorで行う）
       // currentHP/maxHPは因子・Mod適用後の値を使用（戦闘中のHP管理のため）
-      const effectiveStats = ModStatCalculator.calculate(goblin)
+      const effectiveStats = getEffectiveStats(goblin)
       return {
         id: goblin.id.toString(),
         name: goblin.name,

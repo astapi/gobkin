@@ -1,11 +1,10 @@
 import type { Enemy, Goblin } from '../../shared/types'
 import type { Combatant } from './DamageCalculator'
-import { ModStatCalculator } from './ModStatCalculator'
+import { getEffectiveStats } from '../../shared/utils/goblinStats'
 
 export class CombatantManager {
   public fromGoblin(goblin: Goblin): Combatant {
-    // Mod適用後のステータスを使用
-    const effectiveStats = ModStatCalculator.calculate(goblin)
+    const effectiveStats = getEffectiveStats(goblin)
     return {
       id: goblin.id.toString(),
       name: goblin.name,

@@ -5,6 +5,7 @@ import { SQLiteEquipmentRepository } from '../../infrastructure/repositories/SQL
 import type { IGoblinRepository, IEquipmentRepository } from '../../core/repositories'
 import { DeleteGoblinUseCase, GetGoblinListUseCase } from '../../core/usecases'
 import { usePartyStore } from './usePartyStore'
+import { calculateGoblinEffectiveStats } from '../../shared/utils/goblinStats'
 
 interface GoblinState {
   goblins: Goblin[]
@@ -25,17 +26,42 @@ const equipmentRepository: IEquipmentRepository = SQLiteEquipmentRepository.getI
 const getGoblinListUseCase = new GetGoblinListUseCase(repository)
 const deleteGoblinUseCase = new DeleteGoblinUseCase(repository, equipmentRepository)
 
+async function attachEquipmentEffectiveStats(goblin: Goblin): Promise<Goblin> {
+  const equippedItems = await equipmentRepository.getByGoblinId(goblin.id)
+  return {
+    ...goblin,
+    effectiveStats: calculateGoblinEffectiveStats(goblin, equippedItems),
+  }
+}
+
+async function attachEquipmentEffectiveStatsToList(goblins: Goblin[]): Promise<Goblin[]> {
+  const allEquipment = await equipmentRepository.getAll()
+  const equipmentByGoblinId = new Map<number, typeof allEquipment>()
+
+  for (const equipment of allEquipment) {
+    if (equipment.goblinId == null || equipment.slotIndex < 0) continue
+    const list = equipmentByGoblinId.get(equipment.goblinId) ?? []
+    list.push(equipment)
+    equipmentByGoblinId.set(equipment.goblinId, list)
+  }
+
+  return goblins.map((goblin) => ({
+    ...goblin,
+    effectiveStats: calculateGoblinEffectiveStats(goblin, equipmentByGoblinId.get(goblin.id) ?? []),
+  }))
+}
+
 export const useGoblinStore = create<GoblinState & GoblinActions>()((set) => ({
   goblins: [],
   isLoading: true,
 
   initialize: async () => {
-    const goblins = await getGoblinListUseCase.execute()
+    const goblins = await attachEquipmentEffectiveStatsToList(await getGoblinListUseCase.execute())
     set({ goblins, isLoading: false })
   },
 
   refresh: async () => {
-    const goblins = await getGoblinListUseCase.execute()
+    const goblins = await attachEquipmentEffectiveStatsToList(await getGoblinListUseCase.execute())
     set({ goblins })
   },
 
@@ -44,12 +70,12 @@ export const useGoblinStore = create<GoblinState & GoblinActions>()((set) => ({
     if (!goblin) {
       throw new Error(`ID ${goblinId} のゴブリンが見つかりません`)
     }
-    return goblin
+    return attachEquipmentEffectiveStats(goblin)
   },
 
   saveGoblin: async (goblin: Goblin) => {
     await repository.saveGoblin(goblin)
-    const goblins = await getGoblinListUseCase.execute()
+    const goblins = await attachEquipmentEffectiveStatsToList(await getGoblinListUseCase.execute())
     set({ goblins })
   },
 
@@ -60,13 +86,13 @@ export const useGoblinStore = create<GoblinState & GoblinActions>()((set) => ({
       throw new Error(`${assignedParty.name}に編成中のため追放できません`)
     }
     await deleteGoblinUseCase.execute(goblinId)
-    const goblins = await getGoblinListUseCase.execute()
+    const goblins = await attachEquipmentEffectiveStatsToList(await getGoblinListUseCase.execute())
     set({ goblins })
   },
 
   updateGoblinLevel: async (goblinId: number, level: number) => {
     await repository.updateGoblinLevel(goblinId, level)
-    const goblins = await getGoblinListUseCase.execute()
+    const goblins = await attachEquipmentEffectiveStatsToList(await getGoblinListUseCase.execute())
     set({ goblins })
   },
 }))

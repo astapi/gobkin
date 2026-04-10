@@ -16,6 +16,7 @@ import { getModTemplate } from '@/shared/data/modPoolLoader'
 import { describeCharacterSkill, getUniqueSkillsById } from '@/shared/data/characterSkills'
 import { getGoblinJobDefinition } from '@/shared/data/goblinJobs'
 import { getGoblinBaseAttributes } from '@/shared/utils/goblinHp'
+import { getEffectiveStats } from '@/shared/utils/goblinStats'
 import { getFactorName, getRaceLabel, getSkillLabel, getStatLabel } from '@/shared/i18n/entityLocalization'
 
 export default function GoblinDetailScreen() {
@@ -50,7 +51,7 @@ export default function GoblinDetailScreen() {
   }, [goblin, parentNav])
 
   const effectiveStats = useMemo(
-    () => goblin ? ModStatCalculator.calculate(goblin) : null,
+    () => goblin ? getEffectiveStats(goblin) : null,
     [goblin]
   )
   const expForNext = goblin ? getExpForNextLevel(goblin.level) : 0
