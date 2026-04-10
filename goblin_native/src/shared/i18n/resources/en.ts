@@ -208,7 +208,7 @@ const en = {
         reasonLaunchFailed: 'Dispatch failed',
         pendingOverflowBody: 'Not enough pending slots. If {{count}} parties are dispatched, newly added goblins after successful expeditions may be discarded. Dispatch anyway?',
         partyDefaultName: 'PT{{index}}',
-        rewardText: 'G{{gold}}x Rare{{rare}}x Title{{title}}x',
+        rewardText: 'G{{gold}}x Rare{{rare}}x Prefix{{title}}x',
       },
       preparation: {
         title: 'Expedition Prep',
@@ -230,7 +230,7 @@ const en = {
         renameTitle: 'Rename Party',
         renamePlaceholder: 'Enter party name',
         selectReturnPolicyTitle: 'Select Return Policy',
-        rewardText: 'G{{gold}}x Rare{{rare}}x Title{{title}}x',
+        rewardText: 'G{{gold}}x Rare{{rare}}x Prefix{{title}}x',
         nameRequiredTitle: 'Enter a party name',
         nameRequiredBody: 'Empty party names cannot be saved',
         renameFailedTitle: 'Could not rename the party',
