@@ -7,7 +7,7 @@ import type {
   LearnedSpell,
 } from '../types'
 import i18n from '../i18n'
-import { getSkillLabel } from '../i18n/entityLocalization'
+import { getSkillDescription, getSkillLabel } from '../i18n/entityLocalization'
 
 export function cloneCharacterSkill(skill: CharacterSkill): CharacterSkill {
   return {
@@ -77,11 +77,11 @@ export function describeCharacterSkill(skill: CharacterSkill): string {
   }
 
   if (skill.defToHpPercent !== undefined) {
-    return skill.name
+    return i18n.t('battle.defToHp', { value: skill.defToHpPercent })
   }
 
   if (skill.criticalDamageBonusPercent !== undefined) {
-    return skill.name
+    return i18n.t('battle.criticalDamageBonus', { value: skill.criticalDamageBonusPercent })
   }
 
   if (skill.protectRearAllyNormalAttackMultiplier !== undefined) {
@@ -109,15 +109,7 @@ export function describeCharacterSkill(skill: CharacterSkill): string {
 }
 
 export function getCharacterSkillDescription(skill: CharacterSkill): string {
-  if (skill.enablesMeleeRowDamagePenalty) {
-    return '隊列の後ろに行くほど通常攻撃のダメージが低下します。'
-  }
-
-  if (skill.enablesRangedRowDamagePenalty) {
-    return '隊列の前に行くほど通常攻撃のダメージが低下します。'
-  }
-
-  return describeCharacterSkill(skill)
+  return getSkillDescription(skill) ?? describeCharacterSkill(skill)
 }
 
 export function getSkillStatBonuses(skills: CharacterSkill[]): Partial<Record<keyof GoblinStats, number>> {

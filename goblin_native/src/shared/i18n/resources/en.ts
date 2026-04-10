@@ -448,8 +448,14 @@ const en = {
       inspire_150: { name: 'Inspire' },
       rear_guard: { name: 'Rear Guard' },
       survive_lethal_hp1: { name: 'Guts' },
-      weapon_melee_attack: { name: '[Weapon] Melee Attack' },
-      weapon_ranged_attack: { name: '[Weapon] Ranged Attack' },
+      weapon_melee_attack: {
+        name: '[Weapon] Melee Attack',
+        description: 'Normal attack damage decreases the farther back the unit is in the formation.',
+      },
+      weapon_ranged_attack: {
+        name: '[Weapon] Ranged Attack',
+        description: 'Normal attack damage decreases the farther forward the unit is in the formation.',
+      },
     },
     spell: {
       magic_arrow: 'Magic Arrow',
@@ -481,6 +487,8 @@ const en = {
     physicalReduction: '[-{{value}}%] Physical Damage Reduction',
     rearAllyDamage: 'Damage dealt to allies behind becomes x{{value}}',
     additionalDamage: '+{{value}} fixed damage on each normal hit',
+    defToHp: '[{{value}}%] DEF->HP',
+    criticalDamageBonus: 'Critical Damage +{{value}}%',
     rearProtection: 'Reduces normal attack damage taken by rear allies by {{value}}%',
     armorMultiplier: 'Armor equipment values become x{{value}}',
     evasionMultiplier: 'Evasion becomes x{{value}}',

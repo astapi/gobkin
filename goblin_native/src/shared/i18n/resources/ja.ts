@@ -448,8 +448,14 @@ const ja = {
       inspire_150: { name: '鼓舞' },
       rear_guard: { name: '後列防護' },
       survive_lethal_hp1: { name: '気合い' },
-      weapon_melee_attack: { name: '[武器]近距離攻撃' },
-      weapon_ranged_attack: { name: '[武器]遠距離攻撃' },
+      weapon_melee_attack: {
+        name: '[武器]近距離攻撃',
+        description: '隊列の後ろに行くほど通常攻撃のダメージが低下します。',
+      },
+      weapon_ranged_attack: {
+        name: '[武器]遠距離攻撃',
+        description: '隊列の前に行くほど通常攻撃のダメージが低下します。',
+      },
     },
     spell: {
       magic_arrow: 'マジックアロー',
@@ -481,6 +487,8 @@ const ja = {
     physicalReduction: '[-{{value}}%] 物理ダメージ軽減(%)',
     rearAllyDamage: '自分より後列の仲間のダメージが×{{value}}',
     additionalDamage: '通常攻撃の各ヒットに固定で+{{value}}',
+    defToHp: '[{{value}}%] DEF->HP',
+    criticalDamageBonus: '会心威力+{{value}}%',
     rearProtection: '自分より後列の仲間が受ける通常攻撃ダメージを{{value}}%軽減',
     armorMultiplier: '鎧カテゴリ装備の能力値が×{{value}}',
     evasionMultiplier: '回避が×{{value}}',

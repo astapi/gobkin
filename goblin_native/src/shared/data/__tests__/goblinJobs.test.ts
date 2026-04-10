@@ -40,9 +40,9 @@ describe('goblinJobs', () => {
     const goblin = createGoblin({
       job: 'guard',
       skills: [
-        { id: 'armor_mastery_150', name: '[1.5倍]鎧装備', equipmentCategoryMultiplier: { armor: 1.5 } },
-        { id: 'physical_reduction_5', name: '盾壁', physicalDamageReductionPercent: 12 },
-        { id: 'equipment_bonus', name: '装備スキル', statBonuses: { atk: 3 } },
+        { id: 'armor_mastery_150', equipmentCategoryMultiplier: { armor: 1.5 } },
+        { id: 'physical_reduction_5', physicalDamageReductionPercent: 12 },
+        { id: 'equipment_bonus', statBonuses: { atk: 3 } },
       ],
     })
 

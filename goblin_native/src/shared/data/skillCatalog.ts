@@ -15,9 +15,9 @@ function cloneSkill(skill: CharacterSkill): CharacterSkill {
 }
 
 function createAttackCountUpSkill(value: number): CharacterSkill {
+  const id = `attack_count_up_${value}`
   return {
-    id: `attack_count_up_${value}`,
-    name: `[+${value}]攻撃回数`,
+    id,
     statBonuses: {
       attackCount: value,
     },
@@ -25,25 +25,25 @@ function createAttackCountUpSkill(value: number): CharacterSkill {
 }
 
 function createDefToHpSkill(value: number): CharacterSkill {
+  const id = `def_to_hp_${value}`
   return {
-    id: `def_to_hp_${value}`,
-    name: `防御力の${value}%をHPに加算`,
+    id,
     defToHpPercent: value,
   }
 }
 
 function createCriticalDamageBonusSkill(value: number): CharacterSkill {
+  const id = `critical_damage_bonus_${value}`
   return {
-    id: `critical_damage_bonus_${value}`,
-    name: `会心威力+${value}%`,
+    id,
     criticalDamageBonusPercent: value,
   }
 }
 
 function createPhysicalReductionSkill(value: number): CharacterSkill {
+  const id = `physical_reduction_${value}`
   return {
-    id: `physical_reduction_${value}`,
-    name: `[-${value}%]物理ダメージ軽減(%)`,
+    id,
     physicalDamageReductionPercent: value,
   }
 }
@@ -51,29 +51,24 @@ function createPhysicalReductionSkill(value: number): CharacterSkill {
 export const CHARACTER_SKILL_CATALOG = {
   additional_damage_13: {
     id: 'additional_damage_13',
-    name: '[+13]追加ダメージ',
     additionalDamage: 13,
   },
 
   action_order_150: {
     id: 'action_order_150',
-    name: '[戦術] 先制攻撃',
     actionOrderMultiplier: 1.5,
   },
 
   armor_mastery_120: {
     id: 'armor_mastery_120',
-    name: '[1.2倍]鎧装備',
     equipmentCategoryMultiplier: { armor: 1.2 },
   },
   armor_mastery_130: {
     id: 'armor_mastery_130',
-    name: '[1.3倍]鎧装備',
     equipmentCategoryMultiplier: { armor: 1.3 },
   },
   armor_mastery_150: {
     id: 'armor_mastery_150',
-    name: '[1.5倍]鎧装備',
     equipmentCategoryMultiplier: { armor: 1.5 },
   },
 
@@ -91,7 +86,6 @@ export const CHARACTER_SKILL_CATALOG = {
 
   cover_low_hp_ally: {
     id: 'cover_low_hp_ally',
-    name: 'かばう',
     coverLowHpAlly: true,
   },
 
@@ -115,7 +109,6 @@ export const CHARACTER_SKILL_CATALOG = {
 
   equipment_accuracy_200: {
     id: 'equipment_accuracy_200',
-    name: '[2.0倍]命中精度',
     equipmentStatMultipliers: {
       accuracy_flat: 2,
       accuracy_percent: 2,
@@ -124,29 +117,24 @@ export const CHARACTER_SKILL_CATALOG = {
 
   evasion_150: {
     id: 'evasion_150',
-    name: '回避適正',
     statMultipliers: { evasion: 1.5 },
   },
 
   grant_blizzard: {
     id: 'grant_blizzard',
-    name: 'ブリザード',
     grantsSpellId: 'blizzard',
   },
   grant_fireball: {
     id: 'grant_fireball',
-    name: 'ファイヤーボール',
     grantsSpellId: 'fireball',
   },
   grant_magic_arrow: {
     id: 'grant_magic_arrow',
-    name: 'マジックアロー',
     grantsSpellId: 'magic_arrow',
   },
 
   inspire_150: {
     id: 'inspire_150',
-    name: '鼓舞',
     rearAllyDamageMultiplier: 1.5,
   },
 
@@ -164,24 +152,22 @@ export const CHARACTER_SKILL_CATALOG = {
 
   rear_guard: {
     id: 'rear_guard',
-    name: '後列防護',
     protectRearAllyNormalAttackMultiplier: 2 / 3,
   },
 
   survive_lethal_hp1: {
     id: 'survive_lethal_hp1',
-    name: '気合い',
     surviveLethalDamageAtHp1: true,
   },
 
   weapon_melee_attack: {
     id: 'weapon_melee_attack',
-    name: '[武器]近距離攻撃',
+    descriptionKey: 'entities.skill.weapon_melee_attack.description',
     enablesMeleeRowDamagePenalty: true,
   },
   weapon_ranged_attack: {
     id: 'weapon_ranged_attack',
-    name: '[武器]遠距離攻撃',
+    descriptionKey: 'entities.skill.weapon_ranged_attack.description',
     enablesRangedRowDamagePenalty: true,
   },
 } satisfies Record<string, CharacterSkill>
