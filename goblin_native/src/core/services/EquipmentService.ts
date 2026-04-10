@@ -1,6 +1,6 @@
 import type { Goblin } from '../../shared/types/Goblin'
 import type { CharacterSkill } from '../../shared/types/CharacterSkill'
-import type { EquipmentInstance, EquipmentStatBonus, EquipmentEffect } from '../../shared/types/Equipment'
+import type { EquipmentInstance, EquipmentStatBonus } from '../../shared/types/Equipment'
 import { calculateSlotCount } from '../../shared/data/equipmentConfig'
 import { getEquipmentTemplate } from '../../shared/data/equipmentPoolLoader'
 import { cloneCharacterSkill } from '../../shared/data/characterSkills'
@@ -21,10 +21,31 @@ export class EquipmentService {
     }
 
     if (value > 0) {
+      if (!Number.isInteger(value)) {
+        return Number((value * titleDef.plusMultiplier).toFixed(4))
+      }
       return Math.floor(value * titleDef.plusMultiplier)
     }
 
+    if (!Number.isInteger(value)) {
+      return -Number((Math.abs(value) * titleDef.minusMultiplier).toFixed(4))
+    }
+
     return -Math.floor(Math.abs(value) * titleDef.minusMultiplier)
+  }
+
+  private static scaleGrantedSkillByTitle(skill: CharacterSkill, equipment: EquipmentInstance): CharacterSkill {
+    const scaled = cloneCharacterSkill(skill)
+
+    if (scaled.defToHpPercent !== undefined) {
+      scaled.defToHpPercent = this.scaleValueByTitle(scaled.defToHpPercent, equipment)
+    }
+
+    if (scaled.criticalDamageBonusPercent !== undefined) {
+      scaled.criticalDamageBonusPercent = this.scaleValueByTitle(scaled.criticalDamageBonusPercent, equipment)
+    }
+
+    return scaled
   }
 
   /**
@@ -71,13 +92,13 @@ export class EquipmentService {
     let unequipped: EquipmentInstance | undefined
     if (existing) {
       unequipped = this.unequip(existing)
-      this.removeGrantedSkills(goblin, existing.templateId)
+      this.removeGrantedSkills(goblin, existing)
     }
 
     // 装備を装着
     equipment.goblinId = goblin.id
     equipment.slotIndex = slotIndex
-    this.addGrantedSkills(goblin, equipment.templateId)
+    this.addGrantedSkills(goblin, equipment)
 
     return { success: true, unequipped }
   }
@@ -87,7 +108,7 @@ export class EquipmentService {
    */
   static unequip(equipment: EquipmentInstance, goblin?: Goblin): EquipmentInstance {
     if (goblin) {
-      this.removeGrantedSkills(goblin, equipment.templateId)
+      this.removeGrantedSkills(goblin, equipment)
     }
 
     return {
@@ -122,31 +143,6 @@ export class EquipmentService {
     return bonuses
   }
 
-  /**
-   * ゴブリンの装備から特殊効果を収集
-   * ModStatCalculator に渡してステータス確定後に適用
-   */
-  static collectEquipmentEffects(
-    equipped: EquipmentInstance[]
-  ): EquipmentEffect[] {
-    const effects: EquipmentEffect[] = []
-
-    for (const eq of equipped) {
-      const template = getEquipmentTemplate(eq.templateId)
-      if (!template?.effects) continue
-
-      for (const effect of template.effects) {
-        effects.push({
-          ...effect,
-          value: this.scaleValueByTitle(effect.value, eq),
-          sourceCategory: template.category,
-        })
-      }
-    }
-
-    return effects
-  }
-
   static collectGrantedSkills(equipped: EquipmentInstance[]): CharacterSkill[] {
     const skills: CharacterSkill[] = []
 
@@ -155,27 +151,21 @@ export class EquipmentService {
       if (!template?.grantedSkills) continue
 
       for (const skill of template.grantedSkills) {
-        skills.push(cloneCharacterSkill(skill))
+        skills.push(this.scaleGrantedSkillByTitle(skill, eq))
       }
     }
 
     return skills
   }
 
-  private static addGrantedSkills(goblin: Goblin, templateId: string): void {
-    const template = getEquipmentTemplate(templateId)
-    if (!template?.grantedSkills?.length) return
-
-    for (const skill of template.grantedSkills) {
-      goblin.skills.push(cloneCharacterSkill(skill))
+  private static addGrantedSkills(goblin: Goblin, equipment: EquipmentInstance): void {
+    for (const skill of this.collectGrantedSkills([equipment])) {
+      goblin.skills.push(skill)
     }
   }
 
-  private static removeGrantedSkills(goblin: Goblin, templateId: string): void {
-    const template = getEquipmentTemplate(templateId)
-    if (!template?.grantedSkills?.length) return
-
-    for (const grantedSkill of template.grantedSkills) {
+  private static removeGrantedSkills(goblin: Goblin, equipment: EquipmentInstance): void {
+    for (const grantedSkill of this.collectGrantedSkills([equipment])) {
       const index = goblin.skills.findIndex((skill) => this.isSameSkill(skill, grantedSkill))
       if (index >= 0) {
         goblin.skills.splice(index, 1)

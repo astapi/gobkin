@@ -1,7 +1,6 @@
 import type {
   CharacterSkill,
   EquipmentCategory,
-  EquipmentEffect,
   EquipmentStat,
   EquipmentStatBonus,
   GoblinStats,
@@ -77,6 +76,14 @@ export function describeCharacterSkill(skill: CharacterSkill): string {
     return i18n.t('battle.additionalDamage', { value: skill.additionalDamage })
   }
 
+  if (skill.defToHpPercent !== undefined) {
+    return skill.name
+  }
+
+  if (skill.criticalDamageBonusPercent !== undefined) {
+    return skill.name
+  }
+
   if (skill.protectRearAllyNormalAttackMultiplier !== undefined) {
     const reducedRate = Math.round((1 - skill.protectRearAllyNormalAttackMultiplier) * 100)
     return i18n.t('battle.rearProtection', { value: reducedRate })
@@ -99,6 +106,18 @@ export function describeCharacterSkill(skill: CharacterSkill): string {
   }
 
   return getSkillLabel(skill)
+}
+
+export function getCharacterSkillDescription(skill: CharacterSkill): string {
+  if (skill.enablesMeleeRowDamagePenalty) {
+    return '隊列の後ろに行くほど通常攻撃のダメージが低下します。'
+  }
+
+  if (skill.enablesRangedRowDamagePenalty) {
+    return '隊列の前に行くほど通常攻撃のダメージが低下します。'
+  }
+
+  return describeCharacterSkill(skill)
 }
 
 export function getSkillStatBonuses(skills: CharacterSkill[]): Partial<Record<keyof GoblinStats, number>> {
@@ -239,17 +258,4 @@ export function applySkillBonusesToEquipmentBonuses(
     ...bonus,
     value: bonus.value * getEquipmentValueMultiplier(skills, bonus.sourceCategory, bonus.stat),
   }))
-}
-
-export function applySkillBonusesToEquipmentEffects(
-  skills: CharacterSkill[],
-  effects: EquipmentEffect[],
-): EquipmentEffect[] {
-  return effects.map((effect) => {
-    const statKey = effect.type === 'accuracy_boost' ? 'accuracy_flat' : undefined
-    return {
-      ...effect,
-      value: effect.value * getEquipmentValueMultiplier(skills, effect.sourceCategory, statKey),
-    }
-  })
 }

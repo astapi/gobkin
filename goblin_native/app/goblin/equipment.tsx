@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react'
-import { View, Text, TouchableOpacity, StyleSheet, FlatList, Modal, Alert } from 'react-native'
+import { View, Text, TouchableOpacity, StyleSheet, FlatList, Modal, Alert, ScrollView } from 'react-native'
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useLocalSearchParams } from 'expo-router'
 import type { EquipmentInstance, EquipmentTemplate, EquipmentCategory } from '@/shared/types'
@@ -8,15 +8,9 @@ import { useEquipmentService } from '@/presentation/hooks/useEquipmentService'
 import { EquipmentService } from '@/core/services/EquipmentService'
 import { getEquipmentTemplate, getEquipmentTemplates } from '@/shared/data/equipmentPoolLoader'
 import { EQUIPMENT_TITLE_DEFS } from '@/shared/data/equipmentTitleConfig'
-import { describeCharacterSkill } from '@/shared/data/characterSkills'
+import { describeCharacterSkill, getCharacterSkillDescription } from '@/shared/data/characterSkills'
 import { getEquipmentDescription, getEquipmentDisplayName } from '@/shared/i18n/entityLocalization'
 import type { Goblin } from '@/shared/types'
-
-const CATEGORY_LABELS: Record<EquipmentCategory, string> = {
-  weapon: '武器',
-  armor: '防具',
-  accessory: '装飾',
-}
 
 const CATEGORY_ORDER: Record<EquipmentCategory, number> = {
   weapon: 0,
@@ -49,16 +43,34 @@ type InventoryGroup = {
 }
 
 function formatBonus(stat: string, value: number): string {
+  const displayValue = Number.isInteger(value)
+    ? value
+    : Math.trunc(value * 10) / 10
   const isPercent = stat.includes('percent') || stat === 'damage_reduction'
-  return `${value > 0 ? '+' : ''}${value}${isPercent ? '%' : ''}`
+  return `${displayValue > 0 ? '+' : ''}${displayValue}${isPercent ? '%' : ''}`
+}
+
+function getInlineBonusLabel(stat: string, value: number): string {
+  const label = STAT_LABELS[stat] ?? stat
+  return `${label}${formatBonus(stat, value)}`
+}
+
+function getDetailBonusLabel(stat: string, value: number): string {
+  const label = STAT_LABELS[stat] ?? stat
+  return `${label} ${formatBonus(stat, value)}`
 }
 
 function getDisplayBonuses(eq: EquipmentInstance) {
-  return EquipmentService.calculateEquipmentBonuses([eq])
+  return EquipmentService.calculateEquipmentBonuses([eq]).filter((bonus) => {
+    const displayValue = Number.isInteger(bonus.value)
+      ? bonus.value
+      : Math.trunc(bonus.value * 10) / 10
+    return displayValue !== 0
+  })
 }
 
-function getDisplayEffects(eq: EquipmentInstance) {
-  return EquipmentService.collectEquipmentEffects([eq])
+function getDisplaySkills(eq: EquipmentInstance) {
+  return EquipmentService.collectGrantedSkills([eq])
 }
 
 /** カテゴリ→定義順→称号レア度（低→高）でソート */
@@ -107,7 +119,7 @@ function groupInventory(items: EquipmentInstance[]): InventoryGroup[] {
 }
 
 /** 装備済みアイテムの詳細モーダル */
-function EquippedItemDetail({
+function ItemDetail({
   equipment,
   template,
   visible,
@@ -118,57 +130,60 @@ function EquippedItemDetail({
   template: EquipmentTemplate
   visible: boolean
   onClose: () => void
-  onUnequip: () => void
+  onUnequip?: () => void
 }) {
   const displayBonuses = getDisplayBonuses(equipment)
-  const displayEffects = getDisplayEffects(equipment)
+  const displaySkills = getDisplaySkills(equipment)
 
   return (
     <Modal visible={visible} animationType="fade" transparent onRequestClose={onClose}>
       <View style={styles.overlayBackground}>
         <View style={styles.detailCard}>
-          <Text style={styles.detailName}>
-            {getDisplayName(equipment, template)}
-          </Text>
-          <Text style={styles.detailCategory}>
-            {CATEGORY_LABELS[template.category]}
-          </Text>
+          <ScrollView
+            style={styles.detailScroll}
+            contentContainerStyle={styles.detailScrollContent}
+            showsVerticalScrollIndicator={true}
+          >
+            <Text style={styles.detailName}>
+              {getDisplayName(equipment, template)}
+            </Text>
+            {getDisplayDescription(template) && (
+              <Text style={styles.detailDescription}>{getDisplayDescription(template)}</Text>
+            )}
 
-          {getDisplayDescription(template) && (
-            <Text style={styles.detailDescription}>{getDisplayDescription(template)}</Text>
-          )}
-
-          <View style={styles.detailBonuses}>
-            {displayBonuses.map((bonus, i) => (
-              <View key={i} style={styles.bonusBadge}>
-                <Text style={styles.bonusBadgeText}>
-                  {STAT_LABELS[bonus.stat] ?? bonus.stat} {formatBonus(bonus.stat, bonus.value)}
+            <View style={styles.detailList}>
+              {displayBonuses.map((bonus, i) => (
+                <Text key={`bonus-${i}`} style={styles.detailListText}>
+                  {getDetailBonusLabel(bonus.stat, bonus.value)}
                 </Text>
-              </View>
-            ))}
-            {template.grantedSkills?.map((skill, i) => (
-              <View key={`skill-${i}`} style={styles.bonusBadge}>
-                <Text style={styles.bonusBadgeText}>
+              ))}
+              {displaySkills.map((skill, i) => (
+                <Text key={`skill-name-${i}`} style={styles.detailListText}>
                   {describeCharacterSkill(skill)}
-                </Text>
-              </View>
-            ))}
-          </View>
-
-          {displayEffects.length > 0 && (
-            <View style={styles.detailEffects}>
-              {displayEffects.map((effect, i) => (
-                <Text key={i} style={styles.effectText}>
-                  {effect.type}: {effect.value}
                 </Text>
               ))}
             </View>
-          )}
+
+            {displaySkills.length > 0 && (
+              <View style={styles.detailSkillDescriptionSection}>
+                {displaySkills.map((skill, i) => (
+                  <View key={`skill-detail-${i}`} style={styles.detailSkillDescriptionBlock}>
+                    <Text style={styles.detailSkillName}>{describeCharacterSkill(skill)}</Text>
+                    <Text style={styles.detailSkillDescription}>
+                      {getCharacterSkillDescription(skill)}
+                    </Text>
+                  </View>
+                ))}
+              </View>
+            )}
+          </ScrollView>
 
           <View style={styles.detailActions}>
-            <TouchableOpacity style={styles.unequipButton} onPress={onUnequip}>
-              <Text style={styles.unequipButtonText}>外す</Text>
-            </TouchableOpacity>
+            {onUnequip && (
+              <TouchableOpacity style={styles.unequipButton} onPress={onUnequip}>
+                <Text style={styles.unequipButtonText}>外す</Text>
+              </TouchableOpacity>
+            )}
             <TouchableOpacity style={styles.detailCloseButton} onPress={onClose}>
               <Text style={styles.detailCloseButtonText}>閉じる</Text>
             </TouchableOpacity>
@@ -184,16 +199,19 @@ function EquipmentRow({
   eq,
   template,
   onPress,
+  onShowDetail,
   highlighted,
   count,
 }: {
   eq: EquipmentInstance
   template: EquipmentTemplate
   onPress: () => void
+  onShowDetail: () => void
   highlighted?: boolean
   count?: number
 }) {
   const displayBonuses = getDisplayBonuses(eq)
+  const inlineStats = displayBonuses.map((bonus) => getInlineBonusLabel(bonus.stat, bonus.value)).join('  ')
 
   return (
     <TouchableOpacity
@@ -201,26 +219,22 @@ function EquipmentRow({
       onPress={onPress}
     >
       <View style={styles.itemInfo}>
+        <Text style={styles.itemStats} numberOfLines={1}>
+          {inlineStats}
+        </Text>
         <Text style={styles.itemName} numberOfLines={1}>
           {count && count > 1 ? `x${count} ${getDisplayName(eq, template)}` : getDisplayName(eq, template)}
         </Text>
-        <View style={styles.itemBonusRow}>
-          {displayBonuses.map((bonus, i) => (
-            <View key={i} style={styles.itemBonusBadge}>
-              <Text style={styles.itemBonusText}>
-                {STAT_LABELS[bonus.stat] ?? bonus.stat} {formatBonus(bonus.stat, bonus.value)}
-              </Text>
-            </View>
-          ))}
-          {template.grantedSkills?.map((skill, i) => (
-            <View key={`skill-${i}`} style={styles.itemBonusBadge}>
-              <Text style={styles.itemBonusText}>
-                {describeCharacterSkill(skill)}
-              </Text>
-            </View>
-          ))}
-        </View>
       </View>
+      <TouchableOpacity
+        style={styles.itemTipsButton}
+        onPress={(event) => {
+          event.stopPropagation()
+          onShowDetail()
+        }}
+      >
+        <Text style={styles.itemTipsButtonText}>i</Text>
+      </TouchableOpacity>
     </TouchableOpacity>
   )
 }
@@ -236,7 +250,7 @@ export default function EquipmentScreenPage() {
   const { equippedItems, inventoryItems, refreshEquipment, equipItem, unequipItem } =
     useEquipmentService()
   const [goblin, setGoblin] = useState<Goblin | null>(null)
-  const [selectedEquipped, setSelectedEquipped] = useState<EquipmentInstance | null>(null)
+  const [selectedDetail, setSelectedDetail] = useState<EquipmentInstance | null>(null)
 
   useEffect(() => {
     if (!goblinId) return
@@ -308,16 +322,12 @@ export default function EquipmentScreenPage() {
     [equippedItems, maxSlots, goblin, equipItem],
   )
 
-  const handleUnequip = useCallback(async () => {
-    if (!selectedEquipped || !goblin) return
+  const handleUnequip = useCallback(async (equipment: EquipmentInstance) => {
+    if (!goblin) return
     pendingScrollRestoreRef.current = true
-    await unequipItem(goblin, selectedEquipped)
-    setSelectedEquipped(null)
-  }, [selectedEquipped, goblin, unequipItem])
-
-  const selectedEquippedTemplate = selectedEquipped
-    ? getEquipmentTemplate(selectedEquipped.templateId)
-    : null
+    await unequipItem(goblin, equipment)
+    setSelectedDetail(null)
+  }, [goblin, unequipItem])
 
   if (!goblin) return null
 
@@ -339,6 +349,7 @@ export default function EquipmentScreenPage() {
             eq={item.equipment}
             template={item.template}
             onPress={() => handleEquip(item.equipment)}
+            onShowDetail={() => setSelectedDetail(item.equipment)}
             highlighted={emptySlots > 0}
             count={item.count}
           />
@@ -361,7 +372,8 @@ export default function EquipmentScreenPage() {
                       key={eq.id}
                       eq={eq}
                       template={template}
-                      onPress={() => setSelectedEquipped(eq)}
+                      onPress={() => setSelectedDetail(eq)}
+                      onShowDetail={() => setSelectedDetail(eq)}
                     />
                   )
                 })}
@@ -389,13 +401,13 @@ export default function EquipmentScreenPage() {
         ItemSeparatorComponent={() => <View style={styles.itemSeparator} />}
       />
 
-      {selectedEquipped && selectedEquippedTemplate && (
-        <EquippedItemDetail
-          equipment={selectedEquipped}
-          template={selectedEquippedTemplate}
+      {selectedDetail && getEquipmentTemplate(selectedDetail.templateId) && (
+        <ItemDetail
+          equipment={selectedDetail}
+          template={getEquipmentTemplate(selectedDetail.templateId)!}
           visible={true}
-          onClose={() => setSelectedEquipped(null)}
-          onUnequip={handleUnequip}
+          onClose={() => setSelectedDetail(null)}
+          onUnequip={selectedDetail.goblinId != null && selectedDetail.slotIndex >= 0 ? () => handleUnequip(selectedDetail) : undefined}
         />
       )}
     </SafeAreaView>
@@ -454,27 +466,29 @@ const styles = StyleSheet.create({
   itemInfo: {
     flex: 1,
   },
+  itemStats: {
+    fontSize: 12,
+    color: '#6B7280',
+    marginBottom: 4,
+  },
   itemName: {
     fontSize: 14,
     fontWeight: '600',
     color: '#1F2937',
   },
-  itemBonusRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 4,
-    marginTop: 4,
+  itemTipsButton: {
+    backgroundColor: '#E5E7EB',
+    borderRadius: 999,
+    width: 24,
+    height: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginLeft: 12,
   },
-  itemBonusBadge: {
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: 4,
-    backgroundColor: '#DCFCE7',
-  },
-  itemBonusText: {
-    fontSize: 10,
-    color: '#166534',
-    fontWeight: '600',
+  itemTipsButtonText: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#4B5563',
   },
   emptySlot: {
     flexDirection: 'row',
@@ -508,56 +522,64 @@ const styles = StyleSheet.create({
   detailCard: {
     backgroundColor: '#FFFFFF',
     borderRadius: 16,
-    padding: 24,
     width: '100%',
     maxWidth: 340,
+    maxHeight: '80%',
+    overflow: 'hidden',
+  },
+  detailScroll: {
+    flexGrow: 0,
+  },
+  detailScrollContent: {
+    padding: 24,
+    paddingBottom: 16,
   },
   detailName: {
     fontSize: 18,
     fontWeight: '700',
     color: '#1F2937',
-    marginBottom: 4,
-  },
-  detailCategory: {
-    fontSize: 13,
-    color: '#6B7280',
     marginBottom: 12,
   },
   detailDescription: {
     fontSize: 13,
     color: '#4B5563',
-    marginBottom: 12,
+    marginBottom: 6,
     lineHeight: 18,
   },
-  detailBonuses: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 6,
-    marginBottom: 12,
+  detailList: {
+    marginBottom: 10,
   },
-  bonusBadge: {
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 6,
-    backgroundColor: '#DCFCE7',
-  },
-  bonusBadgeText: {
+  detailListText: {
     fontSize: 12,
-    color: '#166534',
+    color: '#1F2937',
     fontWeight: '600',
+    lineHeight: 16,
   },
-  detailEffects: {
-    marginBottom: 12,
+  detailSkillDescriptionSection: {
+    borderTopWidth: 1,
+    borderTopColor: '#E5E7EB',
+    paddingTop: 10,
   },
-  effectText: {
+  detailSkillDescriptionBlock: {
+    marginBottom: 8,
+  },
+  detailSkillName: {
     fontSize: 12,
-    color: '#7C3AED',
-    marginBottom: 4,
+    fontWeight: '600',
+    color: '#1F2937',
+    marginBottom: 2,
+  },
+  detailSkillDescription: {
+    fontSize: 12,
+    lineHeight: 16,
+    color: '#4B5563',
   },
   detailActions: {
     flexDirection: 'row',
     gap: 10,
-    marginTop: 4,
+    marginTop: 0,
+    paddingHorizontal: 24,
+    paddingBottom: 20,
   },
   unequipButton: {
     flex: 1,

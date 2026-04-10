@@ -116,6 +116,14 @@ export function getAccuracyModifier(attackNumber: number): number {
 }
 
 /**
+ * 命中率計算に使う乱数係数
+ * 0.95 <= rand < 1.05 に収め、式全体を過度に変動させないようにする
+ */
+export function getHitRateRandomModifier(rng: () => number): number {
+  return 0.95 + rng() * 0.1
+}
+
+/**
  * 隊列の狙われ率の重みを取得
  * row 0→1/2, row 1→1/4, ... 最後2列は同率
  * totalRows: 生存列数
@@ -400,6 +408,7 @@ export class BattleSystem {
   /**
    * 命中率を計算
    * 命中率 = 乱数A × (命中精度 × 攻撃回数補正 − 回避能力 × 残りHP補正)
+   * 乱数A は 0.95 以上 1.05 未満
    * clamp(5, 95)
    */
   private calculateHitRate(
@@ -409,7 +418,7 @@ export class BattleSystem {
     rng: () => number,
   ): number {
     const accMod = getAccuracyModifier(attackNumber)
-    const rand = rng()
+    const rand = getHitRateRandomModifier(rng)
 
     // 残りHP補正 = 0.5 * (1 + 残りHP / 最大HP)
     const hpRatio = defender.maxHP > 0 ? defender.currentHP / defender.maxHP : 0
