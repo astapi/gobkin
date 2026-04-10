@@ -260,16 +260,16 @@ describe('ModStatCalculator — 戦闘ステータス計算', () => {
 
   it('装備の%ボーナスが乗算される', () => {
     const goblin = createTestGoblin({
-      stats: { hp: 60, atk: 12, agility: 10, def: 10, attackCount: 2, accuracy: 100, evasion: 100 },
+      stats: { hp: 60, atk: 12, def: 10, attackCount: 2, accuracy: 100, evasion: 100 },
     })
     const bonuses = [
-      { stat: 'accuracy_percent' as const, value: 50 },
-      { stat: 'evasion_percent' as const, value: 30 },
+      { stat: 'atk_percent' as const, value: 50 },
+      { stat: 'def_percent' as const, value: 30 },
     ]
     const result = ModStatCalculator.calculate(goblin, bonuses)
 
-    expect(result.accuracy).toBe(150)  // 100 * 1.5
-    expect(result.evasion).toBe(130)   // 100 * 1.3
+    expect(result.atk).toBe(18)  // 12 * 1.5
+    expect(result.def).toBe(13)  // 10 * 1.3
   })
 
   it('ウルフゴブリンは攻撃回数が+2される', () => {

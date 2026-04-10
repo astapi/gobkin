@@ -9,22 +9,13 @@ import { EquipmentService } from '@/core/services/EquipmentService'
 import { getEquipmentTemplate, getEquipmentTemplates } from '@/shared/data/equipmentPoolLoader'
 import { EQUIPMENT_TITLE_DEFS } from '@/shared/data/equipmentTitleConfig'
 import { describeCharacterSkill, getCharacterSkillDescription } from '@/shared/data/characterSkills'
-import { getEquipmentDisplayName } from '@/shared/i18n/entityLocalization'
+import { getEquipmentDisplayName, getStatLabel } from '@/shared/i18n/entityLocalization'
 import type { Goblin } from '@/shared/types'
 
 const CATEGORY_ORDER: Record<EquipmentCategory, number> = {
   weapon: 0,
   armor: 1,
   accessory: 2,
-}
-
-const STAT_LABELS: Record<string, string> = {
-  hp_percent: 'HP', hp_flat: 'HP',
-  atk_percent: 'ATK', atk_flat: 'ATK',
-  def_percent: 'DEF', def_flat: 'DEF',
-  attackCount_percent: '攻撃回数', attackCount_flat: '攻撃回数',
-  accuracy_percent: '命中精度', accuracy_flat: '命中精度',
-  evasion_percent: '回避', evasion_flat: '回避',
 }
 
 function getDisplayName(eq: EquipmentInstance, template: EquipmentTemplate): string {
@@ -47,12 +38,12 @@ function formatBonus(stat: string, value: number): string {
 }
 
 function getInlineBonusLabel(stat: string, value: number): string {
-  const label = STAT_LABELS[stat] ?? stat
+  const label = getStatLabel(stat)
   return `${label}${formatBonus(stat, value)}`
 }
 
 function getDetailBonusLabel(stat: string, value: number): string {
-  const label = STAT_LABELS[stat] ?? stat
+  const label = getStatLabel(stat)
   return `${label} ${formatBonus(stat, value)}`
 }
 

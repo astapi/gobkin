@@ -12,20 +12,7 @@ import type { Goblin } from '@/shared/types'
 import { getGoblinDisplayImage } from '@/shared/utils/goblinImages'
 import { getEffectiveStats } from '@/shared/utils/goblinStats'
 import { getModTemplate } from '@/shared/data/modPoolLoader'
-
-const STAT_LABELS: Record<string, string> = {
-  hp_percent: 'HP', hp_flat: 'HP',
-  atk_percent: 'ATK', atk_flat: 'ATK',
-  def_percent: 'DEF', def_flat: 'DEF',
-  attackCount_percent: '攻撃回数', attackCount_flat: '攻撃回数',
-  accuracy_percent: '命中精度', accuracy_flat: '命中精度',
-  evasion_percent: '回避', evasion_flat: '回避',
-  damage_reduction: '被ダメ軽減',
-}
-
-function getStatLabel(stat: string): string {
-  return STAT_LABELS[stat] || stat
-}
+import { getStatLabel } from '@/shared/i18n/entityLocalization'
 
 export default function GoblinListScreen() {
   const { t } = useTranslation()

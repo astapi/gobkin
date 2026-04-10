@@ -111,7 +111,6 @@ export const CHARACTER_SKILL_CATALOG = {
     id: 'equipment_accuracy_200',
     equipmentStatMultipliers: {
       accuracy_flat: 2,
-      accuracy_percent: 2,
     },
   },
 

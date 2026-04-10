@@ -29,9 +29,6 @@ export type EquipmentStat =
   | 'hp_percent'
   | 'atk_percent'
   | 'def_percent'
-  | 'attackCount_percent'
-  | 'accuracy_percent'
-  | 'evasion_percent'
   | 'critical_rate_percent'
   | 'damage_reduction'
 

@@ -16,11 +16,8 @@ export type ModStat =
   | 'def_percent'
   | 'def_flat'
   | 'attackCount_flat'
-  | 'attackCount_percent'
   | 'accuracy_flat'
-  | 'accuracy_percent'
   | 'evasion_flat'
-  | 'evasion_percent'
   | 'damage_reduction'
 
 /**
