@@ -2,8 +2,10 @@ import { useMemo, useCallback, useState, useEffect } from 'react'
 import { View, Text, FlatList, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { router, useLocalSearchParams } from 'expo-router'
+import { useTranslation } from 'react-i18next'
 import { usePartyStore } from '@/presentation/stores/usePartyStore'
 import { useDungeonStore } from '@/presentation/stores/useDungeonStore'
+import { getDungeonName } from '@/shared/i18n/entityLocalization'
 
 interface LogEntry {
   time: string
@@ -31,6 +33,7 @@ const getEventColor = (type: LogEntry['type']): string => {
 }
 
 export default function ExpeditionLogScreen() {
+  const { t } = useTranslation()
   const { partyId, dungeonId } = useLocalSearchParams<{ partyId: string; dungeonId?: string }>()
 
   const getPartyById = usePartyStore((state) => state.getPartyById)
@@ -60,7 +63,7 @@ export default function ExpeditionLogScreen() {
 
     entries.push({
       time: '00:00',
-      event: `${dungeon.name}への遠征を開始`,
+      event: t('ui.formation.log.startExpedition', { name: getDungeonName(dungeon) }),
       type: 'move',
     })
 
@@ -68,27 +71,27 @@ export default function ExpeditionLogScreen() {
       const baseTime = floor * 10
       entries.push({
         time: `00:${String(baseTime).padStart(2, '0')}`,
-        event: `${floor}階に到達`,
+        event: t('ui.formation.log.floorReached', { floor }),
         type: 'move',
       })
 
       // ランダムなイベントをシミュレート
       entries.push({
         time: `00:${String(baseTime + 2).padStart(2, '0')}`,
-        event: '敵と遭遇！',
+        event: t('ui.formation.log.enemyEncounter'),
         type: 'battle',
       })
 
       entries.push({
         time: `00:${String(baseTime + 5).padStart(2, '0')}`,
-        event: '戦闘に勝利！経験値を獲得',
+        event: t('ui.formation.log.battleVictory'),
         type: 'victory',
       })
 
       if (floor % 2 === 0) {
         entries.push({
           time: `00:${String(baseTime + 7).padStart(2, '0')}`,
-          event: '宝箱を発見！',
+          event: t('ui.formation.log.treasureFound'),
           type: 'item',
         })
       }
@@ -96,18 +99,18 @@ export default function ExpeditionLogScreen() {
 
     entries.push({
       time: `00:${String(floors * 10 + 10).padStart(2, '0')}`,
-      event: 'ボスと遭遇！',
+      event: t('ui.formation.log.bossEncounter'),
       type: 'battle',
     })
 
     entries.push({
       time: `00:${String(floors * 10 + 15).padStart(2, '0')}`,
-      event: 'ボスを撃破！ダンジョン踏破',
+      event: t('ui.formation.log.dungeonClear'),
       type: 'victory',
     })
 
     return entries
-  }, [dungeon])
+  }, [dungeon, t])
 
   const handleBack = useCallback(() => {
     router.back()
@@ -126,9 +129,9 @@ export default function ExpeditionLogScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>遠征ログ</Text>
+        <Text style={styles.title}>{t('ui.formation.log.title')}</Text>
         <Text style={styles.subtitle}>
-          {party.name} → {dungeon?.name || '不明'}
+          {party.name} → {dungeon ? getDungeonName(dungeon) : t('ui.formation.log.unknownDungeon')}
         </Text>
       </View>
 
@@ -149,7 +152,7 @@ export default function ExpeditionLogScreen() {
       />
 
       <TouchableOpacity style={styles.backButton} onPress={handleBack}>
-        <Text style={styles.backButtonText}>戻る</Text>
+        <Text style={styles.backButtonText}>{t('ui.formation.common.back')}</Text>
       </TouchableOpacity>
     </SafeAreaView>
   )

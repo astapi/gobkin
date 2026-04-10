@@ -1,53 +1,56 @@
 import { Stack } from 'expo-router'
+import { useTranslation } from 'react-i18next'
 
 export default function FormationLayout() {
+  const { t } = useTranslation()
+
   return (
     <Stack>
       <Stack.Screen
         name="index"
         options={{
-          title: 'パーティ編成',
+          title: t('ui.formation.layout.index'),
         }}
       />
       <Stack.Screen
         name="preparation"
         options={{
-          title: 'Expedition Prep',
+          title: t('ui.formation.layout.preparation'),
           presentation: 'card',
         }}
       />
       <Stack.Screen
         name="edit"
         options={{
-          title: 'Edit Party',
+          title: t('ui.formation.layout.edit'),
           presentation: 'card',
         }}
       />
       <Stack.Screen
         name="equipment-list"
         options={{
-          title: '装備アイテムの一覧',
+          title: t('ui.formation.layout.equipmentList'),
           presentation: 'card',
         }}
       />
       <Stack.Screen
         name="party-info"
         options={{
-          title: 'PTの情報',
+          title: t('ui.formation.layout.partyInfo'),
           presentation: 'card',
         }}
       />
       <Stack.Screen
         name="equipment"
         options={{
-          title: '装備変更',
+          title: t('ui.formation.layout.equipment'),
           presentation: 'formSheet',
         }}
       />
       <Stack.Screen
         name="playback"
         options={{
-          title: 'Expedition',
+          title: t('ui.formation.layout.playback'),
           presentation: 'card',
           headerShown: false,
         }}
@@ -55,7 +58,7 @@ export default function FormationLayout() {
       <Stack.Screen
         name="result"
         options={{
-          title: 'Results',
+          title: t('ui.formation.layout.result'),
           presentation: 'card',
           headerShown: false,
         }}
@@ -63,14 +66,14 @@ export default function FormationLayout() {
       <Stack.Screen
         name="log"
         options={{
-          title: 'Expedition Log',
+          title: t('ui.formation.layout.log'),
           presentation: 'card',
         }}
       />
       <Stack.Screen
         name="battle-log"
         options={{
-          title: 'Battle Log',
+          title: t('ui.formation.layout.battleLog'),
           presentation: 'card',
           headerShown: false,
         }}

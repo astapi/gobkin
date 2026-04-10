@@ -2,10 +2,12 @@ import { useMemo, useEffect } from 'react'
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { router, useLocalSearchParams } from 'expo-router'
+import { useTranslation } from 'react-i18next'
 import type { BattleLogEntry, BattleLogMeta } from '@/shared/types'
 import { getBattleLog, clearBattleLog } from '@/presentation/contexts/battleLogStore'
 
 export default function BattleLogScreen() {
+  const { t } = useTranslation()
   const { logId } = useLocalSearchParams<{ logId?: string }>()
 
   const stored = useMemo(() => {
@@ -38,15 +40,15 @@ export default function BattleLogScreen() {
             router.replace('/formation/playback')
           }}
         >
-          <Text style={styles.navBack}>← 戻る</Text>
+          <Text style={styles.navBack}>← {t('ui.formation.common.back')}</Text>
         </TouchableOpacity>
-        <Text style={styles.navTitle}>戦闘ログ</Text>
+        <Text style={styles.navTitle}>{t('ui.formation.battleLog.title')}</Text>
         <View style={styles.navSpacer} />
       </View>
 
       {!battleLog && (
         <View style={styles.emptyState}>
-          <Text style={styles.emptyText}>戦闘ログを読み込めませんでした。</Text>
+          <Text style={styles.emptyText}>{t('ui.formation.battleLog.loadFailed')}</Text>
         </View>
       )}
 
@@ -56,14 +58,14 @@ export default function BattleLogScreen() {
             if (entry.action === 'turn_start' && entry.turnState) {
               return (
                 <View key={`turn-${entry.turn}-${index}`} style={styles.sectionCard}>
-                  <Text style={styles.sectionTitle}>Turn {entry.turn} 開始</Text>
-                  <Text style={styles.sectionLabel}>味方:</Text>
+                  <Text style={styles.sectionTitle}>{t('ui.formation.battleLog.turnStart', { turn: entry.turn })}</Text>
+                  <Text style={styles.sectionLabel}>{t('ui.formation.battleLog.allies')}</Text>
                   {entry.turnState.allies.map(ally => (
                     <Text key={ally.id} style={styles.sectionText}>
                       {ally.name} {ally.currentHP}/{ally.maxHP} HP
                     </Text>
                   ))}
-                  <Text style={styles.sectionLabel}>敵:</Text>
+                  <Text style={styles.sectionLabel}>{t('ui.formation.battleLog.enemies')}</Text>
                   {entry.turnState.enemies.map((enemy, enemyIndex) => (
                     <Text key={`${enemy.id}-${enemyIndex}`} style={styles.sectionText}>
                       {enemy.name} {enemy.currentHP}/{enemy.maxHP} HP
@@ -77,25 +79,27 @@ export default function BattleLogScreen() {
               return null
             }
 
-            const isSpell = entry.action !== '通常攻撃' && entry.action !== 'turn_start'
+            const isSpell = entry.action !== t('battle.normalAttack') && entry.action !== 'turn_start'
 
             return (
               <View key={`log-${index}`} style={styles.logCard}>
                 <Text style={styles.logTitle}>
                   {isSpell
-                    ? `${entry.actorName}の${entry.action}（${entry.actorHP}/${entry.actorMaxHP}HP）`
-                    : `${entry.actorName}の${entry.attackCount}回攻撃（${entry.actorHP}/${entry.actorMaxHP}HP）`
+                    ? t('ui.formation.battleLog.spellTitle', { actor: entry.actorName, action: entry.action, hp: entry.actorHP, maxHp: entry.actorMaxHP })
+                    : t('ui.formation.battleLog.attackTitle', { actor: entry.actorName, count: entry.attackCount, hp: entry.actorHP, maxHp: entry.actorMaxHP })
                   }
                 </Text>
                 <Text style={styles.logText}>
                   {isSpell
-                    ? `[列${entry.actorRow}] ${entry.actorName}の${entry.action}！${entry.hitCount}体にヒット！`
-                    : `[列${entry.actorRow}] ${entry.actorName}の攻撃！${entry.hitCount}回ヒット！`
+                    ? t('ui.formation.battleLog.spellSummary', { row: entry.actorRow, actor: entry.actorName, action: entry.action, count: entry.hitCount })
+                    : t('ui.formation.battleLog.attackSummary', { row: entry.actorRow, actor: entry.actorName, count: entry.hitCount })
                   }
                 </Text>
                 {entry.targets?.map((target, targetIndex) => (
                   <Text key={`target-${targetIndex}`} style={styles.logText}>
-                    [列{target.targetRow}] {target.targetName}に {target.totalDamage}ダメージ{target.defeated ? 'を与えて倒した！' : `(${target.hitCount}回)`}
+                    {target.defeated
+                      ? t('ui.formation.battleLog.targetDefeated', { row: target.targetRow, name: target.targetName, damage: target.totalDamage })
+                      : t('ui.formation.battleLog.targetHits', { row: target.targetRow, name: target.targetName, damage: target.totalDamage, count: target.hitCount })}
                   </Text>
                 ))}
               </View>
@@ -110,7 +114,8 @@ export default function BattleLogScreen() {
 }
 
 function BattleResultSection({ meta }: { meta: BattleLogMeta }) {
-  const outcomeText = meta.outcome === 'win' ? '戦いに勝利した！' : '戦いに敗北した...'
+  const { t } = useTranslation()
+  const outcomeText = meta.outcome === 'win' ? t('ui.formation.battleLog.outcomeWin') : t('ui.formation.battleLog.outcomeLose')
 
   return (
     <View style={styles.resultCard}>
@@ -119,13 +124,13 @@ function BattleResultSection({ meta }: { meta: BattleLogMeta }) {
       {meta.outcome === 'win' && (
         <>
           <Text style={styles.resultSummary}>
-            経験値 {meta.xpGained} と {meta.goldGained} gold を手に入れました。
+            {t('ui.formation.battleLog.rewardSummary', { xp: meta.xpGained, gold: meta.goldGained })}
           </Text>
 
-          <Text style={styles.resultLabel}>＜獲得経験値＞</Text>
+          <Text style={styles.resultLabel}>{t('ui.formation.battleLog.gainedXp')}</Text>
           {meta.members.map((member, index) => (
             <Text key={`xp-${index}`} style={styles.resultText}>
-              Exp +{member.xpEach} {member.name} ({member.xpEach} x {member.expMultiplier}倍)
+              {t('ui.formation.battleLog.xpLine', { xp: member.xpEach, name: member.name, multiplier: member.expMultiplier })}
             </Text>
           ))}
         </>
@@ -134,7 +139,7 @@ function BattleResultSection({ meta }: { meta: BattleLogMeta }) {
       <Text style={styles.resultLabel}> </Text>
       {meta.members.map((member, index) => (
         <Text key={`status-${index}`} style={styles.resultText}>
-          ({member.currentHP}/{member.maxHP}) {member.name} Lv{member.level}
+          {t('ui.formation.battleLog.memberLine', { hp: member.currentHP, maxHp: member.maxHP, name: member.name, level: member.level })}
         </Text>
       ))}
     </View>

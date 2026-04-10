@@ -2,6 +2,7 @@ import { useCallback, useMemo, useRef, useState } from 'react'
 import { View, Text, TouchableOpacity, Pressable, StyleSheet, FlatList, ActivityIndicator, Image, Alert } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { router } from 'expo-router'
+import { useTranslation } from 'react-i18next'
 import Swipeable from 'react-native-gesture-handler/Swipeable'
 import { useGoblinStore } from '@/presentation/stores/useGoblinStore'
 import { useBaseStore, selectMaxGoblins, selectRank } from '@/presentation/stores/useBaseStore'
@@ -28,6 +29,7 @@ function getStatLabel(stat: string): string {
 }
 
 export default function GoblinListScreen() {
+  const { t } = useTranslation()
   const goblins = useGoblinStore((state) => state.goblins)
   const isLoading = useGoblinStore((state) => state.isLoading)
   const saveGoblin = useGoblinStore((state) => state.saveGoblin)
@@ -137,9 +139,9 @@ export default function GoblinListScreen() {
       activeOpacity={0.8}
       onPress={() => handleDeleteGoblin(goblin)}
     >
-      <Text style={styles.swipeDeleteActionText}>追放</Text>
+      <Text style={styles.swipeDeleteActionText}>{t('ui.goblinList.banish')}</Text>
     </TouchableOpacity>
-  ), [handleDeleteGoblin])
+  ), [handleDeleteGoblin, t])
 
   const handlePendingGoblinPress = useCallback((goblin: Goblin) => {
     closeOpenSwipeable()
@@ -229,7 +231,7 @@ export default function GoblinListScreen() {
       <View style={styles.pendingSection}>
         <View style={styles.pendingSectionHeader}>
           <View style={styles.pendingSectionHeaderLeft}>
-            <Text style={styles.pendingSectionTitle}>産まれたゴブリン</Text>
+            <Text style={styles.pendingSectionTitle}>{t('ui.goblinList.pendingSectionTitle')}</Text>
             <View style={styles.pendingBadge}>
               <Text style={styles.pendingBadgeText}>{pendingGoblins.length} / {maxPendingGoblins}</Text>
             </View>
@@ -240,7 +242,7 @@ export default function GoblinListScreen() {
             disabled={isBulkDismissingPending}
           >
             <Text style={styles.bulkDismissButtonText}>
-              {isBulkDismissingPending ? '処理中...' : 'まとめて解雇'}
+              {isBulkDismissingPending ? t('ui.goblinList.processing') : t('ui.goblinList.dismissAll')}
             </Text>
           </TouchableOpacity>
         </View>
@@ -285,14 +287,14 @@ export default function GoblinListScreen() {
                     style={styles.addButton}
                     onPress={() => handleAddPending(goblin)}
                   >
-                    <Text style={styles.addButtonText}>追加</Text>
+                    <Text style={styles.addButtonText}>{t('ui.goblinList.add')}</Text>
                   </TouchableOpacity>
                 )}
                 <TouchableOpacity
                   style={styles.dismissButton}
                   onPress={() => handleDismissPending(goblin)}
                 >
-                  <Text style={styles.dismissButtonText}>解雇</Text>
+                  <Text style={styles.dismissButtonText}>{t('ui.goblinList.dismiss')}</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -301,7 +303,7 @@ export default function GoblinListScreen() {
         <View style={styles.footerSpacer} />
       </View>
     )
-  }, [handleAddPending, handleDismissAllPending, handleDismissPending, handlePendingGoblinPress, hasCapacity, isBulkDismissingPending, maxPendingGoblins, pendingGoblins])
+  }, [handleAddPending, handleDismissAllPending, handleDismissPending, handlePendingGoblinPress, hasCapacity, isBulkDismissingPending, maxPendingGoblins, pendingGoblins, t])
 
 
   if (isLoading) {
@@ -329,7 +331,7 @@ export default function GoblinListScreen() {
     <SafeAreaView style={styles.container} edges={['top', 'left', 'right', 'bottom']}>
       <View style={styles.header}>
         <View style={styles.headerTop}>
-          <Text style={styles.headerTitle}>ゴブリン一覧</Text>
+          <Text style={styles.headerTitle}>{t('ui.goblinList.title')}</Text>
           <Text style={styles.headerCount}>{goblins.length} / {maxGoblins}</Text>
         </View>
         <View style={styles.sortRow}>

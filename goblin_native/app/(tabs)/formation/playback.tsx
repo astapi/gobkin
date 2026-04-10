@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useMemo, useCallback } from 'react'
 import { View, Text, StyleSheet, Animated, TouchableOpacity, ScrollView, ActivityIndicator, Image } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { router, useLocalSearchParams, type Href } from 'expo-router'
+import { useTranslation } from 'react-i18next'
 import { usePartyStore } from '@/presentation/stores/usePartyStore'
 import { useGoblinStore } from '@/presentation/stores/useGoblinStore'
 import { useDungeonStore } from '@/presentation/stores/useDungeonStore'
@@ -11,6 +12,7 @@ import type { BattleLogEntry, BattleLogMeta } from '@/shared/types'
 import { storeBattleLog } from '@/presentation/contexts/battleLogStore'
 import { getGoblinDisplayImage } from '@/shared/utils/goblinImages'
 import { ModStatCalculator } from '@/core/services/ModStatCalculator'
+import { getDungeonName } from '@/shared/i18n/entityLocalization'
 
 interface LogEntry {
   id: string
@@ -20,6 +22,7 @@ interface LogEntry {
 }
 
 export default function ExpeditionPlaybackScreen() {
+  const { t } = useTranslation()
   const { partyId, expeditionId } = useLocalSearchParams<{
     partyId?: string
     expeditionId?: string
@@ -109,12 +112,12 @@ export default function ExpeditionPlaybackScreen() {
   }, [])
 
   const getReturnReasonText = useCallback((reason: ExpeditionEndReason) => {
-    if (reason === 'completed') return '探索完了'
-    if (reason === 'defeated') return '全滅により撤退'
-    if (reason === 'policy_return') return '帰還'
-    if (reason === 'abort') return '緊急帰還'
-    return '探索完了'
-  }, [])
+    if (reason === 'completed') return t('ui.formation.playback.completed')
+    if (reason === 'defeated') return t('ui.formation.playback.defeated')
+    if (reason === 'policy_return') return t('ui.formation.playback.policyReturn')
+    if (reason === 'abort') return t('ui.formation.playback.abort')
+    return t('ui.formation.playback.completed')
+  }, [t])
 
   const buildLogEntries = useCallback((event: TimelineEvent): LogEntry[] => {
     const createEntry = (text: string, detail?: BattleLogEntry[], meta?: BattleLogMeta) => {
@@ -123,15 +126,15 @@ export default function ExpeditionPlaybackScreen() {
     }
     switch (event.type) {
       case 'move_start':
-        return [createEntry(`${event.floor}階の探索を開始`)]
+        return [createEntry(t('ui.formation.playback.explorationStart', { floor: event.floor }))]
       case 'floor_up':
-        return [createEntry(`${event.from}階から${event.to}階へ移動`)]
+        return [createEntry(t('ui.formation.playback.floorMove', { from: event.from, to: event.to }))]
       case 'exploring':
-        return [createEntry('探索中...')]
+        return [createEntry(t('ui.formation.playback.exploring'))]
       case 'battle':
       case 'boss': {
-        const label = event.type === 'boss' ? 'ボス' : '戦闘'
-        const result = event.combat.outcome === 'win' ? '勝利' : '敗北'
+        const label = event.type === 'boss' ? t('ui.formation.playback.boss') : t('ui.formation.playback.battle')
+        const result = event.combat.outcome === 'win' ? t('ui.formation.playback.win') : t('ui.formation.playback.lose')
         const partyMembers = replay?.meta.party ?? []
         const xpPerMember = partyMembers.length > 0 ? Math.floor(event.xp / partyMembers.length) : 0
         const meta: BattleLogMeta = {
@@ -155,29 +158,29 @@ export default function ExpeditionPlaybackScreen() {
         }
         const entries: LogEntry[] = [
           createEntry(
-            `${label} ${event.enemy.name} Lv${event.enemy.lvl} ×${event.enemy.count}体と遭遇 → ${result}[詳細]`,
+            t('ui.formation.playback.encounter', { label, enemy: event.enemy.name, level: event.enemy.lvl, count: event.enemy.count, result }),
             event.combat.detailedLog,
             meta,
           ),
         ]
         if (event.xp > 0) {
-          entries.push(createEntry(`${event.xp}XP獲得`))
+          entries.push(createEntry(t('ui.formation.playback.xpGain', { value: event.xp })))
         }
         return entries
       }
       case 'treasure': {
-        const entries: LogEntry[] = [createEntry('宝箱を発見！')]
+        const entries: LogEntry[] = [createEntry(t('ui.formation.playback.treasureFound'))]
         for (const item of event.items) {
-          entries.push(createEntry(`${item.name}が入っていた！`))
+          entries.push(createEntry(t('ui.formation.playback.treasureItem', { name: item.name })))
         }
         return entries
       }
       case 'return':
         return [createEntry(getReturnReasonText(event.reason))]
       default:
-        return [createEntry('イベント発生')]
+        return [createEntry(t('ui.formation.playback.eventOccurred'))]
     }
-  }, [getReturnReasonText, partyGoblins, replay])
+  }, [getReturnReasonText, partyGoblins, replay, t])
 
   const applyEvent = useCallback((event: TimelineEvent, eventTime: number) => {
     const entries = buildLogEntries(event)
@@ -252,7 +255,7 @@ export default function ExpeditionPlaybackScreen() {
   useEffect(() => {
     if (isPartyLoading || isGoblinLoading || isExpeditionLoading) return
     if (!expeditionRecord) {
-      setErrorMessage('遠征データが見つかりません')
+      setErrorMessage(t('ui.formation.playback.dataNotFound'))
       return
     }
     if (!expeditionRecord.replay) {
@@ -263,7 +266,7 @@ export default function ExpeditionPlaybackScreen() {
 
     setErrorMessage(null)
     setReplay(expeditionRecord.replay)
-  }, [expeditionRecord, isPartyLoading, isGoblinLoading, isExpeditionLoading])
+  }, [expeditionRecord, isPartyLoading, isGoblinLoading, isExpeditionLoading, t])
 
   useEffect(() => {
     if (!replay) return
@@ -382,7 +385,7 @@ export default function ExpeditionPlaybackScreen() {
       <SafeAreaView style={styles.container}>
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color="#3B82F6" />
-          <Text style={styles.loadingText}>{errorMessage ?? '読み込み中...'}</Text>
+          <Text style={styles.loadingText}>{errorMessage ?? t('ui.common.loading')}</Text>
         </View>
       </SafeAreaView>
     )
@@ -394,15 +397,15 @@ export default function ExpeditionPlaybackScreen() {
     <SafeAreaView style={styles.container}>
       <View style={styles.navBar}>
         <TouchableOpacity onPress={() => router.back()}>
-          <Text style={styles.navBack}>← 戻る</Text>
+          <Text style={styles.navBack}>← {t('ui.formation.common.back')}</Text>
         </TouchableOpacity>
-        <Text style={styles.navTitle}>{dungeon.name} - ログ閲覧</Text>
+        <Text style={styles.navTitle}>{getDungeonName(dungeon)} - {t('ui.formation.playback.logViewTitle')}</Text>
         <View style={styles.navSpacer} />
       </View>
 
       <View style={styles.statusBar}>
         <View style={styles.statusRow}>
-          <Text style={styles.statusTitle}>{dungeon.name} - {currentFloor}階</Text>
+          <Text style={styles.statusTitle}>{t('ui.formation.playback.floorTitle', { name: getDungeonName(dungeon), floor: currentFloor })}</Text>
           <Text style={styles.statusTimer}>{progressText}</Text>
         </View>
         <View style={styles.progressContainer}>
@@ -454,7 +457,7 @@ export default function ExpeditionPlaybackScreen() {
       <View style={styles.eventLog}>
         <ScrollView style={styles.logScroll}>
           {eventLog.map(entry => {
-            const baseText = entry.text.replace('[詳細]', '')
+            const baseText = entry.text.replace('[Detail]', '').replace('[詳細]', '').replace('[상세]', '')
             if (entry.detail) {
               return (
                 <TouchableOpacity
@@ -466,7 +469,7 @@ export default function ExpeditionPlaybackScreen() {
                   onPress={() => openBattleLog(entry.detail!, entry.meta)}
                 >
                   <Text style={styles.logText}>{baseText}</Text>
-                  <Text style={styles.logDetail}>詳細</Text>
+                  <Text style={styles.logDetail}>{t('ui.formation.playback.detail')}</Text>
                 </TouchableOpacity>
               )
             }

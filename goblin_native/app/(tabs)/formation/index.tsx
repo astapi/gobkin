@@ -2,6 +2,7 @@ import { memo, useMemo, useCallback, useState } from 'react'
 import { View, Text, FlatList, TouchableOpacity, StyleSheet, ActivityIndicator, Image, useWindowDimensions, Alert } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { router, Stack } from 'expo-router'
+import { useTranslation } from 'react-i18next'
 import { usePartyStore } from '@/presentation/stores/usePartyStore'
 import { useGoblinStore } from '@/presentation/stores/useGoblinStore'
 import { useBaseStore, selectRank } from '@/presentation/stores/useBaseStore'
@@ -69,6 +70,7 @@ const PartyCard = memo(function PartyCard({
   slotSize,
   avatarSize,
 }: PartyCardProps) {
+  const { t } = useTranslation()
   const members = useMemo(() => {
     return party.memberIds
       .map(id => goblins.find(g => g.id === id))
@@ -77,8 +79,12 @@ const PartyCard = memo(function PartyCard({
 
   const partyRewardText = useMemo(() => {
     const multipliers = normalizePartyRewardMultipliers(party.rewardMultipliers)
-    return `G${formatMultiplier(multipliers.gold)}倍　レア${formatMultiplier(multipliers.rare)}倍　称号${formatMultiplier(multipliers.title)}倍`
-  }, [party.rewardMultipliers])
+    return t('ui.formation.index.rewardText', {
+      gold: formatMultiplier(multipliers.gold),
+      rare: formatMultiplier(multipliers.rare),
+      title: formatMultiplier(multipliers.title),
+    })
+  }, [party.rewardMultipliers, t])
 
   // 6スロット分の配列を作成
   const slots = useMemo(() => {
@@ -97,7 +103,7 @@ const PartyCard = memo(function PartyCard({
           <Text style={styles.partyName}>{party.name}</Text>
           {status === 'expedition' && (
             <View style={styles.expeditionBadge}>
-              <Text style={styles.expeditionBadgeText}>遠征中</Text>
+              <Text style={styles.expeditionBadgeText}>{t('ui.formation.index.expeditionStatus')}</Text>
             </View>
           )}
         </View>
@@ -113,7 +119,7 @@ const PartyCard = memo(function PartyCard({
 
       {historyDisplays.length > 0 && (
         <View style={styles.historySection}>
-          <Text style={styles.historyTitle}>遠征履歴</Text>
+          <Text style={styles.historyTitle}>{t('ui.formation.index.historyTitle')}</Text>
           <View style={styles.historyList}>
             {historyDisplays.map(item => (
               <View key={item.id} style={styles.historyRow}>
@@ -140,6 +146,7 @@ const PartyCard = memo(function PartyCard({
 })
 
 export default function FormationScreen() {
+  const { t } = useTranslation()
   const { width } = useWindowDimensions()
   const parties = usePartyStore((state) => state.parties)
   const partiesLoading = usePartyStore((state) => state.isLoading)
@@ -188,7 +195,7 @@ export default function FormationScreen() {
     if (!party) {
       // パーティがない場合は新規作成して遷移
       const newParty = await createParty({
-        name: `PT${index + 1}`,
+        name: t('ui.formation.index.partyDefaultName', { index: index + 1 }),
         memberIds: [],
       })
       router.push({
@@ -219,7 +226,7 @@ export default function FormationScreen() {
         params: { partyId: party.id.toString() },
       })
     }
-  }, [createParty, partyHistories])
+  }, [createParty, partyHistories, t])
 
   const handleHistoryPress = useCallback((record: ExpeditionRecord, ongoing: boolean) => {
     if (ongoing) {
@@ -252,23 +259,23 @@ export default function FormationScreen() {
       try {
         for (const party of parties) {
           if ((party.status ?? 'idle') === 'expedition') {
-            skippedReasons.push(`${party.name}: 遠征中です`)
+            skippedReasons.push(`${party.name}: ${t('ui.formation.index.reasonExpedition')}`)
             continue
           }
 
           if (party.memberIds.length === 0) {
-            skippedReasons.push(`${party.name}: メンバーがいません`)
+            skippedReasons.push(`${party.name}: ${t('ui.formation.index.reasonNoMembers')}`)
             continue
           }
 
           if (!party.dungeonId) {
-            skippedReasons.push(`${party.name}: 遠征先が未設定です`)
+            skippedReasons.push(`${party.name}: ${t('ui.formation.index.reasonNoDungeon')}`)
             continue
           }
 
           const dungeon = dungeons.find((item) => item.id === party.dungeonId)
           if (!dungeon || !dungeon.unlocked) {
-            skippedReasons.push(`${party.name}: 遠征先に出撃できません`)
+            skippedReasons.push(`${party.name}: ${t('ui.formation.index.reasonCannotLaunch')}`)
             continue
           }
 
@@ -281,7 +288,7 @@ export default function FormationScreen() {
             startedCount += 1
           } catch (error) {
             console.error('[Formation] Failed to start expedition in bulk launch', error)
-            skippedReasons.push(`${party.name}: 出撃に失敗しました`)
+            skippedReasons.push(`${party.name}: ${t('ui.formation.index.reasonLaunchFailed')}`)
           }
         }
       } finally {
@@ -289,15 +296,15 @@ export default function FormationScreen() {
       }
 
       if (startedCount === 0) {
-        Alert.alert('一括出撃できません', skippedReasons.join('\n') || '出撃可能なPTがありません')
+        Alert.alert(t('ui.formation.index.bulkCannotTitle'), skippedReasons.join('\n') || t('ui.formation.index.bulkNoLaunchable'))
         return
       }
 
       const message = skippedReasons.length > 0
-        ? `${startedCount}PTを出撃させました。\n\n未出撃:\n${skippedReasons.join('\n')}`
-        : `${startedCount}PTを出撃させました。`
+        ? t('ui.formation.index.bulkStartedWithSkipped', { count: startedCount, reasons: skippedReasons.join('\n') })
+        : t('ui.formation.index.bulkStarted', { count: startedCount })
 
-      Alert.alert('一括出撃', message)
+      Alert.alert(t('ui.formation.index.bulkLaunch'), message)
     }
 
     const launchableParties = parties.filter((party) => {
@@ -312,18 +319,18 @@ export default function FormationScreen() {
     const remainingPendingSlots = Math.max(0, maxPendingGoblins - pendingGoblins.length)
     if (launchableParties.length > remainingPendingSlots) {
       Alert.alert(
-        '確認',
-        `待機枠が不足しています。${launchableParties.length}PT出撃すると、遠征成功時に追加されるゴブリンを受け取れず破棄する可能性があります。出撃しますか？`,
+        t('ui.formation.common.confirm'),
+        t('ui.formation.index.pendingOverflowBody', { count: launchableParties.length }),
         [
-          { text: 'キャンセル', style: 'cancel' },
-          { text: '出撃する', onPress: () => void doBulkLaunch() },
+          { text: t('ui.common.cancel'), style: 'cancel' },
+          { text: t('ui.formation.common.launch'), onPress: () => void doBulkLaunch() },
         ],
       )
       return
     }
 
     void doBulkLaunch()
-  }, [dungeons, parties, pendingGoblins.length, rank, startExpedition])
+  }, [dungeons, parties, pendingGoblins.length, rank, startExpedition, t])
 
   const canBulkLaunch = useMemo(() => {
     return parties.some((party) => {
@@ -339,7 +346,7 @@ export default function FormationScreen() {
     return (
       <SafeAreaView style={styles.loadingContainer} edges={['left', 'right', 'bottom']}>
         <ActivityIndicator size="large" color="#3B82F6" />
-        <Text style={styles.loadingText}>読み込み中...</Text>
+        <Text style={styles.loadingText}>{t('ui.common.loading')}</Text>
       </SafeAreaView>
     )
   }
@@ -367,7 +374,7 @@ export default function FormationScreen() {
         activeOpacity={0.7}
       >
         <View style={styles.partyHeader}>
-          <Text style={styles.partyName}>PT{index + 1}</Text>
+          <Text style={styles.partyName}>{t('ui.formation.index.partyDefaultName', { index: index + 1 })}</Text>
         </View>
         <View style={styles.membersRow}>
           {Array.from({ length: MAX_PARTY_SLOTS }).map((_, slotIndex) => (
@@ -389,7 +396,7 @@ export default function FormationScreen() {
                 styles.headerAction,
                 (!canBulkLaunch || isBulkLaunching) && styles.headerActionDisabled,
               ]}>
-                {isBulkLaunching ? '出撃中...' : '一括出撃'}
+                {isBulkLaunching ? t('ui.formation.common.launching') : t('ui.formation.index.bulkLaunch')}
               </Text>
             </TouchableOpacity>
           ),
@@ -400,7 +407,7 @@ export default function FormationScreen() {
         keyExtractor={(item, index) => item?.id.toString() ?? `empty-${index}`}
         renderItem={renderPartyItem}
         contentContainerStyle={styles.contentContainer}
-        ListHeaderComponent={<Text style={styles.prepTitle}>冒険の準備</Text>}
+        ListHeaderComponent={<Text style={styles.prepTitle}>{t('ui.formation.index.prepTitle')}</Text>}
       />
     </SafeAreaView>
   )

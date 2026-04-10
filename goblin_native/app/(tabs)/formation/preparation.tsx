@@ -1,6 +1,7 @@
 import { useState, useCallback, useMemo, useEffect } from 'react'
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView, ActivityIndicator, Alert, Image, useWindowDimensions, Modal, Pressable, TextInput } from 'react-native'
 import { router, useLocalSearchParams, Stack } from 'expo-router'
+import { useTranslation } from 'react-i18next'
 import { usePartyStore } from '@/presentation/stores/usePartyStore'
 import { useGoblinStore } from '@/presentation/stores/useGoblinStore'
 import { useBaseStore, selectRank } from '@/presentation/stores/useBaseStore'
@@ -10,22 +11,15 @@ import { getGoblinDisplayImage } from '@/shared/utils/goblinImages'
 import { getEffectiveStats } from '@/shared/utils/goblinStats'
 import { normalizePartyRewardMultipliers } from '@/shared/types'
 import type { ExpeditionRequest, Goblin, Dungeon, Party } from '@/shared/types'
+import { getDungeonDescription, getDungeonName, getReturnPolicyLabel } from '@/shared/i18n/entityLocalization'
 
 type ReturnPolicy = ExpeditionRequest['returnPolicy']
 
 const MAX_PARTY_SLOTS = 6
 
-const RETURN_POLICIES: { value: ReturnPolicy; label: string }[] = [
-  { value: 'never', label: '帰還しない' },
-  { value: 'until_floor2', label: '2階で帰還' },
-  { value: 'until_floor3', label: '3階で帰還' },
-  { value: 'if_any_ko', label: '誰か倒れたら' },
-  { value: 'last_one', label: '最後の1人まで' },
-]
-
 function formatDungeonLabel(dungeon: Dungeon): string {
-  if (dungeon.areaLevel === undefined) return dungeon.name
-  return `${dungeon.name} / エリアLv.${dungeon.areaLevel}`
+  if (dungeon.areaLevel === undefined) return getDungeonName(dungeon)
+  return `${getDungeonName(dungeon)} / Area Lv.${dungeon.areaLevel}`
 }
 
 function formatMultiplier(value: number): string {
@@ -62,6 +56,7 @@ function MemberSlot({ goblin, isEmpty, slotSize, avatarSize }: MemberSlotProps) 
 }
 
 export default function ExpeditionPreparationScreen() {
+  const { t } = useTranslation()
   const { width } = useWindowDimensions()
   const { partyId } = useLocalSearchParams<{ partyId: string }>()
   const {
@@ -132,8 +127,12 @@ export default function ExpeditionPreparationScreen() {
   const partyRewardText = useMemo(() => {
     if (!party) return ''
     const multipliers = normalizePartyRewardMultipliers(party.rewardMultipliers)
-    return `G${formatMultiplier(multipliers.gold)}倍　レア${formatMultiplier(multipliers.rare)}倍　称号${formatMultiplier(multipliers.title)}倍`
-  }, [party])
+    return t('ui.formation.preparation.rewardText', {
+      gold: formatMultiplier(multipliers.gold),
+      rare: formatMultiplier(multipliers.rare),
+      title: formatMultiplier(multipliers.title),
+    })
+  }, [party, t])
 
   // 6スロット分の配列を作成
   const slots = useMemo(() => {
@@ -189,7 +188,7 @@ export default function ExpeditionPreparationScreen() {
 
     const trimmedPartyName = editingPartyName.trim()
     if (!trimmedPartyName) {
-      Alert.alert('パーティ名を入力してください', '空のパーティ名は保存できません')
+      Alert.alert(t('ui.formation.preparation.nameRequiredTitle'), t('ui.formation.preparation.nameRequiredBody'))
       return
     }
 
@@ -199,7 +198,7 @@ export default function ExpeditionPreparationScreen() {
       setIsPartyNameModalVisible(false)
     } catch (error) {
       console.error('[Preparation] Failed to update party name', error)
-      Alert.alert('パーティ名を変更できませんでした', '時間をおいて再度お試しください')
+      Alert.alert(t('ui.formation.preparation.renameFailedTitle'), t('ui.formation.preparation.renameFailedBody'))
     } finally {
       setIsSavingPartyName(false)
     }
@@ -221,17 +220,17 @@ export default function ExpeditionPreparationScreen() {
 
   const handleStartExpedition = useCallback(() => {
     if (!selectedDungeonId) {
-      Alert.alert('ダンジョンを選択してください', '遠征先のダンジョンを選択する必要があります')
+      Alert.alert(t('ui.formation.preparation.dungeonRequiredTitle'), t('ui.formation.preparation.dungeonRequiredBody'))
       return
     }
 
     if (partyMembers.length === 0) {
-      Alert.alert('メンバーがいません', 'パーティにメンバーを追加してください')
+      Alert.alert(t('ui.formation.preparation.noMembersTitle'), t('ui.formation.preparation.noMembersBody'))
       return
     }
 
     if (!party || !selectedDungeon) {
-      Alert.alert('ダンジョン情報が取得できません', 'ダンジョン情報の取得に失敗しました')
+      Alert.alert(t('ui.formation.preparation.dungeonInfoMissingTitle'), t('ui.formation.preparation.dungeonInfoMissingBody'))
       return
     }
 
@@ -246,18 +245,18 @@ export default function ExpeditionPreparationScreen() {
         router.dismissAll()
       } catch (error) {
         console.error('[Preparation] Failed to start expedition', error)
-        Alert.alert('遠征に失敗しました', '遠征開始時にエラーが発生しました')
+        Alert.alert(t('ui.formation.preparation.startFailedTitle'), t('ui.formation.preparation.startFailedBody'))
       }
     }
 
     const maxPendingGoblins = rank * 5
     if (pendingGoblins.length >= maxPendingGoblins) {
       Alert.alert(
-        '確認',
-        '待機枠がいっぱいです。遠征に成功してゴブリンが追加された場合、受け取れず破棄される可能性があります。出撃しますか？',
+        t('ui.formation.common.confirm'),
+        t('ui.formation.preparation.pendingOverflowBody'),
         [
-          { text: 'キャンセル', style: 'cancel' },
-          { text: '出撃する', onPress: () => void doStartExpedition() },
+          { text: t('ui.common.cancel'), style: 'cancel' },
+          { text: t('ui.formation.common.launch'), onPress: () => void doStartExpedition() },
         ],
       )
       return
@@ -273,6 +272,7 @@ export default function ExpeditionPreparationScreen() {
     selectedReturnPolicy,
     partyMembers.length,
     startExpedition,
+    t,
   ])
 
   const canStartExpedition = selectedDungeonId && partyMembers.length > 0
@@ -295,7 +295,7 @@ export default function ExpeditionPreparationScreen() {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#10B981" />
-        <Text style={styles.loadingText}>読み込み中...</Text>
+        <Text style={styles.loadingText}>{t('ui.common.loading')}</Text>
       </View>
     )
   }
@@ -303,9 +303,9 @@ export default function ExpeditionPreparationScreen() {
   if (!party) {
     return (
       <View style={styles.errorContainer}>
-        <Text style={styles.errorText}>パーティが見つかりません</Text>
+        <Text style={styles.errorText}>{t('ui.formation.common.partyNotFound')}</Text>
         <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-          <Text style={styles.backButtonText}>戻る</Text>
+          <Text style={styles.backButtonText}>{t('ui.formation.common.back')}</Text>
         </TouchableOpacity>
       </View>
     )
@@ -317,7 +317,7 @@ export default function ExpeditionPreparationScreen() {
         options={{
           headerLeft: () => (
             <TouchableOpacity onPress={() => router.back()}>
-              <Text style={styles.headerButton}>← 戻る</Text>
+              <Text style={styles.headerButton}>← {t('ui.formation.common.back')}</Text>
             </TouchableOpacity>
           ),
           headerRight: () => (
@@ -326,17 +326,17 @@ export default function ExpeditionPreparationScreen() {
               disabled={!canStartExpedition}
             >
               <Text style={[styles.headerButton, styles.headerButtonPrimary, !canStartExpedition && styles.headerButtonDisabled]}>
-                出撃
+                {t('ui.formation.common.launch')}
               </Text>
             </TouchableOpacity>
           ),
-          title: '冒険準備',
+          title: t('ui.formation.preparation.title'),
         }}
       />
       <ScrollView style={styles.container}>
         {/* パーティセクション */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>パーティ</Text>
+          <Text style={styles.sectionTitle}>{t('ui.formation.preparation.sectionParty')}</Text>
           <View style={styles.card}>
             <TouchableOpacity style={styles.partyInfoButton} onPress={handleOpenPartyInfo} activeOpacity={0.8}>
               <Text style={styles.partyName}>{party.name}</Text>
@@ -350,26 +350,26 @@ export default function ExpeditionPreparationScreen() {
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.editButton} onPress={handleEditParty}>
-              <Text style={styles.editButtonText}>メンバーを変更する</Text>
+              <Text style={styles.editButtonText}>{t('ui.formation.preparation.editMembers')}</Text>
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.secondaryButton} onPress={handleOpenEquipmentList}>
-              <Text style={styles.secondaryButtonText}>装備アイテムの一覧</Text>
+              <Text style={styles.secondaryButtonText}>{t('ui.formation.preparation.equipmentList')}</Text>
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.secondaryButton} onPress={handleOpenPartyNameModal}>
-              <Text style={styles.secondaryButtonText}>パーティ名を変更する</Text>
+              <Text style={styles.secondaryButtonText}>{t('ui.formation.preparation.renameParty')}</Text>
             </TouchableOpacity>
           </View>
         </View>
 
         {/* 遠征セクション */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>遠征</Text>
+          <Text style={styles.sectionTitle}>{t('ui.formation.preparation.sectionExpedition')}</Text>
           <View style={styles.card}>
             {/* 遠征先 */}
             <View style={styles.settingItem}>
-              <Text style={styles.settingLabel}>遠征先</Text>
+              <Text style={styles.settingLabel}>{t('ui.formation.preparation.dungeon')}</Text>
               <TouchableOpacity
                 style={styles.settingValue}
                 onPress={() => setIsDungeonModalVisible(true)}
@@ -378,45 +378,45 @@ export default function ExpeditionPreparationScreen() {
                 {selectedDungeon ? (
                   <>
                     <Text style={styles.settingValueText}>{formatDungeonLabel(selectedDungeon)}</Text>
-                    <Text style={styles.settingValueDescription}>{selectedDungeon.description}</Text>
+                    <Text style={styles.settingValueDescription}>{getDungeonDescription(selectedDungeon)}</Text>
                   </>
                 ) : (
-                  <Text style={styles.settingValuePlaceholder}>遠征先が未設定です</Text>
+                  <Text style={styles.settingValuePlaceholder}>{t('ui.formation.preparation.dungeonUnset')}</Text>
                 )}
               </TouchableOpacity>
             </View>
 
             {/* 目標階数 */}
             <View style={styles.settingItem}>
-              <Text style={styles.settingLabel}>目標階数</Text>
+              <Text style={styles.settingLabel}>{t('ui.formation.preparation.targetFloor')}</Text>
               <View style={styles.settingValue}>
                 <Text style={styles.settingValueText}>
-                  {selectedTargetFloor === null ? '最下層まで探索' : `${selectedTargetFloor}階まで`}
+                  {selectedTargetFloor === null ? t('ui.formation.preparation.targetFloorDeepest') : t('ui.formation.preparation.targetFloorUntil', { floor: selectedTargetFloor })}
                 </Text>
               </View>
             </View>
 
             {/* 帰還条件 */}
             <View style={styles.settingItem}>
-              <Text style={styles.settingLabel}>帰還条件</Text>
+              <Text style={styles.settingLabel}>{t('ui.formation.preparation.returnPolicy')}</Text>
               <TouchableOpacity
                 style={styles.settingValue}
                 onPress={() => setIsReturnPolicyModalVisible(true)}
               >
                 <Text style={styles.settingValueText}>
-                  {RETURN_POLICIES.find(p => p.value === selectedReturnPolicy)?.label ?? '帰還しない'}
+                  {getReturnPolicyLabel(selectedReturnPolicy)}
                 </Text>
               </TouchableOpacity>
             </View>
 
             {/* 推定探索時間 */}
             <View style={styles.settingItem}>
-              <Text style={styles.settingLabel}>推定探索時間</Text>
+              <Text style={styles.settingLabel}>{t('ui.formation.preparation.estimatedTime')}</Text>
               <View style={styles.settingValue}>
                 {estimatedExplorationTime !== null ? (
-                  <Text style={styles.settingValueText}>{estimatedExplorationTime}秒</Text>
+                  <Text style={styles.settingValueText}>{t('ui.formation.preparation.seconds', { value: estimatedExplorationTime })}</Text>
                 ) : (
-                  <Text style={styles.settingValuePlaceholder}>遠征先が未設定です</Text>
+                  <Text style={styles.settingValuePlaceholder}>{t('ui.formation.preparation.dungeonUnset')}</Text>
                 )}
               </View>
             </View>
@@ -431,10 +431,10 @@ export default function ExpeditionPreparationScreen() {
       >
         <Pressable style={styles.modalOverlay} onPress={() => setIsDungeonModalVisible(false)}>
           <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>遠征先を選択</Text>
+            <Text style={styles.modalTitle}>{t('ui.formation.preparation.selectDungeonTitle')}</Text>
             <ScrollView style={styles.modalList} contentContainerStyle={styles.modalListContent}>
               {unlockedDungeons.length === 0 ? (
-                <Text style={styles.modalEmptyText}>選択できるダンジョンがありません</Text>
+                <Text style={styles.modalEmptyText}>{t('ui.formation.preparation.noDungeon')}</Text>
               ) : (
                 unlockedDungeons.map(dungeon => (
                   <TouchableOpacity
@@ -454,13 +454,13 @@ export default function ExpeditionPreparationScreen() {
                     ]}>
                       {formatDungeonLabel(dungeon)}
                     </Text>
-                    <Text style={styles.modalOptionDescription}>{dungeon.description}</Text>
+                    <Text style={styles.modalOptionDescription}>{getDungeonDescription(dungeon)}</Text>
                   </TouchableOpacity>
                 ))
               )}
             </ScrollView>
             <TouchableOpacity style={styles.modalCloseButton} onPress={() => setIsDungeonModalVisible(false)}>
-              <Text style={styles.modalCloseButtonText}>閉じる</Text>
+              <Text style={styles.modalCloseButtonText}>{t('ui.formation.common.close')}</Text>
             </TouchableOpacity>
           </View>
         </Pressable>
@@ -485,11 +485,11 @@ export default function ExpeditionPreparationScreen() {
           }}
         >
           <Pressable style={styles.modalContent} onPress={() => undefined}>
-            <Text style={styles.modalTitle}>パーティ名を変更</Text>
+            <Text style={styles.modalTitle}>{t('ui.formation.preparation.renameTitle')}</Text>
             <TextInput
               value={editingPartyName}
               onChangeText={setEditingPartyName}
-              placeholder="パーティ名を入力"
+              placeholder={t('ui.formation.preparation.renamePlaceholder')}
               maxLength={30}
               editable={!isSavingPartyName}
               style={styles.partyNameInput}
@@ -505,7 +505,7 @@ export default function ExpeditionPreparationScreen() {
                 onPress={() => setIsPartyNameModalVisible(false)}
                 disabled={isSavingPartyName}
               >
-                <Text style={styles.modalCancelButtonText}>キャンセル</Text>
+                <Text style={styles.modalCancelButtonText}>{t('ui.common.cancel')}</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={[styles.modalActionButton, styles.modalPrimaryButton, isSavingPartyName && styles.modalPrimaryButtonDisabled]}
@@ -513,7 +513,7 @@ export default function ExpeditionPreparationScreen() {
                 disabled={isSavingPartyName}
               >
                 <Text style={styles.modalPrimaryButtonText}>
-                  {isSavingPartyName ? '保存中...' : '保存'}
+                  {isSavingPartyName ? t('ui.formation.common.saving') : t('ui.formation.common.save')}
                 </Text>
               </TouchableOpacity>
             </View>
@@ -529,31 +529,31 @@ export default function ExpeditionPreparationScreen() {
       >
         <Pressable style={styles.modalOverlay} onPress={() => setIsReturnPolicyModalVisible(false)}>
           <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>帰還条件を選択</Text>
+            <Text style={styles.modalTitle}>{t('ui.formation.preparation.selectReturnPolicyTitle')}</Text>
             <ScrollView style={styles.modalList} contentContainerStyle={styles.modalListContent}>
-              {RETURN_POLICIES.map(policy => (
+              {(['never', 'until_floor2', 'until_floor3', 'if_any_ko', 'last_one'] as ReturnPolicy[]).map(policy => (
                 <TouchableOpacity
-                  key={policy.value}
+                  key={policy}
                   style={[
                     styles.modalOption,
-                    selectedReturnPolicy === policy.value && styles.modalOptionSelected,
+                    selectedReturnPolicy === policy && styles.modalOptionSelected,
                   ]}
                   onPress={() => {
-                    handleSelectReturnPolicy(policy.value)
+                    handleSelectReturnPolicy(policy)
                     setIsReturnPolicyModalVisible(false)
                   }}
                 >
                   <Text style={[
                     styles.modalOptionTitle,
-                    selectedReturnPolicy === policy.value && styles.modalOptionTitleSelected,
+                    selectedReturnPolicy === policy && styles.modalOptionTitleSelected,
                   ]}>
-                    {policy.label}
+                    {getReturnPolicyLabel(policy)}
                   </Text>
                 </TouchableOpacity>
               ))}
             </ScrollView>
             <TouchableOpacity style={styles.modalCloseButton} onPress={() => setIsReturnPolicyModalVisible(false)}>
-              <Text style={styles.modalCloseButtonText}>閉じる</Text>
+              <Text style={styles.modalCloseButtonText}>{t('ui.formation.common.close')}</Text>
             </TouchableOpacity>
           </View>
         </Pressable>
