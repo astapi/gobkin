@@ -15,7 +15,10 @@ import type { Goblin } from '@/shared/types'
 const CATEGORY_ORDER: Record<EquipmentCategory, number> = {
   weapon: 0,
   armor: 1,
-  accessory: 2,
+  shield: 2,
+  gauntlet: 3,
+  wand: 4,
+  accessory: 5,
 }
 
 function getDisplayName(eq: EquipmentInstance, template: EquipmentTemplate): string {

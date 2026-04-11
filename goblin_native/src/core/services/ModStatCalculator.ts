@@ -82,7 +82,7 @@ export class ModStatCalculator {
       hp: Math.floor(calcHp() * (skillMultipliers.hp ?? 1)),
       atk: withMultiplier('atk'),
       def: withMultiplier('def'),
-      attackCount: withMultiplier('attackCount'),
+      attackCount: Math.max(1, withMultiplier('attackCount')),
       accuracy: withMultiplier('accuracy'),
       evasion: withMultiplier('evasion'),
     }

@@ -4,7 +4,7 @@ import type { CharacterSkill } from './CharacterSkill'
 /**
  * 装備の種別
  */
-export type EquipmentCategory = 'weapon' | 'armor' | 'accessory'
+export type EquipmentCategory = 'weapon' | 'armor' | 'shield' | 'gauntlet' | 'wand' | 'accessory'
 
 /**
  * 武器のサブカテゴリ
@@ -23,6 +23,8 @@ export type EquipmentStat =
   | 'hp_flat'
   | 'atk_flat'
   | 'def_flat'
+  | 'magic_atk_flat'
+  | 'magic_def_flat'
   | 'attackCount_flat'
   | 'accuracy_flat'
   | 'evasion_flat'

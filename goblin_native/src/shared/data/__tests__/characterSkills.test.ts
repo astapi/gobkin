@@ -154,6 +154,33 @@ describe('characterSkills - 物理ダメージ軽減', () => {
     expect(describeCharacterSkill(skill)).toBe('[-10%] 物理ダメージ軽減(%)')
   })
 
+  it('ブレスダメージ軽減スキルの説明文を表記ルールどおり返す', () => {
+    const skill: CharacterSkill = {
+      id: 'breath_10',
+      breathDamageReductionPercent: 10,
+    }
+
+    expect(describeCharacterSkill(skill)).toBe('[-10%] ブレスダメージ軽減(%)')
+  })
+
+  it('ブレスに強いスキルの説明文を表記ルールどおり返す', () => {
+    const skill: CharacterSkill = {
+      id: 'breath_4_5',
+      breathDamageMultiplier: 0.8,
+    }
+
+    expect(describeCharacterSkill(skill)).toBe('[4/5]ブレスに強い')
+  })
+
+  it('魔法威力スキルの説明文を表記ルールどおり返す', () => {
+    const skill: CharacterSkill = {
+      id: 'spell_damage_10',
+      spellDamagePercent: 10,
+    }
+
+    expect(describeCharacterSkill(skill)).toBe('[+10%]魔法威力の増減(%)')
+  })
+
   it('攻撃回数スキルの説明文を表記ルールどおり返す', () => {
     const skill: CharacterSkill = {
       id: 'attack_count_11',
@@ -161,6 +188,24 @@ describe('characterSkills - 物理ダメージ軽減', () => {
     }
 
     expect(describeCharacterSkill(skill)).toBe('[+11]攻撃回数')
+  })
+
+  it('回避能力スキルの説明文を表記ルールどおり返す', () => {
+    const skill: CharacterSkill = {
+      id: 'evasion_20',
+      statBonuses: { evasion: 20 },
+    }
+
+    expect(describeCharacterSkill(skill)).toBe('[+20]回避能力')
+  })
+
+  it('必殺率スキルの説明文を表記ルールどおり返す', () => {
+    const skill: CharacterSkill = {
+      id: 'critical_rate_10',
+      criticalRateBonusPercent: 10,
+    }
+
+    expect(describeCharacterSkill(skill)).toBe('[+10]必殺率')
   })
 
   it('行動順倍率スキルの説明文を返す', () => {

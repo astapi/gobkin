@@ -47,6 +47,10 @@ export function getSkillLabel(skill: CharacterSkill): string {
     return i18n.t('battle.defToHp', { value: skill.defToHpPercent })
   }
 
+  if (skill.criticalRateBonusPercent !== undefined) {
+    return i18n.t('battle.criticalRateBonus', { value: skill.criticalRateBonusPercent })
+  }
+
   if (skill.criticalDamageBonusPercent !== undefined) {
     return i18n.t('battle.criticalDamageBonus', { value: skill.criticalDamageBonusPercent })
   }
@@ -55,8 +59,24 @@ export function getSkillLabel(skill: CharacterSkill): string {
     return i18n.t('battle.physicalReduction', { value: skill.physicalDamageReductionPercent })
   }
 
+  if (skill.breathDamageMultiplier !== undefined) {
+    return i18n.t('battle.breathDamageMultiplier', { value: skill.breathDamageMultiplier === 0.8 ? '4/5' : skill.breathDamageMultiplier.toFixed(2) })
+  }
+
+  if (skill.breathDamageReductionPercent !== undefined) {
+    return i18n.t('battle.breathReduction', { value: skill.breathDamageReductionPercent })
+  }
+
+  if (skill.spellDamagePercent !== undefined) {
+    return i18n.t('battle.spellDamagePercent', { value: skill.spellDamagePercent })
+  }
+
   if (skill.statBonuses?.attackCount !== undefined) {
     return i18n.t('battle.attackCountBonus', { value: skill.statBonuses.attackCount })
+  }
+
+  if (skill.statBonuses?.evasion !== undefined) {
+    return i18n.t('battle.evasionBonus', { value: skill.statBonuses.evasion })
   }
 
   if (skill.additionalDamage !== undefined) {

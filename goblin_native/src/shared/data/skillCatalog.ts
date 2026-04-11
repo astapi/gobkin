@@ -24,6 +24,40 @@ function createAttackCountUpSkill(value: number): CharacterSkill {
   }
 }
 
+function createEvasionUpSkill(value: number): CharacterSkill {
+  const id = `evasion_up_${value}`
+  return {
+    id,
+    statBonuses: {
+      evasion: value,
+    },
+  }
+}
+
+function createCriticalRateUpSkill(value: number): CharacterSkill {
+  const id = `critical_rate_up_${value}`
+  return {
+    id,
+    criticalRateBonusPercent: value,
+  }
+}
+
+function createBreathReductionSkill(value: number): CharacterSkill {
+  const id = `breath_reduction_${value}`
+  return {
+    id,
+    breathDamageReductionPercent: value,
+  }
+}
+
+function createSpellDamageSkill(value: number): CharacterSkill {
+  const id = `spell_damage_${value}`
+  return {
+    id,
+    spellDamagePercent: value,
+  }
+}
+
 function createDefToHpSkill(value: number): CharacterSkill {
   const id = `def_to_hp_${value}`
   return {
@@ -96,6 +130,19 @@ export const CHARACTER_SKILL_CATALOG = {
   critical_damage_bonus_10: createCriticalDamageBonusSkill(10),
   critical_damage_bonus_11: createCriticalDamageBonusSkill(11),
   critical_damage_bonus_12: createCriticalDamageBonusSkill(12),
+  critical_rate_up_10: createCriticalRateUpSkill(10),
+
+  breath_damage_4_5: {
+    id: 'breath_damage_4_5',
+    breathDamageMultiplier: 0.8,
+  },
+  breath_reduction_6: createBreathReductionSkill(6),
+  breath_reduction_7: createBreathReductionSkill(7),
+  breath_reduction_8: createBreathReductionSkill(8),
+  breath_reduction_9: createBreathReductionSkill(9),
+  breath_reduction_10: createBreathReductionSkill(10),
+  breath_reduction_11: createBreathReductionSkill(11),
+  breath_reduction_12: createBreathReductionSkill(12),
 
   def_to_hp_1: createDefToHpSkill(1),
   def_to_hp_2: createDefToHpSkill(2),
@@ -113,11 +160,26 @@ export const CHARACTER_SKILL_CATALOG = {
       accuracy_flat: 2,
     },
   },
+  evasion_up_20: createEvasionUpSkill(20),
+  evasion_up_30: createEvasionUpSkill(30),
+  evasion_up_40: createEvasionUpSkill(40),
+  evasion_up_50: createEvasionUpSkill(50),
+  evasion_up_60: createEvasionUpSkill(60),
+  evasion_up_70: createEvasionUpSkill(70),
+  evasion_up_80: createEvasionUpSkill(80),
 
   evasion_150: {
     id: 'evasion_150',
     statMultipliers: { evasion: 1.5 },
   },
+
+  spell_damage_10: createSpellDamageSkill(10),
+  spell_damage_11: createSpellDamageSkill(11),
+  spell_damage_12: createSpellDamageSkill(12),
+  spell_damage_13: createSpellDamageSkill(13),
+  spell_damage_14: createSpellDamageSkill(14),
+  spell_damage_15: createSpellDamageSkill(15),
+  spell_damage_16: createSpellDamageSkill(16),
 
   grant_blizzard: {
     id: 'grant_blizzard',
