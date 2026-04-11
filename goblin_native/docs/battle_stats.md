@@ -180,9 +180,9 @@ HP以外の基礎ステータスは、以下の式で決定される。
 | hp_flat / hp_percent | HP |
 | atk_flat / atk_percent | 攻撃力 |
 | def_flat / def_percent | 防御力 |
-| attackCount_flat / attackCount_percent | 攻撃回数 |
-| accuracy_flat / accuracy_percent | 命中精度 |
-| evasion_flat / evasion_percent | 回避能力 |
+| attackCount_flat | 攻撃回数 |
+| accuracy_flat | 命中精度 |
+| evasion_flat | 回避能力 |
 | damage_reduction | 被ダメージ軽減率 |
 
 ## ダメージ計算

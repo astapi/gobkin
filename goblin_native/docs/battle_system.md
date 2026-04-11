@@ -299,8 +299,8 @@ function createSeededRandom(seed: number): () => number {
 | `atk_flat` / `atk_percent` | 攻撃力の加算・乗算 |
 | `def_flat` / `def_percent` | 防御力の加算・乗算 |
 | `hp_flat` / `hp_percent` | HPの加算・乗算 |
-| `accuracy_flat` / `accuracy_percent` | 命中精度の加算・乗算 |
-| `evasion_flat` / `evasion_percent` | 回避の加算・乗算 |
+| `accuracy_flat` | 命中精度の追加 |
+| `evasion_flat` | 回避の追加 |
 | `attackCount_flat` | 攻撃回数の追加 |
 | `damage_reduction` | 被ダメージ軽減 |
 

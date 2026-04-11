@@ -213,9 +213,9 @@ Mod
 | hp_percent / hp_flat | HP |
 | atk_percent / atk_flat | ATK |
 | def_percent / def_flat | DEF |
-| attackCount_percent / attackCount_flat | 攻撃回数 |
-| accuracy_percent / accuracy_flat | 命中精度 |
-| evasion_percent / evasion_flat | 回避 |
+| attackCount_flat | 攻撃回数 |
+| accuracy_flat | 命中精度 |
+| evasion_flat | 回避 |
 | damage_reduction | 被ダメ軽減 |
 
 ## データ永続化
