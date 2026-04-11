@@ -73,6 +73,147 @@ describe('rollTreasureDrops', () => {
       expect(getEquipmentByDungeonLevel(95).some((t) => t.id === 'armor_dragon')).toBe(true)
       expect(getEquipmentByDungeonLevel(120).some((t) => t.id === 'armor_adamant')).toBe(true)
     })
+
+    it('小手が低ティアから上位までのダンジョンレベルプールに含まれる', () => {
+      expect(getEquipmentTemplate('gauntlet_cloth_gloves')?.dropLevelMin).toBe(1)
+      expect(getEquipmentTemplate('gauntlet_cloth_gloves')?.dropLevelMax).toBe(2)
+      expect(getEquipmentTemplate('gauntlet_leather')?.dropLevelMin).toBe(4)
+      expect(getEquipmentTemplate('gauntlet_leather')?.dropLevelMax).toBe(10)
+      expect(getEquipmentTemplate('gauntlet_copper')?.dropLevelMin).toBe(8)
+      expect(getEquipmentTemplate('gauntlet_copper')?.dropLevelMax).toBe(15)
+      expect(getEquipmentTemplate('gauntlet_gauntlet')?.dropLevelMin).toBe(12)
+      expect(getEquipmentTemplate('gauntlet_gauntlet')?.dropLevelMax).toBe(25)
+      expect(getEquipmentTemplate('gauntlet_mithril')?.dropLevelMin).toBe(20)
+      expect(getEquipmentTemplate('gauntlet_mithril')?.dropLevelMax).toBe(40)
+      expect(getEquipmentTemplate('gauntlet_royal')?.dropLevelMin).toBe(35)
+      expect(getEquipmentTemplate('gauntlet_royal')?.dropLevelMax).toBe(60)
+      expect(getEquipmentTemplate('gauntlet_kaiser')?.dropLevelMin).toBe(50)
+      expect(getEquipmentTemplate('gauntlet_kaiser')?.dropLevelMax).toBe(80)
+      expect(getEquipmentTemplate('gauntlet_ancient')?.dropLevelMin).toBe(70)
+      expect(getEquipmentTemplate('gauntlet_ancient')?.dropLevelMax).toBe(105)
+      expect(getEquipmentTemplate('gauntlet_dragon')?.dropLevelMin).toBe(95)
+      expect(getEquipmentTemplate('gauntlet_dragon')?.dropLevelMax).toBe(135)
+      expect(getEquipmentTemplate('gauntlet_adamant')?.dropLevelMin).toBe(120)
+      expect(getEquipmentTemplate('gauntlet_adamant')?.dropLevelMax).toBe(150)
+
+      expect(getEquipmentByDungeonLevel(1).some((t) => t.id === 'gauntlet_cloth_gloves')).toBe(true)
+      expect(getEquipmentByDungeonLevel(4).some((t) => t.id === 'gauntlet_leather')).toBe(true)
+      expect(getEquipmentByDungeonLevel(8).some((t) => t.id === 'gauntlet_copper')).toBe(true)
+      expect(getEquipmentByDungeonLevel(12).some((t) => t.id === 'gauntlet_gauntlet')).toBe(true)
+      expect(getEquipmentByDungeonLevel(20).some((t) => t.id === 'gauntlet_mithril')).toBe(true)
+      expect(getEquipmentByDungeonLevel(35).some((t) => t.id === 'gauntlet_royal')).toBe(true)
+      expect(getEquipmentByDungeonLevel(50).some((t) => t.id === 'gauntlet_kaiser')).toBe(true)
+      expect(getEquipmentByDungeonLevel(70).some((t) => t.id === 'gauntlet_ancient')).toBe(true)
+      expect(getEquipmentByDungeonLevel(95).some((t) => t.id === 'gauntlet_dragon')).toBe(true)
+      expect(getEquipmentByDungeonLevel(120).some((t) => t.id === 'gauntlet_adamant')).toBe(true)
+    })
+
+    it('小手は必殺率statと必殺率アップスキルを持つ', () => {
+      const template = getEquipmentTemplate('gauntlet_cloth_gloves')
+
+      expect(template?.category).toBe('gauntlet')
+      expect(template?.statBonuses).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({ stat: 'accuracy_flat', value: 10 }),
+          expect.objectContaining({ stat: 'critical_rate_percent', value: 3 }),
+          expect.objectContaining({ stat: 'attackCount_flat', value: 0.8 }),
+        ])
+      )
+      expect(template?.grantedSkills).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({ id: 'attack_count_up_1', statBonuses: { attackCount: 1 } }),
+          expect.objectContaining({ id: 'critical_rate_up_10', criticalRateBonusPercent: 10 }),
+        ])
+      )
+    })
+
+    it('盾がアーマーと同じティア帯でダンジョンレベルプールに含まれる', () => {
+      expect(getEquipmentTemplate('shield_shield')?.dropLevelMin).toBe(12)
+      expect(getEquipmentTemplate('shield_shield')?.dropLevelMax).toBe(25)
+      expect(getEquipmentTemplate('shield_mithril')?.dropLevelMin).toBe(20)
+      expect(getEquipmentTemplate('shield_mithril')?.dropLevelMax).toBe(40)
+      expect(getEquipmentTemplate('shield_royal')?.dropLevelMin).toBe(35)
+      expect(getEquipmentTemplate('shield_royal')?.dropLevelMax).toBe(60)
+      expect(getEquipmentTemplate('shield_kaiser')?.dropLevelMin).toBe(50)
+      expect(getEquipmentTemplate('shield_kaiser')?.dropLevelMax).toBe(80)
+      expect(getEquipmentTemplate('shield_ancient')?.dropLevelMin).toBe(70)
+      expect(getEquipmentTemplate('shield_ancient')?.dropLevelMax).toBe(105)
+      expect(getEquipmentTemplate('shield_dragon')?.dropLevelMin).toBe(95)
+      expect(getEquipmentTemplate('shield_dragon')?.dropLevelMax).toBe(135)
+      expect(getEquipmentTemplate('shield_adamant')?.dropLevelMin).toBe(120)
+      expect(getEquipmentTemplate('shield_adamant')?.dropLevelMax).toBe(150)
+
+      expect(getEquipmentByDungeonLevel(12).some((t) => t.id === 'shield_shield')).toBe(true)
+      expect(getEquipmentByDungeonLevel(20).some((t) => t.id === 'shield_mithril')).toBe(true)
+      expect(getEquipmentByDungeonLevel(35).some((t) => t.id === 'shield_royal')).toBe(true)
+      expect(getEquipmentByDungeonLevel(50).some((t) => t.id === 'shield_kaiser')).toBe(true)
+      expect(getEquipmentByDungeonLevel(70).some((t) => t.id === 'shield_ancient')).toBe(true)
+      expect(getEquipmentByDungeonLevel(95).some((t) => t.id === 'shield_dragon')).toBe(true)
+      expect(getEquipmentByDungeonLevel(120).some((t) => t.id === 'shield_adamant')).toBe(true)
+    })
+
+    it('盾は魔法防御statとブレス軽減スキルを持つ', () => {
+      const template = getEquipmentTemplate('shield_shield')
+
+      expect(template?.category).toBe('shield')
+      expect(template?.statBonuses).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({ stat: 'critical_rate_percent', value: -2 }),
+          expect.objectContaining({ stat: 'def_flat', value: 8 }),
+          expect.objectContaining({ stat: 'evasion_flat', value: 12 }),
+          expect.objectContaining({ stat: 'magic_def_flat', value: 8 }),
+        ])
+      )
+      expect(template?.grantedSkills).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({ id: 'breath_damage_4_5', breathDamageMultiplier: 0.8 }),
+          expect.objectContaining({ id: 'evasion_up_20', statBonuses: { evasion: 20 } }),
+          expect.objectContaining({ id: 'breath_reduction_6', breathDamageReductionPercent: 6 }),
+        ])
+      )
+    })
+
+    it('ワンドがアーマーと同じティア帯でダンジョンレベルプールに含まれる', () => {
+      expect(getEquipmentTemplate('wand_wand')?.dropLevelMin).toBe(12)
+      expect(getEquipmentTemplate('wand_wand')?.dropLevelMax).toBe(25)
+      expect(getEquipmentTemplate('wand_mithril')?.dropLevelMin).toBe(20)
+      expect(getEquipmentTemplate('wand_mithril')?.dropLevelMax).toBe(40)
+      expect(getEquipmentTemplate('wand_royal')?.dropLevelMin).toBe(35)
+      expect(getEquipmentTemplate('wand_royal')?.dropLevelMax).toBe(60)
+      expect(getEquipmentTemplate('wand_kaiser')?.dropLevelMin).toBe(50)
+      expect(getEquipmentTemplate('wand_kaiser')?.dropLevelMax).toBe(80)
+      expect(getEquipmentTemplate('wand_ancient')?.dropLevelMin).toBe(70)
+      expect(getEquipmentTemplate('wand_ancient')?.dropLevelMax).toBe(105)
+      expect(getEquipmentTemplate('wand_dragon')?.dropLevelMin).toBe(95)
+      expect(getEquipmentTemplate('wand_dragon')?.dropLevelMax).toBe(135)
+      expect(getEquipmentTemplate('wand_adamant')?.dropLevelMin).toBe(120)
+      expect(getEquipmentTemplate('wand_adamant')?.dropLevelMax).toBe(150)
+
+      expect(getEquipmentByDungeonLevel(12).some((t) => t.id === 'wand_wand')).toBe(true)
+      expect(getEquipmentByDungeonLevel(20).some((t) => t.id === 'wand_mithril')).toBe(true)
+      expect(getEquipmentByDungeonLevel(35).some((t) => t.id === 'wand_royal')).toBe(true)
+      expect(getEquipmentByDungeonLevel(50).some((t) => t.id === 'wand_kaiser')).toBe(true)
+      expect(getEquipmentByDungeonLevel(70).some((t) => t.id === 'wand_ancient')).toBe(true)
+      expect(getEquipmentByDungeonLevel(95).some((t) => t.id === 'wand_dragon')).toBe(true)
+      expect(getEquipmentByDungeonLevel(120).some((t) => t.id === 'wand_adamant')).toBe(true)
+    })
+
+    it('ワンドは魔法攻撃力statと魔法威力増減スキルを持つ', () => {
+      const template = getEquipmentTemplate('wand_wand')
+
+      expect(template?.category).toBe('wand')
+      expect(template?.statBonuses).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({ stat: 'critical_rate_percent', value: -4 }),
+          expect.objectContaining({ stat: 'magic_atk_flat', value: 20 }),
+        ])
+      )
+      expect(template?.grantedSkills).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({ id: 'spell_damage_10', spellDamagePercent: 10 }),
+        ])
+      )
+    })
   })
 
   describe('ドロップ確率の基本動作', () => {

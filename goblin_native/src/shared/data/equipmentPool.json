@@ -1116,6 +1116,651 @@
       "grantedSkillIds": [
         "physical_reduction_12"
       ]
+    },
+    {
+      "_comment": "===== 防具:盾 (shield) ====="
+    },
+    {
+      "id": "shield_shield",
+      "name": "シールド",
+      "category": "shield",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -2
+        },
+        {
+          "stat": "def_flat",
+          "value": 8
+        },
+        {
+          "stat": "evasion_flat",
+          "value": 12
+        },
+        {
+          "stat": "magic_def_flat",
+          "value": 8
+        }
+      ],
+      "price": 80,
+      "unlockRank": 1,
+      "dropLevelMin": 12,
+      "dropLevelMax": 25,
+      "grantedSkillIds": [
+        "breath_damage_4_5",
+        "evasion_up_20",
+        "breath_reduction_6"
+      ]
+    },
+    {
+      "id": "shield_mithril",
+      "name": "ミスリルシールド",
+      "category": "shield",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -2
+        },
+        {
+          "stat": "def_flat",
+          "value": 12
+        },
+        {
+          "stat": "evasion_flat",
+          "value": 16
+        },
+        {
+          "stat": "magic_def_flat",
+          "value": 12
+        }
+      ],
+      "price": 400,
+      "dropLevelMin": 20,
+      "dropLevelMax": 40,
+      "grantedSkillIds": [
+        "breath_damage_4_5",
+        "evasion_up_30",
+        "breath_reduction_7"
+      ]
+    },
+    {
+      "id": "shield_royal",
+      "name": "ロイヤルシールド",
+      "category": "shield",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -2
+        },
+        {
+          "stat": "def_flat",
+          "value": 16
+        },
+        {
+          "stat": "evasion_flat",
+          "value": 20
+        },
+        {
+          "stat": "magic_def_flat",
+          "value": 16
+        }
+      ],
+      "price": 2000,
+      "dropLevelMin": 35,
+      "dropLevelMax": 60,
+      "grantedSkillIds": [
+        "breath_damage_4_5",
+        "evasion_up_40",
+        "breath_reduction_8"
+      ]
+    },
+    {
+      "id": "shield_kaiser",
+      "name": "カイザーシールド",
+      "category": "shield",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -2
+        },
+        {
+          "stat": "def_flat",
+          "value": 20
+        },
+        {
+          "stat": "evasion_flat",
+          "value": 24
+        },
+        {
+          "stat": "magic_def_flat",
+          "value": 20
+        }
+      ],
+      "price": 10000,
+      "unlockRank": 3,
+      "dropLevelMin": 50,
+      "dropLevelMax": 80,
+      "grantedSkillIds": [
+        "breath_damage_4_5",
+        "evasion_up_50",
+        "breath_reduction_9"
+      ]
+    },
+    {
+      "id": "shield_ancient",
+      "name": "エンシェントシールド",
+      "category": "shield",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -2
+        },
+        {
+          "stat": "def_flat",
+          "value": 28
+        },
+        {
+          "stat": "evasion_flat",
+          "value": 36
+        },
+        {
+          "stat": "magic_def_flat",
+          "value": 28
+        }
+      ],
+      "price": 50000,
+      "unlockRank": 5,
+      "dropLevelMin": 70,
+      "dropLevelMax": 105,
+      "grantedSkillIds": [
+        "breath_damage_4_5",
+        "evasion_up_60",
+        "breath_reduction_10"
+      ]
+    },
+    {
+      "id": "shield_dragon",
+      "name": "ドラゴンシールド",
+      "category": "shield",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -2
+        },
+        {
+          "stat": "def_flat",
+          "value": 36
+        },
+        {
+          "stat": "evasion_flat",
+          "value": 50
+        },
+        {
+          "stat": "magic_def_flat",
+          "value": 36
+        }
+      ],
+      "price": 200000,
+      "dropLevelMin": 95,
+      "dropLevelMax": 135,
+      "grantedSkillIds": [
+        "breath_damage_4_5",
+        "evasion_up_70",
+        "breath_reduction_11"
+      ]
+    },
+    {
+      "id": "shield_adamant",
+      "name": "アダマントシールド",
+      "category": "shield",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -2
+        },
+        {
+          "stat": "def_flat",
+          "value": 48
+        },
+        {
+          "stat": "evasion_flat",
+          "value": 75
+        },
+        {
+          "stat": "magic_def_flat",
+          "value": 48
+        }
+      ],
+      "price": 600000,
+      "dropLevelMin": 120,
+      "dropLevelMax": 150,
+      "grantedSkillIds": [
+        "breath_damage_4_5",
+        "evasion_up_80",
+        "breath_reduction_12"
+      ]
+    },
+    {
+      "_comment": "===== 防具:小手 (gauntlet) ====="
+    },
+    {
+      "id": "gauntlet_cloth_gloves",
+      "name": "ぬのの手袋",
+      "category": "gauntlet",
+      "statBonuses": [
+        {
+          "stat": "accuracy_flat",
+          "value": 10
+        },
+        {
+          "stat": "critical_rate_percent",
+          "value": 3
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": 0.8
+        }
+      ],
+      "price": 5,
+      "unlockRank": 1,
+      "dropLevelMin": 1,
+      "dropLevelMax": 2,
+      "grantedSkillIds": [
+        "attack_count_up_1",
+        "critical_rate_up_10"
+      ]
+    },
+    {
+      "id": "gauntlet_leather",
+      "name": "かわの小手",
+      "category": "gauntlet",
+      "statBonuses": [
+        {
+          "stat": "accuracy_flat",
+          "value": 20
+        },
+        {
+          "stat": "critical_rate_percent",
+          "value": 3
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": 0.5
+        }
+      ],
+      "price": 15,
+      "unlockRank": 1,
+      "dropLevelMin": 4,
+      "dropLevelMax": 10,
+      "grantedSkillIds": [
+        "attack_count_up_2",
+        "critical_rate_up_10"
+      ]
+    },
+    {
+      "id": "gauntlet_copper",
+      "name": "どうの小手",
+      "category": "gauntlet",
+      "statBonuses": [
+        {
+          "stat": "accuracy_flat",
+          "value": 30
+        },
+        {
+          "stat": "critical_rate_percent",
+          "value": 3
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": 0.5
+        }
+      ],
+      "price": 30,
+      "unlockRank": 1,
+      "dropLevelMin": 8,
+      "dropLevelMax": 15,
+      "grantedSkillIds": [
+        "attack_count_up_3",
+        "critical_rate_up_10"
+      ]
+    },
+    {
+      "id": "gauntlet_gauntlet",
+      "name": "ガントレット",
+      "category": "gauntlet",
+      "statBonuses": [
+        {
+          "stat": "accuracy_flat",
+          "value": 40
+        },
+        {
+          "stat": "critical_rate_percent",
+          "value": 3
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": 0.5
+        }
+      ],
+      "price": 2000,
+      "unlockRank": 1,
+      "dropLevelMin": 12,
+      "dropLevelMax": 25,
+      "grantedSkillIds": [
+        "attack_count_up_4",
+        "critical_rate_up_10"
+      ]
+    },
+    {
+      "id": "gauntlet_mithril",
+      "name": "ミスリルガントレット",
+      "category": "gauntlet",
+      "statBonuses": [
+        {
+          "stat": "accuracy_flat",
+          "value": 50
+        },
+        {
+          "stat": "critical_rate_percent",
+          "value": 3
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": 0.4
+        }
+      ],
+      "price": 10000,
+      "dropLevelMin": 20,
+      "dropLevelMax": 40,
+      "grantedSkillIds": [
+        "attack_count_up_5",
+        "critical_rate_up_10"
+      ]
+    },
+    {
+      "id": "gauntlet_royal",
+      "name": "ロイヤルガントレット",
+      "category": "gauntlet",
+      "statBonuses": [
+        {
+          "stat": "accuracy_flat",
+          "value": 60
+        },
+        {
+          "stat": "critical_rate_percent",
+          "value": 3
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": 0.3
+        }
+      ],
+      "price": 50000,
+      "dropLevelMin": 35,
+      "dropLevelMax": 60,
+      "grantedSkillIds": [
+        "attack_count_up_6",
+        "critical_rate_up_10"
+      ]
+    },
+    {
+      "id": "gauntlet_kaiser",
+      "name": "カイザーガントレット",
+      "category": "gauntlet",
+      "statBonuses": [
+        {
+          "stat": "accuracy_flat",
+          "value": 70
+        },
+        {
+          "stat": "critical_rate_percent",
+          "value": 3
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": 0.2
+        }
+      ],
+      "price": 250000,
+      "unlockRank": 3,
+      "dropLevelMin": 50,
+      "dropLevelMax": 80,
+      "grantedSkillIds": [
+        "attack_count_up_7",
+        "critical_rate_up_10"
+      ]
+    },
+    {
+      "id": "gauntlet_ancient",
+      "name": "エンシェントガントレット",
+      "category": "gauntlet",
+      "statBonuses": [
+        {
+          "stat": "accuracy_flat",
+          "value": 80
+        },
+        {
+          "stat": "critical_rate_percent",
+          "value": 3
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": 0.2
+        }
+      ],
+      "price": 1250000,
+      "unlockRank": 5,
+      "dropLevelMin": 70,
+      "dropLevelMax": 105,
+      "grantedSkillIds": [
+        "attack_count_up_8",
+        "critical_rate_up_10"
+      ]
+    },
+    {
+      "id": "gauntlet_dragon",
+      "name": "ドラゴンガントレット",
+      "category": "gauntlet",
+      "statBonuses": [
+        {
+          "stat": "accuracy_flat",
+          "value": 90
+        },
+        {
+          "stat": "critical_rate_percent",
+          "value": 3
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": 0.1
+        }
+      ],
+      "price": 2500000,
+      "dropLevelMin": 95,
+      "dropLevelMax": 135,
+      "grantedSkillIds": [
+        "attack_count_up_9",
+        "critical_rate_up_10"
+      ]
+    },
+    {
+      "id": "gauntlet_adamant",
+      "name": "アダマントガントレット",
+      "category": "gauntlet",
+      "statBonuses": [
+        {
+          "stat": "accuracy_flat",
+          "value": 100
+        },
+        {
+          "stat": "critical_rate_percent",
+          "value": 3
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": 0.1
+        }
+      ],
+      "price": 5000000,
+      "dropLevelMin": 120,
+      "dropLevelMax": 150,
+      "grantedSkillIds": [
+        "attack_count_up_10",
+        "critical_rate_up_10"
+      ]
+    },
+    {
+      "_comment": "===== 魔具:ワンド (wand) ====="
+    },
+    {
+      "id": "wand_wand",
+      "name": "ワンド",
+      "category": "wand",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -4
+        },
+        {
+          "stat": "magic_atk_flat",
+          "value": 20
+        }
+      ],
+      "price": 200,
+      "unlockRank": 1,
+      "dropLevelMin": 12,
+      "dropLevelMax": 25,
+      "grantedSkillIds": [
+        "spell_damage_10"
+      ]
+    },
+    {
+      "id": "wand_mithril",
+      "name": "ミスリルワンド",
+      "category": "wand",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -4
+        },
+        {
+          "stat": "magic_atk_flat",
+          "value": 30
+        }
+      ],
+      "price": 1000,
+      "dropLevelMin": 20,
+      "dropLevelMax": 40,
+      "grantedSkillIds": [
+        "spell_damage_11"
+      ]
+    },
+    {
+      "id": "wand_royal",
+      "name": "ロイヤルワンド",
+      "category": "wand",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -4
+        },
+        {
+          "stat": "magic_atk_flat",
+          "value": 40
+        }
+      ],
+      "price": 5000,
+      "dropLevelMin": 35,
+      "dropLevelMax": 60,
+      "grantedSkillIds": [
+        "spell_damage_12"
+      ]
+    },
+    {
+      "id": "wand_kaiser",
+      "name": "カイザーワンド",
+      "category": "wand",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -4
+        },
+        {
+          "stat": "magic_atk_flat",
+          "value": 50
+        }
+      ],
+      "price": 25000,
+      "unlockRank": 3,
+      "dropLevelMin": 50,
+      "dropLevelMax": 80,
+      "grantedSkillIds": [
+        "spell_damage_13"
+      ]
+    },
+    {
+      "id": "wand_ancient",
+      "name": "エンシェントワンド",
+      "category": "wand",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -4
+        },
+        {
+          "stat": "magic_atk_flat",
+          "value": 60
+        }
+      ],
+      "price": 125000,
+      "unlockRank": 5,
+      "dropLevelMin": 70,
+      "dropLevelMax": 105,
+      "grantedSkillIds": [
+        "spell_damage_14"
+      ]
+    },
+    {
+      "id": "wand_dragon",
+      "name": "ドラゴンワンド",
+      "category": "wand",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -4
+        },
+        {
+          "stat": "magic_atk_flat",
+          "value": 80
+        }
+      ],
+      "price": 500000,
+      "dropLevelMin": 95,
+      "dropLevelMax": 135,
+      "grantedSkillIds": [
+        "spell_damage_15"
+      ]
+    },
+    {
+      "id": "wand_adamant",
+      "name": "アダマントワンド",
+      "category": "wand",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -4
+        },
+        {
+          "stat": "magic_atk_flat",
+          "value": 110
+        }
+      ],
+      "price": 1500000,
+      "dropLevelMin": 120,
+      "dropLevelMax": 150,
+      "grantedSkillIds": [
+        "spell_damage_16"
+      ]
     }
   ]
 }

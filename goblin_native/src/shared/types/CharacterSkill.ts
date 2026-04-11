@@ -7,6 +7,7 @@ export interface CharacterSkill {
   statBonuses?: Partial<Record<keyof GoblinStats, number>>
   statMultipliers?: Partial<Record<keyof GoblinStats, number>>
   defToHpPercent?: number
+  criticalRateBonusPercent?: number
   criticalDamageBonusPercent?: number
   actionOrderMultiplier?: number
   equipmentCategoryMultiplier?: Partial<Record<EquipmentCategory, number>>
@@ -14,6 +15,9 @@ export interface CharacterSkill {
   enablesMeleeRowDamagePenalty?: boolean
   enablesRangedRowDamagePenalty?: boolean
   physicalDamageReductionPercent?: number
+  breathDamageReductionPercent?: number
+  breathDamageMultiplier?: number
+  spellDamagePercent?: number
   additionalDamage?: number
   protectRearAllyNormalAttackMultiplier?: number
   rearAllyDamageMultiplier?: number

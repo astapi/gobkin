@@ -258,6 +258,17 @@ describe('ModStatCalculator — 戦闘ステータス計算', () => {
     expect(result.attackCount).toBe(3)
   })
 
+  it('装備のattackCount_flatがマイナスでも攻撃回数は最低1になる', () => {
+    const goblin = createTestGoblin()
+    const bonuses = [
+      { stat: 'attackCount_flat' as const, value: -0.6 },
+      { stat: 'attackCount_flat' as const, value: -0.6 },
+    ]
+    const result = ModStatCalculator.calculate(goblin, bonuses)
+
+    expect(result.attackCount).toBe(1)
+  })
+
   it('装備の%ボーナスが乗算される', () => {
     const goblin = createTestGoblin({
       stats: { hp: 60, atk: 12, def: 10, attackCount: 2, accuracy: 100, evasion: 100 },
