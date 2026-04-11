@@ -5,6 +5,7 @@ import type {
   Party,
 } from '../../shared/types'
 import { normalizePartyRewardMultipliers } from '../../shared/types'
+import { getEffectiveStats } from '../../shared/utils/goblinStats'
 import { GoblinEntity, PartyEntity } from '../domain'
 import type { IGoblinRepository, IPartyRepository } from '../repositories'
 import { ExpeditionEngine } from '../services'
@@ -45,9 +46,18 @@ export class StartExpeditionUseCase {
       throw new Error('遠征可能なメンバーがいません')
     }
 
+    const departingGoblins = goblins.map(goblin => ({
+      ...goblin,
+      currentHp: goblin.currentHp === 0 ? 0 : getEffectiveStats(goblin).hp,
+    }))
+
+    await Promise.all(
+      departingGoblins.map(goblin => this.goblinRepository.updateGoblinCurrentHp(goblin.id, goblin.currentHp!))
+    )
+
     const replay = await this.expeditionEngine.generateExpedition(
       request,
-      goblins,
+      departingGoblins,
       normalizePartyRewardMultipliers(party.rewardMultipliers)
     )
     await this.partyRepository.updatePartyStatus(partyId, 'expedition')

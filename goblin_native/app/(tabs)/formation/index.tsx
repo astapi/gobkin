@@ -39,12 +39,13 @@ const MemberSlot = memo(function MemberSlot({ goblin, isEmpty, slotSize, avatarS
   }
 
   const stats = getEffectiveStats(goblin)
+  const currentHp = goblin.currentHp ?? stats.hp
 
   return (
     <View style={[styles.memberSlot, { width: slotSize }]}>
       <Text style={styles.memberLevel}>Lv{goblin.level}</Text>
       <Image source={getGoblinDisplayImage(goblin)} style={[styles.memberAvatar, { width: avatarSize, height: avatarSize }]} />
-      <Text style={styles.memberHp}>HP{stats.hp}</Text>
+      <Text style={[styles.memberHp, currentHp === 0 && styles.memberHpInjured]}>HP{currentHp}</Text>
     </View>
   )
 })
@@ -556,6 +557,10 @@ const styles = StyleSheet.create({
     fontSize: 10,
     color: '#6B7280',
     marginTop: 4,
+  },
+  memberHpInjured: {
+    color: '#DC2626',
+    fontWeight: '700',
   },
   emptySlot: {
     width: 40,

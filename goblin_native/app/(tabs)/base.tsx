@@ -59,6 +59,14 @@ export default function BaseManagementScreen() {
             </View>
             <Text style={styles.menuButtonArrow}>›</Text>
           </TouchableOpacity>
+
+          <TouchableOpacity style={styles.menuButton} onPress={() => router.push('/base/healing')}>
+            <View style={styles.menuButtonTextGroup}>
+              <Text style={styles.menuButtonTitle}>{t('ui.base.healingTitle')}</Text>
+              <Text style={styles.menuButtonDescription}>{t('ui.base.healingDescription')}</Text>
+            </View>
+            <Text style={styles.menuButtonArrow}>›</Text>
+          </TouchableOpacity>
         </View>
       </ScrollView>
     </SafeAreaView>

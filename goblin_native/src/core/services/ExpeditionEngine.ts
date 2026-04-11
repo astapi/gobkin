@@ -350,14 +350,15 @@ export class ExpeditionEngine {
   private initializePartyState(party: Goblin[]): PartyState[] {
     return party.map(goblin => {
       // 基礎ステータスを保存（因子・Mod適用はModStatCalculatorで行う）
-      // currentHP/maxHPは因子・Mod適用後の値を使用（戦闘中のHP管理のため）
+      // HP0の負傷者は治療されるまで0のまま、それ以外は出発時に最大HPで開始する
       const effectiveStats = getEffectiveStats(goblin)
+      const currentHP = goblin.currentHp === 0 ? 0 : effectiveStats.hp
       return {
         id: goblin.id.toString(),
         name: goblin.name,
         race: goblin.race,
         skills: goblin.skills,
-        currentHP: effectiveStats.hp,
+        currentHP,
         maxHP: effectiveStats.hp,
         // 基礎ステータスを保存（ゴブリン再構築時に使用）
         baseHP: goblin.stats.hp,
@@ -367,8 +368,8 @@ export class ExpeditionEngine {
         attackCount: goblin.stats.attackCount,
         accuracy: goblin.stats.accuracy,
         evasion: goblin.stats.evasion,
-        isKO: false,
-        isDead: false,
+        isKO: currentHP <= 0,
+        isDead: currentHP <= 0,
         mods: goblin.mods || [],
         factors: goblin.factors || [],
         variantFactorId: goblin.variantFactorId,
