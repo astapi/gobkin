@@ -1046,6 +1046,7 @@ describe('selectTarget — 隊列ターゲット選択', () => {
       originalIndex: 0,
       damageReduction: 0,
       physicalDamageReduction: 0,
+      magicDamageReduction: 0,
       row,
       rowSlot,
       level: 1,

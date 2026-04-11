@@ -20,7 +20,7 @@ import { getEquipmentTemplate, getEquipmentByDungeonLevel } from '../../shared/d
 import { BattleSystem } from './BattleSystem'
 import { ModStatCalculator } from './ModStatCalculator'
 import { EquipmentTitleService } from './EquipmentTitleService'
-import { normalizePartyRewardMultipliers, DUNGEON_TIER_SCALING } from '../../shared/types'
+import { normalizePartyRewardMultipliers, DUNGEON_TIER_SCALING, getDungeonTierAreaLevel } from '../../shared/types'
 import { getGoblinBaseAttributes } from '../../shared/utils/goblinHp'
 import { getEffectiveStats } from '../../shared/utils/goblinStats'
 
@@ -75,6 +75,7 @@ export class ExpeditionEngine {
     if (!area) {
       throw new Error(`Area not found: ${request.areaId} (mapped to: ${areaId})`)
     }
+    const effectiveAreaLevel = getDungeonTierAreaLevel(area.areaLevel, tier)
 
     // 敵データを取得
     const enemyDatabase = getEnemyDatabase(areaId)
@@ -127,7 +128,7 @@ export class ExpeditionEngine {
         switch (eventType) {
           case "battle": {
             const pattern = this.selectEnemyPattern(enemyDatabase.patterns, currentFloor, false)
-            const enemies = this.applyTierScaling(this.getEnemiesFromPattern(pattern, enemyDatabase.enemies), tierScaling.enemyLvScale)
+            const enemies = this.applyTierScaling(this.getEnemiesFromPattern(pattern, enemyDatabase.enemies), tierScaling)
             const combat = this.resolveCombat(partyState, enemies, area)
             const xp = Math.floor((area.rewards.xpFloor[currentFloor - 1] || 10) * tierScaling.rewardScale)
 
@@ -153,6 +154,7 @@ export class ExpeditionEngine {
             // 宝箱ドロップ判定（勝利時のみ）
             const treasureDrops = this.rollTreasureDrops(
               area.areaLevel,
+              effectiveAreaLevel,
               enemies.flat(),
               droppedTemplateIds,
               normalizedRewardMultipliers
@@ -189,7 +191,7 @@ export class ExpeditionEngine {
             console.warn(`Unknown event type: ${eventType}, treating as battle`)
             // battleとして処理
             const pattern = this.selectEnemyPattern(enemyDatabase.patterns, currentFloor, false)
-            const enemies = this.applyTierScaling(this.getEnemiesFromPattern(pattern, enemyDatabase.enemies), tierScaling.enemyLvScale)
+            const enemies = this.applyTierScaling(this.getEnemiesFromPattern(pattern, enemyDatabase.enemies), tierScaling)
             const combat = this.resolveCombat(partyState, enemies, area)
             const xp = Math.floor((area.rewards.xpFloor[currentFloor - 1] || 10) * tierScaling.rewardScale)
 
@@ -214,6 +216,7 @@ export class ExpeditionEngine {
             // 宝箱ドロップ判定（勝利時のみ）
             const defaultTreasure = this.rollTreasureDrops(
               area.areaLevel,
+              effectiveAreaLevel,
               enemies.flat(),
               droppedTemplateIds,
               normalizedRewardMultipliers
@@ -259,7 +262,7 @@ export class ExpeditionEngine {
 
       if (bossPatterns.length > 0) {
         const bossPattern = this.selectEnemyPattern(enemyDatabase.patterns, area.floors, true)
-        const bossEnemies = this.applyTierScaling(this.getEnemiesFromPattern(bossPattern, enemyDatabase.enemies), tierScaling.enemyLvScale)
+        const bossEnemies = this.applyTierScaling(this.getEnemiesFromPattern(bossPattern, enemyDatabase.enemies), tierScaling)
 
         const bossCombat = this.resolveCombat(partyState, bossEnemies, area, true)
         const bossXp = Math.floor((area.rewards.xpBoss ?? 0) * tierScaling.rewardScale)
@@ -283,6 +286,7 @@ export class ExpeditionEngine {
         if (bossCombat.outcome === 'win') {
           const bossTreasure = this.rollTreasureDrops(
             area.areaLevel,
+            effectiveAreaLevel,
             bossEnemies.flat(),
             droppedTemplateIds,
             normalizedRewardMultipliers
@@ -323,6 +327,8 @@ export class ExpeditionEngine {
         expeditionId: `exp_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
         areaId: areaId,
         areaName: area.name,
+        areaLevel: area.areaLevel,
+        effectiveAreaLevel,
         floors: area.floors,
         baseDurationSec: adjustedDuration,
         party: party.map(g => g.id.toString()),
@@ -416,16 +422,31 @@ export class ExpeditionEngine {
     return availablePatterns[Math.floor(this.rng() * availablePatterns.length)]
   }
 
-  private applyTierScaling(enemies2D: Enemy[][], lvScale: number): Enemy[][] {
-    if (lvScale === 1.0) return enemies2D
+  private applyTierScaling(
+    enemies2D: Enemy[][],
+    scaling: (typeof DUNGEON_TIER_SCALING)[number]
+  ): Enemy[][] {
+    const statScale = scaling.statScale
+    const countScale = Math.sqrt(statScale)
+    const goldScale = Math.pow(statScale, 1.5)
     return enemies2D.map(row =>
       row.map(enemy => ({
         ...enemy,
-        level: Math.floor(enemy.level * lvScale),
-        hp: Math.floor(enemy.hp * lvScale),
-        atk: Math.floor(enemy.atk * lvScale),
-        def: Math.floor(enemy.def * lvScale),
-        gold: Math.floor(enemy.gold * lvScale),
+        level: Math.floor(enemy.level * statScale) + scaling.levelBonus,
+        hp: Math.floor(enemy.hp * scaling.hpScale),
+        atk: Math.floor(enemy.atk * statScale),
+        def: Math.floor(enemy.def * scaling.defScale),
+        magicDef: enemy.magicDef !== undefined ? Math.floor(enemy.magicDef * scaling.magicDefScale) : undefined,
+        agility: Math.round(enemy.agility * statScale),
+        attackCount: Math.max(1, Math.floor(enemy.attackCount * countScale)),
+        accuracy: Math.round(enemy.accuracy * statScale),
+        evasion: Math.round(enemy.evasion * scaling.evasionScale),
+        physicalResistancePercent: scaling.physicalResistancePercent,
+        penetrationResistancePercent: scaling.penetrationResistancePercent,
+        criticalResistancePercent: scaling.criticalResistancePercent,
+        magicResistancePercent: scaling.magicResistancePercent,
+        exp: Math.floor(enemy.exp * statScale),
+        gold: Math.floor(enemy.gold * goldScale),
       }))
     )
   }
@@ -566,6 +587,7 @@ export class ExpeditionEngine {
    * 5. ドロップ時に称号を抽選して付与
    */
   private rollTreasureDrops(
+    _areaLevel: number,
     dungeonLevel: number,
     enemies: Enemy[],
     droppedIds: Set<string>,

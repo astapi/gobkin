@@ -94,6 +94,13 @@ export const AREA_LEVEL_IV_RANGES: Record<number, [number, number]> = {
   8: [50, 60],    // 最終決戦（王都決戦）
 }
 
+function getAreaLevelIvRange(areaLevel: number): [number, number] {
+  const range = AREA_LEVEL_IV_RANGES[areaLevel]
+  if (range) return range
+  if (areaLevel > 8) return AREA_LEVEL_IV_RANGES[8]
+  return AREA_LEVEL_IV_RANGES[1]
+}
+
 /**
  * 拠点ランクボーナス
  */
@@ -120,7 +127,7 @@ export function calculateIndividualValue(
   random: () => number
 ): number {
   // エリアレベルのベース範囲を取得
-  const [min, max] = AREA_LEVEL_IV_RANGES[areaLevel] || [1, 8]
+  const [min, max] = getAreaLevelIvRange(areaLevel)
   const baseIV = Math.floor(min + (max - min) * random())
 
   // 拠点ランクボーナスを加算

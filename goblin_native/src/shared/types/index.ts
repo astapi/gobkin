@@ -70,7 +70,13 @@ export type {
 export type { Dungeon } from "./Dungeon"
 export type { DungeonProgressState } from "./DungeonProgress"
 export type { DungeonTier } from "./DungeonTier"
-export { DUNGEON_TIER_LIST, DUNGEON_TIER_META, DUNGEON_TIER_SCALING, getDungeonTierDisplayName } from "./DungeonTier"
+export {
+  DUNGEON_TIER_LIST,
+  DUNGEON_TIER_META,
+  DUNGEON_TIER_SCALING,
+  getDungeonTierAreaLevel,
+  getDungeonTierDisplayName,
+} from "./DungeonTier"
 
 // Base related types
 export type { BaseState } from "./BaseState"

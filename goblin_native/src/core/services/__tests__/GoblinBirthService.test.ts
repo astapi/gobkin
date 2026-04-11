@@ -273,10 +273,15 @@ describe('calculateIndividualValue', () => {
     expect(ivMin).toBeGreaterThanOrEqual(1)
   })
 
-  it('未定義のareaLevelはデフォルト範囲[1,8]にフォールバック', () => {
+  it('範囲外の低areaLevelはデフォルト範囲[1,8]にフォールバック', () => {
+    const fixedZero = () => 0
+    const iv = calculateIndividualValue(0, 1, fixedZero)
+    expect(iv).toBe(1)
+  })
+
+  it('areaLevel=9以上は最高エリア帯の範囲を使う', () => {
     const fixedZero = () => 0
     const iv = calculateIndividualValue(99, 1, fixedZero)
-    // AREA_LEVEL_IV_RANGES[99] は undefined → [1,8] にフォールバック
-    expect(iv).toBe(1)
+    expect(iv).toBe(50)
   })
 })

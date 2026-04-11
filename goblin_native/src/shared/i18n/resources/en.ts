@@ -506,6 +506,8 @@ const en = {
     majou: 'Demonic',
     yadotta: 'Possessed',
     densetsu: 'Legendary',
+    osoroshii: 'Terrifying',
+    kowareta: 'Broken',
   },
 } as const
 
