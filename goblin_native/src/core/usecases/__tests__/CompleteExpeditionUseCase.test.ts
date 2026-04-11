@@ -198,6 +198,32 @@ describe('CompleteExpeditionUseCase', () => {
       expect(result.updatedGoblinIds).toContain(2)
     })
 
+    it('全滅した戦闘では経験値が付与されない', async () => {
+      const goblin = createTestGoblin({ id: 1, level: 1, experience: 0 })
+      const party = createTestParty({ id: 1, memberIds: [1] })
+      const baseState = createTestBaseState()
+      const events: TimelineEvent[] = [
+        { type: 'move_start', at: 0, floor: 1 },
+        {
+          ...createBattleEvent(100, [-60], 10, 1),
+          combat: { rounds: 3, outcome: 'lose', allyHPDelta: [-60], enemyDefeated: 0 },
+        },
+        { type: 'return', at: 60, reason: 'defeated' },
+      ]
+      const replay = createTestReplay({
+        events,
+        summary: { success: false, maxFloorReached: 1, xpGained: 100, goldGained: 0, casualties: ['1'] },
+      })
+
+      const goblinRepo = createMockGoblinRepository([goblin])
+      const usecase = new CompleteExpeditionUseCase(goblinRepo, createMockPartyRepository([party]), createMockBaseStateRepository(baseState))
+      const result = await usecase.execute(1, replay)
+
+      expect(result.updatedGoblinIds).toHaveLength(0)
+      expect(result.levelUps.size).toBe(0)
+      expect(goblinRepo.saveGoblin).not.toHaveBeenCalled()
+    })
+
     it('ゴールドが加算される', async () => {
       const goblin = createTestGoblin()
       const party = createTestParty()

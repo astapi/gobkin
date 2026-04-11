@@ -130,7 +130,8 @@ export class ExpeditionEngine {
             const pattern = this.selectEnemyPattern(enemyDatabase.patterns, currentFloor, false)
             const enemies = this.applyTierScaling(this.getEnemiesFromPattern(pattern, enemyDatabase.enemies), tierScaling)
             const combat = this.resolveCombat(partyState, enemies, area)
-            const xp = Math.floor((area.rewards.xpFloor[currentFloor - 1] || 10) * tierScaling.rewardScale)
+            const baseXp = Math.floor((area.rewards.xpFloor[currentFloor - 1] || 10) * tierScaling.rewardScale)
+            const xp = combat.outcome === 'win' ? baseXp : 0
 
             events.push({
               type: "battle",
@@ -193,7 +194,8 @@ export class ExpeditionEngine {
             const pattern = this.selectEnemyPattern(enemyDatabase.patterns, currentFloor, false)
             const enemies = this.applyTierScaling(this.getEnemiesFromPattern(pattern, enemyDatabase.enemies), tierScaling)
             const combat = this.resolveCombat(partyState, enemies, area)
-            const xp = Math.floor((area.rewards.xpFloor[currentFloor - 1] || 10) * tierScaling.rewardScale)
+            const baseXp = Math.floor((area.rewards.xpFloor[currentFloor - 1] || 10) * tierScaling.rewardScale)
+            const xp = combat.outcome === 'win' ? baseXp : 0
 
             events.push({
               type: "battle",
@@ -265,7 +267,8 @@ export class ExpeditionEngine {
         const bossEnemies = this.applyTierScaling(this.getEnemiesFromPattern(bossPattern, enemyDatabase.enemies), tierScaling)
 
         const bossCombat = this.resolveCombat(partyState, bossEnemies, area, true)
-        const bossXp = Math.floor((area.rewards.xpBoss ?? 0) * tierScaling.rewardScale)
+        const baseBossXp = Math.floor((area.rewards.xpBoss ?? 0) * tierScaling.rewardScale)
+        const bossXp = bossCombat.outcome === 'win' ? baseBossXp : 0
 
         // 規定時間の終端でボス戦を行う（最後の秒で戦闘開始）
         const bossTime = adjustedDuration
@@ -657,7 +660,9 @@ export class ExpeditionEngine {
 
     for (const event of events) {
       if (event.type === "battle" || event.type === "boss") {
-        xpGained += event.xp
+        if (event.combat.outcome === "win") {
+          xpGained += event.xp
+        }
         baseGoldGained += event.enemy.gold
         maxFloorReached = Math.max(maxFloorReached, event.floor)
       } else if (event.type === "floor_up") {

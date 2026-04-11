@@ -151,10 +151,11 @@ export default function ExpeditionPlaybackScreen() {
         const label = event.type === 'boss' ? t('ui.formation.playback.boss') : t('ui.formation.playback.battle')
         const result = event.combat.outcome === 'win' ? t('ui.formation.playback.win') : t('ui.formation.playback.lose')
         const partyMembers = replay?.meta.party ?? []
-        const xpPerMember = partyMembers.length > 0 ? Math.floor(event.xp / partyMembers.length) : 0
+        const rewardedXp = event.combat.outcome === 'win' ? event.xp : 0
+        const xpPerMember = partyMembers.length > 0 ? Math.floor(rewardedXp / partyMembers.length) : 0
         const meta: BattleLogMeta = {
           outcome: event.combat.outcome,
-          xpGained: event.xp,
+          xpGained: rewardedXp,
           goldGained: event.enemy.gold,
           members: partyMembers.map((memberId, idx) => {
             const goblin = partyGoblins[idx]
@@ -178,8 +179,8 @@ export default function ExpeditionPlaybackScreen() {
             meta,
           ),
         ]
-        if (event.xp > 0) {
-          entries.push(createEntry(t('ui.formation.playback.xpGain', { value: event.xp })))
+        if (rewardedXp > 0) {
+          entries.push(createEntry(t('ui.formation.playback.xpGain', { value: rewardedXp })))
         }
         return entries
       }
