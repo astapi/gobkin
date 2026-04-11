@@ -54,7 +54,51 @@ describe('ExpeditionEngine reward multipliers', () => {
       gold: 1.5,
     })
 
+    expect(summary.xpGained).toBe(25)
     expect(summary.goldGained).toBe(52)
+  })
+
+  it('敗北した戦闘の経験値を報酬合計に含めない', () => {
+    const engine = new ExpeditionEngine(1)
+    const events: TimelineEvent[] = [
+      { type: 'move_start', at: 0, floor: 1 },
+      {
+        type: 'battle',
+        at: 10,
+        floor: 1,
+        enemy: { id: 'e1', name: '敵1', lvl: 1, count: 1, gold: 10 },
+        combat: { rounds: 1, outcome: 'lose', allyHPDelta: [-10], enemyDefeated: 0 },
+        xp: 100,
+      },
+      { type: 'return', at: 30, reason: 'defeated' },
+    ]
+    const partyState: PartyState[] = [
+      {
+        id: '1',
+        name: 'テスト',
+        race: 'ゴブリン',
+        currentHP: 0,
+        maxHP: 10,
+        baseHP: 10,
+        atk: 5,
+        def: 5,
+        agility: 5,
+        attackCount: 1,
+        accuracy: 10,
+        evasion: 5,
+        isKO: true,
+        isDead: true,
+        mods: [],
+        skills: [],
+        factors: [],
+        level: 1,
+        avatar: 'test.png',
+      },
+    ]
+
+    const summary = (engine as any).calculateRewardSummary(events, partyState)
+
+    expect(summary.xpGained).toBe(0)
   })
 })
 

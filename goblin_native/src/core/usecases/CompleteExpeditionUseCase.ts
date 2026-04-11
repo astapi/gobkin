@@ -78,9 +78,9 @@ export class CompleteExpeditionUseCase {
         if (currentHP[i] > 0) aliveIndices.push(i)
       }
 
-      // 生存メンバー数で経験値を分配
+      // 勝利した戦闘のみ、生存メンバー数で経験値を分配
       const aliveCount = aliveIndices.length
-      if (aliveCount > 0 && event.xp > 0) {
+      if (event.combat.outcome === 'win' && aliveCount > 0 && event.xp > 0) {
         const xpPerMember = Math.floor(event.xp / aliveCount)
         for (const idx of aliveIndices) {
           const goblinId = Number.parseInt(partyIds[idx], 10)
