@@ -22,6 +22,7 @@ import { getFactorName, getRaceLabel, getSkillLabel, getStatLabel } from '@/shar
 export default function GoblinDetailScreen() {
   const { t } = useTranslation()
   const { goblinId, source } = useLocalSearchParams<{ goblinId: string, source?: string }>()
+  const goblins = useGoblinStore((state) => state.goblins)
   const getGoblinById = useGoblinStore((state) => state.getGoblinById)
   const deleteGoblin = useGoblinStore((state) => state.deleteGoblin)
   const pendingGoblins = useBaseStore((state) => state.pendingGoblins)
@@ -29,20 +30,33 @@ export default function GoblinDetailScreen() {
   const [goblin, setGoblin] = useState<Goblin | null>(null)
   const parentNav = useNavigation()
   const isPendingGoblin = source === 'pending'
+  const parsedGoblinId = useMemo(() => {
+    if (!goblinId) return null
+    const parsed = parseInt(goblinId, 10)
+    return Number.isNaN(parsed) ? null : parsed
+  }, [goblinId])
 
   useEffect(() => {
-    if (!goblinId) return
-    const parsedGoblinId = parseInt(goblinId, 10)
+    if (parsedGoblinId == null) {
+      setGoblin(null)
+      return
+    }
 
     if (isPendingGoblin) {
       setGoblin(pendingGoblins.find((item) => item.id === parsedGoblinId) ?? null)
       return
     }
 
+    const storedGoblin = goblins.find((item) => item.id === parsedGoblinId)
+    if (storedGoblin) {
+      setGoblin(storedGoblin)
+      return
+    }
+
     void getGoblinById(parsedGoblinId)
       .then(setGoblin)
       .catch(() => setGoblin(null))
-  }, [goblinId, getGoblinById, isPendingGoblin, pendingGoblins])
+  }, [parsedGoblinId, getGoblinById, goblins, isPendingGoblin, pendingGoblins])
 
   useEffect(() => {
     if (goblin) {
