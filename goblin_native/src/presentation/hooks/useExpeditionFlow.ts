@@ -273,6 +273,8 @@ export const useExpeditionFlow = ({
         }
 
         await handleDungeonClear(record)
+        // UseCaseがDB上のbase_state.goldや制圧済み拠点を直接更新するため、ストアを同期
+        await useBaseStore.getState().refresh()
         // UseCaseがDB上のparty.statusを'idle'に直接更新するため、ストアを同期
         await usePartyStore.getState().refresh()
         // ゴブリンのレベルアップ等もDB直接更新されるため同期

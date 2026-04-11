@@ -27,8 +27,7 @@ export const GoblinCard = memo(function GoblinCard({
 }: GoblinCardProps) {
   const { t } = useTranslation()
   const stats = getEffectiveStats(goblin)
-  const FactorIcon1 = goblin.factors?.[0] ? getFactorImage(goblin.factors[0]) : null
-  const FactorIcon2 = goblin.factors?.[1] ? getFactorImage(goblin.factors[1]) : null
+  const factorIds = goblin.factors ?? []
 
   const content = (
     <View style={[
@@ -48,10 +47,14 @@ export const GoblinCard = memo(function GoblinCard({
           <Text style={[styles.level, isAssignedElsewhere && styles.levelDisabled]}>
             {t('ui.common.levelShort')}{goblin.level}
           </Text>
-          <View style={styles.factorIcons}>
-            {FactorIcon1 && <FactorIcon1 width={16} height={16} />}
-            {FactorIcon2 && <FactorIcon2 width={16} height={16} />}
-          </View>
+          {factorIds.length > 0 && (
+            <View style={styles.factorIcons}>
+              {factorIds.map((factorId, index) => {
+                const FactorIcon = getFactorImage(factorId)
+                return <FactorIcon key={`${factorId}-${index}`} width={16} height={16} />
+              })}
+            </View>
+          )}
         </View>
         {goblin.mods && goblin.mods.length > 0 && (
           <View style={styles.modRow}>
@@ -148,6 +151,7 @@ const styles = StyleSheet.create({
   subRow: {
     flexDirection: 'row',
     alignItems: 'center',
+    flexWrap: 'wrap',
     gap: 6,
   },
   race: {
@@ -173,6 +177,7 @@ const styles = StyleSheet.create({
   },
   factorIcons: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     gap: 3,
   },
   statsContainer: {
