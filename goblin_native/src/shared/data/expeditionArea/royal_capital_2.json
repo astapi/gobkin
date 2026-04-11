@@ -7,8 +7,10 @@
   "description": "王城内部へ侵攻。聖騎士や王国禁衛隊が最後の防衛線を張る。",
   "encounter": {
     "perFloorEvents": 3,
-    "eventWeights": { "battle": 75, "exploring": 25 }
+    "eventWeights": {
+      "battle": 75,
+      "exploring": 25
+    }
   },
-  "rewards": { "xpFloor": [160, 195] },
   "unlockNext": "royal_capital_3"
 }

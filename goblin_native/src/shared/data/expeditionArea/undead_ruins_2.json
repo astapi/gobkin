@@ -12,8 +12,5 @@
       "exploring": 35
     }
   },
-  "rewards": {
-    "xpFloor": [22, 28]
-  },
   "unlockNext": "undead_ruins_3"
 }

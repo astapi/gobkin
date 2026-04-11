@@ -7,8 +7,10 @@
   "description": "村の中心部。自警団長が最後の砦として立ちはだかる。制圧してゴブリン国家の礎を築け。",
   "encounter": {
     "perFloorEvents": 3,
-    "eventWeights": { "battle": 65, "exploring": 35 }
+    "eventWeights": {
+      "battle": 65,
+      "exploring": 35
+    }
   },
-  "rewards": { "xpFloor": [62, 68], "xpBoss": 180 },
   "unlockNext": "dwarf_mine_1"
 }

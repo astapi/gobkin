@@ -8,5 +8,5 @@ export interface IGoblinRepository {
   updateGoblinStats(id: number, stats: Goblin['stats']): Promise<void>
   updateGoblinLevel(id: number, level: number): Promise<void>
   updateGoblinFactors(id: number, factors: string[], effectiveStats: Goblin['stats']): Promise<void>
-  updateGoblinCurrentHp(id: number, currentHp: number): Promise<void>
+  updateGoblinCurrentHp(id: number, currentHp: number | null): Promise<void>
 }

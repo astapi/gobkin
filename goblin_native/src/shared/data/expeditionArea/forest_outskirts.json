@@ -12,9 +12,5 @@
       "exploring": 50
     }
   },
-  "rewards": {
-    "xpFloor": [8, 10, 12],
-    "xpBoss": 30
-  },
   "unlockNext": "mossy_cave"
 }

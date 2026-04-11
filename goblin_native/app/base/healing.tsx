@@ -38,7 +38,7 @@ export default function HealingScreen() {
     try {
       setProcessingIds(prev => new Set(prev).add(goblin.id))
       await updateBaseState({ gold: gold - cost })
-      await updateGoblinCurrentHp(goblin.id, getEffectiveStats(goblin).hp)
+      await updateGoblinCurrentHp(goblin.id, null)
     } catch (error) {
       console.error('[Healing] Failed to heal goblin', error)
       Alert.alert(t('ui.healing.failedTitle'), t('ui.healing.failedBody'))
@@ -62,7 +62,7 @@ export default function HealingScreen() {
       setIsBulkProcessing(true)
       await updateBaseState({ gold: gold - totalCost })
       for (const goblin of injuredGoblins) {
-        await updateGoblinCurrentHp(goblin.id, getEffectiveStats(goblin).hp)
+        await updateGoblinCurrentHp(goblin.id, null)
       }
     } catch (error) {
       console.error('[Healing] Failed to heal all goblins', error)

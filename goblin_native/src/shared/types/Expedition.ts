@@ -111,9 +111,5 @@ export interface AreaConfig {
   }
   enemyTable?: Array<{ id: string; weight: number; lvl: number }>
   boss?: { id: string; lvl: number }
-  rewards: {
-    xpFloor: number[]
-    xpBoss?: number
-  }
   unlockNext?: string
 }

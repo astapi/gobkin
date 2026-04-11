@@ -7,8 +7,10 @@
   "description": "討伐隊長が前線に立つ。騎士候補も含む精鋭部隊との最終決戦。撃退せよ。",
   "encounter": {
     "perFloorEvents": 3,
-    "eventWeights": { "battle": 70, "exploring": 30 }
+    "eventWeights": {
+      "battle": 70,
+      "exploring": 30
+    }
   },
-  "rewards": { "xpFloor": [48, 52], "xpBoss": 140 },
   "unlockNext": "human_village_1"
 }

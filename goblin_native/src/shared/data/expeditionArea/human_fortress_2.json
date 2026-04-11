@@ -7,8 +7,10 @@
   "description": "城内へ侵入。重装騎兵と攻城兵器操手が待ち構える。",
   "encounter": {
     "perFloorEvents": 3,
-    "eventWeights": { "battle": 70, "exploring": 30 }
+    "eventWeights": {
+      "battle": 70,
+      "exploring": 30
+    }
   },
-  "rewards": { "xpFloor": [125, 145] },
   "unlockNext": "human_fortress_3"
 }

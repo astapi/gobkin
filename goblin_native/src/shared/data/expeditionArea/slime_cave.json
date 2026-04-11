@@ -12,9 +12,5 @@
       "exploring": 30
     }
   },
-  "rewards": {
-    "xpFloor": [4, 6],
-    "xpBoss": 12
-  },
   "unlockNext": "forest_outskirts"
 }

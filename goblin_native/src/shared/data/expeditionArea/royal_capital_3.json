@@ -7,7 +7,9 @@
   "description": "最終決戦。勇者と人間王が最後の壁として立ちはだかる。ゴブリンキングダムの完成をかけた決戦。",
   "encounter": {
     "perFloorEvents": 3,
-    "eventWeights": { "battle": 75, "exploring": 25 }
-  },
-  "rewards": { "xpFloor": [240, 260], "xpBoss": 600 }
+    "eventWeights": {
+      "battle": 75,
+      "exploring": 25
+    }
+  }
 }
