@@ -19,6 +19,7 @@ import { useDungeonStore } from '../stores/useDungeonStore'
 import { SQLiteEquipmentRepository } from '../../infrastructure/repositories/SQLiteEquipmentRepository'
 import { useDebugSettingsStore } from '../stores/useDebugSettingsStore'
 import { getDungeonName } from '../../shared/i18n/entityLocalization'
+import { getDungeonTierAreaLevel, getDungeonTierDisplayName } from '../../shared/types'
 import i18n from '../../shared/i18n'
 
 interface UseExpeditionFlowParams {
@@ -47,9 +48,12 @@ export interface ExpeditionHistoryDisplay {
   record: ExpeditionRecord
 }
 
-function formatDungeonLabel(dungeonName: string, areaLevel?: number): string {
-  if (areaLevel === undefined) return dungeonName
-  return `${dungeonName} / Area Lv.${areaLevel}`
+function formatDungeonLabel(dungeonName: string, areaLevel?: number, tier?: DungeonTier): string {
+  const effectiveAreaLevel = areaLevel === undefined
+    ? undefined
+    : getDungeonTierAreaLevel(areaLevel, tier ?? 0)
+  const baseLabel = effectiveAreaLevel === undefined ? dungeonName : `${dungeonName} / Area Lv.${effectiveAreaLevel}`
+  return getDungeonTierDisplayName(baseLabel, tier ?? 0)
 }
 
 export const useExpeditionFlow = ({
@@ -103,7 +107,8 @@ export const useExpeditionFlow = ({
     await markDungeonCleared(dungeon, true, tier)
 
     const nextId = await getNextGoblinId()
-    const areaLevel = dungeon.areaLevel ?? 1
+    const areaLevel = record.replay.meta.effectiveAreaLevel ??
+      getDungeonTierAreaLevel(dungeon.areaLevel ?? 1, tier ?? 0)
     const goblinBirthService = new GoblinBirthService()
     const newGoblin = goblinBirthService.createNewGoblin(
       nextId,
@@ -318,7 +323,11 @@ export const useExpeditionFlow = ({
         return {
           id: record.id,
           title,
-          subtitle: formatDungeonLabel(dungeon ? getDungeonName(dungeon) : record.dungeonName, dungeon?.areaLevel),
+          subtitle: formatDungeonLabel(
+            dungeon ? getDungeonName(dungeon) : record.dungeonName,
+            dungeon?.areaLevel,
+            record.replay?.meta.tier,
+          ),
           ongoing,
           record,
         }

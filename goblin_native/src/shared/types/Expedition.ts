@@ -29,6 +29,8 @@ export interface ExpeditionReplay {
     expeditionId: string
     areaId: string
     areaName: string
+    areaLevel?: number
+    effectiveAreaLevel?: number
     floors: number
     baseDurationSec: number
     party: string[]

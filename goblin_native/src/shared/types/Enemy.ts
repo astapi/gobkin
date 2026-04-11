@@ -15,10 +15,15 @@ export interface Enemy {
   hp: number
   atk: number
   def: number
+  magicDef?: number       // 魔法防御力
   agility: number
   attackCount: number  // 攻撃回数
   accuracy: number     // 命中精度
   evasion: number      // 回避能力
+  physicalResistancePercent?: number    // 物理耐性
+  penetrationResistancePercent?: number // 貫通耐性
+  criticalResistancePercent?: number    // 必殺耐性
+  magicResistancePercent?: number       // 魔法耐性
   exp: number
   gold: number
   factorDrops?: FactorDropConfig[]      // この敵を倒すと得られる可能性のある因子

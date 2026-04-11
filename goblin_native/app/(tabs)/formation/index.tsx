@@ -284,6 +284,7 @@ export default function FormationScreen() {
               party,
               dungeon,
               returnPolicy: party.returnPolicy ?? 'never',
+              tier: party.dungeonTier ?? 0,
             })
             startedCount += 1
           } catch (error) {

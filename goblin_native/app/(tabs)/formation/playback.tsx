@@ -14,6 +14,7 @@ import { getGoblinDisplayImage } from '@/shared/utils/goblinImages'
 import { getEffectiveStats } from '@/shared/utils/goblinStats'
 import { getDungeonName, getEquipmentDisplayName } from '@/shared/i18n/entityLocalization'
 import { getEquipmentTemplate } from '@/shared/data/equipmentPoolLoader'
+import { getDungeonTierDisplayName } from '@/shared/types'
 
 interface LogEntry {
   id: string
@@ -87,6 +88,11 @@ export default function ExpeditionPlaybackScreen() {
     const id = expeditionRecord?.dungeonId || party?.dungeonId
     return dungeons.find(d => d.id === id)
   }, [dungeons, expeditionRecord?.dungeonId, party?.dungeonId])
+
+  const dungeonDisplayName = useMemo(() => {
+    if (!dungeon) return ''
+    return getDungeonTierDisplayName(getDungeonName(dungeon), expeditionRecord?.replay?.meta.tier ?? 0)
+  }, [dungeon, expeditionRecord?.replay?.meta.tier])
 
   const [eventLog, setEventLog] = useState<LogEntry[]>([])
   const [partyHp, setPartyHp] = useState<number[]>([])
@@ -408,13 +414,13 @@ export default function ExpeditionPlaybackScreen() {
         <TouchableOpacity onPress={() => router.back()}>
           <Text style={styles.navBack}>← {t('ui.formation.common.back')}</Text>
         </TouchableOpacity>
-        <Text style={styles.navTitle}>{getDungeonName(dungeon)} - {t('ui.formation.playback.logViewTitle')}</Text>
+        <Text style={styles.navTitle}>{dungeonDisplayName} - {t('ui.formation.playback.logViewTitle')}</Text>
         <View style={styles.navSpacer} />
       </View>
 
       <View style={styles.statusBar}>
         <View style={styles.statusRow}>
-          <Text style={styles.statusTitle}>{t('ui.formation.playback.floorTitle', { name: getDungeonName(dungeon), floor: currentFloor })}</Text>
+          <Text style={styles.statusTitle}>{t('ui.formation.playback.floorTitle', { name: dungeonDisplayName, floor: currentFloor })}</Text>
           <Text style={styles.statusTimer}>{progressText}</Text>
         </View>
         <View style={styles.progressContainer}>

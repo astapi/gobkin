@@ -47,6 +47,7 @@ interface BattleUnit {
   originalIndex: number
   damageReduction: number  // 汎用の被ダメージ軽減率（0〜100）
   physicalDamageReduction: number  // 物理ダメージ軽減率（0〜100）
+  magicDamageReduction: number  // 魔法ダメージ軽減率（0〜100）
   row: number              // 隊列の列番号（0-based）
   rowSlot: number          // 列内のスロット番号（0-based）
   level: number            // 呪文のターゲット数計算用
@@ -504,7 +505,9 @@ export class BattleSystem {
           spellSkill, DEFAULT_DAMAGE_OPTIONS, rng,
         )
         const rearDamageMultiplier = this.getRearDamageMultiplier(unit, sourceGroup)
-        const damage = Math.max(1, Math.floor(baseDamage * rearDamageMultiplier))
+        const reductionFactor = 1 - target.damageReduction / 100
+        const magicReductionFactor = 1 - target.magicDamageReduction / 100
+        const damage = Math.max(1, Math.floor(baseDamage * rearDamageMultiplier * reductionFactor * magicReductionFactor))
 
         this.applyDamage(target, damage)
         totalHitCount++
@@ -530,7 +533,9 @@ export class BattleSystem {
           spellSkill, DEFAULT_DAMAGE_OPTIONS, rng,
         )
         const rearDamageMultiplier = this.getRearDamageMultiplier(unit, sourceGroup)
-        const damage = Math.max(1, Math.floor(baseDamage * rearDamageMultiplier))
+        const reductionFactor = 1 - target.damageReduction / 100
+        const magicReductionFactor = 1 - target.magicDamageReduction / 100
+        const damage = Math.max(1, Math.floor(baseDamage * rearDamageMultiplier * reductionFactor * magicReductionFactor))
 
         this.applyDamage(target, damage)
         totalHitCount++
@@ -601,6 +606,7 @@ export class BattleSystem {
       originalIndex,
       damageReduction,
       physicalDamageReduction,
+      magicDamageReduction: 0,
       row: originalIndex,  // 味方は1列1体（配列順 = 列番号）
       rowSlot: 0,
       level: goblin.level,
@@ -626,7 +632,8 @@ export class BattleSystem {
       isAlly: false,
       originalIndex,
       damageReduction: 0,  // 敵は被ダメージ軽減なし
-      physicalDamageReduction: getPhysicalDamageReductionFromSkills(skills),
+      physicalDamageReduction: (enemy.physicalResistancePercent ?? 0) + getPhysicalDamageReductionFromSkills(skills),
+      magicDamageReduction: enemy.magicResistancePercent ?? 0,
       row,
       rowSlot,
       level: enemy.level,

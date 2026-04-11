@@ -506,6 +506,8 @@ const ja = {
     majou: '魔性',
     yadotta: '宿った',
     densetsu: '伝説',
+    osoroshii: '恐ろしい',
+    kowareta: '壊れた',
   },
 } as const
 

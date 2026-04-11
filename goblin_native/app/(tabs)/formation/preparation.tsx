@@ -9,7 +9,7 @@ import { useDungeonStore } from '@/presentation/stores/useDungeonStore'
 import { useExpeditionFlow } from '@/presentation/hooks/useExpeditionFlow'
 import { getGoblinDisplayImage } from '@/shared/utils/goblinImages'
 import { getEffectiveStats } from '@/shared/utils/goblinStats'
-import { normalizePartyRewardMultipliers, DUNGEON_TIER_META, getDungeonTierDisplayName } from '@/shared/types'
+import { normalizePartyRewardMultipliers, DUNGEON_TIER_META, getDungeonTierAreaLevel, getDungeonTierDisplayName } from '@/shared/types'
 import type { ExpeditionRequest, Goblin, Dungeon, Party, DungeonTier } from '@/shared/types'
 import { getDungeonDescription, getDungeonName, getReturnPolicyLabel } from '@/shared/i18n/entityLocalization'
 
@@ -17,9 +17,9 @@ type ReturnPolicy = ExpeditionRequest['returnPolicy']
 
 const MAX_PARTY_SLOTS = 6
 
-function formatDungeonLabel(dungeon: Dungeon): string {
+function formatDungeonLabel(dungeon: Dungeon, tier: DungeonTier = 0): string {
   if (dungeon.areaLevel === undefined) return getDungeonName(dungeon)
-  return `${getDungeonName(dungeon)} / Area Lv.${dungeon.areaLevel}`
+  return `${getDungeonName(dungeon)} / Area Lv.${getDungeonTierAreaLevel(dungeon.areaLevel, tier)}`
 }
 
 function formatMultiplier(value: number): string {
@@ -213,14 +213,14 @@ export default function ExpeditionPreparationScreen() {
     const maxCleared = selectedDungeon.maxClearedTier ?? 0
     // maxClearedTier=1 → 通常クリア済み → 魔性(tier=1)まで解放
     // maxClearedTier=0 → 未クリア → 通常(tier=0)のみ
-    return Math.min(maxCleared, 3) as DungeonTier
+    return Math.min(maxCleared, 5) as DungeonTier
   }, [selectedDungeon])
 
   // ダンジョン変更時にティアをデフォルト選択
   const autoSelectTier = useCallback((dungeon: Dungeon) => {
     const maxCleared = dungeon.maxClearedTier ?? 0
     // 魔性以上が解放されている場合は最高解放ティアをデフォルト選択
-    const defaultTier = Math.min(maxCleared, 3) as DungeonTier
+    const defaultTier = Math.min(maxCleared, 5) as DungeonTier
     setSelectedTier(defaultTier)
     if (partyId) {
       void setDungeonTier(parseInt(partyId, 10), defaultTier)
@@ -411,7 +411,7 @@ export default function ExpeditionPreparationScreen() {
                 {selectedDungeon ? (
                   <>
                     <Text style={styles.settingValueText}>
-                      {getDungeonTierDisplayName(formatDungeonLabel(selectedDungeon), selectedTier)}
+                      {getDungeonTierDisplayName(formatDungeonLabel(selectedDungeon, selectedTier), selectedTier)}
                     </Text>
                     <Text style={styles.settingValueDescription}>{getDungeonDescription(selectedDungeon)}</Text>
                   </>

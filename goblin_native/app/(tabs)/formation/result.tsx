@@ -9,6 +9,7 @@ import { getGoblinDisplayImage } from '@/shared/utils/goblinImages'
 import { areasData } from '@/shared/data'
 import { getEffectiveStats } from '@/shared/utils/goblinStats'
 import type { ExpeditionRecord, Goblin, TimelineEvent, TreasureDrop } from '@/shared/types'
+import { getDungeonTierDisplayName } from '@/shared/types'
 import { getDungeonName, getEquipmentDisplayName } from '@/shared/i18n/entityLocalization'
 import { getEquipmentTemplate } from '@/shared/data/equipmentPoolLoader'
 
@@ -62,6 +63,11 @@ export default function ExpeditionResultScreen() {
     const id = expeditionRecord?.dungeonId
     return id ? dungeons.find(d => d.id === id) : null
   }, [dungeons, expeditionRecord?.dungeonId])
+
+  const dungeonDisplayName = useMemo(() => {
+    if (!dungeon) return null
+    return getDungeonTierDisplayName(getDungeonName(dungeon), replay?.meta.tier ?? 0)
+  }, [dungeon, replay?.meta.tier])
 
   const partySnapshot = replay?.meta.partySnapshot ?? []
 
@@ -124,7 +130,7 @@ export default function ExpeditionResultScreen() {
     if (!replay || !dungeon) return
     const cleared = replay.summary.success && replay.summary.maxFloorReached >= dungeon.floors
     if (cleared && !dungeon.cleared) {
-      void markDungeonCleared(dungeon, true)
+      void markDungeonCleared(dungeon, true, replay.meta.tier)
     }
   }, [dungeon, markDungeonCleared, replay])
 
@@ -185,7 +191,7 @@ export default function ExpeditionResultScreen() {
       <ScrollView style={styles.scrollView}>
         <View style={styles.headerSection}>
           <Text style={styles.headerTitle}>
-            {dungeon ? getDungeonName(dungeon) : t('ui.result.expeditionFallback')}: {getHeaderText()}
+            {dungeonDisplayName ?? t('ui.result.expeditionFallback')}: {getHeaderText()}
           </Text>
           <Text style={styles.headerSubtitle}>{getResultText()}</Text>
         </View>

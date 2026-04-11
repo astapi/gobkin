@@ -506,6 +506,8 @@ const ko = {
     majou: '마성',
     yadotta: '깃든',
     densetsu: '전설',
+    osoroshii: '무시무시한',
+    kowareta: '망가진',
   },
 } as const
 
