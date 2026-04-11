@@ -105,6 +105,10 @@ function createMockGoblinRepository(goblins: Goblin[]): IGoblinRepository {
       const goblin = store.get(id)
       if (goblin) store.set(id, { ...goblin, factors, effectiveStats })
     }),
+    updateGoblinCurrentHp: jest.fn(async (id: number, currentHp: number) => {
+      const goblin = store.get(id)
+      if (goblin) store.set(id, { ...goblin, currentHp })
+    }),
   }
 }
 
@@ -219,9 +223,10 @@ describe('CompleteExpeditionUseCase', () => {
       const usecase = new CompleteExpeditionUseCase(goblinRepo, createMockPartyRepository([party]), createMockBaseStateRepository(baseState))
       const result = await usecase.execute(1, replay)
 
-      expect(result.updatedGoblinIds).toHaveLength(0)
+      expect(result.updatedGoblinIds).toEqual([1])
       expect(result.levelUps.size).toBe(0)
       expect(goblinRepo.saveGoblin).not.toHaveBeenCalled()
+      expect(goblinRepo.updateGoblinCurrentHp).toHaveBeenCalledWith(1, 0)
     })
 
     it('ゴールドが加算される', async () => {
@@ -461,8 +466,9 @@ describe('CompleteExpeditionUseCase', () => {
       const usecase = new CompleteExpeditionUseCase(goblinRepo, createMockPartyRepository([party]), createMockBaseStateRepository(createTestBaseState()))
       const result = await usecase.execute(1, replay)
 
-      expect(result.updatedGoblinIds).toHaveLength(0)
+      expect(result.updatedGoblinIds).toEqual([1])
       expect(goblinRepo.saveGoblin).not.toHaveBeenCalled()
+      expect(goblinRepo.updateGoblinCurrentHp).toHaveBeenCalledWith(1, 60)
     })
   })
 })

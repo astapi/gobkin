@@ -20,6 +20,7 @@ interface GoblinRow {
   experience: number
   avatar: string
   stats_json: string
+  current_hp: number | null
   effective_stats_json: string | null
   factors_json: string | null
   variant_factor_id: string | null
@@ -62,9 +63,9 @@ export class SQLiteGoblinRepository implements IGoblinRepository {
     await db.runAsync(
       `INSERT OR REPLACE INTO goblins
        (id, name, race, race_id, level, experience, avatar, stats_json,
-        effective_stats_json, factors_json, variant_factor_id, job_id,
+        current_hp, effective_stats_json, factors_json, variant_factor_id, job_id,
         individual_value, mods_json, skills_json, updated_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))`,
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))`,
       [
         persistedGoblin.id,
         persistedGoblin.name,
@@ -74,6 +75,7 @@ export class SQLiteGoblinRepository implements IGoblinRepository {
         persistedGoblin.experience,
         persistedGoblin.avatar,
         JSON.stringify(persistedGoblin.stats),
+        persistedGoblin.currentHp ?? null,
         persistedGoblin.effectiveStats ? JSON.stringify(persistedGoblin.effectiveStats) : null,
         persistedGoblin.factors ? JSON.stringify(persistedGoblin.factors) : null,
         persistedGoblin.variantFactorId ?? null,
@@ -112,6 +114,14 @@ export class SQLiteGoblinRepository implements IGoblinRepository {
     )
   }
 
+  async updateGoblinCurrentHp(id: number, currentHp: number): Promise<void> {
+    const db = await getDatabase()
+    await db.runAsync(
+      `UPDATE goblins SET current_hp = ?, updated_at = datetime('now') WHERE id = ?`,
+      [Math.max(0, Math.floor(currentHp)), id]
+    )
+  }
+
   private rowToGoblin(row: GoblinRow): Goblin {
     const goblin = normalizeGoblinJobSkills({
       id: row.id,
@@ -123,6 +133,7 @@ export class SQLiteGoblinRepository implements IGoblinRepository {
       experience: row.experience,
       avatar: row.avatar,
       stats: JSON.parse(row.stats_json),
+      currentHp: row.current_hp ?? undefined,
       effectiveStats: row.effective_stats_json
         ? JSON.parse(row.effective_stats_json)
         : undefined,

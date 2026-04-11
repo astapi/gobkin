@@ -33,6 +33,7 @@ export type Goblin = {
   experience: number
   avatar: string
   stats: GoblinStats  // 基本ステータス（レベルアップで増加）
+  currentHp?: number  // 現在HP。未設定または1以上なら遠征開始時に最大HPまで回復、0なら負傷扱い
   baseAttributes?: GoblinBaseAttributes  // 基本能力値（力、知恵、精神、体力、敏捷、運）
   effectiveStats?: GoblinStats  // 実効ステータス（stats + 因子 + Mod適用後）、未設定時はModStatCalculatorで計算
   factors?: string[]  // 獲得した因子IDの配列

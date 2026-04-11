@@ -1,5 +1,6 @@
-import type { ExpeditionReplay, MemberLevelUp, TimelineEvent, TreasureDrop } from '../../shared/types'
+import type { ExpeditionReplay, Goblin, MemberLevelUp, TimelineEvent, TreasureDrop } from '../../shared/types'
 import { getEnemyDatabase } from '../../shared/data/enemy'
+import { getEffectiveStats } from '../../shared/utils/goblinStats'
 import { GoblinEntity } from '../domain'
 import type { IGoblinRepository, IPartyRepository, IBaseStateRepository } from '../repositories'
 import type { IEquipmentRepository } from '../repositories/IEquipmentRepository'
@@ -64,9 +65,15 @@ export class CompleteExpeditionUseCase {
     }
 
     // 各メンバーのHP状態を追跡（戦闘不能判定用）
+    const snapshotById = new Map<number, Goblin>(
+      (replay.meta.partySnapshot ?? []).map(goblin => [goblin.id, goblin])
+    )
     const currentHP: number[] = partyIds.map((id) => {
       const goblin = goblins.find(g => g.id === Number.parseInt(id, 10))
-      return goblin ? goblin.stats.hp : 0
+      if (!goblin) return 0
+      const snapshot = snapshotById.get(goblin.id)
+      if (snapshot?.currentHp === 0 || goblin.currentHp === 0) return 0
+      return snapshot?.currentHp ?? getEffectiveStats(goblin).hp
     })
 
     for (const event of replay.events) {
@@ -157,6 +164,16 @@ export class CompleteExpeditionUseCase {
         }
       } else {
         console.warn(`Enemy data not found for area: ${replay.meta.areaId}`)
+      }
+    }
+
+    for (let index = 0; index < partyIds.length; index++) {
+      const goblinId = Number.parseInt(partyIds[index], 10)
+      if (Number.isNaN(goblinId)) continue
+
+      await this.goblinRepository.updateGoblinCurrentHp(goblinId, currentHP[index] ?? 0)
+      if (!updatedGoblinIds.includes(goblinId)) {
+        updatedGoblinIds.push(goblinId)
       }
     }
 

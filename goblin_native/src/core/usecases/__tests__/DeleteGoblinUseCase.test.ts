@@ -38,6 +38,7 @@ function createMockGoblinRepository(goblins: Goblin[]): IGoblinRepository {
     updateGoblinStats: jest.fn(async () => {}),
     updateGoblinLevel: jest.fn(async () => {}),
     updateGoblinFactors: jest.fn(async () => {}),
+    updateGoblinCurrentHp: jest.fn(async () => {}),
   }
 }
 

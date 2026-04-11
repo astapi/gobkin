@@ -227,8 +227,9 @@ export const useExpeditionFlow = ({
         }
 
         await saveExpeditionRecord(record)
-        // UseCaseがDB上のparty.statusを'expedition'に直接更新するため、ストアを同期
+        // UseCaseがDB上のparty.statusと出発時HPを直接更新するため、ストアを同期
         await usePartyStore.getState().refresh()
+        await useGoblinStore.getState().refresh()
 
         return { replay, record }
       } finally {
