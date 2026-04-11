@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Alert } from 'react-native'
 import type {
   Dungeon,
+  DungeonTier,
   ExpeditionReplay,
   ExpeditionRequest,
   ExpeditionRecord,
@@ -30,6 +31,7 @@ interface StartExpeditionInput {
   party: Party
   dungeon: Dungeon
   returnPolicy: ExpeditionRequest['returnPolicy']
+  tier?: DungeonTier
 }
 
 interface StartExpeditionResult {
@@ -97,7 +99,8 @@ export const useExpeditionFlow = ({
       record.replay.summary.maxFloorReached >= dungeon.floors
     if (!cleared) return
 
-    await markDungeonCleared(dungeon, true)
+    const tier = record.replay.meta.tier as DungeonTier | undefined
+    await markDungeonCleared(dungeon, true, tier)
 
     const nextId = await getNextGoblinId()
     const areaLevel = dungeon.areaLevel ?? 1
@@ -185,13 +188,14 @@ export const useExpeditionFlow = ({
   }, [])
 
   const startExpedition = useCallback(
-    async ({ party, dungeon, returnPolicy }: StartExpeditionInput): Promise<StartExpeditionResult> => {
+    async ({ party, dungeon, returnPolicy, tier }: StartExpeditionInput): Promise<StartExpeditionResult> => {
       setIsProcessing(true)
       try {
         const durationSec = estimateExplorationTime(dungeon, returnPolicy)
         const request: ExpeditionRequest = {
           partyId: party.id.toString(),
           areaId: dungeon.id,
+          tier,
           returnPolicy,
           clientVersion: 'native',
           durationSec,

@@ -9,8 +9,8 @@ import { useDungeonStore } from '@/presentation/stores/useDungeonStore'
 import { useExpeditionFlow } from '@/presentation/hooks/useExpeditionFlow'
 import { getGoblinDisplayImage } from '@/shared/utils/goblinImages'
 import { getEffectiveStats } from '@/shared/utils/goblinStats'
-import { normalizePartyRewardMultipliers } from '@/shared/types'
-import type { ExpeditionRequest, Goblin, Dungeon, Party } from '@/shared/types'
+import { normalizePartyRewardMultipliers, DUNGEON_TIER_META, getDungeonTierDisplayName } from '@/shared/types'
+import type { ExpeditionRequest, Goblin, Dungeon, Party, DungeonTier } from '@/shared/types'
 import { getDungeonDescription, getDungeonName, getReturnPolicyLabel } from '@/shared/i18n/entityLocalization'
 
 type ReturnPolicy = ExpeditionRequest['returnPolicy']
@@ -64,6 +64,7 @@ export default function ExpeditionPreparationScreen() {
     isLoading: partiesLoading,
     getPartyById,
     setDungeon,
+    setDungeonTier,
     setReturnPolicy,
     setTargetFloor,
     updateName,
@@ -99,6 +100,7 @@ export default function ExpeditionPreparationScreen() {
   }, [party, partiesLoading, partyId, retryCount, refreshParties])
 
   const [selectedDungeonId, setSelectedDungeonId] = useState<string | undefined>(party?.dungeonId)
+  const [selectedTier, setSelectedTier] = useState<DungeonTier>(party?.dungeonTier ?? 0)
   const [selectedReturnPolicy, setSelectedReturnPolicy] = useState<ReturnPolicy>(party?.returnPolicy ?? 'never')
   const [selectedTargetFloor, setSelectedTargetFloor] = useState<number | null>(party?.targetFloor ?? null)
   const [isDungeonModalVisible, setIsDungeonModalVisible] = useState(false)
@@ -111,6 +113,7 @@ export default function ExpeditionPreparationScreen() {
   useEffect(() => {
     if (party) {
       setSelectedDungeonId(party.dungeonId)
+      setSelectedTier(party.dungeonTier ?? 0)
       setSelectedReturnPolicy(party.returnPolicy ?? 'never')
       setSelectedTargetFloor(party.targetFloor ?? null)
       setEditingPartyName(party.name)
@@ -204,12 +207,40 @@ export default function ExpeditionPreparationScreen() {
     }
   }, [editingPartyName, partyId, updateName])
 
+  // 選択中ダンジョンの最大解放ティアを計算
+  const maxUnlockedTier = useMemo((): DungeonTier => {
+    if (!selectedDungeon) return 0
+    const maxCleared = selectedDungeon.maxClearedTier ?? 0
+    // maxClearedTier=1 → 通常クリア済み → 魔性(tier=1)まで解放
+    // maxClearedTier=0 → 未クリア → 通常(tier=0)のみ
+    return Math.min(maxCleared, 3) as DungeonTier
+  }, [selectedDungeon])
+
+  // ダンジョン変更時にティアをデフォルト選択
+  const autoSelectTier = useCallback((dungeon: Dungeon) => {
+    const maxCleared = dungeon.maxClearedTier ?? 0
+    // 魔性以上が解放されている場合は最高解放ティアをデフォルト選択
+    const defaultTier = Math.min(maxCleared, 3) as DungeonTier
+    setSelectedTier(defaultTier)
+    if (partyId) {
+      void setDungeonTier(parseInt(partyId, 10), defaultTier)
+    }
+  }, [partyId, setDungeonTier])
+
   const handleSelectDungeon = useCallback((dungeon: Dungeon) => {
     setSelectedDungeonId(dungeon.id)
     if (partyId) {
       void setDungeon(parseInt(partyId, 10), dungeon.id)
     }
-  }, [partyId, setDungeon])
+    autoSelectTier(dungeon)
+  }, [partyId, setDungeon, autoSelectTier])
+
+  const handleSelectTier = useCallback((tier: DungeonTier) => {
+    setSelectedTier(tier)
+    if (partyId) {
+      void setDungeonTier(parseInt(partyId, 10), tier)
+    }
+  }, [partyId, setDungeonTier])
 
   const handleSelectReturnPolicy = useCallback((policy: ReturnPolicy) => {
     setSelectedReturnPolicy(policy)
@@ -240,6 +271,7 @@ export default function ExpeditionPreparationScreen() {
           party,
           dungeon: selectedDungeon,
           returnPolicy: selectedReturnPolicy,
+          tier: selectedTier,
         })
 
         router.dismissAll()
@@ -270,6 +302,7 @@ export default function ExpeditionPreparationScreen() {
     selectedDungeon,
     selectedDungeonId,
     selectedReturnPolicy,
+    selectedTier,
     partyMembers.length,
     startExpedition,
     t,
@@ -377,7 +410,9 @@ export default function ExpeditionPreparationScreen() {
               >
                 {selectedDungeon ? (
                   <>
-                    <Text style={styles.settingValueText}>{formatDungeonLabel(selectedDungeon)}</Text>
+                    <Text style={styles.settingValueText}>
+                      {getDungeonTierDisplayName(formatDungeonLabel(selectedDungeon), selectedTier)}
+                    </Text>
                     <Text style={styles.settingValueDescription}>{getDungeonDescription(selectedDungeon)}</Text>
                   </>
                 ) : (
@@ -385,6 +420,40 @@ export default function ExpeditionPreparationScreen() {
                 )}
               </TouchableOpacity>
             </View>
+
+            {/* ティア（称号） */}
+            {selectedDungeon && (
+              <View style={styles.settingItem}>
+                <Text style={styles.settingLabel}>{t('ui.formation.preparation.dungeonTier')}</Text>
+                <View style={styles.tierSelector}>
+                  {DUNGEON_TIER_META.map((meta) => {
+                    const isUnlocked = meta.tier <= maxUnlockedTier
+                    const isSelected = selectedTier === meta.tier
+                    return (
+                      <TouchableOpacity
+                        key={meta.tier}
+                        style={[
+                          styles.tierButton,
+                          isSelected && styles.tierButtonSelected,
+                          !isUnlocked && styles.tierButtonLocked,
+                        ]}
+                        onPress={() => isUnlocked && handleSelectTier(meta.tier as DungeonTier)}
+                        disabled={!isUnlocked}
+                      >
+                        <Text style={[
+                          styles.tierButtonText,
+                          isSelected && styles.tierButtonTextSelected,
+                          !isUnlocked && styles.tierButtonTextLocked,
+                        ]}>
+                          {t(meta.labelKey)}
+                        </Text>
+                        {!isUnlocked && <Text style={styles.tierLockIcon}>🔒</Text>}
+                      </TouchableOpacity>
+                    )
+                  })}
+                </View>
+              </View>
+            )}
 
             {/* 目標階数 */}
             <View style={styles.settingItem}>
@@ -721,6 +790,44 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
     color: '#1D4ED8',
+  },
+  tierSelector: {
+    flexDirection: 'row',
+    gap: 6,
+  },
+  tierButton: {
+    flex: 1,
+    paddingVertical: 10,
+    paddingHorizontal: 4,
+    borderRadius: 8,
+    backgroundColor: '#F3F4F6',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+  },
+  tierButtonSelected: {
+    backgroundColor: '#DBEAFE',
+    borderColor: '#3B82F6',
+  },
+  tierButtonLocked: {
+    backgroundColor: '#F9FAFB',
+    borderColor: '#E5E7EB',
+    opacity: 0.5,
+  },
+  tierButtonText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#374151',
+  },
+  tierButtonTextSelected: {
+    color: '#1D4ED8',
+  },
+  tierButtonTextLocked: {
+    color: '#9CA3AF',
+  },
+  tierLockIcon: {
+    fontSize: 10,
+    marginTop: 2,
   },
   settingItem: {
     marginBottom: 12,

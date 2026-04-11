@@ -5,7 +5,7 @@
 import {
   normalizePartyRewardMultipliers,
 } from '../../shared/types'
-import type { Party, PartyStatus, ExpeditionRequest } from '../../shared/types'
+import type { Party, PartyStatus, ExpeditionRequest, DungeonTier } from '../../shared/types'
 import type { IPartyRepository } from '../../core/repositories/IPartyRepository'
 import { getDatabase } from '../database'
 
@@ -15,6 +15,7 @@ interface PartyRow {
   member_ids_json: string
   status: string | null
   dungeon_id: string | null
+  dungeon_tier: number | null
   target_floor: number | null
   return_policy: string | null
   gold_multiplier: number | null
@@ -51,15 +52,16 @@ export class SQLitePartyRepository implements IPartyRepository {
     const rewardMultipliers = normalizePartyRewardMultipliers(party.rewardMultipliers)
     await db.runAsync(
       `INSERT OR REPLACE INTO parties
-       (id, name, member_ids_json, status, dungeon_id, target_floor, return_policy,
+       (id, name, member_ids_json, status, dungeon_id, dungeon_tier, target_floor, return_policy,
         gold_multiplier, rare_multiplier, title_multiplier, updated_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))`,
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))`,
       [
         party.id,
         party.name,
         JSON.stringify(party.memberIds),
         party.status ?? 'idle',
         party.dungeonId ?? null,
+        party.dungeonTier ?? 0,
         party.targetFloor ?? null,
         party.returnPolicy ?? null,
         rewardMultipliers.gold,
@@ -96,6 +98,14 @@ export class SQLitePartyRepository implements IPartyRepository {
     )
   }
 
+  async updateDungeonTier(id: number, tier: DungeonTier): Promise<void> {
+    const db = await getDatabase()
+    await db.runAsync(
+      "UPDATE parties SET dungeon_tier = ?, updated_at = datetime('now') WHERE id = ?",
+      [tier, id]
+    )
+  }
+
   async updateFloorTarget(id: number, targetFloor: number | null): Promise<void> {
     const db = await getDatabase()
     await db.runAsync(
@@ -119,6 +129,7 @@ export class SQLitePartyRepository implements IPartyRepository {
       memberIds: JSON.parse(row.member_ids_json),
       status: (row.status as PartyStatus) ?? undefined,
       dungeonId: row.dungeon_id ?? undefined,
+      dungeonTier: (row.dungeon_tier ?? 0) as DungeonTier,
       targetFloor: row.target_floor ?? undefined,
       returnPolicy: (row.return_policy as ExpeditionRequest['returnPolicy']) ?? undefined,
       rewardMultipliers: normalizePartyRewardMultipliers({

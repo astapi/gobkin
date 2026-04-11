@@ -59,6 +59,7 @@ export const SCHEMA = {
       member_ids_json TEXT NOT NULL,
       status TEXT DEFAULT 'idle',
       dungeon_id TEXT,
+      dungeon_tier INTEGER NOT NULL DEFAULT 0,
       target_floor INTEGER,
       return_policy TEXT,
       gold_multiplier REAL NOT NULL DEFAULT 1.0,
@@ -125,6 +126,7 @@ export const SCHEMA = {
       unlocked INTEGER NOT NULL DEFAULT 0,
       cleared INTEGER NOT NULL DEFAULT 0,
       unlock_notified INTEGER NOT NULL DEFAULT 0,
+      max_cleared_tier INTEGER NOT NULL DEFAULT 0,
       updated_at TEXT NOT NULL DEFAULT (datetime('now'))
     )
   `,

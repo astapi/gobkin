@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import { SQLiteDungeonProgressRepository } from '../../infrastructure/repositories/SQLiteDungeonProgressRepository'
 import { areasData } from '../../shared/data'
-import type { Dungeon } from '../../shared/types'
+import type { Dungeon, DungeonTier } from '../../shared/types'
 import type { DungeonProgressState } from '../../shared/types/DungeonProgress'
 
 const repository = SQLiteDungeonProgressRepository.getInstance()
@@ -13,6 +13,7 @@ const buildDefaultProgress = (): DungeonProgressState => {
       unlocked: dungeon.unlocked ?? index === 0,
       cleared: dungeon.cleared ?? false,
       unlockNotified: false,
+      maxClearedTier: 0,
     }
   })
   return defaults
@@ -23,6 +24,7 @@ const buildDungeons = (progress: DungeonProgressState): Dungeon[] =>
     ...dungeon,
     cleared: progress[dungeon.id]?.cleared ?? dungeon.cleared ?? false,
     unlocked: progress[dungeon.id]?.unlocked ?? dungeon.unlocked ?? false,
+    maxClearedTier: progress[dungeon.id]?.maxClearedTier ?? 0,
   }))
 
 interface DungeonStoreState {
@@ -35,7 +37,7 @@ interface DungeonStoreActions {
   initialize: () => Promise<void>
   refresh: () => Promise<void>
   updateProgress: (updater: (prev: DungeonProgressState) => DungeonProgressState) => Promise<void>
-  markDungeonCleared: (dungeon: Dungeon, cleared: boolean) => Promise<void>
+  markDungeonCleared: (dungeon: Dungeon, cleared: boolean, tier?: DungeonTier) => Promise<void>
   markUnlockNotified: (dungeonId: string) => Promise<void>
 }
 
@@ -77,25 +79,33 @@ export const useDungeonStore = create<DungeonStoreState & DungeonStoreActions>()
     refresh,
     updateProgress,
 
-    markDungeonCleared: async (dungeon: Dungeon, cleared: boolean) => {
+    markDungeonCleared: async (dungeon: Dungeon, cleared: boolean, tier?: DungeonTier) => {
       await updateProgress(prev => {
         const nextProgress: DungeonProgressState = { ...prev }
         const current = nextProgress[dungeon.id] ?? {
           unlocked: dungeon.unlocked ?? false,
           cleared: false,
           unlockNotified: false,
+          maxClearedTier: 0,
         }
+
+        const clearedTierValue = tier !== undefined ? tier + 1 : 1
+        const newMaxClearedTier = cleared
+          ? Math.max(current.maxClearedTier, clearedTierValue)
+          : current.maxClearedTier
+
         nextProgress[dungeon.id] = {
           ...current,
           unlocked: true,
           cleared: cleared || current.cleared,
+          maxClearedTier: newMaxClearedTier,
         }
 
         if (cleared && dungeon.unlockNext) {
           const target = nextProgress[dungeon.unlockNext]
           if (!target || !target.unlocked) {
             nextProgress[dungeon.unlockNext] = {
-              ...(target ?? { cleared: false, unlockNotified: false }),
+              ...(target ?? { cleared: false, unlockNotified: false, maxClearedTier: 0 }),
               unlocked: true,
             }
           }
@@ -112,6 +122,7 @@ export const useDungeonStore = create<DungeonStoreState & DungeonStoreActions>()
           unlocked: false,
           cleared: false,
           unlockNotified: false,
+          maxClearedTier: 0,
         }
         nextProgress[dungeonId] = { ...current, unlockNotified: true }
         return nextProgress

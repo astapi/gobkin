@@ -1,4 +1,4 @@
-import type { ExpeditionRequest, Party } from '../../shared/types'
+import type { ExpeditionRequest, Party, DungeonTier } from '../../shared/types'
 import type { IPartyRepository } from '../repositories'
 
 export class ConfigurePartyUseCase {
@@ -26,6 +26,11 @@ export class ConfigurePartyUseCase {
 
   public async setDungeon(partyId: number, dungeonId: string): Promise<Party> {
     await this.partyRepository.updateDungeonSettings(partyId, dungeonId)
+    return this.requireParty(partyId)
+  }
+
+  public async setDungeonTier(partyId: number, tier: DungeonTier): Promise<Party> {
+    await this.partyRepository.updateDungeonTier(partyId, tier)
     return this.requireParty(partyId)
   }
 

@@ -221,6 +221,7 @@ const ja = {
         renameParty: 'パーティ名を変更する',
         dungeon: '遠征先',
         dungeonUnset: '遠征先が未設定です',
+        dungeonTier: '称号',
         targetFloor: '目標階数',
         targetFloorDeepest: '最下層まで探索',
         targetFloorUntil: '{{floor}}階まで',
@@ -499,6 +500,12 @@ const ja = {
     accuracyMultiplier: '装備由来の命中精度補正が×{{value}}',
     attackCountBonus: '[+{{value}}]攻撃回数',
     evasionBonus: '[+{{value}}]回避能力',
+  },
+  dungeonTier: {
+    normal: '通常',
+    majou: '魔性',
+    yadotta: '宿った',
+    densetsu: '伝説',
   },
 } as const
 

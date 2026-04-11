@@ -221,6 +221,7 @@ const en = {
         renameParty: 'Rename Party',
         dungeon: 'Destination',
         dungeonUnset: 'No destination set',
+        dungeonTier: 'Title',
         targetFloor: 'Target Floor',
         targetFloorDeepest: 'Explore to the deepest floor',
         targetFloorUntil: 'Up to Floor {{floor}}',
@@ -499,6 +500,12 @@ const en = {
     accuracyMultiplier: 'Equipment-based accuracy becomes x{{value}}',
     attackCountBonus: '[+{{value}}] Attack Count',
     evasionBonus: '[+{{value}}] Evasion',
+  },
+  dungeonTier: {
+    normal: 'Normal',
+    majou: 'Demonic',
+    yadotta: 'Possessed',
+    densetsu: 'Legendary',
   },
 } as const
 
