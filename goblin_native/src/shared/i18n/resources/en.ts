@@ -328,6 +328,7 @@ const en = {
         rewardSummary: 'Obtained {{xp}} EXP and {{gold}} gold.',
         gainedXp: '<Gained EXP>',
         xpLine: 'Exp +{{xp}} {{name}} ({{xp}} x {{multiplier}}x)',
+        levelUpLine: 'Level up! Lv{{oldLevel}} -> Lv{{newLevel}}',
         memberLine: '({{hp}}/{{maxHp}}) {{name}} Lv{{level}}',
       },
       log: {

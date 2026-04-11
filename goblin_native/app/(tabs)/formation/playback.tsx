@@ -15,6 +15,7 @@ import { getEffectiveStats } from '@/shared/utils/goblinStats'
 import { getDungeonName, getEquipmentDisplayName } from '@/shared/i18n/entityLocalization'
 import { getEquipmentTemplate } from '@/shared/data/equipmentPoolLoader'
 import { getDungeonTierDisplayName } from '@/shared/types'
+import { addExperience } from '@/core/services/ExperienceSystem'
 
 interface LogEntry {
   id: string
@@ -114,6 +115,7 @@ export default function ExpeditionPlaybackScreen() {
   const hasCompletedRef = useRef(false)
   const logIdRef = useRef(0)
   const partyHpRef = useRef<number[]>([])
+  const partyExpRef = useRef<Array<{ level: number; experience: number }>>([])
 
   const formatTime = useCallback((seconds: number): string => {
     const minutes = Math.floor(seconds / 60)
@@ -152,7 +154,33 @@ export default function ExpeditionPlaybackScreen() {
         const result = event.combat.outcome === 'win' ? t('ui.formation.playback.win') : t('ui.formation.playback.lose')
         const partyMembers = replay?.meta.party ?? []
         const rewardedXp = event.combat.outcome === 'win' ? event.xp : 0
-        const xpPerMember = partyMembers.length > 0 ? Math.floor(rewardedXp / partyMembers.length) : 0
+        const aliveIndices = partyMembers
+          .map((_, index) => index)
+          .filter(index => (partyHpRef.current[index] ?? 0) > 0)
+        const xpPerMember = aliveIndices.length > 0 ? Math.floor(rewardedXp / aliveIndices.length) : 0
+        const levelUps = new Map<number, { oldLevel: number; newLevel: number }>()
+
+        if (rewardedXp > 0 && xpPerMember > 0) {
+          const nextExpState = partyExpRef.current.map(state => ({ ...state }))
+          for (const index of aliveIndices) {
+            const current = nextExpState[index]
+            if (!current) continue
+
+            const levelUp = addExperience(current.level, current.experience, xpPerMember)
+            nextExpState[index] = {
+              level: levelUp.newLevel,
+              experience: levelUp.remainingExp,
+            }
+            if (levelUp.didLevelUp) {
+              levelUps.set(index, {
+                oldLevel: levelUp.oldLevel,
+                newLevel: levelUp.newLevel,
+              })
+            }
+          }
+          partyExpRef.current = nextExpState
+        }
+
         const meta: BattleLogMeta = {
           outcome: event.combat.outcome,
           xpGained: rewardedXp,
@@ -160,15 +188,17 @@ export default function ExpeditionPlaybackScreen() {
           members: partyMembers.map((memberId, idx) => {
             const goblin = partyGoblins[idx]
             const preHP = partyHpRef.current[idx] ?? (goblin ? getEffectiveStats(goblin).hp : 100)
+            const expState = partyExpRef.current[idx]
             return {
               name: goblin?.name ?? `ID:${memberId}`,
               currentHP: event.combat.allyHPDelta[idx] !== undefined
                 ? Math.max(0, preHP + event.combat.allyHPDelta[idx])
                 : 0,
               maxHP: goblin ? getEffectiveStats(goblin).hp : 100,
-              level: goblin?.level ?? 1,
-              xpEach: xpPerMember,
+              level: expState?.level ?? goblin?.level ?? 1,
+              xpEach: aliveIndices.includes(idx) ? xpPerMember : 0,
               expMultiplier: 1,
+              levelUp: levelUps.get(idx),
             }
           }),
         }
@@ -291,10 +321,16 @@ export default function ExpeditionPlaybackScreen() {
     }
 
     const initialPartyHp = partyGoblins.map(goblin => {
-      return goblin ? getEffectiveStats(goblin).hp : 100
+      if (!goblin) return 100
+      return goblin.currentHp === 0 ? 0 : getEffectiveStats(goblin).hp
     })
+    const initialPartyExp = partyGoblins.map(goblin => ({
+      level: goblin?.level ?? 1,
+      experience: goblin?.experience ?? 0,
+    }))
     let tempHp = [...initialPartyHp]
     partyHpRef.current = [...initialPartyHp]
+    partyExpRef.current = initialPartyExp.map(state => ({ ...state }))
     let tempFloor = 1
     const preloadedLogs: LogEntry[] = []
     let nextIndex = 0

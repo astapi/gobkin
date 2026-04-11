@@ -328,6 +328,7 @@ const ja = {
         rewardSummary: '経験値 {{xp}} と {{gold}} gold を手に入れました。',
         gainedXp: '＜獲得経験値＞',
         xpLine: 'Exp +{{xp}} {{name}} ({{xp}} x {{multiplier}}倍)',
+        levelUpLine: 'レベルアップ！ Lv{{oldLevel}} → Lv{{newLevel}}',
         memberLine: '({{hp}}/{{maxHp}}) {{name}} Lv{{level}}',
       },
       log: {
