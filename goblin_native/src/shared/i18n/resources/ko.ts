@@ -221,6 +221,7 @@ const ko = {
         renameParty: '파티 이름 변경',
         dungeon: '원정지',
         dungeonUnset: '원정지가 설정되지 않았습니다',
+        dungeonTier: '칭호',
         targetFloor: '목표 층',
         targetFloorDeepest: '최하층까지 탐색',
         targetFloorUntil: '{{floor}}층까지',
@@ -499,6 +500,12 @@ const ko = {
     accuracyMultiplier: '장비 유래 명중 보정이 x{{value}}가 된다',
     attackCountBonus: '[+{{value}}] 공격 횟수',
     evasionBonus: '[+{{value}}] 회피',
+  },
+  dungeonTier: {
+    normal: '일반',
+    majou: '마성',
+    yadotta: '깃든',
+    densetsu: '전설',
   },
 } as const
 

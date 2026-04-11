@@ -20,6 +20,7 @@ async function ensureDefaults(): Promise<void> {
         unlocked: dungeon.unlocked ?? index === 0,
         cleared: dungeon.cleared ?? false,
         unlockNotified: false,
+        maxClearedTier: 0,
       })
     }
   }

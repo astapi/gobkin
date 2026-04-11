@@ -3,10 +3,12 @@ import type { CombatReplay } from "./Battle"
 import type { EquipmentTitleId } from "./EquipmentTitle"
 import type { Goblin } from "./Goblin"
 import type { PartyRewardMultipliers } from "./Party"
+import type { DungeonTier } from "./DungeonTier"
 
 export interface ExpeditionRequest {
   partyId: string
   areaId: string
+  tier?: DungeonTier
   returnPolicy: "until_floor2" | "until_floor3" | "if_any_ko" | "if_two_ko" | "last_one" | "never"
   clientVersion: string
   durationSec?: number
@@ -33,6 +35,7 @@ export interface ExpeditionReplay {
     partySnapshot?: Goblin[]
     partyRewardMultipliers: PartyRewardMultipliers
     returnPolicy: ExpeditionRequest["returnPolicy"]
+    tier?: DungeonTier
     seed: number
     serverCommitHash?: string
   }

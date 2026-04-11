@@ -1,4 +1,5 @@
 import type { ExpeditionRequest } from "./Expedition"
+import type { DungeonTier } from "./DungeonTier"
 import type { CharacterSkill } from "./CharacterSkill"
 import type { ModInstance } from "./Mod"
 import type { LearnedSpell } from "./Spell"
@@ -42,6 +43,7 @@ export type Party = {
   dungeonId?: string
   targetFloor?: number | null  // null = どこまでも進む
   returnPolicy?: ExpeditionRequest["returnPolicy"]
+  dungeonTier?: DungeonTier
   rewardMultipliers?: PartyRewardMultipliers
 }
 

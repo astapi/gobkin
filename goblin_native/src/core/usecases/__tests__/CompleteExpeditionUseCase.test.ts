@@ -118,6 +118,7 @@ function createMockPartyRepository(parties: Party[]): IPartyRepository {
     updatePartyStatus: jest.fn(async () => {}),
     getPartiesByStatus: jest.fn(async () => []),
     updateDungeonSettings: jest.fn(async () => {}),
+    updateDungeonTier: jest.fn(async () => {}),
     updateFloorTarget: jest.fn(async () => {}),
     updateReturnPolicy: jest.fn(async () => {}),
   }

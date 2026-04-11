@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import type { Party, ExpeditionRequest } from '../../shared/types'
+import type { Party, ExpeditionRequest, DungeonTier } from '../../shared/types'
 import { SQLitePartyRepository } from '../../infrastructure/repositories/SQLitePartyRepository'
 import type { IPartyRepository } from '../../core/repositories'
 import {
@@ -37,6 +37,7 @@ interface PartyActions {
   markExpedition: (partyId: number) => Promise<void>
   markIdle: (partyId: number) => Promise<void>
   setDungeon: (partyId: number, dungeonId: string) => Promise<Party>
+  setDungeonTier: (partyId: number, tier: DungeonTier) => Promise<Party>
   setTargetFloor: (partyId: number, targetFloor: number | null) => Promise<Party>
   setReturnPolicy: (partyId: number, returnPolicy: ExpeditionRequest['returnPolicy']) => Promise<Party>
 }
@@ -102,6 +103,12 @@ export const usePartyStore = create<PartyState & PartyActions>()((set) => {
 
     setDungeon: async (partyId: number, dungeonId: string) => {
       const updated = await configurePartyUseCase.setDungeon(partyId, dungeonId)
+      await refresh()
+      return updated
+    },
+
+    setDungeonTier: async (partyId: number, tier: DungeonTier) => {
+      const updated = await configurePartyUseCase.setDungeonTier(partyId, tier)
       await refresh()
       return updated
     },

@@ -20,7 +20,7 @@ import { getEquipmentTemplate, getEquipmentByDungeonLevel } from '../../shared/d
 import { BattleSystem } from './BattleSystem'
 import { ModStatCalculator } from './ModStatCalculator'
 import { EquipmentTitleService } from './EquipmentTitleService'
-import { normalizePartyRewardMultipliers } from '../../shared/types'
+import { normalizePartyRewardMultipliers, DUNGEON_TIER_SCALING } from '../../shared/types'
 import { getGoblinBaseAttributes } from '../../shared/utils/goblinHp'
 import { getEffectiveStats } from '../../shared/utils/goblinStats'
 
@@ -58,6 +58,8 @@ export class ExpeditionEngine {
   ): Promise<ExpeditionReplay> {
     console.log('ExpeditionEngine: Starting generateExpedition', { request, partySize: party.length })
     const normalizedRewardMultipliers = normalizePartyRewardMultipliers(rewardMultipliers)
+    const tier = request.tier ?? 0
+    const tierScaling = DUNGEON_TIER_SCALING[tier] ?? DUNGEON_TIER_SCALING[0]
     // ダンジョンIDからエリアIDにマッピング
     const dungeonToAreaMap: Record<string, string> = {
       "1": "forest_outskirts",
@@ -125,9 +127,9 @@ export class ExpeditionEngine {
         switch (eventType) {
           case "battle": {
             const pattern = this.selectEnemyPattern(enemyDatabase.patterns, currentFloor, false)
-            const enemies = this.getEnemiesFromPattern(pattern, enemyDatabase.enemies)
+            const enemies = this.applyTierScaling(this.getEnemiesFromPattern(pattern, enemyDatabase.enemies), tierScaling.enemyLvScale)
             const combat = this.resolveCombat(partyState, enemies, area)
-            const xp = area.rewards.xpFloor[currentFloor - 1] || 10
+            const xp = Math.floor((area.rewards.xpFloor[currentFloor - 1] || 10) * tierScaling.rewardScale)
 
             events.push({
               type: "battle",
@@ -187,9 +189,9 @@ export class ExpeditionEngine {
             console.warn(`Unknown event type: ${eventType}, treating as battle`)
             // battleとして処理
             const pattern = this.selectEnemyPattern(enemyDatabase.patterns, currentFloor, false)
-            const enemies = this.getEnemiesFromPattern(pattern, enemyDatabase.enemies)
+            const enemies = this.applyTierScaling(this.getEnemiesFromPattern(pattern, enemyDatabase.enemies), tierScaling.enemyLvScale)
             const combat = this.resolveCombat(partyState, enemies, area)
-            const xp = area.rewards.xpFloor[currentFloor - 1] || 10
+            const xp = Math.floor((area.rewards.xpFloor[currentFloor - 1] || 10) * tierScaling.rewardScale)
 
             events.push({
               type: "battle",
@@ -257,10 +259,10 @@ export class ExpeditionEngine {
 
       if (bossPatterns.length > 0) {
         const bossPattern = this.selectEnemyPattern(enemyDatabase.patterns, area.floors, true)
-        const bossEnemies = this.getEnemiesFromPattern(bossPattern, enemyDatabase.enemies)
+        const bossEnemies = this.applyTierScaling(this.getEnemiesFromPattern(bossPattern, enemyDatabase.enemies), tierScaling.enemyLvScale)
 
         const bossCombat = this.resolveCombat(partyState, bossEnemies, area, true)
-        const bossXp = area.rewards.xpBoss ?? 0
+        const bossXp = Math.floor((area.rewards.xpBoss ?? 0) * tierScaling.rewardScale)
 
         // 規定時間の終端でボス戦を行う（最後の秒で戦闘開始）
         const bossTime = adjustedDuration
@@ -327,6 +329,7 @@ export class ExpeditionEngine {
         partySnapshot: party.map(g => ({ ...g })),
         partyRewardMultipliers: normalizedRewardMultipliers,
         returnPolicy: request.returnPolicy,
+        tier: tier || undefined,
         seed: this.seed
       },
       durationSec: adjustedDuration,
@@ -411,6 +414,20 @@ export class ExpeditionEngine {
       throw new Error(`No enemy pattern found for floor ${floor}`)
     }
     return availablePatterns[Math.floor(this.rng() * availablePatterns.length)]
+  }
+
+  private applyTierScaling(enemies2D: Enemy[][], lvScale: number): Enemy[][] {
+    if (lvScale === 1.0) return enemies2D
+    return enemies2D.map(row =>
+      row.map(enemy => ({
+        ...enemy,
+        level: Math.floor(enemy.level * lvScale),
+        hp: Math.floor(enemy.hp * lvScale),
+        atk: Math.floor(enemy.atk * lvScale),
+        def: Math.floor(enemy.def * lvScale),
+        gold: Math.floor(enemy.gold * lvScale),
+      }))
+    )
   }
 
   private getEnemiesFromPattern(pattern: EnemyPattern, enemyList: Enemy[]): Enemy[][] {
