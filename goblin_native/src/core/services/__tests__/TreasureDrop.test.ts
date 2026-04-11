@@ -19,7 +19,7 @@ function callRollTreasureDrops(
   rewardMultipliers?: Partial<PartyRewardMultipliers>
 ) {
   return (engine as any).rollTreasureDrops(
-    dungeonLevel, enemies, droppedIds, rewardMultipliers
+    dungeonLevel, dungeonLevel, enemies, droppedIds, rewardMultipliers
   )
 }
 

@@ -40,6 +40,10 @@ export interface BattleLogMeta {
     level: number
     xpEach: number
     expMultiplier: number
+    levelUp?: {
+      oldLevel: number
+      newLevel: number
+    }
   }>
 }
 

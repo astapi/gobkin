@@ -129,9 +129,16 @@ function BattleResultSection({ meta }: { meta: BattleLogMeta }) {
 
           <Text style={styles.resultLabel}>{t('ui.formation.battleLog.gainedXp')}</Text>
           {meta.members.map((member, index) => (
-            <Text key={`xp-${index}`} style={styles.resultText}>
-              {t('ui.formation.battleLog.xpLine', { xp: member.xpEach, name: member.name, multiplier: member.expMultiplier })}
-            </Text>
+            <View key={`xp-${index}`} style={styles.memberResult}>
+              <Text style={styles.resultText}>
+                {t('ui.formation.battleLog.xpLine', { xp: member.xpEach, name: member.name, multiplier: member.expMultiplier })}
+              </Text>
+              {member.levelUp && (
+                <Text style={styles.levelUpText}>
+                  {t('ui.formation.battleLog.levelUpLine', { oldLevel: member.levelUp.oldLevel, newLevel: member.levelUp.newLevel })}
+                </Text>
+              )}
+            </View>
           ))}
         </>
       )}
@@ -262,6 +269,15 @@ const styles = StyleSheet.create({
   resultText: {
     fontSize: 12,
     color: '#374151',
+    marginTop: 2,
+  },
+  memberResult: {
+    marginBottom: 2,
+  },
+  levelUpText: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#D97706',
     marginTop: 2,
   },
 })

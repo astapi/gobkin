@@ -328,6 +328,7 @@ const ko = {
         rewardSummary: '경험치 {{xp}}와 {{gold}} gold를 획득했습니다.',
         gainedXp: '＜획득 경험치＞',
         xpLine: 'Exp +{{xp}} {{name}} ({{xp}} x {{multiplier}}배)',
+        levelUpLine: '레벨 업! Lv{{oldLevel}} -> Lv{{newLevel}}',
         memberLine: '({{hp}}/{{maxHp}}) {{name}} Lv{{level}}',
       },
       log: {
