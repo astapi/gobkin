@@ -46,12 +46,20 @@ function MemberSlot({ goblin, isEmpty, slotSize, avatarSize }: MemberSlotProps) 
 
   const stats = getEffectiveStats(goblin)
   const currentHp = goblin.currentHp ?? stats.hp
+  const isInjured = currentHp === 0
 
   return (
     <View style={[styles.memberSlot, { width: slotSize }]}>
       <Text style={styles.memberLevel}>Lv{goblin.level}</Text>
-      <Image source={getGoblinDisplayImage(goblin)} style={[styles.memberAvatar, { width: avatarSize, height: avatarSize }]} />
-      <Text style={[styles.memberHp, currentHp === 0 && styles.memberHpInjured]}>HP{currentHp}</Text>
+      <Image
+        source={getGoblinDisplayImage(goblin)}
+        style={[
+          styles.memberAvatar,
+          { width: avatarSize, height: avatarSize },
+          isInjured && styles.memberAvatarInjured,
+        ]}
+      />
+      <Text style={[styles.memberHp, isInjured && styles.memberHpInjured]}>HP{currentHp}</Text>
     </View>
   )
 }
@@ -745,13 +753,17 @@ const styles = StyleSheet.create({
     height: 40,
     borderRadius: 4,
   },
+  memberAvatarInjured: {
+    opacity: 0.45,
+    tintColor: '#9CA3AF',
+  },
   memberHp: {
     fontSize: 10,
     color: '#6B7280',
     marginTop: 4,
   },
   memberHpInjured: {
-    color: '#DC2626',
+    color: '#9CA3AF',
     fontWeight: '700',
   },
   emptySlot: {
