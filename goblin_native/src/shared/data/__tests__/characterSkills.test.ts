@@ -14,6 +14,7 @@ import {
   hasSurviveLethalDamageAtHp1Skill,
   getUniqueSkillsById,
   getCharacterSkillDescription,
+  applySkillBonusesToEquipmentBonuses,
 } from '../characterSkills'
 import { getCharacterSkill } from '../skillCatalog'
 
@@ -117,6 +118,28 @@ describe('characterSkills - 物理ダメージ軽減', () => {
 
     expect(getSkillStatMultipliers(skills).evasion).toBeCloseTo(1.5)
     expect(getActionOrderMultiplierFromSkills(skills)).toBeCloseTo(1.5)
+  })
+
+  it('装備倍率スキルはステータス補正の小数点以下を切り捨てる', () => {
+    const skills: CharacterSkill[] = [
+      { id: 'armor_mastery', equipmentCategoryMultiplier: { armor: 1.3 } },
+    ]
+    const bonuses = applySkillBonusesToEquipmentBonuses(skills, [
+      { stat: 'def_flat', value: 11, sourceCategory: 'armor' },
+    ])
+
+    expect(bonuses[0].value).toBe(14)
+  })
+
+  it('装備倍率スキルはマイナス補正も絶対値側で切り捨てる', () => {
+    const skills: CharacterSkill[] = [
+      { id: 'armor_mastery', equipmentCategoryMultiplier: { armor: 1.2 } },
+    ]
+    const bonuses = applySkillBonusesToEquipmentBonuses(skills, [
+      { stat: 'damage_reduction', value: -2, sourceCategory: 'armor' },
+    ])
+
+    expect(bonuses[0].value).toBe(-2)
   })
 
   it('かばうスキルを判定できる', () => {

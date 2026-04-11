@@ -2,13 +2,17 @@ import { useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import { View, Text, TouchableOpacity, StyleSheet, FlatList, Modal, Alert, ScrollView } from 'react-native'
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useLocalSearchParams } from 'expo-router'
-import type { EquipmentInstance, EquipmentTemplate, EquipmentCategory } from '@/shared/types'
+import type { EquipmentInstance, EquipmentTemplate, EquipmentCategory, CharacterSkill } from '@/shared/types'
 import { useGoblinStore } from '@/presentation/stores/useGoblinStore'
 import { useEquipmentService } from '@/presentation/hooks/useEquipmentService'
 import { EquipmentService } from '@/core/services/EquipmentService'
 import { getEquipmentTemplate, getEquipmentTemplates } from '@/shared/data/equipmentPoolLoader'
 import { EQUIPMENT_TITLE_DEFS } from '@/shared/data/equipmentTitleConfig'
-import { describeCharacterSkill, getCharacterSkillDescription } from '@/shared/data/characterSkills'
+import {
+  applySkillBonusesToEquipmentBonuses,
+  describeCharacterSkill,
+  getCharacterSkillDescription,
+} from '@/shared/data/characterSkills'
 import { getEquipmentDisplayName, getStatLabel } from '@/shared/i18n/entityLocalization'
 import type { Goblin } from '@/shared/types'
 
@@ -32,6 +36,12 @@ type InventoryGroup = {
   count: number
 }
 
+type DisplayBonus = {
+  stat: string
+  value: number
+  originalValue: number
+}
+
 function formatBonus(stat: string, value: number): string {
   const displayValue = Number.isInteger(value)
     ? value
@@ -40,23 +50,38 @@ function formatBonus(stat: string, value: number): string {
   return `${displayValue > 0 ? '+' : ''}${displayValue}${isPercent ? '%' : ''}`
 }
 
-function getInlineBonusLabel(stat: string, value: number): string {
-  const label = getStatLabel(stat)
-  return `${label}${formatBonus(stat, value)}`
+function isDisplayValueZero(value: number): boolean {
+  const displayValue = Number.isInteger(value)
+    ? value
+    : Math.trunc(value * 10) / 10
+  return displayValue === 0
 }
 
-function getDetailBonusLabel(stat: string, value: number): string {
-  const label = getStatLabel(stat)
-  return `${label} ${formatBonus(stat, value)}`
+function getInlineBonusLabel(bonus: DisplayBonus): string {
+  const label = getStatLabel(bonus.stat)
+  return `${label}${formatBonus(bonus.stat, bonus.value)}`
 }
 
-function getDisplayBonuses(eq: EquipmentInstance) {
-  return EquipmentService.calculateEquipmentBonuses([eq]).filter((bonus) => {
-    const displayValue = Number.isInteger(bonus.value)
-      ? bonus.value
-      : Math.trunc(bonus.value * 10) / 10
-    return displayValue !== 0
-  })
+function getDetailBonusLabel(bonus: DisplayBonus): string {
+  const { stat, value, originalValue } = bonus
+  const label = getStatLabel(stat)
+  const originalSuffix = value !== originalValue
+    ? `(${formatBonus(stat, originalValue)})`
+    : ''
+  return `${label} ${formatBonus(stat, value)}${originalSuffix}`
+}
+
+function getDisplayBonuses(eq: EquipmentInstance, skills: CharacterSkill[] = []): DisplayBonus[] {
+  const originalBonuses = EquipmentService.calculateEquipmentBonuses([eq])
+  const adjustedBonuses = applySkillBonusesToEquipmentBonuses(skills, originalBonuses)
+
+  return adjustedBonuses
+    .map((bonus, index) => ({
+      stat: bonus.stat,
+      value: bonus.value,
+      originalValue: originalBonuses[index]?.value ?? bonus.value,
+    }))
+    .filter((bonus) => !isDisplayValueZero(bonus.value))
 }
 
 function getDisplaySkills(eq: EquipmentInstance) {
@@ -115,14 +140,16 @@ function ItemDetail({
   visible,
   onClose,
   onUnequip,
+  characterSkills,
 }: {
   equipment: EquipmentInstance
   template: EquipmentTemplate
   visible: boolean
   onClose: () => void
   onUnequip?: () => void
+  characterSkills: CharacterSkill[]
 }) {
-  const displayBonuses = getDisplayBonuses(equipment)
+  const displayBonuses = getDisplayBonuses(equipment, characterSkills)
   const displaySkills = getDisplaySkills(equipment)
 
   return (
@@ -141,7 +168,7 @@ function ItemDetail({
             <View style={styles.detailList}>
               {displayBonuses.map((bonus, i) => (
                 <Text key={`bonus-${i}`} style={styles.detailListText}>
-                  {getDetailBonusLabel(bonus.stat, bonus.value)}
+                  {getDetailBonusLabel(bonus)}
                 </Text>
               ))}
               {displaySkills.map((skill, i) => (
@@ -189,6 +216,7 @@ function EquipmentRow({
   onShowDetail,
   highlighted,
   count,
+  characterSkills,
 }: {
   eq: EquipmentInstance
   template: EquipmentTemplate
@@ -196,9 +224,10 @@ function EquipmentRow({
   onShowDetail: () => void
   highlighted?: boolean
   count?: number
+  characterSkills: CharacterSkill[]
 }) {
-  const displayBonuses = getDisplayBonuses(eq)
-  const inlineStats = displayBonuses.map((bonus) => getInlineBonusLabel(bonus.stat, bonus.value)).join('  ')
+  const displayBonuses = getDisplayBonuses(eq, characterSkills)
+  const inlineStats = displayBonuses.map((bonus) => getInlineBonusLabel(bonus)).join('  ')
 
   return (
     <TouchableOpacity
@@ -259,6 +288,10 @@ export default function EquipmentScreenPage() {
 
   const sortedEquipped = useMemo(() => sortEquipment(equippedItems), [equippedItems])
   const groupedInventory = useMemo(() => groupInventory(inventoryItems), [inventoryItems])
+  const characterSkills = useMemo(
+    () => goblin ? [...goblin.skills, ...EquipmentService.collectGrantedSkills(equippedItems)] : [],
+    [goblin, equippedItems],
+  )
   const emptySlots = maxSlots - equippedItems.length
   const listBottomSpacerHeight = useMemo(
     () => insets.bottom + 56,
@@ -339,6 +372,7 @@ export default function EquipmentScreenPage() {
             onShowDetail={() => setSelectedDetail(item.equipment)}
             highlighted={emptySlots > 0}
             count={item.count}
+            characterSkills={characterSkills}
           />
         )}
         ListHeaderComponent={(
@@ -361,6 +395,7 @@ export default function EquipmentScreenPage() {
                       template={template}
                       onPress={() => setSelectedDetail(eq)}
                       onShowDetail={() => setSelectedDetail(eq)}
+                      characterSkills={characterSkills}
                     />
                   )
                 })}
@@ -395,6 +430,7 @@ export default function EquipmentScreenPage() {
           visible={true}
           onClose={() => setSelectedDetail(null)}
           onUnequip={selectedDetail.goblinId != null && selectedDetail.slotIndex >= 0 ? () => handleUnequip(selectedDetail) : undefined}
+          characterSkills={characterSkills}
         />
       )}
     </SafeAreaView>
