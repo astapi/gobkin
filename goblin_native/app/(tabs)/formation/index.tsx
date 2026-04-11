@@ -563,7 +563,6 @@ const styles = StyleSheet.create({
   },
   memberAvatarInjured: {
     opacity: 0.45,
-    tintColor: '#9CA3AF',
   },
   memberHp: {
     fontSize: 10,
