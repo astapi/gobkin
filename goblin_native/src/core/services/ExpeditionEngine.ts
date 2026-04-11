@@ -434,14 +434,14 @@ export class ExpeditionEngine {
       row.map(enemy => ({
         ...enemy,
         level: Math.floor(enemy.level * statScale) + scaling.levelBonus,
-        hp: Math.floor(enemy.hp * scaling.hpScale),
+        hp: this.scaleEnemyHp(enemy.hp, scaling),
         atk: Math.floor(enemy.atk * statScale),
-        def: Math.floor(enemy.def * scaling.defScale),
-        magicDef: enemy.magicDef !== undefined ? Math.floor(enemy.magicDef * scaling.magicDefScale) : undefined,
+        def: this.scaleDefensiveStat(enemy.def, scaling.defScale),
+        magicDef: enemy.magicDef !== undefined ? this.scaleDefensiveStat(enemy.magicDef, scaling.magicDefScale) : undefined,
         agility: Math.round(enemy.agility * statScale),
         attackCount: Math.max(1, Math.floor(enemy.attackCount * countScale)),
         accuracy: Math.round(enemy.accuracy * statScale),
-        evasion: Math.round(enemy.evasion * scaling.evasionScale),
+        evasion: this.scaleDefensiveStat(enemy.evasion, scaling.evasionScale),
         physicalResistancePercent: scaling.physicalResistancePercent,
         penetrationResistancePercent: scaling.penetrationResistancePercent,
         criticalResistancePercent: scaling.criticalResistancePercent,
@@ -450,6 +450,35 @@ export class ExpeditionEngine {
         gold: Math.floor(enemy.gold * goldScale),
       }))
     )
+  }
+
+  private scaleEnemyHp(
+    hp: number,
+    scaling: (typeof DUNGEON_TIER_SCALING)[number]
+  ): number {
+    if ('hpCurve' in scaling) {
+      const curve = scaling.hpCurve
+      if (hp <= curve[0].base) {
+        return Math.floor(hp * curve[0].scale + 1e-9)
+      }
+
+      for (let i = 1; i < curve.length; i++) {
+        const previous = curve[i - 1]
+        const current = curve[i]
+        if (hp <= current.base) {
+          const ratio = (hp - previous.base) / (current.base - previous.base)
+          const scale = previous.scale + (current.scale - previous.scale) * ratio
+          return Math.floor(hp * scale + 1e-9)
+        }
+      }
+    }
+
+    return Math.floor(hp * scaling.hpScale + 1e-9)
+  }
+
+  private scaleDefensiveStat(value: number, scale: number): number {
+    const scaled = value * scale
+    return value <= 10 ? Math.round(scaled) : Math.floor(scaled)
   }
 
   private getEnemiesFromPattern(pattern: EnemyPattern, enemyList: Enemy[]): Enemy[][] {
