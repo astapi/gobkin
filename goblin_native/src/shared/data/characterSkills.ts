@@ -262,12 +262,24 @@ function getEquipmentValueMultiplier(
   }, 1)
 }
 
+function applyEquipmentValueMultiplier(value: number, multiplier: number): number {
+  if (multiplier === 1 || value === 0) return value
+
+  const scaledAbs = Math.abs(value) * multiplier
+  const scaledValue = Math.floor(scaledAbs)
+  return value > 0 ? scaledValue : -scaledValue
+}
+
 export function applySkillBonusesToEquipmentBonuses(
   skills: CharacterSkill[],
   bonuses: EquipmentStatBonus[],
 ): EquipmentStatBonus[] {
-  return bonuses.map((bonus) => ({
-    ...bonus,
-    value: bonus.value * getEquipmentValueMultiplier(skills, bonus.sourceCategory, bonus.stat),
-  }))
+  return bonuses.map((bonus) => {
+    const multiplier = getEquipmentValueMultiplier(skills, bonus.sourceCategory, bonus.stat)
+
+    return {
+      ...bonus,
+      value: applyEquipmentValueMultiplier(bonus.value, multiplier),
+    }
+  })
 }
