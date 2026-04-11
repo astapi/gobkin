@@ -12,8 +12,5 @@
       "exploring": 35
     }
   },
-  "rewards": {
-    "xpFloor": [28, 34]
-  },
   "unlockNext": "orc_camp_3"
 }

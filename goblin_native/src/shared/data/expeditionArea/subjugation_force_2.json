@@ -7,8 +7,10 @@
   "description": "本隊が到着。傭兵や見習い魔術師も加わり、攻勢が激化する。",
   "encounter": {
     "perFloorEvents": 3,
-    "eventWeights": { "battle": 70, "exploring": 30 }
+    "eventWeights": {
+      "battle": 70,
+      "exploring": 30
+    }
   },
-  "rewards": { "xpFloor": [36, 44] },
   "unlockNext": "subjugation_force_3"
 }

@@ -7,8 +7,10 @@
   "description": "坑道深部。戦士やルーン鍛冶師が待ち構える。",
   "encounter": {
     "perFloorEvents": 3,
-    "eventWeights": { "battle": 65, "exploring": 35 }
+    "eventWeights": {
+      "battle": 65,
+      "exploring": 35
+    }
   },
-  "rewards": { "xpFloor": [58, 68] },
   "unlockNext": "dwarf_mine_3"
 }

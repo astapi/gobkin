@@ -12,8 +12,5 @@
       "exploring": 40
     }
   },
-  "rewards": {
-    "xpFloor": [16, 20]
-  },
   "unlockNext": "goblin_village_3"
 }

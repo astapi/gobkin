@@ -11,9 +11,5 @@
       "battle": 65,
       "exploring": 35
     }
-  },
-  "rewards": {
-    "xpFloor": [38, 45],
-    "xpBoss": 120
   }
 }

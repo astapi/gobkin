@@ -19,7 +19,7 @@ interface GoblinActions {
   saveGoblin: (goblin: Goblin) => Promise<void>
   deleteGoblin: (goblinId: number) => Promise<void>
   updateGoblinLevel: (goblinId: number, level: number) => Promise<void>
-  updateGoblinCurrentHp: (goblinId: number, currentHp: number) => Promise<void>
+  updateGoblinCurrentHp: (goblinId: number, currentHp: number | null) => Promise<void>
 }
 
 const repository: IGoblinRepository = SQLiteGoblinRepository.getInstance()
@@ -97,7 +97,7 @@ export const useGoblinStore = create<GoblinState & GoblinActions>()((set) => ({
     set({ goblins })
   },
 
-  updateGoblinCurrentHp: async (goblinId: number, currentHp: number) => {
+  updateGoblinCurrentHp: async (goblinId: number, currentHp: number | null) => {
     await repository.updateGoblinCurrentHp(goblinId, currentHp)
     const goblins = await attachEquipmentEffectiveStatsToList(await getGoblinListUseCase.execute())
     set({ goblins })

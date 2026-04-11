@@ -180,6 +180,65 @@ describe('ExpeditionEngine dungeon tier scaling', () => {
   })
 })
 
+describe('ExpeditionEngine enemy XP rewards', () => {
+  it('敵ごとのexp合計を戦闘経験値として扱う', () => {
+    const engine = new ExpeditionEngine(1)
+    const enemies: Enemy[][] = [
+      [
+        {
+          id: 'slime-a',
+          name: 'スライムA',
+          raceTags: ['slime'],
+          level: 1,
+          hp: 4,
+          atk: 2,
+          def: 1,
+          agility: 6,
+          attackCount: 1,
+          accuracy: 70,
+          evasion: 9,
+          exp: 1,
+          gold: 1,
+        },
+        {
+          id: 'slime-b',
+          name: 'スライムB',
+          raceTags: ['slime'],
+          level: 1,
+          hp: 4,
+          atk: 2,
+          def: 1,
+          agility: 6,
+          attackCount: 1,
+          accuracy: 70,
+          evasion: 9,
+          exp: 1,
+          gold: 1,
+        },
+      ],
+      [
+        {
+          id: 'boss-slime',
+          name: 'ボススライム',
+          raceTags: ['slime'],
+          level: 3,
+          hp: 20,
+          atk: 3,
+          def: 2,
+          agility: 8,
+          attackCount: 1,
+          accuracy: 100,
+          evasion: 11,
+          exp: 5,
+          gold: 5,
+        },
+      ],
+    ]
+
+    expect((engine as any).calculateEnemyXp(enemies)).toBe(7)
+  })
+})
+
 describe('getDungeonTierAreaLevel', () => {
   it('推奨Lv表の法則でエリアレベルをスケールする', () => {
     const tiers = [0, 1, 2, 3, 4] as DungeonTier[]

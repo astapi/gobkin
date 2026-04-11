@@ -7,8 +7,10 @@
   "description": "坑道の最深部。坑道守護者と擲弾兵に守られた鍛冶王が待ち受ける。鍛冶能力をゴブリン国家に取り込め。",
   "encounter": {
     "perFloorEvents": 3,
-    "eventWeights": { "battle": 65, "exploring": 35 }
+    "eventWeights": {
+      "battle": 65,
+      "exploring": 35
+    }
   },
-  "rewards": { "xpFloor": [80, 88], "xpBoss": 220 },
   "unlockNext": "elf_forest_1"
 }

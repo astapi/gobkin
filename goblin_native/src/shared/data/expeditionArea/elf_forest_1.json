@@ -7,8 +7,10 @@
   "description": "隠れ里の外縁。森の斥候と射手が素早い攻撃を仕掛けてくる。",
   "encounter": {
     "perFloorEvents": 3,
-    "eventWeights": { "battle": 60, "exploring": 40 }
+    "eventWeights": {
+      "battle": 60,
+      "exploring": 40
+    }
   },
-  "rewards": { "xpFloor": [44, 54] },
   "unlockNext": "elf_forest_2"
 }

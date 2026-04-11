@@ -7,8 +7,10 @@
   "description": "市街地へ侵入。守備兵と簡易魔法兵器が配備されている。",
   "encounter": {
     "perFloorEvents": 3,
-    "eventWeights": { "battle": 65, "exploring": 35 }
+    "eventWeights": {
+      "battle": 65,
+      "exploring": 35
+    }
   },
-  "rewards": { "xpFloor": [46, 54] },
   "unlockNext": "human_village_3"
 }

@@ -114,11 +114,11 @@ export class SQLiteGoblinRepository implements IGoblinRepository {
     )
   }
 
-  async updateGoblinCurrentHp(id: number, currentHp: number): Promise<void> {
+  async updateGoblinCurrentHp(id: number, currentHp: number | null): Promise<void> {
     const db = await getDatabase()
     await db.runAsync(
       `UPDATE goblins SET current_hp = ?, updated_at = datetime('now') WHERE id = ?`,
-      [Math.max(0, Math.floor(currentHp)), id]
+      [currentHp === null ? null : Math.max(0, Math.floor(currentHp)), id]
     )
   }
 

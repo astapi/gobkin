@@ -7,15 +7,15 @@
         "slime"
       ],
       "level": 1,
-      "hp": 8,
-      "atk": 5,
+      "hp": 4,
+      "atk": 2,
       "def": 1,
       "agility": 6,
       "attackCount": 1,
-      "accuracy": 180,
+      "accuracy": 70,
       "evasion": 9,
-      "exp": 3,
-      "gold": 3
+      "exp": 1,
+      "gold": 1
     },
     {
       "id": "B_SLIME",
@@ -24,15 +24,15 @@
         "slime"
       ],
       "level": 3,
-      "hp": 30,
-      "atk": 10,
-      "def": 4,
+      "hp": 20,
+      "atk": 3,
+      "def": 2,
       "agility": 8,
-      "attackCount": 2,
-      "accuracy": 220,
+      "attackCount": 1,
+      "accuracy": 100,
       "evasion": 11,
-      "exp": 12,
-      "gold": 10,
+      "exp": 5,
+      "gold": 5,
       "factorDrops": [
         {
           "factorId": "slime",
@@ -45,7 +45,8 @@
     {
       "id": "SP001",
       "floors": [
-        1
+        1,
+        2
       ],
       "enemies": [
         [
@@ -56,109 +57,10 @@
     {
       "id": "SP002",
       "floors": [
-        1
-      ],
-      "enemies": [
-        [
-          "S001",
-          "S001"
-        ]
-      ]
-    },
-    {
-      "id": "SP003",
-      "floors": [
-        1
-      ],
-      "enemies": [
-        [
-          "S001",
-          "S001",
-          "S001"
-        ]
-      ]
-    },
-    {
-      "id": "SP004",
-      "floors": [
-        1
-      ],
-      "enemies": [
-        [
-          "S001"
-        ],
-        [
-          "S001"
-        ]
-      ]
-    },
-    {
-      "id": "SP005",
-      "floors": [
-        1
-      ],
-      "enemies": [
-        [
-          "S001",
-          "S001"
-        ],
-        [
-          "S001",
-          "S001"
-        ]
-      ]
-    },
-    {
-      "id": "SP006",
-      "floors": [
+        1,
         2
       ],
       "enemies": [
-        [
-          "S001",
-          "S001"
-        ]
-      ]
-    },
-    {
-      "id": "SP007",
-      "floors": [
-        2
-      ],
-      "enemies": [
-        [
-          "S001",
-          "S001",
-          "S001"
-        ]
-      ]
-    },
-    {
-      "id": "SP008",
-      "floors": [
-        2
-      ],
-      "enemies": [
-        [
-          "S001",
-          "S001"
-        ],
-        [
-          "S001"
-        ]
-      ]
-    },
-    {
-      "id": "SP009",
-      "floors": [
-        2
-      ],
-      "enemies": [
-        [
-          "S001",
-          "S001",
-          "S001"
-        ],
         [
           "S001",
           "S001"
@@ -171,12 +73,6 @@
         2
       ],
       "enemies": [
-        [
-          "S001",
-          "S001",
-          "S001",
-          "S001"
-        ],
         [
           "B_SLIME"
         ]

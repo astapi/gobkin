@@ -7,8 +7,10 @@
   "description": "村の外周を攻める。民兵と猟師が迎え撃つ。",
   "encounter": {
     "perFloorEvents": 3,
-    "eventWeights": { "battle": 65, "exploring": 35 }
+    "eventWeights": {
+      "battle": 65,
+      "exploring": 35
+    }
   },
-  "rewards": { "xpFloor": [30, 38] },
   "unlockNext": "human_village_2"
 }

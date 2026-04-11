@@ -239,8 +239,8 @@ PartyState → Goblin再構築（基礎ステータス + mods + factors）
 各戦闘イベント（battle/boss）に `xp` が設定される:
 
 ```
-通常戦闘: area.rewards.xpFloor[currentFloor - 1]  （フロアごとに定義）
-ボス戦: area.rewards.xpBoss
+通常戦闘: 出現した敵の `exp` 合計
+ボス戦: 出現した敵の `exp` 合計
 ```
 
 #### 経験値分配（CompleteExpeditionUseCase）
@@ -302,10 +302,6 @@ goldGained = Σ(各戦闘の enemy.gold)
       battle: 40,
       exploring: 50
     }
-  },
-  rewards: {
-    xpFloor: [8, 10, 12],   // フロアごとの戦闘経験値
-    xpBoss: 30               // ボス戦経験値
   },
   // 宝箱ドロップ率は全エリア一律40%（ExpeditionEngine.DROP_CHANCE定数）
   unlockNext: "goblin_village_1"  // 制圧時に解放されるダンジョン
