@@ -98,6 +98,22 @@ const SPELL_DAMAGE_OPTIONS: DamageOptions = {
   isMagic: true,
 }
 
+/** レベル帯ごとの魔法追加ダメージ基本値 */
+const SPELL_BONUS_BASE_BY_LEVEL: { maxLevel: number; base: number }[] = [
+  { maxLevel: 5, base: 14.1 },
+  { maxLevel: 10, base: 21.1 },
+  { maxLevel: 15, base: 31.5 },
+  { maxLevel: 20, base: 37.9 },
+  { maxLevel: 25, base: 45.5 },
+  { maxLevel: 99, base: 50.0 },
+]
+
+function getSpellBonusDamage(level: number, spellCoefficient: number): number {
+  const entry = SPELL_BONUS_BASE_BY_LEVEL.find(e => level <= e.maxLevel)
+  if (!entry || spellCoefficient === 0) return 0
+  return entry.base * spellCoefficient * (1 + level / 20)
+}
+
 // 差5程度なら低敏捷側にも約10%の先行余地を持たせるため、広めの乗算乱数を使う
 const ACTION_ORDER_RANDOM_MIN = 0.21
 const ACTION_ORDER_RANDOM_MAX = 1.0
@@ -570,6 +586,7 @@ export class BattleSystem {
       name: getSpellLabel(spellDef),
       power: spellDef.power,
     }
+    const spellBonusDamage = getSpellBonusDamage(unit.level, spellDef.spellCoefficient ?? 0)
 
     if (spellDef.targeting.type === 'random_hits') {
       // マジックアロー: ランダムにhitCount回攻撃（同じ敵に複数回当たりうる）
@@ -583,7 +600,7 @@ export class BattleSystem {
         const baseDamage = this.damageCalculator.calcDamage(
           RACE_DICT, unit.combatant, target.combatant,
           spellSkill, SPELL_DAMAGE_OPTIONS, rng,
-        )
+        ) + spellBonusDamage
         const rearDamageMultiplier = this.getRearDamageMultiplier(unit, sourceGroup)
         const spellDamageFactor = 1 + unit.spellDamagePercent / 100
         const reductionFactor = 1 - target.damageReduction / 100
@@ -612,7 +629,7 @@ export class BattleSystem {
         const baseDamage = this.damageCalculator.calcDamage(
           RACE_DICT, unit.combatant, target.combatant,
           spellSkill, SPELL_DAMAGE_OPTIONS, rng,
-        )
+        ) + spellBonusDamage
         const rearDamageMultiplier = this.getRearDamageMultiplier(unit, sourceGroup)
         const spellDamageFactor = 1 + unit.spellDamagePercent / 100
         const reductionFactor = 1 - target.damageReduction / 100

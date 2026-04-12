@@ -13,6 +13,7 @@ export interface SpellDef {
   targeting: SpellTargeting
   defaultCharges: number     // 1戦闘あたりの使用回数（デフォルト1）
   effect?: 'damage' | 'heal' | 'barrier'
+  spellCoefficient?: number  // 魔法追加ダメージの呪文係数（デフォルト0 = 追加なし）
   healBonus?: number
   damageReductionPercent?: number
   breathDamageReductionPercent?: number
