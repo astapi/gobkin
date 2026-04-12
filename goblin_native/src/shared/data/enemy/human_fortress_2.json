@@ -15,7 +15,8 @@
       "evasion": 28,
       "exp": 80,
       "gold": 72,
-      "agility": 7
+      "agility": 7,
+      "magicDef": 20
     },
     {
       "id": "FRT002",
@@ -32,7 +33,8 @@
       "evasion": 30,
       "exp": 88,
       "gold": 78,
-      "agility": 9
+      "agility": 9,
+      "magicDef": 11
     },
     {
       "id": "FRT003",
@@ -49,7 +51,8 @@
       "evasion": 26,
       "exp": 92,
       "gold": 82,
-      "agility": 4
+      "agility": 4,
+      "magicDef": 25
     },
     {
       "id": "FRT004",
@@ -66,7 +69,8 @@
       "evasion": 24,
       "exp": 85,
       "gold": 76,
-      "agility": 3
+      "agility": 3,
+      "magicDef": 14
     },
     {
       "id": "FRT005",
@@ -83,7 +87,8 @@
       "evasion": 32,
       "exp": 100,
       "gold": 90,
-      "agility": 8
+      "agility": 8,
+      "magicDef": 24
     }
   ],
   "patterns": [

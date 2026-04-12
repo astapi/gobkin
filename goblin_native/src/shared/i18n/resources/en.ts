@@ -453,7 +453,9 @@ const en = {
     stat: {
       hp: 'HP',
       atk: 'ATK',
+      magicAtk: 'MATK',
       def: 'DEF',
+      magicDef: 'MDEF',
       attackCount: 'Attack Count',
       accuracy: 'Accuracy',
       evasion: 'Evasion',

@@ -15,7 +15,8 @@
       "evasion": 33,
       "exp": 105,
       "gold": 95,
-      "agility": 9
+      "agility": 9,
+      "magicDef": 25
     },
     {
       "id": "ROY002",
@@ -32,7 +33,8 @@
       "evasion": 35,
       "exp": 115,
       "gold": 105,
-      "agility": 10
+      "agility": 10,
+      "magicDef": 14
     },
     {
       "id": "ROY003",
@@ -49,7 +51,8 @@
       "evasion": 34,
       "exp": 120,
       "gold": 110,
-      "agility": 7
+      "agility": 7,
+      "magicDef": 30
     },
     {
       "id": "ROY004",
@@ -66,7 +69,8 @@
       "evasion": 36,
       "exp": 130,
       "gold": 120,
-      "agility": 8
+      "agility": 8,
+      "magicDef": 28
     },
     {
       "id": "ROY005",
@@ -83,7 +87,8 @@
       "evasion": 38,
       "exp": 150,
       "gold": 140,
-      "agility": 12
+      "agility": 12,
+      "magicDef": 27
     }
   ],
   "patterns": [

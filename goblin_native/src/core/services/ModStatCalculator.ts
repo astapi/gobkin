@@ -18,6 +18,8 @@ import {
   calculateGoblinBaseDef,
   calculateGoblinBaseEvasion,
   calculateGoblinBaseHp,
+  calculateGoblinBaseMagicAtk,
+  calculateGoblinBaseMagicDef,
   calculateGoblinBaseMagicHeal,
 } from '../../shared/utils/goblinHp'
 
@@ -39,7 +41,9 @@ export class ModStatCalculator {
       ...goblin.stats,
       hp: calculateGoblinBaseHp(goblin.level, goblin),
       atk: calculateGoblinBaseAtk(goblin.level, goblin),
+      magicAtk: calculateGoblinBaseMagicAtk(goblin.level, goblin),
       def: calculateGoblinBaseDef(goblin.level, goblin),
+      magicDef: calculateGoblinBaseMagicDef(goblin.level, goblin),
       attackCount: calculateGoblinBaseAttackCount(goblin.level, goblin),
       accuracy: calculateGoblinBaseAccuracy(goblin.level, goblin),
       evasion: calculateGoblinBaseEvasion(goblin.level, goblin),
@@ -83,7 +87,9 @@ export class ModStatCalculator {
     const result: GoblinStats = {
       hp: Math.floor(calcHp() * (skillMultipliers.hp ?? 1)),
       atk: withMultiplier('atk'),
+      magicAtk: withMultiplier('magicAtk'),
       def: withMultiplier('def'),
+      magicDef: withMultiplier('magicDef'),
       attackCount: Math.max(1, withMultiplier('attackCount')),
       accuracy: withMultiplier('accuracy'),
       evasion: withMultiplier('evasion'),
@@ -124,14 +130,21 @@ export class ModStatCalculator {
   }
 
   private static readonly ZERO_STATS: Record<keyof GoblinStats, number> = {
-    hp: 0, atk: 0, def: 0, attackCount: 0, accuracy: 0, evasion: 0, magicHeal: 0,
+    hp: 0, atk: 0, magicAtk: 0, def: 0, magicDef: 0, attackCount: 0, accuracy: 0, evasion: 0, magicHeal: 0,
   }
 
-  /** stat名からGoblinStatsのキーを抽出（例: 'hp_flat' → 'hp'） */
+  /** 装備のstat名からGoblinStatsのキーへの特別マッピング */
+  private static readonly EQUIPMENT_STAT_ALIAS: Record<string, keyof GoblinStats> = {
+    magic_atk: 'magicAtk',
+    magic_def: 'magicDef',
+  }
+
+  /** stat名からGoblinStatsのキーを抽出（例: 'hp_flat' → 'hp', 'magic_atk_flat' → 'magicAtk'） */
   private static statKeyFromSuffix(stat: string, suffix: string): keyof GoblinStats | undefined {
     if (!stat.endsWith(suffix)) return undefined
     const key = stat.slice(0, -suffix.length)
     if (key in this.ZERO_STATS) return key as keyof GoblinStats
+    if (key in this.EQUIPMENT_STAT_ALIAS) return this.EQUIPMENT_STAT_ALIAS[key]
     return undefined
   }
 

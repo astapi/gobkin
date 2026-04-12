@@ -33,7 +33,9 @@ export type Combatant = {
   id: string;
   name: string;
   atk: number;
+  magicAtk?: number;
   def: number;
+  magicDef?: number;
   attackCount: number;
   accuracy: number;
   evasion: number;
@@ -47,6 +49,7 @@ export type DamageOptions = {
   crit?: { rate: number; mult: number };
   randomMin?: number;
   randomMax?: number;
+  isMagic?: boolean;  // true の場合、attacker.magicAtk を攻撃力として使用する
 };
 
 function expandRaceTags(races: RaceDict, baseTags: RaceKey[]): Set<RaceKey> {
@@ -129,8 +132,10 @@ export class DamageCalculator {
     const critMult = opt.crit?.mult ?? 1.5;
     const isCrit = randomFn() < critRate;
 
-    const base = attacker.atk * skill.power;
-    const defMitigate = 1 - defender.def / (defender.def + (opt.defConstant ?? 100));
+    const attackPower = opt.isMagic ? (attacker.magicAtk ?? attacker.atk) : attacker.atk;
+    const base = attackPower * skill.power;
+    const defPower = opt.isMagic ? (defender.magicDef ?? defender.def) : defender.def;
+    const defMitigate = 1 - defPower / (defPower + (opt.defConstant ?? 100));
 
     const targetTags = expandRaceTags(races, defender.raceTags);
     const attackerTags = expandRaceTags(races, attacker.raceTags);

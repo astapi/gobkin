@@ -365,6 +365,8 @@ export class ExpeditionEngine {
         attackCount: goblin.stats.attackCount,
         accuracy: goblin.stats.accuracy,
         evasion: goblin.stats.evasion,
+        magicAtk: goblin.stats.magicAtk,
+        magicDef: goblin.stats.magicDef,
         magicHeal: goblin.stats.magicHeal,
         isKO: currentHP <= 0,
         isDead: currentHP <= 0,
@@ -439,6 +441,7 @@ export class ExpeditionEngine {
         atk: Math.floor(enemy.atk * statScale),
         def: this.scaleDefensiveStat(enemy.def, scaling.defScale),
         magicDef: enemy.magicDef !== undefined ? this.scaleDefensiveStat(enemy.magicDef, scaling.magicDefScale) : undefined,
+        magicAtk: enemy.magicAtk !== undefined ? Math.floor(enemy.magicAtk * statScale) : undefined,
         magicHeal: enemy.magicHeal !== undefined ? Math.floor(enemy.magicHeal * statScale) : undefined,
         agility: Math.round(enemy.agility * statScale),
         attackCount: Math.max(1, Math.floor(enemy.attackCount * countScale)),
@@ -534,7 +537,9 @@ export class ExpeditionEngine {
       stats: {
         hp: member.baseHP,  // 基礎HPを使用（ModStatCalculatorが因子・Modを適用）
         atk: member.atk,
+        magicAtk: member.magicAtk,
         def: member.def,
+        magicDef: member.magicDef,
         attackCount: member.attackCount,
         accuracy: member.accuracy,
         evasion: member.evasion,
