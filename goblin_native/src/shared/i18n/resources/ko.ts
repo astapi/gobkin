@@ -453,7 +453,9 @@ const ko = {
     stat: {
       hp: 'HP',
       atk: 'ATK',
+      magicAtk: 'MATK',
       def: 'DEF',
+      magicDef: 'MDEF',
       attackCount: '공격 횟수',
       accuracy: '명중',
       evasion: '회피',

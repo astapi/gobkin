@@ -139,7 +139,9 @@ export default function GoblinDetailScreen() {
             {([
               { key: 'hp', label: getStatLabel('hp') },
               { key: 'atk', label: getStatLabel('atk') },
+              { key: 'magicAtk', label: getStatLabel('magicAtk') },
               { key: 'def', label: getStatLabel('def') },
+              { key: 'magicDef', label: getStatLabel('magicDef') },
               { key: 'attackCount', label: getStatLabel('attackCount') },
               { key: 'accuracy', label: getStatLabel('accuracy') },
               { key: 'evasion', label: getStatLabel('evasion') },

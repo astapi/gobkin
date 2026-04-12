@@ -453,7 +453,9 @@ const ja = {
     stat: {
       hp: 'HP',
       atk: 'ATK',
+      magicAtk: 'MATK',
       def: 'DEF',
+      magicDef: 'MDEF',
       attackCount: '攻撃回数',
       accuracy: '命中精度',
       evasion: '回避',
