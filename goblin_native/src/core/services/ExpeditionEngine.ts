@@ -21,6 +21,7 @@ import { BattleSystem } from './BattleSystem'
 import { ModStatCalculator } from './ModStatCalculator'
 import { EquipmentTitleService } from './EquipmentTitleService'
 import { normalizePartyRewardMultipliers, DUNGEON_TIER_SCALING, getDungeonTierAreaLevel } from '../../shared/types'
+import { getGoldBonusPercentFromSkills } from '../../shared/data/characterSkills'
 import { getGoblinBaseAttributes } from '../../shared/utils/goblinHp'
 import { getEffectiveStats } from '../../shared/utils/goblinStats'
 
@@ -319,7 +320,12 @@ export class ExpeditionEngine {
     }
 
     console.log('ExpeditionEngine: Generated events:', events.length)
-    const summary = this.calculateRewardSummary(events, partyState, normalizedRewardMultipliers)
+    // PTメンバーのスキルからGold取得ボーナスを算出（複数持っていても最大値のみ有効）
+    const partyGoldBonusPercent = partyState.reduce(
+      (max, member) => Math.max(max, getGoldBonusPercentFromSkills(member.skills)),
+      0,
+    )
+    const summary = this.calculateRewardSummary(events, partyState, normalizedRewardMultipliers, partyGoldBonusPercent)
     console.log('ExpeditionEngine: Expedition complete', summary)
 
     return {
@@ -690,9 +696,11 @@ export class ExpeditionEngine {
   private calculateRewardSummary(
     events: TimelineEvent[],
     partyState: PartyState[],
-    rewardMultipliers?: PartyRewardMultipliers
+    rewardMultipliers?: PartyRewardMultipliers,
+    goldBonusPercent: number = 0,
   ): RewardSummary {
     const { gold: goldMultiplier } = normalizePartyRewardMultipliers(rewardMultipliers)
+    const skillGoldMultiplier = 1 + goldBonusPercent / 100
     let xpGained = 0
     let baseGoldGained = 0
     let maxFloorReached = 1
@@ -723,7 +731,7 @@ export class ExpeditionEngine {
       successReasons.has(event.reason)
     )
 
-    const goldGained = Math.floor(baseGoldGained * goldMultiplier)
+    const goldGained = Math.floor(baseGoldGained * goldMultiplier * skillGoldMultiplier)
 
     return {
       success,

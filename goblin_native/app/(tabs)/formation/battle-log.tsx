@@ -83,6 +83,17 @@ export default function BattleLogScreen() {
             const isHealingAction = entry.targets?.some(target => target.totalDamage < 0) ?? false
             const isBarrierAction = entry.actionEffect === 'barrier' || entry.action === t('entities.spell.shield_barrier')
 
+            if (entry.actionEffect === 'regen') {
+              const healed = Math.abs(entry.targets?.[0]?.totalDamage ?? 0)
+              return (
+                <View key={`log-${index}`} style={styles.logCard}>
+                  <Text style={styles.logText}>
+                    {t('ui.formation.battleLog.regenSummary', { actor: entry.actorName, heal: healed })}
+                  </Text>
+                </View>
+              )
+            }
+
             if (isBarrierAction) {
               return (
                 <View key={`log-${index}`} style={styles.logCard}>
@@ -150,7 +161,7 @@ function BattleResultSection({ meta }: { meta: BattleLogMeta }) {
           {meta.members.map((member, index) => (
             <View key={`xp-${index}`} style={styles.memberResult}>
               <Text style={styles.resultText}>
-                {t('ui.formation.battleLog.xpLine', { xp: member.xpEach, name: member.name, multiplier: member.expMultiplier })}
+                {t('ui.formation.battleLog.xpLine', { totalXp: Math.floor(member.xpEach * member.expMultiplier), baseXp: member.xpEach, name: member.name, multiplier: member.expMultiplier })}
               </Text>
               {member.levelUp && (
                 <Text style={styles.levelUpText}>

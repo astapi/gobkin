@@ -11,6 +11,7 @@ import {
   getSpellDamagePercentFromSkills,
   hasCoverLowHpAllySkill,
   hasSurviveLethalDamageAtHp1Skill,
+  getHpRegenPercentFromSkills,
 } from '../../shared/data/characterSkills'
 import type { SpellDef } from '../../shared/types/Spell'
 import { CombatantManager } from './CombatantManager'
@@ -428,6 +429,41 @@ export class BattleSystem {
         const allEnemiesDefeated = enemyUnits.every(u => u.currentHP <= 0)
         const allAlliesDefeated = allyUnits.every(u => u.currentHP <= 0)
         if (allEnemiesDefeated || allAlliesDefeated) break
+      }
+
+      // ターン終了時：HP回復能力を持つ生存ユニットのHP回復
+      for (const unit of [...allyUnits, ...enemyUnits]) {
+        if (unit.currentHP <= 0) continue
+        const regenPercent = getHpRegenPercentFromSkills(unit.skills)
+        if (regenPercent <= 0) continue
+        const regenAmount = Math.floor(unit.maxHP * regenPercent / 100)
+        if (regenAmount <= 0) continue
+        const before = unit.currentHP
+        unit.currentHP = Math.min(unit.maxHP, unit.currentHP + regenAmount)
+        if (unit.currentHP > before) {
+          detailedLog.push({
+            turn: currentTurn,
+            actorId: unit.combatant.id,
+            actorName: this.getLogName(unit),
+            actorRow: unit.row + 1,
+            action: i18n.t('battle.hpRegenAction'),
+            attackCount: 0,
+            hitCount: 0,
+            actorHP: unit.currentHP,
+            actorMaxHP: unit.maxHP,
+            isAlly: unit.isAlly,
+            actionEffect: 'regen',
+            targets: [{
+              targetId: unit.combatant.id,
+              targetName: this.getLogName(unit),
+              targetRow: unit.row + 1,
+              totalDamage: -(unit.currentHP - before),
+              hitCount: 0,
+              defeated: false,
+              targetHP: unit.currentHP,
+            }],
+          })
+        }
       }
 
       const allyAlive = allyUnits.some(unit => unit.currentHP > 0)

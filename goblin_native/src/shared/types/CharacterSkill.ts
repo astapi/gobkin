@@ -27,4 +27,8 @@ export interface CharacterSkill {
   grantsSpellId?: string
   spellChargeBonusForId?: string
   extraSpellCharges?: number
+  expBonusPercent?: number
+  goldBonusPercent?: number
+  undead?: boolean
+  hpRegenPercent?: number
 }
