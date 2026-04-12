@@ -2,6 +2,8 @@
 export type SpellTargeting =
   | { type: 'random_hits'; hitCount: number }
   | { type: 'multi_target'; baseTargets: number; scalePerLevel: number; scaleLevelInterval: number }
+  | { type: 'single_ally_lowest_hp' }
+  | { type: 'all_allies' }
 
 /** 呪文定義（マスターデータ） */
 export interface SpellDef {
@@ -10,6 +12,10 @@ export interface SpellDef {
   power: number              // Skill.power と同じ（ATKベース）
   targeting: SpellTargeting
   defaultCharges: number     // 1戦闘あたりの使用回数（デフォルト1）
+  effect?: 'damage' | 'heal' | 'barrier'
+  healBonus?: number
+  damageReductionPercent?: number
+  breathDamageReductionPercent?: number
 }
 
 /** キャラクターが習得した呪文 */

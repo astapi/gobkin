@@ -438,6 +438,7 @@ export class ExpeditionEngine {
         atk: Math.floor(enemy.atk * statScale),
         def: this.scaleDefensiveStat(enemy.def, scaling.defScale),
         magicDef: enemy.magicDef !== undefined ? this.scaleDefensiveStat(enemy.magicDef, scaling.magicDefScale) : undefined,
+        magicHeal: enemy.magicHeal !== undefined ? Math.floor(enemy.magicHeal * statScale) : undefined,
         agility: Math.round(enemy.agility * statScale),
         attackCount: Math.max(1, Math.floor(enemy.attackCount * countScale)),
         accuracy: Math.round(enemy.accuracy * statScale),

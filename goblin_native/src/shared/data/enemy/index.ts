@@ -25,6 +25,7 @@ import orcCamp3 from './orc_camp_3.json'
 import royalCapital1 from './royal_capital_1.json'
 import royalCapital2 from './royal_capital_2.json'
 import royalCapital3 from './royal_capital_3.json'
+import road1 from './road_1.json'
 import slimeCave from './slime_cave.json'
 import subjugationForce1 from './subjugation_force_1.json'
 import subjugationForce2 from './subjugation_force_2.json'
@@ -62,6 +63,7 @@ const enemyDatabases: Record<string, EnemyDatabase> = {
   royal_capital_1: royalCapital1 as EnemyDatabase,
   royal_capital_2: royalCapital2 as EnemyDatabase,
   royal_capital_3: royalCapital3 as EnemyDatabase,
+  road_1: road1 as EnemyDatabase,
   slime_cave: slimeCave as EnemyDatabase,
   subjugation_force_1: subjugationForce1 as EnemyDatabase,
   subjugation_force_2: subjugationForce2 as EnemyDatabase,

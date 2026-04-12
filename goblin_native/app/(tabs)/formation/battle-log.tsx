@@ -80,6 +80,7 @@ export default function BattleLogScreen() {
             }
 
             const isSpell = entry.action !== t('battle.normalAttack') && entry.action !== 'turn_start'
+            const isHealingAction = entry.targets?.some(target => target.totalDamage < 0) ?? false
 
             return (
               <View key={`log-${index}`} style={styles.logCard}>
@@ -90,14 +91,18 @@ export default function BattleLogScreen() {
                   }
                 </Text>
                 <Text style={styles.logText}>
-                  {isSpell
+                  {isHealingAction
+                    ? t('ui.formation.battleLog.healSummary', { row: entry.actorRow, actor: entry.actorName, action: entry.action, count: entry.hitCount })
+                    : isSpell
                     ? t('ui.formation.battleLog.spellSummary', { row: entry.actorRow, actor: entry.actorName, action: entry.action, count: entry.hitCount })
                     : t('ui.formation.battleLog.attackSummary', { row: entry.actorRow, actor: entry.actorName, count: entry.hitCount })
                   }
                 </Text>
                 {entry.targets?.map((target, targetIndex) => (
                   <Text key={`target-${targetIndex}`} style={styles.logText}>
-                    {target.defeated
+                    {target.totalDamage < 0
+                      ? t('ui.formation.battleLog.targetHealed', { row: target.targetRow, name: target.targetName, heal: Math.abs(target.totalDamage) })
+                      : target.defeated
                       ? t('ui.formation.battleLog.targetDefeated', { row: target.targetRow, name: target.targetName, damage: target.totalDamage })
                       : t('ui.formation.battleLog.targetHits', { row: target.targetRow, name: target.targetName, damage: target.totalDamage, count: target.hitCount })}
                   </Text>

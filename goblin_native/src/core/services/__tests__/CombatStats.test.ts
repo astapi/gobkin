@@ -1047,6 +1047,8 @@ describe('selectTarget — 隊列ターゲット選択', () => {
       damageReduction: 0,
       physicalDamageReduction: 0,
       magicDamageReduction: 0,
+      breathDamageReduction: 0,
+      magicHeal: 0,
       row,
       rowSlot,
       level: 1,
@@ -1366,6 +1368,123 @@ describe('spell charges', () => {
     const spellLogs = result.detailedLog.filter(log => log.actorId === 'ICE_MAGE' && log.action === 'ブリザード')
 
     expect(spellLogs).toHaveLength(1)
+  })
+
+  it('ヒールは魔法回復量ぶん最も傷ついた味方を回復する', () => {
+    const battleSystem = new BattleSystem()
+    const attacker = createTestGoblin({
+      id: 1,
+      stats: { hp: 300, atk: 55, agility: 100, def: 10, attackCount: 1, accuracy: 999, evasion: 0 },
+    })
+    const guard = createTestEnemy({
+      id: 'GUARD',
+      name: '護衛ガード',
+      hp: 120,
+      atk: 1,
+      def: 1,
+      agility: 1,
+      attackCount: 0,
+      evasion: 0,
+    })
+    const cleric = createTestEnemy({
+      id: 'CLERIC',
+      name: '護衛クレリック',
+      hp: 80,
+      atk: 1,
+      def: 1,
+      agility: 50,
+      attackCount: 0,
+      magicHeal: 45,
+      skills: [{ id: 'grant_heal', grantsSpellId: 'heal' }],
+    })
+
+    const result = battleSystem.executeBattle([attacker], [attacker.stats.hp], [[guard], [cleric]], createSeededRng(11), 1)
+    const healLog = result.detailedLog.find(log => log.actorId === 'CLERIC' && log.action === 'ヒール')
+
+    expect(healLog?.targets[0].targetId).toBe('GUARD')
+    expect(healLog?.targets[0].totalDamage).toBe(-45)
+  })
+
+  it('シールドバリアは味方パーティの通常攻撃ダメージを半減させる', () => {
+    const attacker = createTestGoblin({
+      id: 1,
+      stats: { hp: 300, atk: 90, agility: 1, def: 10, attackCount: 1, accuracy: 999, evasion: 0 },
+    })
+    const guardedTarget = createTestEnemy({
+      id: 'GUARD',
+      name: '護衛ガード',
+      hp: 999,
+      atk: 1,
+      def: 1,
+      agility: 1,
+      attackCount: 0,
+      evasion: 0,
+    })
+    const cleric = createTestEnemy({
+      id: 'CLERIC',
+      name: '護衛クレリック',
+      hp: 80,
+      atk: 1,
+      def: 1,
+      agility: 100,
+      attackCount: 0,
+      skills: [{ id: 'grant_shield_barrier', grantsSpellId: 'shield_barrier' }],
+    })
+
+    const shieldedResult = new BattleSystem().executeBattle(
+      [attacker],
+      [attacker.stats.hp],
+      [[guardedTarget], [cleric]],
+      createSeededRng(19),
+      1,
+    )
+    const plainResult = new BattleSystem().executeBattle(
+      [attacker],
+      [attacker.stats.hp],
+      [[createTestEnemy({ ...guardedTarget })]],
+      createSeededRng(19),
+      1,
+    )
+
+    const shieldedDamage = shieldedResult.detailedLog.find(log => log.actorId === '1' && log.action === '通常攻撃')!.targets[0].totalDamage
+    const plainDamage = plainResult.detailedLog.find(log => log.actorId === '1' && log.action === '通常攻撃')!.targets[0].totalDamage
+
+    expect(shieldedResult.detailedLog.some(log => log.actorId === 'CLERIC' && log.action === 'シールドバリア')).toBe(true)
+    expect(shieldedDamage).toBeLessThan(plainDamage)
+    expect(shieldedDamage).toBeGreaterThanOrEqual(Math.floor(plainDamage * 0.45))
+    expect(shieldedDamage).toBeLessThanOrEqual(Math.ceil(plainDamage * 0.55))
+  })
+
+  it('パーティヒールは魔法回復量+50で傷ついた味方全員を回復する', () => {
+    const battleSystem = new BattleSystem()
+    const attacker = createTestGoblin({
+      id: 1,
+      stats: { hp: 300, atk: 150, agility: 120, def: 10, attackCount: 1, accuracy: 999, evasion: 0 },
+    })
+    const cleric = createTestEnemy({
+      id: 'CLERIC',
+      name: '護衛クレリック',
+      hp: 300,
+      atk: 1,
+      def: 1,
+      agility: 50,
+      attackCount: 0,
+      magicHeal: 45,
+      skills: [{ id: 'grant_party_heal', grantsSpellId: 'party_heal' }],
+    })
+
+    const result = battleSystem.executeBattle(
+      [attacker],
+      [attacker.stats.hp],
+      [[cleric]],
+      createSeededRng(23),
+      1,
+    )
+    const healLog = result.detailedLog.find(log => log.actorId === 'CLERIC' && log.action === 'パーティヒール')
+
+    expect(healLog?.targets.length).toBeGreaterThanOrEqual(1)
+    expect(healLog?.targets[0].targetId).toBe('CLERIC')
+    expect(healLog?.targets[0].totalDamage).toBe(-95)
   })
 })
 

@@ -189,9 +189,21 @@ export const CHARACTER_SKILL_CATALOG = {
     id: 'grant_fireball',
     grantsSpellId: 'fireball',
   },
+  grant_heal: {
+    id: 'grant_heal',
+    grantsSpellId: 'heal',
+  },
   grant_magic_arrow: {
     id: 'grant_magic_arrow',
     grantsSpellId: 'magic_arrow',
+  },
+  grant_party_heal: {
+    id: 'grant_party_heal',
+    grantsSpellId: 'party_heal',
+  },
+  grant_shield_barrier: {
+    id: 'grant_shield_barrier',
+    grantsSpellId: 'shield_barrier',
   },
 
   inspire_150: {
