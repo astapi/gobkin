@@ -10,6 +10,7 @@ export type GoblinStats = {
   attackCount: number  // 攻撃回数（種族基本値、ゴブリン=2）
   accuracy: number     // 命中精度
   evasion: number      // 回避能力
+  magicHeal: number    // 魔法回復量
 }
 
 export type GoblinBaseAttributes = {
@@ -21,7 +22,7 @@ export type GoblinBaseAttributes = {
   luck: number
 }
 
-export type GoblinJob = 'guard' | 'thief' | 'mage' | 'warrior'
+export type GoblinJob = 'guard' | 'thief' | 'mage' | 'warrior' | 'cleric'
 
 export type Goblin = {
   id: number

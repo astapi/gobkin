@@ -11,6 +11,7 @@ import {
   calculateGoblinBaseDef,
   calculateGoblinBaseEvasion,
   calculateGoblinBaseHp,
+  calculateGoblinBaseMagicHeal,
   getGoblinBaseAttributes,
 } from '../../shared/utils/goblinHp'
 import { getLegacyRaceName, normalizeGoblinRaceId } from '../../shared/types/Race'
@@ -184,6 +185,7 @@ export class GoblinBirthService {
       attackCount: calculateGoblinBaseAttackCount(1, { race: bloodline, raceId: normalizeGoblinRaceId(bloodline) }),
       accuracy: calculateGoblinBaseAccuracy(1, { race: bloodline, raceId: normalizeGoblinRaceId(bloodline) }),
       evasion: calculateGoblinBaseEvasion(1, { race: bloodline, raceId: normalizeGoblinRaceId(bloodline) }),
+      magicHeal: calculateGoblinBaseMagicHeal(1, { race: bloodline, raceId: normalizeGoblinRaceId(bloodline) }),
     }
   }
 }

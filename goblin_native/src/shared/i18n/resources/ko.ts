@@ -423,6 +423,7 @@ const ko = {
       thief: { name: '고블린 시프', shortLabel: '속도', summary: '속도와 회피를 높여 수와 기습에 특화합니다.', description: '정찰 역할로 단련해 민첩성과 회피 능력을 높입니다.' },
       mage: { name: '고블린 메이지', shortLabel: '마법', summary: '주문을 익혀 광역 공격을 다룹니다.', description: '주문 훈련을 통해 후열 마법사로 전환합니다.' },
       warrior: { name: '고블린 워리어', shortLabel: '공격', summary: '공격 성능을 크게 높여 근접전에 강해집니다.', description: '무투 훈련으로 공격력과 타수를 강화합니다.' },
+      cleric: { name: '고블린 클레릭', shortLabel: '회복', summary: '회복과 보호 주문으로 아군을 지원합니다.', description: '기도 훈련으로 회복과 보호를 맡는 지원 역할로 전환합니다.' },
     },
     stat: {
       hp: 'HP',

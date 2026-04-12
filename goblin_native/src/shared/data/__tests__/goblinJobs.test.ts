@@ -1,5 +1,5 @@
 import type { Goblin } from '../../types'
-import { applyGoblinJob, canTrainGoblin } from '../goblinJobs'
+import { applyGoblinJob, canTrainGoblin, getGoblinTrainingJobDefinitions } from '../goblinJobs'
 
 function createGoblin(overrides: Partial<Goblin> = {}): Goblin {
   return {
@@ -18,6 +18,7 @@ function createGoblin(overrides: Partial<Goblin> = {}): Goblin {
       attackCount: 2,
       accuracy: 100,
       evasion: 5,
+      magicHeal: 10,
     },
     effectiveStats: overrides.effectiveStats,
     factors: overrides.factors,
@@ -65,6 +66,22 @@ describe('goblinJobs', () => {
     expect(trained.skills.some((skill) => skill.id === 'grant_blizzard')).toBe(true)
   })
 
+  it('街道クリア後にクレリック訓練が解放される', () => {
+    expect(getGoblinTrainingJobDefinitions(new Set()).some((job) => job.id === 'cleric')).toBe(false)
+    expect(getGoblinTrainingJobDefinitions(new Set(['road_1'])).some((job) => job.id === 'cleric')).toBe(true)
+  })
+
+  it('クレリックはレベルに応じて回復・防護呪文を習得する', () => {
+    const level1 = applyGoblinJob(createGoblin({ level: 1 }), 'cleric')
+    const level4 = applyGoblinJob(createGoblin({ level: 4 }), 'cleric')
+    const level19 = applyGoblinJob(createGoblin({ level: 19 }), 'cleric')
+
+    expect(level1.skills.some((skill) => skill.id === 'grant_heal')).toBe(true)
+    expect(level1.skills.some((skill) => skill.id === 'grant_shield_barrier')).toBe(false)
+    expect(level4.skills.some((skill) => skill.id === 'grant_shield_barrier')).toBe(true)
+    expect(level19.skills.some((skill) => skill.id === 'grant_party_heal')).toBe(true)
+  })
+
   it('ジョブ変更時にHPが基本能力値ベースで再計算される', () => {
     const goblin = createGoblin({
       level: 3,
@@ -75,6 +92,7 @@ describe('goblinJobs', () => {
         attackCount: 2,
         accuracy: 100,
         evasion: 5,
+        magicHeal: 10,
       },
     })
 
@@ -82,5 +100,6 @@ describe('goblinJobs', () => {
     expect(applyGoblinJob(goblin, 'warrior').stats.hp).toBe(47)
     expect(applyGoblinJob(goblin, 'thief').stats.hp).toBe(35)
     expect(applyGoblinJob(goblin, 'mage').stats.hp).toBe(32)
+    expect(applyGoblinJob(goblin, 'cleric').stats.hp).toBe(38)
   })
 })

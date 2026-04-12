@@ -8,6 +8,7 @@ import {
   calculateGoblinBaseDef,
   calculateGoblinBaseEvasion,
   calculateGoblinBaseHp,
+  calculateGoblinBaseMagicHeal,
   getGoblinBaseAttributes,
 } from '../../shared/utils/goblinHp'
 
@@ -123,6 +124,7 @@ export class GoblinEntity {
       attackCount: calculateGoblinBaseAttackCount(this.level, statContext),
       accuracy: calculateGoblinBaseAccuracy(this.level, statContext),
       evasion: calculateGoblinBaseEvasion(this.level, statContext),
+      magicHeal: calculateGoblinBaseMagicHeal(this.level, statContext),
     }
   }
 }

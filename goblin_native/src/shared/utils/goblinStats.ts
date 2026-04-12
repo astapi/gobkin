@@ -22,7 +22,13 @@ export function calculateGoblinEffectiveStats(
  */
 export function getEffectiveStats(goblin: Goblin): GoblinStats {
   if (goblin.effectiveStats) {
-    return goblin.effectiveStats
+    if (goblin.effectiveStats.magicHeal !== undefined) {
+      return goblin.effectiveStats
+    }
+    return {
+      ...goblin.effectiveStats,
+      magicHeal: calculateGoblinEffectiveStats(goblin).magicHeal,
+    }
   }
   return calculateGoblinEffectiveStats(goblin)
 }

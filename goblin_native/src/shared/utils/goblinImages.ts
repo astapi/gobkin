@@ -16,6 +16,7 @@ const goblinImages: Record<string, ImageSourcePropType> = {
   goblin_thief: require('../../../assets/goblin/goblin_thief.png'),
   goblin_mage: require('../../../assets/goblin/goblin_mage.png'),
   goblin_warrior: require('../../../assets/goblin/goblin_warrior.png'),
+  goblin_cleric: require('../../../assets/goblin/goblin_cleric.png'),
 }
 
 // デフォルト画像
@@ -72,6 +73,8 @@ export function getGoblinDisplayImage(goblin: Pick<Goblin, 'avatar' | 'race' | '
         return goblinImages.goblin_mage
       case 'warrior':
         return goblinImages.goblin_warrior
+      case 'cleric':
+        return goblinImages.goblin_cleric
     }
   }
 

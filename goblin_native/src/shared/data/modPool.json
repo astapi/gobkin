@@ -511,6 +511,174 @@
       "requiredIndividual": 58
     },
     {
+      "id": "magicHeal_percent_t6",
+      "name": "祈りの",
+      "group": "magicHeal_percent",
+      "type": "prefix",
+      "stat": "magicHeal_percent",
+      "tier": 6,
+      "valueRange": [
+        5,
+        8
+      ],
+      "weight": 1000,
+      "requiredIndividual": 1
+    },
+    {
+      "id": "magicHeal_percent_t5",
+      "name": "慈悲の",
+      "group": "magicHeal_percent",
+      "type": "prefix",
+      "stat": "magicHeal_percent",
+      "tier": 5,
+      "valueRange": [
+        9,
+        12
+      ],
+      "weight": 800,
+      "requiredIndividual": 8
+    },
+    {
+      "id": "magicHeal_percent_t4",
+      "name": "治癒の",
+      "group": "magicHeal_percent",
+      "type": "prefix",
+      "stat": "magicHeal_percent",
+      "tier": 4,
+      "valueRange": [
+        13,
+        16
+      ],
+      "weight": 600,
+      "requiredIndividual": 16
+    },
+    {
+      "id": "magicHeal_percent_t3",
+      "name": "祝福の",
+      "group": "magicHeal_percent",
+      "type": "prefix",
+      "stat": "magicHeal_percent",
+      "tier": 3,
+      "valueRange": [
+        17,
+        20
+      ],
+      "weight": 400,
+      "requiredIndividual": 28
+    },
+    {
+      "id": "magicHeal_percent_t2",
+      "name": "聖別の",
+      "group": "magicHeal_percent",
+      "type": "prefix",
+      "stat": "magicHeal_percent",
+      "tier": 2,
+      "valueRange": [
+        21,
+        25
+      ],
+      "weight": 200,
+      "requiredIndividual": 44
+    },
+    {
+      "id": "magicHeal_percent_t1",
+      "name": "奇跡の",
+      "group": "magicHeal_percent",
+      "type": "prefix",
+      "stat": "magicHeal_percent",
+      "tier": 1,
+      "valueRange": [
+        26,
+        30
+      ],
+      "weight": 80,
+      "requiredIndividual": 60
+    },
+    {
+      "id": "magicHeal_flat_t6",
+      "name": "温かな",
+      "group": "magicHeal_flat",
+      "type": "prefix",
+      "stat": "magicHeal_flat",
+      "tier": 6,
+      "valueRange": [
+        1,
+        2
+      ],
+      "weight": 1200,
+      "requiredIndividual": 1
+    },
+    {
+      "id": "magicHeal_flat_t5",
+      "name": "癒しの",
+      "group": "magicHeal_flat",
+      "type": "prefix",
+      "stat": "magicHeal_flat",
+      "tier": 5,
+      "valueRange": [
+        3,
+        4
+      ],
+      "weight": 1000,
+      "requiredIndividual": 6
+    },
+    {
+      "id": "magicHeal_flat_t4",
+      "name": "安息の",
+      "group": "magicHeal_flat",
+      "type": "prefix",
+      "stat": "magicHeal_flat",
+      "tier": 4,
+      "valueRange": [
+        5,
+        6
+      ],
+      "weight": 700,
+      "requiredIndividual": 14
+    },
+    {
+      "id": "magicHeal_flat_t3",
+      "name": "救済の",
+      "group": "magicHeal_flat",
+      "type": "prefix",
+      "stat": "magicHeal_flat",
+      "tier": 3,
+      "valueRange": [
+        7,
+        8
+      ],
+      "weight": 400,
+      "requiredIndividual": 26
+    },
+    {
+      "id": "magicHeal_flat_t2",
+      "name": "再生の",
+      "group": "magicHeal_flat",
+      "type": "prefix",
+      "stat": "magicHeal_flat",
+      "tier": 2,
+      "valueRange": [
+        9,
+        11
+      ],
+      "weight": 200,
+      "requiredIndividual": 42
+    },
+    {
+      "id": "magicHeal_flat_t1",
+      "name": "大司祭の",
+      "group": "magicHeal_flat",
+      "type": "prefix",
+      "stat": "magicHeal_flat",
+      "tier": 1,
+      "valueRange": [
+        12,
+        15
+      ],
+      "weight": 100,
+      "requiredIndividual": 58
+    },
+    {
       "id": "damage_reduction_t5",
       "name": "耐性の",
       "group": "damage_reduction",

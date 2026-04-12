@@ -3,10 +3,11 @@ import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Alert, Modal, Pre
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useTranslation } from 'react-i18next'
 import { useBaseStore, selectRank } from '@/presentation/stores/useBaseStore'
+import { useDungeonStore } from '@/presentation/stores/useDungeonStore'
 import { useGoblinStore } from '@/presentation/stores/useGoblinStore'
 import { usePartyStore } from '@/presentation/stores/usePartyStore'
 import { describeCharacterSkill } from '@/shared/data/characterSkills'
-import { applyGoblinJob, canTrainGoblin, formatGoblinJobSkillName, getGoblinJobDefinitions, getGoblinJobDefinition, getGoblinJobSkillEntries, GOBLIN_TRAINING_UNLOCK_RANK } from '@/shared/data/goblinJobs'
+import { applyGoblinJob, canTrainGoblin, formatGoblinJobSkillName, getGoblinTrainingJobDefinitions, getGoblinJobDefinition, getGoblinJobSkillEntries, GOBLIN_TRAINING_UNLOCK_RANK } from '@/shared/data/goblinJobs'
 import { getCharacterSkill } from '@/shared/data/skillCatalog'
 import type { GoblinJob } from '@/shared/types'
 import { getGoblinJobLabel, getRaceLabel } from '@/shared/i18n/entityLocalization'
@@ -18,6 +19,7 @@ export default function BaseTrainingScreen() {
   const goblins = useGoblinStore((state) => state.goblins)
   const saveGoblin = useGoblinStore((state) => state.saveGoblin)
   const parties = usePartyStore((state) => state.parties)
+  const dungeonProgress = useDungeonStore((state) => state.progress)
 
   const [selectedGoblinId, setSelectedGoblinId] = useState<number | null>(null)
   const [selectedJob, setSelectedJob] = useState<GoblinJob | undefined>(undefined)
@@ -25,7 +27,15 @@ export default function BaseTrainingScreen() {
   const [isGoblinModalVisible, setIsGoblinModalVisible] = useState(false)
 
   const trainingUnlocked = rank >= GOBLIN_TRAINING_UNLOCK_RANK
-  const jobDefinitions = useMemo(() => getGoblinJobDefinitions(), [i18n.resolvedLanguage])
+  const clearedAreaIds = useMemo(() => new Set(
+    Object.entries(dungeonProgress)
+      .filter(([, progress]) => progress.cleared)
+      .map(([areaId]) => areaId)
+  ), [dungeonProgress])
+  const jobDefinitions = useMemo(
+    () => getGoblinTrainingJobDefinitions(clearedAreaIds),
+    [clearedAreaIds, i18n.resolvedLanguage]
+  )
 
   const trainableGoblins = useMemo(() => {
     return goblins

@@ -143,6 +143,7 @@ export default function GoblinDetailScreen() {
               { key: 'attackCount', label: getStatLabel('attackCount') },
               { key: 'accuracy', label: getStatLabel('accuracy') },
               { key: 'evasion', label: getStatLabel('evasion') },
+              { key: 'magicHeal', label: getStatLabel('magicHeal') },
             ] as const).map(item => (
               <View key={item.key} style={styles.statChip}>
                 <Text style={styles.statChipLabel}>{item.label}</Text>

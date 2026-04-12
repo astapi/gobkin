@@ -14,6 +14,7 @@ const GOBLIN_JOB_HP_COEFFICIENTS: Record<NonNullable<Goblin['job']>, number> = {
   warrior: 1.2,
   thief: 0.8,
   mage: 0.7,
+  cleric: 0.9,
 }
 
 type GoblinRaceContext = Pick<Goblin, 'race' | 'baseAttributes'> & { raceId?: Goblin['raceId']; job?: Goblin['job'] }
@@ -153,6 +154,17 @@ export function calculateGoblinBaseAttackCount(level: number, goblin: GoblinStat
   return Math.round(combined * 2 + bloodlineAttackCountBonus)
 }
 
+export function calculateGoblinBaseMagicHeal(level: number, goblin: GoblinStatContext): number {
+  if (hasStoredStat(goblin, 'magicHeal')) {
+    return goblin.stats.magicHeal
+  }
+
+  const attributes = getGoblinBaseAttributes(goblin)
+  const levelScale = getGoblinStatLevelScale(level, goblin.raceId ?? goblin.race)
+  const coefficient = getGoblinStatCoefficient(goblin)
+  return Math.round(attributes.spirit * (1 + levelScale * 2 * coefficient))
+}
+
 export function calculateGoblinDerivedStats(
   level: number,
   goblin: GoblinStatContext
@@ -164,5 +176,6 @@ export function calculateGoblinDerivedStats(
     attackCount: calculateGoblinBaseAttackCount(level, goblin),
     accuracy: calculateGoblinBaseAccuracy(level, goblin),
     evasion: calculateGoblinBaseEvasion(level, goblin),
+    magicHeal: calculateGoblinBaseMagicHeal(level, goblin),
   }
 }

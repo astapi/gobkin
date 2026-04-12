@@ -26,12 +26,14 @@ type GoblinJobDefinition = {
   summary: string
   description: string
   skills: GoblinJobSkill[]
+  unlockRequiresClearedArea?: string
 }
 
 type GoblinJobDefinitionSeed = {
   id: GoblinJob
   accentColor: string
   skills: GoblinJobSkill[]
+  unlockRequiresClearedArea?: string
 }
 
 const GOBLIN_JOB_DEFINITION_SEEDS: Record<GoblinJob, GoblinJobDefinitionSeed> = {
@@ -92,6 +94,24 @@ const GOBLIN_JOB_DEFINITION_SEEDS: Record<GoblinJob, GoblinJobDefinitionSeed> = 
       },
     ],
   },
+  cleric: {
+    id: 'cleric',
+    accentColor: '#0D9488',
+    unlockRequiresClearedArea: 'road_1',
+    skills: [
+      {
+        skillId: 'grant_heal',
+      },
+      {
+        unlockLevel: 4,
+        skillId: 'grant_shield_barrier',
+      },
+      {
+        unlockLevel: 19,
+        skillId: 'grant_party_heal',
+      },
+    ],
+  },
 }
 
 function buildGoblinJobDefinition(seed: GoblinJobDefinitionSeed): GoblinJobDefinition {
@@ -113,6 +133,12 @@ export const GOBLIN_TRAINING_UNLOCK_RANK = 2
 
 export function getGoblinJobDefinitions(): GoblinJobDefinition[] {
   return Object.values(GOBLIN_JOB_DEFINITION_SEEDS).map(buildGoblinJobDefinition)
+}
+
+export function getGoblinTrainingJobDefinitions(clearedAreaIds: ReadonlySet<string>): GoblinJobDefinition[] {
+  return getGoblinJobDefinitions().filter((job) => (
+    !job.unlockRequiresClearedArea || clearedAreaIds.has(job.unlockRequiresClearedArea)
+  ))
 }
 
 export function getGoblinJobDefinition(job: GoblinJob): GoblinJobDefinition {

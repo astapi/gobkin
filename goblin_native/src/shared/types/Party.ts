@@ -62,6 +62,7 @@ export interface PartyState {
   attackCount: number
   accuracy: number
   evasion: number
+  magicHeal: number
   isKO: boolean
   isDead: boolean
   mods: ModInstance[]

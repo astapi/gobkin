@@ -423,6 +423,7 @@ const en = {
       thief: { name: 'Goblin Thief', shortLabel: 'Speed', summary: 'Improves speed and evasion for hit count and ambushes.', description: 'Trains the goblin as a scout and improves speed and evasion.' },
       mage: { name: 'Goblin Mage', shortLabel: 'Magic', summary: 'Learns spells and gains area attacks.', description: 'Turns the goblin into a backline caster with spells and area attacks.' },
       warrior: { name: 'Goblin Warrior', shortLabel: 'Attack', summary: 'Greatly improves offense for melee combat.', description: 'Improves attack power and hit count for frontline combat.' },
+      cleric: { name: 'Goblin Cleric', shortLabel: 'Heal', summary: 'Supports allies with healing and protective spells.', description: 'Trains the goblin as a support unit focused on healing and protection.' },
     },
     stat: {
       hp: 'HP',
