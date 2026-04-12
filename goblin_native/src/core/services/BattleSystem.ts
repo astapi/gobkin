@@ -8,6 +8,7 @@ import {
   getPhysicalDamageReductionFromSkills,
   getRearProtectionMultiplierFromSkills,
   getRowDamageMultiplierFromSkills,
+  getSpellDamagePercentFromSkills,
   hasCoverLowHpAllySkill,
   hasSurviveLethalDamageAtHp1Skill,
 } from '../../shared/data/characterSkills'
@@ -53,6 +54,7 @@ interface BattleUnit {
   shieldBarrierBreathDamageReduction: number // シールドバリアのブレスダメージ軽減率（0〜100）
   magicAtk: number              // 魔法攻撃力
   magicHeal: number             // 魔法回復量
+  spellDamagePercent: number    // 魔法威力の増減（%）
   shieldBarrierActive?: boolean  // シールドバリア状態
   row: number              // 隊列の列番号（0-based）
   rowSlot: number          // 列内のスロット番号（0-based）
@@ -583,9 +585,10 @@ export class BattleSystem {
           spellSkill, SPELL_DAMAGE_OPTIONS, rng,
         )
         const rearDamageMultiplier = this.getRearDamageMultiplier(unit, sourceGroup)
+        const spellDamageFactor = 1 + unit.spellDamagePercent / 100
         const reductionFactor = 1 - target.damageReduction / 100
         const magicReductionFactor = 1 - target.magicDamageReduction / 100
-        const damage = Math.max(1, Math.floor(baseDamage * rearDamageMultiplier * reductionFactor * magicReductionFactor))
+        const damage = Math.max(1, Math.floor(baseDamage * rearDamageMultiplier * spellDamageFactor * reductionFactor * magicReductionFactor))
 
         this.applyDamage(target, damage)
         totalHitCount++
@@ -611,9 +614,10 @@ export class BattleSystem {
           spellSkill, SPELL_DAMAGE_OPTIONS, rng,
         )
         const rearDamageMultiplier = this.getRearDamageMultiplier(unit, sourceGroup)
+        const spellDamageFactor = 1 + unit.spellDamagePercent / 100
         const reductionFactor = 1 - target.damageReduction / 100
         const magicReductionFactor = 1 - target.magicDamageReduction / 100
-        const damage = Math.max(1, Math.floor(baseDamage * rearDamageMultiplier * reductionFactor * magicReductionFactor))
+        const damage = Math.max(1, Math.floor(baseDamage * rearDamageMultiplier * spellDamageFactor * reductionFactor * magicReductionFactor))
 
         this.applyDamage(target, damage)
         totalHitCount++
@@ -709,6 +713,7 @@ export class BattleSystem {
       shieldBarrierBreathDamageReduction: 0,
       magicAtk: effectiveStats.magicAtk,
       magicHeal: effectiveStats.magicHeal,
+      spellDamagePercent: getSpellDamagePercentFromSkills(goblin.skills),
       shieldBarrierActive: false,
       row: originalIndex,  // 味方は1列1体（配列順 = 列番号）
       rowSlot: 0,
@@ -742,6 +747,7 @@ export class BattleSystem {
       shieldBarrierBreathDamageReduction: 0,
       magicAtk: enemy.magicAtk ?? enemy.atk,
       magicHeal: enemy.magicHeal ?? 0,
+      spellDamagePercent: getSpellDamagePercentFromSkills(skills),
       shieldBarrierActive: false,
       row,
       rowSlot,
