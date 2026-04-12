@@ -1,5 +1,5 @@
 import { ExpeditionEngine } from '../ExpeditionEngine'
-import { getEquipmentByDungeonLevel, getEquipmentTemplate } from '../../../shared/data/equipmentPoolLoader'
+import { getEquipmentByDungeonLevel, getEquipmentTemplate, getShopEquipment } from '../../../shared/data/equipmentPoolLoader'
 import type { Enemy, PartyRewardMultipliers } from '../../../shared/types'
 
 /**
@@ -213,6 +213,67 @@ describe('rollTreasureDrops', () => {
           expect.objectContaining({ id: 'spell_damage_10', spellDamagePercent: 10 }),
         ])
       )
+    })
+
+    it('ロッドがアーマーと同じティア帯でダンジョンレベルプールに含まれる', () => {
+      expect(getEquipmentTemplate('rod_rod')?.dropLevelMin).toBe(12)
+      expect(getEquipmentTemplate('rod_rod')?.dropLevelMax).toBe(25)
+      expect(getEquipmentTemplate('rod_mithril')?.dropLevelMin).toBe(20)
+      expect(getEquipmentTemplate('rod_mithril')?.dropLevelMax).toBe(40)
+      expect(getEquipmentTemplate('rod_royal')?.dropLevelMin).toBe(35)
+      expect(getEquipmentTemplate('rod_royal')?.dropLevelMax).toBe(60)
+      expect(getEquipmentTemplate('rod_kaiser')?.dropLevelMin).toBe(50)
+      expect(getEquipmentTemplate('rod_kaiser')?.dropLevelMax).toBe(80)
+      expect(getEquipmentTemplate('rod_ancient')?.dropLevelMin).toBe(70)
+      expect(getEquipmentTemplate('rod_ancient')?.dropLevelMax).toBe(105)
+      expect(getEquipmentTemplate('rod_dragon')?.dropLevelMin).toBe(95)
+      expect(getEquipmentTemplate('rod_dragon')?.dropLevelMax).toBe(135)
+      expect(getEquipmentTemplate('rod_adamant')?.dropLevelMin).toBe(120)
+      expect(getEquipmentTemplate('rod_adamant')?.dropLevelMax).toBe(150)
+
+      expect(getEquipmentByDungeonLevel(12).some((t) => t.id === 'rod_rod')).toBe(true)
+      expect(getEquipmentByDungeonLevel(20).some((t) => t.id === 'rod_mithril')).toBe(true)
+      expect(getEquipmentByDungeonLevel(35).some((t) => t.id === 'rod_royal')).toBe(true)
+      expect(getEquipmentByDungeonLevel(50).some((t) => t.id === 'rod_kaiser')).toBe(true)
+      expect(getEquipmentByDungeonLevel(70).some((t) => t.id === 'rod_ancient')).toBe(true)
+      expect(getEquipmentByDungeonLevel(95).some((t) => t.id === 'rod_dragon')).toBe(true)
+      expect(getEquipmentByDungeonLevel(120).some((t) => t.id === 'rod_adamant')).toBe(true)
+    })
+
+    it('ロッドは魔法回復量statと魔法回復量HP変換スキルを持つ', () => {
+      const template = getEquipmentTemplate('rod_rod')
+
+      expect(template?.category).toBe('rod')
+      expect(template?.statBonuses).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({ stat: 'critical_rate_percent', value: -2 }),
+          expect.objectContaining({ stat: 'magicHeal_flat', value: 20 }),
+        ])
+      )
+      expect(template?.grantedSkills).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({ id: 'magic_heal_to_hp_6', magicHealToHpPercent: 6 }),
+        ])
+      )
+    })
+
+    it('商店ランク2では各カテゴリのロイヤル帯まで購入できる', () => {
+      const shopIds = new Set(getShopEquipment(2).map((template) => template.id))
+
+      for (const id of [
+        'sword_royal',
+        'claw_royal',
+        'bow_royal',
+        'armor_royal',
+        'shield_royal',
+        'gauntlet_royal',
+        'wand_royal',
+        'rod_royal',
+      ]) {
+        expect(shopIds.has(id)).toBe(true)
+      }
+      expect(shopIds.has('rod_kaiser')).toBe(false)
+      expect(shopIds.has('armor_kaiser')).toBe(false)
     })
   })
 

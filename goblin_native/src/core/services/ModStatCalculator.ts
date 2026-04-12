@@ -227,6 +227,9 @@ export class ModStatCalculator {
       if (skill.defToHpPercent !== undefined) {
         stats.hp += Math.floor(stats.def * skill.defToHpPercent / 100)
       }
+      if (skill.magicHealToHpPercent !== undefined) {
+        stats.hp += Math.floor(stats.magicHeal * skill.magicHealToHpPercent / 100)
+      }
     }
   }
 }

@@ -66,6 +66,14 @@ function createDefToHpSkill(value: number): CharacterSkill {
   }
 }
 
+function createMagicHealToHpSkill(value: number): CharacterSkill {
+  const id = `magic_heal_to_hp_${value}`
+  return {
+    id,
+    magicHealToHpPercent: value,
+  }
+}
+
 function createCriticalDamageBonusSkill(value: number): CharacterSkill {
   const id = `critical_damage_bonus_${value}`
   return {
@@ -153,6 +161,14 @@ export const CHARACTER_SKILL_CATALOG = {
   def_to_hp_7: createDefToHpSkill(7),
   def_to_hp_8: createDefToHpSkill(8),
   def_to_hp_9: createDefToHpSkill(9),
+
+  magic_heal_to_hp_6: createMagicHealToHpSkill(6),
+  magic_heal_to_hp_7: createMagicHealToHpSkill(7),
+  magic_heal_to_hp_8: createMagicHealToHpSkill(8),
+  magic_heal_to_hp_9: createMagicHealToHpSkill(9),
+  magic_heal_to_hp_10: createMagicHealToHpSkill(10),
+  magic_heal_to_hp_11: createMagicHealToHpSkill(11),
+  magic_heal_to_hp_12: createMagicHealToHpSkill(12),
 
   equipment_accuracy_200: {
     id: 'equipment_accuracy_200',

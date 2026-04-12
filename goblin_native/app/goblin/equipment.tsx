@@ -22,7 +22,8 @@ const CATEGORY_ORDER: Record<EquipmentCategory, number> = {
   shield: 2,
   gauntlet: 3,
   wand: 4,
-  accessory: 5,
+  rod: 5,
+  accessory: 6,
 }
 
 function getDisplayName(eq: EquipmentInstance, template: EquipmentTemplate): string {

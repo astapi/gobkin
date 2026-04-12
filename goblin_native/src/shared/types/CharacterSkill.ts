@@ -7,6 +7,7 @@ export interface CharacterSkill {
   statBonuses?: Partial<Record<keyof GoblinStats, number>>
   statMultipliers?: Partial<Record<keyof GoblinStats, number>>
   defToHpPercent?: number
+  magicHealToHpPercent?: number
   criticalRateBonusPercent?: number
   criticalDamageBonusPercent?: number
   actionOrderMultiplier?: number

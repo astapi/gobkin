@@ -178,6 +178,7 @@
       ],
       "range": "melee",
       "price": 500,
+      "unlockRank": 2,
       "dropLevelMin": 20,
       "dropLevelMax": 40
     },
@@ -209,6 +210,7 @@
       ],
       "range": "melee",
       "price": 2500,
+      "unlockRank": 2,
       "dropLevelMin": 35,
       "dropLevelMax": 60
     },
@@ -478,6 +480,7 @@
       ],
       "range": "melee",
       "price": 500,
+      "unlockRank": 2,
       "dropLevelMin": 20,
       "dropLevelMax": 40,
       "grantedSkillIds": [
@@ -501,6 +504,7 @@
       ],
       "range": "melee",
       "price": 2500,
+      "unlockRank": 2,
       "dropLevelMin": 35,
       "dropLevelMax": 60,
       "grantedSkillIds": [
@@ -710,6 +714,7 @@
       ],
       "range": "ranged",
       "price": 5000,
+      "unlockRank": 2,
       "dropLevelMin": 20,
       "dropLevelMax": 40
     },
@@ -741,6 +746,7 @@
       ],
       "range": "ranged",
       "price": 25000,
+      "unlockRank": 2,
       "dropLevelMin": 35,
       "dropLevelMax": 60
     },
@@ -984,6 +990,7 @@
         }
       ],
       "price": 500,
+      "unlockRank": 2,
       "dropLevelMin": 20,
       "dropLevelMax": 40,
       "grantedSkillIds": [
@@ -1009,6 +1016,7 @@
         }
       ],
       "price": 2500,
+      "unlockRank": 2,
       "dropLevelMin": 35,
       "dropLevelMax": 60,
       "grantedSkillIds": [
@@ -1175,6 +1183,7 @@
         }
       ],
       "price": 400,
+      "unlockRank": 2,
       "dropLevelMin": 20,
       "dropLevelMax": 40,
       "grantedSkillIds": [
@@ -1206,6 +1215,7 @@
         }
       ],
       "price": 2000,
+      "unlockRank": 2,
       "dropLevelMin": 35,
       "dropLevelMax": 60,
       "grantedSkillIds": [
@@ -1470,6 +1480,7 @@
         }
       ],
       "price": 10000,
+      "unlockRank": 2,
       "dropLevelMin": 20,
       "dropLevelMax": 40,
       "grantedSkillIds": [
@@ -1496,6 +1507,7 @@
         }
       ],
       "price": 50000,
+      "unlockRank": 2,
       "dropLevelMin": 35,
       "dropLevelMax": 60,
       "grantedSkillIds": [
@@ -1649,6 +1661,7 @@
         }
       ],
       "price": 1000,
+      "unlockRank": 2,
       "dropLevelMin": 20,
       "dropLevelMax": 40,
       "grantedSkillIds": [
@@ -1670,6 +1683,7 @@
         }
       ],
       "price": 5000,
+      "unlockRank": 2,
       "dropLevelMin": 35,
       "dropLevelMax": 60,
       "grantedSkillIds": [
@@ -1760,6 +1774,161 @@
       "dropLevelMax": 150,
       "grantedSkillIds": [
         "spell_damage_16"
+      ]
+    },
+    {
+      "_comment": "===== 魔具:ロッド (rod) ====="
+    },
+    {
+      "id": "rod_rod",
+      "name": "ロッド",
+      "category": "rod",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -2
+        },
+        {
+          "stat": "magicHeal_flat",
+          "value": 20
+        }
+      ],
+      "price": 200,
+      "unlockRank": 1,
+      "dropLevelMin": 12,
+      "dropLevelMax": 25,
+      "grantedSkillIds": [
+        "magic_heal_to_hp_6"
+      ]
+    },
+    {
+      "id": "rod_mithril",
+      "name": "ミスリルロッド",
+      "category": "rod",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -2
+        },
+        {
+          "stat": "magicHeal_flat",
+          "value": 30
+        }
+      ],
+      "price": 1000,
+      "unlockRank": 2,
+      "dropLevelMin": 20,
+      "dropLevelMax": 40,
+      "grantedSkillIds": [
+        "magic_heal_to_hp_7"
+      ]
+    },
+    {
+      "id": "rod_royal",
+      "name": "ロイヤルロッド",
+      "category": "rod",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -2
+        },
+        {
+          "stat": "magicHeal_flat",
+          "value": 45
+        }
+      ],
+      "price": 5000,
+      "unlockRank": 2,
+      "dropLevelMin": 35,
+      "dropLevelMax": 60,
+      "grantedSkillIds": [
+        "magic_heal_to_hp_8"
+      ]
+    },
+    {
+      "id": "rod_kaiser",
+      "name": "カイザーロッド",
+      "category": "rod",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -2
+        },
+        {
+          "stat": "magicHeal_flat",
+          "value": 60
+        }
+      ],
+      "price": 25000,
+      "unlockRank": 3,
+      "dropLevelMin": 50,
+      "dropLevelMax": 80,
+      "grantedSkillIds": [
+        "magic_heal_to_hp_9"
+      ]
+    },
+    {
+      "id": "rod_ancient",
+      "name": "エンシェントロッド",
+      "category": "rod",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -2
+        },
+        {
+          "stat": "magicHeal_flat",
+          "value": 120
+        }
+      ],
+      "price": 125000,
+      "unlockRank": 5,
+      "dropLevelMin": 70,
+      "dropLevelMax": 105,
+      "grantedSkillIds": [
+        "magic_heal_to_hp_10"
+      ]
+    },
+    {
+      "id": "rod_dragon",
+      "name": "ドラゴンロッド",
+      "category": "rod",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -2
+        },
+        {
+          "stat": "magicHeal_flat",
+          "value": 180
+        }
+      ],
+      "price": 500000,
+      "dropLevelMin": 95,
+      "dropLevelMax": 135,
+      "grantedSkillIds": [
+        "magic_heal_to_hp_11"
+      ]
+    },
+    {
+      "id": "rod_adamant",
+      "name": "アダマントロッド",
+      "category": "rod",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -2
+        },
+        {
+          "stat": "magicHeal_flat",
+          "value": 240
+        }
+      ],
+      "price": 1500000,
+      "dropLevelMin": 120,
+      "dropLevelMax": 150,
+      "grantedSkillIds": [
+        "magic_heal_to_hp_12"
       ]
     }
   ]

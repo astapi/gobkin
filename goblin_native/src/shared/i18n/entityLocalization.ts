@@ -47,6 +47,10 @@ export function getSkillLabel(skill: CharacterSkill): string {
     return i18n.t('battle.defToHp', { value: skill.defToHpPercent })
   }
 
+  if (skill.magicHealToHpPercent !== undefined) {
+    return i18n.t('battle.magicHealToHp', { value: skill.magicHealToHpPercent })
+  }
+
   if (skill.criticalRateBonusPercent !== undefined) {
     return i18n.t('battle.criticalRateBonus', { value: skill.criticalRateBonusPercent })
   }

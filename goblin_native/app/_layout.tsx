@@ -103,6 +103,17 @@ export default function RootLayout() {
                   }}
                 />
                 <Stack.Screen
+                  name="base/shop"
+                  options={{
+                    headerShown: true,
+                    headerStyle: { backgroundColor: '#FFFFFF' },
+                    headerTitleStyle: { color: '#1F2937', fontWeight: 'bold' },
+                    headerTintColor: '#6B7280',
+                    headerBackTitle: t('ui.common.back'),
+                    title: t('ui.root.equipmentShop'),
+                  }}
+                />
+                <Stack.Screen
                   name="goblin"
                   options={{
                     headerShown: true,
