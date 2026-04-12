@@ -16,6 +16,7 @@ export interface Enemy {
   atk: number
   def: number
   magicDef?: number       // 魔法防御力
+  magicHeal?: number      // 魔法回復量
   agility: number
   attackCount: number  // 攻撃回数
   accuracy: number     // 命中精度

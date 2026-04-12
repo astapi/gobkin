@@ -3,7 +3,7 @@ export interface AttackTargetDetail {
   targetId: string
   targetName: string
   targetRow: number       // ターゲットの隊列番号
-  totalDamage: number     // このターゲットへの合計ダメージ
+  totalDamage: number     // このターゲットへの合計ダメージ（回復は負値）
   hitCount: number        // このターゲットへの命中回数
   defeated: boolean       // この攻撃で倒したか
   targetHP: number        // 攻撃後の残りHP

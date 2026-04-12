@@ -88,6 +88,17 @@
       "exploration_time_sec": 40,
       "description": "廃墟の最深部。屍鬼が群れをなし、奥には死霊術師の残骸が眠る。",
       "unlockRequires": "undead_ruins_2",
+      "unlockNext": "road_1"
+    },
+    {
+      "id": "road_1",
+      "name": "街道",
+      "areaLevel": 12,
+      "floors": 2,
+      "exploration_time_sec_first": 90,
+      "exploration_time_sec": 35,
+      "description": "ゴブリン集落から最も近い街道。森から出てくる狼や盗賊、荷を守る人間の護衛が行き交う。",
+      "unlockRequires": "undead_ruins_3",
       "unlockNext": "orc_camp_1"
     },
     {
@@ -98,7 +109,7 @@
       "exploration_time_sec_first": 90,
       "exploration_time_sec": 35,
       "description": "オーク野営地の前哨。前線のブルートと、その後方に控える兵たちが見張りに立っている。",
-      "unlockRequires": "undead_ruins_3",
+      "unlockRequires": "road_1",
       "unlockNext": "orc_camp_2"
     },
     {

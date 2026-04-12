@@ -1,0 +1,364 @@
+{
+  "enemies": [
+    {
+      "id": "RD001",
+      "name": "街道オオカミ",
+      "raceTags": [
+        "beast"
+      ],
+      "level": 8,
+      "hp": 80,
+      "atk": 18,
+      "def": 6,
+      "agility": 12,
+      "attackCount": 2,
+      "accuracy": 270,
+      "evasion": 18,
+      "exp": 24,
+      "gold": 16
+    },
+    {
+      "id": "RD002",
+      "name": "ジャイアントスネーク",
+      "raceTags": [
+        "beast"
+      ],
+      "level": 9,
+      "hp": 100,
+      "atk": 24,
+      "def": 8,
+      "agility": 9,
+      "attackCount": 3,
+      "accuracy": 300,
+      "evasion": 18,
+      "exp": 32,
+      "gold": 22
+    },
+    {
+      "id": "RD003",
+      "name": "ジャイアントスコーピオン",
+      "raceTags": [
+        "insect"
+      ],
+      "level": 10,
+      "hp": 130,
+      "atk": 28,
+      "def": 16,
+      "agility": 6,
+      "attackCount": 3,
+      "accuracy": 305,
+      "evasion": 17,
+      "exp": 38,
+      "gold": 26
+    },
+    {
+      "id": "B_TRAVELER",
+      "name": "護衛付きの商人",
+      "raceTags": [
+        "human"
+      ],
+      "level": 19,
+      "hp": 220,
+      "atk": 1,
+      "def": 22,
+      "agility": 10,
+      "attackCount": 0,
+      "accuracy": 0,
+      "evasion": 28,
+      "exp": 120,
+      "gold": 180
+    },
+    {
+      "id": "B_HUM_GUARD",
+      "name": "護衛ガード",
+      "raceTags": [
+        "human"
+      ],
+      "level": 20,
+      "hp": 240,
+      "atk": 34,
+      "def": 36,
+      "agility": 7,
+      "attackCount": 1,
+      "accuracy": 380,
+      "evasion": 25,
+      "exp": 85,
+      "gold": 70,
+      "skills": [
+        {
+          "id": "cover_low_hp_ally",
+          "name": "かばう",
+          "coverLowHpAlly": true
+        }
+      ]
+    },
+    {
+      "id": "B_HUM_WARRIOR",
+      "name": "護衛ウォリアー",
+      "raceTags": [
+        "human"
+      ],
+      "level": 20,
+      "hp": 190,
+      "atk": 90,
+      "def": 22,
+      "agility": 11,
+      "attackCount": 2,
+      "accuracy": 395,
+      "evasion": 28,
+      "exp": 90,
+      "gold": 72
+    },
+    {
+      "id": "B_HUM_MAGE",
+      "name": "護衛メイジ",
+      "raceTags": [
+        "human"
+      ],
+      "level": 19,
+      "hp": 120,
+      "atk": 34,
+      "def": 10,
+      "agility": 10,
+      "attackCount": 1,
+      "accuracy": 385,
+      "evasion": 28,
+      "exp": 92,
+      "gold": 76,
+      "skills": [
+        {
+          "id": "grant_fireball",
+          "name": "ファイヤーボール",
+          "grantsSpellId": "fireball"
+        },
+        {
+          "id": "grant_magic_arrow",
+          "name": "マジックアロー",
+          "grantsSpellId": "magic_arrow"
+        }
+      ]
+    },
+    {
+      "id": "B_HUM_CLERIC",
+      "name": "護衛クレリック",
+      "raceTags": [
+        "human"
+      ],
+      "level": 19,
+      "hp": 150,
+      "atk": 28,
+      "def": 16,
+      "magicHeal": 75,
+      "agility": 9,
+      "attackCount": 1,
+      "accuracy": 375,
+      "evasion": 27,
+      "exp": 95,
+      "gold": 78,
+      "skills": [
+        {
+          "id": "grant_heal",
+          "name": "ヒール",
+          "grantsSpellId": "heal"
+        },
+        {
+          "id": "grant_shield_barrier",
+          "name": "シールドバリア",
+          "grantsSpellId": "shield_barrier"
+        },
+        {
+          "id": "grant_party_heal",
+          "name": "パーティヒール",
+          "grantsSpellId": "party_heal"
+        }
+      ]
+    }
+  ],
+  "patterns": [
+    {
+      "id": "RD1_001",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "RD001",
+          "RD001"
+        ],
+        [
+          "RD002"
+        ]
+      ]
+    },
+    {
+      "id": "RD1_002",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "RD002",
+          "RD002"
+        ],
+        [
+          "RD001"
+        ]
+      ]
+    },
+    {
+      "id": "RD1_003",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "RD003"
+        ],
+        [
+          "RD001",
+          "RD002"
+        ]
+      ]
+    },
+    {
+      "id": "RD1_004",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "RD001",
+          "RD001",
+          "RD002"
+        ],
+        [
+          "RD003"
+        ]
+      ]
+    },
+    {
+      "id": "RD1_005",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "RD003",
+          "RD002"
+        ],
+        [
+          "RD001"
+        ]
+      ]
+    },
+    {
+      "id": "RD1_006",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "RD002",
+          "RD002"
+        ],
+        [
+          "RD001",
+          "RD001"
+        ]
+      ]
+    },
+    {
+      "id": "RD1_007",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "RD003",
+          "RD003"
+        ],
+        [
+          "RD002"
+        ]
+      ]
+    },
+    {
+      "id": "RD1_008",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "RD003",
+          "RD002"
+        ],
+        [
+          "RD001",
+          "RD001"
+        ]
+      ]
+    },
+    {
+      "id": "RD1_009",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "RD001",
+          "RD001",
+          "RD002"
+        ],
+        [
+          "RD003"
+        ],
+        [
+          "RD002"
+        ]
+      ]
+    },
+    {
+      "id": "RD1_010",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "RD003",
+          "RD003"
+        ],
+        [
+          "RD002",
+          "RD001"
+        ],
+        [
+          "RD002"
+        ]
+      ]
+    },
+    {
+      "id": "BOSS",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "B_HUM_GUARD"
+        ],
+        [
+          "B_HUM_WARRIOR"
+        ],
+        [
+          "B_HUM_MAGE"
+        ],
+        [
+          "B_HUM_CLERIC"
+        ],
+        [
+          "B_TRAVELER"
+        ]
+      ],
+      "isBoss": true
+    }
+  ]
+}

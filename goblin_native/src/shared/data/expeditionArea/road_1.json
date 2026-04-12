@@ -1,0 +1,16 @@
+{
+  "id": "road_1",
+  "name": "街道",
+  "areaLevel": 12,
+  "floors": 2,
+  "baseDurationSec": 35,
+  "description": "ゴブリン集落から最も近い街道。森から出てくる狼や盗賊、荷を守る人間の護衛が行き交う。",
+  "encounter": {
+    "perFloorEvents": 3,
+    "eventWeights": {
+      "battle": 65,
+      "exploring": 35
+    }
+  },
+  "unlockNext": "orc_camp_1"
+}

@@ -48,6 +48,8 @@ interface BattleUnit {
   damageReduction: number  // 汎用の被ダメージ軽減率（0〜100）
   physicalDamageReduction: number  // 物理ダメージ軽減率（0〜100）
   magicDamageReduction: number  // 魔法ダメージ軽減率（0〜100）
+  breathDamageReduction: number // ブレスダメージ軽減率（0〜100）
+  magicHeal: number             // 魔法回復量
   row: number              // 隊列の列番号（0-based）
   rowSlot: number          // 列内のスロット番号（0-based）
   level: number            // 呪文のターゲット数計算用
@@ -280,9 +282,10 @@ export class BattleSystem {
         if (unit.currentHP <= 0) continue
 
         const targetGroup = unit.isAlly ? enemyUnits : allyUnits
+        const sourceGroup = unit.isAlly ? allyUnits : enemyUnits
 
-        // 行動決定: 呪文チャージがあれば呪文優先
-        const spellAction = this.decideSpellAction(unit)
+        // 行動決定: 有効に使える呪文チャージがあれば呪文優先
+        const spellAction = this.decideSpellAction(unit, targetGroup, sourceGroup)
 
         if (spellAction) {
           // 呪文実行
@@ -290,7 +293,7 @@ export class BattleSystem {
             unit,
             spellAction,
             targetGroup,
-            unit.isAlly ? allyUnits : enemyUnits,
+            sourceGroup,
             rng,
           )
 
@@ -313,8 +316,8 @@ export class BattleSystem {
           })
         } else {
           // 通常攻撃
-          const targetDetails: Map<string, AttackTargetDetail> = new Map()
           let totalHitCount = 0
+          const targetDetails: Map<string, AttackTargetDetail> = new Map()
 
           for (let atkIdx = 0; atkIdx < unit.attackCount; atkIdx++) {
             if (unit.currentHP <= 0) break
@@ -450,14 +453,45 @@ export class BattleSystem {
   /**
    * 使用可能な呪文があれば返す（呪文優先AI）
    */
-  private decideSpellAction(unit: BattleUnit): SpellDef | null {
+  private decideSpellAction(
+    unit: BattleUnit,
+    targetGroup: BattleUnit[],
+    sourceGroup: BattleUnit[],
+  ): SpellDef | null {
     for (const sc of unit.spellCharges) {
       if (sc.remaining > 0) {
         const def = SPELL_DEFS[sc.spellId]
-        if (def) return def
+        if (def && this.canUseSpell(def, targetGroup, sourceGroup)) return def
       }
     }
     return null
+  }
+
+  private canUseSpell(
+    spellDef: SpellDef,
+    targetGroup: BattleUnit[],
+    sourceGroup: BattleUnit[],
+  ): boolean {
+    const effect = spellDef.effect ?? 'damage'
+
+    if (effect === 'damage') {
+      return targetGroup.some(unit => unit.currentHP > 0)
+    }
+
+    if (effect === 'heal') {
+      return sourceGroup.some(unit => unit.currentHP > 0 && unit.currentHP < unit.maxHP)
+    }
+
+    if (effect === 'barrier') {
+      const reduction = spellDef.damageReductionPercent ?? 0
+      const breathReduction = spellDef.breathDamageReductionPercent ?? 0
+      return sourceGroup.some(unit => (
+        unit.currentHP > 0 &&
+        (unit.physicalDamageReduction < reduction || unit.breathDamageReduction < breathReduction)
+      ))
+    }
+
+    return false
   }
 
   /**
@@ -466,6 +500,8 @@ export class BattleSystem {
   private getSpellHitCount(spellDef: SpellDef, level: number): number {
     const t = spellDef.targeting
     if (t.type === 'random_hits') return t.hitCount
+    if (t.type === 'single_ally_lowest_hp') return 1
+    if (t.type === 'all_allies') return 0
     // multi_target
     const bonus = Math.floor(level / t.scaleLevelInterval) * t.scalePerLevel
     return t.baseTargets + bonus
@@ -484,6 +520,38 @@ export class BattleSystem {
     const targetDetails: Map<string, AttackTargetDetail> = new Map()
     let totalHitCount = 0
     const hitCount = this.getSpellHitCount(spellDef, unit.level)
+    const effect = spellDef.effect ?? 'damage'
+
+    if (effect === 'heal') {
+      const healAmount = Math.max(0, Math.floor(unit.magicHeal + (spellDef.healBonus ?? 0)))
+      const targets = spellDef.targeting.type === 'all_allies'
+        ? sourceGroup.filter(target => target.currentHP > 0 && target.currentHP < target.maxHP)
+        : this.selectLowestHpRatioAlly(sourceGroup)
+
+      for (const target of targets) {
+        const healed = this.applyHealing(target, healAmount)
+        if (healed <= 0) continue
+        totalHitCount++
+        this.accumulateTargetDetail(targetDetails, target, -healed)
+      }
+
+      return { targetDetails, totalHitCount }
+    }
+
+    if (effect === 'barrier') {
+      const damageReduction = spellDef.damageReductionPercent ?? 0
+      const breathReduction = spellDef.breathDamageReductionPercent ?? 0
+      const targets = sourceGroup.filter(target => target.currentHP > 0)
+
+      for (const target of targets) {
+        target.physicalDamageReduction = Math.max(target.physicalDamageReduction, damageReduction)
+        target.breathDamageReduction = Math.max(target.breathDamageReduction, breathReduction)
+        totalHitCount++
+        this.accumulateTargetDetail(targetDetails, target, 0)
+      }
+
+      return { targetDetails, totalHitCount }
+    }
 
     const spellSkill: Skill = {
       id: spellDef.id,
@@ -514,7 +582,7 @@ export class BattleSystem {
 
         this.accumulateTargetDetail(targetDetails, target, damage)
       }
-    } else {
+    } else if (spellDef.targeting.type === 'multi_target') {
       // ファイヤーボール: 最大hitCount体にそれぞれ1回ダメージ（重複なし）
       const aliveTargets = targetGroup.filter(t => t.currentHP > 0)
       const count = Math.min(hitCount, aliveTargets.length)
@@ -545,6 +613,19 @@ export class BattleSystem {
     }
 
     return { targetDetails, totalHitCount }
+  }
+
+  private selectLowestHpRatioAlly(sourceGroup: BattleUnit[]): BattleUnit[] {
+    const target = sourceGroup
+      .filter(unit => unit.currentHP > 0 && unit.currentHP < unit.maxHP)
+      .sort((a, b) => {
+        const aRatio = a.maxHP > 0 ? a.currentHP / a.maxHP : 1
+        const bRatio = b.maxHP > 0 ? b.currentHP / b.maxHP : 1
+        if (aRatio !== bRatio) return aRatio - bRatio
+        return a.row - b.row
+      })[0]
+
+    return target ? [target] : []
   }
 
   private accumulateTargetDetail(
@@ -583,6 +664,12 @@ export class BattleSystem {
     target.currentHP = Math.max(0, nextHP)
   }
 
+  private applyHealing(target: BattleUnit, amount: number): number {
+    const before = target.currentHP
+    target.currentHP = Math.min(target.maxHP, target.currentHP + amount)
+    return target.currentHP - before
+  }
+
   private createAllyUnit(goblin: Goblin, initialHP: number | undefined, originalIndex: number): BattleUnit {
     const combatant = this.combatantManager.fromGoblin(goblin)
     const actionOrderAgility = (goblin as Goblin & { agility?: number }).agility
@@ -607,6 +694,8 @@ export class BattleSystem {
       damageReduction,
       physicalDamageReduction,
       magicDamageReduction: 0,
+      breathDamageReduction: 0,
+      magicHeal: 0,
       row: originalIndex,  // 味方は1列1体（配列順 = 列番号）
       rowSlot: 0,
       level: goblin.level,
@@ -634,6 +723,8 @@ export class BattleSystem {
       damageReduction: 0,  // 敵は被ダメージ軽減なし
       physicalDamageReduction: (enemy.physicalResistancePercent ?? 0) + getPhysicalDamageReductionFromSkills(skills),
       magicDamageReduction: enemy.magicResistancePercent ?? 0,
+      breathDamageReduction: 0,
+      magicHeal: enemy.magicHeal ?? 0,
       row,
       rowSlot,
       level: enemy.level,
