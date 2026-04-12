@@ -41,6 +41,10 @@ export class EquipmentService {
       scaled.defToHpPercent = this.scaleValueByTitle(scaled.defToHpPercent, equipment)
     }
 
+    if (scaled.magicHealToHpPercent !== undefined) {
+      scaled.magicHealToHpPercent = this.scaleValueByTitle(scaled.magicHealToHpPercent, equipment)
+    }
+
     if (scaled.criticalDamageBonusPercent !== undefined) {
       scaled.criticalDamageBonusPercent = this.scaleValueByTitle(scaled.criticalDamageBonusPercent, equipment)
     }

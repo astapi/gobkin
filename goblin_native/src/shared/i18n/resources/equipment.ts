@@ -64,6 +64,13 @@ export const equipmentJa = {
   wand_ancient: { name: 'エンシェントワンド' },
   wand_dragon: { name: 'ドラゴンワンド' },
   wand_adamant: { name: 'アダマントワンド' },
+  rod_rod: { name: 'ロッド' },
+  rod_mithril: { name: 'ミスリルロッド' },
+  rod_royal: { name: 'ロイヤルロッド' },
+  rod_kaiser: { name: 'カイザーロッド' },
+  rod_ancient: { name: 'エンシェントロッド' },
+  rod_dragon: { name: 'ドラゴンロッド' },
+  rod_adamant: { name: 'アダマントロッド' },
 } as const
 
 export const equipmentEn = {
@@ -132,6 +139,13 @@ export const equipmentEn = {
   wand_ancient: { name: 'Ancient Wand' },
   wand_dragon: { name: 'Dragon Wand' },
   wand_adamant: { name: 'Adamant Wand' },
+  rod_rod: { name: 'Rod' },
+  rod_mithril: { name: 'Mithril Rod' },
+  rod_royal: { name: 'Royal Rod' },
+  rod_kaiser: { name: 'Kaiser Rod' },
+  rod_ancient: { name: 'Ancient Rod' },
+  rod_dragon: { name: 'Dragon Rod' },
+  rod_adamant: { name: 'Adamant Rod' },
 } as const
 
 export const equipmentKo = {
@@ -200,4 +214,11 @@ export const equipmentKo = {
   wand_ancient: { name: '에인션트 완드' },
   wand_dragon: { name: '드래곤 완드' },
   wand_adamant: { name: '아다만트 완드' },
+  rod_rod: { name: '로드' },
+  rod_mithril: { name: '미스릴 로드' },
+  rod_royal: { name: '로열 로드' },
+  rod_kaiser: { name: '카이저 로드' },
+  rod_ancient: { name: '에인션트 로드' },
+  rod_dragon: { name: '드래곤 로드' },
+  rod_adamant: { name: '아다만트 로드' },
 } as const

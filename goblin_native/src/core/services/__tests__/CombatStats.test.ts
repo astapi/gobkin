@@ -293,6 +293,25 @@ describe('ModStatCalculator — 戦闘ステータス計算', () => {
     delete factorDatabase.test_magic_heal
   })
 
+  it('魔法回復量HP変換スキルはmagicHealを減らさずHPへ加算する', () => {
+    const baseGoblin = createTestGoblin({
+      level: 3,
+      skills: [],
+      baseAttributes: { power: 10, wisdom: 10, spirit: 10, vitality: 10, agility: 10, luck: 10 },
+    })
+    const skilledGoblin = createTestGoblin({
+      level: 3,
+      skills: [{ id: 'magic_heal_to_hp_10', magicHealToHpPercent: 10 }],
+      baseAttributes: { power: 10, wisdom: 10, spirit: 10, vitality: 10, agility: 10, luck: 10 },
+    })
+    const bonuses = [{ stat: 'magicHeal_flat' as const, value: 20 }]
+    const baseResult = ModStatCalculator.calculate(baseGoblin, bonuses)
+    const skilledResult = ModStatCalculator.calculate(skilledGoblin, bonuses)
+
+    expect(skilledResult.magicHeal).toBe(baseResult.magicHeal)
+    expect(skilledResult.hp).toBe(baseResult.hp + Math.floor(skilledResult.magicHeal * 0.1))
+  })
+
   it('装備のattackCount_flatがマイナスでも攻撃回数は最低1になる', () => {
     const goblin = createTestGoblin()
     const bonuses = [

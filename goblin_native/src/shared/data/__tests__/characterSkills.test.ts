@@ -231,6 +231,15 @@ describe('characterSkills - 物理ダメージ軽減', () => {
     expect(describeCharacterSkill(skill)).toBe('[+10]必殺率')
   })
 
+  it('魔法回復量HP変換スキルの説明文を表記ルールどおり返す', () => {
+    const skill: CharacterSkill = {
+      id: 'magic_heal_to_hp_10',
+      magicHealToHpPercent: 10,
+    }
+
+    expect(describeCharacterSkill(skill)).toBe('[10%]魔法回復量→HP')
+  })
+
   it('行動順倍率スキルの説明文を返す', () => {
     const skill: CharacterSkill = {
       id: 'initiative',
