@@ -59,11 +59,17 @@ describe('goblinJobs', () => {
   it('レベル15未満ではレベル習得スキルを持たない', () => {
     const trained = applyGoblinJob(createGoblin({ level: 14 }), 'guard')
     expect(trained.skills.some((skill) => skill.id === 'cover_low_hp_ally')).toBe(false)
+    expect(trained.skills.some((skill) => skill.id === 'rear_guard')).toBe(false)
   })
 
   it('レベル15以上ではレベル習得スキルを持つ', () => {
     const trained = applyGoblinJob(createGoblin({ level: 15 }), 'mage')
     expect(trained.skills.some((skill) => skill.id === 'grant_blizzard')).toBe(true)
+  })
+
+  it('ゴブリンガードはレベル15で後列防護を習得する', () => {
+    const trained = applyGoblinJob(createGoblin({ level: 15 }), 'guard')
+    expect(trained.skills.some((skill) => skill.id === 'rear_guard')).toBe(true)
   })
 
   it('街道クリア後にクレリック訓練が解放される', () => {

@@ -51,6 +51,10 @@ const GOBLIN_JOB_DEFINITION_SEEDS: Record<GoblinJob, GoblinJobDefinitionSeed> = 
         unlockLevel: 15,
         skillId: 'cover_low_hp_ally',
       },
+      {
+        unlockLevel: 15,
+        skillId: 'rear_guard',
+      },
     ],
   },
   thief: {
