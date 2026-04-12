@@ -15,7 +15,8 @@
       "accuracy": 270,
       "evasion": 18,
       "exp": 24,
-      "gold": 16
+      "gold": 16,
+      "magicDef": 4
     },
     {
       "id": "RD002",
@@ -32,7 +33,8 @@
       "accuracy": 300,
       "evasion": 18,
       "exp": 32,
-      "gold": 22
+      "gold": 22,
+      "magicDef": 6
     },
     {
       "id": "RD003",
@@ -49,7 +51,8 @@
       "accuracy": 305,
       "evasion": 17,
       "exp": 38,
-      "gold": 26
+      "gold": 26,
+      "magicDef": 12
     },
     {
       "id": "B_TRAVELER",
@@ -66,7 +69,8 @@
       "accuracy": 0,
       "evasion": 28,
       "exp": 120,
-      "gold": 180
+      "gold": 180,
+      "magicDef": 17
     },
     {
       "id": "B_HUM_GUARD",
@@ -90,7 +94,8 @@
           "name": "かばう",
           "coverLowHpAlly": true
         }
-      ]
+      ],
+      "magicDef": 28
     },
     {
       "id": "B_HUM_WARRIOR",
@@ -107,7 +112,8 @@
       "accuracy": 395,
       "evasion": 28,
       "exp": 90,
-      "gold": 72
+      "gold": 72,
+      "magicDef": 17
     },
     {
       "id": "B_HUM_MAGE",
@@ -118,6 +124,7 @@
       "level": 19,
       "hp": 120,
       "atk": 34,
+      "magicAtk": 34,
       "def": 10,
       "agility": 10,
       "attackCount": 1,
@@ -136,7 +143,8 @@
           "name": "マジックアロー",
           "grantsSpellId": "magic_arrow"
         }
-      ]
+      ],
+      "magicDef": 8
     },
     {
       "id": "B_HUM_CLERIC",
@@ -171,7 +179,8 @@
           "name": "パーティヒール",
           "grantsSpellId": "party_heal"
         }
-      ]
+      ],
+      "magicDef": 12
     }
   ],
   "patterns": [

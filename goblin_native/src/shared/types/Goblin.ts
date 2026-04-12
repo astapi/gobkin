@@ -6,7 +6,9 @@ import type { GoblinRaceId } from './Race'
 export type GoblinStats = {
   hp: number
   atk: number
+  magicAtk: number     // 魔法攻撃力
   def: number
+  magicDef: number     // 魔法防御力
   attackCount: number  // 攻撃回数（種族基本値、ゴブリン=2）
   accuracy: number     // 命中精度
   evasion: number      // 回避能力

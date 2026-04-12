@@ -15,7 +15,8 @@
       "accuracy": 215,
       "evasion": 12,
       "exp": 24,
-      "gold": 18
+      "gold": 18,
+      "magicDef": 8
     },
     {
       "id": "ORC005",
@@ -32,7 +33,8 @@
       "accuracy": 205,
       "evasion": 13,
       "exp": 36,
-      "gold": 28
+      "gold": 28,
+      "magicDef": 12
     }
   ],
   "patterns": [

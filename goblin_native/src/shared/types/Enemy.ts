@@ -14,6 +14,7 @@ export interface Enemy {
   level: number
   hp: number
   atk: number
+  magicAtk?: number        // 魔法攻撃力
   def: number
   magicDef?: number       // 魔法防御力
   magicHeal?: number      // 魔法回復量

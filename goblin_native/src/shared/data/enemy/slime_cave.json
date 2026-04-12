@@ -15,7 +15,8 @@
       "accuracy": 70,
       "evasion": 9,
       "exp": 1,
-      "gold": 1
+      "gold": 1,
+      "magicDef": 0
     },
     {
       "id": "B_SLIME",
@@ -38,7 +39,8 @@
           "factorId": "slime",
           "probability": 1
         }
-      ]
+      ],
+      "magicDef": 1
     }
   ],
   "patterns": [

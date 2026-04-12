@@ -11,6 +11,8 @@ import {
   calculateGoblinBaseDef,
   calculateGoblinBaseEvasion,
   calculateGoblinBaseHp,
+  calculateGoblinBaseMagicAtk,
+  calculateGoblinBaseMagicDef,
   calculateGoblinBaseMagicHeal,
   getGoblinBaseAttributes,
 } from '../../shared/utils/goblinHp'
@@ -181,7 +183,9 @@ export class GoblinBirthService {
     return {
       hp: calculateGoblinBaseHp(1, { race: bloodline, raceId: normalizeGoblinRaceId(bloodline) }),
       atk: calculateGoblinBaseAtk(1, { race: bloodline, raceId: normalizeGoblinRaceId(bloodline) }),
+      magicAtk: calculateGoblinBaseMagicAtk(1, { race: bloodline, raceId: normalizeGoblinRaceId(bloodline) }),
       def: calculateGoblinBaseDef(1, { race: bloodline, raceId: normalizeGoblinRaceId(bloodline) }),
+      magicDef: calculateGoblinBaseMagicDef(1, { race: bloodline, raceId: normalizeGoblinRaceId(bloodline) }),
       attackCount: calculateGoblinBaseAttackCount(1, { race: bloodline, raceId: normalizeGoblinRaceId(bloodline) }),
       accuracy: calculateGoblinBaseAccuracy(1, { race: bloodline, raceId: normalizeGoblinRaceId(bloodline) }),
       evasion: calculateGoblinBaseEvasion(1, { race: bloodline, raceId: normalizeGoblinRaceId(bloodline) }),

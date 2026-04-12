@@ -51,6 +51,7 @@ interface BattleUnit {
   breathDamageReduction: number // ブレスダメージ軽減率（0〜100）
   shieldBarrierDamageReduction: number // シールドバリアの攻撃ダメージ軽減率（0〜100）
   shieldBarrierBreathDamageReduction: number // シールドバリアのブレスダメージ軽減率（0〜100）
+  magicAtk: number              // 魔法攻撃力
   magicHeal: number             // 魔法回復量
   shieldBarrierActive?: boolean  // シールドバリア状態
   row: number              // 隊列の列番号（0-based）
@@ -88,6 +89,11 @@ const DEFAULT_DAMAGE_OPTIONS: DamageOptions = {
   defConstant: 100,
   randomMin: 0.95,
   randomMax: 1.05,
+}
+
+const SPELL_DAMAGE_OPTIONS: DamageOptions = {
+  ...DEFAULT_DAMAGE_OPTIONS,
+  isMagic: true,
 }
 
 // 差5程度なら低敏捷側にも約10%の先行余地を持たせるため、広めの乗算乱数を使う
@@ -574,7 +580,7 @@ export class BattleSystem {
 
         const baseDamage = this.damageCalculator.calcDamage(
           RACE_DICT, unit.combatant, target.combatant,
-          spellSkill, DEFAULT_DAMAGE_OPTIONS, rng,
+          spellSkill, SPELL_DAMAGE_OPTIONS, rng,
         )
         const rearDamageMultiplier = this.getRearDamageMultiplier(unit, sourceGroup)
         const reductionFactor = 1 - target.damageReduction / 100
@@ -602,7 +608,7 @@ export class BattleSystem {
       for (const target of selected) {
         const baseDamage = this.damageCalculator.calcDamage(
           RACE_DICT, unit.combatant, target.combatant,
-          spellSkill, DEFAULT_DAMAGE_OPTIONS, rng,
+          spellSkill, SPELL_DAMAGE_OPTIONS, rng,
         )
         const rearDamageMultiplier = this.getRearDamageMultiplier(unit, sourceGroup)
         const reductionFactor = 1 - target.damageReduction / 100
@@ -701,6 +707,7 @@ export class BattleSystem {
       breathDamageReduction: 0,
       shieldBarrierDamageReduction: 0,
       shieldBarrierBreathDamageReduction: 0,
+      magicAtk: effectiveStats.magicAtk,
       magicHeal: effectiveStats.magicHeal,
       shieldBarrierActive: false,
       row: originalIndex,  // 味方は1列1体（配列順 = 列番号）
@@ -733,6 +740,7 @@ export class BattleSystem {
       breathDamageReduction: 0,
       shieldBarrierDamageReduction: 0,
       shieldBarrierBreathDamageReduction: 0,
+      magicAtk: enemy.magicAtk ?? enemy.atk,
       magicHeal: enemy.magicHeal ?? 0,
       shieldBarrierActive: false,
       row,

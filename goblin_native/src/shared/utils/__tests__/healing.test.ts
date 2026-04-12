@@ -9,7 +9,7 @@ function createGoblin(level: number, race = 'ゴブリン'): Goblin {
     level,
     experience: 0,
     avatar: 'test.png',
-    stats: { hp: 10, atk: 1, def: 1, attackCount: 1, accuracy: 1, evasion: 1, magicHeal: 1 },
+    stats: { hp: 10, atk: 1, magicAtk: 0, def: 1, magicDef: 0, attackCount: 1, accuracy: 1, evasion: 1, magicHeal: 1 },
     skills: [],
   }
 }

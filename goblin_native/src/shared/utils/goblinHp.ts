@@ -113,6 +113,17 @@ export function calculateGoblinBaseDef(level: number, goblin: GoblinStatContext)
   return Math.round(attributes.vitality * (1 + levelScale * coefficient))
 }
 
+export function calculateGoblinBaseMagicDef(level: number, goblin: GoblinStatContext): number {
+  if (hasStoredStat(goblin, 'magicDef')) {
+    return goblin.stats.magicDef
+  }
+
+  const attributes = getGoblinBaseAttributes(goblin)
+  const levelScale = getGoblinStatLevelScale(level, goblin.raceId ?? goblin.race)
+  const coefficient = getGoblinStatCoefficient(goblin)
+  return Math.round(attributes.spirit * (1 + levelScale * 1 * coefficient))
+}
+
 export function calculateGoblinBaseAccuracy(level: number, goblin: GoblinStatContext): number {
   if (hasStoredStat(goblin, 'accuracy')) {
     return goblin.stats.accuracy
@@ -154,6 +165,17 @@ export function calculateGoblinBaseAttackCount(level: number, goblin: GoblinStat
   return Math.round(combined * 2 + bloodlineAttackCountBonus)
 }
 
+export function calculateGoblinBaseMagicAtk(level: number, goblin: GoblinStatContext): number {
+  if (hasStoredStat(goblin, 'magicAtk')) {
+    return goblin.stats.magicAtk
+  }
+
+  const attributes = getGoblinBaseAttributes(goblin)
+  const levelScale = getGoblinStatLevelScale(level, goblin.raceId ?? goblin.race)
+  const coefficient = getGoblinStatCoefficient(goblin)
+  return Math.round(attributes.wisdom * (1 + levelScale * 1 * coefficient))
+}
+
 export function calculateGoblinBaseMagicHeal(level: number, goblin: GoblinStatContext): number {
   if (hasStoredStat(goblin, 'magicHeal')) {
     return goblin.stats.magicHeal
@@ -172,7 +194,9 @@ export function calculateGoblinDerivedStats(
   return {
     hp: calculateGoblinBaseHp(level, goblin),
     atk: calculateGoblinBaseAtk(level, goblin),
+    magicAtk: calculateGoblinBaseMagicAtk(level, goblin),
     def: calculateGoblinBaseDef(level, goblin),
+    magicDef: calculateGoblinBaseMagicDef(level, goblin),
     attackCount: calculateGoblinBaseAttackCount(level, goblin),
     accuracy: calculateGoblinBaseAccuracy(level, goblin),
     evasion: calculateGoblinBaseEvasion(level, goblin),

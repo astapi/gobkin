@@ -22,12 +22,19 @@ export function calculateGoblinEffectiveStats(
  */
 export function getEffectiveStats(goblin: Goblin): GoblinStats {
   if (goblin.effectiveStats) {
-    if (goblin.effectiveStats.magicHeal !== undefined) {
+    if (
+      goblin.effectiveStats.magicAtk !== undefined &&
+      goblin.effectiveStats.magicDef !== undefined &&
+      goblin.effectiveStats.magicHeal !== undefined
+    ) {
       return goblin.effectiveStats
     }
+    const computed = calculateGoblinEffectiveStats(goblin)
     return {
       ...goblin.effectiveStats,
-      magicHeal: calculateGoblinEffectiveStats(goblin).magicHeal,
+      magicAtk: goblin.effectiveStats.magicAtk ?? computed.magicAtk,
+      magicDef: goblin.effectiveStats.magicDef ?? computed.magicDef,
+      magicHeal: goblin.effectiveStats.magicHeal ?? computed.magicHeal,
     }
   }
   return calculateGoblinEffectiveStats(goblin)

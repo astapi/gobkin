@@ -57,7 +57,9 @@ export interface PartyState {
   // 基礎ステータス（ModStatCalculatorが因子・Modを適用する）
   baseHP: number
   atk: number
+  magicAtk: number
   def: number
+  magicDef: number
   agility: number
   attackCount: number
   accuracy: number
