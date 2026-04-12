@@ -20,10 +20,11 @@ export interface BattleLogEntry {
   actorHP: number         // 攻撃者の現在HP
   actorMaxHP: number      // 攻撃者の最大HP
   isAlly: boolean
+  actionEffect?: 'damage' | 'heal' | 'barrier'
   targets: AttackTargetDetail[]  // ターゲットごとの結果
   turnState?: {
-    allies: Array<{ id: string; name: string; currentHP: number; maxHP: number }>
-    enemies: Array<{ id: string; name: string; currentHP: number; maxHP: number }>
+    allies: Array<{ id: string; name: string; currentHP: number; maxHP: number; shieldBarrierActive?: boolean }>
+    enemies: Array<{ id: string; name: string; currentHP: number; maxHP: number; shieldBarrierActive?: boolean }>
   }
 }
 

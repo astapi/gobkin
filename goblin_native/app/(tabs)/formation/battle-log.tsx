@@ -62,13 +62,13 @@ export default function BattleLogScreen() {
                   <Text style={styles.sectionLabel}>{t('ui.formation.battleLog.allies')}</Text>
                   {entry.turnState.allies.map(ally => (
                     <Text key={ally.id} style={styles.sectionText}>
-                      {ally.name} {ally.currentHP}/{ally.maxHP} HP
+                      {ally.name} {ally.currentHP}/{ally.maxHP} HP{ally.shieldBarrierActive ? ` (${t('ui.formation.battleLog.shieldBarrierStatus')})` : ''}
                     </Text>
                   ))}
                   <Text style={styles.sectionLabel}>{t('ui.formation.battleLog.enemies')}</Text>
                   {entry.turnState.enemies.map((enemy, enemyIndex) => (
                     <Text key={`${enemy.id}-${enemyIndex}`} style={styles.sectionText}>
-                      {enemy.name} {enemy.currentHP}/{enemy.maxHP} HP
+                      {enemy.name} {enemy.currentHP}/{enemy.maxHP} HP{enemy.shieldBarrierActive ? ` (${t('ui.formation.battleLog.shieldBarrierStatus')})` : ''}
                     </Text>
                   ))}
                 </View>
@@ -81,6 +81,20 @@ export default function BattleLogScreen() {
 
             const isSpell = entry.action !== t('battle.normalAttack') && entry.action !== 'turn_start'
             const isHealingAction = entry.targets?.some(target => target.totalDamage < 0) ?? false
+            const isBarrierAction = entry.actionEffect === 'barrier' || entry.action === t('entities.spell.shield_barrier')
+
+            if (isBarrierAction) {
+              return (
+                <View key={`log-${index}`} style={styles.logCard}>
+                  <Text style={styles.logTitle}>
+                    {t('ui.formation.battleLog.spellTitle', { actor: entry.actorName, action: entry.action, hp: entry.actorHP, maxHp: entry.actorMaxHP })}
+                  </Text>
+                  <Text style={styles.logText}>
+                    {t('ui.formation.battleLog.shieldBarrierSummary')}
+                  </Text>
+                </View>
+              )
+            }
 
             return (
               <View key={`log-${index}`} style={styles.logCard}>
