@@ -16,6 +16,7 @@ import { getDungeonName, getEquipmentDisplayName } from '@/shared/i18n/entityLoc
 import { getEquipmentTemplate } from '@/shared/data/equipmentPoolLoader'
 import { getDungeonTierDisplayName } from '@/shared/types'
 import { addExperience } from '@/core/services/ExperienceSystem'
+import { getExpBonusPercentFromSkills } from '@/shared/data/characterSkills'
 
 interface LogEntry {
   id: string
@@ -160,13 +161,22 @@ export default function ExpeditionPlaybackScreen() {
         const xpPerMember = aliveIndices.length > 0 ? Math.floor(rewardedXp / aliveIndices.length) : 0
         const levelUps = new Map<number, { oldLevel: number; newLevel: number }>()
 
+        // 各メンバーのEXPボーナス倍率を計算
+        const memberExpMultipliers = partyMembers.map((_, idx) => {
+          const goblin = partyGoblins[idx]
+          if (!goblin) return 1
+          const bonusPercent = getExpBonusPercentFromSkills(goblin.skills)
+          return bonusPercent > 0 ? 1 + bonusPercent / 100 : 1
+        })
+
         if (rewardedXp > 0 && xpPerMember > 0) {
           const nextExpState = partyExpRef.current.map(state => ({ ...state }))
           for (const index of aliveIndices) {
             const current = nextExpState[index]
             if (!current) continue
 
-            const levelUp = addExperience(current.level, current.experience, xpPerMember)
+            const boostedXp = Math.floor(xpPerMember * memberExpMultipliers[index])
+            const levelUp = addExperience(current.level, current.experience, boostedXp)
             nextExpState[index] = {
               level: levelUp.newLevel,
               experience: levelUp.remainingExp,
@@ -197,7 +207,7 @@ export default function ExpeditionPlaybackScreen() {
               maxHP: goblin ? getEffectiveStats(goblin).hp : 100,
               level: expState?.level ?? goblin?.level ?? 1,
               xpEach: aliveIndices.includes(idx) ? xpPerMember : 0,
-              expMultiplier: 1,
+              expMultiplier: memberExpMultipliers[idx],
               levelUp: levelUps.get(idx),
             }
           }),

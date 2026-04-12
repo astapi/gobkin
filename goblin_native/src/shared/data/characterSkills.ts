@@ -104,6 +104,22 @@ export function describeCharacterSkill(skill: CharacterSkill): string {
     return i18n.t('battle.criticalDamageBonus', { value: skill.criticalDamageBonusPercent })
   }
 
+  if (skill.expBonusPercent !== undefined) {
+    return i18n.t('battle.expBonus', { value: skill.expBonusPercent })
+  }
+
+  if (skill.goldBonusPercent !== undefined) {
+    return i18n.t('battle.goldBonus', { value: skill.goldBonusPercent })
+  }
+
+  if (skill.undead) {
+    return i18n.t('battle.undead')
+  }
+
+  if (skill.hpRegenPercent !== undefined) {
+    return i18n.t('battle.hpRegen', { value: skill.hpRegenPercent })
+  }
+
   if (skill.protectRearAllyNormalAttackMultiplier !== undefined) {
     const reducedRate = Math.round((1 - skill.protectRearAllyNormalAttackMultiplier) * 100)
     return i18n.t('battle.rearProtection', { value: reducedRate })
@@ -258,6 +274,31 @@ export function getLearnedSpellsFromSkills(skills: CharacterSkill[]): LearnedSpe
   }
 
   return [...spellMap.values()]
+}
+
+export function getExpBonusPercentFromSkills(skills: CharacterSkill[]): number {
+  return getUniqueSkillsById(skills).reduce(
+    (sum, skill) => sum + (skill.expBonusPercent ?? 0),
+    0,
+  )
+}
+
+export function getGoldBonusPercentFromSkills(skills: CharacterSkill[]): number {
+  return getUniqueSkillsById(skills).reduce(
+    (max, skill) => Math.max(max, skill.goldBonusPercent ?? 0),
+    0,
+  )
+}
+
+export function hasUndeadSkill(skills: CharacterSkill[]): boolean {
+  return getUniqueSkillsById(skills).some((skill) => skill.undead)
+}
+
+export function getHpRegenPercentFromSkills(skills: CharacterSkill[]): number {
+  return getUniqueSkillsById(skills).reduce(
+    (sum, skill) => sum + (skill.hpRegenPercent ?? 0),
+    0,
+  )
 }
 
 function getEquipmentValueMultiplier(

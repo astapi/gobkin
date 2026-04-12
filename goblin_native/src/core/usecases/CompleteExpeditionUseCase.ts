@@ -1,6 +1,7 @@
 import type { ExpeditionReplay, Goblin, MemberLevelUp, TimelineEvent, TreasureDrop } from '../../shared/types'
 import { getEnemyDatabase } from '../../shared/data/enemy'
 import { getEffectiveStats } from '../../shared/utils/goblinStats'
+import { getExpBonusPercentFromSkills, hasUndeadSkill } from '../../shared/data/characterSkills'
 import { GoblinEntity } from '../domain'
 import type { IGoblinRepository, IPartyRepository, IBaseStateRepository } from '../repositories'
 import type { IEquipmentRepository } from '../repositories/IEquipmentRepository'
@@ -107,7 +108,12 @@ export class CompleteExpeditionUseCase {
     const latestGoblins = new Map(goblins.map(g => [g.id, g]))
 
     for (const goblin of goblins) {
-      const expToGain = perGoblinExp.get(goblin.id) ?? 0
+      // 獲得経験値スキルによるボーナス適用
+      const expBonusPercent = getExpBonusPercentFromSkills(goblin.skills)
+      const baseExp = perGoblinExp.get(goblin.id) ?? 0
+      const expToGain = expBonusPercent > 0
+        ? Math.floor(baseExp * (1 + expBonusPercent / 100))
+        : baseExp
       if (expToGain <= 0) continue
 
       const entity = new GoblinEntity(goblin)
@@ -171,7 +177,18 @@ export class CompleteExpeditionUseCase {
       const goblinId = Number.parseInt(partyIds[index], 10)
       if (Number.isNaN(goblinId)) continue
 
-      await this.goblinRepository.updateGoblinCurrentHp(goblinId, currentHP[index] ?? 0)
+      // アンデッドスキル: HP0でも遠征終了時にHP全回復
+      const hp = currentHP[index] ?? 0
+      if (hp <= 0) {
+        const goblin = goblins.find(g => g.id === goblinId)
+        if (goblin && hasUndeadSkill(goblin.skills)) {
+          await this.goblinRepository.updateGoblinCurrentHp(goblinId, null)
+        } else {
+          await this.goblinRepository.updateGoblinCurrentHp(goblinId, hp)
+        }
+      } else {
+        await this.goblinRepository.updateGoblinCurrentHp(goblinId, hp)
+      }
       if (!updatedGoblinIds.includes(goblinId)) {
         updatedGoblinIds.push(goblinId)
       }

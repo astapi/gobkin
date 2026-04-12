@@ -68,6 +68,7 @@ export const goblinVariantDefinitions: Record<string, GoblinVariantDefinition> =
     defaultSkillIds: [
       'armor_mastery_130',
       'rear_guard',
+      'hp_regen_20',
     ],
   },
   wolf: {
@@ -134,7 +135,10 @@ export const goblinVariantDefinitions: Record<string, GoblinVariantDefinition> =
       { type: 'stat_bonus', target: 'hp', value: 40 },
       { type: 'stat_bonus', target: 'atk', value: 10 },
     ],
-    defaultSkillIds: [],
+    defaultSkillIds: [
+      'undead_trait',
+      'hp_regen_20',
+    ],
   },
   hobgoblin: {
     factorId: 'hobgoblin',

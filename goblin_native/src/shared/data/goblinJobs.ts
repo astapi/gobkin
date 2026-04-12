@@ -65,6 +65,9 @@ const GOBLIN_JOB_DEFINITION_SEEDS: Record<GoblinJob, GoblinJobDefinitionSeed> = 
         skillId: 'action_order_150',
       },
       {
+        skillId: 'gold_bonus_50',
+      },
+      {
         unlockLevel: 15,
         skillId: 'evasion_150',
       },

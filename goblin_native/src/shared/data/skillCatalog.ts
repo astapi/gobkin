@@ -249,6 +249,26 @@ export const CHARACTER_SKILL_CATALOG = {
     surviveLethalDamageAtHp1: true,
   },
 
+  exp_bonus_70: {
+    id: 'exp_bonus_70',
+    expBonusPercent: 70,
+  },
+
+  gold_bonus_50: {
+    id: 'gold_bonus_50',
+    goldBonusPercent: 50,
+  },
+
+  undead_trait: {
+    id: 'undead_trait',
+    undead: true,
+  },
+
+  hp_regen_20: {
+    id: 'hp_regen_20',
+    hpRegenPercent: 20,
+  },
+
   weapon_melee_attack: {
     id: 'weapon_melee_attack',
     descriptionKey: 'entities.skill.weapon_melee_attack.description',
