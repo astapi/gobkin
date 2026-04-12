@@ -8,6 +8,7 @@ import {
   getPhysicalDamageReductionFromSkills,
   getRearProtectionMultiplierFromSkills,
   getRowDamageMultiplierFromSkills,
+  getSpellDamagePercentFromSkills,
   hasCoverLowHpAllySkill,
   hasSurviveLethalDamageAtHp1Skill,
 } from '../../shared/data/characterSkills'
@@ -53,6 +54,7 @@ interface BattleUnit {
   shieldBarrierBreathDamageReduction: number // シールドバリアのブレスダメージ軽減率（0〜100）
   magicAtk: number              // 魔法攻撃力
   magicHeal: number             // 魔法回復量
+  spellDamagePercent: number    // 魔法威力の増減（%）
   shieldBarrierActive?: boolean  // シールドバリア状態
   row: number              // 隊列の列番号（0-based）
   rowSlot: number          // 列内のスロット番号（0-based）
@@ -94,6 +96,22 @@ const DEFAULT_DAMAGE_OPTIONS: DamageOptions = {
 const SPELL_DAMAGE_OPTIONS: DamageOptions = {
   ...DEFAULT_DAMAGE_OPTIONS,
   isMagic: true,
+}
+
+/** レベル帯ごとの魔法追加ダメージ基本値 */
+const SPELL_BONUS_BASE_BY_LEVEL: { maxLevel: number; base: number }[] = [
+  { maxLevel: 5, base: 14.1 },
+  { maxLevel: 10, base: 21.1 },
+  { maxLevel: 15, base: 31.5 },
+  { maxLevel: 20, base: 37.9 },
+  { maxLevel: 25, base: 45.5 },
+  { maxLevel: 99, base: 50.0 },
+]
+
+function getSpellBonusDamage(level: number, spellCoefficient: number): number {
+  const entry = SPELL_BONUS_BASE_BY_LEVEL.find(e => level <= e.maxLevel)
+  if (!entry || spellCoefficient === 0) return 0
+  return entry.base * spellCoefficient * (1 + level / 20)
 }
 
 // 差5程度なら低敏捷側にも約10%の先行余地を持たせるため、広めの乗算乱数を使う
@@ -568,6 +586,7 @@ export class BattleSystem {
       name: getSpellLabel(spellDef),
       power: spellDef.power,
     }
+    const spellBonusDamage = getSpellBonusDamage(unit.level, spellDef.spellCoefficient ?? 0)
 
     if (spellDef.targeting.type === 'random_hits') {
       // マジックアロー: ランダムにhitCount回攻撃（同じ敵に複数回当たりうる）
@@ -581,11 +600,12 @@ export class BattleSystem {
         const baseDamage = this.damageCalculator.calcDamage(
           RACE_DICT, unit.combatant, target.combatant,
           spellSkill, SPELL_DAMAGE_OPTIONS, rng,
-        )
+        ) + spellBonusDamage
         const rearDamageMultiplier = this.getRearDamageMultiplier(unit, sourceGroup)
+        const spellDamageFactor = 1 + unit.spellDamagePercent / 100
         const reductionFactor = 1 - target.damageReduction / 100
         const magicReductionFactor = 1 - target.magicDamageReduction / 100
-        const damage = Math.max(1, Math.floor(baseDamage * rearDamageMultiplier * reductionFactor * magicReductionFactor))
+        const damage = Math.max(1, Math.floor(baseDamage * rearDamageMultiplier * spellDamageFactor * reductionFactor * magicReductionFactor))
 
         this.applyDamage(target, damage)
         totalHitCount++
@@ -609,11 +629,12 @@ export class BattleSystem {
         const baseDamage = this.damageCalculator.calcDamage(
           RACE_DICT, unit.combatant, target.combatant,
           spellSkill, SPELL_DAMAGE_OPTIONS, rng,
-        )
+        ) + spellBonusDamage
         const rearDamageMultiplier = this.getRearDamageMultiplier(unit, sourceGroup)
+        const spellDamageFactor = 1 + unit.spellDamagePercent / 100
         const reductionFactor = 1 - target.damageReduction / 100
         const magicReductionFactor = 1 - target.magicDamageReduction / 100
-        const damage = Math.max(1, Math.floor(baseDamage * rearDamageMultiplier * reductionFactor * magicReductionFactor))
+        const damage = Math.max(1, Math.floor(baseDamage * rearDamageMultiplier * spellDamageFactor * reductionFactor * magicReductionFactor))
 
         this.applyDamage(target, damage)
         totalHitCount++
@@ -709,6 +730,7 @@ export class BattleSystem {
       shieldBarrierBreathDamageReduction: 0,
       magicAtk: effectiveStats.magicAtk,
       magicHeal: effectiveStats.magicHeal,
+      spellDamagePercent: getSpellDamagePercentFromSkills(goblin.skills),
       shieldBarrierActive: false,
       row: originalIndex,  // 味方は1列1体（配列順 = 列番号）
       rowSlot: 0,
@@ -742,6 +764,7 @@ export class BattleSystem {
       shieldBarrierBreathDamageReduction: 0,
       magicAtk: enemy.magicAtk ?? enemy.atk,
       magicHeal: enemy.magicHeal ?? 0,
+      spellDamagePercent: getSpellDamagePercentFromSkills(skills),
       shieldBarrierActive: false,
       row,
       rowSlot,

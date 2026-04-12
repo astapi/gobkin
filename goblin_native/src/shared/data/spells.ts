@@ -8,6 +8,7 @@ export const SPELL_DEFS: Record<string, SpellDef> = {
     power: 0.8,
     targeting: { type: 'random_hits', hitCount: 3 },
     defaultCharges: 1,
+    spellCoefficient: 1.0,
   },
   fireball: {
     id: 'fireball',
@@ -20,6 +21,7 @@ export const SPELL_DEFS: Record<string, SpellDef> = {
       scaleLevelInterval: 12,
     },
     defaultCharges: 1,
+    spellCoefficient: 1.0,
   },
   fireball_twice: {
     id: 'fireball_twice',
@@ -32,6 +34,7 @@ export const SPELL_DEFS: Record<string, SpellDef> = {
       scaleLevelInterval: 12,
     },
     defaultCharges: 2,
+    spellCoefficient: 1.0,
   },
   blizzard: {
     id: 'blizzard',
@@ -44,6 +47,7 @@ export const SPELL_DEFS: Record<string, SpellDef> = {
       scaleLevelInterval: 8,
     },
     defaultCharges: 1,
+    spellCoefficient: 1.0,
   },
   heal: {
     id: 'heal',
