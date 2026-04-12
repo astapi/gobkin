@@ -423,6 +423,7 @@ const ja = {
       thief: { name: 'ゴブリンシーフ', shortLabel: '速さ', summary: '速度と回避を伸ばし、手数と奇襲に寄せる。', description: '斥候として鍛え上げ、素早さと回避能力を高めます。' },
       mage: { name: 'ゴブリンメイジ', shortLabel: '魔法', summary: '呪文を習得し、範囲攻撃を扱えるようになる。', description: '呪文訓練を施し、魔力と範囲攻撃を扱える後衛に変えます。' },
       warrior: { name: 'ゴブリンウォリアー', shortLabel: '攻撃', summary: '攻撃性能を大きく伸ばし、殴り合いに強くする。', description: '武闘訓練を施し、攻撃力と手数を前線向けに強化します。' },
+      cleric: { name: 'ゴブリンクレリック', shortLabel: '回復', summary: '回復呪文と防護呪文で味方を支える。', description: '祈祷訓練を施し、回復と防護を担う支援役にします。' },
     },
     stat: {
       hp: 'HP',

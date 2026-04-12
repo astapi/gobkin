@@ -18,6 +18,7 @@ import {
   calculateGoblinBaseDef,
   calculateGoblinBaseEvasion,
   calculateGoblinBaseHp,
+  calculateGoblinBaseMagicHeal,
 } from '../../shared/utils/goblinHp'
 
 /**
@@ -42,6 +43,7 @@ export class ModStatCalculator {
       attackCount: calculateGoblinBaseAttackCount(goblin.level, goblin),
       accuracy: calculateGoblinBaseAccuracy(goblin.level, goblin),
       evasion: calculateGoblinBaseEvasion(goblin.level, goblin),
+      magicHeal: calculateGoblinBaseMagicHeal(goblin.level, goblin),
     }
     const mods = goblin.mods ?? []
 
@@ -85,6 +87,7 @@ export class ModStatCalculator {
       attackCount: Math.max(1, withMultiplier('attackCount')),
       accuracy: withMultiplier('accuracy'),
       evasion: withMultiplier('evasion'),
+      magicHeal: withMultiplier('magicHeal'),
     }
 
     // 6. パッシブスキル由来の最終効果を適用（ステータス確定後）
@@ -121,7 +124,7 @@ export class ModStatCalculator {
   }
 
   private static readonly ZERO_STATS: Record<keyof GoblinStats, number> = {
-    hp: 0, atk: 0, def: 0, attackCount: 0, accuracy: 0, evasion: 0,
+    hp: 0, atk: 0, def: 0, attackCount: 0, accuracy: 0, evasion: 0, magicHeal: 0,
   }
 
   /** stat名からGoblinStatsのキーを抽出（例: 'hp_flat' → 'hp'） */

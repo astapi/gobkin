@@ -695,7 +695,7 @@ export class BattleSystem {
       physicalDamageReduction,
       magicDamageReduction: 0,
       breathDamageReduction: 0,
-      magicHeal: 0,
+      magicHeal: effectiveStats.magicHeal,
       row: originalIndex,  // 味方は1列1体（配列順 = 列番号）
       rowSlot: 0,
       level: goblin.level,

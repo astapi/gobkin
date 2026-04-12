@@ -6,6 +6,7 @@ import { getDefaultSkillsForRace } from '../../../shared/data/raceSkills'
 import { getBloodlineAttackCountBonus } from '../../../shared/data/equipmentConfig'
 import { EquipmentService } from '../EquipmentService'
 import { getEquipmentTemplate } from '../../../shared/data/equipmentPoolLoader'
+import { factorDatabase } from '../../../shared/data/factors'
 import type { Goblin, Enemy } from '../../../shared/types'
 
 /**
@@ -23,7 +24,7 @@ function createSeededRng(seed: number): () => number {
  * テスト用の最小限のゴブリンを作成
  */
 function createTestGoblin(
-  overrides: Partial<Goblin> & { stats?: Partial<Goblin['stats']> & { agility?: number } } = {}
+  overrides: Omit<Partial<Goblin>, 'stats'> & { stats?: Partial<Goblin['stats']> & { agility?: number } } = {}
 ): Goblin {
   const race = overrides.race ?? 'ゴブリン'
   const agilityOverride = overrides.stats?.agility ?? overrides.baseAttributes?.agility
@@ -35,7 +36,7 @@ function createTestGoblin(
     level: 1,
     experience: 0,
     avatar: '/test.png',
-    stats: { hp: 60, atk: 12, def: 10, attackCount: 2, accuracy: 20, evasion: 15, ...statsOverrides },
+    stats: { hp: 60, atk: 12, def: 10, attackCount: 2, accuracy: 20, evasion: 15, magicHeal: 10, ...statsOverrides },
     mods: [],
     skills: overrides.skills ?? getDefaultSkillsForRace(race),
     factors: [],
@@ -256,6 +257,40 @@ describe('ModStatCalculator — 戦闘ステータス計算', () => {
     const result = ModStatCalculator.calculate(goblin, bonuses)
 
     expect(result.attackCount).toBe(3)
+  })
+
+  it('magicHealは精神とレベル式から算出される', () => {
+    const goblin = createTestGoblin({
+      level: 3,
+      baseAttributes: { power: 10, wisdom: 10, spirit: 10, vitality: 10, agility: 10, luck: 10 },
+    })
+    const result = ModStatCalculator.calculate(goblin)
+
+    expect(result.magicHeal).toBe(15)
+  })
+
+  it('magicHealに因子・MOD・装備補正が適用される', () => {
+    factorDatabase.test_magic_heal = {
+      id: 'test_magic_heal',
+      name: 'テスト回復因子',
+      description: 'テスト用',
+      inheritProbability: 1,
+      effects: [{ type: 'stat_bonus', target: 'magicHeal', value: 10 }],
+    }
+    const goblin = createTestGoblin({
+      level: 3,
+      baseAttributes: { power: 10, wisdom: 10, spirit: 10, vitality: 10, agility: 10, luck: 10 },
+      factors: ['test_magic_heal'],
+      mods: [
+        { templateId: 'magicHeal_flat_t6', value: 2 },
+        { templateId: 'magicHeal_percent_t6', value: 10 },
+      ],
+    })
+    const bonuses = [{ stat: 'magicHeal_flat' as const, value: 3 }]
+    const result = ModStatCalculator.calculate(goblin, bonuses)
+
+    expect(result.magicHeal).toBe(33)
+    delete factorDatabase.test_magic_heal
   })
 
   it('装備のattackCount_flatがマイナスでも攻撃回数は最低1になる', () => {

@@ -28,9 +28,11 @@ export type EquipmentStat =
   | 'attackCount_flat'
   | 'accuracy_flat'
   | 'evasion_flat'
+  | 'magicHeal_flat'
   | 'hp_percent'
   | 'atk_percent'
   | 'def_percent'
+  | 'magicHeal_percent'
   | 'critical_rate_percent'
   | 'damage_reduction'
 

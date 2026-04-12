@@ -18,6 +18,8 @@ export type ModStat =
   | 'attackCount_flat'
   | 'accuracy_flat'
   | 'evasion_flat'
+  | 'magicHeal_percent'
+  | 'magicHeal_flat'
   | 'damage_reduction'
 
 /**
