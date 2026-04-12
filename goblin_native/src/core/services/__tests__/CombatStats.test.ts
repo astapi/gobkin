@@ -36,7 +36,7 @@ function createTestGoblin(
     level: 1,
     experience: 0,
     avatar: '/test.png',
-    stats: { hp: 60, atk: 12, magicAtk: 0, def: 10, attackCount: 2, accuracy: 20, evasion: 15, magicHeal: 10, ...statsOverrides },
+    stats: { hp: 60, atk: 12, magicAtk: 0, def: 10, attackCount: 2, accuracy: 20, evasion: 15, magicHeal: 10, criticalRate: 0, ...statsOverrides },
     mods: [],
     skills: overrides.skills ?? getDefaultSkillsForRace(race),
     factors: [],
@@ -753,7 +753,7 @@ describe('BattleSystem — 命中判定と複数回攻撃', () => {
     const rear = result.detailedLog.find(log => log.action === '通常攻撃' && !log.isAlly)!.targets.find(target => target.targetId === '3')
 
     expect(rear).toBeDefined()
-    expect(rear!.totalDamage).toBe(239)
+    expect(rear!.totalDamage).toBe(190)
   })
 
   it('遠征戦闘でもスライムゴブリンの後列防護が適用される', () => {
@@ -1045,7 +1045,7 @@ describe('BattleSystem — 命中判定と複数回攻撃', () => {
     const frontDamage = frontResult.detailedLog.find((log) => log.actorId === '1' && log.action === '通常攻撃')!.targets[0].totalDamage
     const rearDamage = rearResult.detailedLog.find((log) => log.actorId === '2' && log.action === '通常攻撃')!.targets[0].totalDamage
 
-    expect(rearDamage).toBe(45)
+    expect(rearDamage).toBe(42)
   })
 })
 
@@ -1105,6 +1105,7 @@ describe('selectTarget — 隊列ターゲット選択', () => {
       shieldBarrierBreathDamageReduction: 0,
       magicAtk: 0,
       magicHeal: 0,
+      criticalRate: 0,
       spellDamagePercent: 0,
       row,
       rowSlot,
@@ -1702,7 +1703,7 @@ describe('BattleSystem — ジョブ系スキル', () => {
     )
     const attackerLog = result.detailedLog.find(log => log.actorId === String(attacker.id) && log.action === '通常攻撃')
 
-    expect(attackerLog?.targets[0]?.totalDamage).toBe(60)
+    expect(attackerLog?.targets[0]?.totalDamage).toBe(58)
   })
 
   it('気合い持ちは致死ダメージを受けてもHP1で耐える', () => {

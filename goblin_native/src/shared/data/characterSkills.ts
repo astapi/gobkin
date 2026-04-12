@@ -226,6 +226,13 @@ export function getPhysicalDamageReductionFromSkills(skills: CharacterSkill[]): 
   )
 }
 
+export function getCriticalRateBonusFromSkills(skills: CharacterSkill[]): number {
+  return getUniqueSkillsById(skills).reduce(
+    (sum, skill) => sum + (skill.criticalRateBonusPercent ?? 0),
+    0,
+  )
+}
+
 export function getSpellDamagePercentFromSkills(skills: CharacterSkill[]): number {
   return getUniqueSkillsById(skills).reduce(
     (sum, skill) => sum + (skill.spellDamagePercent ?? 0),

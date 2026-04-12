@@ -544,6 +544,7 @@ export class ExpeditionEngine {
         accuracy: member.accuracy,
         evasion: member.evasion,
         magicHeal: member.magicHeal,
+        criticalRate: 0,
       },
       agility: member.agility,
       mods: member.mods,

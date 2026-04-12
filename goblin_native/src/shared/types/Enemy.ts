@@ -22,6 +22,7 @@ export interface Enemy {
   attackCount: number  // 攻撃回数
   accuracy: number     // 命中精度
   evasion: number      // 回避能力
+  criticalRate?: number // 必殺率
   physicalResistancePercent?: number    // 物理耐性
   penetrationResistancePercent?: number // 貫通耐性
   criticalResistancePercent?: number    // 必殺耐性

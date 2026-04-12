@@ -54,6 +54,7 @@ interface BattleUnit {
   shieldBarrierBreathDamageReduction: number // シールドバリアのブレスダメージ軽減率（0〜100）
   magicAtk: number              // 魔法攻撃力
   magicHeal: number             // 魔法回復量
+  criticalRate: number          // 必殺率（%）
   spellDamagePercent: number    // 魔法威力の増減（%）
   shieldBarrierActive?: boolean  // シールドバリア状態
   row: number              // 隊列の列番号（0-based）
@@ -367,11 +368,17 @@ export class BattleSystem {
 
             totalHitCount++
 
-            // ダメージ計算
+            // 必殺判定
+            const isCritical = rng() * 100 < unit.criticalRate
+
+            // ダメージ計算（必殺時は防御力を50%として扱う）
+            const damageTarget = isCritical
+              ? { ...target.combatant, def: Math.floor(target.combatant.def * 0.5) }
+              : target.combatant
             const baseDamage = this.damageCalculator.calcDamage(
               RACE_DICT,
               unit.combatant,
-              target.combatant,
+              damageTarget,
               BASIC_ATTACK_SKILL,
               DEFAULT_DAMAGE_OPTIONS,
               rng,
@@ -730,6 +737,7 @@ export class BattleSystem {
       shieldBarrierBreathDamageReduction: 0,
       magicAtk: effectiveStats.magicAtk,
       magicHeal: effectiveStats.magicHeal,
+      criticalRate: effectiveStats.criticalRate,
       spellDamagePercent: getSpellDamagePercentFromSkills(goblin.skills),
       shieldBarrierActive: false,
       row: originalIndex,  // 味方は1列1体（配列順 = 列番号）
@@ -764,6 +772,7 @@ export class BattleSystem {
       shieldBarrierBreathDamageReduction: 0,
       magicAtk: enemy.magicAtk ?? enemy.atk,
       magicHeal: enemy.magicHeal ?? 0,
+      criticalRate: enemy.criticalRate ?? 0,
       spellDamagePercent: getSpellDamagePercentFromSkills(skills),
       shieldBarrierActive: false,
       row,

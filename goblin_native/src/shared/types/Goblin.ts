@@ -13,6 +13,7 @@ export type GoblinStats = {
   accuracy: number     // 命中精度
   evasion: number      // 回避能力
   magicHeal: number    // 魔法回復量
+  criticalRate: number // 必殺率
 }
 
 export type GoblinBaseAttributes = {

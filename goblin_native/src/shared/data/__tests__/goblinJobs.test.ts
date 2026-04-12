@@ -21,6 +21,7 @@ function createGoblin(overrides: Partial<Goblin> = {}): Goblin {
       accuracy: 100,
       evasion: 5,
       magicHeal: 10,
+      criticalRate: 0,
     },
     effectiveStats: overrides.effectiveStats,
     factors: overrides.factors,
@@ -103,6 +104,7 @@ describe('goblinJobs', () => {
         accuracy: 100,
         evasion: 5,
         magicHeal: 10,
+        criticalRate: 0,
       },
     })
 

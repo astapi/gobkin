@@ -190,6 +190,7 @@ export class GoblinBirthService {
       accuracy: calculateGoblinBaseAccuracy(1, { race: bloodline, raceId: normalizeGoblinRaceId(bloodline) }),
       evasion: calculateGoblinBaseEvasion(1, { race: bloodline, raceId: normalizeGoblinRaceId(bloodline) }),
       magicHeal: calculateGoblinBaseMagicHeal(1, { race: bloodline, raceId: normalizeGoblinRaceId(bloodline) }),
+      criticalRate: 0,
     }
   }
 }
