@@ -25,7 +25,8 @@ export function getEffectiveStats(goblin: Goblin): GoblinStats {
     if (
       goblin.effectiveStats.magicAtk !== undefined &&
       goblin.effectiveStats.magicDef !== undefined &&
-      goblin.effectiveStats.magicHeal !== undefined
+      goblin.effectiveStats.magicHeal !== undefined &&
+      goblin.effectiveStats.criticalRate !== undefined
     ) {
       return goblin.effectiveStats
     }
@@ -35,6 +36,7 @@ export function getEffectiveStats(goblin: Goblin): GoblinStats {
       magicAtk: goblin.effectiveStats.magicAtk ?? computed.magicAtk,
       magicDef: goblin.effectiveStats.magicDef ?? computed.magicDef,
       magicHeal: goblin.effectiveStats.magicHeal ?? computed.magicHeal,
+      criticalRate: goblin.effectiveStats.criticalRate ?? computed.criticalRate,
     }
   }
   return calculateGoblinEffectiveStats(goblin)

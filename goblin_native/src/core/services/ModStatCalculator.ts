@@ -5,6 +5,7 @@ import type { EquipmentStatBonus } from '../../shared/types/Equipment'
 import { getModTemplate, getDamageReductionCap } from '../../shared/data/modPoolLoader'
 import {
   applySkillBonusesToEquipmentBonuses,
+  getCriticalRateBonusFromSkills,
   getUniqueSkillsById,
   getSkillStatBonuses,
   getSkillStatMultipliers,
@@ -21,6 +22,7 @@ import {
   calculateGoblinBaseMagicAtk,
   calculateGoblinBaseMagicDef,
   calculateGoblinBaseMagicHeal,
+  calculateGoblinBaseCriticalRate,
 } from '../../shared/utils/goblinHp'
 
 /**
@@ -48,6 +50,7 @@ export class ModStatCalculator {
       accuracy: calculateGoblinBaseAccuracy(goblin.level, goblin),
       evasion: calculateGoblinBaseEvasion(goblin.level, goblin),
       magicHeal: calculateGoblinBaseMagicHeal(goblin.level, goblin),
+      criticalRate: calculateGoblinBaseCriticalRate(goblin.level, goblin),
     }
     const mods = goblin.mods ?? []
 
@@ -84,6 +87,9 @@ export class ModStatCalculator {
 
     const withMultiplier = (key: keyof GoblinStats) => Math.floor(calc(key) * (skillMultipliers[key] ?? 1))
 
+    // 装備の critical_rate_percent をフラット加算として集計
+    const equipCriticalRateFlat = this.aggregateEquipmentCriticalRate(adjustedEquipmentBonuses)
+
     const result: GoblinStats = {
       hp: Math.floor(calcHp() * (skillMultipliers.hp ?? 1)),
       atk: withMultiplier('atk'),
@@ -94,6 +100,7 @@ export class ModStatCalculator {
       accuracy: withMultiplier('accuracy'),
       evasion: withMultiplier('evasion'),
       magicHeal: withMultiplier('magicHeal'),
+      criticalRate: Math.min(50, withMultiplier('criticalRate') + equipCriticalRateFlat + getCriticalRateBonusFromSkills(goblin.skills)),
     }
 
     // 6. パッシブスキル由来の最終効果を適用（ステータス確定後）
@@ -129,8 +136,21 @@ export class ModStatCalculator {
     return Math.min(total, getDamageReductionCap())
   }
 
+  /**
+   * 装備の critical_rate_percent をフラット加算として集計
+   */
+  private static aggregateEquipmentCriticalRate(bonuses: EquipmentStatBonus[]): number {
+    let total = 0
+    for (const bonus of bonuses) {
+      if (bonus.stat === 'critical_rate_percent') {
+        total += bonus.value
+      }
+    }
+    return total
+  }
+
   private static readonly ZERO_STATS: Record<keyof GoblinStats, number> = {
-    hp: 0, atk: 0, magicAtk: 0, def: 0, magicDef: 0, attackCount: 0, accuracy: 0, evasion: 0, magicHeal: 0,
+    hp: 0, atk: 0, magicAtk: 0, def: 0, magicDef: 0, attackCount: 0, accuracy: 0, evasion: 0, magicHeal: 0, criticalRate: 0,
   }
 
   /** 装備のstat名からGoblinStatsのキーへの特別マッピング */

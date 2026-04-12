@@ -459,6 +459,7 @@ const ja = {
       attackCount: '攻撃回数',
       accuracy: '命中精度',
       evasion: '回避',
+      criticalRate: '必殺率',
       power: '力',
       wisdom: '知恵',
       spirit: '精神',

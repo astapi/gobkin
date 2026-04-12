@@ -187,6 +187,19 @@ export function calculateGoblinBaseMagicHeal(level: number, goblin: GoblinStatCo
   return Math.round(attributes.spirit * (1 + levelScale * 2 * coefficient))
 }
 
+export function calculateGoblinBaseCriticalRate(level: number, goblin: GoblinStatContext): number {
+  if (hasStoredStat(goblin, 'criticalRate')) {
+    return goblin.stats.criticalRate
+  }
+
+  const attributes = getGoblinBaseAttributes(goblin)
+  const levelScale = getGoblinStatLevelScale(level, goblin.raceId ?? goblin.race)
+  const coefficient = getGoblinStatCoefficient(goblin)
+  const rawBase = attributes.agility * 1 + attributes.luck * 2 - 45
+  const base = Math.max(0, rawBase)
+  return Math.round(base * (1 + levelScale * 0.16 * coefficient))
+}
+
 export function calculateGoblinDerivedStats(
   level: number,
   goblin: GoblinStatContext
@@ -201,5 +214,6 @@ export function calculateGoblinDerivedStats(
     accuracy: calculateGoblinBaseAccuracy(level, goblin),
     evasion: calculateGoblinBaseEvasion(level, goblin),
     magicHeal: calculateGoblinBaseMagicHeal(level, goblin),
+    criticalRate: calculateGoblinBaseCriticalRate(level, goblin),
   }
 }

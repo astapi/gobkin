@@ -15,7 +15,7 @@ function createTestGoblin(overrides: Partial<Goblin> = {}): Goblin {
     level: 1,
     experience: 0,
     avatar: '/test.png',
-    stats: { hp: 60, atk: 12, magicAtk: 0, def: 10, magicDef: 0, attackCount: 2, accuracy: 20, evasion: 15, magicHeal: 10 },
+    stats: { hp: 60, atk: 12, magicAtk: 0, def: 10, magicDef: 0, attackCount: 2, accuracy: 20, evasion: 15, magicHeal: 10, criticalRate: 0 },
     mods: [],
     skills: overrides.skills ?? getDefaultSkillsForRace(race),
     factors: [],

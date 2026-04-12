@@ -459,6 +459,7 @@ const ko = {
       attackCount: '공격 횟수',
       accuracy: '명중',
       evasion: '회피',
+      criticalRate: '치명률',
       power: '힘',
       wisdom: '지혜',
       spirit: '정신',

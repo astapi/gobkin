@@ -459,6 +459,7 @@ const en = {
       attackCount: 'Attack Count',
       accuracy: 'Accuracy',
       evasion: 'Evasion',
+      criticalRate: 'Critical Rate',
       power: 'Power',
       wisdom: 'Wisdom',
       spirit: 'Spirit',
