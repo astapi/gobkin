@@ -122,7 +122,6 @@ const ja = {
     },
     shop: {
       title: '装備商店',
-      lead: '購入した装備は在庫に入ります。',
       goldLabel: '所持ゴールド',
       buyTab: '購入',
       sellTab: '売却',

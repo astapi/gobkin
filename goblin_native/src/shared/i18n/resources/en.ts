@@ -122,7 +122,6 @@ const en = {
     },
     shop: {
       title: 'Equipment Shop',
-      lead: 'Purchased equipment goes to inventory.',
       goldLabel: 'Gold',
       buyTab: 'Buy',
       sellTab: 'Sell',

@@ -122,7 +122,6 @@ const ko = {
     },
     shop: {
       title: '장비 상점',
-      lead: '구매한 장비는 보관함에 들어갑니다.',
       goldLabel: '보유 골드',
       buyTab: '구매',
       sellTab: '판매',

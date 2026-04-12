@@ -297,7 +297,6 @@ export default function EquipmentShopScreen() {
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.contentContainer}>
         <View style={styles.summaryCard}>
           <Text style={styles.summaryTitle}>{t('ui.shop.title')}</Text>
-          <Text style={styles.summaryLead}>{t('ui.shop.lead')}</Text>
           <View style={styles.summaryRow}>
             <Text style={styles.summaryLabel}>{t('ui.shop.goldLabel')}</Text>
             <Text style={styles.summaryValue}>{formatPrice(gold)}</Text>
@@ -434,11 +433,6 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: '700',
     color: '#111827',
-  },
-  summaryLead: {
-    fontSize: 13,
-    lineHeight: 20,
-    color: '#6B7280',
   },
   summaryRow: {
     flexDirection: 'row',
