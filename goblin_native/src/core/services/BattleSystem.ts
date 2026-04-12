@@ -49,7 +49,10 @@ interface BattleUnit {
   physicalDamageReduction: number  // 物理ダメージ軽減率（0〜100）
   magicDamageReduction: number  // 魔法ダメージ軽減率（0〜100）
   breathDamageReduction: number // ブレスダメージ軽減率（0〜100）
+  shieldBarrierDamageReduction: number // シールドバリアの攻撃ダメージ軽減率（0〜100）
+  shieldBarrierBreathDamageReduction: number // シールドバリアのブレスダメージ軽減率（0〜100）
   magicHeal: number             // 魔法回復量
+  shieldBarrierActive?: boolean  // シールドバリア状態
   row: number              // 隊列の列番号（0-based）
   rowSlot: number          // 列内のスロット番号（0-based）
   level: number            // 呪文のターゲット数計算用
@@ -312,6 +315,7 @@ export class BattleSystem {
             actorHP: unit.currentHP,
             actorMaxHP: unit.maxHP,
             isAlly: unit.isAlly,
+            actionEffect: spellAction.effect ?? 'damage',
             targets: [...targetDetails.values()],
           })
         } else {
@@ -361,10 +365,11 @@ export class BattleSystem {
             // スキル由来の物理ダメージ軽減を適用
             const reductionFactor = 1 - target.damageReduction / 100
             const physicalReductionFactor = 1 - target.physicalDamageReduction / 100
+            const shieldBarrierReductionFactor = 1 - target.shieldBarrierDamageReduction / 100
             const protectionFactor = this.getRearGuardReductionFactor(target, allyUnits)
             const damage = Math.max(
               1,
-              Math.floor((baseDamage * dmgMod * rearDamageMultiplier * rowDamageMultiplier + additionalDamage) * reductionFactor * physicalReductionFactor * protectionFactor),
+              Math.floor((baseDamage * dmgMod * rearDamageMultiplier * rowDamageMultiplier + additionalDamage) * reductionFactor * physicalReductionFactor * shieldBarrierReductionFactor * protectionFactor),
             )
 
             this.applyDamage(target, damage)
@@ -487,7 +492,7 @@ export class BattleSystem {
       const breathReduction = spellDef.breathDamageReductionPercent ?? 0
       return sourceGroup.some(unit => (
         unit.currentHP > 0 &&
-        (unit.physicalDamageReduction < reduction || unit.breathDamageReduction < breathReduction)
+        (unit.shieldBarrierDamageReduction < reduction || unit.shieldBarrierBreathDamageReduction < breathReduction)
       ))
     }
 
@@ -544,10 +549,9 @@ export class BattleSystem {
       const targets = sourceGroup.filter(target => target.currentHP > 0)
 
       for (const target of targets) {
-        target.physicalDamageReduction = Math.max(target.physicalDamageReduction, damageReduction)
-        target.breathDamageReduction = Math.max(target.breathDamageReduction, breathReduction)
-        totalHitCount++
-        this.accumulateTargetDetail(targetDetails, target, 0)
+        target.shieldBarrierDamageReduction = Math.max(target.shieldBarrierDamageReduction, damageReduction)
+        target.shieldBarrierBreathDamageReduction = Math.max(target.shieldBarrierBreathDamageReduction, breathReduction)
+        target.shieldBarrierActive = true
       }
 
       return { targetDetails, totalHitCount }
@@ -695,7 +699,10 @@ export class BattleSystem {
       physicalDamageReduction,
       magicDamageReduction: 0,
       breathDamageReduction: 0,
+      shieldBarrierDamageReduction: 0,
+      shieldBarrierBreathDamageReduction: 0,
       magicHeal: effectiveStats.magicHeal,
+      shieldBarrierActive: false,
       row: originalIndex,  // 味方は1列1体（配列順 = 列番号）
       rowSlot: 0,
       level: goblin.level,
@@ -724,7 +731,10 @@ export class BattleSystem {
       physicalDamageReduction: (enemy.physicalResistancePercent ?? 0) + getPhysicalDamageReductionFromSkills(skills),
       magicDamageReduction: enemy.magicResistancePercent ?? 0,
       breathDamageReduction: 0,
+      shieldBarrierDamageReduction: 0,
+      shieldBarrierBreathDamageReduction: 0,
       magicHeal: enemy.magicHeal ?? 0,
+      shieldBarrierActive: false,
       row,
       rowSlot,
       level: enemy.level,
@@ -813,12 +823,14 @@ export class BattleSystem {
           name: this.getLogName(unit),
           currentHP: unit.currentHP,
           maxHP: unit.maxHP,
+          shieldBarrierActive: unit.shieldBarrierActive,
         })),
         enemies: enemyUnits.map(unit => ({
           id: unit.combatant.id,
           name: this.getLogName(unit),
           currentHP: unit.currentHP,
           maxHP: unit.maxHP,
+          shieldBarrierActive: unit.shieldBarrierActive,
         })),
       },
     }

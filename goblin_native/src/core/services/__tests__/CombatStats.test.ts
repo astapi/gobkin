@@ -283,13 +283,12 @@ describe('ModStatCalculator — 戦闘ステータス計算', () => {
       factors: ['test_magic_heal'],
       mods: [
         { templateId: 'magicHeal_flat_t6', value: 2 },
-        { templateId: 'magicHeal_percent_t6', value: 10 },
       ],
     })
     const bonuses = [{ stat: 'magicHeal_flat' as const, value: 3 }]
     const result = ModStatCalculator.calculate(goblin, bonuses)
 
-    expect(result.magicHeal).toBe(33)
+    expect(result.magicHeal).toBe(30)
     delete factorDatabase.test_magic_heal
   })
 
@@ -1102,6 +1101,8 @@ describe('selectTarget — 隊列ターゲット選択', () => {
       physicalDamageReduction: 0,
       magicDamageReduction: 0,
       breathDamageReduction: 0,
+      shieldBarrierDamageReduction: 0,
+      shieldBarrierBreathDamageReduction: 0,
       magicHeal: 0,
       row,
       rowSlot,
@@ -1503,8 +1504,89 @@ describe('spell charges', () => {
     const shieldedDamage = shieldedResult.detailedLog.find(log => log.actorId === '1' && log.action === '通常攻撃')!.targets[0].totalDamage
     const plainDamage = plainResult.detailedLog.find(log => log.actorId === '1' && log.action === '通常攻撃')!.targets[0].totalDamage
 
-    expect(shieldedResult.detailedLog.some(log => log.actorId === 'CLERIC' && log.action === 'シールドバリア')).toBe(true)
+    const barrierLog = shieldedResult.detailedLog.find(log => log.actorId === 'CLERIC' && log.action === 'シールドバリア')
+    expect(barrierLog).toBeDefined()
+    expect(barrierLog?.actionEffect).toBe('barrier')
+    expect(barrierLog?.hitCount).toBe(0)
+    expect(barrierLog?.targets).toEqual([])
     expect(shieldedDamage).toBeLessThan(plainDamage)
+    expect(shieldedDamage).toBeGreaterThanOrEqual(Math.floor(plainDamage * 0.45))
+    expect(shieldedDamage).toBeLessThanOrEqual(Math.ceil(plainDamage * 0.55))
+  })
+
+  it('シールドバリア後のターン開始ログに状態が残る', () => {
+    const observer = createTestGoblin({
+      id: 1,
+      stats: { hp: 300, atk: 1, agility: 1, def: 10, attackCount: 0, accuracy: 999, evasion: 0 },
+    })
+    const cleric = createTestEnemy({
+      id: 'CLERIC',
+      name: '護衛クレリック',
+      hp: 300,
+      atk: 1,
+      def: 1,
+      agility: 100,
+      attackCount: 0,
+      skills: [{ id: 'grant_shield_barrier', grantsSpellId: 'shield_barrier' }],
+    })
+
+    const result = new BattleSystem().executeBattle(
+      [observer],
+      [observer.stats.hp],
+      [[cleric]],
+      createSeededRng(29),
+      2,
+    )
+    const secondTurnStart = result.detailedLog.find(log => log.action === 'turn_start' && log.turn === 2)
+
+    expect(secondTurnStart?.turnState?.enemies[0].shieldBarrierActive).toBe(true)
+  })
+
+  it('シールドバリアは元の物理軽減と乗算される', () => {
+    const attacker = createTestGoblin({
+      id: 1,
+      stats: { hp: 300, atk: 90, agility: 1, def: 10, attackCount: 1, accuracy: 999, evasion: 0 },
+    })
+    const guardedTarget = createTestEnemy({
+      id: 'GUARD',
+      name: '護衛ガード',
+      hp: 999,
+      atk: 1,
+      def: 1,
+      agility: 1,
+      attackCount: 0,
+      evasion: 0,
+      skills: [{ id: 'physical_reduction_50', physicalDamageReductionPercent: 50 }],
+    })
+    const cleric = createTestEnemy({
+      id: 'CLERIC',
+      name: '護衛クレリック',
+      hp: 80,
+      atk: 1,
+      def: 1,
+      agility: 100,
+      attackCount: 0,
+      skills: [{ id: 'grant_shield_barrier', grantsSpellId: 'shield_barrier' }],
+    })
+
+    const shieldedResult = new BattleSystem().executeBattle(
+      [attacker],
+      [attacker.stats.hp],
+      [[guardedTarget], [cleric]],
+      createSeededRng(19),
+      1,
+    )
+    const plainResult = new BattleSystem().executeBattle(
+      [attacker],
+      [attacker.stats.hp],
+      [[createTestEnemy({ ...guardedTarget })]],
+      createSeededRng(19),
+      1,
+    )
+
+    const shieldedDamage = shieldedResult.detailedLog.find(log => log.actorId === '1' && log.action === '通常攻撃')!.targets[0].totalDamage
+    const plainDamage = plainResult.detailedLog.find(log => log.actorId === '1' && log.action === '通常攻撃')!.targets[0].totalDamage
+
     expect(shieldedDamage).toBeGreaterThanOrEqual(Math.floor(plainDamage * 0.45))
     expect(shieldedDamage).toBeLessThanOrEqual(Math.ceil(plainDamage * 0.55))
   })

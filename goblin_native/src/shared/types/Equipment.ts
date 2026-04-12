@@ -32,7 +32,6 @@ export type EquipmentStat =
   | 'hp_percent'
   | 'atk_percent'
   | 'def_percent'
-  | 'magicHeal_percent'
   | 'critical_rate_percent'
   | 'damage_reduction'
 
