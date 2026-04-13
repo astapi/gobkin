@@ -15,9 +15,7 @@ import harpyCliff1 from './harpy_cliff_1.json'
 import humanFortress1 from './human_fortress_1.json'
 import humanFortress2 from './human_fortress_2.json'
 import humanFortress3 from './human_fortress_3.json'
-import humanVillage1 from './human_village_1.json'
-import humanVillage2 from './human_village_2.json'
-import humanVillage3 from './human_village_3.json'
+import humanVillage from './human_village.json'
 import hobbitHills1 from './hobbit_hills_1.json'
 import lizardmanSwamp1 from './lizardman_swamp_1.json'
 import lizardmanSwamp2 from './lizardman_swamp_2.json'
@@ -59,9 +57,7 @@ const enemyDatabases: Record<string, EnemyDatabase> = {
   human_fortress_1: humanFortress1 as EnemyDatabase,
   human_fortress_2: humanFortress2 as EnemyDatabase,
   human_fortress_3: humanFortress3 as EnemyDatabase,
-  human_village_1: humanVillage1 as EnemyDatabase,
-  human_village_2: humanVillage2 as EnemyDatabase,
-  human_village_3: humanVillage3 as EnemyDatabase,
+  human_village: humanVillage as EnemyDatabase,
   hobbit_hills_1: hobbitHills1 as EnemyDatabase,
   lizardman_swamp_1: lizardmanSwamp1 as EnemyDatabase,
   lizardman_swamp_2: lizardmanSwamp2 as EnemyDatabase,
