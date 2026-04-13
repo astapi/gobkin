@@ -30,7 +30,19 @@
       "accuracy": 340,
       "evasion": 16,
       "exp": 42,
-      "gold": 36
+      "gold": 36,
+      "skills": [
+        {
+          "id": "grant_fireball",
+          "name": "ファイヤーボール",
+          "grantsSpellId": "fireball"
+        },
+        {
+          "id": "grant_magic_arrow",
+          "name": "マジックアロー",
+          "grantsSpellId": "magic_arrow"
+        }
+      ]
     },
     {
       "id": "HUM003",
