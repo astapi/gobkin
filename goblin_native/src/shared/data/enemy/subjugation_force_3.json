@@ -2,326 +2,227 @@
   "enemies": [
     {
       "id": "HUM001",
-      "name": "正規兵",
-      "raceTags": [
-        "human"
-      ],
-      "level": 7,
-      "hp": 40,
-      "atk": 16,
-      "def": 10,
+      "name": "辺境城正規兵",
+      "raceTags": ["human"],
+      "level": 30,
+      "hp": 440,
+      "atk": 95,
+      "def": 20,
+      "magicDef": 14,
+      "agility": 7,
       "attackCount": 1,
-      "accuracy": 280,
-      "evasion": 15,
-      "exp": 24,
-      "gold": 20,
-      "agility": 5,
-      "magicDef": 8
+      "accuracy": 330,
+      "evasion": 17,
+      "exp": 36,
+      "gold": 30
     },
     {
       "id": "HUM002",
-      "name": "傭兵",
-      "raceTags": [
-        "human"
-      ],
-      "level": 8,
-      "hp": 50,
-      "atk": 22,
-      "def": 7,
+      "name": "辺境城魔術師",
+      "raceTags": ["human"],
+      "level": 30,
+      "hp": 280,
+      "atk": 120,
+      "def": 10,
+      "magicDef": 22,
+      "agility": 8,
       "attackCount": 1,
-      "accuracy": 300,
+      "accuracy": 340,
       "evasion": 16,
-      "exp": 28,
-      "gold": 24,
-      "agility": 7,
-      "magicDef": 5
+      "exp": 42,
+      "gold": 36
     },
     {
       "id": "HUM003",
-      "name": "見習い魔術師",
-      "raceTags": [
-        "human"
-      ],
-      "level": 8,
-      "hp": 30,
-      "atk": 24,
-      "def": 4,
+      "name": "辺境城弓兵",
+      "raceTags": ["human"],
+      "level": 30,
+      "hp": 310,
+      "atk": 105,
+      "def": 12,
+      "magicDef": 10,
+      "agility": 11,
       "attackCount": 1,
-      "accuracy": 300,
-      "evasion": 16,
-      "exp": 30,
-      "gold": 26,
-      "agility": 6,
-      "magicDef": 3
+      "accuracy": 350,
+      "evasion": 20,
+      "exp": 38,
+      "gold": 32
     },
     {
       "id": "HUM004",
-      "name": "騎士候補",
-      "raceTags": [
-        "human"
-      ],
-      "level": 9,
-      "hp": 65,
-      "atk": 20,
-      "def": 14,
+      "name": "辺境城クレリック",
+      "raceTags": ["human"],
+      "level": 30,
+      "hp": 390,
+      "atk": 80,
+      "def": 18,
+      "magicDef": 24,
+      "agility": 6,
       "attackCount": 1,
-      "accuracy": 310,
-      "evasion": 17,
-      "exp": 32,
-      "gold": 28,
-      "agility": 4,
-      "magicDef": 11
+      "accuracy": 320,
+      "evasion": 15,
+      "exp": 40,
+      "gold": 34
     },
     {
       "id": "HUM005",
-      "name": "弓兵",
-      "raceTags": [
-        "human"
-      ],
-      "level": 8,
-      "hp": 35,
-      "atk": 20,
-      "def": 5,
+      "name": "辺境城騎士",
+      "raceTags": ["human"],
+      "level": 30,
+      "hp": 600,
+      "atk": 110,
+      "def": 28,
+      "magicDef": 18,
+      "agility": 5,
       "attackCount": 1,
-      "accuracy": 300,
-      "evasion": 17,
-      "exp": 26,
-      "gold": 22,
-      "agility": 8,
-      "magicDef": 4
+      "accuracy": 310,
+      "evasion": 14,
+      "exp": 46,
+      "gold": 40
     },
     {
       "id": "B_CAPTAIN",
-      "name": "討伐隊長",
-      "raceTags": [
-        "human"
-      ],
-      "level": 14,
-      "hp": 300,
-      "atk": 42,
-      "def": 22,
-      "attackCount": 2,
-      "accuracy": 400,
-      "evasion": 22,
-      "exp": 140,
-      "gold": 120,
-      "factorDrops": [],
-      "agility": 8,
-      "magicDef": 17
+      "name": "辺境城騎士団長",
+      "raceTags": ["human"],
+      "level": 40,
+      "hp": 1600,
+      "atk": 150,
+      "def": 30,
+      "magicDef": 22,
+      "agility": 9,
+      "attackCount": 10,
+      "accuracy": 380,
+      "evasion": 20,
+      "exp": 200,
+      "gold": 160,
+      "factorDrops": []
     }
   ],
   "patterns": [
     {
       "id": "SF3_001",
-      "floors": [
-        1
-      ],
+      "floors": [1],
       "enemies": [
-        [
-          "HUM004",
-          "HUM003"
-        ],
-        [
-          "HUM005"
-        ]
+        ["HUM005"],
+        ["HUM001"],
+        ["HUM001"],
+        ["HUM003", "HUM002"]
       ]
     },
     {
       "id": "SF3_002",
-      "floors": [
-        1
-      ],
+      "floors": [1],
       "enemies": [
-        [
-          "HUM002",
-          "HUM004"
-        ],
-        [
-          "HUM003",
-          "HUM005"
-        ]
+        ["HUM005"],
+        ["HUM001", "HUM001"],
+        ["HUM001"],
+        ["HUM003", "HUM002"],
+        ["HUM004"]
       ]
     },
     {
       "id": "SF3_003",
-      "floors": [
-        1
-      ],
+      "floors": [1],
       "enemies": [
-        [
-          "HUM004",
-          "HUM003",
-          "HUM005"
-        ],
-        [
-          "HUM002",
-          "HUM002"
-        ]
+        ["HUM005"],
+        ["HUM001"],
+        ["HUM001"],
+        ["HUM001"],
+        ["HUM003", "HUM002"],
+        ["HUM004"]
       ]
     },
     {
       "id": "SF3_004",
-      "floors": [
-        1
-      ],
+      "floors": [1],
       "enemies": [
-        [
-          "HUM004",
-          "HUM004",
-          "HUM002"
-        ],
-        [
-          "HUM003",
-          "HUM005"
-        ],
-        [
-          "HUM002"
-        ]
+        ["HUM005"],
+        ["HUM001", "HUM001"],
+        ["HUM001"],
+        ["HUM001"],
+        ["HUM003", "HUM003"],
+        ["HUM002", "HUM004"]
       ]
     },
     {
       "id": "SF3_005",
-      "floors": [
-        1
-      ],
+      "floors": [1],
       "enemies": [
-        [
-          "HUM004",
-          "HUM004",
-          "HUM002"
-        ],
-        [
-          "HUM003",
-          "HUM005"
-        ],
-        [
-          "HUM002",
-          "HUM005",
-          "HUM003"
-        ]
+        ["HUM005", "HUM005"],
+        ["HUM001", "HUM001"],
+        ["HUM001"],
+        ["HUM001"],
+        ["HUM003", "HUM002"],
+        ["HUM003", "HUM004"]
       ]
     },
     {
       "id": "SF3_006",
-      "floors": [
-        2
-      ],
+      "floors": [2],
       "enemies": [
-        [
-          "HUM004",
-          "HUM002"
-        ],
-        [
-          "HUM003",
-          "HUM005"
-        ]
+        ["HUM005"],
+        ["HUM001"],
+        ["HUM001"],
+        ["HUM001"],
+        ["HUM003", "HUM002"]
       ]
     },
     {
       "id": "SF3_007",
-      "floors": [
-        2
-      ],
+      "floors": [2],
       "enemies": [
-        [
-          "HUM004",
-          "HUM004"
-        ],
-        [
-          "HUM003",
-          "HUM005",
-          "HUM002"
-        ]
+        ["HUM005"],
+        ["HUM001", "HUM001"],
+        ["HUM001"],
+        ["HUM003", "HUM002"],
+        ["HUM004"]
       ]
     },
     {
       "id": "SF3_008",
-      "floors": [
-        2
-      ],
+      "floors": [2],
       "enemies": [
-        [
-          "HUM004",
-          "HUM004",
-          "HUM002"
-        ],
-        [
-          "HUM003",
-          "HUM005"
-        ],
-        [
-          "HUM002"
-        ]
+        ["HUM005"],
+        ["HUM001"],
+        ["HUM001"],
+        ["HUM001"],
+        ["HUM003", "HUM003"],
+        ["HUM002", "HUM004"]
       ]
     },
     {
       "id": "SF3_009",
-      "floors": [
-        2
-      ],
+      "floors": [2],
       "enemies": [
-        [
-          "HUM004",
-          "HUM004",
-          "HUM002"
-        ],
-        [
-          "HUM003",
-          "HUM005",
-          "HUM002"
-        ],
-        [
-          "HUM005"
-        ]
+        ["HUM005", "HUM005"],
+        ["HUM001", "HUM001"],
+        ["HUM001"],
+        ["HUM003", "HUM002"],
+        ["HUM004", "HUM003"]
       ]
     },
     {
       "id": "SF3_010",
-      "floors": [
-        2
-      ],
+      "floors": [2],
       "enemies": [
-        [
-          "HUM004",
-          "HUM004",
-          "HUM003"
-        ],
-        [
-          "HUM002",
-          "HUM005",
-          "HUM002"
-        ],
-        [
-          "HUM003",
-          "HUM005",
-          "HUM004"
-        ]
+        ["HUM005", "HUM005"],
+        ["HUM001", "HUM001"],
+        ["HUM001"],
+        ["HUM001"],
+        ["HUM003", "HUM003"],
+        ["HUM002", "HUM004"]
       ]
     },
     {
       "id": "BOSS",
-      "floors": [
-        2
-      ],
+      "floors": [2],
       "enemies": [
-        [
-          "B_CAPTAIN",
-          "HUM004",
-          "HUM004"
-        ],
-        [
-          "HUM002",
-          "HUM003",
-          "HUM005"
-        ],
-        [
-          "HUM004",
-          "HUM002",
-          "HUM005"
-        ],
-        [
-          "HUM003"
-        ]
+        ["HUM005", "HUM005"],
+        ["HUM001", "HUM001"],
+        ["B_CAPTAIN"],
+        ["HUM001"],
+        ["HUM003", "HUM003"],
+        ["HUM002", "HUM004"]
       ],
       "isBoss": true
     }
