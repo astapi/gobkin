@@ -96,6 +96,10 @@ export function getSkillLabel(skill: CharacterSkill): string {
     return i18n.t('battle.additionalDamage', { value: skill.additionalDamage })
   }
 
+  if (skill.itemSlotsBonus) {
+    return i18n.t('battle.itemSlotsBonus')
+  }
+
   return skill.id
 }
 

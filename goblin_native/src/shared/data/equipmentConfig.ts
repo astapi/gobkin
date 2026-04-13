@@ -23,6 +23,15 @@ export const EQUIPMENT_SLOT_LEVELS = [
 ] as const
 
 /**
+ * [才能]アイテム装備可能数を持つ場合の装備枠解放レベル表
+ * 通常より早く多くの枠が開放される（最大28枠）
+ */
+export const TALENT_EQUIPMENT_SLOT_LEVELS = [
+  1, 2, 5, 7, 10, 13, 16, 20, 24, 29, 34, 40, 46, 53,
+  60, 67, 75, 83, 91, 99, 108, 117, 126, 135, 145, 158, 172, 187,
+] as const
+
+/**
  * 血統別の攻撃回数補正
  * 攻撃回数は敏捷ベースで算出し、血統差分のみ最終補正として加算する
  */
@@ -51,13 +60,14 @@ function normalizeEquipmentLevel(level: unknown): number {
 
 /**
  * ゴブリンのレベルからスロット数を計算
+ * @param hasItemSlotsBonus [才能]アイテム装備可能数を持つ場合 true
  */
-export function calculateSlotCount(level: number): number
-export function calculateSlotCount(level: number): number {
+export function calculateSlotCount(level: number, hasItemSlotsBonus?: boolean): number {
   const normalizedLevel = normalizeEquipmentLevel(level)
+  const table = hasItemSlotsBonus ? TALENT_EQUIPMENT_SLOT_LEVELS : EQUIPMENT_SLOT_LEVELS
   let unlockedSlots = 0
 
-  for (const unlockLevel of EQUIPMENT_SLOT_LEVELS) {
+  for (const unlockLevel of table) {
     if (normalizedLevel < unlockLevel) break
     unlockedSlots++
   }

@@ -124,6 +124,11 @@ export const CHARACTER_SKILL_CATALOG = {
     equipmentCategoryMultiplier: { armor: 1.5 },
   },
 
+  talent_itemSlots: {
+    id: 'talent_itemSlots',
+    itemSlotsBonus: true,
+  } as CharacterSkill,
+
   talent_hp_150: createTalentSkill('hp'),
   talent_atk_150: createTalentSkill('atk'),
   talent_def_150: createTalentSkill('def'),

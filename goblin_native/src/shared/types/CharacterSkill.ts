@@ -32,4 +32,5 @@ export interface CharacterSkill {
   goldBonusPercent?: number
   undead?: boolean
   hpRegenPercent?: number
+  itemSlotsBonus?: boolean
 }

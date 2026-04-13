@@ -510,6 +510,7 @@ const ko = {
       talent_evasion_150: { name: '[재능] 회피' },
       talent_accuracy_150: { name: '[재능] 명중' },
       talent_criticalRate_150: { name: '[재능] 치명률' },
+      talent_itemSlots: { name: '[재능] 아이템 장비 가능 수' },
       cover_low_hp_ally: { name: '커버' },
       equipment_accuracy_200: { name: '[2.0배] 명중' },
       evasion_150: { name: '회피 적성' },
