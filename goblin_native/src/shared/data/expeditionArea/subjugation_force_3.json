@@ -4,7 +4,7 @@
   "areaLevel": 3,
   "floors": 2,
   "baseDurationSec": 50,
-  "description": "討伐隊長が前線に立つ。騎士候補も含む精鋭部隊との最終決戦。撃退せよ。",
+  "description": "辺境城騎士団長が自ら前線に立つ。精鋭部隊との最終決戦。撃退せよ。",
   "encounter": {
     "perFloorEvents": 3,
     "eventWeights": {

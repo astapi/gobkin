@@ -1,10 +1,10 @@
 {
   "id": "subjugation_force_2",
-  "name": "vs討伐隊防衛戦・迎撃",
+  "name": "vs本隊",
   "areaLevel": 3,
   "floors": 2,
   "baseDurationSec": 45,
-  "description": "本隊が到着。傭兵や見習い魔術師も加わり、攻勢が激化する。",
+  "description": "討伐隊の本隊が到着。騎士・魔術師・クレリックを含む正規編成で攻勢が激化する。",
   "encounter": {
     "perFloorEvents": 3,
     "eventWeights": {
