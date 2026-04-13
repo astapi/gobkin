@@ -42,6 +42,9 @@ const GOBLIN_JOB_DEFINITION_SEEDS: Record<GoblinJob, GoblinJobDefinitionSeed> = 
     accentColor: '#2563EB',
     skills: [
       {
+        skillId: 'talent_def_150',
+      },
+      {
         skillId: 'armor_mastery_150',
       },
       {
@@ -93,6 +96,9 @@ const GOBLIN_JOB_DEFINITION_SEEDS: Record<GoblinJob, GoblinJobDefinitionSeed> = 
     id: 'warrior',
     accentColor: '#EA580C',
     skills: [
+      {
+        skillId: 'talent_attackCount_150',
+      },
       {
         skillId: 'armor_mastery_120',
       },

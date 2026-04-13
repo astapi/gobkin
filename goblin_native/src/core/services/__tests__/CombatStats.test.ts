@@ -3,6 +3,7 @@ import { ModStatCalculator } from '../ModStatCalculator'
 import { BattleSystem, getDamageModifier, getAccuracyModifier, getHitRateRandomModifier, getRowWeight, selectTarget } from '../BattleSystem'
 import { ExpeditionEngine } from '../ExpeditionEngine'
 import { getDefaultSkillsForRace } from '../../../shared/data/raceSkills'
+import { getCharacterSkill } from '../../../shared/data/skillCatalog'
 import { getBloodlineAttackCountBonus } from '../../../shared/data/equipmentConfig'
 import { EquipmentService } from '../EquipmentService'
 import { getEquipmentTemplate } from '../../../shared/data/equipmentPoolLoader'
@@ -267,6 +268,39 @@ describe('ModStatCalculator — 戦闘ステータス計算', () => {
     const result = ModStatCalculator.calculate(goblin)
 
     expect(result.magicHeal).toBe(15)
+  })
+
+  it('[才能]スキルは各基礎ステータス式へ1.5倍を適用する', () => {
+    const baseAttributes = { power: 10, wisdom: 10, spirit: 10, vitality: 10, agility: 10, luck: 10 }
+    const skillCases = [
+      ['talent_hp_150', 'hp', 52],
+      ['talent_atk_150', 'atk', 19],
+      ['talent_def_150', 'def', 19],
+      ['talent_magicAtk_150', 'magicAtk', 19],
+      ['talent_magicDef_150', 'magicDef', 19],
+      ['talent_attackCount_150', 'attackCount', 3],
+      ['talent_evasion_150', 'evasion', 19],
+      ['talent_accuracy_150', 'accuracy', 97],
+    ] as const
+
+    for (const [skillId, stat, expected] of skillCases) {
+      const goblin = createTestGoblin({
+        level: 3,
+        skills: [getCharacterSkill(skillId)],
+        baseAttributes,
+      })
+      const result = ModStatCalculator.calculate(goblin)
+
+      expect(result[stat]).toBe(expected)
+    }
+
+    const criticalGoblin = createTestGoblin({
+      level: 3,
+      skills: [getCharacterSkill('talent_criticalRate_150')],
+      baseAttributes: { power: 10, wisdom: 10, spirit: 10, vitality: 10, agility: 30, luck: 15 },
+    })
+
+    expect(ModStatCalculator.calculate(criticalGoblin).criticalRate).toBe(23)
   })
 
   it('magicHealに因子・MOD・装備補正が適用される', () => {

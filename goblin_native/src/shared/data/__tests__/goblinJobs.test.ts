@@ -44,6 +44,7 @@ describe('goblinJobs', () => {
     const goblin = createGoblin({
       job: 'guard',
       skills: [
+        { id: 'talent_def_150', baseStatMultipliers: { def: 1.5 } },
         { id: 'armor_mastery_150', equipmentCategoryMultiplier: { armor: 1.5 } },
         { id: 'physical_reduction_5', physicalDamageReductionPercent: 12 },
         { id: 'equipment_bonus', statBonuses: { atk: 3 } },
@@ -55,6 +56,7 @@ describe('goblinJobs', () => {
     expect(trained.job).toBe('mage')
     expect(trained.skills.some((skill) => skill.id === 'grant_fireball')).toBe(true)
     expect(trained.skills.some((skill) => skill.id === 'grant_magic_arrow')).toBe(true)
+    expect(trained.skills.some((skill) => skill.id === 'talent_def_150')).toBe(false)
     expect(trained.skills.some((skill) => skill.id === 'armor_mastery_150')).toBe(false)
     expect(trained.skills.some((skill) => skill.id === 'equipment_bonus')).toBe(true)
   })

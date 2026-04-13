@@ -20,6 +20,7 @@ function cloneSkill(skill: CharacterSkill): CharacterSkill {
     ...skill,
     statBonuses: skill.statBonuses ? { ...skill.statBonuses } : undefined,
     statMultipliers: skill.statMultipliers ? { ...skill.statMultipliers } : undefined,
+    baseStatMultipliers: skill.baseStatMultipliers ? { ...skill.baseStatMultipliers } : undefined,
     equipmentCategoryMultiplier: skill.equipmentCategoryMultiplier
       ? { ...skill.equipmentCategoryMultiplier }
       : undefined,
