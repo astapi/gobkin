@@ -15,7 +15,7 @@ import { getExpForNextLevel, getExpProgress } from '@/core/services/ExperienceSy
 import { getModTemplate } from '@/shared/data/modPoolLoader'
 import { describeCharacterSkill, getUniqueSkillsById } from '@/shared/data/characterSkills'
 import { getGoblinJobDefinition } from '@/shared/data/goblinJobs'
-import { getGoblinBaseAttributes } from '@/shared/utils/goblinHp'
+import { getGoblinBaseAttributesAtLevel } from '@/shared/utils/goblinHp'
 import { getEffectiveStats } from '@/shared/utils/goblinStats'
 import { getFactorName, getRaceLabel, getSkillLabel, getStatLabel } from '@/shared/i18n/entityLocalization'
 
@@ -72,7 +72,7 @@ export default function GoblinDetailScreen() {
   const expProgress = goblin ? getExpProgress(goblin.level, goblin.experience) : 0
   const characterSkills = useMemo(() => getUniqueSkillsById(goblin?.skills ?? []), [goblin])
   const baseAttributes = useMemo(
-    () => goblin ? getGoblinBaseAttributes(goblin) : null,
+    () => goblin ? getGoblinBaseAttributesAtLevel(goblin, goblin.level) : null,
     [goblin]
   )
   const assignedParty = useMemo(() => (
