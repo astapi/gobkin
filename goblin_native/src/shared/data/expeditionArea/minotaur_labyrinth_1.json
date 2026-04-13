@@ -1,0 +1,15 @@
+{
+  "id": "minotaur_labyrinth_1",
+  "name": "ミノタウロス迷宮",
+  "areaLevel": 7,
+  "floors": 2,
+  "baseDurationSec": 72,
+  "description": "城塞へ続く古い迷宮。重い斧を振るうミノタウロスの戦士たちが侵入者を迷路へ誘い込む。",
+  "encounter": {
+    "perFloorEvents": 3,
+    "eventWeights": {
+      "battle": 72,
+      "exploring": 28
+    }
+  }
+}

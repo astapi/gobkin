@@ -132,44 +132,22 @@
       "exploration_time_sec": 45,
       "description": "野営地の本陣。ブルートが陣を固め、奥にはオーク遠征隊長が控える。攻略すれば拠点として利用可能。",
       "unlockRequires": "orc_camp_2",
-      "unlockNext": "subjugation_force_1",
+      "unlockNext": "human_village_1",
+      "unlockNexts": [
+        "orc_fortress_1"
+      ],
       "isBaseCapture": true,
       "rankUpTarget": 3
     },
     {
-      "id": "subjugation_force_1",
-      "name": "vs討伐隊防衛戦・前哨戦",
-      "areaLevel": 3,
-      "floors": 2,
-      "exploration_time_sec_first": 1,
-      "exploration_time_sec": 40,
-      "description": "討伐隊の先遣部隊が接近。正規兵と弓兵の小部隊を迎撃せよ。",
-      "unlockRequires": "orc_camp_3",
-      "unlockNext": "subjugation_force_2"
-    },
-    {
-      "id": "subjugation_force_2",
-      "name": "vs討伐隊防衛戦・迎撃",
-      "areaLevel": 3,
-      "floors": 2,
-      "exploration_time_sec_first": 1,
-      "exploration_time_sec": 45,
-      "description": "本隊が到着。傭兵や見習い魔術師も加わり、攻勢が激化する。",
-      "unlockRequires": "subjugation_force_1",
-      "unlockNext": "subjugation_force_3"
-    },
-    {
-      "id": "subjugation_force_3",
-      "name": "vs討伐隊防衛戦・決戦",
-      "areaLevel": 3,
-      "floors": 2,
-      "exploration_time_sec_first": 1,
-      "exploration_time_sec": 50,
-      "description": "討伐隊長が前線に立つ。騎士候補も含む精鋭部隊との最終決戦。撃退せよ。",
-      "unlockRequires": "subjugation_force_2",
-      "unlockNext": "human_village_1",
-      "isBaseCapture": true,
-      "rankUpTarget": 4
+      "id": "orc_fortress_1",
+      "name": "オークの砦",
+      "areaLevel": 15,
+      "floors": 3,
+      "exploration_time_sec_first": 90,
+      "exploration_time_sec": 48,
+      "description": "野営地の奥に築かれた石造りの砦。解放直後の戦力ではまず歯が立たない。オークの重装兵に加え、傭兵として雇われたトロルが門を守っている。",
+      "unlockRequires": "orc_camp_3"
     },
     {
       "id": "human_village_1",
@@ -179,7 +157,7 @@
       "exploration_time_sec_first": 120,
       "exploration_time_sec": 45,
       "description": "村の外周を攻める。民兵と猟師が迎え撃つ。",
-      "unlockRequires": "subjugation_force_3",
+      "unlockRequires": "orc_camp_3",
       "unlockNext": "human_village_2"
     },
     {
@@ -202,7 +180,57 @@
       "exploration_time_sec": 55,
       "description": "村の中心部。自警団長が最後の砦として立ちはだかる。制圧してゴブリン国家の礎を築け。",
       "unlockRequires": "human_village_2",
-      "unlockNext": "dwarf_mine_1"
+      "unlockNext": "subjugation_force_1",
+      "unlockNexts": [
+        "hobbit_hills_1",
+        "dwarf_mine_1",
+        "lizardman_swamp_1"
+      ]
+    },
+    {
+      "id": "subjugation_force_1",
+      "name": "vs討伐隊防衛戦・前哨戦",
+      "areaLevel": 3,
+      "floors": 3,
+      "exploration_time_sec_first": 1,
+      "exploration_time_sec": 40,
+      "description": "討伐隊の先遣部隊が接近。正規兵と弓兵の小部隊を迎撃せよ。",
+      "unlockRequires": "human_village_3",
+      "unlockNext": "subjugation_force_2"
+    },
+    {
+      "id": "subjugation_force_2",
+      "name": "vs討伐隊防衛戦・迎撃",
+      "areaLevel": 3,
+      "floors": 3,
+      "exploration_time_sec_first": 1,
+      "exploration_time_sec": 45,
+      "description": "本隊が到着。傭兵や見習い魔術師も加わり、攻勢が激化する。",
+      "unlockRequires": "subjugation_force_1",
+      "unlockNext": "subjugation_force_3"
+    },
+    {
+      "id": "subjugation_force_3",
+      "name": "vs討伐隊防衛戦・決戦",
+      "areaLevel": 3,
+      "floors": 3,
+      "exploration_time_sec_first": 1,
+      "exploration_time_sec": 50,
+      "description": "討伐隊長が前線に立つ。騎士候補も含む精鋭部隊との最終決戦。撃退せよ。",
+      "unlockRequires": "subjugation_force_2",
+      "unlockNext": "human_fortress_1",
+      "isBaseCapture": true,
+      "rankUpTarget": 4
+    },
+    {
+      "id": "hobbit_hills_1",
+      "name": "ホビットの丘陵村",
+      "areaLevel": 4,
+      "floors": 2,
+      "exploration_time_sec_first": 120,
+      "exploration_time_sec": 52,
+      "description": "辺境の村の先に広がる丘陵地。身軽なホビットの斥候と投石手が補給路を守っている。",
+      "unlockRequires": "human_village_3"
     },
     {
       "id": "dwarf_mine_1",
@@ -280,7 +308,7 @@
       "exploration_time_sec_first": 150,
       "exploration_time_sec": 55,
       "description": "沼砦の浅瀬。沼の戦士と毒牙兵が水際で襲いかかる。",
-      "unlockRequires": "elf_forest_3",
+      "unlockRequires": "human_village_3",
       "unlockNext": "lizardman_swamp_2"
     },
     {
@@ -303,6 +331,17 @@
       "exploration_time_sec": 65,
       "description": "砦の本拠。鱗の重装兵に守られた沼王が待ち受ける。水棲戦力を手に入れろ。",
       "unlockRequires": "lizardman_swamp_2",
+      "unlockNext": "harpy_cliff_1"
+    },
+    {
+      "id": "harpy_cliff_1",
+      "name": "ハーピィの崖巣",
+      "areaLevel": 6,
+      "floors": 2,
+      "exploration_time_sec_first": 150,
+      "exploration_time_sec": 66,
+      "description": "沼地を抜けた断崖。空から急襲するハーピィたちが峡谷への道を塞いでいる。",
+      "unlockRequires": "lizardman_swamp_3",
       "unlockNext": "troll_canyon_1"
     },
     {
@@ -313,7 +352,7 @@
       "exploration_time_sec_first": 150,
       "exploration_time_sec": 58,
       "description": "峡谷の入口。トロルが単体で徘徊している。一体でも油断ならない巨躯。",
-      "unlockRequires": "lizardman_swamp_3",
+      "unlockRequires": "harpy_cliff_1",
       "unlockNext": "troll_canyon_2"
     },
     {
@@ -336,7 +375,17 @@
       "exploration_time_sec": 70,
       "description": "峡谷の最奥。巨大トロルの群れの先に、峡谷の暴君が待ち受ける。再生能力を手に入れろ。",
       "unlockRequires": "troll_canyon_2",
-      "unlockNext": "human_fortress_1"
+      "unlockNext": "minotaur_labyrinth_1"
+    },
+    {
+      "id": "minotaur_labyrinth_1",
+      "name": "ミノタウロス迷宮",
+      "areaLevel": 7,
+      "floors": 2,
+      "exploration_time_sec_first": 180,
+      "exploration_time_sec": 72,
+      "description": "城塞へ続く古い迷宮。重い斧を振るうミノタウロスの戦士たちが侵入者を迷路へ誘い込む。",
+      "unlockRequires": "troll_canyon_3"
     },
     {
       "id": "human_fortress_1",
@@ -346,7 +395,7 @@
       "exploration_time_sec_first": 180,
       "exploration_time_sec": 68,
       "description": "城塞の外壁。騎士と宮廷魔術師が城壁から迎え撃つ。",
-      "unlockRequires": "troll_canyon_3",
+      "unlockRequires": "subjugation_force_3",
       "unlockNext": "human_fortress_2"
     },
     {
@@ -369,9 +418,20 @@
       "exploration_time_sec": 80,
       "description": "城塞の本丸。精鋭近衛兵に守られた城塞司令官との最終決戦。異種族の力を総動員して突破せよ。",
       "unlockRequires": "human_fortress_2",
-      "unlockNext": "royal_capital_1",
+      "unlockNext": "vampire_castle_1",
       "isBaseCapture": true,
       "rankUpTarget": 6
+    },
+    {
+      "id": "vampire_castle_1",
+      "name": "ヴァンパイアの古城",
+      "areaLevel": 8,
+      "floors": 2,
+      "exploration_time_sec_first": 180,
+      "exploration_time_sec": 82,
+      "description": "王都へ向かう街道を見下ろす古城。夜の眷属を率いるヴァンパイアが影から進軍を阻む。",
+      "unlockRequires": "human_fortress_3",
+      "unlockNext": "royal_capital_1"
     },
     {
       "id": "royal_capital_1",
@@ -381,7 +441,7 @@
       "exploration_time_sec_first": 180,
       "exploration_time_sec": 76,
       "description": "王都の城門を突破する。近衛騎士と大魔導師が立ちはだかる。",
-      "unlockRequires": "human_fortress_3",
+      "unlockRequires": "vampire_castle_1",
       "unlockNext": "royal_capital_2"
     },
     {
@@ -393,6 +453,17 @@
       "exploration_time_sec": 84,
       "description": "王城内部へ侵攻。聖騎士や王国禁衛隊が最後の防衛線を張る。",
       "unlockRequires": "royal_capital_1",
+      "unlockNext": "dragon_volcano_1"
+    },
+    {
+      "id": "dragon_volcano_1",
+      "name": "ドラゴンの火山巣",
+      "areaLevel": 8,
+      "floors": 3,
+      "exploration_time_sec_first": 180,
+      "exploration_time_sec": 88,
+      "description": "王城地下から通じる火山巣。王国が最後に解き放ったドラゴンを越えなければ玉座には届かない。",
+      "unlockRequires": "royal_capital_2",
       "unlockNext": "royal_capital_3"
     },
     {
@@ -403,7 +474,7 @@
       "exploration_time_sec_first": 180,
       "exploration_time_sec": 90,
       "description": "最終決戦。勇者と人間王が最後の壁として立ちはだかる。ゴブリンキングダムの完成をかけた決戦。",
-      "unlockRequires": "royal_capital_2",
+      "unlockRequires": "dragon_volcano_1",
       "isBaseCapture": true,
       "rankUpTarget": 7
     }

@@ -135,23 +135,35 @@ export default function ExpeditionResultScreen() {
   }, [dungeon, markDungeonCleared, replay])
 
   const area = replay ? areasData.find(a => a.id === replay.meta.areaId) : dungeon
-  const unlockNext = area?.unlockNext
-  const nextAreaName = unlockNext
-    ? (() => {
-        const nextArea = areasData.find(a => a.id === unlockNext)
-        return nextArea ? getDungeonName(nextArea) : unlockNext
-      })()
+  const unlockTargets = useMemo(() => {
+    if (!area) return []
+    return Array.from(new Set([
+      ...(area.unlockNext ? [area.unlockNext] : []),
+      ...(area.unlockNexts ?? []),
+    ]))
+  }, [area])
+  const nextAreaName = unlockTargets.length > 0
+    ? unlockTargets
+        .map(unlockTarget => {
+          const nextArea = areasData.find(a => a.id === unlockTarget)
+          return nextArea ? getDungeonName(nextArea) : unlockTarget
+        })
+        .join('、')
     : null
   const [showUnlockNotice, setShowUnlockNotice] = useState(false)
 
   useEffect(() => {
-    if (!unlockNext || !isSuccess) return
-    const nextProgress = progress[unlockNext]
-    if (!nextProgress || !nextProgress.unlocked) return
-    if (nextProgress.unlockNotified) return
+    if (unlockTargets.length === 0 || !isSuccess) return
+    const newlyUnlockedTargets = unlockTargets.filter(unlockTarget => {
+      const nextProgress = progress[unlockTarget]
+      return nextProgress?.unlocked && !nextProgress.unlockNotified
+    })
+    if (newlyUnlockedTargets.length === 0) return
     setShowUnlockNotice(true)
-    void markUnlockNotified(unlockNext)
-  }, [unlockNext, isSuccess, progress, markUnlockNotified])
+    newlyUnlockedTargets.forEach(unlockTarget => {
+      void markUnlockNotified(unlockTarget)
+    })
+  }, [unlockTargets, isSuccess, progress, markUnlockNotified])
 
   const handleBackToList = useCallback(() => {
     router.dismissAll()

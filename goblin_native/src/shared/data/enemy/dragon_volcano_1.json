@@ -1,0 +1,178 @@
+{
+  "enemies": [
+    {
+      "id": "DRG001",
+      "name": "火蜥蜴",
+      "raceTags": [
+        "dragon"
+      ],
+      "level": 31,
+      "hp": 170,
+      "atk": 62,
+      "def": 30,
+      "attackCount": 1,
+      "accuracy": 700,
+      "evasion": 30,
+      "exp": 135,
+      "gold": 126,
+      "agility": 16,
+      "magicDef": 34
+    },
+    {
+      "id": "DRG002",
+      "name": "ワイバーン",
+      "raceTags": [
+        "dragon"
+      ],
+      "level": 32,
+      "hp": 220,
+      "atk": 72,
+      "def": 34,
+      "attackCount": 2,
+      "accuracy": 730,
+      "evasion": 38,
+      "exp": 155,
+      "gold": 144,
+      "agility": 22,
+      "magicDef": 36
+    },
+    {
+      "id": "DRG003",
+      "name": "ドラゴン幼体",
+      "raceTags": [
+        "dragon"
+      ],
+      "level": 34,
+      "hp": 360,
+      "atk": 82,
+      "def": 42,
+      "attackCount": 2,
+      "accuracy": 760,
+      "evasion": 34,
+      "exp": 190,
+      "gold": 176,
+      "agility": 18,
+      "magicDef": 44
+    },
+    {
+      "id": "B_FLAME_DRAGON",
+      "name": "紅蓮竜",
+      "raceTags": [
+        "dragon"
+      ],
+      "level": 40,
+      "hp": 2400,
+      "atk": 105,
+      "def": 58,
+      "attackCount": 3,
+      "accuracy": 860,
+      "evasion": 42,
+      "criticalRate": 0.12,
+      "exp": 780,
+      "gold": 680,
+      "agility": 20,
+      "magicDef": 56
+    }
+  ],
+  "patterns": [
+    {
+      "id": "DV1_001",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "DRG001",
+          "DRG001"
+        ],
+        [
+          "DRG002"
+        ]
+      ]
+    },
+    {
+      "id": "DV1_002",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "DRG002",
+          "DRG001"
+        ],
+        [
+          "DRG001",
+          "DRG002"
+        ]
+      ]
+    },
+    {
+      "id": "DV1_003",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "DRG002"
+        ],
+        [
+          "DRG003"
+        ],
+        [
+          "DRG001"
+        ]
+      ]
+    },
+    {
+      "id": "DV1_004",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "DRG003",
+          "DRG001"
+        ],
+        [
+          "DRG002",
+          "DRG002"
+        ]
+      ]
+    },
+    {
+      "id": "DV1_005",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "DRG003"
+        ],
+        [
+          "DRG002",
+          "DRG001"
+        ]
+      ]
+    },
+    {
+      "id": "BOSS",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "B_FLAME_DRAGON"
+        ],
+        [
+          "DRG003",
+          "DRG002"
+        ],
+        [
+          "DRG001",
+          "DRG001"
+        ]
+      ],
+      "isBoss": true
+    }
+  ]
+}

@@ -1,0 +1,182 @@
+{
+  "enemies": [
+    {
+      "id": "ORF001",
+      "name": "オーク重装兵",
+      "raceTags": [
+        "orc"
+      ],
+      "level": 13,
+      "hp": 520,
+      "atk": 115,
+      "def": 24,
+      "agility": 7,
+      "attackCount": 1,
+      "accuracy": 245,
+      "evasion": 13,
+      "exp": 58,
+      "gold": 44,
+      "magicDef": 18
+    },
+    {
+      "id": "ORF002",
+      "name": "オーク砦弓兵",
+      "raceTags": [
+        "orc"
+      ],
+      "level": 13,
+      "hp": 360,
+      "atk": 98,
+      "def": 16,
+      "agility": 10,
+      "attackCount": 1,
+      "accuracy": 275,
+      "evasion": 18,
+      "exp": 54,
+      "gold": 42,
+      "magicDef": 14
+    },
+    {
+      "id": "ORF003",
+      "name": "雇われトロル",
+      "raceTags": [
+        "troll"
+      ],
+      "level": 15,
+      "hp": 680,
+      "atk": 132,
+      "def": 28,
+      "agility": 4,
+      "attackCount": 1,
+      "accuracy": 250,
+      "evasion": 10,
+      "exp": 72,
+      "gold": 56,
+      "magicDef": 22
+    },
+    {
+      "id": "B_ORC_FORTRESS",
+      "name": "オーク砦守将",
+      "raceTags": [
+        "orc"
+      ],
+      "level": 18,
+      "hp": 980,
+      "atk": 150,
+      "def": 36,
+      "agility": 9,
+      "attackCount": 2,
+      "accuracy": 305,
+      "evasion": 16,
+      "exp": 260,
+      "gold": 220,
+      "factorDrops": [
+        {
+          "factorId": "orc",
+          "probability": 1
+        }
+      ],
+      "magicDef": 28
+    }
+  ],
+  "patterns": [
+    {
+      "id": "OF1_001",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "ORF001"
+        ],
+        [
+          "ORF002",
+          "ORF002"
+        ]
+      ]
+    },
+    {
+      "id": "OF1_002",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "ORF001",
+          "ORF001"
+        ],
+        [
+          "ORF002"
+        ]
+      ]
+    },
+    {
+      "id": "OF1_003",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "ORF003"
+        ],
+        [
+          "ORF001",
+          "ORF002"
+        ]
+      ]
+    },
+    {
+      "id": "OF1_004",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "ORF003",
+          "ORF001"
+        ],
+        [
+          "ORF002",
+          "ORF002"
+        ]
+      ]
+    },
+    {
+      "id": "OF1_005",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "ORF003"
+        ],
+        [
+          "ORF001",
+          "ORF001"
+        ],
+        [
+          "ORF002"
+        ]
+      ]
+    },
+    {
+      "id": "BOSS",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "B_ORC_FORTRESS"
+        ],
+        [
+          "ORF003"
+        ],
+        [
+          "ORF001",
+          "ORF002"
+        ]
+      ],
+      "isBoss": true
+    }
+  ]
+}

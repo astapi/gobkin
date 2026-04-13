@@ -1,0 +1,129 @@
+{
+  "enemies": [
+    {
+      "id": "VMP001",
+      "name": "吸血鬼の従者",
+      "raceTags": [
+        "vampire",
+        "undead"
+      ],
+      "level": 29,
+      "hp": 140,
+      "atk": 58,
+      "def": 24,
+      "attackCount": 2,
+      "accuracy": 670,
+      "evasion": 42,
+      "exp": 120,
+      "gold": 112,
+      "agility": 20,
+      "magicDef": 34
+    },
+    {
+      "id": "VMP002",
+      "name": "夜会の魔術師",
+      "raceTags": [
+        "vampire",
+        "undead"
+      ],
+      "level": 30,
+      "hp": 120,
+      "atk": 50,
+      "magicAtk": 72,
+      "def": 20,
+      "attackCount": 1,
+      "accuracy": 690,
+      "evasion": 40,
+      "exp": 130,
+      "gold": 122,
+      "agility": 18,
+      "magicDef": 38
+    },
+    {
+      "id": "B_VAMPIRE_LORD",
+      "name": "ヴァンパイアロード",
+      "raceTags": [
+        "vampire",
+        "undead"
+      ],
+      "level": 35,
+      "hp": 1500,
+      "atk": 82,
+      "magicAtk": 88,
+      "def": 40,
+      "attackCount": 2,
+      "accuracy": 780,
+      "evasion": 50,
+      "exp": 620,
+      "gold": 520,
+      "agility": 24,
+      "magicDef": 48
+    }
+  ],
+  "patterns": [
+    {
+      "id": "VC1_001",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "VMP001",
+          "VMP001"
+        ],
+        [
+          "VMP002"
+        ]
+      ]
+    },
+    {
+      "id": "VC1_002",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "VMP002",
+          "VMP001"
+        ],
+        [
+          "VMP001",
+          "VMP002"
+        ]
+      ]
+    },
+    {
+      "id": "VC1_003",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "VMP002",
+          "VMP002"
+        ],
+        [
+          "VMP001",
+          "VMP001"
+        ]
+      ]
+    },
+    {
+      "id": "BOSS",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "B_VAMPIRE_LORD"
+        ],
+        [
+          "VMP002",
+          "VMP001",
+          "VMP001"
+        ]
+      ],
+      "isBoss": true
+    }
+  ]
+}

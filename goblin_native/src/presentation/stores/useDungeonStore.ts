@@ -101,12 +101,19 @@ export const useDungeonStore = create<DungeonStoreState & DungeonStoreActions>()
           maxClearedTier: newMaxClearedTier,
         }
 
-        if (cleared && dungeon.unlockNext) {
-          const target = nextProgress[dungeon.unlockNext]
-          if (!target || !target.unlocked) {
-            nextProgress[dungeon.unlockNext] = {
-              ...(target ?? { cleared: false, unlockNotified: false, maxClearedTier: 0 }),
-              unlocked: true,
+        if (cleared) {
+          const unlockTargets = [
+            ...(dungeon.unlockNext ? [dungeon.unlockNext] : []),
+            ...(dungeon.unlockNexts ?? []),
+          ]
+
+          for (const unlockTarget of unlockTargets) {
+            const target = nextProgress[unlockTarget]
+            if (!target || !target.unlocked) {
+              nextProgress[unlockTarget] = {
+                ...(target ?? { cleared: false, unlockNotified: false, maxClearedTier: 0 }),
+                unlocked: true,
+              }
             }
           }
         }

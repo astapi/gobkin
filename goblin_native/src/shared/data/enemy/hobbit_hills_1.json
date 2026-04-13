@@ -1,0 +1,123 @@
+{
+  "enemies": [
+    {
+      "id": "HBT001",
+      "name": "ホビット斥候",
+      "raceTags": [
+        "hobbit"
+      ],
+      "level": 14,
+      "hp": 62,
+      "atk": 25,
+      "def": 13,
+      "attackCount": 1,
+      "accuracy": 410,
+      "evasion": 38,
+      "exp": 48,
+      "gold": 52,
+      "agility": 18,
+      "magicDef": 16
+    },
+    {
+      "id": "HBT002",
+      "name": "ホビット投石手",
+      "raceTags": [
+        "hobbit"
+      ],
+      "level": 15,
+      "hp": 58,
+      "atk": 30,
+      "def": 11,
+      "attackCount": 1,
+      "accuracy": 430,
+      "evasion": 34,
+      "exp": 52,
+      "gold": 56,
+      "agility": 16,
+      "magicDef": 14
+    },
+    {
+      "id": "HBT003",
+      "name": "ホビット村長",
+      "raceTags": [
+        "hobbit"
+      ],
+      "level": 18,
+      "hp": 420,
+      "atk": 42,
+      "def": 22,
+      "attackCount": 2,
+      "accuracy": 500,
+      "evasion": 42,
+      "exp": 240,
+      "gold": 260,
+      "agility": 18,
+      "magicDef": 24
+    }
+  ],
+  "patterns": [
+    {
+      "id": "HH1_001",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "HBT001",
+          "HBT001"
+        ],
+        [
+          "HBT002"
+        ]
+      ]
+    },
+    {
+      "id": "HH1_002",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "HBT002",
+          "HBT001"
+        ],
+        [
+          "HBT001",
+          "HBT002"
+        ]
+      ]
+    },
+    {
+      "id": "HH1_003",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "HBT002",
+          "HBT002"
+        ],
+        [
+          "HBT001",
+          "HBT001"
+        ]
+      ]
+    },
+    {
+      "id": "BOSS",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "HBT003"
+        ],
+        [
+          "HBT002",
+          "HBT001"
+        ]
+      ],
+      "isBoss": true
+    }
+  ]
+}
