@@ -4,6 +4,7 @@ import {
   BASE_GOBLIN_HP_COEFFICIENT,
   getGoblinVariantByRace,
 } from '../data/goblinVariants'
+import { getSkillBaseStatMultipliers } from '../data/characterSkills'
 import type { Goblin, GoblinBaseAttributes, GoblinStats } from '../types'
 import { normalizeGoblinRaceId } from '../types/Race'
 
@@ -68,6 +69,7 @@ export function getGoblinStatLevelScale(level: number, race: string): number {
 type GoblinStatContext = Pick<Goblin, 'race' | 'job' | 'baseAttributes'> & {
   raceId?: Goblin['raceId']
   stats?: Partial<GoblinStats>
+  skills?: Goblin['skills']
 }
 
 function hasStoredStat(
@@ -75,6 +77,11 @@ function hasStoredStat(
   key: keyof GoblinStats
 ): goblin is GoblinStatContext & { stats: Pick<GoblinStats, typeof key> } {
   return !goblin.baseAttributes && goblin.stats?.[key] !== undefined
+}
+
+function getBaseStatMultiplier(goblin: GoblinStatContext, key: keyof GoblinStats): number {
+  if (!goblin.skills?.length) return 1
+  return getSkillBaseStatMultipliers(goblin.skills)[key] ?? 1
 }
 
 export function calculateGoblinBaseHp(
@@ -88,7 +95,8 @@ export function calculateGoblinBaseHp(
   const attributes = getGoblinBaseAttributes(goblin)
   const levelScale = getGoblinStatLevelScale(level, goblin.raceId ?? goblin.race)
   const coefficient = getGoblinStatCoefficient(goblin)
-  return Math.floor(attributes.vitality * (1 + levelScale * 10 * coefficient) + 1)
+  const multiplier = getBaseStatMultiplier(goblin, 'hp')
+  return Math.floor(attributes.vitality * (1 + levelScale * 10 * coefficient) * multiplier + 1)
 }
 
 export function calculateGoblinBaseAtk(level: number, goblin: GoblinStatContext): number {
@@ -99,7 +107,8 @@ export function calculateGoblinBaseAtk(level: number, goblin: GoblinStatContext)
   const attributes = getGoblinBaseAttributes(goblin)
   const levelScale = getGoblinStatLevelScale(level, goblin.raceId ?? goblin.race)
   const coefficient = getGoblinStatCoefficient(goblin)
-  return Math.round(attributes.power * (1 + levelScale * coefficient))
+  const multiplier = getBaseStatMultiplier(goblin, 'atk')
+  return Math.round(attributes.power * (1 + levelScale * coefficient) * multiplier)
 }
 
 export function calculateGoblinBaseDef(level: number, goblin: GoblinStatContext): number {
@@ -110,7 +119,8 @@ export function calculateGoblinBaseDef(level: number, goblin: GoblinStatContext)
   const attributes = getGoblinBaseAttributes(goblin)
   const levelScale = getGoblinStatLevelScale(level, goblin.raceId ?? goblin.race)
   const coefficient = getGoblinStatCoefficient(goblin)
-  return Math.round(attributes.vitality * (1 + levelScale * coefficient))
+  const multiplier = getBaseStatMultiplier(goblin, 'def')
+  return Math.round(attributes.vitality * (1 + levelScale * coefficient) * multiplier)
 }
 
 export function calculateGoblinBaseMagicDef(level: number, goblin: GoblinStatContext): number {
@@ -121,7 +131,8 @@ export function calculateGoblinBaseMagicDef(level: number, goblin: GoblinStatCon
   const attributes = getGoblinBaseAttributes(goblin)
   const levelScale = getGoblinStatLevelScale(level, goblin.raceId ?? goblin.race)
   const coefficient = getGoblinStatCoefficient(goblin)
-  return Math.round(attributes.spirit * (1 + levelScale * 1 * coefficient))
+  const multiplier = getBaseStatMultiplier(goblin, 'magicDef')
+  return Math.round(attributes.spirit * (1 + levelScale * 1 * coefficient) * multiplier)
 }
 
 export function calculateGoblinBaseAccuracy(level: number, goblin: GoblinStatContext): number {
@@ -133,7 +144,8 @@ export function calculateGoblinBaseAccuracy(level: number, goblin: GoblinStatCon
   const levelScale = getGoblinStatLevelScale(level, goblin.raceId ?? goblin.race)
   const coefficient = getGoblinStatCoefficient(goblin)
   const attributeAverage = (attributes.power + attributes.agility) / 2
-  return Math.round(attributeAverage * (1 + levelScale * 2 * coefficient) + 50)
+  const multiplier = getBaseStatMultiplier(goblin, 'accuracy')
+  return Math.round((attributeAverage * (1 + levelScale * 2 * coefficient) + 50) * multiplier)
 }
 
 export function calculateGoblinBaseEvasion(level: number, goblin: GoblinStatContext): number {
@@ -145,7 +157,8 @@ export function calculateGoblinBaseEvasion(level: number, goblin: GoblinStatCont
   const levelScale = getGoblinStatLevelScale(level, goblin.raceId ?? goblin.race)
   const coefficient = getGoblinStatCoefficient(goblin)
   const attributeAverage = (attributes.agility + attributes.luck) / 2
-  return Math.round(attributeAverage * (1 + levelScale * coefficient))
+  const multiplier = getBaseStatMultiplier(goblin, 'evasion')
+  return Math.round(attributeAverage * (1 + levelScale * coefficient) * multiplier)
 }
 
 export function calculateGoblinBaseAttackCount(level: number, goblin: GoblinStatContext): number {
@@ -161,8 +174,9 @@ export function calculateGoblinBaseAttackCount(level: number, goblin: GoblinStat
   const primary = Math.round(agilityScale + 0.1)
   const secondary = Math.round(agilityScale - 0.3)
   const combined = Math.max(1, primary + secondary)
+  const multiplier = getBaseStatMultiplier(goblin, 'attackCount')
 
-  return Math.round(combined * 2 + bloodlineAttackCountBonus)
+  return Math.round((combined * 2 + bloodlineAttackCountBonus) * multiplier)
 }
 
 export function calculateGoblinBaseMagicAtk(level: number, goblin: GoblinStatContext): number {
@@ -173,7 +187,8 @@ export function calculateGoblinBaseMagicAtk(level: number, goblin: GoblinStatCon
   const attributes = getGoblinBaseAttributes(goblin)
   const levelScale = getGoblinStatLevelScale(level, goblin.raceId ?? goblin.race)
   const coefficient = getGoblinStatCoefficient(goblin)
-  return Math.round(attributes.wisdom * (1 + levelScale * 1 * coefficient))
+  const multiplier = getBaseStatMultiplier(goblin, 'magicAtk')
+  return Math.round(attributes.wisdom * (1 + levelScale * 1 * coefficient) * multiplier)
 }
 
 export function calculateGoblinBaseMagicHeal(level: number, goblin: GoblinStatContext): number {
@@ -197,7 +212,8 @@ export function calculateGoblinBaseCriticalRate(level: number, goblin: GoblinSta
   const coefficient = getGoblinStatCoefficient(goblin)
   const rawBase = attributes.agility * 1 + attributes.luck * 2 - 45
   const base = Math.max(0, rawBase)
-  return Math.round(base * (1 + levelScale * 0.16 * coefficient))
+  const multiplier = getBaseStatMultiplier(goblin, 'criticalRate')
+  return Math.round(base * (1 + levelScale * 0.16 * coefficient) * multiplier)
 }
 
 export function calculateGoblinDerivedStats(

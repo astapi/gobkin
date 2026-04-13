@@ -14,6 +14,7 @@ export function cloneCharacterSkill(skill: CharacterSkill): CharacterSkill {
     ...skill,
     statBonuses: skill.statBonuses ? { ...skill.statBonuses } : undefined,
     statMultipliers: skill.statMultipliers ? { ...skill.statMultipliers } : undefined,
+    baseStatMultipliers: skill.baseStatMultipliers ? { ...skill.baseStatMultipliers } : undefined,
     equipmentCategoryMultiplier: skill.equipmentCategoryMultiplier
       ? { ...skill.equipmentCategoryMultiplier }
       : undefined,
@@ -129,6 +130,15 @@ export function describeCharacterSkill(skill: CharacterSkill): string {
     return i18n.t('battle.armorMultiplier', { value: skill.equipmentCategoryMultiplier.armor.toFixed(1) })
   }
 
+  for (const [key, value] of Object.entries(skill.baseStatMultipliers ?? {})) {
+    if (value !== undefined) {
+      return i18n.t('battle.baseStatMultiplier', {
+        stat: i18n.t(`entities.stat.${key}`, { defaultValue: key }),
+        value: value.toFixed(1),
+      })
+    }
+  }
+
   if (skill.statMultipliers?.evasion !== undefined) {
     return i18n.t('battle.evasionMultiplier', { value: skill.statMultipliers.evasion.toFixed(1) })
   }
@@ -170,6 +180,20 @@ export function getSkillStatMultipliers(skills: CharacterSkill[]): Partial<Recor
 
   for (const skill of getUniqueSkillsById(skills)) {
     for (const [key, value] of Object.entries(skill.statMultipliers ?? {})) {
+      if (value === undefined) continue
+      const statKey = key as keyof GoblinStats
+      multipliers[statKey] = (multipliers[statKey] ?? 1) * value
+    }
+  }
+
+  return multipliers
+}
+
+export function getSkillBaseStatMultipliers(skills: CharacterSkill[]): Partial<Record<keyof GoblinStats, number>> {
+  const multipliers: Partial<Record<keyof GoblinStats, number>> = {}
+
+  for (const skill of getUniqueSkillsById(skills)) {
+    for (const [key, value] of Object.entries(skill.baseStatMultipliers ?? {})) {
       if (value === undefined) continue
       const statKey = key as keyof GoblinStats
       multipliers[statKey] = (multipliers[statKey] ?? 1) * value

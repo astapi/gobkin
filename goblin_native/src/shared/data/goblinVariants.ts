@@ -66,6 +66,7 @@ export const goblinVariantDefinitions: Record<string, GoblinVariantDefinition> =
     hpCoefficient: 1.2,
     combatStats: { attackCount: 2, accuracy: 20, evasion: 15 },
     defaultSkillIds: [
+      'talent_hp_150',
       'armor_mastery_130',
       'rear_guard',
       'hp_regen_20',
@@ -89,6 +90,7 @@ export const goblinVariantDefinitions: Record<string, GoblinVariantDefinition> =
     hpCoefficient: 0.9,
     combatStats: { attackCount: 3, accuracy: 20, evasion: 15 },
     defaultSkillIds: [
+      'talent_accuracy_150',
       'attack_count_up_2',
       'equipment_accuracy_200',
       'additional_damage_13',
@@ -162,6 +164,7 @@ export const goblinVariantDefinitions: Record<string, GoblinVariantDefinition> =
     hpCoefficient: 1.2,
     combatStats: { attackCount: 2, accuracy: 20, evasion: 15 },
     defaultSkillIds: [
+      'talent_atk_150',
       'inspire_150',
       'survive_lethal_hp1',
     ],

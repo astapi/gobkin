@@ -5,6 +5,7 @@ function cloneSkill(skill: CharacterSkill): CharacterSkill {
     ...skill,
     statBonuses: skill.statBonuses ? { ...skill.statBonuses } : undefined,
     statMultipliers: skill.statMultipliers ? { ...skill.statMultipliers } : undefined,
+    baseStatMultipliers: skill.baseStatMultipliers ? { ...skill.baseStatMultipliers } : undefined,
     equipmentCategoryMultiplier: skill.equipmentCategoryMultiplier
       ? { ...skill.equipmentCategoryMultiplier }
       : undefined,
@@ -82,6 +83,15 @@ function createCriticalDamageBonusSkill(value: number): CharacterSkill {
   }
 }
 
+function createTalentSkill(stat: keyof NonNullable<CharacterSkill['baseStatMultipliers']>): CharacterSkill {
+  return {
+    id: `talent_${stat}_150`,
+    baseStatMultipliers: {
+      [stat]: 1.5,
+    },
+  }
+}
+
 function createPhysicalReductionSkill(value: number): CharacterSkill {
   const id = `physical_reduction_${value}`
   return {
@@ -113,6 +123,16 @@ export const CHARACTER_SKILL_CATALOG = {
     id: 'armor_mastery_150',
     equipmentCategoryMultiplier: { armor: 1.5 },
   },
+
+  talent_hp_150: createTalentSkill('hp'),
+  talent_atk_150: createTalentSkill('atk'),
+  talent_def_150: createTalentSkill('def'),
+  talent_magicAtk_150: createTalentSkill('magicAtk'),
+  talent_magicDef_150: createTalentSkill('magicDef'),
+  talent_attackCount_150: createTalentSkill('attackCount'),
+  talent_evasion_150: createTalentSkill('evasion'),
+  talent_accuracy_150: createTalentSkill('accuracy'),
+  talent_criticalRate_150: createTalentSkill('criticalRate'),
 
   attack_count_up_1: createAttackCountUpSkill(1),
   attack_count_up_2: createAttackCountUpSkill(2),
