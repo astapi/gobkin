@@ -510,6 +510,7 @@ const ja = {
       talent_evasion_150: { name: '[才能]回避' },
       talent_accuracy_150: { name: '[才能]命中精度' },
       talent_criticalRate_150: { name: '[才能]必殺率' },
+      talent_itemSlots: { name: '[才能]アイテム装備可能数' },
       cover_low_hp_ally: { name: 'かばう' },
       equipment_accuracy_200: { name: '[2.0倍]命中精度' },
       evasion_150: { name: '回避適正' },
@@ -587,6 +588,7 @@ const ja = {
     undead: '遠征終了時にHP0でも治療不要で全回復する',
     hpRegen: '[{{value}}%]毎ターン終了時に最大HPの{{value}}%を回復',
     hpRegenAction: '回復能力',
+    itemSlotsBonus: 'アイテム装備可能数が増加する',
   },
   dungeonTier: {
     normal: '通常',

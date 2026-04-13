@@ -121,6 +121,10 @@ export function describeCharacterSkill(skill: CharacterSkill): string {
     return i18n.t('battle.hpRegen', { value: skill.hpRegenPercent })
   }
 
+  if (skill.itemSlotsBonus) {
+    return i18n.t('battle.itemSlotsBonus')
+  }
+
   if (skill.protectRearAllyNormalAttackMultiplier !== undefined) {
     const reducedRate = Math.round((1 - skill.protectRearAllyNormalAttackMultiplier) * 100)
     return i18n.t('battle.rearProtection', { value: reducedRate })
@@ -316,6 +320,10 @@ export function getGoldBonusPercentFromSkills(skills: CharacterSkill[]): number 
 
 export function hasUndeadSkill(skills: CharacterSkill[]): boolean {
   return getUniqueSkillsById(skills).some((skill) => skill.undead)
+}
+
+export function hasItemSlotsBonusSkill(skills: CharacterSkill[]): boolean {
+  return getUniqueSkillsById(skills).some((skill) => skill.itemSlotsBonus)
 }
 
 export function getHpRegenPercentFromSkills(skills: CharacterSkill[]): number {

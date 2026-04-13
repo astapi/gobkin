@@ -137,7 +137,9 @@ export const goblinVariantDefinitions: Record<string, GoblinVariantDefinition> =
       { type: 'stat_bonus', target: 'hp', value: 40 },
       { type: 'stat_bonus', target: 'atk', value: 10 },
     ],
+    baseAttributes: { power: 11, wisdom: 8, spirit: 10, vitality: 15, agility: 7, luck: 9 },
     defaultSkillIds: [
+      'talent_itemSlots',
       'undead_trait',
       'hp_regen_20',
     ],

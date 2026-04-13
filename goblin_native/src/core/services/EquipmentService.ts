@@ -3,7 +3,7 @@ import type { CharacterSkill } from '../../shared/types/CharacterSkill'
 import type { EquipmentInstance, EquipmentStatBonus } from '../../shared/types/Equipment'
 import { calculateSlotCount } from '../../shared/data/equipmentConfig'
 import { getEquipmentTemplate } from '../../shared/data/equipmentPoolLoader'
-import { cloneCharacterSkill } from '../../shared/data/characterSkills'
+import { cloneCharacterSkill, hasItemSlotsBonusSkill } from '../../shared/data/characterSkills'
 import { EquipmentTitleService } from './EquipmentTitleService'
 
 /**
@@ -56,7 +56,8 @@ export class EquipmentService {
    * ゴブリンが利用可能なスロット数を取得
    */
   static getAvailableSlots(goblin: Goblin): number {
-    return calculateSlotCount(goblin.level)
+    const hasBonus = hasItemSlotsBonusSkill(goblin.skills ?? [])
+    return calculateSlotCount(goblin.level, hasBonus)
   }
 
   /**

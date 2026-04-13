@@ -510,6 +510,7 @@ const en = {
       talent_evasion_150: { name: '[Talent] Evasion' },
       talent_accuracy_150: { name: '[Talent] Accuracy' },
       talent_criticalRate_150: { name: '[Talent] Critical Rate' },
+      talent_itemSlots: { name: '[Talent] Item Slots' },
       cover_low_hp_ally: { name: 'Cover' },
       equipment_accuracy_200: { name: '[2.0x] Accuracy' },
       evasion_150: { name: 'Evasion Aptitude' },
