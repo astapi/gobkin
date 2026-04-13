@@ -33,4 +33,5 @@ export interface CharacterSkill {
   undead?: boolean
   hpRegenPercent?: number
   itemSlotsBonus?: boolean
+  recoveryMagicLevel?: number
 }

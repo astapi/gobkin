@@ -100,6 +100,13 @@ function createPhysicalReductionSkill(value: number): CharacterSkill {
   }
 }
 
+function createRecoveryMagicSkill(level: number): CharacterSkill {
+  return {
+    id: `recovery_magic_lv${level}`,
+    recoveryMagicLevel: level,
+  }
+}
+
 export const CHARACTER_SKILL_CATALOG = {
   additional_damage_13: {
     id: 'additional_damage_13',
@@ -293,6 +300,14 @@ export const CHARACTER_SKILL_CATALOG = {
     id: 'hp_regen_20',
     hpRegenPercent: 20,
   },
+
+  recovery_magic_lv1: createRecoveryMagicSkill(1),
+  recovery_magic_lv2: createRecoveryMagicSkill(2),
+  recovery_magic_lv3: createRecoveryMagicSkill(3),
+  recovery_magic_lv4: createRecoveryMagicSkill(4),
+  recovery_magic_lv5: createRecoveryMagicSkill(5),
+  recovery_magic_lv6: createRecoveryMagicSkill(6),
+  recovery_magic_lv7: createRecoveryMagicSkill(7),
 
   weapon_melee_attack: {
     id: 'weapon_melee_attack',

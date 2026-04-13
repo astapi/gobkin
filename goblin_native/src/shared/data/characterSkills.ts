@@ -8,6 +8,7 @@ import type {
 } from '../types'
 import i18n from '../i18n'
 import { getSkillDescription, getSkillLabel } from '../i18n/entityLocalization'
+import { getRecoveryMagicSpellIds } from './recoveryMagic'
 
 export function cloneCharacterSkill(skill: CharacterSkill): CharacterSkill {
   return {
@@ -284,13 +285,24 @@ export function getSpellDamagePercentFromSkills(skills: CharacterSkill[]): numbe
   )
 }
 
-export function getLearnedSpellsFromSkills(skills: CharacterSkill[]): LearnedSpell[] {
+export function getLearnedSpellsFromSkills(skills: CharacterSkill[], level?: number): LearnedSpell[] {
   const spellMap = new Map<string, LearnedSpell>()
 
   for (const skill of getUniqueSkillsById(skills)) {
-    if (!skill.grantsSpellId) continue
-    if (!spellMap.has(skill.grantsSpellId)) {
-      spellMap.set(skill.grantsSpellId, { spellId: skill.grantsSpellId })
+    if (skill.grantsSpellId) {
+      if (!spellMap.has(skill.grantsSpellId)) {
+        spellMap.set(skill.grantsSpellId, { spellId: skill.grantsSpellId })
+      }
+    }
+
+    if (skill.recoveryMagicLevel !== undefined) {
+      const charLevel = level ?? 99
+      const spellIds = getRecoveryMagicSpellIds(skill.recoveryMagicLevel, charLevel)
+      for (const spellId of spellIds) {
+        if (!spellMap.has(spellId)) {
+          spellMap.set(spellId, { spellId })
+        }
+      }
     }
   }
 
