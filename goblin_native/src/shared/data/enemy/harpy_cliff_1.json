@@ -1,0 +1,124 @@
+{
+  "enemies": [
+    {
+      "id": "HRP001",
+      "name": "ハーピィ",
+      "raceTags": [
+        "harpy"
+      ],
+      "level": 22,
+      "hp": 88,
+      "atk": 42,
+      "def": 14,
+      "attackCount": 2,
+      "accuracy": 540,
+      "evasion": 48,
+      "exp": 78,
+      "gold": 70,
+      "agility": 24,
+      "magicDef": 18
+    },
+    {
+      "id": "HRP002",
+      "name": "風切りハーピィ",
+      "raceTags": [
+        "harpy"
+      ],
+      "level": 23,
+      "hp": 96,
+      "atk": 46,
+      "def": 16,
+      "attackCount": 2,
+      "accuracy": 560,
+      "evasion": 52,
+      "exp": 84,
+      "gold": 76,
+      "agility": 27,
+      "magicDef": 20
+    },
+    {
+      "id": "B_HARPY_MATRIARCH",
+      "name": "崖巣の女王",
+      "raceTags": [
+        "harpy"
+      ],
+      "level": 27,
+      "hp": 780,
+      "atk": 68,
+      "def": 28,
+      "attackCount": 3,
+      "accuracy": 640,
+      "evasion": 58,
+      "exp": 420,
+      "gold": 360,
+      "agility": 30,
+      "magicDef": 30
+    }
+  ],
+  "patterns": [
+    {
+      "id": "HC1_001",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "HRP001",
+          "HRP001"
+        ],
+        [
+          "HRP002"
+        ]
+      ]
+    },
+    {
+      "id": "HC1_002",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "HRP002",
+          "HRP001"
+        ],
+        [
+          "HRP001",
+          "HRP002"
+        ]
+      ]
+    },
+    {
+      "id": "HC1_003",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "HRP002",
+          "HRP002"
+        ],
+        [
+          "HRP001",
+          "HRP001"
+        ]
+      ]
+    },
+    {
+      "id": "BOSS",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "B_HARPY_MATRIARCH"
+        ],
+        [
+          "HRP002",
+          "HRP001",
+          "HRP001"
+        ]
+      ],
+      "isBoss": true
+    }
+  ]
+}

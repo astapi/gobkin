@@ -1,0 +1,122 @@
+{
+  "enemies": [
+    {
+      "id": "MNT001",
+      "name": "ミノタウロス若兵",
+      "raceTags": [
+        "minotaur"
+      ],
+      "level": 25,
+      "hp": 170,
+      "atk": 58,
+      "def": 28,
+      "attackCount": 1,
+      "accuracy": 600,
+      "evasion": 24,
+      "exp": 100,
+      "gold": 88,
+      "agility": 8,
+      "magicDef": 24
+    },
+    {
+      "id": "MNT002",
+      "name": "ミノタウロス斧兵",
+      "raceTags": [
+        "minotaur"
+      ],
+      "level": 26,
+      "hp": 210,
+      "atk": 66,
+      "def": 32,
+      "attackCount": 1,
+      "accuracy": 620,
+      "evasion": 22,
+      "criticalRate": 0.08,
+      "exp": 112,
+      "gold": 98,
+      "agility": 7,
+      "magicDef": 27
+    },
+    {
+      "id": "B_LABYRINTH_KEEPER",
+      "name": "迷宮の番人",
+      "raceTags": [
+        "minotaur"
+      ],
+      "level": 31,
+      "hp": 1200,
+      "atk": 82,
+      "def": 42,
+      "attackCount": 2,
+      "accuracy": 720,
+      "evasion": 28,
+      "criticalRate": 0.1,
+      "exp": 520,
+      "gold": 430,
+      "agility": 9,
+      "magicDef": 36
+    }
+  ],
+  "patterns": [
+    {
+      "id": "ML1_001",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "MNT001"
+        ],
+        [
+          "MNT002"
+        ]
+      ]
+    },
+    {
+      "id": "ML1_002",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "MNT002"
+        ],
+        [
+          "MNT001",
+          "MNT001"
+        ]
+      ]
+    },
+    {
+      "id": "ML1_003",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "MNT002",
+          "MNT001"
+        ],
+        [
+          "MNT002"
+        ]
+      ]
+    },
+    {
+      "id": "BOSS",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "B_LABYRINTH_KEEPER"
+        ],
+        [
+          "MNT002",
+          "MNT001"
+        ]
+      ],
+      "isBoss": true
+    }
+  ]
+}

@@ -10,6 +10,7 @@ export type Dungeon = {
   icon?: string
   difficulty?: string
   unlockNext?: string
+  unlockNexts?: string[]
   unlockRequires?: string
   areaLevel?: number                // エリアレベル（1-8）、個体値計算に使用
   isBaseCapture?: boolean           // 拠点化可能か

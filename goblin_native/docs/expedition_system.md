@@ -424,3 +424,7 @@ expeditions (
 | `app/(tabs)/formation/preparation.tsx` | 準備画面 |
 | `app/(tabs)/formation/playback.tsx` | 再生画面 |
 | `app/(tabs)/formation/result.tsx` | 結果画面 |
+
+## 関連ドキュメント
+
+- [遠征エリア解放ルート](expedition_unlock_routes.md) — `unlockNext` / `unlockNexts` に基づく Mermaid 図
