@@ -113,15 +113,7 @@ const GOBLIN_JOB_DEFINITION_SEEDS: Record<GoblinJob, GoblinJobDefinitionSeed> = 
     unlockRequiresClearedArea: 'road_1',
     skills: [
       {
-        skillId: 'grant_heal',
-      },
-      {
-        unlockLevel: 4,
-        skillId: 'grant_shield_barrier',
-      },
-      {
-        unlockLevel: 19,
-        skillId: 'grant_party_heal',
+        skillId: 'recovery_magic_lv7',
       },
     ],
   },

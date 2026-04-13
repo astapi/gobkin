@@ -57,12 +57,19 @@
       "atk": 70,
       "def": 16,
       "magicDef": 22,
+      "magicHeal": 100,
       "agility": 5,
       "attackCount": 1,
       "accuracy": 310,
       "evasion": 14,
       "exp": 36,
-      "gold": 30
+      "gold": 30,
+      "skills": [
+        {
+          "id": "recovery_magic_lv7",
+          "recoveryMagicLevel": 7
+        }
+      ]
     },
     {
       "id": "HUM005",

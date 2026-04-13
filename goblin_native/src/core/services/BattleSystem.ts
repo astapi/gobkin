@@ -53,11 +53,13 @@ interface BattleUnit {
   breathDamageReduction: number // ブレスダメージ軽減率（0〜100）
   shieldBarrierDamageReduction: number // シールドバリアの攻撃ダメージ軽減率（0〜100）
   shieldBarrierBreathDamageReduction: number // シールドバリアのブレスダメージ軽減率（0〜100）
+  magicBarrierDamageReduction: number // マジックバリアの魔法ダメージ軽減率（0〜100）
   magicAtk: number              // 魔法攻撃力
   magicHeal: number             // 魔法回復量
   criticalRate: number          // 必殺率（%）
   spellDamagePercent: number    // 魔法威力の増減（%）
   shieldBarrierActive?: boolean  // シールドバリア状態
+  magicBarrierActive?: boolean   // マジックバリア状態
   row: number              // 隊列の列番号（0-based）
   rowSlot: number          // 列内のスロット番号（0-based）
   level: number            // 呪文のターゲット数計算用
@@ -232,6 +234,7 @@ export class BattleSystem {
   private mergeLearnedSpells(
     explicitSpells: LearnedSpell[] | undefined,
     skills: CharacterSkill[],
+    level: number,
   ): LearnedSpell[] | undefined {
     const merged = new Map<string, LearnedSpell>()
 
@@ -239,7 +242,7 @@ export class BattleSystem {
       merged.set(spell.spellId, { ...spell })
     }
 
-    for (const spell of getLearnedSpellsFromSkills(skills)) {
+    for (const spell of getLearnedSpellsFromSkills(skills, level)) {
       const existing = merged.get(spell.spellId)
       if (!existing) {
         merged.set(spell.spellId, { ...spell })
@@ -551,16 +554,29 @@ export class BattleSystem {
     }
 
     if (effect === 'heal') {
+      if (spellDef.targeting.type === 'single_ally_below_half_hp') {
+        return sourceGroup.some(unit => unit.currentHP > 0 && unit.maxHP > 0 && unit.currentHP <= unit.maxHP / 2)
+      }
       return sourceGroup.some(unit => unit.currentHP > 0 && unit.currentHP < unit.maxHP)
     }
 
     if (effect === 'barrier') {
       const reduction = spellDef.damageReductionPercent ?? 0
       const breathReduction = spellDef.breathDamageReductionPercent ?? 0
+      const magicReduction = spellDef.magicDamageReductionPercent ?? 0
       return sourceGroup.some(unit => (
         unit.currentHP > 0 &&
-        (unit.shieldBarrierDamageReduction < reduction || unit.shieldBarrierBreathDamageReduction < breathReduction)
+        (
+          (reduction > 0 && unit.shieldBarrierDamageReduction < reduction) ||
+          (breathReduction > 0 && unit.shieldBarrierBreathDamageReduction < breathReduction) ||
+          (magicReduction > 0 && unit.magicBarrierDamageReduction < magicReduction)
+        )
       ))
+    }
+
+    // cure: 現在は状態異常システム未実装のため常にfalse
+    if (effect === 'cure') {
+      return false
     }
 
     return false
@@ -573,6 +589,7 @@ export class BattleSystem {
     const t = spellDef.targeting
     if (t.type === 'random_hits') return t.hitCount
     if (t.type === 'single_ally_lowest_hp') return 1
+    if (t.type === 'single_ally_below_half_hp') return 1
     if (t.type === 'all_allies') return 0
     // multi_target
     const bonus = Math.floor(level / t.scaleLevelInterval) * t.scalePerLevel
@@ -595,12 +612,19 @@ export class BattleSystem {
     const effect = spellDef.effect ?? 'damage'
 
     if (effect === 'heal') {
-      const healAmount = Math.max(0, Math.floor(unit.magicHeal + (spellDef.healBonus ?? 0)))
-      const targets = spellDef.targeting.type === 'all_allies'
-        ? sourceGroup.filter(target => target.currentHP > 0 && target.currentHP < target.maxHP)
-        : this.selectLowestHpRatioAlly(sourceGroup)
+      let targets: BattleUnit[]
+      if (spellDef.targeting.type === 'all_allies') {
+        targets = sourceGroup.filter(target => target.currentHP > 0 && target.currentHP < target.maxHP)
+      } else if (spellDef.targeting.type === 'single_ally_below_half_hp') {
+        targets = this.selectBelowHalfHpAlly(sourceGroup)
+      } else {
+        targets = this.selectLowestHpRatioAlly(sourceGroup)
+      }
 
       for (const target of targets) {
+        const healAmount = spellDef.fullHeal
+          ? target.maxHP - target.currentHP
+          : Math.max(0, Math.floor(unit.magicHeal + (spellDef.healBonus ?? 0)))
         const healed = this.applyHealing(target, healAmount)
         if (healed <= 0) continue
         totalHitCount++
@@ -613,14 +637,30 @@ export class BattleSystem {
     if (effect === 'barrier') {
       const damageReduction = spellDef.damageReductionPercent ?? 0
       const breathReduction = spellDef.breathDamageReductionPercent ?? 0
+      const magicReduction = spellDef.magicDamageReductionPercent ?? 0
       const targets = sourceGroup.filter(target => target.currentHP > 0)
 
       for (const target of targets) {
-        target.shieldBarrierDamageReduction = Math.max(target.shieldBarrierDamageReduction, damageReduction)
-        target.shieldBarrierBreathDamageReduction = Math.max(target.shieldBarrierBreathDamageReduction, breathReduction)
-        target.shieldBarrierActive = true
+        if (damageReduction > 0) {
+          target.shieldBarrierDamageReduction = Math.max(target.shieldBarrierDamageReduction, damageReduction)
+        }
+        if (breathReduction > 0) {
+          target.shieldBarrierBreathDamageReduction = Math.max(target.shieldBarrierBreathDamageReduction, breathReduction)
+        }
+        if (magicReduction > 0) {
+          target.magicBarrierDamageReduction = Math.max(target.magicBarrierDamageReduction, magicReduction)
+          target.magicBarrierActive = true
+        }
+        if (damageReduction > 0 || breathReduction > 0) {
+          target.shieldBarrierActive = true
+        }
       }
 
+      return { targetDetails, totalHitCount }
+    }
+
+    // cure: 状態異常システム実装時に処理追加
+    if (effect === 'cure') {
       return { targetDetails, totalHitCount }
     }
 
@@ -648,7 +688,8 @@ export class BattleSystem {
         const spellDamageFactor = 1 + unit.spellDamagePercent / 100
         const reductionFactor = 1 - target.damageReduction / 100
         const magicReductionFactor = 1 - target.magicDamageReduction / 100
-        const damage = Math.max(1, Math.floor(baseDamage * rearDamageMultiplier * spellDamageFactor * reductionFactor * magicReductionFactor))
+        const magicBarrierFactor = 1 - target.magicBarrierDamageReduction / 100
+        const damage = Math.max(1, Math.floor(baseDamage * rearDamageMultiplier * spellDamageFactor * reductionFactor * magicReductionFactor * magicBarrierFactor))
 
         this.applyDamage(target, damage)
         totalHitCount++
@@ -677,7 +718,8 @@ export class BattleSystem {
         const spellDamageFactor = 1 + unit.spellDamagePercent / 100
         const reductionFactor = 1 - target.damageReduction / 100
         const magicReductionFactor = 1 - target.magicDamageReduction / 100
-        const damage = Math.max(1, Math.floor(baseDamage * rearDamageMultiplier * spellDamageFactor * reductionFactor * magicReductionFactor))
+        const magicBarrierFactor = 1 - target.magicBarrierDamageReduction / 100
+        const damage = Math.max(1, Math.floor(baseDamage * rearDamageMultiplier * spellDamageFactor * reductionFactor * magicReductionFactor * magicBarrierFactor))
 
         this.applyDamage(target, damage)
         totalHitCount++
@@ -695,6 +737,22 @@ export class BattleSystem {
       .sort((a, b) => {
         const aRatio = a.maxHP > 0 ? a.currentHP / a.maxHP : 1
         const bRatio = b.maxHP > 0 ? b.currentHP / b.maxHP : 1
+        if (aRatio !== bRatio) return aRatio - bRatio
+        return a.row - b.row
+      })[0]
+
+    return target ? [target] : []
+  }
+
+  /**
+   * HPが半分以下の味方の中で最もHP割合が低い1体を選択（フルヒール用）
+   */
+  private selectBelowHalfHpAlly(sourceGroup: BattleUnit[]): BattleUnit[] {
+    const target = sourceGroup
+      .filter(unit => unit.currentHP > 0 && unit.maxHP > 0 && unit.currentHP <= unit.maxHP / 2)
+      .sort((a, b) => {
+        const aRatio = a.currentHP / a.maxHP
+        const bRatio = b.currentHP / b.maxHP
         if (aRatio !== bRatio) return aRatio - bRatio
         return a.row - b.row
       })[0]
@@ -752,7 +810,7 @@ export class BattleSystem {
     const hp = initialHP ?? effectiveStats.hp
     const damageReduction = ModStatCalculator.getDamageReduction(goblin)
     const physicalDamageReduction = getPhysicalDamageReductionFromSkills(goblin.skills)
-    const learnedSpells = this.mergeLearnedSpells(goblin.spells, goblin.skills)
+    const learnedSpells = this.mergeLearnedSpells(goblin.spells, goblin.skills, goblin.level)
     return {
       instanceId: `ally:${combatant.id}`,
       combatant,
@@ -771,11 +829,13 @@ export class BattleSystem {
       breathDamageReduction: 0,
       shieldBarrierDamageReduction: 0,
       shieldBarrierBreathDamageReduction: 0,
+      magicBarrierDamageReduction: 0,
       magicAtk: effectiveStats.magicAtk,
       magicHeal: effectiveStats.magicHeal,
       criticalRate: effectiveStats.criticalRate,
       spellDamagePercent: getSpellDamagePercentFromSkills(goblin.skills),
       shieldBarrierActive: false,
+      magicBarrierActive: false,
       row: originalIndex,  // 味方は1列1体（配列順 = 列番号）
       rowSlot: 0,
       level: goblin.level,
@@ -787,7 +847,7 @@ export class BattleSystem {
   private createEnemyUnit(enemy: Enemy, originalIndex: number, row: number, rowSlot: number): BattleUnit {
     const combatant = this.combatantManager.fromEnemy(enemy)
     const skills = enemy.skills ?? []
-    const learnedSpells = this.mergeLearnedSpells(enemy.spells, skills)
+    const learnedSpells = this.mergeLearnedSpells(enemy.spells, skills, enemy.level)
     return {
       instanceId: `enemy:${combatant.id}:${originalIndex}`,
       combatant,
@@ -806,11 +866,13 @@ export class BattleSystem {
       breathDamageReduction: 0,
       shieldBarrierDamageReduction: 0,
       shieldBarrierBreathDamageReduction: 0,
+      magicBarrierDamageReduction: 0,
       magicAtk: enemy.magicAtk ?? enemy.atk,
       magicHeal: enemy.magicHeal ?? 0,
       criticalRate: enemy.criticalRate ?? 0,
       spellDamagePercent: getSpellDamagePercentFromSkills(skills),
       shieldBarrierActive: false,
+      magicBarrierActive: false,
       row,
       rowSlot,
       level: enemy.level,
@@ -900,6 +962,7 @@ export class BattleSystem {
           currentHP: unit.currentHP,
           maxHP: unit.maxHP,
           shieldBarrierActive: unit.shieldBarrierActive,
+          magicBarrierActive: unit.magicBarrierActive,
         })),
         enemies: enemyUnits.map(unit => ({
           id: unit.combatant.id,
@@ -907,6 +970,7 @@ export class BattleSystem {
           currentHP: unit.currentHP,
           maxHP: unit.maxHP,
           shieldBarrierActive: unit.shieldBarrierActive,
+          magicBarrierActive: unit.magicBarrierActive,
         })),
       },
     }

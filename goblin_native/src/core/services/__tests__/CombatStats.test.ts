@@ -1137,6 +1137,7 @@ describe('selectTarget — 隊列ターゲット選択', () => {
       breathDamageReduction: 0,
       shieldBarrierDamageReduction: 0,
       shieldBarrierBreathDamageReduction: 0,
+      magicBarrierDamageReduction: 0,
       magicAtk: 0,
       magicHeal: 0,
       criticalRate: 0,

@@ -165,19 +165,8 @@
       "gold": 78,
       "skills": [
         {
-          "id": "grant_heal",
-          "name": "ヒール",
-          "grantsSpellId": "heal"
-        },
-        {
-          "id": "grant_shield_barrier",
-          "name": "シールドバリア",
-          "grantsSpellId": "shield_barrier"
-        },
-        {
-          "id": "grant_party_heal",
-          "name": "パーティヒール",
-          "grantsSpellId": "party_heal"
+          "id": "recovery_magic_lv7",
+          "recoveryMagicLevel": 7
         }
       ],
       "magicDef": 12

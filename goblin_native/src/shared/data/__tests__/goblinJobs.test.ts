@@ -82,15 +82,11 @@ describe('goblinJobs', () => {
     expect(getGoblinTrainingJobDefinitions(new Set(['road_1'])).some((job) => job.id === 'cleric')).toBe(true)
   })
 
-  it('クレリックはレベルに応じて回復・防護呪文を習得する', () => {
+  it('クレリックは回復魔法Lv7スキルを持つ', () => {
     const level1 = applyGoblinJob(createGoblin({ level: 1 }), 'cleric')
-    const level4 = applyGoblinJob(createGoblin({ level: 4 }), 'cleric')
-    const level19 = applyGoblinJob(createGoblin({ level: 19 }), 'cleric')
 
-    expect(level1.skills.some((skill) => skill.id === 'grant_heal')).toBe(true)
-    expect(level1.skills.some((skill) => skill.id === 'grant_shield_barrier')).toBe(false)
-    expect(level4.skills.some((skill) => skill.id === 'grant_shield_barrier')).toBe(true)
-    expect(level19.skills.some((skill) => skill.id === 'grant_party_heal')).toBe(true)
+    expect(level1.skills.some((skill) => skill.id === 'recovery_magic_lv7')).toBe(true)
+    expect(level1.skills.some((skill) => skill.recoveryMagicLevel === 7)).toBe(true)
   })
 
   it('ジョブ変更時にHPが基本能力値ベースで再計算される', () => {
