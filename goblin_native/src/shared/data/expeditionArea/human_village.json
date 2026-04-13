@@ -1,9 +1,9 @@
 {
-  "id": "human_village_3",
-  "name": "辺境の村・中心部",
-  "areaLevel": 4,
-  "floors": 2,
-  "baseDurationSec": 55,
+  "id": "human_village",
+  "name": "辺境の村",
+  "areaLevel": 18,
+  "floors": 4,
+  "baseDurationSec": 50,
   "description": "村の中心部。自警団長が最後の砦として立ちはだかる。制圧してゴブリン国家の礎を築け。",
   "encounter": {
     "perFloorEvents": 3,

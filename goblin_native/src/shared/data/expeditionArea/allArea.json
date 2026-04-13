@@ -132,7 +132,7 @@
       "exploration_time_sec": 45,
       "description": "野営地の本陣。ブルートが陣を固め、奥にはオーク遠征隊長が控える。攻略すれば拠点として利用可能。",
       "unlockRequires": "orc_camp_2",
-      "unlockNext": "human_village_1",
+      "unlockNext": "human_village",
       "unlockNexts": [
         "orc_fortress_1"
       ],
@@ -142,44 +142,22 @@
     {
       "id": "orc_fortress_1",
       "name": "オークの砦",
-      "areaLevel": 15,
-      "floors": 3,
+      "areaLevel": 35,
+      "floors": 5,
       "exploration_time_sec_first": 90,
       "exploration_time_sec": 48,
-      "description": "野営地の奥に築かれた石造りの砦。解放直後の戦力ではまず歯が立たない。オークの重装兵に加え、傭兵として雇われたトロルが門を守っている。",
+      "description": "オークの本拠地。砦というよりはもはやオークの国といっていい規模だ。",
       "unlockRequires": "orc_camp_3"
     },
     {
-      "id": "human_village_1",
-      "name": "辺境の村・外周",
-      "areaLevel": 4,
-      "floors": 2,
-      "exploration_time_sec_first": 120,
-      "exploration_time_sec": 45,
-      "description": "村の外周を攻める。民兵と猟師が迎え撃つ。",
-      "unlockRequires": "orc_camp_3",
-      "unlockNext": "human_village_2"
-    },
-    {
-      "id": "human_village_2",
-      "name": "辺境の村・市街",
-      "areaLevel": 4,
-      "floors": 2,
+      "id": "human_village",
+      "name": "辺境の村",
+      "areaLevel": 18,
+      "floors": 4,
       "exploration_time_sec_first": 120,
       "exploration_time_sec": 50,
-      "description": "市街地へ侵入。守備兵と簡易魔法兵器が配備されている。",
-      "unlockRequires": "human_village_1",
-      "unlockNext": "human_village_3"
-    },
-    {
-      "id": "human_village_3",
-      "name": "辺境の村・中心部",
-      "areaLevel": 4,
-      "floors": 2,
-      "exploration_time_sec_first": 120,
-      "exploration_time_sec": 55,
-      "description": "村の中心部。自警団長が最後の砦として立ちはだかる。制圧してゴブリン国家の礎を築け。",
-      "unlockRequires": "human_village_2",
+      "description": "人間の村。",
+      "unlockRequires": "orc_camp_3",
       "unlockNext": "subjugation_force_1",
       "unlockNexts": [
         "hobbit_hills_1",
@@ -195,7 +173,7 @@
       "exploration_time_sec_first": 1,
       "exploration_time_sec": 40,
       "description": "討伐隊の先遣部隊が接近。正規兵と弓兵の小部隊を迎撃せよ。",
-      "unlockRequires": "human_village_3",
+      "unlockRequires": "human_village",
       "unlockNext": "subjugation_force_2"
     },
     {
@@ -230,7 +208,7 @@
       "exploration_time_sec_first": 120,
       "exploration_time_sec": 52,
       "description": "辺境の村の先に広がる丘陵地。身軽なホビットの斥候と投石手が補給路を守っている。",
-      "unlockRequires": "human_village_3"
+      "unlockRequires": "human_village"
     },
     {
       "id": "dwarf_mine_1",
@@ -240,7 +218,7 @@
       "exploration_time_sec_first": 120,
       "exploration_time_sec": 50,
       "description": "坑道の入口。ドワーフ坑夫たちが工具を武器に抵抗してくる。",
-      "unlockRequires": "human_village_3",
+      "unlockRequires": "human_village",
       "unlockNext": "dwarf_mine_2"
     },
     {
@@ -308,7 +286,7 @@
       "exploration_time_sec_first": 150,
       "exploration_time_sec": 55,
       "description": "沼砦の浅瀬。沼の戦士と毒牙兵が水際で襲いかかる。",
-      "unlockRequires": "human_village_3",
+      "unlockRequires": "human_village",
       "unlockNext": "lizardman_swamp_2"
     },
     {

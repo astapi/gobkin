@@ -29,9 +29,7 @@ flowchart TD
   subjugation_force_1["vs討伐隊防衛戦・前哨戦"]
   subjugation_force_2["vs討伐隊防衛戦・迎撃"]
   subjugation_force_3["vs討伐隊防衛戦・決戦"]
-  human_village_1["辺境の村・外周"]
-  human_village_2["辺境の村・市街"]
-  human_village_3["辺境の村・中心部"]
+  human_village["辺境の村"]
   hobbit_hills_1["ホビットの丘陵村"]
   dwarf_mine_1["ドワーフ坑道・入口"]
   dwarf_mine_2["ドワーフ坑道・深層"]
@@ -67,14 +65,12 @@ flowchart TD
   road_1 --> orc_camp_1
   orc_camp_1 --> orc_camp_2
   orc_camp_2 --> orc_camp_3
-  orc_camp_3 --> human_village_1
+  orc_camp_3 --> human_village
   orc_camp_3 -.-> orc_fortress_1
-  human_village_1 --> human_village_2
-  human_village_2 --> human_village_3
-  human_village_3 --> subjugation_force_1
-  human_village_3 -.-> hobbit_hills_1
-  human_village_3 -.-> dwarf_mine_1
-  human_village_3 -.-> lizardman_swamp_1
+  human_village --> subjugation_force_1
+  human_village -.-> hobbit_hills_1
+  human_village -.-> dwarf_mine_1
+  human_village -.-> lizardman_swamp_1
   subjugation_force_1 --> subjugation_force_2
   subjugation_force_2 --> subjugation_force_3
   subjugation_force_3 --> human_fortress_1
