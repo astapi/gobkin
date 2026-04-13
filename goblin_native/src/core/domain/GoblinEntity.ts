@@ -10,6 +10,7 @@ import {
   calculateGoblinBaseHp,
   calculateGoblinBaseMagicHeal,
   getGoblinBaseAttributes,
+  getGoblinBaseAttributesAtLevel,
 } from '../../shared/utils/goblinHp'
 
 export class GoblinEntity {
@@ -66,7 +67,7 @@ export class GoblinEntity {
    */
   public calculateCombatPower(): number {
     const stats = this.effectiveStats
-    const agility = this.base.baseAttributes?.agility ?? getGoblinBaseAttributes(this.base).agility
+    const agility = getGoblinBaseAttributesAtLevel(this.base, this.level).agility
     const rawPower = stats.atk * 1.5 + stats.def * 1.2 + agility + stats.hp / 10
     return Math.round(rawPower)
   }

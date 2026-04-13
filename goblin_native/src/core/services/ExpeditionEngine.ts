@@ -22,7 +22,7 @@ import { ModStatCalculator } from './ModStatCalculator'
 import { EquipmentTitleService } from './EquipmentTitleService'
 import { normalizePartyRewardMultipliers, DUNGEON_TIER_SCALING, getDungeonTierAreaLevel } from '../../shared/types'
 import { getGoldBonusPercentFromSkills } from '../../shared/data/characterSkills'
-import { getGoblinBaseAttributes } from '../../shared/utils/goblinHp'
+import { getGoblinBaseAttributesAtLevel } from '../../shared/utils/goblinHp'
 import { getEffectiveStats } from '../../shared/utils/goblinStats'
 
 /** 全エリア共通の宝箱ドロップ確率（敵1体ごと） */
@@ -367,7 +367,7 @@ export class ExpeditionEngine {
         baseHP: goblin.stats.hp,
         atk: goblin.stats.atk,
         def: goblin.stats.def,
-        agility: getGoblinBaseAttributes(goblin).agility,
+        agility: getGoblinBaseAttributesAtLevel(goblin, goblin.level).agility,
         attackCount: goblin.stats.attackCount,
         accuracy: goblin.stats.accuracy,
         evasion: goblin.stats.evasion,

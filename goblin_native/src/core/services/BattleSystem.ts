@@ -17,7 +17,7 @@ import type { SpellDef } from '../../shared/types/Spell'
 import { CombatantManager } from './CombatantManager'
 import { DamageCalculator } from './DamageCalculator'
 import { ModStatCalculator } from './ModStatCalculator'
-import { getGoblinBaseAttributes } from '../../shared/utils/goblinHp'
+import { getGoblinBaseAttributesAtLevel } from '../../shared/utils/goblinHp'
 import { getEffectiveStats } from '../../shared/utils/goblinStats'
 import i18n from '../../shared/i18n'
 import { getSpellLabel } from '../../shared/i18n/entityLocalization'
@@ -759,7 +759,7 @@ export class BattleSystem {
       currentHP: hp,
       maxHP: effectiveStats.hp,
       initialHP: hp,
-      agility: actionOrderAgility ?? getGoblinBaseAttributes(goblin).agility,
+      agility: actionOrderAgility ?? getGoblinBaseAttributesAtLevel(goblin, goblin.level).agility,
       attackCount: effectiveStats.attackCount,
       accuracy: effectiveStats.accuracy,
       evasion: effectiveStats.evasion,
