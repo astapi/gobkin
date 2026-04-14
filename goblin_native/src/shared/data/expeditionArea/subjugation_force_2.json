@@ -1,8 +1,8 @@
 {
   "id": "subjugation_force_2",
-  "name": "vs本隊",
+  "name": "vs討伐隊防衛戦・本隊",
   "areaLevel": 3,
-  "floors": 2,
+  "floors": 3,
   "baseDurationSec": 45,
   "description": "討伐隊の本隊が到着。騎士・魔術師・クレリックを含む正規編成で攻勢が激化する。",
   "encounter": {
