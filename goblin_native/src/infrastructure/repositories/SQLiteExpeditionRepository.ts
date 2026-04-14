@@ -2,7 +2,7 @@
  * SQLiteを使用した遠征記録リポジトリ実装
  * DBから直接読み書きする設計
  */
-import type { ExpeditionRecord, ExpeditionReplay, ExpeditionRequest } from '../../shared/types'
+import type { ExpeditionRecord, ExpeditionMeta, ExpeditionReplay, ExpeditionRequest } from '../../shared/types'
 import { getDatabase } from '../database'
 
 interface ExpeditionRow {
@@ -16,6 +16,7 @@ interface ExpeditionRow {
   status: string
   return_policy: string
   replay_json: string | null
+  expedition_meta_json: string | null
   created_at: string
   updated_at: string
 }
@@ -26,6 +27,7 @@ export interface IExpeditionRepository {
   getByPartyId(partyId: number): Promise<ExpeditionRecord[]>
   getOngoing(): Promise<ExpeditionRecord[]>
   save(record: ExpeditionRecord): Promise<void>
+  updateReplay(id: string, replay: ExpeditionReplay): Promise<void>
   delete(id: string): Promise<void>
   complete(id: string, replay: ExpeditionReplay): Promise<boolean>
 }
@@ -79,8 +81,8 @@ export class SQLiteExpeditionRepository implements IExpeditionRepository {
     await db.runAsync(
       `INSERT INTO expeditions
        (id, party_id, party_name, dungeon_id, dungeon_name, start_time, return_time,
-        status, return_policy, replay_json, created_at, updated_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'), datetime('now'))
+        status, return_policy, replay_json, expedition_meta_json, created_at, updated_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'), datetime('now'))
        ON CONFLICT(id) DO UPDATE SET
         party_id = excluded.party_id,
         party_name = excluded.party_name,
@@ -91,6 +93,7 @@ export class SQLiteExpeditionRepository implements IExpeditionRepository {
         status = excluded.status,
         return_policy = excluded.return_policy,
         replay_json = excluded.replay_json,
+        expedition_meta_json = excluded.expedition_meta_json,
         updated_at = datetime('now')`,
       [
         record.id,
@@ -103,7 +106,16 @@ export class SQLiteExpeditionRepository implements IExpeditionRepository {
         record.status,
         record.returnPolicy,
         record.replay ? JSON.stringify(record.replay) : null,
+        record.expeditionMeta ? JSON.stringify(record.expeditionMeta) : null,
       ]
+    )
+  }
+
+  async updateReplay(id: string, replay: ExpeditionReplay): Promise<void> {
+    const db = await getDatabase()
+    await db.runAsync(
+      `UPDATE expeditions SET replay_json = ?, updated_at = datetime('now') WHERE id = ?`,
+      [JSON.stringify(replay), id]
     )
   }
 
@@ -137,6 +149,7 @@ export class SQLiteExpeditionRepository implements IExpeditionRepository {
       status: row.status as ExpeditionRecord['status'],
       returnPolicy: row.return_policy as ExpeditionRequest['returnPolicy'],
       replay: row.replay_json ? JSON.parse(row.replay_json) : undefined,
+      expeditionMeta: row.expedition_meta_json ? JSON.parse(row.expedition_meta_json) as ExpeditionMeta : undefined,
       createdAt: new Date(row.created_at),
       updatedAt: new Date(row.updated_at),
     }

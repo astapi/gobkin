@@ -1,5 +1,5 @@
 import type {
-  ExpeditionReplay,
+  ExpeditionMeta,
   ExpeditionRequest,
   Goblin,
   Party,
@@ -8,24 +8,20 @@ import { normalizePartyRewardMultipliers } from '../../shared/types'
 import { getEffectiveStats } from '../../shared/utils/goblinStats'
 import { GoblinEntity, PartyEntity } from '../domain'
 import type { IGoblinRepository, IPartyRepository } from '../repositories'
-import { ExpeditionEngine } from '../services'
 
 export class StartExpeditionUseCase {
   private readonly partyRepository: IPartyRepository
   private readonly goblinRepository: IGoblinRepository
-  private readonly expeditionEngine: ExpeditionEngine
 
   constructor(
     partyRepository: IPartyRepository,
     goblinRepository: IGoblinRepository,
-    expeditionEngine: ExpeditionEngine,
   ) {
     this.partyRepository = partyRepository
     this.goblinRepository = goblinRepository
-    this.expeditionEngine = expeditionEngine
   }
 
-  public async execute(request: ExpeditionRequest): Promise<ExpeditionReplay> {
+  public async execute(request: ExpeditionRequest): Promise<ExpeditionMeta> {
     const partyId = Number.parseInt(request.partyId, 10)
     if (Number.isNaN(partyId)) {
       throw new Error('パーティIDが不正です')
@@ -55,13 +51,15 @@ export class StartExpeditionUseCase {
       departingGoblins.map(goblin => this.goblinRepository.updateGoblinCurrentHp(goblin.id, goblin.currentHp!))
     )
 
-    const replay = await this.expeditionEngine.generateExpedition(
+    const seed = Math.floor(Math.random() * 0x7FFFFFFF)
+    await this.partyRepository.updatePartyStatus(partyId, 'expedition')
+
+    return {
+      seed,
       request,
       departingGoblins,
-      normalizePartyRewardMultipliers(party.rewardMultipliers)
-    )
-    await this.partyRepository.updatePartyStatus(partyId, 'expedition')
-    return replay
+      rewardMultipliers: normalizePartyRewardMultipliers(party.rewardMultipliers),
+    }
   }
 
   private async loadPartyMembers(party: Party): Promise<Goblin[]> {

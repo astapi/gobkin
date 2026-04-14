@@ -16,6 +16,7 @@ import { getDungeonName, getEquipmentDisplayName } from '@/shared/i18n/entityLoc
 import { getEquipmentTemplate } from '@/shared/data/equipmentPoolLoader'
 import { getDungeonTierDisplayName } from '@/shared/types'
 import { addExperience } from '@/core/services/ExperienceSystem'
+import { computeExpeditionReplay } from '@/core/services/LazyExpeditionComputer'
 import { getExpBonusPercentFromSkills } from '@/shared/data/characterSkills'
 
 interface LogEntry {
@@ -308,21 +309,44 @@ export default function ExpeditionPlaybackScreen() {
     // playback側ではタイマー停止のみ行う。
   }, [expeditionRecord, replay])
 
+  const updateExpeditionReplay = useExpeditionStore((state) => state.updateExpeditionReplay)
+  const [isComputingReplay, setIsComputingReplay] = useState(false)
+
   useEffect(() => {
     if (isPartyLoading || isGoblinLoading || isExpeditionLoading) return
     if (!expeditionRecord) {
       setErrorMessage(t('ui.formation.playback.dataNotFound'))
       return
     }
-    if (!expeditionRecord.replay) {
+
+    if (expeditionRecord.replay) {
       setErrorMessage(null)
-      setReplay(null)
+      setReplay(expeditionRecord.replay)
       return
     }
 
-    setErrorMessage(null)
-    setReplay(expeditionRecord.replay)
-  }, [expeditionRecord, isPartyLoading, isGoblinLoading, isExpeditionLoading, t])
+    if (expeditionRecord.expeditionMeta) {
+      // replay が未計算の場合は遅延計算を実行
+      setErrorMessage(null)
+      setReplay(null)
+      setIsComputingReplay(true)
+      void (async () => {
+        try {
+          const computed = await computeExpeditionReplay(expeditionRecord.expeditionMeta!)
+          await updateExpeditionReplay(expeditionRecord.id, computed)
+          setReplay(computed)
+        } catch (error) {
+          console.error('[Playback] Failed to compute replay', error)
+          setErrorMessage(t('ui.formation.playback.dataNotFound'))
+        } finally {
+          setIsComputingReplay(false)
+        }
+      })()
+      return
+    }
+
+    setErrorMessage(t('ui.formation.playback.dataNotFound'))
+  }, [expeditionRecord, isPartyLoading, isGoblinLoading, isExpeditionLoading, t, updateExpeditionReplay])
 
   useEffect(() => {
     if (!replay) return

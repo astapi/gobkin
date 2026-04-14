@@ -15,6 +15,7 @@ interface ExpeditionStoreActions {
   getExpeditionById: (id: string) => Promise<ExpeditionRecord | null>
   getPartyExpeditionHistory: (partyId: number, limit?: number) => Promise<ExpeditionRecord[]>
   saveExpeditionRecord: (record: ExpeditionRecord) => Promise<void>
+  saveBulkExpeditionRecords: (records: ExpeditionRecord[]) => Promise<void>
   updateExpeditionReplay: (id: string, replay: ExpeditionReplay) => Promise<void>
   completeExpeditionRecord: (id: string, replay: ExpeditionReplay) => Promise<boolean>
 }
@@ -45,6 +46,13 @@ export const useExpeditionStore = create<ExpeditionStoreState & ExpeditionStoreA
 
     saveExpeditionRecord: async (record: ExpeditionRecord) => {
       await repository.save(record)
+      await refresh()
+    },
+
+    saveBulkExpeditionRecords: async (records: ExpeditionRecord[]) => {
+      for (const record of records) {
+        await repository.save(record)
+      }
       await refresh()
     },
 

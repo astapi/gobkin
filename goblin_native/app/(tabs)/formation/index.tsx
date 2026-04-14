@@ -12,7 +12,7 @@ import { useDungeonStore } from '@/presentation/stores/useDungeonStore'
 import { getGoblinDisplayImage } from '@/shared/utils/goblinImages'
 import { getEffectiveStats } from '@/shared/utils/goblinStats'
 import { normalizePartyRewardMultipliers } from '@/shared/types'
-import type { Party, Goblin, ExpeditionRecord } from '@/shared/types'
+import type { Party, Goblin, Dungeon, DungeonTier, ExpeditionRequest, ExpeditionRecord } from '@/shared/types'
 
 const MAX_PARTY_SLOTS = 6
 
@@ -172,6 +172,7 @@ export default function FormationScreen() {
     partyHistories,
     partyHistoryDisplays,
     startExpedition,
+    startBulkExpedition,
   } = useExpeditionFlow({ parties, enableAutoCompletion: true, currentTime })
   const [isBulkLaunching, setIsBulkLaunching] = useState(false)
   const { slotSize, avatarSize } = useMemo(() => {
@@ -259,78 +260,67 @@ export default function FormationScreen() {
   }, [])
 
   const handleBulkLaunch = useCallback(() => {
+    const skippedReasons: string[] = []
+    const inputs: Array<{ party: Party; dungeon: Dungeon; returnPolicy: ExpeditionRequest['returnPolicy']; tier: DungeonTier }> = []
+
+    for (const party of parties) {
+      if ((party.status ?? 'idle') === 'expedition') {
+        skippedReasons.push(`${party.name}: ${t('ui.formation.index.reasonExpedition')}`)
+        continue
+      }
+      if (party.memberIds.length === 0) {
+        skippedReasons.push(`${party.name}: ${t('ui.formation.index.reasonNoMembers')}`)
+        continue
+      }
+      if (!party.dungeonId) {
+        skippedReasons.push(`${party.name}: ${t('ui.formation.index.reasonNoDungeon')}`)
+        continue
+      }
+      const dungeon = dungeons.find((item) => item.id === party.dungeonId)
+      if (!dungeon || !dungeon.unlocked) {
+        skippedReasons.push(`${party.name}: ${t('ui.formation.index.reasonCannotLaunch')}`)
+        continue
+      }
+      inputs.push({
+        party,
+        dungeon,
+        returnPolicy: party.returnPolicy ?? 'never',
+        tier: party.dungeonTier ?? 0,
+      })
+    }
+
     const doBulkLaunch = async () => {
       setIsBulkLaunching(true)
-
-      let startedCount = 0
-      const skippedReasons: string[] = []
-
       try {
-        for (const party of parties) {
-          if ((party.status ?? 'idle') === 'expedition') {
-            skippedReasons.push(`${party.name}: ${t('ui.formation.index.reasonExpedition')}`)
-            continue
-          }
+        const result = await startBulkExpedition(inputs)
+        const allSkipped = [...skippedReasons, ...result.skippedReasons]
 
-          if (party.memberIds.length === 0) {
-            skippedReasons.push(`${party.name}: ${t('ui.formation.index.reasonNoMembers')}`)
-            continue
-          }
-
-          if (!party.dungeonId) {
-            skippedReasons.push(`${party.name}: ${t('ui.formation.index.reasonNoDungeon')}`)
-            continue
-          }
-
-          const dungeon = dungeons.find((item) => item.id === party.dungeonId)
-          if (!dungeon || !dungeon.unlocked) {
-            skippedReasons.push(`${party.name}: ${t('ui.formation.index.reasonCannotLaunch')}`)
-            continue
-          }
-
-          try {
-            await startExpedition({
-              party,
-              dungeon,
-              returnPolicy: party.returnPolicy ?? 'never',
-              tier: party.dungeonTier ?? 0,
-            })
-            startedCount += 1
-          } catch (error) {
-            console.error('[Formation] Failed to start expedition in bulk launch', error)
-            skippedReasons.push(`${party.name}: ${t('ui.formation.index.reasonLaunchFailed')}`)
-          }
+        if (result.startedCount === 0) {
+          Alert.alert(t('ui.formation.index.bulkCannotTitle'), allSkipped.join('\n') || t('ui.formation.index.bulkNoLaunchable'))
+          return
         }
+
+        const message = allSkipped.length > 0
+          ? t('ui.formation.index.bulkStartedWithSkipped', { count: result.startedCount, reasons: allSkipped.join('\n') })
+          : t('ui.formation.index.bulkStarted', { count: result.startedCount })
+
+        Alert.alert(t('ui.formation.index.bulkLaunch'), message)
       } finally {
         setIsBulkLaunching(false)
       }
-
-      if (startedCount === 0) {
-        Alert.alert(t('ui.formation.index.bulkCannotTitle'), skippedReasons.join('\n') || t('ui.formation.index.bulkNoLaunchable'))
-        return
-      }
-
-      const message = skippedReasons.length > 0
-        ? t('ui.formation.index.bulkStartedWithSkipped', { count: startedCount, reasons: skippedReasons.join('\n') })
-        : t('ui.formation.index.bulkStarted', { count: startedCount })
-
-      Alert.alert(t('ui.formation.index.bulkLaunch'), message)
     }
 
-    const launchableParties = parties.filter((party) => {
-      if ((party.status ?? 'idle') === 'expedition') return false
-      if (party.memberIds.length === 0) return false
-      if (!party.dungeonId) return false
-      const dungeon = dungeons.find((item) => item.id === party.dungeonId)
-      return Boolean(dungeon?.unlocked)
-    })
+    if (inputs.length === 0) {
+      Alert.alert(t('ui.formation.index.bulkCannotTitle'), skippedReasons.join('\n') || t('ui.formation.index.bulkNoLaunchable'))
+      return
+    }
 
     const maxPendingGoblins = rank * 5
     const remainingPendingSlots = Math.max(0, maxPendingGoblins - pendingGoblins.length)
-    if (launchableParties.length > remainingPendingSlots) {
+    if (inputs.length > remainingPendingSlots) {
       Alert.alert(
         t('ui.formation.common.confirm'),
-        t('ui.formation.index.pendingOverflowBody', { count: launchableParties.length }),
+        t('ui.formation.index.pendingOverflowBody', { count: inputs.length }),
         [
           { text: t('ui.common.cancel'), style: 'cancel' },
           { text: t('ui.formation.common.launch'), onPress: () => void doBulkLaunch() },
@@ -340,7 +330,7 @@ export default function FormationScreen() {
     }
 
     void doBulkLaunch()
-  }, [dungeons, parties, pendingGoblins.length, rank, startExpedition, t])
+  }, [dungeons, parties, pendingGoblins.length, rank, startBulkExpedition, t])
 
   const canBulkLaunch = useMemo(() => {
     return parties.some((party) => {

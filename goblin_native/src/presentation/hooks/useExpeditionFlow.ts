@@ -9,7 +9,7 @@ import type {
   Party,
 } from '../../shared/types'
 import { StartExpeditionUseCase, CompleteExpeditionUseCase } from '../../core/usecases'
-import { ExpeditionEngine, GoblinBirthService } from '../../core/services'
+import { GoblinBirthService, computeExpeditionReplay } from '../../core/services'
 import { areasData } from '../../shared/data'
 import { usePartyStore, getPartyRepository } from '../stores/usePartyStore'
 import { useGoblinStore, getGoblinRepository } from '../stores/useGoblinStore'
@@ -36,7 +36,6 @@ interface StartExpeditionInput {
 }
 
 interface StartExpeditionResult {
-  replay: ExpeditionReplay
   record: ExpeditionRecord
 }
 
@@ -78,6 +77,7 @@ export const useExpeditionFlow = ({
   const expeditionRecords = useExpeditionStore((state) => state.expeditionRecords)
   const getPartyExpeditionHistory = useExpeditionStore((state) => state.getPartyExpeditionHistory)
   const saveExpeditionRecord = useExpeditionStore((state) => state.saveExpeditionRecord)
+  const saveBulkExpeditionRecords = useExpeditionStore((state) => state.saveBulkExpeditionRecords)
   const completeExpeditionRecord = useExpeditionStore((state) => state.completeExpeditionRecord)
   const instantDungeonExploration = useDebugSettingsStore((state) => state.instantDungeonExploration)
 
@@ -85,7 +85,6 @@ export const useExpeditionFlow = ({
     return new StartExpeditionUseCase(
       partyRepository,
       goblinRepository,
-      new ExpeditionEngine(),
     )
   }, [partyRepository, goblinRepository])
 
@@ -206,9 +205,9 @@ export const useExpeditionFlow = ({
           durationSec,
         }
 
-        const replay = await startExpeditionUseCase.execute(request)
+        const expeditionMeta = await startExpeditionUseCase.execute(request)
         const startTime = new Date()
-        const returnTime = new Date(startTime.getTime() + replay.durationSec * 1000)
+        const returnTime = new Date(startTime.getTime() + durationSec * 1000)
         const expeditionId = `exp_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`
         const record: ExpeditionRecord = {
           id: expeditionId,
@@ -221,7 +220,7 @@ export const useExpeditionFlow = ({
           returnTime,
           status: 'ongoing',
           returnPolicy,
-          replay,
+          expeditionMeta,
           createdAt: startTime,
           updatedAt: startTime,
         }
@@ -231,7 +230,7 @@ export const useExpeditionFlow = ({
         await usePartyStore.getState().refresh()
         await useGoblinStore.getState().refresh()
 
-        return { replay, record }
+        return { record }
       } finally {
         setIsProcessing(false)
       }
@@ -239,21 +238,93 @@ export const useExpeditionFlow = ({
     [estimateExplorationTime, saveExpeditionRecord, startExpeditionUseCase],
   )
 
+  interface BulkStartResult {
+    startedCount: number
+    skippedReasons: string[]
+  }
+
+  const startBulkExpedition = useCallback(
+    async (inputs: StartExpeditionInput[]): Promise<BulkStartResult> => {
+      setIsProcessing(true)
+      const records: ExpeditionRecord[] = []
+      const skippedReasons: string[] = []
+
+      try {
+        for (const { party, dungeon, returnPolicy, tier } of inputs) {
+          const durationSec = estimateExplorationTime(dungeon, returnPolicy)
+          const request: ExpeditionRequest = {
+            partyId: party.id.toString(),
+            areaId: dungeon.id,
+            tier,
+            returnPolicy,
+            clientVersion: 'native',
+            durationSec,
+          }
+
+          try {
+            const expeditionMeta = await startExpeditionUseCase.execute(request)
+            const startTime = new Date()
+            const returnTime = new Date(startTime.getTime() + durationSec * 1000)
+            const expeditionId = `exp_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`
+            records.push({
+              id: expeditionId,
+              userId: '',
+              partyId: party.id,
+              partyName: party.name,
+              dungeonId: dungeon.id,
+              dungeonName: getDungeonName(dungeon),
+              startTime,
+              returnTime,
+              status: 'ongoing',
+              returnPolicy,
+              expeditionMeta,
+              createdAt: startTime,
+              updatedAt: startTime,
+            })
+          } catch (error) {
+            skippedReasons.push(`${party.name}: ${(error as Error).message}`)
+          }
+        }
+
+        if (records.length > 0) {
+          await saveBulkExpeditionRecords(records)
+          await usePartyStore.getState().refresh()
+          await useGoblinStore.getState().refresh()
+        }
+
+        return { startedCount: records.length, skippedReasons }
+      } finally {
+        setIsProcessing(false)
+      }
+    },
+    [estimateExplorationTime, saveBulkExpeditionRecords, startExpeditionUseCase],
+  )
+
+  const updateExpeditionReplay = useExpeditionStore((state) => state.updateExpeditionReplay)
+
   const completeDueExpeditions = useCallback(async (): Promise<void> => {
     const now = new Date()
     const dueExpeditions = expeditionRecords.filter(record =>
       record.status === 'ongoing' &&
       record.returnTime &&
       record.returnTime <= now &&
-      record.replay
+      (record.replay || record.expeditionMeta)
     )
 
     for (const record of dueExpeditions) {
       if (processedExpeditionsRef.current.has(record.id)) continue
       processedExpeditionsRef.current.add(record.id)
       try {
+        // replay が未計算の場合は遅延計算を実行
+        let replay = record.replay
+        if (!replay && record.expeditionMeta) {
+          replay = await computeExpeditionReplay(record.expeditionMeta)
+          await updateExpeditionReplay(record.id, replay)
+        }
+        if (!replay) continue
+
         // ゲームロジックを先に実行し、レベルアップ情報を含む enrichedReplay を取得
-        const result = await completeExpeditionUseCase.execute(record.partyId, record.replay!)
+        const result = await completeExpeditionUseCase.execute(record.partyId, replay)
 
         // DBレベルで WHERE status='ongoing' を条件にアトミックに更新。
         // enrichedReplay（memberLevelUps含む）を一括保存。
@@ -288,6 +359,7 @@ export const useExpeditionFlow = ({
     completeExpeditionUseCase,
     completeExpeditionRecord,
     handleDungeonClear,
+    updateExpeditionReplay,
   ])
 
   const [partyHistories, setPartyHistories] = useState<Record<number, ExpeditionRecord[]>>({})
@@ -371,6 +443,7 @@ export const useExpeditionFlow = ({
   return {
     isProcessing,
     startExpedition,
+    startBulkExpedition,
     estimateExplorationTime,
     completeDueExpeditions,
     currentTime,
