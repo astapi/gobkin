@@ -346,7 +346,7 @@ export const useExpeditionFlow = ({
           }
         }
 
-        await handleDungeonClear(record)
+        await handleDungeonClear({ ...record, replay: result.enrichedReplay })
         // UseCaseがDB上のbase_state.goldや制圧済み拠点を直接更新するため、ストアを同期
         await useBaseStore.getState().refresh()
         // UseCaseがDB上のparty.statusを'idle'に直接更新するため、ストアを同期
