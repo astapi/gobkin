@@ -233,8 +233,69 @@
       ]
     },
     {
+      "id": "SF3_011",
+      "floors": [3],
+      "enemies": [
+        ["HUM005", "HUM005"],
+        ["HUM001", "HUM001"],
+        ["HUM001"],
+        ["HUM003", "HUM002"],
+        ["HUM004"]
+      ]
+    },
+    {
+      "id": "SF3_012",
+      "floors": [3],
+      "enemies": [
+        ["HUM005", "HUM005"],
+        ["HUM001", "HUM001"],
+        ["HUM001"],
+        ["HUM001"],
+        ["HUM003", "HUM003"],
+        ["HUM002", "HUM004"]
+      ]
+    },
+    {
+      "id": "SF3_013",
+      "floors": [3],
+      "enemies": [
+        ["HUM005", "HUM005"],
+        ["HUM001", "HUM001"],
+        ["HUM001"],
+        ["HUM001"],
+        ["HUM003", "HUM002"],
+        ["HUM003", "HUM004"]
+      ]
+    },
+    {
+      "id": "SF3_014",
+      "floors": [3],
+      "enemies": [
+        ["HUM005", "HUM005"],
+        ["HUM001", "HUM001"],
+        ["HUM001"],
+        ["HUM001"],
+        ["HUM001"],
+        ["HUM003", "HUM003"],
+        ["HUM002", "HUM004"]
+      ]
+    },
+    {
+      "id": "SF3_015",
+      "floors": [3],
+      "enemies": [
+        ["HUM005", "HUM005"],
+        ["HUM005"],
+        ["HUM001", "HUM001"],
+        ["HUM001"],
+        ["HUM001"],
+        ["HUM003", "HUM003"],
+        ["HUM002", "HUM004"]
+      ]
+    },
+    {
       "id": "BOSS",
-      "floors": [2],
+      "floors": [3],
       "enemies": [
         ["HUM005", "HUM005"],
         ["HUM001", "HUM001"],

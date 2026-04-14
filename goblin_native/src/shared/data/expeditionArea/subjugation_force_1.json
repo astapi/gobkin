@@ -1,8 +1,8 @@
 {
   "id": "subjugation_force_1",
-  "name": "vs先遣隊",
+  "name": "vs討伐隊防衛戦・先遣隊",
   "areaLevel": 3,
-  "floors": 2,
+  "floors": 3,
   "baseDurationSec": 40,
   "description": "辺境城から先遣隊が接近。正規兵と弓兵を中心とした少数部隊を迎撃せよ。",
   "encounter": {

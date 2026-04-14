@@ -167,7 +167,7 @@
     },
     {
       "id": "subjugation_force_1",
-      "name": "vs先遣隊",
+      "name": "vs討伐隊防衛戦・先遣隊",
       "areaLevel": 3,
       "floors": 3,
       "exploration_time_sec_first": 1,
@@ -178,7 +178,7 @@
     },
     {
       "id": "subjugation_force_2",
-      "name": "vs本隊",
+      "name": "vs討伐隊防衛戦・本隊",
       "areaLevel": 3,
       "floors": 3,
       "exploration_time_sec_first": 1,
