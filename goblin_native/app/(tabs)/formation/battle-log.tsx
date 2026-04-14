@@ -120,6 +120,8 @@ export default function BattleLogScreen() {
                     ? t('ui.formation.battleLog.healSummary', { row: entry.actorRow, actor: entry.actorName, action: entry.action, count: entry.hitCount })
                     : isSpell
                     ? t('ui.formation.battleLog.spellSummary', { row: entry.actorRow, actor: entry.actorName, action: entry.action, count: entry.hitCount })
+                    : entry.isCritical
+                    ? t('ui.formation.battleLog.attackCriticalSummary', { row: entry.actorRow, actor: entry.actorName, count: entry.hitCount })
                     : t('ui.formation.battleLog.attackSummary', { row: entry.actorRow, actor: entry.actorName, count: entry.hitCount })
                   }
                 </Text>

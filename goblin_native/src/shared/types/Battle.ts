@@ -20,6 +20,7 @@ export interface BattleLogEntry {
   actorHP: number         // 攻撃者の現在HP
   actorMaxHP: number      // 攻撃者の最大HP
   isAlly: boolean
+  isCritical?: boolean    // 必殺（クリティカル）発生
   actionEffect?: 'damage' | 'heal' | 'barrier' | 'cure' | 'regen'
   targets: AttackTargetDetail[]  // ターゲットごとの結果
   turnState?: {

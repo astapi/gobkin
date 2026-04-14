@@ -348,6 +348,7 @@ const ko = {
         regenSummary: '{{actor}}의 회복 능력! HP가 {{heal}} 회복되었다',
         healSummary: '[열{{row}}] {{actor}}의 {{action}}! {{count}}체를 회복!',
         attackSummary: '[열{{row}}] {{actor}}의 공격! {{count}}회 히트!',
+        attackCriticalSummary: '[열{{row}}] {{actor}}의 필살 공격! {{count}}회 히트!',
         targetDefeated: '[열{{row}}] {{name}}에게 {{damage}} 피해를 주고 쓰러뜨렸다!',
         targetHits: '[열{{row}}] {{name}}에게 {{damage}} 피해 ({{count}}회)',
         targetHealed: '[열{{row}}] {{name}}을(를) {{heal}} 회복',

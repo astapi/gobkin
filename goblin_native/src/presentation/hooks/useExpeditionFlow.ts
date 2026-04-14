@@ -81,12 +81,15 @@ export const useExpeditionFlow = ({
   const completeExpeditionRecord = useExpeditionStore((state) => state.completeExpeditionRecord)
   const instantDungeonExploration = useDebugSettingsStore((state) => state.instantDungeonExploration)
 
+  const equipmentRepository = useMemo(() => SQLiteEquipmentRepository.getInstance(), [])
+
   const startExpeditionUseCase = useMemo(() => {
     return new StartExpeditionUseCase(
       partyRepository,
       goblinRepository,
+      equipmentRepository,
     )
-  }, [partyRepository, goblinRepository])
+  }, [partyRepository, goblinRepository, equipmentRepository])
 
   const completeExpeditionUseCase = useMemo(() => {
     return new CompleteExpeditionUseCase(goblinRepository, partyRepository, baseStateRepository, SQLiteEquipmentRepository.getInstance())

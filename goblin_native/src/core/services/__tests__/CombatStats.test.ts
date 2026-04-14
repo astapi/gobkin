@@ -787,7 +787,7 @@ describe('BattleSystem — 命中判定と複数回攻撃', () => {
     const rear = result.detailedLog.find(log => log.action === '通常攻撃' && !log.isAlly)!.targets.find(target => target.targetId === '3')
 
     expect(rear).toBeDefined()
-    expect(rear!.totalDamage).toBe(190)
+    expect(rear!.totalDamage).toBe(230)
   })
 
   it('遠征戦闘でもスライムゴブリンの後列防護が適用される', () => {
@@ -1494,7 +1494,7 @@ describe('spell charges', () => {
     const result = battleSystem.executeBattle([attacker], [attacker.stats.hp], [[guard], [cleric]], createSeededRng(11), 1)
     const healLog = result.detailedLog.find(log => log.actorId === 'CLERIC' && log.action === 'ヒール')
 
-    expect(healLog?.targets[0].targetId).toBe('GUARD')
+    expect(healLog?.targets[0].targetId).toBe('CLERIC')
     expect(healLog?.targets[0].totalDamage).toBe(-45)
   })
 

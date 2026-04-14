@@ -6,19 +6,23 @@ import type {
 } from '../../shared/types'
 import { normalizePartyRewardMultipliers } from '../../shared/types'
 import { getEffectiveStats } from '../../shared/utils/goblinStats'
-import { GoblinEntity, PartyEntity } from '../domain'
-import type { IGoblinRepository, IPartyRepository } from '../repositories'
+import { EquipmentService } from '../services/EquipmentService'
+import { PartyEntity } from '../domain'
+import type { IGoblinRepository, IPartyRepository, IEquipmentRepository } from '../repositories'
 
 export class StartExpeditionUseCase {
   private readonly partyRepository: IPartyRepository
   private readonly goblinRepository: IGoblinRepository
+  private readonly equipmentRepository: IEquipmentRepository
 
   constructor(
     partyRepository: IPartyRepository,
     goblinRepository: IGoblinRepository,
+    equipmentRepository: IEquipmentRepository,
   ) {
     this.partyRepository = partyRepository
     this.goblinRepository = goblinRepository
+    this.equipmentRepository = equipmentRepository
   }
 
   public async execute(request: ExpeditionRequest): Promise<ExpeditionMeta> {
@@ -42,10 +46,7 @@ export class StartExpeditionUseCase {
       throw new Error('遠征可能なメンバーがいません')
     }
 
-    const departingGoblins = goblins.map(goblin => ({
-      ...goblin,
-      currentHp: goblin.currentHp === 0 ? 0 : getEffectiveStats(goblin).hp,
-    }))
+    const departingGoblins = await this.prepareDepartingGoblins(goblins)
 
     await Promise.all(
       departingGoblins.map(goblin => this.goblinRepository.updateGoblinCurrentHp(goblin.id, goblin.currentHp!))
@@ -62,12 +63,30 @@ export class StartExpeditionUseCase {
     }
   }
 
+  /**
+   * 遠征出発時のゴブリンデータを準備する。
+   * DB の effectiveStats は装備込みで保存済み。
+   * skills のみ装備由来スキルをマージして戦闘に反映する。
+   */
+  private async prepareDepartingGoblins(goblins: Goblin[]): Promise<Goblin[]> {
+    return Promise.all(goblins.map(async goblin => {
+      const equippedItems = await this.equipmentRepository.getByGoblinId(goblin.id)
+      const equipmentSkills = EquipmentService.collectGrantedSkills(equippedItems)
+      const effectiveStats = getEffectiveStats(goblin)
+      return {
+        ...goblin,
+        skills: [...goblin.skills, ...equipmentSkills],
+        currentHp: goblin.currentHp === 0 ? 0 : effectiveStats.hp,
+      }
+    }))
+  }
+
   private async loadPartyMembers(party: Party): Promise<Goblin[]> {
     const goblins: Goblin[] = []
     for (const id of party.memberIds) {
       const goblin = await this.goblinRepository.getGoblin(id)
       if (goblin) {
-        goblins.push(new GoblinEntity(goblin).toSnapshot())
+        goblins.push(goblin)
       }
     }
     return goblins
