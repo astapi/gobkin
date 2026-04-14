@@ -348,6 +348,7 @@ const ja = {
         regenSummary: '{{actor}}の回復能力！HPが{{heal}}回復した',
         healSummary: '[列{{row}}] {{actor}}の{{action}}！{{count}}体を回復！',
         attackSummary: '[列{{row}}] {{actor}}の攻撃！{{count}}回ヒット！',
+        attackCriticalSummary: '[列{{row}}] {{actor}}の必殺攻撃！{{count}}回ヒット！',
         targetDefeated: '[列{{row}}] {{name}}に {{damage}}ダメージを与えて倒した！',
         targetHits: '[列{{row}}] {{name}}に {{damage}}ダメージ ({{count}}回)',
         targetHealed: '[列{{row}}] {{name}}を {{heal}}回復',

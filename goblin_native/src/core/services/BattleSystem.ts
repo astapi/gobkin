@@ -352,6 +352,9 @@ export class BattleSystem {
           let totalHitCount = 0
           const targetDetails: Map<string, AttackTargetDetail> = new Map()
 
+          // 必殺判定（攻撃単位で1回判定し、全攻撃回数に適用）
+          const isCritical = rng() * 100 < unit.criticalRate
+
           for (let atkIdx = 0; atkIdx < unit.attackCount; atkIdx++) {
             if (unit.currentHP <= 0) break
 
@@ -371,9 +374,6 @@ export class BattleSystem {
             if (!isHit) continue
 
             totalHitCount++
-
-            // 必殺判定
-            const isCritical = rng() * 100 < unit.criticalRate
 
             // ダメージ計算（必殺時は防御力を50%として扱う）
             const damageTarget = isCritical
@@ -424,6 +424,7 @@ export class BattleSystem {
             actorHP: unit.currentHP,
             actorMaxHP: unit.maxHP,
             isAlly: unit.isAlly,
+            isCritical,
             targets: [...targetDetails.values()],
           })
         }
