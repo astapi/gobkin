@@ -60,6 +60,18 @@ export type TimelineEvent =
   | { type: "treasure"; at: number; floor: number; items: TreasureDrop[] }
   | { type: "return"; at: number; reason: ExpeditionEndReason }
 
+/**
+ * 遅延計算用メタデータ
+ * 出撃時にシミュレーションを実行せず、このメタ情報を保存する。
+ * プレイバック画面表示時または帰還時に、このデータから ExpeditionReplay を再計算する。
+ */
+export interface ExpeditionMeta {
+  seed: number
+  request: ExpeditionRequest
+  departingGoblins: Goblin[]
+  rewardMultipliers: PartyRewardMultipliers
+}
+
 export interface ExpeditionRecord {
   id: string
   userId: string
@@ -72,6 +84,7 @@ export interface ExpeditionRecord {
   status: 'ongoing' | 'completed' | 'failed'
   returnPolicy: ExpeditionRequest["returnPolicy"]
   replay?: ExpeditionReplay
+  expeditionMeta?: ExpeditionMeta
   createdAt: Date
   updatedAt: Date
 }

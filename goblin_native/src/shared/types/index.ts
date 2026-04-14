@@ -60,6 +60,7 @@ export type {
   TimelineEvent,
   TreasureDrop,
   ExpeditionRecord,
+  ExpeditionMeta,
   RewardSummary,
   MemberLevelUp,
   AreaConfig,
