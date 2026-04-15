@@ -391,6 +391,10 @@ const en = {
       alreadyRead: 'Already Read',
       noStories: 'No stories unlocked yet.',
     },
+    notification: {
+      expeditionTitle: 'Expedition Complete',
+      expeditionReturn: '{{partyName}} has returned.',
+    },
   },
   entities: {
     race: {

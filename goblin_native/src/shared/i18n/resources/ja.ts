@@ -391,6 +391,10 @@ const ja = {
       alreadyRead: '読了済み',
       noStories: 'まだ解放されたストーリーはありません。',
     },
+    notification: {
+      expeditionTitle: '遠征完了',
+      expeditionReturn: '{{partyName}}が帰還しました。',
+    },
   },
   entities: {
     race: {

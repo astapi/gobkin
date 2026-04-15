@@ -391,6 +391,10 @@ const ko = {
       alreadyRead: '읽음 완료',
       noStories: '아직 해금된 스토리가 없습니다.',
     },
+    notification: {
+      expeditionTitle: '원정 완료',
+      expeditionReturn: '{{partyName}}이(가) 귀환했습니다.',
+    },
   },
   entities: {
     race: {
