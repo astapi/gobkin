@@ -18,6 +18,7 @@ import { useBaseStore, getBaseStateRepository } from '../stores/useBaseStore'
 import { useDungeonStore } from '../stores/useDungeonStore'
 import { SQLiteEquipmentRepository } from '../../infrastructure/repositories/SQLiteEquipmentRepository'
 import { useDebugSettingsStore } from '../stores/useDebugSettingsStore'
+import { getSpeedMultiplier } from '../stores/usePurchaseStore'
 import { getDungeonName } from '../../shared/i18n/entityLocalization'
 import { getDungeonTierAreaLevel, getDungeonTierDisplayName } from '../../shared/types'
 import i18n from '../../shared/i18n'
@@ -155,7 +156,8 @@ export const useExpeditionFlow = ({
       last_one: 0.9,
     }
     const multiplier = multiplierMap[returnPolicy] ?? 1.0
-    return Math.floor(baseTime * multiplier)
+    const speedMultiplier = getSpeedMultiplier()
+    return Math.floor(baseTime * multiplier * speedMultiplier)
   }, [instantDungeonExploration])
 
   const formatTime = useCallback((date: Date) => {
