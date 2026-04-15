@@ -12,6 +12,7 @@ const ja = {
       levelShort: 'Lv.',
     },
     tabs: {
+      story: '物語',
       goblinList: '一覧',
       formation: '編成',
       base: '拠点',
@@ -96,6 +97,7 @@ const ja = {
       gainedGold: '{{value}} Gold を獲得',
       items: '獲得アイテム',
       unlockedArea: '次のエリア「{{name}}」が解放されました',
+      storyUnlocked: '新しい物語が解放されました',
       backToMenu: 'メニューに戻る',
     },
     base: {
@@ -374,6 +376,20 @@ const ja = {
         bossEncounter: 'ボスと遭遇！',
         dungeonClear: 'ボスを撃破！ダンジョン踏破',
       },
+    },
+    story: {
+      title: '記録の書',
+      mainStory: 'メインストーリー',
+      sideStory: 'サイドストーリー',
+      locked: '未解放',
+      notFound: 'ストーリーが見つかりません。',
+      skip: 'スキップ',
+      skipTitle: 'スキップ確認',
+      skipMessage: 'ストーリーをスキップして読了済みにしますか？',
+      skipConfirm: 'スキップする',
+      complete: '読了する',
+      alreadyRead: '読了済み',
+      noStories: 'まだ解放されたストーリーはありません。',
     },
   },
   entities: {

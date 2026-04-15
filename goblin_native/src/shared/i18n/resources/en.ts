@@ -12,6 +12,7 @@ const en = {
       levelShort: 'Lv.',
     },
     tabs: {
+      story: 'Story',
       goblinList: 'Goblins',
       formation: 'Formation',
       base: 'Base',
@@ -96,6 +97,7 @@ const en = {
       gainedGold: 'Gained {{value}} Gold',
       items: 'Items Obtained',
       unlockedArea: 'Unlocked next area: "{{name}}"',
+      storyUnlocked: 'A new story has been unlocked',
       backToMenu: 'Back to Menu',
     },
     base: {
@@ -374,6 +376,20 @@ const en = {
         bossEncounter: 'Encountered the boss!',
         dungeonClear: 'Defeated the boss and cleared the dungeon',
       },
+    },
+    story: {
+      title: 'Story Archive',
+      mainStory: 'Main Story',
+      sideStory: 'Side Story',
+      locked: 'Locked',
+      notFound: 'Story not found.',
+      skip: 'Skip',
+      skipTitle: 'Skip Story',
+      skipMessage: 'Skip this story and mark it as read?',
+      skipConfirm: 'Skip',
+      complete: 'Mark as Read',
+      alreadyRead: 'Already Read',
+      noStories: 'No stories unlocked yet.',
     },
   },
   entities: {

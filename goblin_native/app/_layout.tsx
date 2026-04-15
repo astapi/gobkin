@@ -15,6 +15,7 @@ import { useDungeonStore } from '@/presentation/stores/useDungeonStore'
 import { useExpeditionStore } from '@/presentation/stores/useExpeditionStore'
 import { useDebugSettingsStore } from '@/presentation/stores/useDebugSettingsStore'
 import { usePurchaseStore } from '@/presentation/stores/usePurchaseStore'
+import { useStoryStore } from '@/presentation/stores/useStoryStore'
 import { initializeI18n } from '@/shared/i18n'
 
 export default function RootLayout() {
@@ -34,6 +35,7 @@ export default function RootLayout() {
         useExpeditionStore.getState().initialize(),
         useDebugSettingsStore.getState().initialize(),
         usePurchaseStore.getState().initialize(),
+        useStoryStore.getState().initialize(),
       ])
       setStoresReady(true)
     }
@@ -135,6 +137,12 @@ export default function RootLayout() {
                     headerTintColor: '#6B7280',
                     headerBackTitle: t('ui.common.back'),
                     title: t('ui.root.goblinDetail'),
+                  }}
+                />
+                <Stack.Screen
+                  name="story"
+                  options={{
+                    headerShown: false,
                   }}
                 />
               </Stack>
