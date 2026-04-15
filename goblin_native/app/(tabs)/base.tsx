@@ -77,6 +77,14 @@ export default function BaseManagementScreen() {
               <Text style={styles.menuButtonArrow}>›</Text>
             </TouchableOpacity>
           )}
+
+          <TouchableOpacity style={styles.menuButton} onPress={() => router.push('/shop')}>
+            <View style={styles.menuButtonTextGroup}>
+              <Text style={styles.menuButtonTitle}>{t('ui.base.premiumShopTitle')}</Text>
+              <Text style={styles.menuButtonDescription}>{t('ui.base.premiumShopDescription')}</Text>
+            </View>
+            <Text style={styles.menuButtonArrow}>›</Text>
+          </TouchableOpacity>
         </View>
       </ScrollView>
     </SafeAreaView>
