@@ -3,7 +3,7 @@
   "name": "ドラゴンの火山巣",
   "areaLevel": 8,
   "floors": 3,
-  "baseDurationSec": 88,
+  "baseDurationSec": 15600,
   "description": "王城地下から通じる火山巣。王国が最後に解き放ったドラゴンを越えなければ玉座には届かない。",
   "encounter": {
     "perFloorEvents": 3,

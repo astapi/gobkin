@@ -3,7 +3,7 @@
   "name": "忘れられた廃墟・深部",
   "areaLevel": 10,
   "floors": 2,
-  "baseDurationSec": 35,
+  "baseDurationSec": 3120,
   "description": "廃墟の深部。ゴーストや骨弓兵が加わり、アンデッドの密度が増す。",
   "encounter": {
     "perFloorEvents": 3,

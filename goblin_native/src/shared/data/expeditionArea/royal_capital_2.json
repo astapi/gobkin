@@ -3,7 +3,7 @@
   "name": "王都決戦・王城内部",
   "areaLevel": 8,
   "floors": 2,
-  "baseDurationSec": 84,
+  "baseDurationSec": 13500,
   "description": "王城内部へ侵攻。聖騎士や王国禁衛隊が最後の防衛線を張る。",
   "encounter": {
     "perFloorEvents": 3,

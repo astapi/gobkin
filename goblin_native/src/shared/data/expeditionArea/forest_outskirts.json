@@ -3,7 +3,7 @@
   "name": "周辺の森",
   "areaLevel": 4,
   "floors": 3,
-  "baseDurationSec": 60,
+  "baseDurationSec": 540,
   "description": "明るい森、弱い獣や小鬼が出現",
   "encounter": {
     "perFloorEvents": 3,

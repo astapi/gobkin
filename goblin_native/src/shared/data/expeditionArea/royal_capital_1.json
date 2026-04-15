@@ -3,7 +3,7 @@
   "name": "王都決戦・城門",
   "areaLevel": 8,
   "floors": 2,
-  "baseDurationSec": 76,
+  "baseDurationSec": 13200,
   "description": "王都の城門を突破する。近衛騎士と大魔導師が立ちはだかる。",
   "encounter": {
     "perFloorEvents": 3,

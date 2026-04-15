@@ -3,7 +3,7 @@
   "name": "ドワーフ坑道・深層",
   "areaLevel": 5,
   "floors": 2,
-  "baseDurationSec": 55,
+  "baseDurationSec": 6120,
   "description": "坑道深部。戦士やルーン鍛冶師が待ち構える。",
   "encounter": {
     "perFloorEvents": 3,
