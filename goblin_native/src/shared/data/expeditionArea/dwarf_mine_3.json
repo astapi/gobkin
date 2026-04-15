@@ -3,7 +3,7 @@
   "name": "ドワーフ坑道・最深部",
   "areaLevel": 5,
   "floors": 2,
-  "baseDurationSec": 60,
+  "baseDurationSec": 6300,
   "description": "坑道の最深部。坑道守護者と擲弾兵に守られた鍛冶王が待ち受ける。鍛冶能力をゴブリン国家に取り込め。",
   "encounter": {
     "perFloorEvents": 3,

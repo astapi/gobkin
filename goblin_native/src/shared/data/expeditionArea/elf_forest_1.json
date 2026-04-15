@@ -3,7 +3,7 @@
   "name": "エルフの隠れ里・外縁",
   "areaLevel": 5,
   "floors": 2,
-  "baseDurationSec": 50,
+  "baseDurationSec": 6900,
   "description": "隠れ里の外縁。森の斥候と射手が素早い攻撃を仕掛けてくる。",
   "encounter": {
     "perFloorEvents": 3,

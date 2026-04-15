@@ -3,7 +3,7 @@
   "name": "トロルの峡谷・深部",
   "areaLevel": 6,
   "floors": 2,
-  "baseDurationSec": 64,
+  "baseDurationSec": 7920,
   "description": "峡谷の深部。洞窟トロルや投石トロルが群れをなす。",
   "encounter": {
     "perFloorEvents": 3,

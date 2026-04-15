@@ -3,7 +3,7 @@
   "name": "オークの野営地・陣営",
   "areaLevel": 13,
   "floors": 2,
-  "baseDurationSec": 40,
+  "baseDurationSec": 4320,
   "description": "野営地の陣営部。前に出るブルートを壁に、兵たちが厚く控える。",
   "encounter": {
     "perFloorEvents": 3,

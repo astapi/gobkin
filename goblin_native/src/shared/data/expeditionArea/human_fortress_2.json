@@ -3,7 +3,7 @@
   "name": "人間の城塞・城内",
   "areaLevel": 7,
   "floors": 2,
-  "baseDurationSec": 74,
+  "baseDurationSec": 10200,
   "description": "城内へ侵入。重装騎兵と攻城兵器操手が待ち構える。",
   "encounter": {
     "perFloorEvents": 3,

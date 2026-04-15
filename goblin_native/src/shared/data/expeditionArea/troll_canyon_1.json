@@ -3,7 +3,7 @@
   "name": "トロルの峡谷・入口",
   "areaLevel": 6,
   "floors": 2,
-  "baseDurationSec": 58,
+  "baseDurationSec": 7800,
   "description": "峡谷の入口。トロルが単体で徘徊している。一体でも油断ならない巨躯。",
   "encounter": {
     "perFloorEvents": 3,

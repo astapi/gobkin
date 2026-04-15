@@ -3,7 +3,7 @@
   "name": "辺境の村",
   "areaLevel": 18,
   "floors": 4,
-  "baseDurationSec": 50,
+  "baseDurationSec": 5400,
   "description": "村の中心部。自警団長が最後の砦として立ちはだかる。制圧してゴブリン国家の礎を築け。",
   "encounter": {
     "perFloorEvents": 3,
