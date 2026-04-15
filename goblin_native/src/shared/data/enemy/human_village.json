@@ -3,60 +3,75 @@
     {
       "id": "VIL001",
       "name": "民兵",
-      "raceTags": ["human"],
+      "raceTags": [
+        "human"
+      ],
       "level": 21,
       "hp": 180,
       "atk": 40,
       "def": 16,
-      "magicDef": 10,
+      "magicDef": 24,
       "agility": 12,
       "attackCount": 1,
       "accuracy": 340,
       "evasion": 20,
-      "exp": 42,
-      "gold": 32
+      "exp": 68,
+      "gold": 60
     },
     {
       "id": "VIL002",
       "name": "村守備兵",
-      "raceTags": ["human"],
+      "raceTags": [
+        "human"
+      ],
       "level": 23,
       "hp": 250,
       "atk": 35,
       "def": 26,
-      "magicDef": 16,
+      "magicDef": 39,
       "agility": 10,
       "attackCount": 1,
       "accuracy": 330,
       "evasion": 18,
-      "exp": 50,
-      "gold": 38
+      "exp": 78,
+      "gold": 68
     },
     {
       "id": "VIL003",
       "name": "猟師",
-      "raceTags": ["human"],
+      "raceTags": [
+        "human"
+      ],
       "level": 23,
       "hp": 150,
       "atk": 70,
       "def": 16,
-      "magicDef": 10,
+      "magicDef": 24,
       "agility": 16,
-      "attackCount": 3,
+      "attackCount": 5,
       "accuracy": 420,
       "evasion": 26,
-      "exp": 55,
-      "gold": 36
+      "exp": 82,
+      "gold": 72,
+      "skills": [
+        {
+          "id": "preemptive_strike",
+          "name": "先制攻撃",
+          "actionOrderMultiplier": 2
+        }
+      ]
     },
     {
       "id": "B_CANNON",
       "name": "防衛砲台",
-      "raceTags": ["construct"],
+      "raceTags": [
+        "construct"
+      ],
       "level": 25,
       "hp": 400,
       "atk": 250,
       "def": 20,
-      "magicDef": 14,
+      "magicDef": 30,
       "agility": 2,
       "attackCount": 1,
       "accuracy": 160,
@@ -74,233 +89,530 @@
   "patterns": [
     {
       "id": "HV_001",
-      "floors": [1],
+      "floors": [
+        1
+      ],
       "enemies": [
-        ["VIL001", "VIL001"],
-        ["VIL001"],
-        ["VIL001"],
-        ["VIL001"],
-        ["VIL003"]
+        [
+          "VIL001",
+          "VIL001"
+        ],
+        [
+          "VIL001"
+        ],
+        [
+          "VIL001"
+        ],
+        [
+          "VIL001"
+        ],
+        [
+          "VIL003"
+        ]
       ]
     },
     {
       "id": "HV_002",
-      "floors": [1],
+      "floors": [
+        1
+      ],
       "enemies": [
-        ["VIL001", "VIL001", "VIL001"],
-        ["VIL001"],
-        ["VIL001"],
-        ["VIL001"],
-        ["VIL003"]
+        [
+          "VIL001",
+          "VIL001",
+          "VIL001"
+        ],
+        [
+          "VIL001"
+        ],
+        [
+          "VIL001"
+        ],
+        [
+          "VIL001"
+        ],
+        [
+          "VIL003"
+        ]
       ]
     },
     {
       "id": "HV_003",
-      "floors": [1],
+      "floors": [
+        1
+      ],
       "enemies": [
-        ["VIL001", "VIL001"],
-        ["VIL001", "VIL001"],
-        ["VIL001"],
-        ["VIL001"],
-        ["VIL003"]
+        [
+          "VIL001",
+          "VIL001"
+        ],
+        [
+          "VIL001",
+          "VIL001"
+        ],
+        [
+          "VIL001"
+        ],
+        [
+          "VIL001"
+        ],
+        [
+          "VIL003"
+        ]
       ]
     },
     {
       "id": "HV_004",
-      "floors": [1],
+      "floors": [
+        1
+      ],
       "enemies": [
-        ["VIL001", "VIL001"],
-        ["VIL001"],
-        ["VIL001"],
-        ["VIL001"],
-        ["VIL003", "VIL003"]
+        [
+          "VIL001",
+          "VIL001"
+        ],
+        [
+          "VIL001"
+        ],
+        [
+          "VIL001"
+        ],
+        [
+          "VIL001"
+        ],
+        [
+          "VIL003",
+          "VIL003"
+        ]
       ]
     },
     {
       "id": "HV_005",
-      "floors": [1],
+      "floors": [
+        1
+      ],
       "enemies": [
-        ["VIL001", "VIL001"],
-        ["VIL001"],
-        ["VIL001", "VIL001"],
-        ["VIL001"],
-        ["VIL003"]
+        [
+          "VIL001",
+          "VIL001"
+        ],
+        [
+          "VIL001"
+        ],
+        [
+          "VIL001",
+          "VIL001"
+        ],
+        [
+          "VIL001"
+        ],
+        [
+          "VIL003"
+        ]
       ]
     },
     {
       "id": "HV_006",
-      "floors": [2],
+      "floors": [
+        2
+      ],
       "enemies": [
-        ["VIL001", "VIL002"],
-        ["VIL001"],
-        ["VIL001"],
-        ["VIL001"],
-        ["VIL003"]
+        [
+          "VIL001",
+          "VIL002"
+        ],
+        [
+          "VIL001"
+        ],
+        [
+          "VIL001"
+        ],
+        [
+          "VIL001"
+        ],
+        [
+          "VIL003"
+        ]
       ]
     },
     {
       "id": "HV_007",
-      "floors": [2],
+      "floors": [
+        2
+      ],
       "enemies": [
-        ["VIL002", "VIL001"],
-        ["VIL001", "VIL001"],
-        ["VIL001"],
-        ["VIL001"],
-        ["VIL003"]
+        [
+          "VIL002",
+          "VIL001"
+        ],
+        [
+          "VIL001",
+          "VIL001"
+        ],
+        [
+          "VIL001"
+        ],
+        [
+          "VIL001"
+        ],
+        [
+          "VIL003"
+        ]
       ]
     },
     {
       "id": "HV_008",
-      "floors": [2],
+      "floors": [
+        2
+      ],
       "enemies": [
-        ["VIL001", "VIL001"],
-        ["VIL002"],
-        ["VIL001"],
-        ["VIL001"],
-        ["VIL003", "VIL003"]
+        [
+          "VIL001",
+          "VIL001"
+        ],
+        [
+          "VIL002"
+        ],
+        [
+          "VIL001"
+        ],
+        [
+          "VIL001"
+        ],
+        [
+          "VIL003",
+          "VIL003"
+        ]
       ]
     },
     {
       "id": "HV_009",
-      "floors": [2],
+      "floors": [
+        2
+      ],
       "enemies": [
-        ["VIL002", "VIL001"],
-        ["VIL001"],
-        ["VIL001"],
-        ["VIL002"],
-        ["VIL003"]
+        [
+          "VIL002",
+          "VIL001"
+        ],
+        [
+          "VIL001"
+        ],
+        [
+          "VIL001"
+        ],
+        [
+          "VIL002"
+        ],
+        [
+          "VIL003"
+        ]
       ]
     },
     {
       "id": "HV_010",
-      "floors": [2],
+      "floors": [
+        2
+      ],
       "enemies": [
-        ["VIL001", "VIL002"],
-        ["VIL001", "VIL001"],
-        ["VIL002"],
-        ["VIL001"],
-        ["VIL003"]
+        [
+          "VIL001",
+          "VIL002"
+        ],
+        [
+          "VIL001",
+          "VIL001"
+        ],
+        [
+          "VIL002"
+        ],
+        [
+          "VIL001"
+        ],
+        [
+          "VIL003"
+        ]
       ]
     },
     {
       "id": "HV_011",
-      "floors": [3],
+      "floors": [
+        3
+      ],
       "enemies": [
-        ["VIL002", "VIL002"],
-        ["VIL001"],
-        ["VIL001"],
-        ["VIL002"],
-        ["VIL003", "VIL003"]
+        [
+          "VIL002",
+          "VIL002"
+        ],
+        [
+          "VIL001"
+        ],
+        [
+          "VIL001"
+        ],
+        [
+          "VIL002"
+        ],
+        [
+          "VIL003",
+          "VIL003"
+        ]
       ]
     },
     {
       "id": "HV_012",
-      "floors": [3],
+      "floors": [
+        3
+      ],
       "enemies": [
-        ["VIL002", "VIL001"],
-        ["VIL002"],
-        ["VIL001"],
-        ["VIL001"],
-        ["VIL003", "VIL003"]
+        [
+          "VIL002",
+          "VIL001"
+        ],
+        [
+          "VIL002"
+        ],
+        [
+          "VIL001"
+        ],
+        [
+          "VIL001"
+        ],
+        [
+          "VIL003",
+          "VIL003"
+        ]
       ]
     },
     {
       "id": "HV_013",
-      "floors": [3],
+      "floors": [
+        3
+      ],
       "enemies": [
-        ["VIL002", "VIL002"],
-        ["VIL001", "VIL001"],
-        ["VIL002"],
-        ["VIL001"],
-        ["VIL003"]
+        [
+          "VIL002",
+          "VIL002"
+        ],
+        [
+          "VIL001",
+          "VIL001"
+        ],
+        [
+          "VIL002"
+        ],
+        [
+          "VIL001"
+        ],
+        [
+          "VIL003"
+        ]
       ]
     },
     {
       "id": "HV_014",
-      "floors": [3],
+      "floors": [
+        3
+      ],
       "enemies": [
-        ["VIL002", "VIL001"],
-        ["VIL002", "VIL001"],
-        ["VIL001"],
-        ["VIL002"],
-        ["VIL003", "VIL003"]
+        [
+          "VIL002",
+          "VIL001"
+        ],
+        [
+          "VIL002",
+          "VIL001"
+        ],
+        [
+          "VIL001"
+        ],
+        [
+          "VIL002"
+        ],
+        [
+          "VIL003",
+          "VIL003"
+        ]
       ]
     },
     {
       "id": "HV_015",
-      "floors": [3],
+      "floors": [
+        3
+      ],
       "enemies": [
-        ["VIL002", "VIL002"],
-        ["VIL001"],
-        ["VIL002"],
-        ["VIL001"],
-        ["VIL003", "VIL003"]
+        [
+          "VIL002",
+          "VIL002"
+        ],
+        [
+          "VIL001"
+        ],
+        [
+          "VIL002"
+        ],
+        [
+          "VIL001"
+        ],
+        [
+          "VIL003",
+          "VIL003"
+        ]
       ]
     },
     {
       "id": "HV_016",
-      "floors": [4],
+      "floors": [
+        4
+      ],
       "enemies": [
-        ["VIL002", "VIL002"],
-        ["VIL002"],
-        ["VIL001"],
-        ["VIL002"],
-        ["VIL003", "VIL003"]
+        [
+          "VIL002",
+          "VIL002"
+        ],
+        [
+          "VIL002"
+        ],
+        [
+          "VIL001"
+        ],
+        [
+          "VIL002"
+        ],
+        [
+          "VIL003",
+          "VIL003"
+        ]
       ]
     },
     {
       "id": "HV_017",
-      "floors": [4],
+      "floors": [
+        4
+      ],
       "enemies": [
-        ["VIL002", "VIL002"],
-        ["VIL001", "VIL002"],
-        ["VIL002"],
-        ["VIL001"],
-        ["VIL003", "VIL003"]
+        [
+          "VIL002",
+          "VIL002"
+        ],
+        [
+          "VIL001",
+          "VIL002"
+        ],
+        [
+          "VIL002"
+        ],
+        [
+          "VIL001"
+        ],
+        [
+          "VIL003",
+          "VIL003"
+        ]
       ]
     },
     {
       "id": "HV_018",
-      "floors": [4],
+      "floors": [
+        4
+      ],
       "enemies": [
-        ["VIL002", "VIL002"],
-        ["VIL002"],
-        ["VIL001", "VIL002"],
-        ["VIL001"],
-        ["VIL003", "VIL003"]
+        [
+          "VIL002",
+          "VIL002"
+        ],
+        [
+          "VIL002"
+        ],
+        [
+          "VIL001",
+          "VIL002"
+        ],
+        [
+          "VIL001"
+        ],
+        [
+          "VIL003",
+          "VIL003"
+        ]
       ]
     },
     {
       "id": "HV_019",
-      "floors": [4],
+      "floors": [
+        4
+      ],
       "enemies": [
-        ["VIL002", "VIL002", "VIL001"],
-        ["VIL002"],
-        ["VIL002"],
-        ["VIL001"],
-        ["VIL003", "VIL003"]
+        [
+          "VIL002",
+          "VIL002",
+          "VIL001"
+        ],
+        [
+          "VIL002"
+        ],
+        [
+          "VIL002"
+        ],
+        [
+          "VIL001"
+        ],
+        [
+          "VIL003",
+          "VIL003"
+        ]
       ]
     },
     {
       "id": "HV_020",
-      "floors": [4],
+      "floors": [
+        4
+      ],
       "enemies": [
-        ["VIL002", "VIL002"],
-        ["VIL002", "VIL001"],
-        ["VIL002"],
-        ["VIL002"],
-        ["VIL003", "VIL003"]
+        [
+          "VIL002",
+          "VIL002"
+        ],
+        [
+          "VIL002",
+          "VIL001"
+        ],
+        [
+          "VIL002"
+        ],
+        [
+          "VIL002"
+        ],
+        [
+          "VIL003",
+          "VIL003"
+        ]
       ]
     },
     {
       "id": "BOSS",
-      "floors": [4],
+      "floors": [
+        4
+      ],
       "enemies": [
-        ["VIL002", "VIL002"],
-        ["VIL001", "VIL002"],
-        ["VIL002"],
-        ["B_CANNON"],
-        ["VIL003", "VIL003"]
+        [
+          "VIL002",
+          "VIL002"
+        ],
+        [
+          "VIL001",
+          "VIL002"
+        ],
+        [
+          "VIL002"
+        ],
+        [
+          "B_CANNON"
+        ],
+        [
+          "VIL003",
+          "VIL003"
+        ]
       ],
       "isBoss": true
     }

@@ -16,7 +16,7 @@
       "exp": 38,
       "gold": 32,
       "agility": 3,
-      "magicDef": 11
+      "magicDef": 17
     },
     {
       "id": "DWF002",
@@ -34,7 +34,7 @@
       "exp": 44,
       "gold": 38,
       "agility": 4,
-      "magicDef": 14
+      "magicDef": 22
     },
     {
       "id": "DWF003",
@@ -52,7 +52,7 @@
       "exp": 48,
       "gold": 42,
       "agility": 5,
-      "magicDef": 8
+      "magicDef": 12
     },
     {
       "id": "DWF004",
@@ -70,7 +70,7 @@
       "exp": 55,
       "gold": 48,
       "agility": 3,
-      "magicDef": 17
+      "magicDef": 26
     },
     {
       "id": "DWF005",
@@ -88,7 +88,7 @@
       "exp": 50,
       "gold": 44,
       "agility": 4,
-      "magicDef": 9
+      "magicDef": 14
     }
   ],
   "patterns": [

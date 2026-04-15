@@ -6,7 +6,7 @@
       "raceTags": [
         "undead"
       ],
-      "level": 5,
+      "level": 9,
       "hp": 120,
       "atk": 20,
       "def": 6,
@@ -14,9 +14,9 @@
       "attackCount": 2,
       "accuracy": 230,
       "evasion": 13,
-      "exp": 16,
-      "gold": 12,
-      "magicDef": 4
+      "exp": 24,
+      "gold": 21,
+      "magicDef": 5
     },
     {
       "id": "UND002",
@@ -24,7 +24,7 @@
       "raceTags": [
         "undead"
       ],
-      "level": 6,
+      "level": 9,
       "hp": 100,
       "atk": 12,
       "def": 4,
@@ -32,9 +32,9 @@
       "attackCount": 1,
       "accuracy": 240,
       "evasion": 14,
-      "exp": 18,
-      "gold": 14,
-      "magicDef": 3
+      "exp": 22,
+      "gold": 19,
+      "magicDef": 4
     },
     {
       "id": "UND003",
@@ -42,7 +42,7 @@
       "raceTags": [
         "undead"
       ],
-      "level": 6,
+      "level": 10,
       "hp": 100,
       "atk": 14,
       "def": 2,
@@ -50,9 +50,9 @@
       "attackCount": 1,
       "accuracy": 240,
       "evasion": 16,
-      "exp": 20,
-      "gold": 16,
-      "magicDef": 1
+      "exp": 28,
+      "gold": 24,
+      "magicDef": 2
     },
     {
       "id": "UND004",
@@ -60,7 +60,7 @@
       "raceTags": [
         "undead"
       ],
-      "level": 7,
+      "level": 10,
       "hp": 60,
       "atk": 15,
       "def": 5,
@@ -68,9 +68,9 @@
       "attackCount": 1,
       "accuracy": 255,
       "evasion": 15,
-      "exp": 22,
-      "gold": 18,
-      "magicDef": 4
+      "exp": 30,
+      "gold": 26,
+      "magicDef": 5
     },
     {
       "id": "UND005",
@@ -78,7 +78,7 @@
       "raceTags": [
         "undead"
       ],
-      "level": 8,
+      "level": 12,
       "hp": 55,
       "atk": 50,
       "def": 10,
@@ -86,9 +86,9 @@
       "attackCount": 1,
       "accuracy": 180,
       "evasion": 16,
-      "exp": 28,
-      "gold": 22,
-      "magicDef": 8
+      "exp": 36,
+      "gold": 32,
+      "magicDef": 9
     },
     {
       "id": "B_LICH",
@@ -96,7 +96,7 @@
       "raceTags": [
         "undead"
       ],
-      "level": 11,
+      "level": 14,
       "hp": 200,
       "atk": 28,
       "magicAtk": 28,
@@ -105,8 +105,8 @@
       "attackCount": 2,
       "accuracy": 330,
       "evasion": 19,
-      "exp": 90,
-      "gold": 80,
+      "exp": 105,
+      "gold": 92,
       "skills": [
         {
           "id": "fireball",
@@ -126,7 +126,7 @@
           "probability": 1
         }
       ],
-      "magicDef": 9
+      "magicDef": 11
     }
   ],
   "patterns": [

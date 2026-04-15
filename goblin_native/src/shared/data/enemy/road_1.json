@@ -16,7 +16,7 @@
       "evasion": 18,
       "exp": 24,
       "gold": 16,
-      "magicDef": 4
+      "magicDef": 7
     },
     {
       "id": "RD002",
@@ -34,7 +34,7 @@
       "evasion": 18,
       "exp": 32,
       "gold": 22,
-      "magicDef": 6
+      "magicDef": 10
     },
     {
       "id": "RD003",
@@ -52,7 +52,7 @@
       "evasion": 17,
       "exp": 38,
       "gold": 26,
-      "magicDef": 12
+      "magicDef": 19
     },
     {
       "id": "B_TRAVELER",
@@ -70,7 +70,7 @@
       "evasion": 28,
       "exp": 120,
       "gold": 180,
-      "magicDef": 17
+      "magicDef": 33
     },
     {
       "id": "B_HUM_GUARD",
@@ -79,7 +79,7 @@
         "human"
       ],
       "level": 20,
-      "hp": 240,
+      "hp": 480,
       "atk": 34,
       "def": 36,
       "agility": 7,
@@ -95,7 +95,7 @@
           "coverLowHpAlly": true
         }
       ],
-      "magicDef": 28
+      "magicDef": 54
     },
     {
       "id": "B_HUM_WARRIOR",
@@ -104,16 +104,16 @@
         "human"
       ],
       "level": 20,
-      "hp": 190,
+      "hp": 380,
       "atk": 90,
       "def": 22,
       "agility": 11,
-      "attackCount": 2,
+      "attackCount": 10,
       "accuracy": 395,
       "evasion": 28,
       "exp": 90,
       "gold": 72,
-      "magicDef": 17
+      "magicDef": 33
     },
     {
       "id": "B_HUM_MAGE",
@@ -122,7 +122,7 @@
         "human"
       ],
       "level": 19,
-      "hp": 120,
+      "hp": 240,
       "atk": 34,
       "magicAtk": 34,
       "def": 10,
@@ -144,7 +144,7 @@
           "grantsSpellId": "magic_arrow"
         }
       ],
-      "magicDef": 8
+      "magicDef": 15
     },
     {
       "id": "B_HUM_CLERIC",
@@ -153,7 +153,7 @@
         "human"
       ],
       "level": 19,
-      "hp": 150,
+      "hp": 300,
       "atk": 28,
       "def": 16,
       "magicHeal": 75,
@@ -169,7 +169,7 @@
           "recoveryMagicLevel": 7
         }
       ],
-      "magicDef": 12
+      "magicDef": 24
     }
   ],
   "patterns": [

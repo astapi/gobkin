@@ -16,7 +16,7 @@
       "exp": 55,
       "gold": 48,
       "agility": 7,
-      "magicDef": 12
+      "magicDef": 19
     },
     {
       "id": "LIZ002",
@@ -34,7 +34,7 @@
       "exp": 60,
       "gold": 52,
       "agility": 9,
-      "magicDef": 9
+      "magicDef": 14
     },
     {
       "id": "LIZ003",
@@ -52,7 +52,7 @@
       "exp": 65,
       "gold": 56,
       "agility": 8,
-      "magicDef": 8
+      "magicDef": 12
     },
     {
       "id": "LIZ004",
@@ -70,7 +70,7 @@
       "exp": 68,
       "gold": 60,
       "agility": 4,
-      "magicDef": 20
+      "magicDef": 31
     },
     {
       "id": "LIZ005",
@@ -88,7 +88,7 @@
       "exp": 62,
       "gold": 54,
       "agility": 13,
-      "magicDef": 8
+      "magicDef": 12
     },
     {
       "id": "B_SWAMPKING",
@@ -112,7 +112,7 @@
         }
       ],
       "agility": 9,
-      "magicDef": 24
+      "magicDef": 36
     }
   ],
   "patterns": [

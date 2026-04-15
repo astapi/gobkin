@@ -3,12 +3,14 @@
     {
       "id": "HUM001",
       "name": "辺境城正規兵",
-      "raceTags": ["human"],
+      "raceTags": [
+        "human"
+      ],
       "level": 30,
       "hp": 400,
       "atk": 85,
       "def": 18,
-      "magicDef": 12,
+      "magicDef": 27,
       "agility": 6,
       "attackCount": 1,
       "accuracy": 320,
@@ -19,7 +21,9 @@
     {
       "id": "HUM002",
       "name": "辺境城魔術師",
-      "raceTags": ["human"],
+      "raceTags": [
+        "human"
+      ],
       "level": 30,
       "hp": 250,
       "atk": 110,
@@ -47,12 +51,14 @@
     {
       "id": "HUM003",
       "name": "辺境城弓兵",
-      "raceTags": ["human"],
+      "raceTags": [
+        "human"
+      ],
       "level": 30,
       "hp": 280,
       "atk": 95,
       "def": 10,
-      "magicDef": 8,
+      "magicDef": 15,
       "agility": 10,
       "attackCount": 1,
       "accuracy": 340,
@@ -63,12 +69,14 @@
     {
       "id": "HUM004",
       "name": "辺境城クレリック",
-      "raceTags": ["human"],
+      "raceTags": [
+        "human"
+      ],
       "level": 30,
       "hp": 350,
       "atk": 70,
       "def": 16,
-      "magicDef": 22,
+      "magicDef": 24,
       "magicHeal": 100,
       "agility": 5,
       "attackCount": 1,
@@ -86,12 +94,14 @@
     {
       "id": "HUM005",
       "name": "辺境城騎士",
-      "raceTags": ["human"],
+      "raceTags": [
+        "human"
+      ],
       "level": 30,
       "hp": 550,
       "atk": 100,
       "def": 24,
-      "magicDef": 16,
+      "magicDef": 36,
       "agility": 4,
       "attackCount": 1,
       "accuracy": 300,
@@ -103,177 +113,420 @@
   "patterns": [
     {
       "id": "SF2_001",
-      "floors": [1],
+      "floors": [
+        1
+      ],
       "enemies": [
-        ["HUM005"],
-        ["HUM001"],
-        ["HUM001"],
-        ["HUM003", "HUM002"]
+        [
+          "HUM005"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM003",
+          "HUM002"
+        ]
       ]
     },
     {
       "id": "SF2_002",
-      "floors": [1],
+      "floors": [
+        1
+      ],
       "enemies": [
-        ["HUM005"],
-        ["HUM001", "HUM001"],
-        ["HUM001"],
-        ["HUM003", "HUM002"],
-        ["HUM004"]
+        [
+          "HUM005"
+        ],
+        [
+          "HUM001",
+          "HUM001"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM003",
+          "HUM002"
+        ],
+        [
+          "HUM004"
+        ]
       ]
     },
     {
       "id": "SF2_003",
-      "floors": [1],
+      "floors": [
+        1
+      ],
       "enemies": [
-        ["HUM005"],
-        ["HUM001"],
-        ["HUM001"],
-        ["HUM001"],
-        ["HUM003", "HUM002"],
-        ["HUM004"]
+        [
+          "HUM005"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM003",
+          "HUM002"
+        ],
+        [
+          "HUM004"
+        ]
       ]
     },
     {
       "id": "SF2_004",
-      "floors": [1],
+      "floors": [
+        1
+      ],
       "enemies": [
-        ["HUM005"],
-        ["HUM001", "HUM001"],
-        ["HUM001"],
-        ["HUM001"],
-        ["HUM003", "HUM003"],
-        ["HUM002", "HUM004"]
+        [
+          "HUM005"
+        ],
+        [
+          "HUM001",
+          "HUM001"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM003",
+          "HUM003"
+        ],
+        [
+          "HUM002",
+          "HUM004"
+        ]
       ]
     },
     {
       "id": "SF2_005",
-      "floors": [1],
+      "floors": [
+        1
+      ],
       "enemies": [
-        ["HUM005", "HUM005"],
-        ["HUM001", "HUM001"],
-        ["HUM001"],
-        ["HUM001"],
-        ["HUM003", "HUM002"],
-        ["HUM003", "HUM004"]
+        [
+          "HUM005",
+          "HUM005"
+        ],
+        [
+          "HUM001",
+          "HUM001"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM003",
+          "HUM002"
+        ],
+        [
+          "HUM003",
+          "HUM004"
+        ]
       ]
     },
     {
       "id": "SF2_006",
-      "floors": [2],
+      "floors": [
+        2
+      ],
       "enemies": [
-        ["HUM005"],
-        ["HUM001"],
-        ["HUM001"],
-        ["HUM001"],
-        ["HUM003", "HUM002"]
+        [
+          "HUM005"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM003",
+          "HUM002"
+        ]
       ]
     },
     {
       "id": "SF2_007",
-      "floors": [2],
+      "floors": [
+        2
+      ],
       "enemies": [
-        ["HUM005"],
-        ["HUM001", "HUM001"],
-        ["HUM001"],
-        ["HUM003", "HUM002"],
-        ["HUM004"]
+        [
+          "HUM005"
+        ],
+        [
+          "HUM001",
+          "HUM001"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM003",
+          "HUM002"
+        ],
+        [
+          "HUM004"
+        ]
       ]
     },
     {
       "id": "SF2_008",
-      "floors": [2],
+      "floors": [
+        2
+      ],
       "enemies": [
-        ["HUM005"],
-        ["HUM001"],
-        ["HUM001"],
-        ["HUM001"],
-        ["HUM003", "HUM003"],
-        ["HUM002", "HUM004"]
+        [
+          "HUM005"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM003",
+          "HUM003"
+        ],
+        [
+          "HUM002",
+          "HUM004"
+        ]
       ]
     },
     {
       "id": "SF2_009",
-      "floors": [2],
+      "floors": [
+        2
+      ],
       "enemies": [
-        ["HUM005", "HUM005"],
-        ["HUM001", "HUM001"],
-        ["HUM001"],
-        ["HUM003", "HUM002"],
-        ["HUM004", "HUM003"]
+        [
+          "HUM005",
+          "HUM005"
+        ],
+        [
+          "HUM001",
+          "HUM001"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM003",
+          "HUM002"
+        ],
+        [
+          "HUM004",
+          "HUM003"
+        ]
       ]
     },
     {
       "id": "SF2_010",
-      "floors": [2],
+      "floors": [
+        2
+      ],
       "enemies": [
-        ["HUM005", "HUM005"],
-        ["HUM001", "HUM001"],
-        ["HUM001"],
-        ["HUM001"],
-        ["HUM003", "HUM003"],
-        ["HUM002", "HUM004"]
+        [
+          "HUM005",
+          "HUM005"
+        ],
+        [
+          "HUM001",
+          "HUM001"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM003",
+          "HUM003"
+        ],
+        [
+          "HUM002",
+          "HUM004"
+        ]
       ]
     },
     {
       "id": "SF2_011",
-      "floors": [3],
+      "floors": [
+        3
+      ],
       "enemies": [
-        ["HUM005", "HUM005"],
-        ["HUM001", "HUM001"],
-        ["HUM001"],
-        ["HUM003", "HUM002"],
-        ["HUM004"]
+        [
+          "HUM005",
+          "HUM005"
+        ],
+        [
+          "HUM001",
+          "HUM001"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM003",
+          "HUM002"
+        ],
+        [
+          "HUM004"
+        ]
       ]
     },
     {
       "id": "SF2_012",
-      "floors": [3],
+      "floors": [
+        3
+      ],
       "enemies": [
-        ["HUM005", "HUM005"],
-        ["HUM001", "HUM001"],
-        ["HUM001"],
-        ["HUM001"],
-        ["HUM003", "HUM003"],
-        ["HUM002", "HUM004"]
+        [
+          "HUM005",
+          "HUM005"
+        ],
+        [
+          "HUM001",
+          "HUM001"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM003",
+          "HUM003"
+        ],
+        [
+          "HUM002",
+          "HUM004"
+        ]
       ]
     },
     {
       "id": "SF2_013",
-      "floors": [3],
+      "floors": [
+        3
+      ],
       "enemies": [
-        ["HUM005", "HUM005"],
-        ["HUM001", "HUM001"],
-        ["HUM001"],
-        ["HUM001"],
-        ["HUM003", "HUM002"],
-        ["HUM003", "HUM004"]
+        [
+          "HUM005",
+          "HUM005"
+        ],
+        [
+          "HUM001",
+          "HUM001"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM003",
+          "HUM002"
+        ],
+        [
+          "HUM003",
+          "HUM004"
+        ]
       ]
     },
     {
       "id": "SF2_014",
-      "floors": [3],
+      "floors": [
+        3
+      ],
       "enemies": [
-        ["HUM005", "HUM005"],
-        ["HUM001", "HUM001"],
-        ["HUM001"],
-        ["HUM001"],
-        ["HUM001"],
-        ["HUM003", "HUM003"],
-        ["HUM002", "HUM004"]
+        [
+          "HUM005",
+          "HUM005"
+        ],
+        [
+          "HUM001",
+          "HUM001"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM003",
+          "HUM003"
+        ],
+        [
+          "HUM002",
+          "HUM004"
+        ]
       ]
     },
     {
       "id": "SF2_015",
-      "floors": [3],
+      "floors": [
+        3
+      ],
       "enemies": [
-        ["HUM005", "HUM005"],
-        ["HUM005"],
-        ["HUM001", "HUM001"],
-        ["HUM001"],
-        ["HUM001"],
-        ["HUM003", "HUM003"],
-        ["HUM002", "HUM004"]
+        [
+          "HUM005",
+          "HUM005"
+        ],
+        [
+          "HUM005"
+        ],
+        [
+          "HUM001",
+          "HUM001"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM003",
+          "HUM003"
+        ],
+        [
+          "HUM002",
+          "HUM004"
+        ]
       ]
     }
   ]
