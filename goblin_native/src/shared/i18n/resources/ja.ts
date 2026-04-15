@@ -26,6 +26,7 @@ const ja = {
       healing: '治療所',
       equipmentShop: '装備商店',
       equipmentChange: '装備変更',
+      shop: '特別商店',
     },
     settings: {
       debug: 'Debug',
@@ -119,6 +120,8 @@ const ja = {
       healingDescription: '負傷したゴブリンを治療して次の遠征に備えます。',
       shopTitle: '装備商店',
       shopDescription: '装備を購入、売却します。',
+      premiumShopTitle: '特別商店',
+      premiumShopDescription: 'アイテムや特典を購入します。',
     },
     shop: {
       title: '装備商店',
@@ -609,6 +612,72 @@ const ja = {
     densetsu: '伝説',
     osoroshii: '恐ろしい',
     kowareta: '壊れた',
+  },
+  shop: {
+    title: '特別商店',
+    subtitle: 'アイテムや特典を購入',
+    restore: '購入を復元',
+    noProducts: '現在購入可能な商品はありません',
+    purchased: '購入済み',
+    active: '有効',
+    locked: '未解放',
+    lockedHint: '「{{name}}」を購入すると解放されます',
+    sectionOneTime: '買い切り',
+    sectionSubscription: '月額パス',
+    sectionTicket: 'チケット',
+    purchaseSuccess: '購入完了',
+    purchaseSuccessMessage: '購入が完了しました！',
+    purchaseFailed: '購入失敗',
+    purchaseFailedMessage: '購入処理に失敗しました。もう一度お試しください。',
+    restoreSuccess: '復元完了',
+    restoreSuccessMessage: '購入履歴を復元しました。',
+    restoreFailed: '復元失敗',
+    restoreFailedMessage: '購入履歴の復元に失敗しました。',
+    ticketCount: '{{count}}枚',
+    goblinCapacityExpansion: {
+      name: 'ゴブリン容量拡張',
+      description: '拠点のゴブリン容量を+{{count}}拡張します',
+    },
+    partySlotExpansion: {
+      name: 'パーティ枠拡張',
+      description: 'パーティ枠を+{{count}}追加します',
+    },
+    expBoost: {
+      name: '経験値ブースト',
+      description: '遠征で獲得する経験値が{{multiplier}}倍になります',
+    },
+    rareBoost: {
+      name: 'レアドロップブースト',
+      description: 'レア装備のドロップ率が{{multiplier}}倍になります',
+    },
+    titleBoost: {
+      name: '称号ブースト',
+      description: '装備の良い称号が出やすくなります（{{multiplier}}倍）',
+    },
+    speedHalf: {
+      name: '探索時間短縮 1/2',
+      description: '遠征の探索時間が半分になります',
+    },
+    speedTwoThirds: {
+      name: '探索時間短縮 2/3',
+      description: '遠征の探索時間がさらに2/3になります（1/2と併用で1/3）',
+    },
+    premiumBundle: {
+      name: 'プレミアムバンドル',
+      description: '全ての買い切り商品をまとめてお得に購入',
+    },
+    monthlyPass: {
+      name: '月額パス',
+      description: 'ゴールド{{goldMultiplier}}倍・遠征時間{{speedPercent}}%短縮',
+    },
+    speedTicket: {
+      name: '時短チケット×5',
+      description: '遠征時間を50%短縮するチケット5枚',
+    },
+    boostTicket: {
+      name: 'ブーストチケット×5',
+      description: 'ドロップ率・経験値が2倍になるチケット5枚',
+    },
   },
 } as const
 

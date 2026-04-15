@@ -14,6 +14,7 @@ import { useBaseStore } from '@/presentation/stores/useBaseStore'
 import { useDungeonStore } from '@/presentation/stores/useDungeonStore'
 import { useExpeditionStore } from '@/presentation/stores/useExpeditionStore'
 import { useDebugSettingsStore } from '@/presentation/stores/useDebugSettingsStore'
+import { usePurchaseStore } from '@/presentation/stores/usePurchaseStore'
 import { initializeI18n } from '@/shared/i18n'
 
 export default function RootLayout() {
@@ -32,6 +33,7 @@ export default function RootLayout() {
         useDungeonStore.getState().initialize(),
         useExpeditionStore.getState().initialize(),
         useDebugSettingsStore.getState().initialize(),
+        usePurchaseStore.getState().initialize(),
       ])
       setStoresReady(true)
     }
@@ -111,6 +113,17 @@ export default function RootLayout() {
                     headerTintColor: '#6B7280',
                     headerBackTitle: t('ui.common.back'),
                     title: t('ui.root.equipmentShop'),
+                  }}
+                />
+                <Stack.Screen
+                  name="shop"
+                  options={{
+                    headerShown: true,
+                    headerStyle: { backgroundColor: '#FFFFFF' },
+                    headerTitleStyle: { color: '#1F2937', fontWeight: 'bold' },
+                    headerTintColor: '#6B7280',
+                    headerBackTitle: t('ui.common.back'),
+                    title: t('ui.root.shop'),
                   }}
                 />
                 <Stack.Screen

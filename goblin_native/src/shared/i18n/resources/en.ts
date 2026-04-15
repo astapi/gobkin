@@ -26,6 +26,7 @@ const en = {
       healing: 'Healing',
       equipmentShop: 'Equipment Shop',
       equipmentChange: 'Change Equipment',
+      shop: 'Special Shop',
     },
     settings: {
       debug: 'Debug',
@@ -119,6 +120,8 @@ const en = {
       healingDescription: 'Treat injured goblins so they are ready for the next expedition.',
       shopTitle: 'Equipment Shop',
       shopDescription: 'Buy and sell equipment.',
+      premiumShopTitle: 'Special Shop',
+      premiumShopDescription: 'Purchase items and perks.',
     },
     shop: {
       title: 'Equipment Shop',
@@ -588,6 +591,72 @@ const en = {
     densetsu: 'Legendary',
     osoroshii: 'Terrifying',
     kowareta: 'Broken',
+  },
+  shop: {
+    title: 'Special Shop',
+    subtitle: 'Purchase items and perks',
+    restore: 'Restore Purchases',
+    noProducts: 'No products available',
+    purchased: 'Purchased',
+    active: 'Active',
+    locked: 'Locked',
+    lockedHint: 'Purchase "{{name}}" to unlock',
+    sectionOneTime: 'One-Time Purchase',
+    sectionSubscription: 'Monthly Pass',
+    sectionTicket: 'Tickets',
+    purchaseSuccess: 'Purchase Complete',
+    purchaseSuccessMessage: 'Your purchase was successful!',
+    purchaseFailed: 'Purchase Failed',
+    purchaseFailedMessage: 'Purchase failed. Please try again.',
+    restoreSuccess: 'Restore Complete',
+    restoreSuccessMessage: 'Your purchases have been restored.',
+    restoreFailed: 'Restore Failed',
+    restoreFailedMessage: 'Failed to restore purchases.',
+    ticketCount: '{{count}} tickets',
+    goblinCapacityExpansion: {
+      name: 'Goblin Capacity Expansion',
+      description: 'Expand goblin capacity by +{{count}}',
+    },
+    partySlotExpansion: {
+      name: 'Party Slot Expansion',
+      description: 'Add +{{count}} party slots',
+    },
+    expBoost: {
+      name: 'EXP Boost',
+      description: 'Earn {{multiplier}}x experience from expeditions',
+    },
+    rareBoost: {
+      name: 'Rare Drop Boost',
+      description: 'Rare equipment drop rate {{multiplier}}x',
+    },
+    titleBoost: {
+      name: 'Title Boost',
+      description: 'Better equipment titles appear more often ({{multiplier}}x)',
+    },
+    speedHalf: {
+      name: 'Speed Boost 1/2',
+      description: 'Halves expedition exploration time',
+    },
+    speedTwoThirds: {
+      name: 'Speed Boost 2/3',
+      description: 'Reduces expedition time by another 2/3 (1/3 total with 1/2)',
+    },
+    premiumBundle: {
+      name: 'Premium Bundle',
+      description: 'All one-time purchases in one bundle',
+    },
+    monthlyPass: {
+      name: 'Monthly Pass',
+      description: 'Gold {{goldMultiplier}}x, expedition time -{{speedPercent}}%',
+    },
+    speedTicket: {
+      name: 'Speed Ticket x5',
+      description: '5 tickets that reduce expedition time by 50%',
+    },
+    boostTicket: {
+      name: 'Boost Ticket x5',
+      description: '5 tickets that double drop rate and EXP',
+    },
   },
 } as const
 

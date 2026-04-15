@@ -26,6 +26,7 @@ const ko = {
       healing: '치료소',
       equipmentShop: '장비 상점',
       equipmentChange: '장비 변경',
+      shop: '특별 상점',
     },
     settings: {
       debug: 'Debug',
@@ -119,6 +120,8 @@ const ko = {
       healingDescription: '부상당한 고블린을 치료해 다음 원정에 대비합니다.',
       shopTitle: '장비 상점',
       shopDescription: '장비를 구매하고 판매합니다.',
+      premiumShopTitle: '특별 상점',
+      premiumShopDescription: '아이템 및 혜택을 구매합니다.',
     },
     shop: {
       title: '장비 상점',
@@ -588,6 +591,72 @@ const ko = {
     densetsu: '전설',
     osoroshii: '무시무시한',
     kowareta: '망가진',
+  },
+  shop: {
+    title: '특별 상점',
+    subtitle: '아이템 및 혜택 구매',
+    restore: '구매 복원',
+    noProducts: '현재 구매 가능한 상품이 없습니다',
+    purchased: '구매 완료',
+    active: '활성',
+    locked: '잠김',
+    lockedHint: '"{{name}}"을(를) 구매하면 잠금 해제됩니다',
+    sectionOneTime: '일회성 구매',
+    sectionSubscription: '월간 패스',
+    sectionTicket: '티켓',
+    purchaseSuccess: '구매 완료',
+    purchaseSuccessMessage: '구매가 완료되었습니다!',
+    purchaseFailed: '구매 실패',
+    purchaseFailedMessage: '구매에 실패했습니다. 다시 시도해 주세요.',
+    restoreSuccess: '복원 완료',
+    restoreSuccessMessage: '구매 내역이 복원되었습니다.',
+    restoreFailed: '복원 실패',
+    restoreFailedMessage: '구매 내역 복원에 실패했습니다.',
+    ticketCount: '{{count}}장',
+    goblinCapacityExpansion: {
+      name: '고블린 용량 확장',
+      description: '고블린 수용 용량을 +{{count}} 확장합니다',
+    },
+    partySlotExpansion: {
+      name: '파티 슬롯 확장',
+      description: '파티 슬롯을 +{{count}} 추가합니다',
+    },
+    expBoost: {
+      name: '경험치 부스트',
+      description: '원정에서 획득하는 경험치가 {{multiplier}}배가 됩니다',
+    },
+    rareBoost: {
+      name: '레어 드롭 부스트',
+      description: '레어 장비 드롭률이 {{multiplier}}배가 됩니다',
+    },
+    titleBoost: {
+      name: '칭호 부스트',
+      description: '좋은 장비 칭호가 더 자주 나옵니다 ({{multiplier}}배)',
+    },
+    speedHalf: {
+      name: '탐색 시간 단축 1/2',
+      description: '원정 탐색 시간이 절반이 됩니다',
+    },
+    speedTwoThirds: {
+      name: '탐색 시간 단축 2/3',
+      description: '원정 시간이 추가로 2/3가 됩니다 (1/2와 함께 1/3)',
+    },
+    premiumBundle: {
+      name: '프리미엄 번들',
+      description: '모든 일회성 구매 상품을 한 번에 할인 구매',
+    },
+    monthlyPass: {
+      name: '월간 패스',
+      description: '골드 {{goldMultiplier}}배, 원정 시간 {{speedPercent}}% 단축',
+    },
+    speedTicket: {
+      name: '시간 단축 티켓 x5',
+      description: '원정 시간을 50% 단축하는 티켓 5장',
+    },
+    boostTicket: {
+      name: '부스트 티켓 x5',
+      description: '드롭률과 경험치가 2배가 되는 티켓 5장',
+    },
   },
 } as const
 
