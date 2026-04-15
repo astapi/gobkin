@@ -16,7 +16,7 @@
       "evasion": 13,
       "exp": 58,
       "gold": 44,
-      "magicDef": 18
+      "magicDef": 29
     },
     {
       "id": "ORF002",
@@ -52,7 +52,7 @@
       "evasion": 10,
       "exp": 72,
       "gold": 56,
-      "magicDef": 22
+      "magicDef": 34
     },
     {
       "id": "B_ORC_FORTRESS",
@@ -76,7 +76,7 @@
           "probability": 1
         }
       ],
-      "magicDef": 28
+      "magicDef": 43
     }
   ],
   "patterns": [

@@ -6,17 +6,17 @@
       "raceTags": [
         "orc"
       ],
-      "level": 6,
+      "level": 14,
       "hp": 300,
       "atk": 70,
       "def": 10,
-      "agility": 8,
+      "agility": 10,
       "attackCount": 1,
       "accuracy": 215,
       "evasion": 12,
-      "exp": 24,
-      "gold": 18,
-      "magicDef": 8
+      "exp": 46,
+      "gold": 40,
+      "magicDef": 12
     },
     {
       "id": "ORC005",
@@ -24,17 +24,17 @@
       "raceTags": [
         "orc"
       ],
-      "level": 8,
+      "level": 17,
       "hp": 550,
       "atk": 100,
       "def": 16,
-      "agility": 7,
+      "agility": 10,
       "attackCount": 1,
       "accuracy": 205,
       "evasion": 13,
-      "exp": 36,
-      "gold": 28,
-      "magicDef": 12
+      "exp": 62,
+      "gold": 54,
+      "magicDef": 19
     },
     {
       "id": "B_ORC",
@@ -42,7 +42,7 @@
       "raceTags": [
         "orc"
       ],
-      "level": 12,
+      "level": 20,
       "hp": 450,
       "atk": 120,
       "def": 18,
@@ -50,15 +50,15 @@
       "attackCount": 1,
       "accuracy": 225,
       "evasion": 14,
-      "exp": 120,
-      "gold": 100,
+      "exp": 160,
+      "gold": 140,
       "factorDrops": [
         {
           "factorId": "orc",
           "probability": 1
         }
       ],
-      "magicDef": 14
+      "magicDef": 22
     }
   ],
   "patterns": [

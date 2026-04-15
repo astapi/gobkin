@@ -16,7 +16,7 @@
       "exp": 45,
       "gold": 40,
       "agility": 12,
-      "magicDef": 6
+      "magicDef": 10
     },
     {
       "id": "ELF002",
@@ -34,7 +34,7 @@
       "exp": 50,
       "gold": 44,
       "agility": 11,
-      "magicDef": 5
+      "magicDef": 8
     },
     {
       "id": "ELF003",
@@ -52,7 +52,7 @@
       "exp": 55,
       "gold": 48,
       "agility": 9,
-      "magicDef": 8
+      "magicDef": 12
     },
     {
       "id": "ELF004",
@@ -70,7 +70,7 @@
       "exp": 52,
       "gold": 46,
       "agility": 10,
-      "magicDef": 12
+      "magicDef": 19
     },
     {
       "id": "ELF005",
@@ -89,7 +89,7 @@
       "exp": 58,
       "gold": 50,
       "agility": 6,
-      "magicDef": 16
+      "magicDef": 24
     },
     {
       "id": "B_FORESTGUARD",
@@ -113,7 +113,7 @@
         }
       ],
       "agility": 12,
-      "magicDef": 22
+      "magicDef": 34
     }
   ],
   "patterns": [

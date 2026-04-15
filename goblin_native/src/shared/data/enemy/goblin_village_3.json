@@ -16,7 +16,7 @@
       "evasion": 11,
       "exp": 8,
       "gold": 6,
-      "magicDef": 2
+      "magicDef": 4
     },
     {
       "id": "GOB002",
@@ -52,7 +52,7 @@
       "evasion": 13,
       "exp": 15,
       "gold": 12,
-      "magicDef": 4
+      "magicDef": 7
     },
     {
       "id": "GOB004",
@@ -78,7 +78,7 @@
           "grantsSpellId": "fireball"
         }
       ],
-      "magicDef": 2
+      "magicDef": 4
     },
     {
       "id": "GOB005",
@@ -96,7 +96,7 @@
       "evasion": 14,
       "exp": 20,
       "gold": 18,
-      "magicDef": 24
+      "magicDef": 36
     },
     {
       "id": "B_HOB",
@@ -133,7 +133,7 @@
           "probability": 1
         }
       ],
-      "magicDef": 11
+      "magicDef": 17
     }
   ],
   "patterns": [

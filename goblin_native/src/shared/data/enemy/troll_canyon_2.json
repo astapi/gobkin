@@ -16,7 +16,7 @@
       "exp": 62,
       "gold": 54,
       "agility": 4,
-      "magicDef": 11
+      "magicDef": 17
     },
     {
       "id": "TRL002",
@@ -34,7 +34,7 @@
       "exp": 68,
       "gold": 60,
       "agility": 3,
-      "magicDef": 14
+      "magicDef": 22
     },
     {
       "id": "TRL003",
@@ -52,7 +52,7 @@
       "exp": 72,
       "gold": 64,
       "agility": 5,
-      "magicDef": 9
+      "magicDef": 14
     },
     {
       "id": "TRL004",
@@ -70,7 +70,7 @@
       "exp": 78,
       "gold": 68,
       "agility": 3,
-      "magicDef": 17
+      "magicDef": 26
     },
     {
       "id": "TRL005",
@@ -88,7 +88,7 @@
       "exp": 70,
       "gold": 62,
       "agility": 7,
-      "magicDef": 11
+      "magicDef": 17
     }
   ],
   "patterns": [
