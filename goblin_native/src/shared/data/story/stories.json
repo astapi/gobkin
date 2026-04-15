@@ -1,0 +1,306 @@
+{
+  "stories": [
+    {
+      "id": "prologue",
+      "title": "ゴブリンの目覚め",
+      "category": "main",
+      "order": 0,
+      "unlockCondition": null,
+      "rewards": [],
+      "chapters": [
+        {
+          "id": "prologue_1",
+          "text": "薄暗い洞窟の奥で、一匹のゴブリンが目を覚ました。\n\n周囲には仲間の気配がある。いや、仲間と呼ぶにはまだ早いかもしれない。\n\n彼らはただ、同じ洞窟に住んでいるだけの存在だ。"
+        },
+        {
+          "id": "prologue_2",
+          "text": "しかし、何かが違う。\n\nこの洞窟の外には、もっと広い世界があるはずだ。\n\nまずは近くの洞窟を探索して、力を蓄えよう。"
+        }
+      ]
+    },
+    {
+      "id": "story_after_slime_cave",
+      "title": "森への道",
+      "category": "main",
+      "order": 1,
+      "unlockCondition": { "type": "dungeon_cleared", "dungeonId": "slime_cave" },
+      "rewards": [],
+      "chapters": [
+        {
+          "id": "story_after_slime_cave_1",
+          "text": "スライムの洞窟を制覇した。\n\n弱い相手だったが、ゴブリンたちは初めての勝利の味を覚えた。\n\n洞窟の出口から差し込む光の先に、森が広がっている。"
+        }
+      ]
+    },
+    {
+      "id": "story_after_forest",
+      "title": "同族との対峙",
+      "category": "main",
+      "order": 2,
+      "unlockCondition": { "type": "dungeon_cleared", "dungeonId": "forest_outskirts" },
+      "rewards": [],
+      "chapters": [
+        {
+          "id": "story_after_forest_1",
+          "text": "森を抜けた先に、ゴブリンの集落が見えた。\n\n同族だ。しかし、彼らは我々を歓迎するつもりはないようだ。\n\n独立のためには、同族の支配からも脱しなければならない。"
+        }
+      ]
+    },
+    {
+      "id": "story_after_goblin_village",
+      "title": "独立の狼煙",
+      "category": "main",
+      "order": 3,
+      "unlockCondition": { "type": "dungeon_cleared", "dungeonId": "goblin_village_3" },
+      "rewards": [],
+      "chapters": [
+        {
+          "id": "story_after_goblin_village_1",
+          "text": "ホブゴブリンを打ち倒し、集落を手に入れた。\n\nこれが我らの最初の拠点だ。ゴブリンキングダムの礎となる場所。\n\n集落の外には、忘れ去られた廃墟が広がっているという噂がある。"
+        }
+      ]
+    },
+    {
+      "id": "story_after_ruins",
+      "title": "街道への進出",
+      "category": "main",
+      "order": 4,
+      "unlockCondition": { "type": "dungeon_cleared", "dungeonId": "undead_ruins_3" },
+      "rewards": [],
+      "chapters": [
+        {
+          "id": "story_after_ruins_1",
+          "text": "アンデッドの脅威を退け、廃墟を越えた。\n\n目の前に街道が現れた。人間たちの世界への入口だ。\n\n商人や護衛が行き交う街道を支配できれば、国の力はさらに増すだろう。"
+        }
+      ]
+    },
+    {
+      "id": "story_after_road",
+      "title": "オークとの邂逅",
+      "category": "main",
+      "order": 5,
+      "unlockCondition": { "type": "dungeon_cleared", "dungeonId": "road_1" },
+      "rewards": [],
+      "chapters": [
+        {
+          "id": "story_after_road_1",
+          "text": "街道を制圧した先に、オークの野営地が見えてきた。\n\nオークたちは我々を同盟者とは見なしていない。\n\n彼らの力を取り込むか、排除するか。いずれにせよ、避けては通れない。"
+        }
+      ]
+    },
+    {
+      "id": "story_after_orc_camp",
+      "title": "辺境の脅威",
+      "category": "main",
+      "order": 6,
+      "unlockCondition": { "type": "dungeon_cleared", "dungeonId": "orc_camp_3" },
+      "rewards": [],
+      "chapters": [
+        {
+          "id": "story_after_orc_camp_1",
+          "text": "オークの野営地を制圧し、新たな拠点を手に入れた。\n\n勢力を広げた我らの存在は、ついに人間たちの耳にも届いたようだ。\n\n辺境の村から偵察の兵が来ている。人間との接触は避けられない。"
+        }
+      ]
+    },
+    {
+      "id": "story_after_village",
+      "title": "討伐隊の接近",
+      "category": "main",
+      "order": 7,
+      "unlockCondition": { "type": "dungeon_cleared", "dungeonId": "human_village" },
+      "rewards": [],
+      "chapters": [
+        {
+          "id": "story_after_village_1",
+          "text": "辺境の村を落とした報せは、瞬く間に城塞都市へ伝わった。\n\n人間たちは討伐隊を編成し、こちらに向かっているという。\n\n迎え撃つ準備をしなければならない。"
+        }
+      ]
+    },
+    {
+      "id": "story_after_subjugation",
+      "title": "城塞への進軍",
+      "category": "main",
+      "order": 8,
+      "unlockCondition": { "type": "dungeon_cleared", "dungeonId": "subjugation_force_3" },
+      "rewards": [],
+      "chapters": [
+        {
+          "id": "story_after_subjugation_1",
+          "text": "討伐隊を撃退した。人間たちの恐怖が伝わってくる。\n\nだが、守りに入るつもりはない。城塞を落とさなければ、いずれまた大軍が押し寄せる。\n\n攻めるなら今だ。城塞の壁を越えろ。"
+        }
+      ]
+    },
+    {
+      "id": "story_after_fortress",
+      "title": "闇の領域",
+      "category": "main",
+      "order": 9,
+      "unlockCondition": { "type": "dungeon_cleared", "dungeonId": "human_fortress_3" },
+      "rewards": [],
+      "chapters": [
+        {
+          "id": "story_after_fortress_1",
+          "text": "城塞を攻略し、人間の防衛線は崩壊した。\n\nしかし、王都への道はまだ遠い。街道を見下ろす古城からは、不気味な気配が漂っている。\n\nヴァンパイア……夜の支配者が、我らの進軍を阻んでいる。"
+        }
+      ]
+    },
+    {
+      "id": "story_after_vampire",
+      "title": "王都への道",
+      "category": "main",
+      "order": 10,
+      "unlockCondition": { "type": "dungeon_cleared", "dungeonId": "vampire_castle_1" },
+      "rewards": [],
+      "chapters": [
+        {
+          "id": "story_after_vampire_1",
+          "text": "ヴァンパイアを退け、古城を通過した。\n\n遠くに王都の城壁が見える。人間の王国の心臓部だ。\n\nここを落とせば、ゴブリンキングダムは名実ともに一つの国となる。"
+        }
+      ]
+    },
+    {
+      "id": "story_after_royal_capital_2",
+      "title": "最後の試練",
+      "category": "main",
+      "order": 11,
+      "unlockCondition": { "type": "dungeon_cleared", "dungeonId": "royal_capital_2" },
+      "rewards": [],
+      "chapters": [
+        {
+          "id": "story_after_royal_capital_2_1",
+          "text": "王城内部を制圧した。しかし、玉座への道は開かない。\n\n王国が最後の切り札として放ったのは、地下に封印されていたドラゴンだった。\n\n炎の試練を越えなければ、玉座には届かない。"
+        }
+      ]
+    },
+    {
+      "id": "story_ending",
+      "title": "ゴブリンキングダム",
+      "category": "main",
+      "order": 12,
+      "unlockCondition": { "type": "dungeon_cleared", "dungeonId": "royal_capital_3" },
+      "rewards": [],
+      "chapters": [
+        {
+          "id": "story_ending_1",
+          "text": "勇者と人間王を打ち倒し、玉座を手に入れた。\n\nかつて洞窟の奥で目覚めた一匹のゴブリンが、今や一国の王として玉座に座っている。\n\nゴブリンキングダムは完成した。しかし、王国の運営はこれからが本番だ。"
+        },
+        {
+          "id": "story_ending_2",
+          "text": "新たな脅威、新たな仲間、新たな冒険が待っている。\n\nゴブリンキングダムの物語は、まだ終わらない。"
+        }
+      ]
+    },
+    {
+      "id": "side_orc_fortress",
+      "title": "オークの本拠地",
+      "category": "side",
+      "order": 100,
+      "unlockCondition": { "type": "dungeon_cleared", "dungeonId": "orc_fortress_1" },
+      "rewards": [],
+      "chapters": [
+        {
+          "id": "side_orc_fortress_1",
+          "text": "オークの砦を攻略した。\n\n砦と呼ぶには巨大すぎるその拠点は、もはや一つの国と言ってよい規模だった。\n\nオークの力を完全に手中に収めた。"
+        }
+      ]
+    },
+    {
+      "id": "side_hobbit_hills",
+      "title": "丘陵の民",
+      "category": "side",
+      "order": 101,
+      "unlockCondition": { "type": "dungeon_cleared", "dungeonId": "hobbit_hills_1" },
+      "rewards": [],
+      "chapters": [
+        {
+          "id": "side_hobbit_hills_1",
+          "text": "ホビットたちの丘陵村を制した。\n\n小さな体に似合わぬ勇敢さを見せた彼らだが、今は我らに従っている。\n\nホビットの斥候術は、今後の遠征に役立つだろう。"
+        }
+      ]
+    },
+    {
+      "id": "side_dwarf_mine",
+      "title": "鍛冶王の遺産",
+      "category": "side",
+      "order": 102,
+      "unlockCondition": { "type": "dungeon_cleared", "dungeonId": "dwarf_mine_3" },
+      "rewards": [],
+      "chapters": [
+        {
+          "id": "side_dwarf_mine_1",
+          "text": "ドワーフの坑道を最深部まで制覇し、鍛冶王を降した。\n\nドワーフの鍛冶技術は世界一と名高い。この力があれば、より強力な装備を生み出せる。\n\n坑道の奥には、エルフの隠れ里への道が続いているようだ。"
+        }
+      ]
+    },
+    {
+      "id": "side_elf_forest",
+      "title": "森の民との決着",
+      "category": "side",
+      "order": 103,
+      "unlockCondition": { "type": "dungeon_cleared", "dungeonId": "elf_forest_3" },
+      "rewards": [],
+      "chapters": [
+        {
+          "id": "side_elf_forest_1",
+          "text": "エルフの隠れ里を攻略した。\n\n森の番人を降し、古代の魔法の知識を手に入れた。\n\nエルフの魔法はゴブリンの力を新たな高みへと導くだろう。"
+        }
+      ]
+    },
+    {
+      "id": "side_lizardman_swamp",
+      "title": "沼王の降伏",
+      "category": "side",
+      "order": 104,
+      "unlockCondition": { "type": "dungeon_cleared", "dungeonId": "lizardman_swamp_3" },
+      "rewards": [],
+      "chapters": [
+        {
+          "id": "side_lizardman_swamp_1",
+          "text": "リザードマンの沼砦を制圧した。\n\n沼王は降伏し、水棲戦力が我が軍に加わった。\n\n沼地の先には、断崖が聳え立っている。空の脅威が待ち受けているようだ。"
+        }
+      ]
+    },
+    {
+      "id": "side_troll_canyon",
+      "title": "峡谷の暴君",
+      "category": "side",
+      "order": 105,
+      "unlockCondition": { "type": "dungeon_cleared", "dungeonId": "troll_canyon_3" },
+      "rewards": [],
+      "chapters": [
+        {
+          "id": "side_troll_canyon_1",
+          "text": "トロルの峡谷を制覇した。\n\n暴君の驚異的な再生能力の秘密を解き明かした。\n\nこの力は戦場で大きな武器となるだろう。"
+        }
+      ]
+    },
+    {
+      "id": "side_minotaur",
+      "title": "迷宮の主",
+      "category": "side",
+      "order": 106,
+      "unlockCondition": { "type": "dungeon_cleared", "dungeonId": "minotaur_labyrinth_1" },
+      "rewards": [],
+      "chapters": [
+        {
+          "id": "side_minotaur_1",
+          "text": "ミノタウロスの迷宮を攻略した。\n\n巨大な斧を振るうミノタウロスたちは、今や我が軍の戦力に加わった。\n\nその圧倒的な膂力は、城塞攻略の切り札となるだろう。"
+        }
+      ]
+    },
+    {
+      "id": "side_harpy_cliff",
+      "title": "空の支配者",
+      "category": "side",
+      "order": 107,
+      "unlockCondition": { "type": "dungeon_cleared", "dungeonId": "harpy_cliff_1" },
+      "rewards": [],
+      "chapters": [
+        {
+          "id": "side_harpy_cliff_1",
+          "text": "ハーピィの崖巣を攻略した。\n\n空からの襲撃を得意とする彼女たちが味方につけば、偵察と奇襲の幅が広がる。\n\n崖の先には、峡谷が続いている。"
+        }
+      ]
+    }
+  ]
+}

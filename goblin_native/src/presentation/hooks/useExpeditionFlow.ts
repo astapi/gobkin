@@ -19,6 +19,7 @@ import { useDungeonStore } from '../stores/useDungeonStore'
 import { SQLiteEquipmentRepository } from '../../infrastructure/repositories/SQLiteEquipmentRepository'
 import { useDebugSettingsStore } from '../stores/useDebugSettingsStore'
 import { getSpeedMultiplier } from '../stores/usePurchaseStore'
+import { useStoryStore } from '../stores/useStoryStore'
 import { getDungeonName } from '../../shared/i18n/entityLocalization'
 import { getDungeonTierAreaLevel, getDungeonTierDisplayName } from '../../shared/types'
 import i18n from '../../shared/i18n'
@@ -75,6 +76,7 @@ export const useExpeditionFlow = ({
   const isBaseLoading = useBaseStore(s => s.isLoading)
   const baseStateRepository = getBaseStateRepository()
   const markDungeonCleared = useDungeonStore((state) => state.markDungeonCleared)
+  const checkAndUnlockStories = useStoryStore((state) => state.checkAndUnlockStories)
   const expeditionRecords = useExpeditionStore((state) => state.expeditionRecords)
   const getPartyExpeditionHistory = useExpeditionStore((state) => state.getPartyExpeditionHistory)
   const saveExpeditionRecord = useExpeditionStore((state) => state.saveExpeditionRecord)
@@ -108,6 +110,7 @@ export const useExpeditionFlow = ({
 
     const tier = record.replay.meta.tier as DungeonTier | undefined
     await markDungeonCleared(dungeon, true, tier)
+    await checkAndUnlockStories(dungeon.id)
 
     const nextId = await getNextGoblinId()
     const areaLevel = record.replay.meta.effectiveAreaLevel ??
@@ -128,6 +131,7 @@ export const useExpeditionFlow = ({
     await addPendingGoblin(newGoblin)
   }, [
     addPendingGoblin,
+    checkAndUnlockStories,
     getNextGoblinId,
     goblins,
     isBaseLoading,

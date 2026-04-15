@@ -82,5 +82,9 @@ export {
 // Base related types
 export type { BaseState } from "./BaseState"
 
+// Story related types
+export type { Story, StoryCategory, StoryUnlockCondition, StoryReward, StoryChapter } from "./Story"
+export type { StoryProgressState } from "./StoryProgress"
+
 // Ticket related types
 export type { TicketBalance } from "./Ticket"

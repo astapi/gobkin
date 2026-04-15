@@ -1,0 +1,26 @@
+export type StoryCategory = 'main' | 'side'
+
+export type StoryUnlockCondition = {
+  type: 'dungeon_cleared'
+  dungeonId: string
+}
+
+export type StoryReward = {
+  type: 'gold' | 'goblin' | 'equipment'
+  value: number | string
+}
+
+export type StoryChapter = {
+  id: string
+  text: string
+}
+
+export type Story = {
+  id: string
+  title: string
+  category: StoryCategory
+  order: number
+  unlockCondition: StoryUnlockCondition | null
+  rewards: StoryReward[]
+  chapters: StoryChapter[]
+}

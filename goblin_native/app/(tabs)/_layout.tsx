@@ -8,6 +8,7 @@ import HenseiIcon from '../../assets/hensei.svg'
 import BaseIcon from '../../assets/base.svg'
 import { CurrentTimeBadge } from '@/presentation/components/CurrentTimeBadge'
 import { GoldBadge } from '@/presentation/components/GoldBadge'
+import { useStoryStore } from '@/presentation/stores/useStoryStore'
 
 interface TabIconProps {
   Icon: React.FC<{ width: number; height: number; fill?: string }>
@@ -24,6 +25,7 @@ const TabIcon = memo(function TabIcon({ Icon, color }: TabIconProps) {
 
 export default function TabLayout() {
   const { t } = useTranslation()
+  const unreadCount = useStoryStore((state) => state.unreadCount)
   const insets = useSafeAreaInsets()
   const basePadding = 8
   const baseHeight = 60
@@ -55,6 +57,20 @@ export default function TabLayout() {
         },
       }}
     >
+      <Tabs.Screen
+        name="story"
+        options={{
+          title: t('ui.tabs.story'),
+          headerShown: false,
+          tabBarIcon: ({ color }) => (
+            <View style={styles.iconContainer}>
+              <Text style={{ fontSize: 20, color }}>&#128214;</Text>
+            </View>
+          ),
+          tabBarBadge: unreadCount > 0 ? unreadCount : undefined,
+          tabBarBadgeStyle: { backgroundColor: '#7C3AED', fontSize: 10 },
+        }}
+      />
       <Tabs.Screen
         name="index"
         options={{

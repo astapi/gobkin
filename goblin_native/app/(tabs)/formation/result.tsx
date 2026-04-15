@@ -5,10 +5,11 @@ import { router, useLocalSearchParams } from 'expo-router'
 import { useTranslation } from 'react-i18next'
 import { useDungeonStore } from '@/presentation/stores/useDungeonStore'
 import { useExpeditionStore } from '@/presentation/stores/useExpeditionStore'
+import { useStoryStore } from '@/presentation/stores/useStoryStore'
 import { getGoblinDisplayImage } from '@/shared/utils/goblinImages'
 import { areasData } from '@/shared/data'
 import { getEffectiveStats } from '@/shared/utils/goblinStats'
-import type { ExpeditionRecord, Goblin, TimelineEvent, TreasureDrop } from '@/shared/types'
+import type { ExpeditionRecord, Goblin, Story, TimelineEvent, TreasureDrop } from '@/shared/types'
 import { getDungeonTierDisplayName } from '@/shared/types'
 import { getDungeonName, getEquipmentDisplayName } from '@/shared/i18n/entityLocalization'
 import { getEquipmentTemplate } from '@/shared/data/equipmentPoolLoader'
@@ -35,8 +36,10 @@ export default function ExpeditionResultScreen() {
     refresh: refreshExpeditions,
     isLoading: isExpeditionLoading,
   } = useExpeditionStore()
+  const checkAndUnlockStories = useStoryStore((state) => state.checkAndUnlockStories)
   const [hasRetriedLoad, setHasRetriedLoad] = useState(false)
   const [expeditionRecord, setExpeditionRecord] = useState<ExpeditionRecord | null>(null)
+  const [unlockedStories, setUnlockedStories] = useState<Story[]>([])
 
   useEffect(() => {
     if (!expeditionId) return
@@ -130,9 +133,15 @@ export default function ExpeditionResultScreen() {
     if (!replay || !dungeon) return
     const cleared = replay.summary.success && replay.summary.maxFloorReached >= dungeon.floors
     if (cleared && !dungeon.cleared) {
-      void markDungeonCleared(dungeon, true, replay.meta.tier)
+      void (async () => {
+        await markDungeonCleared(dungeon, true, replay.meta.tier)
+        const stories = await checkAndUnlockStories(dungeon.id)
+        if (stories.length > 0) {
+          setUnlockedStories(stories)
+        }
+      })()
     }
-  }, [dungeon, markDungeonCleared, replay])
+  }, [dungeon, markDungeonCleared, checkAndUnlockStories, replay])
 
   const area = replay ? areasData.find(a => a.id === replay.meta.areaId) : dungeon
   const unlockTargets = useMemo(() => {
@@ -256,6 +265,22 @@ export default function ExpeditionResultScreen() {
         {nextAreaName && isSuccess && showUnlockNotice && (
           <View style={styles.section}>
             <Text style={styles.summaryText}>{t('ui.result.unlockedArea', { name: nextAreaName })}</Text>
+          </View>
+        )}
+
+        {unlockedStories.length > 0 && (
+          <View style={styles.section}>
+            <Text style={styles.storyUnlockTitle}>{t('ui.result.storyUnlocked')}</Text>
+            {unlockedStories.map(story => (
+              <TouchableOpacity
+                key={story.id}
+                style={styles.storyButton}
+                onPress={() => router.push({ pathname: '/story/reader', params: { storyId: story.id } })}
+              >
+                <Text style={styles.storyButtonText}>{story.title}</Text>
+                <Text style={styles.storyButtonArrow}>→</Text>
+              </TouchableOpacity>
+            ))}
           </View>
         )}
 
@@ -386,6 +411,33 @@ const styles = StyleSheet.create({
   bottomSection: {
     padding: 16,
     backgroundColor: '#F3F4F6',
+  },
+  storyUnlockTitle: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#7C3AED',
+    marginBottom: 8,
+  },
+  storyButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: '#F5F3FF',
+    borderRadius: 8,
+    paddingVertical: 12,
+    paddingHorizontal: 14,
+    marginBottom: 6,
+    borderWidth: 1,
+    borderColor: '#DDD6FE',
+  },
+  storyButtonText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#7C3AED',
+  },
+  storyButtonArrow: {
+    fontSize: 16,
+    color: '#7C3AED',
   },
   menuButton: {
     backgroundColor: '#1F2937',

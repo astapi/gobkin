@@ -12,6 +12,7 @@ const ko = {
       levelShort: 'Lv.',
     },
     tabs: {
+      story: '이야기',
       goblinList: '고블린',
       formation: '편성',
       base: '거점',
@@ -96,6 +97,7 @@ const ko = {
       gainedGold: '{{value}} Gold 획득',
       items: '획득 아이템',
       unlockedArea: '다음 지역 "{{name}}"이 해금되었습니다',
+      storyUnlocked: '새로운 이야기가 해금되었습니다',
       backToMenu: '메뉴로 돌아가기',
     },
     base: {
@@ -374,6 +376,20 @@ const ko = {
         bossEncounter: '보스와 조우!',
         dungeonClear: '보스를 격파! 던전 돌파',
       },
+    },
+    story: {
+      title: '기록의 서',
+      mainStory: '메인 스토리',
+      sideStory: '사이드 스토리',
+      locked: '미해금',
+      notFound: '스토리를 찾을 수 없습니다.',
+      skip: '건너뛰기',
+      skipTitle: '건너뛰기 확인',
+      skipMessage: '이 스토리를 건너뛰고 읽은 것으로 처리하시겠습니까?',
+      skipConfirm: '건너뛰기',
+      complete: '읽음 처리',
+      alreadyRead: '읽음 완료',
+      noStories: '아직 해금된 스토리가 없습니다.',
     },
   },
   entities: {
