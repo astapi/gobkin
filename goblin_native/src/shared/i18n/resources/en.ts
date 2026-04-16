@@ -260,6 +260,10 @@ const en = {
         pendingOverflowBody: 'Not enough pending slots. If {{count}} parties are dispatched, newly added goblins after successful expeditions may be discarded. Dispatch anyway?',
         partyDefaultName: 'PT{{index}}',
         rewardText: 'G{{gold}}x Rare{{rare}}x Prefix{{title}}x',
+        abortButton: 'Return',
+        abortConfirmTitle: 'Confirm Return',
+        abortConfirmBody: 'End the expedition early.\nGold and items will be lost.\nExperience and HP status will be kept.',
+        abortConfirmOk: 'Return',
       },
       preparation: {
         title: 'Expedition Prep',

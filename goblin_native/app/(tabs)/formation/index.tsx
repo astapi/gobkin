@@ -62,6 +62,7 @@ interface PartyCardProps {
   party: Party
   goblins: Goblin[]
   onPress: () => void
+  onAbort: () => void
   historyDisplays: ExpeditionHistoryDisplay[]
   onHistoryPress: (record: ExpeditionRecord, ongoing: boolean) => void
   onLogPress: (record: ExpeditionRecord) => void
@@ -73,6 +74,7 @@ const PartyCard = memo(function PartyCard({
   party,
   goblins,
   onPress,
+  onAbort,
   historyDisplays,
   onHistoryPress,
   onLogPress,
@@ -111,9 +113,16 @@ const PartyCard = memo(function PartyCard({
         <View style={styles.partyHeader}>
           <Text style={styles.partyName}>{party.name}</Text>
           {status === 'expedition' && (
-            <View style={styles.expeditionBadge}>
-              <Text style={styles.expeditionBadgeText}>{t('ui.formation.index.expeditionStatus')}</Text>
-            </View>
+            <TouchableOpacity
+              style={styles.expeditionBadge}
+              onPress={(e) => {
+                e.stopPropagation()
+                onAbort()
+              }}
+              activeOpacity={0.7}
+            >
+              <Text style={styles.expeditionBadgeText}>{t('ui.formation.index.abortButton')}</Text>
+            </TouchableOpacity>
           )}
         </View>
 
@@ -173,6 +182,7 @@ export default function FormationScreen() {
     partyHistoryDisplays,
     startExpedition,
     startBulkExpedition,
+    abortExpedition,
   } = useExpeditionFlow({ parties, enableAutoCompletion: true, currentTime })
   const [isBulkLaunching, setIsBulkLaunching] = useState(false)
   const { slotSize, avatarSize } = useMemo(() => {
@@ -237,6 +247,24 @@ export default function FormationScreen() {
       })
     }
   }, [createParty, partyHistories, t])
+
+  const handleAbort = useCallback((party: Party) => {
+    const latestHistory = partyHistories[party.id]?.[0]
+    if (!latestHistory || latestHistory.status !== 'ongoing') return
+
+    Alert.alert(
+      t('ui.formation.index.abortConfirmTitle'),
+      t('ui.formation.index.abortConfirmBody'),
+      [
+        { text: t('ui.common.cancel'), style: 'cancel' },
+        {
+          text: t('ui.formation.index.abortConfirmOk'),
+          style: 'destructive',
+          onPress: () => void abortExpedition(latestHistory),
+        },
+      ],
+    )
+  }, [abortExpedition, partyHistories, t])
 
   const handleHistoryPress = useCallback((record: ExpeditionRecord, ongoing: boolean) => {
     if (ongoing) {
@@ -358,6 +386,7 @@ export default function FormationScreen() {
           party={item}
           goblins={goblins}
           onPress={() => handlePartyPress(item, index)}
+          onAbort={() => handleAbort(item)}
           historyDisplays={partyHistoryDisplays[item.id] ?? []}
           onHistoryPress={handleHistoryPress}
           onLogPress={handleLogPress}
@@ -383,7 +412,7 @@ export default function FormationScreen() {
         </View>
       </TouchableOpacity>
     )
-  }, [avatarSize, goblins, handleHistoryPress, handleLogPress, handlePartyPress, partyHistoryDisplays, slotSize])
+  }, [avatarSize, goblins, handleAbort, handleHistoryPress, handleLogPress, handlePartyPress, partyHistoryDisplays, slotSize])
 
   return (
     <SafeAreaView style={styles.container} edges={['left', 'right', 'bottom']}>

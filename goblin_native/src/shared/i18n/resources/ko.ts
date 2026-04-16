@@ -260,6 +260,10 @@ const ko = {
         pendingOverflowBody: '대기 슬롯이 부족합니다. {{count}}개 PT가 출격하면 원정 성공 시 추가되는 고블린을 받지 못하고 폐기할 수 있습니다. 출격할까요?',
         partyDefaultName: 'PT{{index}}',
         rewardText: 'G{{gold}}배 레어{{rare}}배 칭호{{title}}배',
+        abortButton: '귀환',
+        abortConfirmTitle: '귀환 확인',
+        abortConfirmBody: '원정을 중도 종료합니다.\n골드와 아이템은 가져올 수 없습니다.\n경험치와 HP 상태는 유지됩니다.',
+        abortConfirmOk: '귀환하기',
       },
       preparation: {
         title: '원정 준비',

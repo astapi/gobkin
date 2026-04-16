@@ -39,8 +39,10 @@ export class CompleteExpeditionUseCase {
 
   public async execute(
     partyId: number,
-    replay: ExpeditionReplay
+    replay: ExpeditionReplay,
+    options?: { isAbort?: boolean }
   ): Promise<ExpeditionCompletionResult> {
+    const isAbort = options?.isAbort ?? false
     const party = await this.partyRepository.getParty(partyId)
     if (!party) {
       throw new Error('パーティが見つかりません')
@@ -131,7 +133,7 @@ export class CompleteExpeditionUseCase {
       (e): e is Extract<TimelineEvent, { type: 'boss' }> => e.type === 'boss'
     )
 
-    if (bossEvent && bossEvent.combat.outcome === 'win') {
+    if (!isAbort && bossEvent && bossEvent.combat.outcome === 'win') {
       const enemyDatabase = getEnemyDatabase(replay.meta.areaId)
 
       if (enemyDatabase) {
@@ -195,7 +197,7 @@ export class CompleteExpeditionUseCase {
     }
 
     const treasureDrops = replay.summary.treasureDrops ?? []
-    if (treasureDrops.length > 0 && this.equipmentRepository) {
+    if (!isAbort && treasureDrops.length > 0 && this.equipmentRepository) {
       for (const drop of treasureDrops) {
         const equipmentId = `eq_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
         await this.equipmentRepository.save({
@@ -209,25 +211,27 @@ export class CompleteExpeditionUseCase {
     }
 
     let newDungeonCaptured: string | undefined
-    const goldGained = replay.summary.goldGained || 0
+    const goldGained = isAbort ? 0 : (replay.summary.goldGained || 0)
 
-    const currentBaseState = await this.baseStateRepository.getBaseState()
-    if (currentBaseState) {
-      let updatedBaseState = {
-        ...currentBaseState,
-        gold: currentBaseState.gold + goldGained,
-      }
-
-      if (replay.summary.success) {
-        const wasCaptured = currentBaseState.capturedDungeons.includes(replay.meta.areaId)
-        updatedBaseState = captureDungeon(replay.meta.areaId, updatedBaseState)
-
-        if (!wasCaptured) {
-          newDungeonCaptured = replay.meta.areaId
+    if (!isAbort) {
+      const currentBaseState = await this.baseStateRepository.getBaseState()
+      if (currentBaseState) {
+        let updatedBaseState = {
+          ...currentBaseState,
+          gold: currentBaseState.gold + goldGained,
         }
-      }
 
-      await this.baseStateRepository.saveBaseState(updatedBaseState)
+        if (replay.summary.success) {
+          const wasCaptured = currentBaseState.capturedDungeons.includes(replay.meta.areaId)
+          updatedBaseState = captureDungeon(replay.meta.areaId, updatedBaseState)
+
+          if (!wasCaptured) {
+            newDungeonCaptured = replay.meta.areaId
+          }
+        }
+
+        await this.baseStateRepository.saveBaseState(updatedBaseState)
+      }
     }
 
     await this.partyRepository.updatePartyStatus(partyId, 'idle')
