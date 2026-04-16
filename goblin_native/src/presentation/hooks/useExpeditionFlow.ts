@@ -20,6 +20,7 @@ import { SQLiteEquipmentRepository } from '../../infrastructure/repositories/SQL
 import { useDebugSettingsStore } from '../stores/useDebugSettingsStore'
 import { getSpeedMultiplier } from '../stores/usePurchaseStore'
 import { useStoryStore } from '../stores/useStoryStore'
+import { useExpeditionNotification } from '../hooks/useExpeditionNotification'
 import { getDungeonName } from '../../shared/i18n/entityLocalization'
 import { getDungeonTierAreaLevel, getDungeonTierDisplayName } from '../../shared/types'
 import i18n from '../../shared/i18n'
@@ -85,6 +86,7 @@ export const useExpeditionFlow = ({
   const instantDungeonExploration = useDebugSettingsStore((state) => state.instantDungeonExploration)
 
   const equipmentRepository = useMemo(() => SQLiteEquipmentRepository.getInstance(), [])
+  const { scheduleExpeditionNotification, cancelExpeditionNotification } = useExpeditionNotification()
 
   const startExpeditionUseCase = useMemo(() => {
     return new StartExpeditionUseCase(
@@ -239,12 +241,19 @@ export const useExpeditionFlow = ({
         await usePartyStore.getState().refresh()
         await useGoblinStore.getState().refresh()
 
+        // ローカル通知をスケジュール
+        try {
+          await scheduleExpeditionNotification(record)
+        } catch {
+          // 通知スケジュール失敗はゲーム進行に影響させない
+        }
+
         return { record }
       } finally {
         setIsProcessing(false)
       }
     },
-    [estimateExplorationTime, saveExpeditionRecord, startExpeditionUseCase],
+    [estimateExplorationTime, saveExpeditionRecord, startExpeditionUseCase, scheduleExpeditionNotification],
   )
 
   interface BulkStartResult {
@@ -299,6 +308,15 @@ export const useExpeditionFlow = ({
           await saveBulkExpeditionRecords(records)
           await usePartyStore.getState().refresh()
           await useGoblinStore.getState().refresh()
+
+          // 一括遠征の通知をスケジュール
+          for (const record of records) {
+            try {
+              await scheduleExpeditionNotification(record)
+            } catch {
+              // 通知スケジュール失敗はゲーム進行に影響させない
+            }
+          }
         }
 
         return { startedCount: records.length, skippedReasons }
@@ -306,7 +324,7 @@ export const useExpeditionFlow = ({
         setIsProcessing(false)
       }
     },
-    [estimateExplorationTime, saveBulkExpeditionRecords, startExpeditionUseCase],
+    [estimateExplorationTime, saveBulkExpeditionRecords, startExpeditionUseCase, scheduleExpeditionNotification],
   )
 
   const updateExpeditionReplay = useExpeditionStore((state) => state.updateExpeditionReplay)
@@ -334,6 +352,9 @@ export const useExpeditionFlow = ({
 
         // ゲームロジックを先に実行し、レベルアップ情報を含む enrichedReplay を取得
         const result = await completeExpeditionUseCase.execute(record.partyId, replay)
+
+        // フォアグラウンドで完了処理するため、スケジュール済み通知をキャンセル
+        await cancelExpeditionNotification(record.id)
 
         // DBレベルで WHERE status='ongoing' を条件にアトミックに更新。
         // enrichedReplay（memberLevelUps含む）を一括保存。
@@ -369,6 +390,7 @@ export const useExpeditionFlow = ({
     completeExpeditionRecord,
     handleDungeonClear,
     updateExpeditionReplay,
+    cancelExpeditionNotification,
   ])
 
   const [partyHistories, setPartyHistories] = useState<Record<number, ExpeditionRecord[]>>({})

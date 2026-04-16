@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react'
-import { View, ActivityIndicator, Text, StyleSheet, Pressable } from 'react-native'
+import { View, ActivityIndicator, Text, StyleSheet, Pressable, Platform } from 'react-native'
 import { Stack } from 'expo-router'
 import { StatusBar } from 'expo-status-bar'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { useTranslation } from 'react-i18next'
+import * as Notifications from 'expo-notifications'
 import { AuthProvider } from '@/presentation/contexts/AuthContext'
 import { ResetProvider } from '@/presentation/contexts/ResetContext'
 import { useDatabaseInit } from '@/presentation/hooks/useDatabaseInit'
@@ -37,6 +38,13 @@ export default function RootLayout() {
         usePurchaseStore.getState().initialize(),
         useStoryStore.getState().initialize(),
       ])
+      // 通知パーミッション要求（ネイティブのみ）
+      if (Platform.OS !== 'web') {
+        const { status } = await Notifications.getPermissionsAsync()
+        if (status !== 'granted') {
+          await Notifications.requestPermissionsAsync()
+        }
+      }
       setStoresReady(true)
     }
     void init()
