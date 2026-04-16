@@ -511,7 +511,7 @@ export const useExpeditionFlow = ({
       const items = history.map(record => {
         const dungeon = areasData.find(area => area.id === record.dungeonId)
         const ongoing = isExpeditionOngoing(record, currentTime)
-        const floorReached = record.replay?.summary.maxFloorReached ?? 0
+        const floorReached = record.replay?.summary.maxFloorReached ?? 1
         const remainingMinutes = ongoing && record.returnTime
           ? getRemainingMinutes(record.returnTime, currentTime)
           : 0
