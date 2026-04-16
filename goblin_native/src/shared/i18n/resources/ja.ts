@@ -260,6 +260,10 @@ const ja = {
         pendingOverflowBody: '待機枠が不足しています。{{count}}PT出撃すると、遠征成功時に追加されるゴブリンを受け取れず破棄する可能性があります。出撃しますか？',
         partyDefaultName: 'PT{{index}}',
         rewardText: 'G{{gold}}倍 レア{{rare}}倍 称号{{title}}倍',
+        abortButton: '帰還',
+        abortConfirmTitle: '帰還確認',
+        abortConfirmBody: '遠征を途中で終了します。\nGold・アイテムは持ち帰れません。\n経験値とHP状態は維持されます。',
+        abortConfirmOk: '帰還する',
       },
       preparation: {
         title: '冒険準備',

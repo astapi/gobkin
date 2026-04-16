@@ -329,6 +329,98 @@ export const useExpeditionFlow = ({
 
   const updateExpeditionReplay = useExpeditionStore((state) => state.updateExpeditionReplay)
 
+  const abortExpedition = useCallback(async (record: ExpeditionRecord): Promise<void> => {
+    setIsProcessing(true)
+    try {
+      // replay が未計算の場合は遅延計算を実行
+      let replay = record.replay
+      if (!replay && record.expeditionMeta) {
+        replay = await computeExpeditionReplay(record.expeditionMeta)
+        await updateExpeditionReplay(record.id, replay)
+      }
+      if (!replay) return
+
+      // 経過時間の割合でリプレイを途中で切断
+      const now = new Date()
+      const startMs = record.startTime.getTime()
+      const returnMs = record.returnTime ? record.returnTime.getTime() : startMs
+      const totalMs = returnMs - startMs
+      const elapsedRatio = totalMs > 0
+        ? Math.min(1, Math.max(0, (now.getTime() - startMs) / totalMs))
+        : 0
+      const cutoffSec = elapsedRatio * replay.durationSec
+
+      // cutoffSec 以前のイベントのみ残し、元の return イベントを除外
+      const truncatedEvents = replay.events.filter(
+        e => e.type !== 'return' && e.at <= cutoffSec
+      )
+      // abort の return イベントを追加
+      truncatedEvents.push({ type: 'return', at: cutoffSec, reason: 'abort' as const })
+
+      // 切断されたイベントから summary を再計算
+      let xpGained = 0
+      let goldGained = 0
+      let maxFloorReached = 1
+      const truncatedTreasureDrops: typeof replay.summary.treasureDrops = []
+      const casualtyIds: string[] = []
+
+      // HP追跡用
+      const hpState = replay.meta.party.map((id) => {
+        const snapshot = replay!.meta.partySnapshot?.find(g => g.id === Number.parseInt(id, 10))
+        return snapshot?.currentHp ?? 999
+      })
+
+      for (const event of truncatedEvents) {
+        if (event.type === 'battle' || event.type === 'boss') {
+          if (event.combat.outcome === 'win') xpGained += event.xp
+          goldGained += event.enemy.gold
+          maxFloorReached = Math.max(maxFloorReached, event.floor)
+          event.combat.allyHPDelta.forEach((delta, i) => {
+            if (i < hpState.length) hpState[i] = Math.max(0, hpState[i] + delta)
+          })
+        } else if (event.type === 'floor_up') {
+          maxFloorReached = Math.max(maxFloorReached, event.to)
+        } else if (event.type === 'treasure') {
+          truncatedTreasureDrops.push(...event.items)
+        }
+      }
+
+      // HP0のメンバーを casualties に追加
+      replay.meta.party.forEach((id, i) => {
+        if (hpState[i] <= 0) casualtyIds.push(id)
+      })
+
+      const truncatedReplay: typeof replay = {
+        ...replay,
+        durationSec: cutoffSec,
+        events: truncatedEvents,
+        summary: {
+          success: false,
+          maxFloorReached,
+          xpGained,
+          goldGained,
+          casualties: casualtyIds,
+          treasureDrops: truncatedTreasureDrops.length > 0 ? truncatedTreasureDrops : undefined,
+        },
+      }
+
+      // abort モードで完了処理（Gold・アイテム・因子・制圧をスキップ）
+      const result = await completeExpeditionUseCase.execute(record.partyId, truncatedReplay, { isAbort: true })
+
+      // スケジュール済み通知をキャンセル
+      await cancelExpeditionNotification(record.id)
+
+      // DBをアトミックに更新
+      await completeExpeditionRecord(record.id, result.enrichedReplay)
+
+      // ストアを同期
+      await usePartyStore.getState().refresh()
+      await useGoblinStore.getState().refresh()
+    } finally {
+      setIsProcessing(false)
+    }
+  }, [completeExpeditionUseCase, completeExpeditionRecord, updateExpeditionReplay, cancelExpeditionNotification])
+
   const completeDueExpeditions = useCallback(async (): Promise<void> => {
     const now = new Date()
     const dueExpeditions = expeditionRecords.filter(record =>
@@ -475,6 +567,7 @@ export const useExpeditionFlow = ({
     isProcessing,
     startExpedition,
     startBulkExpedition,
+    abortExpedition,
     estimateExplorationTime,
     completeDueExpeditions,
     currentTime,
