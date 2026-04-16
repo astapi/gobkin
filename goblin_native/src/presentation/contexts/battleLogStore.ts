@@ -1,17 +1,18 @@
-import type { BattleLogEntry, BattleLogMeta } from '@/shared/types'
+import type { BattleLogEntry, BattleLogMeta, Goblin } from '@/shared/types'
 
 interface StoredBattleLog {
   log: BattleLogEntry[]
   meta?: BattleLogMeta
+  partySnapshot?: Goblin[]
 }
 
 const battleLogStore = new Map<string, StoredBattleLog>()
 let logCounter = 0
 
-export const storeBattleLog = (log: BattleLogEntry[], meta?: BattleLogMeta): string => {
+export const storeBattleLog = (log: BattleLogEntry[], meta?: BattleLogMeta, partySnapshot?: Goblin[]): string => {
   logCounter += 1
   const id = `${Date.now()}-${logCounter}`
-  battleLogStore.set(id, { log, meta })
+  battleLogStore.set(id, { log, meta, partySnapshot })
   return id
 }
 

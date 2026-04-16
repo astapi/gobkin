@@ -1,10 +1,11 @@
 import { useMemo, useEffect } from 'react'
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native'
+import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { router, useLocalSearchParams } from 'expo-router'
 import { useTranslation } from 'react-i18next'
-import type { BattleLogEntry, BattleLogMeta } from '@/shared/types'
+import type { BattleLogEntry, BattleLogMeta, Goblin } from '@/shared/types'
 import { getBattleLog, clearBattleLog } from '@/presentation/contexts/battleLogStore'
+import { getGoblinDisplayImage } from '@/shared/utils/goblinImages'
 
 export default function BattleLogScreen() {
   const { t } = useTranslation()
@@ -19,6 +20,15 @@ export default function BattleLogScreen() {
 
   const battleLog = stored?.log ?? null
   const meta = stored?.meta ?? null
+  const partySnapshot = stored?.partySnapshot ?? []
+
+  const goblinMap = useMemo(() => {
+    const map = new Map<string, Goblin>()
+    for (const goblin of partySnapshot) {
+      map.set(String(goblin.id), goblin)
+    }
+    return map
+  }, [partySnapshot])
 
   useEffect(() => {
     const raw = Array.isArray(logId) ? logId[0] : logId
@@ -83,13 +93,19 @@ export default function BattleLogScreen() {
             const isHealingAction = entry.targets?.some(target => target.totalDamage < 0) ?? false
             const isBarrierAction = entry.actionEffect === 'barrier' || entry.action === t('entities.spell.shield_barrier')
 
+            const allyGoblin = entry.isAlly ? goblinMap.get(entry.actorId) : undefined
+            const actorImage = allyGoblin ? getGoblinDisplayImage(allyGoblin) : undefined
+
             if (entry.actionEffect === 'regen') {
               const healed = Math.abs(entry.targets?.[0]?.totalDamage ?? 0)
               return (
                 <View key={`log-${index}`} style={styles.logCard}>
-                  <Text style={styles.logText}>
-                    {t('ui.formation.battleLog.regenSummary', { actor: entry.actorName, heal: healed })}
-                  </Text>
+                  <View style={styles.logHeader}>
+                    {actorImage && <Image source={actorImage} style={styles.actorImage} />}
+                    <Text style={[styles.logText, styles.logHeaderText]}>
+                      {t('ui.formation.battleLog.regenSummary', { actor: entry.actorName, heal: healed })}
+                    </Text>
+                  </View>
                 </View>
               )
             }
@@ -97,36 +113,46 @@ export default function BattleLogScreen() {
             if (isBarrierAction) {
               return (
                 <View key={`log-${index}`} style={styles.logCard}>
-                  <Text style={styles.logTitle}>
-                    {t('ui.formation.battleLog.spellTitle', { actor: entry.actorName, action: entry.action, hp: entry.actorHP, maxHp: entry.actorMaxHP })}
-                  </Text>
-                  <Text style={styles.logText}>
-                    {t('ui.formation.battleLog.shieldBarrierSummary')}
-                  </Text>
+                  <View style={styles.logHeader}>
+                    {actorImage && <Image source={actorImage} style={styles.actorImage} />}
+                    <View style={styles.logHeaderText}>
+                      <Text style={styles.logTitle}>
+                        {t('ui.formation.battleLog.spellTitle', { actor: entry.actorName, action: entry.action, hp: entry.actorHP, maxHp: entry.actorMaxHP })}
+                      </Text>
+                      <Text style={styles.logText}>
+                        {t('ui.formation.battleLog.shieldBarrierSummary')}
+                      </Text>
+                    </View>
+                  </View>
                 </View>
               )
             }
 
             return (
               <View key={`log-${index}`} style={styles.logCard}>
-                <Text style={styles.logTitle}>
-                  {isSpell
-                    ? t('ui.formation.battleLog.spellTitle', { actor: entry.actorName, action: entry.action, hp: entry.actorHP, maxHp: entry.actorMaxHP })
-                    : t('ui.formation.battleLog.attackTitle', { actor: entry.actorName, count: entry.attackCount, hp: entry.actorHP, maxHp: entry.actorMaxHP })
-                  }
-                </Text>
-                <Text style={styles.logText}>
-                  {isHealingAction
-                    ? t('ui.formation.battleLog.healSummary', { row: entry.actorRow, actor: entry.actorName, action: entry.action, count: entry.hitCount })
-                    : isSpell
-                    ? t('ui.formation.battleLog.spellSummary', { row: entry.actorRow, actor: entry.actorName, action: entry.action, count: entry.hitCount })
-                    : entry.isCritical
-                    ? t('ui.formation.battleLog.attackCriticalSummary', { row: entry.actorRow, actor: entry.actorName, count: entry.hitCount })
-                    : t('ui.formation.battleLog.attackSummary', { row: entry.actorRow, actor: entry.actorName, count: entry.hitCount })
-                  }
-                </Text>
+                <View style={styles.logHeader}>
+                  {actorImage && <Image source={actorImage} style={styles.actorImage} />}
+                  <View style={styles.logHeaderText}>
+                    <Text style={styles.logTitle}>
+                      {isSpell
+                        ? t('ui.formation.battleLog.spellTitle', { actor: entry.actorName, action: entry.action, hp: entry.actorHP, maxHp: entry.actorMaxHP })
+                        : t('ui.formation.battleLog.attackTitle', { actor: entry.actorName, count: entry.attackCount, hp: entry.actorHP, maxHp: entry.actorMaxHP })
+                      }
+                    </Text>
+                    <Text style={styles.logText}>
+                      {isHealingAction
+                        ? t('ui.formation.battleLog.healSummary', { row: entry.actorRow, actor: entry.actorName, action: entry.action, count: entry.hitCount })
+                        : isSpell
+                        ? t('ui.formation.battleLog.spellSummary', { row: entry.actorRow, actor: entry.actorName, action: entry.action, count: entry.hitCount })
+                        : entry.isCritical
+                        ? t('ui.formation.battleLog.attackCriticalSummary', { row: entry.actorRow, actor: entry.actorName, count: entry.hitCount })
+                        : t('ui.formation.battleLog.attackSummary', { row: entry.actorRow, actor: entry.actorName, count: entry.hitCount })
+                      }
+                    </Text>
+                  </View>
+                </View>
                 {entry.targets?.map((target, targetIndex) => (
-                  <Text key={`target-${targetIndex}`} style={styles.logText}>
+                  <Text key={`target-${targetIndex}`} style={[styles.logText, actorImage ? styles.logTargetIndented : undefined]}>
                     {target.totalDamage < 0
                       ? t('ui.formation.battleLog.targetHealed', { row: target.targetRow, name: target.targetName, heal: Math.abs(target.totalDamage) })
                       : target.defeated
@@ -261,6 +287,23 @@ const styles = StyleSheet.create({
     padding: 12,
     borderWidth: 1,
     borderColor: '#E5E7EB',
+  },
+  logHeader: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 8,
+  },
+  actorImage: {
+    width: 28,
+    height: 28,
+    borderRadius: 6,
+    marginTop: 2,
+  },
+  logHeaderText: {
+    flex: 1,
+  },
+  logTargetIndented: {
+    marginLeft: 36,
   },
   logTitle: {
     fontSize: 13,

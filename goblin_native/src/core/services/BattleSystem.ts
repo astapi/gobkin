@@ -1001,7 +1001,8 @@ export class BattleSystem {
   }
 
   private getLogName(unit: BattleUnit): string {
-    return unit.logName ?? unit.combatant.name
+    const name = unit.logName ?? unit.combatant.name
+    return `Lv${unit.level} ${name}`
   }
 
   private assignEnemyLogNames(enemyUnits: BattleUnit[]): void {
