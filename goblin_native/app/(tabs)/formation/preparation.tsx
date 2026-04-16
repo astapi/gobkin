@@ -225,11 +225,11 @@ export default function ExpeditionPreparationScreen() {
     return Math.min(maxCleared, 5) as DungeonTier
   }, [selectedDungeon])
 
-  // ダンジョン変更時にティアをデフォルト選択
+  // ダンジョン変更時にティアをデフォルト選択（クリア済みの最高ティア）
   const autoSelectTier = useCallback((dungeon: Dungeon) => {
     const maxCleared = dungeon.maxClearedTier ?? 0
-    // 魔性以上が解放されている場合は最高解放ティアをデフォルト選択
-    const defaultTier = Math.min(maxCleared, 5) as DungeonTier
+    // maxClearedTier は「次に解放されるティア番号」なので、クリア済み最高は -1
+    const defaultTier = Math.min(Math.max(maxCleared - 1, 0), 5) as DungeonTier
     setSelectedTier(defaultTier)
     if (partyId) {
       void setDungeonTier(parseInt(partyId, 10), defaultTier)
