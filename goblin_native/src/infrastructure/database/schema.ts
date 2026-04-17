@@ -22,6 +22,7 @@ export const SCHEMA = {
       individual_value INTEGER DEFAULT 1,
       mods_json TEXT,
       skills_json TEXT NOT NULL DEFAULT '[]',
+      battle_action_policy_json TEXT,
       created_at TEXT NOT NULL DEFAULT (datetime('now')),
       updated_at TEXT NOT NULL DEFAULT (datetime('now'))
     )
@@ -50,6 +51,7 @@ export const SCHEMA = {
       individual_value INTEGER DEFAULT 1,
       mods_json TEXT,
       skills_json TEXT NOT NULL DEFAULT '[]',
+      battle_action_policy_json TEXT,
       created_at TEXT NOT NULL DEFAULT (datetime('now'))
     )
   `,

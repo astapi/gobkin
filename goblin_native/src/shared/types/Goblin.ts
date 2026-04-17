@@ -2,6 +2,7 @@ import type { ModInstance } from './Mod'
 import type { CharacterSkill } from './CharacterSkill'
 import type { LearnedSpell } from './Spell'
 import type { GoblinRaceId } from './Race'
+import type { BattleActionPolicy } from './Battle'
 
 export type GoblinStats = {
   hp: number
@@ -46,4 +47,5 @@ export type Goblin = {
   mods?: ModInstance[]  // 付与されたMod配列（0〜4個）
   skills: CharacterSkill[]  // パッシブスキル一覧
   spells?: LearnedSpell[]  // 習得した呪文リスト
+  battleActionPolicy?: BattleActionPolicy // 戦闘時の行動率設定
 }

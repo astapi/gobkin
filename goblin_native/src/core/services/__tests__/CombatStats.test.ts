@@ -1147,6 +1147,8 @@ describe('selectTarget — 隊列ターゲット選択', () => {
       level: 1,
       spellCharges: [],
       skills: [],
+      battleActionPolicy: { attackRate: 100, clericMagicRate: 100, mageMagicRate: 100 },
+      isDefending: false,
     }
   }
 
@@ -1659,6 +1661,158 @@ describe('spell charges', () => {
     expect(healLog?.targets.length).toBeGreaterThanOrEqual(1)
     expect(healLog?.targets[0].targetId).toBe('CLERIC')
     expect(healLog?.targets[0].totalDamage).toBe(-95)
+  })
+
+  it('攻撃行動率0のユニットは通常攻撃せず防御する', () => {
+    const defender = createTestGoblin({
+      id: 1,
+      stats: { hp: 300, atk: 80, agility: 100, def: 10, attackCount: 1, accuracy: 999, evasion: 0 },
+      battleActionPolicy: { attackRate: 0, clericMagicRate: 100, mageMagicRate: 100 },
+    })
+    const enemy = createTestEnemy({
+      hp: 300,
+      atk: 1,
+      def: 1,
+      agility: 1,
+      attackCount: 0,
+    })
+
+    const result = new BattleSystem().executeBattle([defender], [defender.stats.hp], [[enemy]], createSeededRng(5), 1)
+
+    expect(result.detailedLog.some(log => log.actorId === '1' && log.action === '防御')).toBe(true)
+    expect(result.detailedLog.some(log => log.actorId === '1' && log.action === '通常攻撃')).toBe(false)
+  })
+
+  it('防御後に受ける通常攻撃ダメージは半減する', () => {
+    const defender = createTestGoblin({
+      id: 1,
+      stats: { hp: 999, atk: 1, agility: 100, def: 10, attackCount: 0, accuracy: 999, evasion: 0 },
+      battleActionPolicy: { attackRate: 0, clericMagicRate: 100, mageMagicRate: 100 },
+    })
+    const plainTarget = createTestGoblin({
+      id: 1,
+      stats: { hp: 999, atk: 1, agility: 100, def: 10, attackCount: 0, accuracy: 999, evasion: 0 },
+    })
+    const enemy = createTestEnemy({
+      id: 'ATTACKER',
+      hp: 999,
+      atk: 120,
+      def: 1,
+      agility: 1,
+      attackCount: 1,
+      accuracy: 999,
+      evasion: 0,
+    })
+
+    const defendedResult = new BattleSystem().executeBattle([defender], [defender.stats.hp], [[enemy]], createSeededRng(9), 1)
+    const plainResult = new BattleSystem().executeBattle([plainTarget], [plainTarget.stats.hp], [[createTestEnemy({ ...enemy })]], createSeededRng(9), 1)
+    const defendedDamage = defendedResult.detailedLog.find(log => log.actorId === 'ATTACKER')!.targets[0].totalDamage
+    const plainDamage = plainResult.detailedLog.find(log => log.actorId === 'ATTACKER')!.targets[0].totalDamage
+
+    expect(defendedDamage).toBeLessThan(plainDamage)
+    expect(defendedDamage).toBeGreaterThanOrEqual(Math.floor(plainDamage * 0.45))
+    expect(defendedDamage).toBeLessThanOrEqual(Math.ceil(plainDamage * 0.55))
+  })
+
+  it('防御前に受けた通常攻撃ダメージは半減しない', () => {
+    const defender = createTestGoblin({
+      id: 1,
+      stats: { hp: 999, atk: 1, agility: 1, def: 10, attackCount: 0, accuracy: 999, evasion: 0 },
+      battleActionPolicy: { attackRate: 0, clericMagicRate: 100, mageMagicRate: 100 },
+    })
+    const plainTarget = createTestGoblin({
+      id: 1,
+      stats: { hp: 999, atk: 1, agility: 1, def: 10, attackCount: 0, accuracy: 999, evasion: 0 },
+    })
+    const enemy = createTestEnemy({
+      id: 'FAST_ATTACKER',
+      hp: 999,
+      atk: 120,
+      def: 1,
+      agility: 100,
+      attackCount: 1,
+      accuracy: 999,
+      evasion: 0,
+    })
+
+    const defendedResult = new BattleSystem().executeBattle([defender], [defender.stats.hp], [[enemy]], createSeededRng(13), 1)
+    const plainResult = new BattleSystem().executeBattle([plainTarget], [plainTarget.stats.hp], [[createTestEnemy({ ...enemy })]], createSeededRng(13), 1)
+    const defendedDamage = defendedResult.detailedLog.find(log => log.actorId === 'FAST_ATTACKER')!.targets[0].totalDamage
+    const plainDamage = plainResult.detailedLog.find(log => log.actorId === 'FAST_ATTACKER')!.targets[0].totalDamage
+
+    expect(defendedDamage).toBe(plainDamage)
+  })
+
+  it('防御状態は次ターン開始時に解除される', () => {
+    const defender = createTestGoblin({
+      id: 1,
+      stats: { hp: 999, atk: 1, agility: 100, def: 10, attackCount: 0, accuracy: 999, evasion: 0 },
+      battleActionPolicy: { attackRate: 0, clericMagicRate: 100, mageMagicRate: 100 },
+    })
+    const enemy = createTestEnemy({
+      id: 'ORDER_ATTACKER',
+      hp: 999,
+      atk: 120,
+      def: 1,
+      agility: 1,
+      attackCount: 1,
+      accuracy: 999,
+      evasion: 0,
+    })
+
+    const result = new BattleSystem().executeBattle([defender], [defender.stats.hp], [[enemy]], createSeededRng(37), 2)
+    const firstTurnDefendLog = result.detailedLog.find(log => log.turn === 1 && log.actorId === '1' && log.action === '防御')
+    const secondTurnStart = result.detailedLog.find(log => log.turn === 2 && log.action === 'turn_start')
+
+    expect(firstTurnDefendLog).toBeDefined()
+    expect(secondTurnStart?.turnState?.allies[0].isDefending).toBe(false)
+  })
+
+  it('僧侶魔法使用率0なら回復魔法を使わず防御できる', () => {
+    const attacker = createTestGoblin({
+      id: 1,
+      stats: { hp: 300, atk: 150, agility: 100, def: 10, attackCount: 1, accuracy: 999, evasion: 0 },
+    })
+    const cleric = createTestEnemy({
+      id: 'CLERIC_POLICY',
+      hp: 300,
+      atk: 1,
+      def: 1,
+      agility: 50,
+      attackCount: 1,
+      magicHeal: 80,
+      accuracy: 999,
+      evasion: 0,
+      skills: [{ id: 'recovery_magic_lv7', recoveryMagicLevel: 7 }],
+      battleActionPolicy: { attackRate: 0, clericMagicRate: 0, mageMagicRate: 100 },
+    })
+
+    const result = new BattleSystem().executeBattle([attacker], [attacker.stats.hp], [[cleric]], createSeededRng(23), 1)
+
+    expect(result.detailedLog.some(log => log.actorId === 'CLERIC_POLICY' && log.action === 'ヒール')).toBe(false)
+    expect(result.detailedLog.some(log => log.actorId === 'CLERIC_POLICY' && log.action === '防御')).toBe(true)
+  })
+
+  it('魔法使い魔法使用率0なら攻撃魔法を使わず防御できる', () => {
+    const ally = createTestGoblin({
+      id: 1,
+      stats: { hp: 500, atk: 1, agility: 1, def: 10, attackCount: 0, accuracy: 999, evasion: 0 },
+    })
+    const mage = createTestEnemy({
+      id: 'MAGE_POLICY',
+      hp: 300,
+      atk: 1,
+      def: 1,
+      agility: 100,
+      attackCount: 1,
+      skills: [{ id: 'grant_fireball', grantsSpellId: 'fireball' }],
+      battleActionPolicy: { attackRate: 0, clericMagicRate: 100, mageMagicRate: 0 },
+    })
+
+    const result = new BattleSystem().executeBattle([ally], [ally.stats.hp], [[mage]], createSeededRng(31), 1)
+
+    expect(result.detailedLog.some(log => log.actorId === 'MAGE_POLICY' && log.action === 'ファイヤーボール')).toBe(false)
+    expect(result.detailedLog.some(log => log.actorId === 'MAGE_POLICY' && log.action === '防御')).toBe(true)
   })
 })
 

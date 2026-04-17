@@ -113,6 +113,24 @@ export default function BattleLogScreen() {
               )
             }
 
+            if (entry.actionEffect === 'defend') {
+              return (
+                <View key={`log-${index}`} style={styles.logCard}>
+                  <View style={styles.logHeader}>
+                    {actorImage && <Image source={actorImage} style={styles.actorImage} />}
+                    <View style={styles.logHeaderText}>
+                      <Text style={styles.logTitle}>
+                        {t('ui.formation.battleLog.defendTitle', { actor: entry.actorName, hp: entry.actorHP, maxHp: entry.actorMaxHP })}
+                      </Text>
+                      <Text style={styles.logText}>
+                        {t('ui.formation.battleLog.defendSummary', { row: entry.actorRow, actor: entry.actorName })}
+                      </Text>
+                    </View>
+                  </View>
+                </View>
+              )
+            }
+
             if (isBarrierAction) {
               return (
                 <View key={`log-${index}`} style={styles.logCard}>

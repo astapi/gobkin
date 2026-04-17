@@ -1,5 +1,5 @@
-import { useMemo, useCallback, useEffect, useState } from 'react'
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, Alert } from 'react-native'
+import { useMemo, useCallback, useEffect, useRef, useState } from 'react'
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, Alert, PanResponder } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useLocalSearchParams, router, useNavigation } from 'expo-router'
 import { useTranslation } from 'react-i18next'
@@ -7,6 +7,7 @@ import { useGoblinStore } from '@/presentation/stores/useGoblinStore'
 import { useBaseStore } from '@/presentation/stores/useBaseStore'
 import { usePartyStore } from '@/presentation/stores/usePartyStore'
 import type { Goblin } from '@/shared/types'
+import type { BattleActionPolicy } from '@/shared/types'
 import { getFactor } from '@/shared/data/factors'
 import { getGoblinDisplayImage } from '@/shared/utils/goblinImages'
 import { getFactorImage } from '@/shared/utils/factorImages'
@@ -18,16 +19,94 @@ import { getGoblinJobDefinition } from '@/shared/data/goblinJobs'
 import { getGoblinBaseAttributesAtLevel } from '@/shared/utils/goblinHp'
 import { getEffectiveStats } from '@/shared/utils/goblinStats'
 import { getFactorName, getRaceLabel, getSkillLabel, getStatLabel } from '@/shared/i18n/entityLocalization'
+import { normalizeBattleActionPolicy } from '@/shared/utils/battleActionPolicy'
+
+const ACTION_POLICY_FIELDS: Array<{ key: keyof BattleActionPolicy; labelKey: string }> = [
+  { key: 'attackRate', labelKey: 'ui.goblin.battleActionAttackRate' },
+  { key: 'clericMagicRate', labelKey: 'ui.goblin.battleActionClericMagicRate' },
+  { key: 'mageMagicRate', labelKey: 'ui.goblin.battleActionMageMagicRate' },
+]
+
+function BattleActionRateSlider({
+  value,
+  onChange,
+  onSlidingStart,
+  onSlidingComplete,
+}: {
+  value: number
+  onChange: (value: number) => void
+  onSlidingStart: () => void
+  onSlidingComplete: () => void
+}) {
+  const trackRef = useRef<View>(null)
+  const [trackWidth, setTrackWidth] = useState(0)
+  const clampedValue = Math.max(0, Math.min(100, Math.round(value)))
+  const fillWidth = trackWidth * clampedValue / 100
+
+  const updateFromTrackX = useCallback((x: number) => {
+    if (trackWidth <= 0) return
+    const nextValue = Math.round(Math.max(0, Math.min(trackWidth, x)) / trackWidth * 100)
+    onChange(nextValue)
+  }, [onChange, trackWidth])
+
+  const updateFromPageX = useCallback((pageX: number) => {
+    trackRef.current?.measureInWindow((x) => {
+      updateFromTrackX(pageX - x)
+    })
+  }, [updateFromTrackX])
+
+  const panResponder = useMemo(() => PanResponder.create({
+    onStartShouldSetPanResponder: () => true,
+    onStartShouldSetPanResponderCapture: () => true,
+    onMoveShouldSetPanResponder: () => true,
+    onMoveShouldSetPanResponderCapture: () => true,
+    onPanResponderTerminationRequest: () => false,
+    onPanResponderGrant: event => updateFromPageX(event.nativeEvent.pageX),
+    onPanResponderMove: (_, gestureState) => updateFromPageX(gestureState.moveX),
+    onPanResponderRelease: onSlidingComplete,
+    onPanResponderTerminate: onSlidingComplete,
+    onShouldBlockNativeResponder: () => true,
+  }), [onSlidingComplete, updateFromPageX])
+
+  return (
+    <View style={styles.sliderBlock}>
+      <View
+        ref={trackRef}
+        style={styles.sliderTrackTouchArea}
+        onLayout={event => setTrackWidth(event.nativeEvent.layout.width)}
+        onTouchStart={onSlidingStart}
+        {...panResponder.panHandlers}
+      >
+        <View style={styles.sliderTrack}>
+          <View style={[styles.sliderFill, { width: fillWidth }]} />
+          <View style={[styles.sliderThumb, { left: fillWidth }]} />
+        </View>
+      </View>
+      <View style={styles.sliderScaleRow}>
+        <Text style={styles.sliderScaleText}>0%</Text>
+        <Text style={styles.sliderScaleText}>50%</Text>
+        <Text style={styles.sliderScaleText}>100%</Text>
+      </View>
+    </View>
+  )
+}
 
 export default function GoblinDetailScreen() {
   const { t } = useTranslation()
   const { goblinId, source } = useLocalSearchParams<{ goblinId: string, source?: string }>()
   const goblins = useGoblinStore((state) => state.goblins)
   const getGoblinById = useGoblinStore((state) => state.getGoblinById)
+  const saveGoblin = useGoblinStore((state) => state.saveGoblin)
   const deleteGoblin = useGoblinStore((state) => state.deleteGoblin)
   const pendingGoblins = useBaseStore((state) => state.pendingGoblins)
   const parties = usePartyStore((state) => state.parties)
   const [goblin, setGoblin] = useState<Goblin | null>(null)
+  const [battleActionPolicyDraft, setBattleActionPolicyDraft] = useState<BattleActionPolicy>(
+    normalizeBattleActionPolicy(),
+  )
+  const [isSavingBattleActionPolicy, setIsSavingBattleActionPolicy] = useState(false)
+  const [isSlidingBattleActionPolicy, setIsSlidingBattleActionPolicy] = useState(false)
+  const savedBattleActionPolicyRef = useRef<string>(JSON.stringify(normalizeBattleActionPolicy()))
   const parentNav = useNavigation()
   const isPendingGoblin = source === 'pending'
   const parsedGoblinId = useMemo(() => {
@@ -60,7 +139,10 @@ export default function GoblinDetailScreen() {
 
   useEffect(() => {
     if (goblin) {
+      const nextPolicy = normalizeBattleActionPolicy(goblin.battleActionPolicy)
+      savedBattleActionPolicyRef.current = JSON.stringify(nextPolicy)
       parentNav.getParent()?.setOptions({ title: goblin.name })
+      setBattleActionPolicyDraft(nextPolicy)
     }
   }, [goblin, parentNav])
 
@@ -114,11 +196,44 @@ export default function GoblinDetailScreen() {
     router.push({ pathname: '/goblin/equipment', params: { goblinId: String(goblin.id) } })
   }, [goblin])
 
+  const handleChangeBattleActionPolicy = useCallback((key: keyof BattleActionPolicy, value: number) => {
+    setBattleActionPolicyDraft(current => normalizeBattleActionPolicy({
+      ...current,
+      [key]: value,
+    }))
+  }, [])
+
+  useEffect(() => {
+    if (!goblin || isPendingGoblin) return
+
+    const nextPolicy = normalizeBattleActionPolicy(battleActionPolicyDraft)
+    const nextPolicyKey = JSON.stringify(nextPolicy)
+    if (nextPolicyKey === savedBattleActionPolicyRef.current) return
+
+    const timeoutId = setTimeout(() => {
+      setIsSavingBattleActionPolicy(true)
+      void saveGoblin({
+        ...goblin,
+        battleActionPolicy: nextPolicy,
+      })
+        .then(() => {
+          savedBattleActionPolicyRef.current = nextPolicyKey
+          setGoblin(current => current ? { ...current, battleActionPolicy: nextPolicy } : current)
+        })
+        .catch((error: unknown) => {
+          console.error('[GoblinDetail] Failed to save battle action policy', error)
+        })
+        .finally(() => setIsSavingBattleActionPolicy(false))
+    }, 500)
+
+    return () => clearTimeout(timeoutId)
+  }, [battleActionPolicyDraft, goblin, isPendingGoblin, saveGoblin])
+
   if (!goblin || !effectiveStats) return null
 
   return (
     <SafeAreaView style={styles.container} edges={['left', 'right', 'bottom']}>
-      <ScrollView style={styles.content}>
+      <ScrollView style={styles.content} scrollEnabled={!isSlidingBattleActionPolicy}>
         <View style={styles.profileCard}>
           <View style={styles.profileRow}>
             <View style={styles.profileAvatar}>
@@ -186,6 +301,33 @@ export default function GoblinDetailScreen() {
                 <View key={`${skill.id}-${idx}`} style={styles.abilityItem}>
                   <Text style={styles.abilityName}>{getSkillLabel(skill)}</Text>
                   <Text style={styles.abilityDesc}>{describeCharacterSkill(skill)}</Text>
+                </View>
+              ))}
+            </View>
+          </View>
+        )}
+
+        {!isPendingGoblin && (
+          <View style={styles.detailSection}>
+            <View style={styles.policySectionHeader}>
+              <Text style={styles.sectionTitle}>{t('ui.goblin.battleActionPolicy')}</Text>
+              {isSavingBattleActionPolicy && (
+                <Text style={styles.policySavingText}>{t('ui.common.saving')}</Text>
+              )}
+            </View>
+            <View style={styles.policyList}>
+              {ACTION_POLICY_FIELDS.map(field => (
+                <View key={field.key} style={styles.policyItem}>
+                  <View style={styles.policyHeader}>
+                    <Text style={styles.policyLabel}>{t(field.labelKey)}</Text>
+                    <Text style={styles.policyValue}>{battleActionPolicyDraft[field.key]}%</Text>
+                  </View>
+                  <BattleActionRateSlider
+                    value={battleActionPolicyDraft[field.key]}
+                    onChange={(value) => handleChangeBattleActionPolicy(field.key, value)}
+                    onSlidingStart={() => setIsSlidingBattleActionPolicy(true)}
+                    onSlidingComplete={() => setIsSlidingBattleActionPolicy(false)}
+                  />
                 </View>
               ))}
             </View>
@@ -430,6 +572,86 @@ const styles = StyleSheet.create({
   abilityDesc: {
     fontSize: 10,
     color: '#6B7280',
+  },
+  policySectionHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 12,
+    marginBottom: 6,
+  },
+  policySavingText: {
+    fontSize: 10,
+    fontWeight: '600',
+    color: '#6B7280',
+  },
+  policyList: {
+    gap: 8,
+  },
+  policyItem: {
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: '#F3F4F6',
+    backgroundColor: '#FFFFFF',
+    padding: 8,
+    gap: 8,
+  },
+  policyHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 12,
+  },
+  policyLabel: {
+    flex: 1,
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#1F2937',
+  },
+  policyValue: {
+    minWidth: 44,
+    textAlign: 'right',
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#1F2937',
+  },
+  sliderBlock: {
+    gap: 2,
+  },
+  sliderTrackTouchArea: {
+    height: 34,
+    justifyContent: 'center',
+    paddingHorizontal: 2,
+  },
+  sliderTrack: {
+    height: 6,
+    borderRadius: 999,
+    backgroundColor: '#E5E7EB',
+    overflow: 'visible',
+  },
+  sliderFill: {
+    height: 6,
+    borderRadius: 999,
+    backgroundColor: '#4B5563',
+  },
+  sliderThumb: {
+    position: 'absolute',
+    top: -7,
+    width: 20,
+    height: 20,
+    marginLeft: -10,
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: '#FFFFFF',
+    backgroundColor: '#374151',
+  },
+  sliderScaleRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  sliderScaleText: {
+    fontSize: 9,
+    color: '#9CA3AF',
   },
   expCard: {
     borderRadius: 6,

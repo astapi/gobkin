@@ -1,6 +1,7 @@
 import type { CharacterSkill } from './CharacterSkill'
 import type { FactorDropConfig } from './Factor'
 import type { LearnedSpell } from './Spell'
+import type { BattleActionPolicy } from './Battle'
 
 export interface EquipmentDropConfig {
   templateId: string   // EquipmentTemplate.id
@@ -33,6 +34,7 @@ export interface Enemy {
   equipmentDrops?: EquipmentDropConfig[] // この敵を倒すと得られる可能性のある装備
   skills?: CharacterSkill[]              // パッシブ/呪文付与スキル
   spells?: LearnedSpell[]               // この敵が使える呪文リスト
+  battleActionPolicy?: BattleActionPolicy // 戦闘時の行動率設定
 }
 
 export interface EnemyPattern {
