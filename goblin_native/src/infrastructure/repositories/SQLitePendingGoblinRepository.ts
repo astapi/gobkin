@@ -7,6 +7,7 @@ import type { IPendingGoblinRepository } from '../../core/repositories/IPendingG
 import { getDatabase } from '../database'
 import { normalizeGoblinJobSkills } from '../../shared/data/goblinJobs'
 import { normalizeGoblinRaceId } from '../../shared/types/Race'
+import { normalizeBattleActionPolicy } from '../../shared/utils/battleActionPolicy'
 
 interface PendingGoblinRow {
   id: number
@@ -24,6 +25,7 @@ interface PendingGoblinRow {
   individual_value: number | null
   mods_json: string | null
   skills_json: string
+  battle_action_policy_json: string | null
   created_at: string
 }
 
@@ -52,8 +54,8 @@ export class SQLitePendingGoblinRepository implements IPendingGoblinRepository {
       `INSERT OR REPLACE INTO pending_goblins
        (id, name, race, race_id, level, experience, avatar, stats_json,
         effective_stats_json, factors_json, variant_factor_id, job_id,
-        individual_value, mods_json, skills_json)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        individual_value, mods_json, skills_json, battle_action_policy_json)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         normalizedGoblin.id,
         normalizedGoblin.name,
@@ -70,6 +72,9 @@ export class SQLitePendingGoblinRepository implements IPendingGoblinRepository {
         normalizedGoblin.individualValue ?? 1,
         normalizedGoblin.mods ? JSON.stringify(normalizedGoblin.mods) : null,
         JSON.stringify(normalizedGoblin.skills),
+        normalizedGoblin.battleActionPolicy
+          ? JSON.stringify(normalizeBattleActionPolicy(normalizedGoblin.battleActionPolicy))
+          : null,
       ]
     )
   }
@@ -107,6 +112,9 @@ export class SQLitePendingGoblinRepository implements IPendingGoblinRepository {
         ? JSON.parse(row.mods_json)
         : undefined,
       skills: JSON.parse(row.skills_json),
+      battleActionPolicy: row.battle_action_policy_json
+        ? normalizeBattleActionPolicy(JSON.parse(row.battle_action_policy_json))
+        : undefined,
     })
   }
 }

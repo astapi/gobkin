@@ -1,5 +1,6 @@
-import type { AttackTargetDetail, BattleLogEntry, CharacterSkill, Enemy, Goblin, LearnedSpell } from '../../shared/types'
+import type { AttackTargetDetail, BattleActionPolicy, BattleLogEntry, CharacterSkill, Enemy, Goblin, LearnedSpell } from '../../shared/types'
 import { SPELL_DEFS } from '../../shared/data/spells'
+import { RECOVERY_MAGIC_SPELL_TABLE } from '../../shared/data/recoveryMagic'
 import {
   getActionOrderMultiplierFromSkills,
   getAdditionalDamageFromSkills,
@@ -21,6 +22,7 @@ import { getGoblinBaseAttributesAtLevel } from '../../shared/utils/goblinHp'
 import { getEffectiveStats } from '../../shared/utils/goblinStats'
 import i18n from '../../shared/i18n'
 import { getSpellLabel } from '../../shared/i18n/entityLocalization'
+import { normalizeBattleActionPolicy, shouldRunRate } from '../../shared/utils/battleActionPolicy'
 import type {
   Combatant,
   DamageOptions,
@@ -32,7 +34,10 @@ interface SpellCharge {
   spellId: string
   remaining: number   // 残りチャージ
   maxCharges: number  // 最大チャージ
+  category: SpellCategory
 }
+
+type SpellCategory = 'cleric' | 'mage'
 
 interface BattleUnit {
   instanceId?: string
@@ -65,6 +70,8 @@ interface BattleUnit {
   level: number            // 呪文のターゲット数計算用
   spellCharges: SpellCharge[]  // 戦闘中の呪文チャージ状態
   skills: CharacterSkill[]
+  battleActionPolicy: BattleActionPolicy
+  isDefending: boolean
 }
 
 export interface BattleResult {
@@ -101,6 +108,8 @@ const SPELL_DAMAGE_OPTIONS: DamageOptions = {
   ...DEFAULT_DAMAGE_OPTIONS,
   isMagic: true,
 }
+
+const CLERIC_MAGIC_SPELL_IDS = new Set(RECOVERY_MAGIC_SPELL_TABLE.map(entry => entry.spellId))
 
 /** レベル帯ごとの魔法追加ダメージ基本値 */
 const SPELL_BONUS_BASE_BY_LEVEL: { maxLevel: number; base: number }[] = [
@@ -282,6 +291,10 @@ export class BattleSystem {
     while (currentTurn < maxTurns) {
       currentTurn++
 
+      for (const unit of [...allyUnits, ...enemyUnits]) {
+        unit.isDefending = false
+      }
+
       // ターン10で呪文チャージリセット
       if (currentTurn === 10) {
         for (const unit of [...allyUnits, ...enemyUnits]) {
@@ -317,7 +330,7 @@ export class BattleSystem {
         const sourceGroup = unit.isAlly ? allyUnits : enemyUnits
 
         // 行動決定: 有効に使える呪文チャージがあれば呪文優先
-        const spellAction = this.decideSpellAction(unit, targetGroup, sourceGroup)
+        const spellAction = this.decideSpellAction(unit, targetGroup, sourceGroup, rng)
 
         if (spellAction) {
           // 呪文実行
@@ -347,7 +360,7 @@ export class BattleSystem {
             actionEffect: spellAction.effect ?? 'damage',
             targets: [...targetDetails.values()],
           })
-        } else {
+        } else if (shouldRunRate(unit.battleActionPolicy.attackRate, rng)) {
           // 通常攻撃
           let totalHitCount = 0
           const targetDetails: Map<string, AttackTargetDetail> = new Map()
@@ -402,9 +415,10 @@ export class BattleSystem {
             const physicalReductionFactor = 1 - target.physicalDamageReduction / 100
             const shieldBarrierReductionFactor = 1 - target.shieldBarrierDamageReduction / 100
             const protectionFactor = this.getRearGuardReductionFactor(target, allyUnits)
+            const defendingFactor = this.getDefendingDamageFactor(target)
             const damage = Math.max(
               1,
-              Math.floor((baseDamage * dmgMod * rearDamageMultiplier * rowDamageMultiplier + additionalDamage) * reductionFactor * physicalReductionFactor * shieldBarrierReductionFactor * protectionFactor),
+              Math.floor((baseDamage * dmgMod * rearDamageMultiplier * rowDamageMultiplier + additionalDamage) * reductionFactor * physicalReductionFactor * shieldBarrierReductionFactor * protectionFactor * defendingFactor),
             )
 
             this.applyDamage(target, damage)
@@ -426,6 +440,22 @@ export class BattleSystem {
             isAlly: unit.isAlly,
             isCritical,
             targets: [...targetDetails.values()],
+          })
+        } else {
+          unit.isDefending = true
+          detailedLog.push({
+            turn: currentTurn,
+            actorId: unit.combatant.id,
+            actorName: this.getLogName(unit),
+            actorRow: unit.row + 1,
+            action: i18n.t('battle.defendAction'),
+            attackCount: 0,
+            hitCount: 0,
+            actorHP: unit.currentHP,
+            actorMaxHP: unit.maxHP,
+            isAlly: unit.isAlly,
+            actionEffect: 'defend',
+            targets: [],
           })
         }
 
@@ -521,9 +551,17 @@ export class BattleSystem {
           spellId: ls.spellId,
           remaining: def.defaultCharges + extra,
           maxCharges: def.defaultCharges + extra,
+          category: this.getSpellCategory(ls.spellId),
         }
       })
       .filter((sc): sc is SpellCharge => sc !== null)
+  }
+
+  private getSpellCategory(spellId: string): SpellCategory {
+    if (CLERIC_MAGIC_SPELL_IDS.has(spellId)) {
+      return 'cleric'
+    }
+    return 'mage'
   }
 
   /**
@@ -533,11 +571,16 @@ export class BattleSystem {
     unit: BattleUnit,
     targetGroup: BattleUnit[],
     sourceGroup: BattleUnit[],
+    rng: () => number,
   ): SpellDef | null {
     for (const sc of unit.spellCharges) {
       if (sc.remaining > 0) {
         const def = SPELL_DEFS[sc.spellId]
-        if (def && this.canUseSpell(def, targetGroup, sourceGroup)) return def
+        if (!def || !this.canUseSpell(def, targetGroup, sourceGroup)) continue
+        const useRate = sc.category === 'cleric'
+          ? unit.battleActionPolicy.clericMagicRate
+          : unit.battleActionPolicy.mageMagicRate
+        if (shouldRunRate(useRate, rng)) return def
       }
     }
     return null
@@ -690,7 +733,8 @@ export class BattleSystem {
         const reductionFactor = 1 - target.damageReduction / 100
         const magicReductionFactor = 1 - target.magicDamageReduction / 100
         const magicBarrierFactor = 1 - target.magicBarrierDamageReduction / 100
-        const damage = Math.max(1, Math.floor(baseDamage * rearDamageMultiplier * spellDamageFactor * reductionFactor * magicReductionFactor * magicBarrierFactor))
+        const defendingFactor = this.getDefendingDamageFactor(target)
+        const damage = Math.max(1, Math.floor(baseDamage * rearDamageMultiplier * spellDamageFactor * reductionFactor * magicReductionFactor * magicBarrierFactor * defendingFactor))
 
         this.applyDamage(target, damage)
         totalHitCount++
@@ -720,7 +764,8 @@ export class BattleSystem {
         const reductionFactor = 1 - target.damageReduction / 100
         const magicReductionFactor = 1 - target.magicDamageReduction / 100
         const magicBarrierFactor = 1 - target.magicBarrierDamageReduction / 100
-        const damage = Math.max(1, Math.floor(baseDamage * rearDamageMultiplier * spellDamageFactor * reductionFactor * magicReductionFactor * magicBarrierFactor))
+        const defendingFactor = this.getDefendingDamageFactor(target)
+        const damage = Math.max(1, Math.floor(baseDamage * rearDamageMultiplier * spellDamageFactor * reductionFactor * magicReductionFactor * magicBarrierFactor * defendingFactor))
 
         this.applyDamage(target, damage)
         totalHitCount++
@@ -803,6 +848,10 @@ export class BattleSystem {
     return target.currentHP - before
   }
 
+  private getDefendingDamageFactor(target: BattleUnit): number {
+    return target.isDefending ? 0.5 : 1
+  }
+
   private createAllyUnit(goblin: Goblin, initialHP: number | undefined, originalIndex: number): BattleUnit {
     const combatant = this.combatantManager.fromGoblin(goblin)
     const actionOrderAgility = (goblin as Goblin & { agility?: number }).agility
@@ -842,6 +891,8 @@ export class BattleSystem {
       level: goblin.level,
       spellCharges: this.initSpellCharges(learnedSpells),
       skills: goblin.skills,
+      battleActionPolicy: normalizeBattleActionPolicy(goblin.battleActionPolicy),
+      isDefending: false,
     }
   }
 
@@ -879,6 +930,8 @@ export class BattleSystem {
       level: enemy.level,
       spellCharges: this.initSpellCharges(learnedSpells),
       skills,
+      battleActionPolicy: normalizeBattleActionPolicy(enemy.battleActionPolicy),
+      isDefending: false,
     }
   }
 
@@ -964,6 +1017,7 @@ export class BattleSystem {
           maxHP: unit.maxHP,
           shieldBarrierActive: unit.shieldBarrierActive,
           magicBarrierActive: unit.magicBarrierActive,
+          isDefending: unit.isDefending,
         })),
         enemies: enemyUnits.map(unit => ({
           id: unit.combatant.id,
@@ -972,6 +1026,7 @@ export class BattleSystem {
           maxHP: unit.maxHP,
           shieldBarrierActive: unit.shieldBarrierActive,
           magicBarrierActive: unit.magicBarrierActive,
+          isDefending: unit.isDefending,
         })),
       },
     }

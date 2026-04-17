@@ -21,12 +21,18 @@ export interface BattleLogEntry {
   actorMaxHP: number      // 攻撃者の最大HP
   isAlly: boolean
   isCritical?: boolean    // 必殺（クリティカル）発生
-  actionEffect?: 'damage' | 'heal' | 'barrier' | 'cure' | 'regen'
+  actionEffect?: 'damage' | 'heal' | 'barrier' | 'cure' | 'regen' | 'defend'
   targets: AttackTargetDetail[]  // ターゲットごとの結果
   turnState?: {
-    allies: Array<{ id: string; name: string; currentHP: number; maxHP: number; shieldBarrierActive?: boolean; magicBarrierActive?: boolean }>
-    enemies: Array<{ id: string; name: string; currentHP: number; maxHP: number; shieldBarrierActive?: boolean; magicBarrierActive?: boolean }>
+    allies: Array<{ id: string; name: string; currentHP: number; maxHP: number; shieldBarrierActive?: boolean; magicBarrierActive?: boolean; isDefending?: boolean }>
+    enemies: Array<{ id: string; name: string; currentHP: number; maxHP: number; shieldBarrierActive?: boolean; magicBarrierActive?: boolean; isDefending?: boolean }>
   }
+}
+
+export interface BattleActionPolicy {
+  attackRate: number
+  clericMagicRate: number
+  mageMagicRate: number
 }
 
 /** 戦闘結果のメタ情報（ログ表示用） */
