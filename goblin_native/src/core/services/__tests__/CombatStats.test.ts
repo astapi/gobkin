@@ -1407,8 +1407,8 @@ describe('spell charges', () => {
     const turnStartLog = result.detailedLog.find(log => log.action === 'turn_start')
     const attackLog = result.detailedLog.find(log => log.actorId === '1' && log.action === '通常攻撃')
 
-    expect(turnStartLog?.turnState?.enemies.map(enemy => enemy.name)).toEqual(['オーク兵A', 'オーク兵B'])
-    expect(attackLog?.targets[0]?.targetName).toBe('オーク兵A')
+    expect(turnStartLog?.turnState?.enemies.map(enemy => enemy.name)).toEqual(['Lv1 オーク兵A', 'Lv1 オーク兵B'])
+    expect(attackLog?.targets[0]?.targetName).toBe('Lv1 オーク兵A')
   })
 
   it('ファイヤーボール2回は1戦闘で2回使える', () => {
@@ -1825,7 +1825,7 @@ describe('BattleSystem — 隊列統合テスト', () => {
 
   it('前列の敵が後列より多くダメージを受ける（統計的検証）', () => {
     // 3列の敵に攻撃して、ダメージの分布を確認
-    const damageByName: Record<string, number> = { '前列': 0, '中列': 0, '後列': 0 }
+    const damageByName: Record<string, number> = { 'Lv1 前列': 0, 'Lv1 中列': 0, 'Lv1 後列': 0 }
 
     for (let seed = 0; seed < 100; seed++) {
       const allies = [createTestGoblin({
@@ -1851,7 +1851,7 @@ describe('BattleSystem — 隊列統合テスト', () => {
     }
 
     // 3列: 1/2, 1/4, 1/4 → 前列が最もダメージを受ける
-    expect(damageByName['前列']).toBeGreaterThan(damageByName['中列'])
-    expect(damageByName['前列']).toBeGreaterThan(damageByName['後列'])
+    expect(damageByName['Lv1 前列']).toBeGreaterThan(damageByName['Lv1 中列'])
+    expect(damageByName['Lv1 前列']).toBeGreaterThan(damageByName['Lv1 後列'])
   })
 })

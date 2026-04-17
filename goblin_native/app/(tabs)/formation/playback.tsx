@@ -126,9 +126,9 @@ export default function ExpeditionPlaybackScreen() {
   }, [])
 
   const openBattleLog = useCallback((detail: BattleLogEntry[], meta?: BattleLogMeta) => {
-    const logId = storeBattleLog(detail, meta)
+    const logId = storeBattleLog(detail, meta, partyGoblins)
     router.push(`/formation/battle-log?logId=${encodeURIComponent(logId)}` as Href)
-  }, [])
+  }, [partyGoblins])
 
   const getReturnReasonText = useCallback((reason: ExpeditionEndReason) => {
     if (reason === 'completed') return t('ui.formation.playback.completed')
