@@ -3,7 +3,7 @@
   "name": "街道",
   "areaLevel": 12,
   "floors": 2,
-  "baseDurationSec": 3600,
+  "baseDurationSec": 1620,
   "description": "ゴブリン集落から最も近い街道。森から出てくる狼や盗賊、荷を守る人間の護衛が行き交う。",
   "encounter": {
     "perFloorEvents": 3,
