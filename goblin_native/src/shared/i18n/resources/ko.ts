@@ -95,6 +95,7 @@ const ko = {
       partyDefeated: '파티가 전멸했습니다.',
       gainedXp: '경험치 {{value}} XP 획득',
       gainedGold: '{{value}} Gold 획득',
+      gainedGoldWithMultiplier: '{{value}} Gold 획득 (×{{multiplier}})',
       items: '획득 아이템',
       unlockedArea: '다음 지역 "{{name}}"이 해금되었습니다',
       storyUnlocked: '새로운 이야기가 해금되었습니다',

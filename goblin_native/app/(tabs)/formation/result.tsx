@@ -127,6 +127,7 @@ export default function ExpeditionResultScreen() {
   const isSuccess = replay?.summary.success ?? false
   const expGained = replay?.summary.xpGained ?? 0
   const goldGained = replay?.summary.goldGained ?? 0
+  const goldMultiplier = replay?.summary.goldMultiplier ?? 1
   const treasureDrops = replay?.summary.treasureDrops ?? []
 
   useEffect(() => {
@@ -250,7 +251,14 @@ export default function ExpeditionResultScreen() {
 
         <View style={styles.section}>
           <Text style={styles.summaryText}>{t('ui.result.gainedXp', { value: expGained.toLocaleString() })}</Text>
-          <Text style={styles.summaryText}>{t('ui.result.gainedGold', { value: goldGained.toLocaleString() })}</Text>
+          <Text style={styles.summaryText}>
+            {goldMultiplier > 1
+              ? t('ui.result.gainedGoldWithMultiplier', {
+                  value: goldGained.toLocaleString(),
+                  multiplier: goldMultiplier.toFixed(1),
+                })
+              : t('ui.result.gainedGold', { value: goldGained.toLocaleString() })}
+          </Text>
         </View>
 
         {treasureDrops.length > 0 && (
