@@ -1683,6 +1683,46 @@ describe('spell charges', () => {
     expect(result.detailedLog.some(log => log.actorId === '1' && log.action === '通常攻撃')).toBe(false)
   })
 
+  it('遠征戦闘でも攻撃行動率0のユニットは防御する', () => {
+    const partyState = [{
+      id: '1',
+      name: '防御役',
+      race: 'ゴブリン',
+      currentHP: 300,
+      maxHP: 300,
+      baseHP: 300,
+      atk: 80,
+      magicAtk: 0,
+      def: 10,
+      magicDef: 0,
+      agility: 100,
+      attackCount: 1,
+      accuracy: 999,
+      evasion: 0,
+      magicHeal: 0,
+      isKO: false,
+      isDead: false,
+      mods: [],
+      skills: [],
+      factors: [],
+      spells: [],
+      battleActionPolicy: { attackRate: 0, clericMagicRate: 100, mageMagicRate: 100 },
+      level: 1,
+      avatar: '/test.png',
+    }]
+    const enemy = createTestEnemy({
+      hp: 300,
+      atk: 1,
+      def: 1,
+      agility: 1,
+      attackCount: 0,
+    })
+    const combat = (new ExpeditionEngine(1) as any).resolveCombat(partyState, [[enemy]], { areaLevel: 1 }, false)
+
+    expect(combat.detailedLog.some((log: any) => log.actorId === '1' && log.action === '防御')).toBe(true)
+    expect(combat.detailedLog.some((log: any) => log.actorId === '1' && log.action === '通常攻撃')).toBe(false)
+  })
+
   it('防御後に受ける通常攻撃ダメージは半減する', () => {
     const defender = createTestGoblin({
       id: 1,

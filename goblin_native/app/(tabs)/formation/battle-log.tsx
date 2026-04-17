@@ -122,9 +122,6 @@ export default function BattleLogScreen() {
                       <Text style={styles.logTitle}>
                         {t('ui.formation.battleLog.defendTitle', { actor: entry.actorName, hp: entry.actorHP, maxHp: entry.actorMaxHP })}
                       </Text>
-                      <Text style={styles.logText}>
-                        {t('ui.formation.battleLog.defendSummary', { row: entry.actorRow, actor: entry.actorName })}
-                      </Text>
                     </View>
                   </View>
                 </View>

@@ -365,7 +365,6 @@ const ja = {
         attackTitle: '{{actor}}の{{count}}回攻撃（{{hp}}/{{maxHp}}HP）',
         shieldBarrierSummary: 'パーティメンバーが受ける攻撃ダメージとブレスダメージが半減',
         defendTitle: '{{actor}}は防御した（{{hp}}/{{maxHp}}HP）',
-        defendSummary: '[列{{row}}] {{actor}}はこのターン中、以後に受けるダメージを半減する',
         spellSummary: '[列{{row}}] {{actor}}の{{action}}！{{count}}体にヒット！',
         regenSummary: '{{actor}}の回復能力！HPが{{heal}}回復した',
         healSummary: '[列{{row}}] {{actor}}の{{action}}！{{count}}体を回復！',
