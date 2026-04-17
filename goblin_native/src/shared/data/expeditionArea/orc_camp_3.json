@@ -3,7 +3,7 @@
   "name": "オークの野営地・本陣",
   "areaLevel": 14,
   "floors": 2,
-  "baseDurationSec": 4500,
+  "baseDurationSec": 2700,
   "description": "野営地の本陣。ブルートが陣を固め、奥にはオーク遠征隊長が控える。攻略すれば拠点として利用可能。",
   "encounter": {
     "perFloorEvents": 3,

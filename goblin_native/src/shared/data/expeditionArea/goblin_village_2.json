@@ -3,7 +3,7 @@
   "name": "ゴブリン集落・内部",
   "areaLevel": 7,
   "floors": 2,
-  "baseDurationSec": 2220,
+  "baseDurationSec": 600,
   "description": "集落の内部へ侵入。ウォリアーやメイジが組織的に守りを固めている。",
   "encounter": {
     "perFloorEvents": 3,
