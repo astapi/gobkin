@@ -3,6 +3,7 @@ import type { DungeonTier } from "./DungeonTier"
 import type { CharacterSkill } from "./CharacterSkill"
 import type { ModInstance } from "./Mod"
 import type { LearnedSpell } from "./Spell"
+import type { BattleActionPolicy } from "./Battle"
 
 export type PartyStatus = "idle" | "expedition"
 
@@ -72,6 +73,7 @@ export interface PartyState {
   factors: string[]   // 因子ID配列（ModStatCalculatorでボーナス計算に使用）
   variantFactorId?: string  // 亜種の元となった因子ID（追加効果適用に使用）
   spells?: LearnedSpell[]
+  battleActionPolicy?: BattleActionPolicy
   level: number
   avatar: string
 }

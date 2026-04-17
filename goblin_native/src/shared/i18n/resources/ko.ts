@@ -365,7 +365,6 @@ const ko = {
         attackTitle: '{{actor}}의 {{count}}회 공격 ({{hp}}/{{maxHp}}HP)',
         shieldBarrierSummary: '파티원이 받는 공격 피해와 브레스 피해가 절반으로 감소',
         defendTitle: '{{actor}} 방어 ({{hp}}/{{maxHp}}HP)',
-        defendSummary: '[열{{row}}] {{actor}}은(는) 이번 턴 이후 받는 피해를 절반으로 줄인다',
         spellSummary: '[열{{row}}] {{actor}}의 {{action}}! {{count}}체에 히트!',
         regenSummary: '{{actor}}의 회복 능력! HP가 {{heal}} 회복되었다',
         healSummary: '[열{{row}}] {{actor}}의 {{action}}! {{count}}체를 회복!',

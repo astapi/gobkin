@@ -365,7 +365,6 @@ const en = {
         attackTitle: '{{actor}} attacked {{count}} times ({{hp}}/{{maxHp}} HP)',
         shieldBarrierSummary: 'Attack and breath damage taken by party members is halved',
         defendTitle: '{{actor}} defended ({{hp}}/{{maxHp}} HP)',
-        defendSummary: '[Row {{row}}] {{actor}} halves damage taken later this turn',
         spellSummary: '[Row {{row}}] {{actor}} used {{action}}! Hit {{count}} targets!',
         regenSummary: '{{actor}} regenerated {{heal}} HP!',
         healSummary: '[Row {{row}}] {{actor}} used {{action}}! Healed {{count}} targets!',

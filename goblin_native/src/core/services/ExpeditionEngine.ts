@@ -380,6 +380,7 @@ export class ExpeditionEngine {
         factors: goblin.factors || [],
         variantFactorId: goblin.variantFactorId,
         spells: goblin.spells,
+        battleActionPolicy: goblin.battleActionPolicy,
         level: goblin.level,
         avatar: goblin.avatar,
       }
@@ -558,6 +559,7 @@ export class ExpeditionEngine {
       factors: member.factors,
       variantFactorId: member.variantFactorId,
       spells: member.spells,
+      battleActionPolicy: member.battleActionPolicy,
     } as Goblin))
 
     // 各メンバーの現在HPを配列で渡す
