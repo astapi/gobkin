@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next'
 import type { BattleLogEntry, BattleLogMeta, Goblin } from '@/shared/types'
 import { getBattleLog, clearBattleLog } from '@/presentation/contexts/battleLogStore'
 import { getGoblinDisplayImage } from '@/shared/utils/goblinImages'
+import { getEnemyImage } from '@/shared/utils/enemyImages'
 
 export default function BattleLogScreen() {
   const { t } = useTranslation()
@@ -94,7 +95,9 @@ export default function BattleLogScreen() {
             const isBarrierAction = entry.actionEffect === 'barrier' || entry.action === t('entities.spell.shield_barrier')
 
             const allyGoblin = entry.isAlly ? goblinMap.get(entry.actorId) : undefined
-            const actorImage = allyGoblin ? getGoblinDisplayImage(allyGoblin) : undefined
+            const actorImage = allyGoblin
+              ? getGoblinDisplayImage(allyGoblin)
+              : getEnemyImage({ id: entry.actorId, name: entry.actorName }) ?? undefined
 
             if (entry.actionEffect === 'regen') {
               const healed = Math.abs(entry.targets?.[0]?.totalDamage ?? 0)
