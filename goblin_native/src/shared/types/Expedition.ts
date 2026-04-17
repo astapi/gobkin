@@ -100,6 +100,7 @@ export interface RewardSummary {
   maxFloorReached: number
   xpGained: number
   goldGained: number
+  goldMultiplier?: number  // PT倍率×スキル補正の合成値（Goldログ表示用）
   casualties: string[]
   treasureDrops?: TreasureDrop[]  // 宝箱から獲得した装備
   memberLevelUps?: MemberLevelUp[]  // 遠征完了時に確定したレベルアップ情報

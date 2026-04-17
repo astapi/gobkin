@@ -95,6 +95,7 @@ const ja = {
       partyDefeated: 'パーティは全滅しました。',
       gainedXp: '経験値 {{value}} XP',
       gainedGold: '{{value}} Gold を獲得',
+      gainedGoldWithMultiplier: '{{value}} Gold を獲得 (×{{multiplier}})',
       items: '獲得アイテム',
       unlockedArea: '次のエリア「{{name}}」が解放されました',
       storyUnlocked: '新しい物語が解放されました',

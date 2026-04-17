@@ -95,6 +95,7 @@ const en = {
       partyDefeated: 'The party was wiped out.',
       gainedXp: 'Gained {{value}} XP',
       gainedGold: 'Gained {{value}} Gold',
+      gainedGoldWithMultiplier: 'Gained {{value}} Gold (×{{multiplier}})',
       items: 'Items Obtained',
       unlockedArea: 'Unlocked next area: "{{name}}"',
       storyUnlocked: 'A new story has been unlocked',

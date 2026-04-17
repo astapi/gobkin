@@ -9,6 +9,7 @@ import { useDungeonStore } from '@/presentation/stores/useDungeonStore'
 import { useExpeditionFlow } from '@/presentation/hooks/useExpeditionFlow'
 import { getGoblinDisplayImage } from '@/shared/utils/goblinImages'
 import { getEffectiveStats } from '@/shared/utils/goblinStats'
+import { getGoldBonusPercentFromSkills } from '@/shared/data/characterSkills'
 import { normalizePartyRewardMultipliers, DUNGEON_TIER_META, getDungeonTierAreaLevel, getDungeonTierDisplayName } from '@/shared/types'
 import type { ExpeditionRequest, Goblin, Dungeon, Party, DungeonTier } from '@/shared/types'
 import { getDungeonDescription, getDungeonName, getReturnPolicyLabel } from '@/shared/i18n/entityLocalization'
@@ -139,12 +140,18 @@ export default function ExpeditionPreparationScreen() {
   const partyRewardText = useMemo(() => {
     if (!party) return ''
     const multipliers = normalizePartyRewardMultipliers(party.rewardMultipliers)
+    // スキル由来のGoldボーナスは PT 内で1つのみ有効（最大値）
+    const maxGoldBonusPercent = partyMembers.reduce(
+      (max, member) => Math.max(max, getGoldBonusPercentFromSkills(member.skills)),
+      0,
+    )
+    const goldMultiplier = multipliers.gold * (1 + maxGoldBonusPercent / 100)
     return t('ui.formation.preparation.rewardText', {
-      gold: formatMultiplier(multipliers.gold),
+      gold: formatMultiplier(goldMultiplier),
       rare: formatMultiplier(multipliers.rare),
       title: formatMultiplier(multipliers.title),
     })
-  }, [party, t])
+  }, [party, partyMembers, t])
 
   // 6スロット分の配列を作成
   const slots = useMemo(() => {

@@ -732,12 +732,14 @@ export class ExpeditionEngine {
     )
 
     const goldGained = Math.floor(baseGoldGained * goldMultiplier * skillGoldMultiplier)
+    const totalGoldMultiplier = goldMultiplier * skillGoldMultiplier
 
     return {
       success,
       maxFloorReached,
       xpGained,
       goldGained,
+      goldMultiplier: totalGoldMultiplier,
       casualties,
       treasureDrops: treasureDrops.length > 0 ? treasureDrops : undefined,
     }
