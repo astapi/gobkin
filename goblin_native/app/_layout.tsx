@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { View, ActivityIndicator, Text, StyleSheet, Pressable, Platform } from 'react-native'
+import { View, ActivityIndicator, Text, StyleSheet, Pressable, Platform, AppState } from 'react-native'
 import { Stack } from 'expo-router'
 import { StatusBar } from 'expo-status-bar'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
@@ -42,13 +42,34 @@ export default function RootLayout() {
       if (Platform.OS !== 'web') {
         const { status } = await Notifications.getPermissionsAsync()
         if (status !== 'granted') {
-          await Notifications.requestPermissionsAsync()
+          await Notifications.requestPermissionsAsync({
+            ios: { allowAlert: true, allowBadge: true, allowSound: true },
+          })
+        }
+        // 起動時点でユーザーは既にアプリを見ているので、アプリアイコンのバッジはクリア
+        try {
+          await Notifications.setBadgeCountAsync(0)
+        } catch {
+          // バッジクリア失敗は致命ではない
         }
       }
       setStoresReady(true)
     }
     void init()
   }, [ready])
+
+  // フォアグラウンド復帰時にアプリアイコンのバッジをクリア
+  useEffect(() => {
+    if (Platform.OS === 'web') return
+    const subscription = AppState.addEventListener('change', (state) => {
+      if (state === 'active') {
+        Notifications.setBadgeCountAsync(0).catch(() => {
+          // バッジクリア失敗は致命ではない
+        })
+      }
+    })
+    return () => subscription.remove()
+  }, [])
 
   if (error) {
     return (
