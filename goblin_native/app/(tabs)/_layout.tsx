@@ -1,11 +1,13 @@
 import { memo } from 'react'
 import { Tabs } from 'expo-router'
-import { View, Text, StyleSheet } from 'react-native'
+import { View, StyleSheet } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useTranslation } from 'react-i18next'
-import ListIcon from '../../assets/list.svg'
-import HenseiIcon from '../../assets/hensei.svg'
-import BaseIcon from '../../assets/base.svg'
+import ListIcon from '../../assets/tab/tab_list.svg'
+import HenseiIcon from '../../assets/tab/tab_hensei.svg'
+import BaseIcon from '../../assets/tab/tab_base.svg'
+import StoryIcon from '../../assets/tab/tab_story.svg'
+import SettingIcon from '../../assets/tab/tab_setting.svg'
 import { CurrentTimeBadge } from '@/presentation/components/CurrentTimeBadge'
 import { GoldBadge } from '@/presentation/components/GoldBadge'
 import { useStoryStore } from '@/presentation/stores/useStoryStore'
@@ -13,12 +15,13 @@ import { useStoryStore } from '@/presentation/stores/useStoryStore'
 interface TabIconProps {
   Icon: React.FC<{ width: number; height: number; fill?: string }>
   color: string
+  size?: number
 }
 
-const TabIcon = memo(function TabIcon({ Icon, color }: TabIconProps) {
+const TabIcon = memo(function TabIcon({ Icon, color, size = 24 }: TabIconProps) {
   return (
     <View style={styles.iconContainer}>
-      <Icon width={24} height={24} fill={color} />
+      <Icon width={size} height={size} fill={color} />
     </View>
   )
 })
@@ -62,11 +65,7 @@ export default function TabLayout() {
         options={{
           title: t('ui.tabs.story'),
           headerShown: false,
-          tabBarIcon: ({ color }) => (
-            <View style={styles.iconContainer}>
-              <Text style={{ fontSize: 20, color }}>&#128214;</Text>
-            </View>
-          ),
+          tabBarIcon: ({ color }) => <TabIcon Icon={StoryIcon} color={color} size={30} />,
           tabBarBadge: unreadCount > 0 ? unreadCount : undefined,
           tabBarBadgeStyle: { backgroundColor: '#7C3AED', fontSize: 10 },
         }}
@@ -77,7 +76,7 @@ export default function TabLayout() {
           title: t('ui.tabs.goblinList'),
           headerTitle: t('ui.tabs.goblinList'),
           headerShown: false,
-          tabBarIcon: ({ color }) => <TabIcon Icon={ListIcon} color={color} />,
+          tabBarIcon: ({ color }) => <TabIcon Icon={ListIcon} color={color} size={20} />,
         }}
       />
       <Tabs.Screen
@@ -95,7 +94,7 @@ export default function TabLayout() {
           title: t('ui.tabs.base'),
           headerTitle: t('ui.tabs.base'),
           headerShown: false,
-          tabBarIcon: ({ color }) => <TabIcon Icon={BaseIcon} color={color} />,
+          tabBarIcon: ({ color }) => <TabIcon Icon={BaseIcon} color={color} size={40} />,
         }}
       />
       <Tabs.Screen
@@ -103,11 +102,7 @@ export default function TabLayout() {
         options={{
           title: t('ui.tabs.settings'),
           headerShown: false,
-          tabBarIcon: ({ color }) => (
-            <View style={styles.iconContainer}>
-              <Text style={{ fontSize: 20, color }}>&#9881;</Text>
-            </View>
-          ),
+          tabBarIcon: ({ color }) => <TabIcon Icon={SettingIcon} color={color} />,
         }}
       />
     </Tabs>
@@ -122,8 +117,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   iconContainer: {
-    width: 24,
-    height: 24,
     alignItems: 'center',
     justifyContent: 'center',
   },
