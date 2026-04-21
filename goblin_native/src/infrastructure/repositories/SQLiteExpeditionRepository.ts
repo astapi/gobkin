@@ -30,7 +30,10 @@ export interface IExpeditionRepository {
   updateReplay(id: string, replay: ExpeditionReplay): Promise<void>
   delete(id: string): Promise<void>
   complete(id: string, replay: ExpeditionReplay): Promise<boolean>
+  pruneOldCompleted(max: number): Promise<number>
 }
+
+export const MAX_EXPEDITION_HISTORY = 50
 
 export class SQLiteExpeditionRepository implements IExpeditionRepository {
   private static instance: SQLiteExpeditionRepository | null = null
@@ -122,6 +125,28 @@ export class SQLiteExpeditionRepository implements IExpeditionRepository {
   async delete(id: string): Promise<void> {
     const db = await getDatabase()
     await db.runAsync('DELETE FROM expeditions WHERE id = ?', [id])
+  }
+
+  /**
+   * 完了・失敗した遠征履歴を最大 max 件まで残し、古いものを削除する。
+   * ongoing な遠征は対象外（進行中のものは必ず保持）。
+   * @returns 削除された行数
+   */
+  async pruneOldCompleted(max: number): Promise<number> {
+    if (max < 0) return 0
+    const db = await getDatabase()
+    const result = await db.runAsync(
+      `DELETE FROM expeditions
+       WHERE status != 'ongoing'
+         AND id NOT IN (
+           SELECT id FROM expeditions
+           WHERE status != 'ongoing'
+           ORDER BY created_at DESC
+           LIMIT ?
+         )`,
+      [max]
+    )
+    return result.changes ?? 0
   }
 
   async complete(id: string, replay: ExpeditionReplay): Promise<boolean> {

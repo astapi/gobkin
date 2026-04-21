@@ -1,9 +1,10 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { View, Text, TouchableOpacity, StyleSheet, Alert, Switch } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useTranslation } from 'react-i18next'
 import { useReset } from '@/presentation/contexts/ResetContext'
 import { useDebugSettingsStore } from '@/presentation/stores/useDebugSettingsStore'
+import { useSaveDataBackup } from '@/presentation/hooks/useSaveDataBackup'
 import { SUPPORTED_LANGUAGES, type SupportedLanguage } from '@/shared/i18n/keys'
 import { getCurrentLanguage, setAppLanguage } from '@/shared/i18n'
 
@@ -20,6 +21,12 @@ export default function SettingsScreen() {
   const { resetAndReinitialize } = useReset()
   const instantDungeonExploration = useDebugSettingsStore((state) => state.instantDungeonExploration)
   const setInstantDungeonExploration = useDebugSettingsStore((state) => state.setInstantDungeonExploration)
+  const {
+    isExporting,
+    lastError: backupError,
+    exportSaveData,
+    clearError: clearBackupError,
+  } = useSaveDataBackup()
   const currentLanguage = (() => {
     const resolvedLanguage = i18n.resolvedLanguage ?? i18n.language
     return SUPPORTED_LANGUAGES.includes(resolvedLanguage as SupportedLanguage)
@@ -43,6 +50,23 @@ export default function SettingsScreen() {
         },
       ],
     )
+  }
+
+  useEffect(() => {
+    if (!backupError) return
+    Alert.alert(t('ui.common.close'), backupError.message, [
+      { text: t('ui.common.close'), onPress: clearBackupError },
+    ])
+  }, [backupError, clearBackupError, t])
+
+  const handleExportSaveData = async () => {
+    const ok = await exportSaveData()
+    if (ok) {
+      Alert.alert(
+        t('ui.settings.backup.exportSuccessTitle'),
+        t('ui.settings.backup.exportSuccessBody'),
+      )
+    }
   }
 
   const handleChangeLanguage = async (language: SupportedLanguage) => {
@@ -83,6 +107,29 @@ export default function SettingsScreen() {
               )
             })}
           </View>
+        </View>
+
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>{t('ui.settings.backup.sectionTitle')}</Text>
+          <View style={styles.settingRow}>
+            <View style={styles.settingTextBlock}>
+              <Text style={styles.settingTitle}>{t('ui.settings.backup.exportTitle')}</Text>
+              <Text style={styles.settingDescription}>
+                {t('ui.settings.backup.exportDescription')}
+              </Text>
+            </View>
+          </View>
+          <TouchableOpacity
+            style={[styles.primaryButton, isExporting && styles.primaryButtonDisabled]}
+            onPress={() => void handleExportSaveData()}
+            disabled={isExporting}
+          >
+            <Text style={styles.primaryButtonText}>
+              {isExporting
+                ? t('ui.settings.backup.exporting')
+                : t('ui.settings.backup.exportButton')}
+            </Text>
+          </TouchableOpacity>
         </View>
 
         <View style={styles.section}>
@@ -206,6 +253,20 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingVertical: 14,
     alignItems: 'center',
+  },
+  primaryButton: {
+    backgroundColor: '#2563EB',
+    borderRadius: 10,
+    paddingVertical: 14,
+    alignItems: 'center',
+  },
+  primaryButtonDisabled: {
+    backgroundColor: '#93C5FD',
+  },
+  primaryButtonText: {
+    color: '#FFFFFF',
+    fontWeight: '700',
+    fontSize: 14,
   },
   dangerButtonText: {
     color: '#FFFFFF',
