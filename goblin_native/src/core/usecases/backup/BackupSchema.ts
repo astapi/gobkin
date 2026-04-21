@@ -4,6 +4,7 @@
 
 export const BACKUP_APP_ID = 'goblin_kingdom'
 export const BACKUP_FORMAT_VERSION = 1
+export const BACKUP_SIGNATURE_ALGORITHM = 'HMAC-SHA256'
 
 export const EXPORTABLE_TABLES = [
   'goblins',
@@ -28,7 +29,8 @@ export interface BackupMeta {
   schemaVersion: number
   exportedAt: string
   platform: 'ios' | 'android' | 'web' | 'unknown'
-  checksum: string
+  signatureAlgorithm: typeof BACKUP_SIGNATURE_ALGORITHM
+  signature: string
 }
 
 export interface BackupPreferences {

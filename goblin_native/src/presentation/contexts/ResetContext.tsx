@@ -2,19 +2,22 @@ import { createContext, useContext, type ReactNode } from 'react'
 
 interface ResetContextValue {
   resetAndReinitialize: () => Promise<void>
+  reloadAfterImport: () => Promise<void>
 }
 
 const ResetContext = createContext<ResetContextValue | null>(null)
 
 export function ResetProvider({
   resetAndReinitialize,
+  reloadAfterImport,
   children,
 }: {
   resetAndReinitialize: () => Promise<void>
+  reloadAfterImport: () => Promise<void>
   children: ReactNode
 }) {
   return (
-    <ResetContext.Provider value={{ resetAndReinitialize }}>
+    <ResetContext.Provider value={{ resetAndReinitialize, reloadAfterImport }}>
       {children}
     </ResetContext.Provider>
   )

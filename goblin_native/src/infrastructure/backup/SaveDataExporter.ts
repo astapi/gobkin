@@ -6,12 +6,15 @@ import { getDatabase } from '../database'
 import {
   BACKUP_APP_ID,
   BACKUP_FORMAT_VERSION,
+  BACKUP_SIGNATURE_ALGORITHM,
   EXPORTABLE_TABLES,
   type BackupDocument,
+  type BackupMeta,
   type BackupPreferences,
   type ExportableTableName,
   type TableRow,
 } from '../../core/usecases/backup/BackupSchema'
+import { buildSignablePayload, signBackup } from './BackupSignature'
 
 const APP_VERSION = '1.0.0'
 
@@ -29,19 +32,22 @@ export const buildBackupDocument = async (input: ExportInput): Promise<BackupDoc
   }
 
   const schemaVersion = await getSchemaVersion(tables.app_metadata)
-  const tablesJson = JSON.stringify(tables)
-  const checksum = computeChecksum(tablesJson)
+
+  const metaWithoutSignature: Omit<BackupMeta, 'signature'> = {
+    app: BACKUP_APP_ID,
+    formatVersion: BACKUP_FORMAT_VERSION,
+    appVersion: APP_VERSION,
+    schemaVersion,
+    exportedAt: new Date().toISOString(),
+    platform: resolvePlatform(),
+    signatureAlgorithm: BACKUP_SIGNATURE_ALGORITHM,
+  }
+
+  const payload = buildSignablePayload(metaWithoutSignature, tables, input.preferences)
+  const signature = signBackup(payload)
 
   return {
-    meta: {
-      app: BACKUP_APP_ID,
-      formatVersion: BACKUP_FORMAT_VERSION,
-      appVersion: APP_VERSION,
-      schemaVersion,
-      exportedAt: new Date().toISOString(),
-      platform: resolvePlatform(),
-      checksum,
-    },
+    meta: { ...metaWithoutSignature, signature },
     tables,
     preferences: input.preferences,
   }
@@ -59,20 +65,4 @@ const resolvePlatform = (): 'ios' | 'android' | 'web' | 'unknown' => {
   if (Platform.OS === 'android') return 'android'
   if (Platform.OS === 'web') return 'web'
   return 'unknown'
-}
-
-/**
- * 破損検知用の軽量チェックサム (FNV-1a 32bit)
- * 暗号学的強度は不要のため、ハッシュライブラリの追加依存を避ける目的で独自実装
- */
-export const computeChecksum = (input: string): string => {
-  const FNV_OFFSET = 0x811c9dc5
-  const FNV_PRIME = 0x01000193
-  let hash = FNV_OFFSET
-  for (let i = 0; i < input.length; i++) {
-    hash ^= input.charCodeAt(i)
-    hash = Math.imul(hash, FNV_PRIME)
-  }
-  const unsigned = hash >>> 0
-  return `fnv1a-${unsigned.toString(16).padStart(8, '0')}`
 }
