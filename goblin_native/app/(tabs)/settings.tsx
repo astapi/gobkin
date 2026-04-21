@@ -23,8 +23,10 @@ export default function SettingsScreen() {
   const setInstantDungeonExploration = useDebugSettingsStore((state) => state.setInstantDungeonExploration)
   const {
     isExporting,
+    isImporting,
     lastError: backupError,
     exportSaveData,
+    importSaveData,
     clearError: clearBackupError,
   } = useSaveDataBackup()
   const currentLanguage = (() => {
@@ -67,6 +69,33 @@ export default function SettingsScreen() {
         t('ui.settings.backup.exportSuccessBody'),
       )
     }
+  }
+
+  const handleImportSaveData = () => {
+    Alert.alert(
+      t('ui.settings.backup.importConfirmTitle'),
+      t('ui.settings.backup.importConfirmBody'),
+      [
+        { text: t('ui.common.cancel'), style: 'cancel' },
+        {
+          text: t('ui.settings.backup.importConfirmAction'),
+          style: 'destructive',
+          onPress: () => {
+            void (async () => {
+              const result = await importSaveData()
+              if (result) {
+                Alert.alert(
+                  t('ui.settings.backup.importSuccessTitle'),
+                  t('ui.settings.backup.importSuccessBody', {
+                    fileName: result.fileName,
+                  }),
+                )
+              }
+            })()
+          },
+        },
+      ],
+    )
   }
 
   const handleChangeLanguage = async (language: SupportedLanguage) => {
@@ -122,12 +151,32 @@ export default function SettingsScreen() {
           <TouchableOpacity
             style={[styles.primaryButton, isExporting && styles.primaryButtonDisabled]}
             onPress={() => void handleExportSaveData()}
-            disabled={isExporting}
+            disabled={isExporting || isImporting}
           >
             <Text style={styles.primaryButtonText}>
               {isExporting
                 ? t('ui.settings.backup.exporting')
                 : t('ui.settings.backup.exportButton')}
+            </Text>
+          </TouchableOpacity>
+
+          <View style={styles.settingRow}>
+            <View style={styles.settingTextBlock}>
+              <Text style={styles.settingTitle}>{t('ui.settings.backup.importTitle')}</Text>
+              <Text style={styles.settingDescription}>
+                {t('ui.settings.backup.importDescription')}
+              </Text>
+            </View>
+          </View>
+          <TouchableOpacity
+            style={[styles.secondaryButton, isImporting && styles.secondaryButtonDisabled]}
+            onPress={handleImportSaveData}
+            disabled={isExporting || isImporting}
+          >
+            <Text style={styles.secondaryButtonText}>
+              {isImporting
+                ? t('ui.settings.backup.importing')
+                : t('ui.settings.backup.importButton')}
             </Text>
           </TouchableOpacity>
         </View>
@@ -259,12 +308,29 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingVertical: 14,
     alignItems: 'center',
+    marginBottom: 16,
   },
   primaryButtonDisabled: {
     backgroundColor: '#93C5FD',
   },
   primaryButtonText: {
     color: '#FFFFFF',
+    fontWeight: '700',
+    fontSize: 14,
+  },
+  secondaryButton: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#2563EB',
+    paddingVertical: 14,
+    alignItems: 'center',
+  },
+  secondaryButtonDisabled: {
+    borderColor: '#93C5FD',
+  },
+  secondaryButtonText: {
+    color: '#2563EB',
     fontWeight: '700',
     fontSize: 14,
   },

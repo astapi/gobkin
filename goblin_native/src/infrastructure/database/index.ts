@@ -18,7 +18,7 @@ import { migrateV12 } from './migrations/v12'
 import { migrateV13 } from './migrations/v13'
 
 const DB_NAME = 'goblin_kingdom.db'
-const CURRENT_SCHEMA_VERSION = 13
+export const CURRENT_SCHEMA_VERSION = 13
 
 let db: SQLite.SQLiteDatabase | null = null
 let initializationPromise: Promise<SQLite.SQLiteDatabase> | null = null

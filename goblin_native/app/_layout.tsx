@@ -21,7 +21,7 @@ import { initializeI18n } from '@/shared/i18n'
 
 export default function RootLayout() {
   const { t } = useTranslation()
-  const { ready, error, resetAndReinitialize } = useDatabaseInit()
+  const { ready, error, resetAndReinitialize, reloadAfterImport } = useDatabaseInit()
   const [storesReady, setStoresReady] = useState(false)
 
   useEffect(() => {
@@ -99,7 +99,10 @@ export default function RootLayout() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
         <AuthProvider>
-          <ResetProvider resetAndReinitialize={resetAndReinitialize}>
+          <ResetProvider
+            resetAndReinitialize={resetAndReinitialize}
+            reloadAfterImport={reloadAfterImport}
+          >
               <Stack screenOptions={{ headerShown: false }}>
                 <Stack.Screen name="(tabs)" />
                 <Stack.Screen

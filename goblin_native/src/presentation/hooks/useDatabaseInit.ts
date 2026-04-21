@@ -59,5 +59,21 @@ export const useDatabaseInit = () => {
     }
   }, [])
 
-  return { ready, error, resetAndReinitialize }
+  /**
+   * セーブデータインポート後の再起動相当の再初期化
+   * - DB は import 側で既に書き換え済みなので破棄しない
+   * - ready を一度 false にして RootLayout のストア初期化を再実行させる
+   */
+  const reloadAfterImport = useCallback(async (): Promise<void> => {
+    setReady(false)
+    setError(null)
+    try {
+      await ensureDefaults()
+      setReady(true)
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Database reload failed')
+    }
+  }, [])
+
+  return { ready, error, resetAndReinitialize, reloadAfterImport }
 }
