@@ -47,6 +47,17 @@ const ko = {
       resetAction: '초기화',
       resetButton: '데이터 초기화 (SQLite)',
       resetHint: '모든 고블린, 파티, 원정 데이터를 삭제하고 초기 상태로 되돌립니다.',
+      backup: {
+        sectionTitle: '데이터 관리',
+        exportTitle: '저장 데이터 내보내기',
+        exportDescription: '고블린, 파티, 원정 등의 저장 데이터를 파일로 내보내 메일이나 클라우드로 공유할 수 있습니다. 결제 정보는 포함되지 않습니다.',
+        exportButton: '내보내기',
+        exporting: '내보내는 중...',
+        exportSuccessTitle: '내보내기 완료',
+        exportSuccessBody: '내보낸 파일을 안전한 곳에 보관해 주세요.',
+        errorSharingUnavailable: '이 기기에서는 공유 기능을 사용할 수 없습니다.',
+        errorExport: '저장 데이터 내보내기에 실패했습니다.',
+      },
     },
     goblin: {
       stats: '스탯',

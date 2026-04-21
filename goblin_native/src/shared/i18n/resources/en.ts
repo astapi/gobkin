@@ -47,6 +47,17 @@ const en = {
       resetAction: 'Reset',
       resetButton: 'Reset Data (SQLite)',
       resetHint: 'Deletes all goblins, parties, and expedition data and restores the initial state.',
+      backup: {
+        sectionTitle: 'Data Management',
+        exportTitle: 'Export Save Data',
+        exportDescription: 'Export goblins, parties, expeditions, and other save data as a file you can share via email or cloud storage. Purchase information is not included.',
+        exportButton: 'Export',
+        exporting: 'Exporting...',
+        exportSuccessTitle: 'Exported',
+        exportSuccessBody: 'Keep the exported file in a safe place.',
+        errorSharingUnavailable: 'Sharing is not available on this device.',
+        errorExport: 'Failed to export the save data.',
+      },
     },
     goblin: {
       stats: 'Stats',

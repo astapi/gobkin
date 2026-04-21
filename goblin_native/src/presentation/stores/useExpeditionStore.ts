@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import type { ExpeditionRecord, ExpeditionReplay } from '../../shared/types'
 import { SQLiteExpeditionRepository } from '../../infrastructure/repositories'
+import { MAX_EXPEDITION_HISTORY } from '../../infrastructure/repositories/SQLiteExpeditionRepository'
 
 const repository = SQLiteExpeditionRepository.getInstance()
 
@@ -31,6 +32,7 @@ export const useExpeditionStore = create<ExpeditionStoreState & ExpeditionStoreA
     isLoading: true,
 
     initialize: async () => {
+      await repository.pruneOldCompleted(MAX_EXPEDITION_HISTORY)
       const records = await repository.getAll()
       set({ expeditionRecords: records, isLoading: false })
     },
@@ -69,6 +71,7 @@ export const useExpeditionStore = create<ExpeditionStoreState & ExpeditionStoreA
 
     completeExpeditionRecord: async (id: string, replay: ExpeditionReplay) => {
       const updated = await repository.complete(id, replay)
+      await repository.pruneOldCompleted(MAX_EXPEDITION_HISTORY)
       await refresh()
       return updated
     },

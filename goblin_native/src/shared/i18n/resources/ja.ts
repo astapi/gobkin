@@ -47,6 +47,17 @@ const ja = {
       resetAction: 'リセット',
       resetButton: 'データリセット（SQLite）',
       resetHint: 'すべてのゴブリン・パーティ・遠征データを削除し、初期状態に戻します。',
+      backup: {
+        sectionTitle: 'データ管理',
+        exportTitle: 'セーブデータを書き出す',
+        exportDescription: 'ゴブリン・パーティ・遠征などのセーブデータをファイルとして書き出し、メールやクラウドに共有できます。課金情報は含まれません。',
+        exportButton: '書き出す',
+        exporting: '書き出し中...',
+        exportSuccessTitle: '書き出しました',
+        exportSuccessBody: '書き出したファイルを安全な場所に保管してください。',
+        errorSharingUnavailable: 'この端末では共有機能が利用できません。',
+        errorExport: 'セーブデータの書き出しに失敗しました。',
+      },
     },
     goblin: {
       stats: 'ステータス',
