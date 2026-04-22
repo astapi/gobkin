@@ -100,7 +100,7 @@ const BASIC_ATTACK_SKILL: Skill = {
 
 const DEFAULT_DAMAGE_OPTIONS: DamageOptions = {
   defConstant: 100,
-  randomMin: 0.95,
+  randomMin: 0.6,
   randomMax: 1.05,
 }
 
@@ -111,20 +111,25 @@ const SPELL_DAMAGE_OPTIONS: DamageOptions = {
 
 const CLERIC_MAGIC_SPELL_IDS = new Set(RECOVERY_MAGIC_SPELL_TABLE.map(entry => entry.spellId))
 
-/** レベル帯ごとの魔法追加ダメージ基本値 */
-const SPELL_BONUS_BASE_BY_LEVEL: { maxLevel: number; base: number }[] = [
-  { maxLevel: 5, base: 14.1 },
-  { maxLevel: 10, base: 21.1 },
-  { maxLevel: 15, base: 31.5 },
-  { maxLevel: 20, base: 37.9 },
-  { maxLevel: 25, base: 45.5 },
-  { maxLevel: 99, base: 50.0 },
+/** レベル帯ごとの魔法追加ダメージ制限倍率 */
+const SPELL_BONUS_LEVEL_LIMIT_BY_LEVEL: { maxLevel: number; multiplier: number }[] = [
+  { maxLevel: 5, multiplier: 0.282 },
+  { maxLevel: 10, multiplier: 0.422 },
+  { maxLevel: 15, multiplier: 0.630 },
+  { maxLevel: 20, multiplier: 0.758 },
+  { maxLevel: 25, multiplier: 0.910 },
+  { maxLevel: 99, multiplier: 1.000 },
 ]
 
-function getSpellBonusDamage(level: number, spellCoefficient: number): number {
-  const entry = SPELL_BONUS_BASE_BY_LEVEL.find(e => level <= e.maxLevel)
-  if (!entry || spellCoefficient === 0) return 0
-  return entry.base * spellCoefficient * (1 + level / 20)
+function getSpellCoefficient(level: number, spellDef: SpellDef): number {
+  return (spellDef.spellCoefficient ?? 0) + level * (spellDef.spellCoefficientPerLevel ?? 0)
+}
+
+function getSpellBonusDamage(level: number, magicAtk: number, spellDef: SpellDef): number {
+  const entry = SPELL_BONUS_LEVEL_LIMIT_BY_LEVEL.find(e => level <= e.maxLevel)
+  const spellBase = getSpellCoefficient(level, spellDef)
+  if (!entry || spellBase === 0) return 0
+  return entry.multiplier * (magicAtk * 0.1 + spellBase * (1 + level / 20) * 0.2)
 }
 
 // 差5程度なら低敏捷側にも約10%の先行余地を持たせるため、広めの乗算乱数を使う
@@ -713,7 +718,7 @@ export class BattleSystem {
       name: getSpellLabel(spellDef),
       power: spellDef.power,
     }
-    const spellBonusDamage = getSpellBonusDamage(unit.level, spellDef.spellCoefficient ?? 0)
+    const spellBonusDamage = getSpellBonusDamage(unit.level, unit.magicAtk, spellDef)
 
     if (spellDef.targeting.type === 'random_hits') {
       // マジックアロー: ランダムにhitCount回攻撃（同じ敵に複数回当たりうる）
