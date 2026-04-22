@@ -8,12 +8,12 @@ export const SPELL_DEFS: Record<string, SpellDef> = {
     power: 0.8,
     targeting: { type: 'random_hits', hitCount: 3 },
     defaultCharges: 1,
-    spellCoefficient: 1.0,
+    spellCoefficient: 50,
   },
   fireball: {
     id: 'fireball',
     name: getSpellLabel({ id: 'fireball', name: 'ファイヤーボール' }),
-    power: 1.2,
+    power: 0.5,
     targeting: {
       type: 'multi_target',
       baseTargets: 6,
@@ -21,12 +21,12 @@ export const SPELL_DEFS: Record<string, SpellDef> = {
       scaleLevelInterval: 12,
     },
     defaultCharges: 1,
-    spellCoefficient: 1.0,
+    spellCoefficient: 50,
   },
   fireball_twice: {
     id: 'fireball_twice',
     name: getSpellLabel({ id: 'fireball_twice', name: 'ファイヤーボール2回' }),
-    power: 1.2,
+    power: 0.5,
     targeting: {
       type: 'multi_target',
       baseTargets: 6,
@@ -34,12 +34,12 @@ export const SPELL_DEFS: Record<string, SpellDef> = {
       scaleLevelInterval: 12,
     },
     defaultCharges: 2,
-    spellCoefficient: 1.0,
+    spellCoefficient: 50,
   },
   blizzard: {
     id: 'blizzard',
     name: getSpellLabel({ id: 'blizzard', name: 'ブリザード' }),
-    power: 0.9,
+    power: 0.5,
     targeting: {
       type: 'multi_target',
       baseTargets: 8,
@@ -47,7 +47,8 @@ export const SPELL_DEFS: Record<string, SpellDef> = {
       scaleLevelInterval: 8,
     },
     defaultCharges: 1,
-    spellCoefficient: 1.0,
+    spellCoefficient: 50,
+    spellCoefficientPerLevel: 1,
   },
   heal: {
     id: 'heal',

@@ -787,7 +787,7 @@ describe('BattleSystem — 命中判定と複数回攻撃', () => {
     const rear = result.detailedLog.find(log => log.action === '通常攻撃' && !log.isAlly)!.targets.find(target => target.targetId === '3')
 
     expect(rear).toBeDefined()
-    expect(rear!.totalDamage).toBe(230)
+    expect(rear!.totalDamage).toBe(173)
   })
 
   it('遠征戦闘でもスライムゴブリンの後列防護が適用される', () => {
@@ -1079,7 +1079,7 @@ describe('BattleSystem — 命中判定と複数回攻撃', () => {
     const frontDamage = frontResult.detailedLog.find((log) => log.actorId === '1' && log.action === '通常攻撃')!.targets[0].totalDamage
     const rearDamage = rearResult.detailedLog.find((log) => log.actorId === '2' && log.action === '通常攻撃')!.targets[0].totalDamage
 
-    expect(rearDamage).toBe(42)
+    expect(rearDamage).toBe(30)
   })
 })
 
@@ -1417,7 +1417,7 @@ describe('spell charges', () => {
     const battleSystem = new BattleSystem()
     const ally = createTestGoblin({
       level: 20,
-      stats: { hp: 400, atk: 12, agility: 1, def: 10, attackCount: 1, accuracy: 20, evasion: 15 },
+      stats: { hp: 9999, atk: 12, agility: 1, def: 10, attackCount: 1, accuracy: 20, evasion: 15 },
     })
     const enemy = createTestEnemy({
       id: 'B_LICH_TEST',
@@ -1530,14 +1530,14 @@ describe('spell charges', () => {
       [attacker],
       [attacker.stats.hp],
       [[guardedTarget], [cleric]],
-      createSeededRng(19),
+      () => 0.5,
       1,
     )
     const plainResult = new BattleSystem().executeBattle(
       [attacker],
       [attacker.stats.hp],
       [[createTestEnemy({ ...guardedTarget })]],
-      createSeededRng(19),
+      () => 0.5,
       1,
     )
 
@@ -1613,14 +1613,14 @@ describe('spell charges', () => {
       [attacker],
       [attacker.stats.hp],
       [[guardedTarget], [cleric]],
-      createSeededRng(19),
+      () => 0.5,
       1,
     )
     const plainResult = new BattleSystem().executeBattle(
       [attacker],
       [attacker.stats.hp],
       [[createTestEnemy({ ...guardedTarget })]],
-      createSeededRng(19),
+      () => 0.5,
       1,
     )
 
@@ -1744,8 +1744,8 @@ describe('spell charges', () => {
       evasion: 0,
     })
 
-    const defendedResult = new BattleSystem().executeBattle([defender], [defender.stats.hp], [[enemy]], createSeededRng(9), 1)
-    const plainResult = new BattleSystem().executeBattle([plainTarget], [plainTarget.stats.hp], [[createTestEnemy({ ...enemy })]], createSeededRng(9), 1)
+    const defendedResult = new BattleSystem().executeBattle([defender], [defender.stats.hp], [[enemy]], () => 0.5, 1)
+    const plainResult = new BattleSystem().executeBattle([plainTarget], [plainTarget.stats.hp], [[createTestEnemy({ ...enemy })]], () => 0.5, 1)
     const defendedDamage = defendedResult.detailedLog.find(log => log.actorId === 'ATTACKER')!.targets[0].totalDamage
     const plainDamage = plainResult.detailedLog.find(log => log.actorId === 'ATTACKER')!.targets[0].totalDamage
 
@@ -1932,7 +1932,7 @@ describe('BattleSystem — ジョブ系スキル', () => {
     )
     const attackerLog = result.detailedLog.find(log => log.actorId === String(attacker.id) && log.action === '通常攻撃')
 
-    expect(attackerLog?.targets[0]?.totalDamage).toBe(58)
+    expect(attackerLog?.targets[0]?.totalDamage).toBe(49)
   })
 
   it('気合い持ちは致死ダメージを受けてもHP1で耐える', () => {

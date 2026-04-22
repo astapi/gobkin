@@ -44,7 +44,7 @@ baseDamage = max(1, floor(ATK × power × defMitigate × raceFactor × takenFact
 | raceFactor | `(1 + 種族加算合計) × 種族乗算積` | 現在は1.0 |
 | takenFactor | `(1 + 被種族加算合計) × 被種族乗算積` | 現在は1.0 |
 | critFactor | クリティカル時の倍率 | rate=0, mult=1.5（実質未使用） |
-| rand | 乱数補正 | 0.95〜1.05 |
+| rand | 乱数補正 | 0.6〜1.05 |
 
 ### 防御軽減率の仕組み
 
@@ -214,10 +214,12 @@ hitRate = 0.7 × (150 × 1.0 - 20 × 0.9)
 
 ### 魔法一覧
 
-| ID | 名前 | 威力倍率 | ターゲティング | チャージ数 |
-|----|------|---------|-------------|----------|
-| magic_arrow | マジックアロー | 0.8 | random_hits (3回) | 1 |
-| fireball | ファイヤーボール | 1.2 | multi_target (6体〜) | 1 |
+| ID | 名前 | 威力倍率 | spellCoefficient | ターゲティング | チャージ数 |
+|----|------|---------|------------------|-------------|----------|
+| magic_arrow | マジックアロー | 0.8 | 50 | random_hits (3回) | 1 |
+| fireball | ファイヤーボール | 0.5 | 50 | multi_target (6体〜) | 1 |
+| fireball_twice | ファイヤーボール2回 | 0.5 | 50 | multi_target (6体〜) | 2 |
+| blizzard | ブリザード | 0.5 | 50 + Lv | multi_target (8体〜) | 1 |
 
 ### ターゲティング方式
 
@@ -260,9 +262,19 @@ hitCount = baseTargets + floor(level / scaleLevelInterval) × scalePerLevel
 魔法ダメージ = max(1, floor(ATK × spellPower × defMitigate × ... × (1 - damageReduction/100)))
 ```
 
-- 通常攻撃との違いは `power` の値（マジックアロー: 0.8、ファイヤーボール: 1.2）
+- 通常攻撃との違いは `power` の値（マジックアロー: 0.8、ファイヤーボール: 0.5、ブリザード: 0.5）
+- 魔法追加ダメージは `Lv制限倍率 × (魔法攻撃力 × 0.1 + 呪文基本値 × (1 + Lv / 20) × 0.2)`
 - 攻撃回数によるダメージ補正（getDamageModifier）は**適用されない**
 - 被ダメージ軽減は適用される
+
+| レベル | Lv制限倍率 |
+|--------|-----------|
+| 1〜5 | 0.282 |
+| 6〜10 | 0.422 |
+| 11〜15 | 0.630 |
+| 16〜20 | 0.758 |
+| 21〜25 | 0.910 |
+| 26〜 | 1.000 |
 
 ### チャージシステム
 
@@ -340,7 +352,7 @@ hitCount = baseTargets + floor(level / scaleLevelInterval) × scalePerLevel
 | 最大ターン数 | 20 |
 | 最小ダメージ | 1 |
 | DEF定数 | 100 |
-| ダメージ乱数幅 | 0.95〜1.05 |
+| ダメージ乱数幅 | 0.6〜1.05 |
 | クリティカル率 | 0（未使用） |
 | 命中率下限 | 5% |
 | 命中率上限 | 95% |

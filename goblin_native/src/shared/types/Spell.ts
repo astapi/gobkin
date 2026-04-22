@@ -15,6 +15,7 @@ export interface SpellDef {
   defaultCharges: number     // 1戦闘あたりの使用回数（デフォルト1）
   effect?: 'damage' | 'heal' | 'barrier' | 'cure'
   spellCoefficient?: number  // 魔法追加ダメージの呪文係数（デフォルト0 = 追加なし）
+  spellCoefficientPerLevel?: number // 呪文係数に加算するレベル係数
   healBonus?: number
   fullHeal?: boolean         // trueの場合、対象のHPを全回復する
   damageReductionPercent?: number
