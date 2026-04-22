@@ -1,5 +1,5 @@
 {
-  "version": "1.5.0",
+  "version": "1.6.3",
   "templates": [
     {
       "_comment": "===== 武器:剣 (melee) ====="
@@ -22,8 +22,7 @@
       "range": "melee",
       "price": 5,
       "unlockRank": 1,
-      "dropLevelMin": 1,
-      "dropLevelMax": 2
+      "rank": 0
     },
     {
       "id": "sword_club",
@@ -51,8 +50,7 @@
       "range": "melee",
       "price": 15,
       "unlockRank": 1,
-      "dropLevelMin": 4,
-      "dropLevelMax": 10
+      "rank": 0
     },
     {
       "id": "sword_copper",
@@ -83,8 +81,7 @@
       "range": "melee",
       "price": 30,
       "unlockRank": 1,
-      "dropLevelMin": 8,
-      "dropLevelMax": 15
+      "rank": 0
     },
     {
       "id": "sword_broad",
@@ -115,8 +112,7 @@
       "range": "melee",
       "price": 60,
       "unlockRank": 1,
-      "dropLevelMin": 8,
-      "dropLevelMax": 15
+      "rank": 1
     },
     {
       "id": "sword_long",
@@ -147,8 +143,7 @@
       "range": "melee",
       "price": 100,
       "unlockRank": 1,
-      "dropLevelMin": 12,
-      "dropLevelMax": 25
+      "rank": 2
     },
     {
       "id": "sword_mithril",
@@ -179,8 +174,7 @@
       "range": "melee",
       "price": 500,
       "unlockRank": 2,
-      "dropLevelMin": 20,
-      "dropLevelMax": 40
+      "rank": 3
     },
     {
       "id": "sword_royal",
@@ -211,8 +205,7 @@
       "range": "melee",
       "price": 2500,
       "unlockRank": 2,
-      "dropLevelMin": 35,
-      "dropLevelMax": 60
+      "rank": 4
     },
     {
       "id": "sword_kaiser",
@@ -243,8 +236,7 @@
       "range": "melee",
       "price": 12500,
       "unlockRank": 3,
-      "dropLevelMin": 50,
-      "dropLevelMax": 80
+      "rank": 5
     },
     {
       "id": "sword_ancient",
@@ -275,8 +267,7 @@
       "range": "melee",
       "price": 60000,
       "unlockRank": 5,
-      "dropLevelMin": 70,
-      "dropLevelMax": 105
+      "rank": 6
     },
     {
       "id": "sword_dragon",
@@ -306,8 +297,7 @@
       ],
       "range": "melee",
       "price": 240000,
-      "dropLevelMin": 95,
-      "dropLevelMax": 135
+      "rank": 7
     },
     {
       "id": "sword_adamant",
@@ -337,8 +327,7 @@
       ],
       "range": "melee",
       "price": 720000,
-      "dropLevelMin": 120,
-      "dropLevelMax": 150
+      "rank": 8
     },
     {
       "_comment": "===== 武器:爪 (melee) ====="
@@ -361,11 +350,10 @@
       "range": "melee",
       "price": 5,
       "unlockRank": 1,
-      "dropLevelMin": 4,
-      "dropLevelMax": 10,
       "grantedSkillIds": [
         "attack_count_up_1"
-      ]
+      ],
+      "rank": 0
     },
     {
       "id": "claw_beast",
@@ -385,11 +373,10 @@
       "range": "melee",
       "price": 15,
       "unlockRank": 1,
-      "dropLevelMin": 4,
-      "dropLevelMax": 10,
       "grantedSkillIds": [
         "attack_count_up_2"
-      ]
+      ],
+      "rank": 0
     },
     {
       "id": "claw_copper",
@@ -409,11 +396,10 @@
       "range": "melee",
       "price": 30,
       "unlockRank": 1,
-      "dropLevelMin": 8,
-      "dropLevelMax": 15,
       "grantedSkillIds": [
         "attack_count_up_3"
-      ]
+      ],
+      "rank": 0
     },
     {
       "id": "claw_iron",
@@ -433,11 +419,10 @@
       "range": "melee",
       "price": 60,
       "unlockRank": 1,
-      "dropLevelMin": 8,
-      "dropLevelMax": 15,
       "grantedSkillIds": [
         "attack_count_up_4"
-      ]
+      ],
+      "rank": 1
     },
     {
       "id": "claw_steel",
@@ -457,11 +442,10 @@
       "range": "melee",
       "price": 100,
       "unlockRank": 1,
-      "dropLevelMin": 12,
-      "dropLevelMax": 25,
       "grantedSkillIds": [
         "attack_count_up_5"
-      ]
+      ],
+      "rank": 2
     },
     {
       "id": "claw_mithril",
@@ -481,11 +465,10 @@
       "range": "melee",
       "price": 500,
       "unlockRank": 2,
-      "dropLevelMin": 20,
-      "dropLevelMax": 40,
       "grantedSkillIds": [
         "attack_count_up_6"
-      ]
+      ],
+      "rank": 3
     },
     {
       "id": "claw_royal",
@@ -505,11 +488,10 @@
       "range": "melee",
       "price": 2500,
       "unlockRank": 2,
-      "dropLevelMin": 35,
-      "dropLevelMax": 60,
       "grantedSkillIds": [
         "attack_count_up_7"
-      ]
+      ],
+      "rank": 4
     },
     {
       "id": "claw_kaiser",
@@ -529,11 +511,10 @@
       "range": "melee",
       "price": 12500,
       "unlockRank": 3,
-      "dropLevelMin": 50,
-      "dropLevelMax": 80,
       "grantedSkillIds": [
         "attack_count_up_8"
-      ]
+      ],
+      "rank": 5
     },
     {
       "id": "claw_ancient",
@@ -553,11 +534,10 @@
       "range": "melee",
       "price": 60000,
       "unlockRank": 5,
-      "dropLevelMin": 70,
-      "dropLevelMax": 105,
       "grantedSkillIds": [
         "attack_count_up_9"
-      ]
+      ],
+      "rank": 6
     },
     {
       "id": "claw_dragon",
@@ -576,11 +556,10 @@
       ],
       "range": "melee",
       "price": 240000,
-      "dropLevelMin": 95,
-      "dropLevelMax": 135,
       "grantedSkillIds": [
         "attack_count_up_10"
-      ]
+      ],
+      "rank": 7
     },
     {
       "id": "claw_adamant",
@@ -599,11 +578,10 @@
       ],
       "range": "melee",
       "price": 720000,
-      "dropLevelMin": 120,
-      "dropLevelMax": 150,
       "grantedSkillIds": [
         "attack_count_up_11"
-      ]
+      ],
+      "rank": 8
     },
     {
       "_comment": "===== 武器:弓 (ranged) ====="
@@ -626,8 +604,7 @@
       "range": "ranged",
       "price": 10,
       "unlockRank": 1,
-      "dropLevelMin": 1,
-      "dropLevelMax": 2
+      "rank": 0
     },
     {
       "id": "bow_short",
@@ -651,8 +628,7 @@
       "range": "ranged",
       "price": 40,
       "unlockRank": 1,
-      "dropLevelMin": 4,
-      "dropLevelMax": 10
+      "rank": 1
     },
     {
       "id": "bow_long",
@@ -683,8 +659,7 @@
       "range": "ranged",
       "price": 1000,
       "unlockRank": 1,
-      "dropLevelMin": 12,
-      "dropLevelMax": 25
+      "rank": 2
     },
     {
       "id": "bow_mithril",
@@ -715,8 +690,7 @@
       "range": "ranged",
       "price": 5000,
       "unlockRank": 2,
-      "dropLevelMin": 20,
-      "dropLevelMax": 40
+      "rank": 3
     },
     {
       "id": "bow_royal",
@@ -747,8 +721,7 @@
       "range": "ranged",
       "price": 25000,
       "unlockRank": 2,
-      "dropLevelMin": 35,
-      "dropLevelMax": 60
+      "rank": 4
     },
     {
       "id": "bow_kaiser",
@@ -779,8 +752,7 @@
       "range": "ranged",
       "price": 125000,
       "unlockRank": 3,
-      "dropLevelMin": 50,
-      "dropLevelMax": 80
+      "rank": 5
     },
     {
       "id": "bow_ancient",
@@ -811,8 +783,7 @@
       "range": "ranged",
       "price": 500000,
       "unlockRank": 5,
-      "dropLevelMin": 70,
-      "dropLevelMax": 105
+      "rank": 6
     },
     {
       "id": "bow_dragon",
@@ -842,8 +813,7 @@
       ],
       "range": "ranged",
       "price": 1500000,
-      "dropLevelMin": 95,
-      "dropLevelMax": 135
+      "rank": 7
     },
     {
       "id": "bow_adamant",
@@ -873,8 +843,7 @@
       ],
       "range": "ranged",
       "price": 3000000,
-      "dropLevelMin": 120,
-      "dropLevelMax": 150
+      "rank": 8
     },
     {
       "_comment": "===== 防具:鎧 (armor) ====="
@@ -895,11 +864,10 @@
       ],
       "price": 5,
       "unlockRank": 1,
-      "dropLevelMin": 1,
-      "dropLevelMax": 2,
       "grantedSkillIds": [
         "physical_reduction_1"
-      ]
+      ],
+      "rank": 0
     },
     {
       "id": "armor_leather_vest",
@@ -917,11 +885,10 @@
       ],
       "price": 15,
       "unlockRank": 1,
-      "dropLevelMin": 4,
-      "dropLevelMax": 10,
       "grantedSkillIds": [
         "physical_reduction_2"
-      ]
+      ],
+      "rank": 0
     },
     {
       "id": "armor_fur_vest",
@@ -939,11 +906,10 @@
       ],
       "price": 30,
       "unlockRank": 1,
-      "dropLevelMin": 8,
-      "dropLevelMax": 15,
       "grantedSkillIds": [
         "physical_reduction_3"
-      ]
+      ],
+      "rank": 1
     },
     {
       "id": "armor_armor",
@@ -965,11 +931,10 @@
       ],
       "price": 100,
       "unlockRank": 1,
-      "dropLevelMin": 12,
-      "dropLevelMax": 25,
       "grantedSkillIds": [
         "physical_reduction_6"
-      ]
+      ],
+      "rank": 2
     },
     {
       "id": "armor_mithril",
@@ -991,11 +956,10 @@
       ],
       "price": 500,
       "unlockRank": 2,
-      "dropLevelMin": 20,
-      "dropLevelMax": 40,
       "grantedSkillIds": [
         "physical_reduction_7"
-      ]
+      ],
+      "rank": 3
     },
     {
       "id": "armor_royal",
@@ -1017,11 +981,10 @@
       ],
       "price": 2500,
       "unlockRank": 2,
-      "dropLevelMin": 35,
-      "dropLevelMax": 60,
       "grantedSkillIds": [
         "physical_reduction_8"
-      ]
+      ],
+      "rank": 4
     },
     {
       "id": "armor_kaiser",
@@ -1043,11 +1006,10 @@
       ],
       "price": 12500,
       "unlockRank": 3,
-      "dropLevelMin": 50,
-      "dropLevelMax": 80,
       "grantedSkillIds": [
         "physical_reduction_9"
-      ]
+      ],
+      "rank": 5
     },
     {
       "id": "armor_ancient",
@@ -1069,11 +1031,10 @@
       ],
       "price": 60000,
       "unlockRank": 5,
-      "dropLevelMin": 70,
-      "dropLevelMax": 105,
       "grantedSkillIds": [
         "physical_reduction_10"
-      ]
+      ],
+      "rank": 6
     },
     {
       "id": "armor_dragon",
@@ -1094,11 +1055,10 @@
         }
       ],
       "price": 240000,
-      "dropLevelMin": 95,
-      "dropLevelMax": 135,
       "grantedSkillIds": [
         "physical_reduction_11"
-      ]
+      ],
+      "rank": 7
     },
     {
       "id": "armor_adamant",
@@ -1119,14 +1079,53 @@
         }
       ],
       "price": 720000,
-      "dropLevelMin": 120,
-      "dropLevelMax": 150,
       "grantedSkillIds": [
         "physical_reduction_12"
-      ]
+      ],
+      "rank": 8
     },
     {
       "_comment": "===== 防具:盾 (shield) ====="
+    },
+    {
+      "id": "shield_pot_lid",
+      "name": "なべのフタ",
+      "category": "shield",
+      "statBonuses": [
+        {
+          "stat": "def_flat",
+          "value": 2
+        },
+        {
+          "stat": "evasion_flat",
+          "value": 2
+        }
+      ],
+      "price": 5,
+      "unlockRank": 1,
+      "rank": 0
+    },
+    {
+      "id": "shield_wooden",
+      "name": "木の盾",
+      "category": "shield",
+      "statBonuses": [
+        {
+          "stat": "def_flat",
+          "value": 5
+        },
+        {
+          "stat": "evasion_flat",
+          "value": 5
+        },
+        {
+          "stat": "magic_def_flat",
+          "value": 2
+        }
+      ],
+      "price": 30,
+      "unlockRank": 1,
+      "rank": 1
     },
     {
       "id": "shield_shield",
@@ -1152,13 +1151,12 @@
       ],
       "price": 80,
       "unlockRank": 1,
-      "dropLevelMin": 12,
-      "dropLevelMax": 25,
       "grantedSkillIds": [
         "breath_damage_4_5",
         "evasion_up_20",
         "breath_reduction_6"
-      ]
+      ],
+      "rank": 2
     },
     {
       "id": "shield_mithril",
@@ -1184,13 +1182,12 @@
       ],
       "price": 400,
       "unlockRank": 2,
-      "dropLevelMin": 20,
-      "dropLevelMax": 40,
       "grantedSkillIds": [
         "breath_damage_4_5",
         "evasion_up_30",
         "breath_reduction_7"
-      ]
+      ],
+      "rank": 3
     },
     {
       "id": "shield_royal",
@@ -1216,13 +1213,12 @@
       ],
       "price": 2000,
       "unlockRank": 2,
-      "dropLevelMin": 35,
-      "dropLevelMax": 60,
       "grantedSkillIds": [
         "breath_damage_4_5",
         "evasion_up_40",
         "breath_reduction_8"
-      ]
+      ],
+      "rank": 4
     },
     {
       "id": "shield_kaiser",
@@ -1248,13 +1244,12 @@
       ],
       "price": 10000,
       "unlockRank": 3,
-      "dropLevelMin": 50,
-      "dropLevelMax": 80,
       "grantedSkillIds": [
         "breath_damage_4_5",
         "evasion_up_50",
         "breath_reduction_9"
-      ]
+      ],
+      "rank": 5
     },
     {
       "id": "shield_ancient",
@@ -1280,13 +1275,12 @@
       ],
       "price": 50000,
       "unlockRank": 5,
-      "dropLevelMin": 70,
-      "dropLevelMax": 105,
       "grantedSkillIds": [
         "breath_damage_4_5",
         "evasion_up_60",
         "breath_reduction_10"
-      ]
+      ],
+      "rank": 6
     },
     {
       "id": "shield_dragon",
@@ -1311,13 +1305,12 @@
         }
       ],
       "price": 200000,
-      "dropLevelMin": 95,
-      "dropLevelMax": 135,
       "grantedSkillIds": [
         "breath_damage_4_5",
         "evasion_up_70",
         "breath_reduction_11"
-      ]
+      ],
+      "rank": 7
     },
     {
       "id": "shield_adamant",
@@ -1342,13 +1335,12 @@
         }
       ],
       "price": 600000,
-      "dropLevelMin": 120,
-      "dropLevelMax": 150,
       "grantedSkillIds": [
         "breath_damage_4_5",
         "evasion_up_80",
         "breath_reduction_12"
-      ]
+      ],
+      "rank": 8
     },
     {
       "_comment": "===== 防具:小手 (gauntlet) ====="
@@ -1373,12 +1365,11 @@
       ],
       "price": 5,
       "unlockRank": 1,
-      "dropLevelMin": 1,
-      "dropLevelMax": 2,
       "grantedSkillIds": [
         "attack_count_up_1",
         "critical_rate_up_10"
-      ]
+      ],
+      "rank": 0
     },
     {
       "id": "gauntlet_leather",
@@ -1400,12 +1391,11 @@
       ],
       "price": 15,
       "unlockRank": 1,
-      "dropLevelMin": 4,
-      "dropLevelMax": 10,
       "grantedSkillIds": [
         "attack_count_up_2",
         "critical_rate_up_10"
-      ]
+      ],
+      "rank": 0
     },
     {
       "id": "gauntlet_copper",
@@ -1427,12 +1417,11 @@
       ],
       "price": 30,
       "unlockRank": 1,
-      "dropLevelMin": 8,
-      "dropLevelMax": 15,
       "grantedSkillIds": [
         "attack_count_up_3",
         "critical_rate_up_10"
-      ]
+      ],
+      "rank": 1
     },
     {
       "id": "gauntlet_gauntlet",
@@ -1454,12 +1443,11 @@
       ],
       "price": 2000,
       "unlockRank": 1,
-      "dropLevelMin": 12,
-      "dropLevelMax": 25,
       "grantedSkillIds": [
         "attack_count_up_4",
         "critical_rate_up_10"
-      ]
+      ],
+      "rank": 2
     },
     {
       "id": "gauntlet_mithril",
@@ -1481,12 +1469,11 @@
       ],
       "price": 10000,
       "unlockRank": 2,
-      "dropLevelMin": 20,
-      "dropLevelMax": 40,
       "grantedSkillIds": [
         "attack_count_up_5",
         "critical_rate_up_10"
-      ]
+      ],
+      "rank": 3
     },
     {
       "id": "gauntlet_royal",
@@ -1508,12 +1495,11 @@
       ],
       "price": 50000,
       "unlockRank": 2,
-      "dropLevelMin": 35,
-      "dropLevelMax": 60,
       "grantedSkillIds": [
         "attack_count_up_6",
         "critical_rate_up_10"
-      ]
+      ],
+      "rank": 4
     },
     {
       "id": "gauntlet_kaiser",
@@ -1535,12 +1521,11 @@
       ],
       "price": 250000,
       "unlockRank": 3,
-      "dropLevelMin": 50,
-      "dropLevelMax": 80,
       "grantedSkillIds": [
         "attack_count_up_7",
         "critical_rate_up_10"
-      ]
+      ],
+      "rank": 5
     },
     {
       "id": "gauntlet_ancient",
@@ -1562,12 +1547,11 @@
       ],
       "price": 1250000,
       "unlockRank": 5,
-      "dropLevelMin": 70,
-      "dropLevelMax": 105,
       "grantedSkillIds": [
         "attack_count_up_8",
         "critical_rate_up_10"
-      ]
+      ],
+      "rank": 6
     },
     {
       "id": "gauntlet_dragon",
@@ -1588,12 +1572,11 @@
         }
       ],
       "price": 2500000,
-      "dropLevelMin": 95,
-      "dropLevelMax": 135,
       "grantedSkillIds": [
         "attack_count_up_9",
         "critical_rate_up_10"
-      ]
+      ],
+      "rank": 7
     },
     {
       "id": "gauntlet_adamant",
@@ -1614,15 +1597,46 @@
         }
       ],
       "price": 5000000,
-      "dropLevelMin": 120,
-      "dropLevelMax": 150,
       "grantedSkillIds": [
         "attack_count_up_10",
         "critical_rate_up_10"
-      ]
+      ],
+      "rank": 8
     },
     {
       "_comment": "===== 魔具:ワンド (wand) ====="
+    },
+    {
+      "id": "wand_twig",
+      "name": "枝の杖",
+      "category": "wand",
+      "statBonuses": [
+        {
+          "stat": "magic_atk_flat",
+          "value": 5
+        }
+      ],
+      "price": 5,
+      "unlockRank": 1,
+      "rank": 0
+    },
+    {
+      "id": "wand_apprentice",
+      "name": "見習いの杖",
+      "category": "wand",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -2
+        },
+        {
+          "stat": "magic_atk_flat",
+          "value": 10
+        }
+      ],
+      "price": 30,
+      "unlockRank": 1,
+      "rank": 1
     },
     {
       "id": "wand_wand",
@@ -1640,11 +1654,10 @@
       ],
       "price": 200,
       "unlockRank": 1,
-      "dropLevelMin": 12,
-      "dropLevelMax": 25,
       "grantedSkillIds": [
         "spell_damage_10"
-      ]
+      ],
+      "rank": 2
     },
     {
       "id": "wand_mithril",
@@ -1662,11 +1675,10 @@
       ],
       "price": 1000,
       "unlockRank": 2,
-      "dropLevelMin": 20,
-      "dropLevelMax": 40,
       "grantedSkillIds": [
         "spell_damage_11"
-      ]
+      ],
+      "rank": 3
     },
     {
       "id": "wand_royal",
@@ -1684,11 +1696,10 @@
       ],
       "price": 5000,
       "unlockRank": 2,
-      "dropLevelMin": 35,
-      "dropLevelMax": 60,
       "grantedSkillIds": [
         "spell_damage_12"
-      ]
+      ],
+      "rank": 4
     },
     {
       "id": "wand_kaiser",
@@ -1706,11 +1717,10 @@
       ],
       "price": 25000,
       "unlockRank": 3,
-      "dropLevelMin": 50,
-      "dropLevelMax": 80,
       "grantedSkillIds": [
         "spell_damage_13"
-      ]
+      ],
+      "rank": 5
     },
     {
       "id": "wand_ancient",
@@ -1728,11 +1738,10 @@
       ],
       "price": 125000,
       "unlockRank": 5,
-      "dropLevelMin": 70,
-      "dropLevelMax": 105,
       "grantedSkillIds": [
         "spell_damage_14"
-      ]
+      ],
+      "rank": 6
     },
     {
       "id": "wand_dragon",
@@ -1749,11 +1758,10 @@
         }
       ],
       "price": 500000,
-      "dropLevelMin": 95,
-      "dropLevelMax": 135,
       "grantedSkillIds": [
         "spell_damage_15"
-      ]
+      ],
+      "rank": 7
     },
     {
       "id": "wand_adamant",
@@ -1770,14 +1778,45 @@
         }
       ],
       "price": 1500000,
-      "dropLevelMin": 120,
-      "dropLevelMax": 150,
       "grantedSkillIds": [
         "spell_damage_16"
-      ]
+      ],
+      "rank": 8
     },
     {
       "_comment": "===== 魔具:ロッド (rod) ====="
+    },
+    {
+      "id": "rod_acolyte",
+      "name": "見習いのロッド",
+      "category": "rod",
+      "statBonuses": [
+        {
+          "stat": "magicHeal_flat",
+          "value": 5
+        }
+      ],
+      "price": 5,
+      "unlockRank": 1,
+      "rank": 0
+    },
+    {
+      "id": "rod_wooden",
+      "name": "木のロッド",
+      "category": "rod",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -1
+        },
+        {
+          "stat": "magicHeal_flat",
+          "value": 10
+        }
+      ],
+      "price": 30,
+      "unlockRank": 1,
+      "rank": 1
     },
     {
       "id": "rod_rod",
@@ -1795,11 +1834,10 @@
       ],
       "price": 200,
       "unlockRank": 1,
-      "dropLevelMin": 12,
-      "dropLevelMax": 25,
       "grantedSkillIds": [
         "magic_heal_to_hp_6"
-      ]
+      ],
+      "rank": 2
     },
     {
       "id": "rod_mithril",
@@ -1817,11 +1855,10 @@
       ],
       "price": 1000,
       "unlockRank": 2,
-      "dropLevelMin": 20,
-      "dropLevelMax": 40,
       "grantedSkillIds": [
         "magic_heal_to_hp_7"
-      ]
+      ],
+      "rank": 3
     },
     {
       "id": "rod_royal",
@@ -1839,11 +1876,10 @@
       ],
       "price": 5000,
       "unlockRank": 2,
-      "dropLevelMin": 35,
-      "dropLevelMax": 60,
       "grantedSkillIds": [
         "magic_heal_to_hp_8"
-      ]
+      ],
+      "rank": 4
     },
     {
       "id": "rod_kaiser",
@@ -1861,11 +1897,10 @@
       ],
       "price": 25000,
       "unlockRank": 3,
-      "dropLevelMin": 50,
-      "dropLevelMax": 80,
       "grantedSkillIds": [
         "magic_heal_to_hp_9"
-      ]
+      ],
+      "rank": 5
     },
     {
       "id": "rod_ancient",
@@ -1883,11 +1918,10 @@
       ],
       "price": 125000,
       "unlockRank": 5,
-      "dropLevelMin": 70,
-      "dropLevelMax": 105,
       "grantedSkillIds": [
         "magic_heal_to_hp_10"
-      ]
+      ],
+      "rank": 6
     },
     {
       "id": "rod_dragon",
@@ -1904,11 +1938,10 @@
         }
       ],
       "price": 500000,
-      "dropLevelMin": 95,
-      "dropLevelMax": 135,
       "grantedSkillIds": [
         "magic_heal_to_hp_11"
-      ]
+      ],
+      "rank": 7
     },
     {
       "id": "rod_adamant",
@@ -1925,11 +1958,10 @@
         }
       ],
       "price": 1500000,
-      "dropLevelMin": 120,
-      "dropLevelMax": 150,
       "grantedSkillIds": [
         "magic_heal_to_hp_12"
-      ]
+      ],
+      "rank": 8
     }
   ]
 }

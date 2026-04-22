@@ -16,10 +16,11 @@ import type {
 } from '../../shared/types'
 import { getAreaConfig } from '../../shared/data/expeditionArea'
 import { getEnemyDatabase } from '../../shared/data/enemy'
-import { getEquipmentTemplate, getEquipmentByDungeonLevel } from '../../shared/data/equipmentPoolLoader'
+import { getEquipmentTemplate, getEquipmentByRank } from '../../shared/data/equipmentPoolLoader'
 import { BattleSystem } from './BattleSystem'
 import { ModStatCalculator } from './ModStatCalculator'
 import { EquipmentTitleService } from './EquipmentTitleService'
+import { rollDropRank } from './DropRankRoller'
 import { normalizePartyRewardMultipliers, DUNGEON_TIER_SCALING, getDungeonTierAreaLevel } from '../../shared/types'
 import { getGoldBonusPercentFromSkills } from '../../shared/data/characterSkills'
 import { getGoblinBaseAttributesAtLevel } from '../../shared/utils/goblinHp'
@@ -154,8 +155,6 @@ export class ExpeditionEngine {
 
             // 宝箱ドロップ判定（勝利時のみ）
             const treasureDrops = this.rollTreasureDrops(
-              area.areaLevel,
-              effectiveAreaLevel,
               enemies.flat(),
               droppedTemplateIds,
               normalizedRewardMultipliers
@@ -216,8 +215,6 @@ export class ExpeditionEngine {
 
             // 宝箱ドロップ判定（勝利時のみ）
             const defaultTreasure = this.rollTreasureDrops(
-              area.areaLevel,
-              effectiveAreaLevel,
               enemies.flat(),
               droppedTemplateIds,
               normalizedRewardMultipliers
@@ -286,8 +283,6 @@ export class ExpeditionEngine {
         // ボス戦勝利時の宝箱ドロップ判定
         if (bossCombat.outcome === 'win') {
           const bossTreasure = this.rollTreasureDrops(
-            area.areaLevel,
-            effectiveAreaLevel,
             bossEnemies.flat(),
             droppedTemplateIds,
             normalizedRewardMultipliers
@@ -631,15 +626,13 @@ export class ExpeditionEngine {
 
   /**
    * 宝箱ドロップを判定（同一遠征中に同じアイテムは1個まで）
-   * 1. 敵1体ごとにダンジョンレベル対応の装備プールを15%で抽選
-   * 2. 同一戦闘内では同じアイテムの重複を許可する
-   * 3. 敵個別の equipmentDrops も同じ戦闘内では重複を許可する
+   * 1. 敵1体ごとに 15% でドロップ判定
+   * 2. ドロップ時は敵レベルからアイテムランクを抽選し、そのランクの装備プールから均等抽選
+   * 3. 敵個別の equipmentDrops は独立に判定
    * 4. 戦闘終了後、ドロップしたtemplateIdを遠征全体の重複防止に登録する
    * 5. ドロップ時に称号を抽選して付与
    */
   private rollTreasureDrops(
-    _areaLevel: number,
-    dungeonLevel: number,
     enemies: Enemy[],
     droppedIds: Set<string>,
     rewardMultipliers?: PartyRewardMultipliers
@@ -648,23 +641,27 @@ export class ExpeditionEngine {
     const drops: TreasureDrop[] = []
     const expeditionDroppedIds = new Set(droppedIds)
     const pendingDroppedIds = new Set<string>()
-    const pool = getEquipmentByDungeonLevel(dungeonLevel)
-    const candidates = pool.filter(t => !expeditionDroppedIds.has(t.id))
 
-    // ダンジョンレベルに応じた装備プールから敵1体ごとに抽選
-    for (const _enemy of enemies) {
-      if (this.rng() < DROP_CHANCE && candidates.length > 0) {
-        const index = Math.floor(this.rng() * candidates.length)
-        const selected = candidates[index]
+    // 敵1体ごとにドロップ判定し、敵レベルに応じたランクから装備を抽選
+    for (const enemy of enemies) {
+      if (this.rng() >= DROP_CHANCE) continue
 
-        // 称号を抽選
-        const title = EquipmentTitleService.rollTitle(titleMultiplier, this.rng)
-        drops.push({
-          templateId: selected.id,
-          titleId: title.titleId !== 'none' ? title.titleId : undefined,
-        })
-        pendingDroppedIds.add(selected.id)
-      }
+      const rank = rollDropRank(enemy.level, this.rng)
+      const candidates = getEquipmentByRank(rank).filter(
+        (t) => !expeditionDroppedIds.has(t.id)
+      )
+      if (candidates.length === 0) continue
+
+      const index = Math.floor(this.rng() * candidates.length)
+      const selected = candidates[index]
+
+      // 称号を抽選
+      const title = EquipmentTitleService.rollTitle(titleMultiplier, this.rng)
+      drops.push({
+        templateId: selected.id,
+        titleId: title.titleId !== 'none' ? title.titleId : undefined,
+      })
+      pendingDroppedIds.add(selected.id)
     }
 
     // 敵個別のレアアイテムドロップ（将来用）

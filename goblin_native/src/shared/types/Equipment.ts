@@ -58,8 +58,7 @@ export interface EquipmentTemplate {
   range?: WeaponRange
   price: number
   unlockRank?: number  // 店売り解放に必要な拠点ランク（未設定=店売りなし）
-  dropLevelMin?: number  // 宝箱ドロップするダンジョンレベル下限（未設定=ドロップなし）
-  dropLevelMax?: number  // 宝箱ドロップするダンジョンレベル上限
+  rank?: number  // アイテムランク（敵レベル→ランク抽選時の対象。未設定=敵ドロップ対象外）
 }
 
 /**
