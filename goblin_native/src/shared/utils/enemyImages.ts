@@ -74,24 +74,6 @@ const enemyImagesByName: Record<string, ImageSourcePropType> = {
   ゴブリンガード: enemyImagesById.GOB005,
 }
 
-function getEnemyImageByRoleName(name: string): ImageSourcePropType | null {
-  if (name.includes('ゴブリン')) {
-    if (name.includes('ガード')) return enemyImagesById.GOB005
-    if (name.includes('シーフ')) return enemyImagesById.GOB002
-    if (name.includes('ウォリアー') || name.includes('戦士')) return enemyImagesById.GOB003
-    if (name.includes('メイジ') || name.includes('魔術師')) return enemyImagesById.GOB004
-    return enemyImagesById.GOB001
-  }
-
-  if (name.includes('商人') || name.includes('旅人')) return enemyImagesById.B_TRAVELER
-  if (name.includes('クレリック') || name.includes('僧') || name.includes('神官') || name.includes('司祭')) return enemyImagesById.B_HUM_CLERIC
-  if (name.includes('メイジ') || name.includes('魔術師') || name.includes('魔導師') || name.includes('魔法使い')) return enemyImagesById.B_HUM_MAGE
-  if (name.includes('ウォリアー') || name.includes('戦士') || name.includes('剣士')) return enemyImagesById.B_HUM_WARRIOR
-  if (name.includes('ガード') || name.includes('守備兵') || name.includes('衛兵') || name.includes('近衛') || name.includes('護衛')) return enemyImagesById.B_HUM_GUARD
-
-  return null
-}
-
 export function getEnemyImage(enemy: Pick<EnemySnap, 'id' | 'name'>): ImageSourcePropType | null {
-  return enemyImagesById[enemy.id] ?? enemyImagesByName[enemy.name] ?? getEnemyImageByRoleName(enemy.name)
+  return enemyImagesById[enemy.id] ?? enemyImagesByName[enemy.name] ?? null
 }
