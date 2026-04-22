@@ -105,9 +105,9 @@
         "goblin",
         "hobgoblin"
       ],
-      "level": 10,
+      "level": 15,
       "hp": 150,
-      "atk": 25,
+      "atk": 30,
       "def": 14,
       "agility": 8,
       "attackCount": 2,

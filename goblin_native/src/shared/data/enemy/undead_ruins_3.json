@@ -6,7 +6,7 @@
       "raceTags": [
         "undead"
       ],
-      "level": 9,
+      "level": 10,
       "hp": 120,
       "atk": 20,
       "def": 6,
@@ -24,7 +24,7 @@
       "raceTags": [
         "undead"
       ],
-      "level": 9,
+      "level": 10,
       "hp": 100,
       "atk": 12,
       "def": 4,
@@ -96,8 +96,8 @@
       "raceTags": [
         "undead"
       ],
-      "level": 14,
-      "hp": 200,
+      "level": 20,
+      "hp": 250,
       "atk": 28,
       "magicAtk": 28,
       "def": 12,
