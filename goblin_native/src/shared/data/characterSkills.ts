@@ -9,6 +9,7 @@ import type {
 import i18n from '../i18n'
 import { getSkillDescription, getSkillLabel } from '../i18n/entityLocalization'
 import { getRecoveryMagicSpellIds } from './recoveryMagic'
+import { getMageMagicSpellIds } from './mageMagic'
 
 export function cloneCharacterSkill(skill: CharacterSkill): CharacterSkill {
   return {
@@ -298,6 +299,16 @@ export function getLearnedSpellsFromSkills(skills: CharacterSkill[], level?: num
     if (skill.recoveryMagicLevel !== undefined) {
       const charLevel = level ?? 99
       const spellIds = getRecoveryMagicSpellIds(skill.recoveryMagicLevel, charLevel)
+      for (const spellId of spellIds) {
+        if (!spellMap.has(spellId)) {
+          spellMap.set(spellId, { spellId })
+        }
+      }
+    }
+
+    if (skill.mageMagicLevel !== undefined) {
+      const charLevel = level ?? 99
+      const spellIds = getMageMagicSpellIds(skill.mageMagicLevel, charLevel)
       for (const spellId of spellIds) {
         if (!spellMap.has(spellId)) {
           spellMap.set(spellId, { spellId })

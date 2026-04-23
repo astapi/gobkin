@@ -50,6 +50,27 @@ export const SPELL_DEFS: Record<string, SpellDef> = {
     spellCoefficient: 50,
     spellCoefficientPerLevel: 1,
   },
+  sleep_mist: {
+    id: 'sleep_mist',
+    name: getSpellLabel({ id: 'sleep_mist', name: 'スリープミスト' }),
+    power: 0,
+    targeting: {
+      type: 'multi_target',
+      baseTargets: 12,
+      scalePerLevel: 1,
+      scaleLevelInterval: 6,
+    },
+    defaultCharges: 1,
+    effect: 'sleep',
+  },
+  attack_up: {
+    id: 'attack_up',
+    name: getSpellLabel({ id: 'attack_up', name: 'アタックアップ' }),
+    power: 0,
+    targeting: { type: 'all_allies' },
+    defaultCharges: 1,
+    effect: 'attack_up',
+  },
   heal: {
     id: 'heal',
     name: getSpellLabel({ id: 'heal', name: 'ヒール' }),

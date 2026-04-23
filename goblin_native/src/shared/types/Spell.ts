@@ -13,7 +13,7 @@ export interface SpellDef {
   power: number              // Skill.power と同じ（ATKベース）
   targeting: SpellTargeting
   defaultCharges: number     // 1戦闘あたりの使用回数（デフォルト1）
-  effect?: 'damage' | 'heal' | 'barrier' | 'cure'
+  effect?: 'damage' | 'heal' | 'barrier' | 'cure' | 'sleep' | 'attack_up'
   spellCoefficient?: number  // 魔法追加ダメージの呪文係数（デフォルト0 = 追加なし）
   spellCoefficientPerLevel?: number // 呪文係数に加算するレベル係数
   healBonus?: number

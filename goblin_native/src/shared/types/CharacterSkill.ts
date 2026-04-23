@@ -34,4 +34,5 @@ export interface CharacterSkill {
   hpRegenPercent?: number
   itemSlotsBonus?: boolean
   recoveryMagicLevel?: number
+  mageMagicLevel?: number
 }

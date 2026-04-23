@@ -59,6 +59,7 @@ interface BattleUnit {
   shieldBarrierDamageReduction: number // シールドバリアの攻撃ダメージ軽減率（0〜100）
   shieldBarrierBreathDamageReduction: number // シールドバリアのブレスダメージ軽減率（0〜100）
   magicBarrierDamageReduction: number // マジックバリアの魔法ダメージ軽減率（0〜100）
+  physicalDamageDealtMultiplier: number // 物理与ダメージ倍率
   magicAtk: number              // 魔法攻撃力
   magicHeal: number             // 魔法回復量
   criticalRate: number          // 必殺率（%）
@@ -110,6 +111,7 @@ const SPELL_DAMAGE_OPTIONS: DamageOptions = {
 }
 
 const CLERIC_MAGIC_SPELL_IDS = new Set(RECOVERY_MAGIC_SPELL_TABLE.map(entry => entry.spellId))
+const ATTACK_UP_PHYSICAL_DAMAGE_MULTIPLIER = 1.6
 
 /** レベル帯ごとの魔法追加ダメージ制限倍率 */
 const SPELL_BONUS_LEVEL_LIMIT_BY_LEVEL: { maxLevel: number; multiplier: number }[] = [
@@ -423,7 +425,7 @@ export class BattleSystem {
             const defendingFactor = this.getDefendingDamageFactor(target)
             const damage = Math.max(
               1,
-              Math.floor((baseDamage * dmgMod * rearDamageMultiplier * rowDamageMultiplier + additionalDamage) * reductionFactor * physicalReductionFactor * shieldBarrierReductionFactor * protectionFactor * defendingFactor),
+              Math.floor((baseDamage * dmgMod * rearDamageMultiplier * rowDamageMultiplier + additionalDamage) * unit.physicalDamageDealtMultiplier * reductionFactor * physicalReductionFactor * shieldBarrierReductionFactor * protectionFactor * defendingFactor),
             )
 
             this.applyDamage(target, damage)
@@ -623,6 +625,13 @@ export class BattleSystem {
       ))
     }
 
+    if (effect === 'attack_up') {
+      return sourceGroup.some(unit => (
+        unit.currentHP > 0 &&
+        unit.physicalDamageDealtMultiplier < ATTACK_UP_PHYSICAL_DAMAGE_MULTIPLIER
+      ))
+    }
+
     // cure: 現在は状態異常システム未実装のため常にfalse
     if (effect === 'cure') {
       return false
@@ -703,6 +712,19 @@ export class BattleSystem {
         if (damageReduction > 0 || breathReduction > 0) {
           target.shieldBarrierActive = true
         }
+      }
+
+      return { targetDetails, totalHitCount }
+    }
+
+    if (effect === 'attack_up') {
+      const targets = sourceGroup.filter(target => target.currentHP > 0)
+
+      for (const target of targets) {
+        target.physicalDamageDealtMultiplier = Math.max(
+          target.physicalDamageDealtMultiplier,
+          ATTACK_UP_PHYSICAL_DAMAGE_MULTIPLIER,
+        )
       }
 
       return { targetDetails, totalHitCount }
@@ -885,6 +907,7 @@ export class BattleSystem {
       shieldBarrierDamageReduction: 0,
       shieldBarrierBreathDamageReduction: 0,
       magicBarrierDamageReduction: 0,
+      physicalDamageDealtMultiplier: 1,
       magicAtk: effectiveStats.magicAtk,
       magicHeal: effectiveStats.magicHeal,
       criticalRate: effectiveStats.criticalRate,
@@ -924,6 +947,7 @@ export class BattleSystem {
       shieldBarrierDamageReduction: 0,
       shieldBarrierBreathDamageReduction: 0,
       magicBarrierDamageReduction: 0,
+      physicalDamageDealtMultiplier: 1,
       magicAtk: enemy.magicAtk ?? enemy.atk,
       magicHeal: enemy.magicHeal ?? 0,
       criticalRate: enemy.criticalRate ?? 0,

@@ -54,8 +54,8 @@ describe('goblinJobs', () => {
     const trained = applyGoblinJob(goblin, 'mage')
 
     expect(trained.job).toBe('mage')
-    expect(trained.skills.some((skill) => skill.id === 'grant_fireball')).toBe(true)
-    expect(trained.skills.some((skill) => skill.id === 'grant_magic_arrow')).toBe(true)
+    expect(trained.skills.some((skill) => skill.id === 'mage_magic_lv7')).toBe(true)
+    expect(trained.skills.some((skill) => skill.mageMagicLevel === 7)).toBe(true)
     expect(trained.skills.some((skill) => skill.id === 'talent_def_150')).toBe(false)
     expect(trained.skills.some((skill) => skill.id === 'armor_mastery_150')).toBe(false)
     expect(trained.skills.some((skill) => skill.id === 'equipment_bonus')).toBe(true)
@@ -67,9 +67,10 @@ describe('goblinJobs', () => {
     expect(trained.skills.some((skill) => skill.id === 'rear_guard')).toBe(false)
   })
 
-  it('レベル15以上ではレベル習得スキルを持つ', () => {
-    const trained = applyGoblinJob(createGoblin({ level: 15 }), 'mage')
-    expect(trained.skills.some((skill) => skill.id === 'grant_blizzard')).toBe(true)
+  it('メイジはLv7魔法使い魔法スキルを持つ', () => {
+    const trained = applyGoblinJob(createGoblin({ level: 1 }), 'mage')
+    expect(trained.skills.some((skill) => skill.id === 'mage_magic_lv7')).toBe(true)
+    expect(trained.skills.some((skill) => skill.mageMagicLevel === 7)).toBe(true)
   })
 
   it('ゴブリンガードはレベル15で後列防護を習得する', () => {
