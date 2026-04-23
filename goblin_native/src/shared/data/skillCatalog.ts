@@ -107,6 +107,13 @@ function createRecoveryMagicSkill(level: number): CharacterSkill {
   }
 }
 
+function createMageMagicSkill(level: number): CharacterSkill {
+  return {
+    id: `mage_magic_lv${level}`,
+    mageMagicLevel: level,
+  }
+}
+
 export const CHARACTER_SKILL_CATALOG = {
   additional_damage_13: {
     id: 'additional_damage_13',
@@ -308,6 +315,14 @@ export const CHARACTER_SKILL_CATALOG = {
   recovery_magic_lv5: createRecoveryMagicSkill(5),
   recovery_magic_lv6: createRecoveryMagicSkill(6),
   recovery_magic_lv7: createRecoveryMagicSkill(7),
+
+  mage_magic_lv1: createMageMagicSkill(1),
+  mage_magic_lv2: createMageMagicSkill(2),
+  mage_magic_lv3: createMageMagicSkill(3),
+  mage_magic_lv4: createMageMagicSkill(4),
+  mage_magic_lv5: createMageMagicSkill(5),
+  mage_magic_lv6: createMageMagicSkill(6),
+  mage_magic_lv7: createMageMagicSkill(7),
 
   weapon_melee_attack: {
     id: 'weapon_melee_attack',

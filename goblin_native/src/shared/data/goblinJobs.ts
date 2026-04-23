@@ -81,14 +81,7 @@ const GOBLIN_JOB_DEFINITION_SEEDS: Record<GoblinJob, GoblinJobDefinitionSeed> = 
     accentColor: '#B91C1C',
     skills: [
       {
-        skillId: 'grant_fireball',
-      },
-      {
-        skillId: 'grant_magic_arrow',
-      },
-      {
-        unlockLevel: 15,
-        skillId: 'grant_blizzard',
+        skillId: 'mage_magic_lv7',
       },
     ],
   },
@@ -130,8 +123,13 @@ function buildGoblinJobDefinition(seed: GoblinJobDefinitionSeed): GoblinJobDefin
 }
 
 const GOBLIN_JOB_SKILL_IDS = new Set<string>(
-  Object.values(GOBLIN_JOB_DEFINITION_SEEDS)
-    .flatMap((job) => job.skills.map((entry) => entry.skillId))
+  [
+    ...Object.values(GOBLIN_JOB_DEFINITION_SEEDS)
+      .flatMap((job) => job.skills.map((entry) => entry.skillId)),
+    'grant_fireball',
+    'grant_magic_arrow',
+    'grant_blizzard',
+  ]
 )
 
 export const GOBLIN_TRAINING_UNLOCK_RANK = 2

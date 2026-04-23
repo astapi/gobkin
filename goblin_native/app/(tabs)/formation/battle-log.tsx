@@ -93,6 +93,7 @@ export default function BattleLogScreen() {
             const isSpell = entry.action !== t('battle.normalAttack') && entry.action !== 'turn_start'
             const isHealingAction = entry.targets?.some(target => target.totalDamage < 0) ?? false
             const isBarrierAction = entry.actionEffect === 'barrier' || entry.action === t('entities.spell.shield_barrier')
+            const isAttackUpAction = entry.actionEffect === 'attack_up' || entry.action === t('entities.spell.attack_up')
 
             const allyGoblin = entry.isAlly ? goblinMap.get(entry.actorId) : undefined
             const actorImage = allyGoblin
@@ -139,6 +140,24 @@ export default function BattleLogScreen() {
                       </Text>
                       <Text style={styles.logText}>
                         {t('ui.formation.battleLog.shieldBarrierSummary')}
+                      </Text>
+                    </View>
+                  </View>
+                </View>
+              )
+            }
+
+            if (isAttackUpAction) {
+              return (
+                <View key={`log-${index}`} style={styles.logCard}>
+                  <View style={styles.logHeader}>
+                    {actorImage && <Image source={actorImage} style={styles.actorImage} />}
+                    <View style={styles.logHeaderText}>
+                      <Text style={styles.logTitle}>
+                        {t('ui.formation.battleLog.attackUpTitle', { actor: entry.actorName, action: entry.action })}
+                      </Text>
+                      <Text style={styles.logText}>
+                        {t('ui.formation.battleLog.attackUpSummary')}
                       </Text>
                     </View>
                   </View>

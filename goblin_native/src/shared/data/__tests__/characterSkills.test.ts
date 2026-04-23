@@ -278,6 +278,31 @@ describe('characterSkills - 物理ダメージ軽減', () => {
     ])
   })
 
+  it('魔法使い魔法スキルからレベルに応じたLearnedSpellへ変換できる', () => {
+    const skills: CharacterSkill[] = [
+      { id: 'mage_magic_lv7', mageMagicLevel: 7 },
+    ]
+
+    expect(getLearnedSpellsFromSkills(skills, 6)).toEqual([
+      { spellId: 'magic_arrow' },
+      { spellId: 'sleep_mist' },
+    ])
+    expect(getLearnedSpellsFromSkills(skills, 13)).toEqual([
+      { spellId: 'magic_arrow' },
+      { spellId: 'sleep_mist' },
+      { spellId: 'fireball' },
+      { spellId: 'blizzard' },
+      { spellId: 'attack_up' },
+    ])
+    expect(getLearnedSpellsFromSkills(skills, 15)).toEqual([
+      { spellId: 'magic_arrow' },
+      { spellId: 'sleep_mist' },
+      { spellId: 'fireball' },
+      { spellId: 'blizzard' },
+      { spellId: 'attack_up' },
+    ])
+  })
+
   it('基礎呪文がない場合、追加回数スキルだけではLearnedSpellにならない', () => {
     const skills: CharacterSkill[] = [
       { id: 'fireball_twice', spellChargeBonusForId: 'fireball', extraSpellCharges: 1 },

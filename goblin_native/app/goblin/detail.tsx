@@ -16,16 +16,48 @@ import { getExpForNextLevel, getExpProgress } from '@/core/services/ExperienceSy
 import { getModTemplate } from '@/shared/data/modPoolLoader'
 import { describeCharacterSkill, getUniqueSkillsById } from '@/shared/data/characterSkills'
 import { getGoblinJobDefinition } from '@/shared/data/goblinJobs'
+import { MAGE_MAGIC_SPELL_TABLE } from '@/shared/data/mageMagic'
+import { SPELL_DEFS } from '@/shared/data/spells'
 import { getGoblinBaseAttributesAtLevel } from '@/shared/utils/goblinHp'
 import { getEffectiveStats } from '@/shared/utils/goblinStats'
-import { getFactorName, getRaceLabel, getSkillLabel, getStatLabel } from '@/shared/i18n/entityLocalization'
+import { getFactorName, getRaceLabel, getSkillLabel, getSpellLabel, getStatLabel } from '@/shared/i18n/entityLocalization'
 import { normalizeBattleActionPolicy } from '@/shared/utils/battleActionPolicy'
+import type { CharacterSkill } from '@/shared/types'
 
 const ACTION_POLICY_FIELDS: Array<{ key: keyof BattleActionPolicy; labelKey: string }> = [
   { key: 'attackRate', labelKey: 'ui.goblin.battleActionAttackRate' },
   { key: 'clericMagicRate', labelKey: 'ui.goblin.battleActionClericMagicRate' },
   { key: 'mageMagicRate', labelKey: 'ui.goblin.battleActionMageMagicRate' },
 ]
+
+function getMageMagicEntries(skill: CharacterSkill) {
+  const mageMagicLevel = skill.mageMagicLevel
+  if (mageMagicLevel === undefined) return []
+  return MAGE_MAGIC_SPELL_TABLE.filter(entry => entry.spellTier <= mageMagicLevel)
+}
+
+function getSpellName(spellId: string): string {
+  const spellDef = SPELL_DEFS[spellId]
+  return spellDef ? getSpellLabel(spellDef) : spellId
+}
+
+function getLearnedMageMagicNames(skill: CharacterSkill, characterLevel: number): string[] {
+  return getMageMagicEntries(skill)
+    .filter(entry => characterLevel >= entry.requiredCharacterLevel)
+    .map(entry => getSpellName(entry.spellId))
+}
+
+function formatMageMagicDetail(skill: CharacterSkill, characterLevel: number): string | null {
+  const entries = getMageMagicEntries(skill)
+  if (entries.length === 0) return null
+
+  return entries
+    .map((entry) => {
+      const learned = characterLevel >= entry.requiredCharacterLevel ? '習得済' : '未習得'
+      return `Lv${entry.requiredCharacterLevel} ${getSpellName(entry.spellId)}（${learned}）`
+    })
+    .join('\n')
+}
 
 function BattleActionRateSlider({
   value,
@@ -196,6 +228,13 @@ export default function GoblinDetailScreen() {
     router.push({ pathname: '/goblin/equipment', params: { goblinId: String(goblin.id) } })
   }, [goblin])
 
+  const handlePressSkill = useCallback((skill: CharacterSkill) => {
+    if (!goblin) return
+    const title = getSkillLabel(skill)
+    const mageMagicDetail = formatMageMagicDetail(skill, goblin.level)
+    Alert.alert(title, mageMagicDetail ?? describeCharacterSkill(skill))
+  }, [goblin])
+
   const handleChangeBattleActionPolicy = useCallback((key: keyof BattleActionPolicy, value: number) => {
     setBattleActionPolicyDraft(current => normalizeBattleActionPolicy({
       ...current,
@@ -297,12 +336,26 @@ export default function GoblinDetailScreen() {
           <View style={styles.detailSection}>
             <Text style={styles.sectionTitle}>{t('ui.goblin.skills')}</Text>
             <View style={styles.abilityList}>
-              {characterSkills.map((skill, idx) => (
-                <View key={`${skill.id}-${idx}`} style={styles.abilityItem}>
-                  <Text style={styles.abilityName}>{getSkillLabel(skill)}</Text>
-                  <Text style={styles.abilityDesc}>{describeCharacterSkill(skill)}</Text>
-                </View>
-              ))}
+              {characterSkills.map((skill, idx) => {
+                const learnedMageMagicNames = getLearnedMageMagicNames(skill, goblin.level)
+
+                return (
+                  <TouchableOpacity
+                    key={`${skill.id}-${idx}`}
+                    style={styles.abilityItem}
+                    activeOpacity={0.75}
+                    onPress={() => handlePressSkill(skill)}
+                  >
+                    <Text style={styles.abilityName}>{getSkillLabel(skill)}</Text>
+                    <Text style={styles.abilityDesc}>{describeCharacterSkill(skill)}</Text>
+                    {learnedMageMagicNames.length > 0 && (
+                      <Text style={styles.abilitySpellList}>
+                        習得済魔法: {learnedMageMagicNames.join(' / ')}
+                      </Text>
+                    )}
+                  </TouchableOpacity>
+                )
+              })}
             </View>
           </View>
         )}
@@ -572,6 +625,12 @@ const styles = StyleSheet.create({
   abilityDesc: {
     fontSize: 10,
     color: '#6B7280',
+  },
+  abilitySpellList: {
+    marginTop: 4,
+    fontSize: 10,
+    lineHeight: 14,
+    color: '#374151',
   },
   policySectionHeader: {
     flexDirection: 'row',

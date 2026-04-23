@@ -1138,6 +1138,7 @@ describe('selectTarget — 隊列ターゲット選択', () => {
       shieldBarrierDamageReduction: 0,
       shieldBarrierBreathDamageReduction: 0,
       magicBarrierDamageReduction: 0,
+      physicalDamageDealtMultiplier: 1,
       magicAtk: 0,
       magicHeal: 0,
       criticalRate: 0,
@@ -1629,6 +1630,56 @@ describe('spell charges', () => {
 
     expect(shieldedDamage).toBeGreaterThanOrEqual(Math.floor(plainDamage * 0.45))
     expect(shieldedDamage).toBeLessThanOrEqual(Math.ceil(plainDamage * 0.55))
+  })
+
+  it('アタックアップ後は味方の通常攻撃ダメージが1.6倍になる', () => {
+    const buffer = createTestGoblin({
+      id: 1,
+      name: '支援メイジ',
+      level: 13,
+      spells: [{ spellId: 'attack_up' }],
+      stats: { hp: 300, atk: 1, agility: 100, def: 10, attackCount: 0, accuracy: 999, evasion: 0 },
+    })
+    const attacker = createTestGoblin({
+      id: 2,
+      name: '攻撃役',
+      stats: { hp: 300, atk: 90, agility: 50, def: 10, attackCount: 1, accuracy: 999, evasion: 0 },
+    })
+    const target = createTestEnemy({
+      id: 'TARGET',
+      name: '標的',
+      hp: 999,
+      atk: 1,
+      def: 1,
+      agility: 1,
+      attackCount: 0,
+      evasion: 0,
+    })
+
+    const buffedResult = new BattleSystem().executeBattle(
+      [buffer, attacker],
+      [buffer.stats.hp, attacker.stats.hp],
+      [[target]],
+      () => 0.5,
+      1,
+    )
+    const plainResult = new BattleSystem().executeBattle(
+      [attacker],
+      [attacker.stats.hp],
+      [[createTestEnemy({ ...target })]],
+      () => 0.5,
+      1,
+    )
+
+    const attackUpLog = buffedResult.detailedLog.find(log => log.actorId === '1' && log.action === 'アタックアップ')
+    const buffedDamage = buffedResult.detailedLog.find(log => log.actorId === '2' && log.action === '通常攻撃')!.targets[0].totalDamage
+    const plainDamage = plainResult.detailedLog.find(log => log.actorId === '2' && log.action === '通常攻撃')!.targets[0].totalDamage
+
+    expect(attackUpLog).toBeDefined()
+    expect(attackUpLog?.actionEffect).toBe('attack_up')
+    expect(attackUpLog?.targets).toEqual([])
+    expect(buffedDamage).toBeGreaterThanOrEqual(Math.floor(plainDamage * 1.55))
+    expect(buffedDamage).toBeLessThanOrEqual(Math.ceil(plainDamage * 1.65))
   })
 
   it('パーティヒールは魔法回復量+50で傷ついた味方全員を回復する', () => {
