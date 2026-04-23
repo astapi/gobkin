@@ -14,6 +14,7 @@ export interface Enemy {
   raceTags: string[]
   level: number
   hp: number
+  vitality?: number
   atk: number
   magicAtk?: number        // 魔法攻撃力
   def: number

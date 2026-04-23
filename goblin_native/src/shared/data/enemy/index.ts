@@ -1,4 +1,5 @@
 import type { EnemyDatabase } from '../../types'
+import { resolveEnemyDatabaseStats } from '../../utils/enemyStats'
 
 import dwarfMine1 from './dwarf_mine_1.json'
 import dwarfMine2 from './dwarf_mine_2.json'
@@ -85,5 +86,6 @@ const enemyDatabases: Record<string, EnemyDatabase> = {
 }
 
 export function getEnemyDatabase(areaId: string): EnemyDatabase | null {
-  return enemyDatabases[areaId] ?? null
+  const database = enemyDatabases[areaId]
+  return database ? resolveEnemyDatabaseStats(database) : null
 }
