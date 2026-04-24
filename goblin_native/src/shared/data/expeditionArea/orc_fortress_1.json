@@ -1,7 +1,7 @@
 {
   "id": "orc_fortress_1",
   "name": "オークの砦",
-  "areaLevel": 15,
+  "areaLevel": 75,
   "floors": 3,
   "baseDurationSec": 10800,
   "description": "野営地の奥に築かれた石造りの砦。解放直後の戦力ではまず歯が立たない。オークの重装兵に加え、傭兵として雇われたトロルが門を守っている。",

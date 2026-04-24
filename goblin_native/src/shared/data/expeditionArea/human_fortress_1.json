@@ -1,7 +1,7 @@
 {
   "id": "human_fortress_1",
   "name": "人間の城塞・外壁",
-  "areaLevel": 7,
+  "areaLevel": 47,
   "floors": 2,
   "baseDurationSec": 9900,
   "description": "城塞の外壁。騎士と宮廷魔術師が城壁から迎え撃つ。",

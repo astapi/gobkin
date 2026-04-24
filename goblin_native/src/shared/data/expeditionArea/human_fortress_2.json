@@ -1,7 +1,7 @@
 {
   "id": "human_fortress_2",
   "name": "人間の城塞・城内",
-  "areaLevel": 7,
+  "areaLevel": 47,
   "floors": 2,
   "baseDurationSec": 10200,
   "description": "城内へ侵入。重装騎兵と攻城兵器操手が待ち構える。",

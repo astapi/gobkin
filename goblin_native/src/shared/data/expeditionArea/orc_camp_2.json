@@ -1,7 +1,7 @@
 {
   "id": "orc_camp_2",
   "name": "オークの野営地・陣営",
-  "areaLevel": 13,
+  "areaLevel": 21,
   "floors": 2,
   "baseDurationSec": 2340,
   "description": "野営地の陣営部。前に出るブルートを壁に、兵たちが厚く控える。",

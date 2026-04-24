@@ -1,0 +1,7 @@
+node_modules
+dist
+.vite
+*.tsbuildinfo
+
+# ローカルで保存するPTプリセット等。チームで共有したければこの行を外してください
+data/

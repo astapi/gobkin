@@ -1,7 +1,7 @@
 {
   "id": "harpy_cliff_1",
   "name": "ハーピィの崖巣",
-  "areaLevel": 6,
+  "areaLevel": 46,
   "floors": 2,
   "baseDurationSec": 7200,
   "description": "沼地を抜けた断崖。空から急襲するハーピィたちが峡谷への道を塞いでいる。",

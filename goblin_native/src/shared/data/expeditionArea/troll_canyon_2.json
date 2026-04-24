@@ -1,7 +1,7 @@
 {
   "id": "troll_canyon_2",
   "name": "トロルの峡谷・深部",
-  "areaLevel": 6,
+  "areaLevel": 46,
   "floors": 2,
   "baseDurationSec": 7920,
   "description": "峡谷の深部。洞窟トロルや投石トロルが群れをなす。",

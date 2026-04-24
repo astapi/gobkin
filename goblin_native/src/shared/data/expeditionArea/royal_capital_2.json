@@ -1,7 +1,7 @@
 {
   "id": "royal_capital_2",
   "name": "王都決戦・王城内部",
-  "areaLevel": 8,
+  "areaLevel": 170,
   "floors": 2,
   "baseDurationSec": 13500,
   "description": "王城内部へ侵攻。聖騎士や王国禁衛隊が最後の防衛線を張る。",
