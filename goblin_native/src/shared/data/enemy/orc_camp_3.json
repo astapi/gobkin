@@ -10,13 +10,20 @@
       "hp": 300,
       "atk": 70,
       "def": 10,
-      "agility": 10,
       "attackCount": 1,
       "accuracy": 215,
       "evasion": 12,
       "exp": 46,
       "gold": 40,
-      "magicDef": 12
+      "magicDef": 12,
+      "baseAttributes": {
+        "power": 18,
+        "wisdom": 18,
+        "spirit": 3,
+        "vitality": 5,
+        "agility": 10,
+        "luck": 3
+      }
     },
     {
       "id": "ORC005",
@@ -28,13 +35,20 @@
       "hp": 550,
       "atk": 100,
       "def": 16,
-      "agility": 10,
       "attackCount": 1,
       "accuracy": 205,
       "evasion": 13,
       "exp": 62,
       "gold": 54,
-      "magicDef": 19
+      "magicDef": 19,
+      "baseAttributes": {
+        "power": 25,
+        "wisdom": 25,
+        "spirit": 5,
+        "vitality": 8,
+        "agility": 10,
+        "luck": 3
+      }
     },
     {
       "id": "B_ORC",
@@ -46,7 +60,6 @@
       "hp": 450,
       "atk": 120,
       "def": 18,
-      "agility": 10,
       "attackCount": 1,
       "accuracy": 225,
       "evasion": 14,
@@ -58,7 +71,15 @@
           "probability": 1
         }
       ],
-      "magicDef": 22
+      "magicDef": 22,
+      "baseAttributes": {
+        "power": 30,
+        "wisdom": 30,
+        "spirit": 6,
+        "vitality": 9,
+        "agility": 10,
+        "luck": 4
+      }
     }
   ],
   "patterns": [

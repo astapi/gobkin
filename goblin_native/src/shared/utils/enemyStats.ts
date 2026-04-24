@@ -29,19 +29,17 @@ function roundOnesPlace(value: number): number {
   return Math.round(value / 10) * 10
 }
 
-export function calculateEnemyBaseHp(enemy: Pick<Enemy, 'level' | 'raceTags' | 'vitality'>): number | null {
-  if (enemy.vitality === undefined) return null
-
+export function calculateEnemyBaseHp(enemy: Pick<Enemy, 'level' | 'raceTags' | 'baseAttributes'>): number {
   const raceTag = enemy.raceTags[0] ?? ''
   const levelScale = getGoblinHpLevelScale(enemy.level, raceTag)
   const coefficient = getEnemyHpCoefficient(enemy)
-  const baseHp = Math.floor(enemy.vitality * (1 + levelScale * 10 * coefficient) + 1)
+  const baseHp = Math.floor(enemy.baseAttributes.vitality * (1 + levelScale * 10 * coefficient) + 1)
   return roundOnesPlace(baseHp * getEnemyHpMultiplier(enemy))
 }
 
 export function resolveEnemyStats(enemy: Enemy): Enemy {
   const hp = calculateEnemyBaseHp(enemy)
-  return hp === null ? enemy : { ...enemy, hp }
+  return { ...enemy, hp }
 }
 
 export function resolveEnemyDatabaseStats(database: EnemyDatabase): EnemyDatabase {

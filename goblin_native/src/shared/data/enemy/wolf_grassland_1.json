@@ -1,82 +1,60 @@
 {
   "enemies": [
     {
-      "id": "WFG001",
-      "name": "草原ウルフ",
-      "raceTags": [
-        "beast"
-      ],
-      "level": 16,
-      "hp": 90,
-      "atk": 28,
-      "def": 12,
-      "attackCount": 2,
-      "accuracy": 420,
-      "evasion": 30,
-      "exp": 54,
-      "gold": 46,
-      "agility": 14,
-      "magicDef": 15
-    },
-    {
       "id": "WFG002",
       "name": "ダイアウルフ",
       "raceTags": [
         "beast"
       ],
-      "level": 17,
-      "hp": 110,
-      "atk": 34,
-      "def": 14,
+      "level": 30,
+      "hp": 400,
+      "atk": 120,
+      "def": 24,
       "attackCount": 2,
-      "accuracy": 440,
-      "evasion": 32,
-      "exp": 60,
-      "gold": 52,
-      "agility": 16,
-      "magicDef": 18
-    },
-    {
-      "id": "WFG003",
-      "name": "牙王の眷属",
-      "raceTags": [
-        "beast"
-      ],
-      "level": 18,
-      "hp": 140,
-      "atk": 38,
-      "def": 16,
-      "attackCount": 3,
-      "accuracy": 455,
-      "evasion": 34,
-      "exp": 68,
-      "gold": 60,
-      "agility": 18,
-      "magicDef": 20
+      "accuracy": 560,
+      "evasion": 46,
+      "exp": 120,
+      "gold": 96,
+      "magicDef": 24,
+      "baseAttributes": {
+        "power": 30,
+        "wisdom": 30,
+        "spirit": 6,
+        "vitality": 13,
+        "agility": 26,
+        "luck": 12
+      }
     },
     {
       "id": "B_WOLF_ALPHA",
-      "name": "銀牙のアルファ",
+      "name": "グランダイアウルフ",
       "raceTags": [
         "beast"
       ],
-      "level": 21,
-      "hp": 620,
-      "atk": 56,
-      "def": 22,
+      "level": 40,
+      "hp": 920,
+      "atk": 200,
+      "def": 34,
       "attackCount": 4,
-      "accuracy": 520,
-      "evasion": 40,
-      "exp": 320,
-      "gold": 280,
+      "accuracy": 640,
+      "evasion": 52,
+      "exp": 360,
+      "gold": 320,
       "factorDrops": [
         {
           "factorId": "wolf",
           "probability": 1
         }
       ],
-      "agility": 22,
-      "magicDef": 24
+      "magicDef": 30,
+      "baseAttributes": {
+        "power": 50,
+        "wisdom": 50,
+        "spirit": 8,
+        "vitality": 20,
+        "agility": 32,
+        "luck": 13
+      }
     }
   ],
   "patterns": [
@@ -87,10 +65,14 @@
       ],
       "enemies": [
         [
-          "WFG001",
-          "WFG001"
+          "WFG002",
+          "WFG002",
+          "WFG002",
+          "WFG002",
+          "WFG002"
         ],
         [
+          "WFG002",
           "WFG002"
         ]
       ]
@@ -102,12 +84,16 @@
       ],
       "enemies": [
         [
-          "WFG001",
+          "WFG002",
+          "WFG002",
+          "WFG002",
           "WFG002"
         ],
         [
-          "WFG001",
-          "WFG001"
+          "WFG002",
+          "WFG002",
+          "WFG002",
+          "WFG002"
         ]
       ]
     },
@@ -119,10 +105,15 @@
       "enemies": [
         [
           "WFG002",
+          "WFG002",
+          "WFG002",
+          "WFG002",
+          "WFG002",
           "WFG002"
         ],
         [
-          "WFG001"
+          "WFG002",
+          "WFG002"
         ]
       ]
     },
@@ -134,10 +125,15 @@
       "enemies": [
         [
           "WFG002",
-          "WFG001"
+          "WFG002",
+          "WFG002",
+          "WFG002",
+          "WFG002"
         ],
         [
-          "WFG003"
+          "WFG002",
+          "WFG002",
+          "WFG002"
         ]
       ]
     },
@@ -149,10 +145,15 @@
       "enemies": [
         [
           "WFG002",
+          "WFG002",
+          "WFG002",
           "WFG002"
         ],
         [
-          "WFG003"
+          "WFG002",
+          "WFG002",
+          "WFG002",
+          "WFG002"
         ]
       ]
     },
@@ -163,12 +164,17 @@
       ],
       "enemies": [
         [
-          "WFG003",
-          "WFG001"
+          "WFG002",
+          "WFG002",
+          "WFG002",
+          "WFG002",
+          "WFG002",
+          "WFG002"
         ],
         [
           "WFG002",
-          "WFG001"
+          "WFG002",
+          "WFG002"
         ]
       ]
     },
@@ -179,12 +185,17 @@
       ],
       "enemies": [
         [
-          "WFG003",
+          "WFG002",
+          "WFG002",
+          "WFG002",
+          "WFG002",
           "WFG002"
         ],
         [
-          "WFG003",
-          "WFG001"
+          "WFG002",
+          "WFG002",
+          "WFG002",
+          "WFG002"
         ]
       ]
     },
@@ -195,11 +206,18 @@
       ],
       "enemies": [
         [
-          "B_WOLF_ALPHA"
+          "WFG002",
+          "WFG002",
+          "WFG002",
+          "WFG002"
         ],
         [
-          "WFG003",
+          "WFG002",
+          "WFG002",
           "WFG002"
+        ],
+        [
+          "B_WOLF_ALPHA"
         ]
       ],
       "isBoss": true

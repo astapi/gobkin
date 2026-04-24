@@ -30,7 +30,7 @@ export const BASE_RANK_CONFIGS: BaseRankConfig[] = [
     ivBonus: 4,
     upgradeCost: 500,  // ランク3への引っ越し資金
     unlockCondition: {
-      dungeonId: 'orc_camp_3',  // オークの野営地・本陣
+      dungeonId: 'human_village',  // 辺境の村
       clearCount: 1,
     },
   },
@@ -41,7 +41,7 @@ export const BASE_RANK_CONFIGS: BaseRankConfig[] = [
     ivBonus: 6,
     upgradeCost: 1500,
     unlockCondition: {
-      dungeonId: 'subjugation_force_3',
+      dungeonId: 'orc_fortress_1',
       clearCount: 1,
     },
   },
@@ -52,7 +52,7 @@ export const BASE_RANK_CONFIGS: BaseRankConfig[] = [
     ivBonus: 8,
     upgradeCost: 4000,
     unlockCondition: {
-      dungeonId: 'dwarf_mine_3',
+      dungeonId: 'human_fortress_3',
       clearCount: 1,
     },
   },
@@ -63,7 +63,7 @@ export const BASE_RANK_CONFIGS: BaseRankConfig[] = [
     ivBonus: 10,
     upgradeCost: 10000,
     unlockCondition: {
-      dungeonId: 'human_fortress_3',
+      dungeonId: 'vampire_castle_1',
       clearCount: 1,
     },
   },

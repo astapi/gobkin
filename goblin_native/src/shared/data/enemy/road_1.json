@@ -10,13 +10,20 @@
       "hp": 80,
       "atk": 18,
       "def": 6,
-      "agility": 12,
       "attackCount": 2,
       "accuracy": 270,
       "evasion": 18,
       "exp": 24,
       "gold": 16,
-      "magicDef": 7
+      "magicDef": 7,
+      "baseAttributes": {
+        "power": 5,
+        "wisdom": 5,
+        "spirit": 2,
+        "vitality": 3,
+        "agility": 12,
+        "luck": 5
+      }
     },
     {
       "id": "RD002",
@@ -28,13 +35,20 @@
       "hp": 100,
       "atk": 24,
       "def": 8,
-      "agility": 9,
       "attackCount": 3,
       "accuracy": 300,
       "evasion": 18,
       "exp": 32,
       "gold": 22,
-      "magicDef": 10
+      "magicDef": 10,
+      "baseAttributes": {
+        "power": 6,
+        "wisdom": 6,
+        "spirit": 3,
+        "vitality": 4,
+        "agility": 9,
+        "luck": 5
+      }
     },
     {
       "id": "RD003",
@@ -46,13 +60,20 @@
       "hp": 130,
       "atk": 28,
       "def": 16,
-      "agility": 6,
       "attackCount": 3,
       "accuracy": 305,
       "evasion": 17,
       "exp": 38,
       "gold": 26,
-      "magicDef": 19
+      "magicDef": 19,
+      "baseAttributes": {
+        "power": 7,
+        "wisdom": 7,
+        "spirit": 5,
+        "vitality": 8,
+        "agility": 6,
+        "luck": 4
+      }
     },
     {
       "id": "B_TRAVELER",
@@ -64,13 +85,20 @@
       "hp": 220,
       "atk": 1,
       "def": 22,
-      "agility": 10,
       "attackCount": 0,
       "accuracy": 0,
       "evasion": 28,
       "exp": 120,
       "gold": 180,
-      "magicDef": 33
+      "magicDef": 33,
+      "baseAttributes": {
+        "power": 1,
+        "wisdom": 1,
+        "spirit": 8,
+        "vitality": 11,
+        "agility": 10,
+        "luck": 7
+      }
     },
     {
       "id": "B_HUM_GUARD",
@@ -82,7 +110,6 @@
       "hp": 480,
       "atk": 34,
       "def": 36,
-      "agility": 7,
       "attackCount": 1,
       "accuracy": 380,
       "evasion": 25,
@@ -95,7 +122,15 @@
           "coverLowHpAlly": true
         }
       ],
-      "magicDef": 54
+      "magicDef": 54,
+      "baseAttributes": {
+        "power": 9,
+        "wisdom": 9,
+        "spirit": 14,
+        "vitality": 18,
+        "agility": 7,
+        "luck": 6
+      }
     },
     {
       "id": "B_HUM_WARRIOR",
@@ -107,13 +142,20 @@
       "hp": 380,
       "atk": 90,
       "def": 22,
-      "agility": 11,
       "attackCount": 10,
       "accuracy": 395,
       "evasion": 28,
       "exp": 90,
       "gold": 72,
-      "magicDef": 33
+      "magicDef": 33,
+      "baseAttributes": {
+        "power": 23,
+        "wisdom": 23,
+        "spirit": 8,
+        "vitality": 11,
+        "agility": 11,
+        "luck": 7
+      }
     },
     {
       "id": "B_HUM_MAGE",
@@ -126,7 +168,6 @@
       "atk": 34,
       "magicAtk": 34,
       "def": 10,
-      "agility": 10,
       "attackCount": 1,
       "accuracy": 385,
       "evasion": 28,
@@ -144,7 +185,15 @@
           "grantsSpellId": "magic_arrow"
         }
       ],
-      "magicDef": 15
+      "magicDef": 15,
+      "baseAttributes": {
+        "power": 9,
+        "wisdom": 9,
+        "spirit": 4,
+        "vitality": 5,
+        "agility": 10,
+        "luck": 7
+      }
     },
     {
       "id": "B_HUM_CLERIC",
@@ -157,7 +206,6 @@
       "atk": 28,
       "def": 16,
       "magicHeal": 75,
-      "agility": 9,
       "attackCount": 1,
       "accuracy": 375,
       "evasion": 27,
@@ -169,7 +217,15 @@
           "recoveryMagicLevel": 7
         }
       ],
-      "magicDef": 24
+      "magicDef": 24,
+      "baseAttributes": {
+        "power": 7,
+        "wisdom": 7,
+        "spirit": 6,
+        "vitality": 8,
+        "agility": 9,
+        "luck": 7
+      }
     }
   ],
   "patterns": [

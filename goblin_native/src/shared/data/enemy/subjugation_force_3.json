@@ -8,16 +8,22 @@
       ],
       "level": 30,
       "hp": 760,
-      "vitality": 18,
       "atk": 200,
       "def": 40,
       "magicDef": 30,
-      "agility": 7,
       "attackCount": 4,
       "accuracy": 330,
       "evasion": 17,
       "exp": 36,
-      "gold": 30
+      "gold": 30,
+      "baseAttributes": {
+        "power": 50,
+        "wisdom": 50,
+        "spirit": 8,
+        "vitality": 18,
+        "agility": 7,
+        "luck": 4
+      }
     },
     {
       "id": "HUM002",
@@ -27,11 +33,9 @@
       ],
       "level": 30,
       "hp": 590,
-      "vitality": 14,
       "atk": 120,
       "def": 10,
       "magicDef": 22,
-      "agility": 8,
       "attackCount": 1,
       "accuracy": 340,
       "evasion": 16,
@@ -48,7 +52,15 @@
           "name": "マジックアロー",
           "grantsSpellId": "magic_arrow"
         }
-      ]
+      ],
+      "baseAttributes": {
+        "power": 30,
+        "wisdom": 30,
+        "spirit": 6,
+        "vitality": 14,
+        "agility": 8,
+        "luck": 4
+      }
     },
     {
       "id": "HUM003",
@@ -58,16 +70,22 @@
       ],
       "level": 30,
       "hp": 630,
-      "vitality": 15,
       "atk": 150,
       "def": 12,
       "magicDef": 18,
-      "agility": 11,
       "attackCount": 4,
       "accuracy": 350,
       "evasion": 20,
       "exp": 38,
-      "gold": 32
+      "gold": 32,
+      "baseAttributes": {
+        "power": 38,
+        "wisdom": 38,
+        "spirit": 5,
+        "vitality": 15,
+        "agility": 11,
+        "luck": 5
+      }
     },
     {
       "id": "HUM004",
@@ -77,12 +95,10 @@
       ],
       "level": 30,
       "hp": 630,
-      "vitality": 15,
       "atk": 80,
       "def": 18,
       "magicDef": 27,
       "magicHeal": 110,
-      "agility": 6,
       "attackCount": 1,
       "accuracy": 320,
       "evasion": 15,
@@ -93,7 +109,15 @@
           "id": "recovery_magic_lv7",
           "recoveryMagicLevel": 7
         }
-      ]
+      ],
+      "baseAttributes": {
+        "power": 20,
+        "wisdom": 20,
+        "spirit": 7,
+        "vitality": 15,
+        "agility": 6,
+        "luck": 4
+      }
     },
     {
       "id": "HUM005",
@@ -103,16 +127,22 @@
       ],
       "level": 30,
       "hp": 760,
-      "vitality": 18,
       "atk": 210,
       "def": 50,
       "magicDef": 42,
-      "agility": 5,
       "attackCount": 4,
       "accuracy": 310,
       "evasion": 14,
       "exp": 46,
-      "gold": 40
+      "gold": 40,
+      "baseAttributes": {
+        "power": 53,
+        "wisdom": 53,
+        "spirit": 11,
+        "vitality": 18,
+        "agility": 5,
+        "luck": 4
+      }
     },
     {
       "id": "B_CAPTAIN",
@@ -122,17 +152,23 @@
       ],
       "level": 40,
       "hp": 1370,
-      "vitality": 22,
       "atk": 350,
       "def": 100,
       "magicDef": 45,
-      "agility": 9,
       "attackCount": 7,
       "accuracy": 380,
       "evasion": 20,
       "exp": 200,
       "gold": 160,
-      "factorDrops": []
+      "factorDrops": [],
+      "baseAttributes": {
+        "power": 88,
+        "wisdom": 88,
+        "spirit": 11,
+        "vitality": 22,
+        "agility": 9,
+        "luck": 5
+      }
     }
   ],
   "patterns": [

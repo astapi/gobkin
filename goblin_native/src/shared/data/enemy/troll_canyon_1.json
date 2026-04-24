@@ -15,8 +15,15 @@
       "evasion": 24,
       "exp": 62,
       "gold": 54,
-      "agility": 4,
-      "magicDef": 17
+      "magicDef": 17,
+      "baseAttributes": {
+        "power": 8,
+        "wisdom": 8,
+        "spirit": 4,
+        "vitality": 7,
+        "agility": 4,
+        "luck": 6
+      }
     },
     {
       "id": "TRL002",
@@ -33,8 +40,15 @@
       "evasion": 24,
       "exp": 68,
       "gold": 60,
-      "agility": 3,
-      "magicDef": 22
+      "magicDef": 22,
+      "baseAttributes": {
+        "power": 9,
+        "wisdom": 9,
+        "spirit": 6,
+        "vitality": 9,
+        "agility": 3,
+        "luck": 6
+      }
     },
     {
       "id": "TRL003",
@@ -51,8 +65,15 @@
       "evasion": 25,
       "exp": 72,
       "gold": 64,
-      "agility": 5,
-      "magicDef": 14
+      "magicDef": 14,
+      "baseAttributes": {
+        "power": 11,
+        "wisdom": 11,
+        "spirit": 4,
+        "vitality": 6,
+        "agility": 5,
+        "luck": 6
+      }
     },
     {
       "id": "TRL004",
@@ -69,8 +90,15 @@
       "evasion": 24,
       "exp": 78,
       "gold": 68,
-      "agility": 3,
-      "magicDef": 26
+      "magicDef": 26,
+      "baseAttributes": {
+        "power": 10,
+        "wisdom": 10,
+        "spirit": 7,
+        "vitality": 11,
+        "agility": 3,
+        "luck": 6
+      }
     },
     {
       "id": "TRL005",
@@ -87,8 +115,15 @@
       "evasion": 26,
       "exp": 70,
       "gold": 62,
-      "agility": 7,
-      "magicDef": 17
+      "magicDef": 17,
+      "baseAttributes": {
+        "power": 9,
+        "wisdom": 9,
+        "spirit": 4,
+        "vitality": 7,
+        "agility": 7,
+        "luck": 7
+      }
     }
   ],
   "patterns": [

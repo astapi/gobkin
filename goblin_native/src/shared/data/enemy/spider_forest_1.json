@@ -3,7 +3,9 @@
     {
       "id": "SPF001",
       "name": "巣糸蜘蛛",
-      "raceTags": ["insect"],
+      "raceTags": [
+        "insect"
+      ],
       "level": 22,
       "hp": 96,
       "atk": 40,
@@ -13,13 +15,22 @@
       "evasion": 42,
       "exp": 80,
       "gold": 70,
-      "agility": 20,
-      "magicDef": 18
+      "magicDef": 18,
+      "baseAttributes": {
+        "power": 10,
+        "wisdom": 10,
+        "spirit": 5,
+        "vitality": 8,
+        "agility": 20,
+        "luck": 11
+      }
     },
     {
       "id": "SPF002",
       "name": "毒牙蜘蛛",
-      "raceTags": ["insect"],
+      "raceTags": [
+        "insect"
+      ],
       "level": 23,
       "hp": 108,
       "atk": 46,
@@ -29,13 +40,22 @@
       "evasion": 44,
       "exp": 86,
       "gold": 76,
-      "agility": 22,
-      "magicDef": 20
+      "magicDef": 20,
+      "baseAttributes": {
+        "power": 12,
+        "wisdom": 12,
+        "spirit": 5,
+        "vitality": 9,
+        "agility": 22,
+        "luck": 11
+      }
     },
     {
       "id": "SPF003",
       "name": "森影アラクネ",
-      "raceTags": ["spider"],
+      "raceTags": [
+        "spider"
+      ],
       "level": 24,
       "hp": 136,
       "atk": 50,
@@ -46,13 +66,22 @@
       "evasion": 48,
       "exp": 96,
       "gold": 84,
-      "agility": 24,
-      "magicDef": 24
+      "magicDef": 24,
+      "baseAttributes": {
+        "power": 13,
+        "wisdom": 8,
+        "spirit": 6,
+        "vitality": 10,
+        "agility": 24,
+        "luck": 12
+      }
     },
     {
       "id": "B_ARACHNE",
       "name": "巣森のアラクネ",
-      "raceTags": ["spider"],
+      "raceTags": [
+        "spider"
+      ],
       "level": 28,
       "hp": 840,
       "atk": 64,
@@ -63,15 +92,95 @@
       "evasion": 56,
       "exp": 440,
       "gold": 380,
-      "agility": 28,
-      "magicDef": 34
+      "magicDef": 34,
+      "baseAttributes": {
+        "power": 16,
+        "wisdom": 10,
+        "spirit": 9,
+        "vitality": 15,
+        "agility": 28,
+        "luck": 14
+      }
     }
   ],
   "patterns": [
-    { "id": "SF1_001", "floors": [1], "enemies": [["SPF001", "SPF001"], ["SPF002"]] },
-    { "id": "SF1_002", "floors": [1], "enemies": [["SPF002", "SPF001"], ["SPF001", "SPF001"]] },
-    { "id": "SF1_003", "floors": [2], "enemies": [["SPF002", "SPF002"], ["SPF003"]] },
-    { "id": "SF1_004", "floors": [2], "enemies": [["SPF003", "SPF001"], ["SPF002", "SPF001"]] },
-    { "id": "BOSS", "floors": [3], "enemies": [["B_ARACHNE"], ["SPF003", "SPF002"]], "isBoss": true }
+    {
+      "id": "SF1_001",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "SPF001",
+          "SPF001"
+        ],
+        [
+          "SPF002"
+        ]
+      ]
+    },
+    {
+      "id": "SF1_002",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "SPF002",
+          "SPF001"
+        ],
+        [
+          "SPF001",
+          "SPF001"
+        ]
+      ]
+    },
+    {
+      "id": "SF1_003",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "SPF002",
+          "SPF002"
+        ],
+        [
+          "SPF003"
+        ]
+      ]
+    },
+    {
+      "id": "SF1_004",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "SPF003",
+          "SPF001"
+        ],
+        [
+          "SPF002",
+          "SPF001"
+        ]
+      ]
+    },
+    {
+      "id": "BOSS",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "B_ARACHNE"
+        ],
+        [
+          "SPF003",
+          "SPF002"
+        ]
+      ],
+      "isBoss": true
+    }
   ]
 }

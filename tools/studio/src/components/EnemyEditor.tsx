@@ -80,7 +80,7 @@ export function EnemyEditor({
                 <td className="num">{e.hp}</td>
                 <td className="num">{e.atk}</td>
                 <td className="num">{e.def}</td>
-                <td className="num">{e.agility}</td>
+                <td className="num">{e.baseAttributes.agility}</td>
                 <td className="num">{e.exp}</td>
                 <td className="num">{e.gold}</td>
               </tr>
@@ -107,6 +107,14 @@ function EnemyForm({
 }) {
   const set = <K extends keyof Enemy>(key: K, value: Enemy[K]) =>
     onChange((prev) => ({ ...prev, [key]: value }))
+  const setBaseAttribute = (key: keyof Enemy['baseAttributes'], value: number) =>
+    onChange((prev) => ({
+      ...prev,
+      baseAttributes: {
+        ...prev.baseAttributes,
+        [key]: value,
+      },
+    }))
 
   return (
     <aside className="card enemy-detail">
@@ -146,12 +154,6 @@ function EnemyForm({
         <NumberField label="atk" value={enemy.atk} min={0} onChange={(v) => set('atk', v)} />
         <NumberField label="def" value={enemy.def} min={0} onChange={(v) => set('def', v)} />
         <NumberField
-          label="agility"
-          value={enemy.agility}
-          min={0}
-          onChange={(v) => set('agility', v)}
-        />
-        <NumberField
           label="attackCount"
           value={enemy.attackCount}
           min={1}
@@ -173,14 +175,18 @@ function EnemyForm({
         <NumberField label="gold" value={enemy.gold} min={0} onChange={(v) => set('gold', v)} />
       </FieldGroup>
 
+      <h4>基本能力値</h4>
+      <FieldGroup columns={2}>
+        <NumberField label="power" value={enemy.baseAttributes.power} min={0} onChange={(v) => setBaseAttribute('power', v)} />
+        <NumberField label="wisdom" value={enemy.baseAttributes.wisdom} min={0} onChange={(v) => setBaseAttribute('wisdom', v)} />
+        <NumberField label="spirit" value={enemy.baseAttributes.spirit} min={0} onChange={(v) => setBaseAttribute('spirit', v)} />
+        <NumberField label="vitality" value={enemy.baseAttributes.vitality} min={0} onChange={(v) => setBaseAttribute('vitality', v)} />
+        <NumberField label="agility" value={enemy.baseAttributes.agility} min={0} onChange={(v) => setBaseAttribute('agility', v)} />
+        <NumberField label="luck" value={enemy.baseAttributes.luck} min={0} onChange={(v) => setBaseAttribute('luck', v)} />
+      </FieldGroup>
+
       <h4>オプション</h4>
       <FieldGroup columns={2}>
-        <OptionalNumberField
-          label="vitality"
-          value={enemy.vitality}
-          min={0}
-          onChange={(v) => set('vitality', v)}
-        />
         <OptionalNumberField
           label="magicAtk"
           value={enemy.magicAtk}

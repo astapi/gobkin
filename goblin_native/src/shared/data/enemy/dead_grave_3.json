@@ -3,7 +3,9 @@
     {
       "id": "DGR003",
       "name": "嘆きの霊",
-      "raceTags": ["undead"],
+      "raceTags": [
+        "undead"
+      ],
       "level": 23,
       "hp": 110,
       "atk": 40,
@@ -14,13 +16,22 @@
       "evasion": 30,
       "exp": 82,
       "gold": 74,
-      "agility": 18,
-      "magicDef": 12
+      "magicDef": 12,
+      "baseAttributes": {
+        "power": 10,
+        "wisdom": 9,
+        "spirit": 3,
+        "vitality": 5,
+        "agility": 18,
+        "luck": 8
+      }
     },
     {
       "id": "DGR004",
       "name": "墓守の骨弓兵",
-      "raceTags": ["undead"],
+      "raceTags": [
+        "undead"
+      ],
       "level": 23,
       "hp": 98,
       "atk": 44,
@@ -30,13 +41,22 @@
       "evasion": 28,
       "exp": 84,
       "gold": 76,
-      "agility": 17,
-      "magicDef": 16
+      "magicDef": 16,
+      "baseAttributes": {
+        "power": 11,
+        "wisdom": 11,
+        "spirit": 4,
+        "vitality": 7,
+        "agility": 17,
+        "luck": 7
+      }
     },
     {
       "id": "DGR005",
       "name": "墓喰らいの屍鬼",
-      "raceTags": ["undead"],
+      "raceTags": [
+        "undead"
+      ],
       "level": 24,
       "hp": 180,
       "atk": 54,
@@ -46,13 +66,22 @@
       "evasion": 22,
       "exp": 92,
       "gold": 82,
-      "agility": 12,
-      "magicDef": 20
+      "magicDef": 20,
+      "baseAttributes": {
+        "power": 14,
+        "wisdom": 14,
+        "spirit": 5,
+        "vitality": 11,
+        "agility": 12,
+        "luck": 6
+      }
     },
     {
       "id": "B_GRAVE_WARDEN",
       "name": "霊廟の墓守将",
-      "raceTags": ["undead"],
+      "raceTags": [
+        "undead"
+      ],
       "level": 28,
       "hp": 860,
       "atk": 60,
@@ -63,13 +92,79 @@
       "evasion": 34,
       "exp": 460,
       "gold": 400,
-      "magicDef": 32
+      "magicDef": 32,
+      "baseAttributes": {
+        "power": 15,
+        "wisdom": 11,
+        "spirit": 8,
+        "vitality": 14,
+        "agility": 10,
+        "luck": 9
+      }
     }
   ],
   "patterns": [
-    { "id": "DG3_001", "floors": [1], "enemies": [["DGR004", "DGR004"], ["DGR003"]] },
-    { "id": "DG3_002", "floors": [1], "enemies": [["DGR005"], ["DGR004", "DGR003"]] },
-    { "id": "DG3_003", "floors": [2], "enemies": [["DGR005", "DGR004"], ["DGR003", "DGR004"]] },
-    { "id": "BOSS", "floors": [2], "enemies": [["B_GRAVE_WARDEN"], ["DGR005", "DGR004"]], "isBoss": true }
+    {
+      "id": "DG3_001",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "DGR004",
+          "DGR004"
+        ],
+        [
+          "DGR003"
+        ]
+      ]
+    },
+    {
+      "id": "DG3_002",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "DGR005"
+        ],
+        [
+          "DGR004",
+          "DGR003"
+        ]
+      ]
+    },
+    {
+      "id": "DG3_003",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "DGR005",
+          "DGR004"
+        ],
+        [
+          "DGR003",
+          "DGR004"
+        ]
+      ]
+    },
+    {
+      "id": "BOSS",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "B_GRAVE_WARDEN"
+        ],
+        [
+          "DGR005",
+          "DGR004"
+        ]
+      ],
+      "isBoss": true
+    }
   ]
 }

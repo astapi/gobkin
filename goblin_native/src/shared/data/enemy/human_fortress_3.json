@@ -15,8 +15,15 @@
       "evasion": 28,
       "exp": 80,
       "gold": 72,
-      "agility": 7,
-      "magicDef": 39
+      "magicDef": 39,
+      "baseAttributes": {
+        "power": 10,
+        "wisdom": 10,
+        "spirit": 10,
+        "vitality": 13,
+        "agility": 7,
+        "luck": 7
+      }
     },
     {
       "id": "FRT002",
@@ -33,8 +40,15 @@
       "evasion": 30,
       "exp": 88,
       "gold": 78,
-      "agility": 9,
-      "magicDef": 21
+      "magicDef": 21,
+      "baseAttributes": {
+        "power": 13,
+        "wisdom": 13,
+        "spirit": 5,
+        "vitality": 7,
+        "agility": 9,
+        "luck": 8
+      }
     },
     {
       "id": "FRT003",
@@ -51,8 +65,15 @@
       "evasion": 26,
       "exp": 92,
       "gold": 82,
-      "agility": 4,
-      "magicDef": 48
+      "magicDef": 48,
+      "baseAttributes": {
+        "power": 11,
+        "wisdom": 11,
+        "spirit": 12,
+        "vitality": 16,
+        "agility": 4,
+        "luck": 7
+      }
     },
     {
       "id": "FRT004",
@@ -69,8 +90,15 @@
       "evasion": 24,
       "exp": 85,
       "gold": 76,
-      "agility": 3,
-      "magicDef": 27
+      "magicDef": 27,
+      "baseAttributes": {
+        "power": 14,
+        "wisdom": 14,
+        "spirit": 7,
+        "vitality": 9,
+        "agility": 3,
+        "luck": 6
+      }
     },
     {
       "id": "FRT005",
@@ -87,8 +115,15 @@
       "evasion": 32,
       "exp": 100,
       "gold": 90,
-      "agility": 8,
-      "magicDef": 45
+      "magicDef": 45,
+      "baseAttributes": {
+        "power": 12,
+        "wisdom": 12,
+        "spirit": 11,
+        "vitality": 15,
+        "agility": 8,
+        "luck": 8
+      }
     },
     {
       "id": "B_COMMANDER",
@@ -105,8 +140,15 @@
       "evasion": 35,
       "exp": 480,
       "gold": 420,
-      "agility": 10,
-      "magicDef": 60
+      "magicDef": 60,
+      "baseAttributes": {
+        "power": 18,
+        "wisdom": 18,
+        "spirit": 15,
+        "vitality": 20,
+        "agility": 10,
+        "luck": 9
+      }
     }
   ],
   "patterns": [

@@ -15,8 +15,15 @@
       "evasion": 25,
       "exp": 55,
       "gold": 48,
-      "agility": 7,
-      "magicDef": 19
+      "magicDef": 19,
+      "baseAttributes": {
+        "power": 7,
+        "wisdom": 7,
+        "spirit": 5,
+        "vitality": 8,
+        "agility": 7,
+        "luck": 6
+      }
     },
     {
       "id": "LIZ002",
@@ -33,8 +40,15 @@
       "evasion": 26,
       "exp": 60,
       "gold": 52,
-      "agility": 9,
-      "magicDef": 14
+      "magicDef": 14,
+      "baseAttributes": {
+        "power": 8,
+        "wisdom": 8,
+        "spirit": 4,
+        "vitality": 6,
+        "agility": 9,
+        "luck": 7
+      }
     },
     {
       "id": "LIZ003",
@@ -51,8 +65,15 @@
       "evasion": 27,
       "exp": 65,
       "gold": 56,
-      "agility": 8,
-      "magicDef": 12
+      "magicDef": 12,
+      "baseAttributes": {
+        "power": 9,
+        "wisdom": 9,
+        "spirit": 3,
+        "vitality": 5,
+        "agility": 8,
+        "luck": 7
+      }
     },
     {
       "id": "LIZ004",
@@ -69,8 +90,15 @@
       "evasion": 24,
       "exp": 68,
       "gold": 60,
-      "agility": 4,
-      "magicDef": 31
+      "magicDef": 31,
+      "baseAttributes": {
+        "power": 8,
+        "wisdom": 8,
+        "spirit": 8,
+        "vitality": 13,
+        "agility": 4,
+        "luck": 6
+      }
     },
     {
       "id": "LIZ005",
@@ -87,8 +115,15 @@
       "evasion": 29,
       "exp": 62,
       "gold": 54,
-      "agility": 13,
-      "magicDef": 12
+      "magicDef": 12,
+      "baseAttributes": {
+        "power": 9,
+        "wisdom": 9,
+        "spirit": 3,
+        "vitality": 5,
+        "agility": 13,
+        "luck": 7
+      }
     }
   ],
   "patterns": [

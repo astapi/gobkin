@@ -15,8 +15,15 @@
       "evasion": 33,
       "exp": 105,
       "gold": 95,
-      "agility": 9,
-      "magicDef": 48
+      "magicDef": 48,
+      "baseAttributes": {
+        "power": 12,
+        "wisdom": 12,
+        "spirit": 12,
+        "vitality": 16,
+        "agility": 9,
+        "luck": 8
+      }
     },
     {
       "id": "ROY002",
@@ -33,8 +40,15 @@
       "evasion": 35,
       "exp": 115,
       "gold": 105,
-      "agility": 10,
-      "magicDef": 27
+      "magicDef": 27,
+      "baseAttributes": {
+        "power": 15,
+        "wisdom": 15,
+        "spirit": 7,
+        "vitality": 9,
+        "agility": 10,
+        "luck": 9
+      }
     },
     {
       "id": "ROY003",
@@ -51,8 +65,15 @@
       "evasion": 34,
       "exp": 120,
       "gold": 110,
-      "agility": 7,
-      "magicDef": 57
+      "magicDef": 57,
+      "baseAttributes": {
+        "power": 14,
+        "wisdom": 14,
+        "spirit": 14,
+        "vitality": 19,
+        "agility": 7,
+        "luck": 9
+      }
     },
     {
       "id": "ROY004",
@@ -69,8 +90,15 @@
       "evasion": 36,
       "exp": 130,
       "gold": 120,
-      "agility": 8,
-      "magicDef": 54
+      "magicDef": 54,
+      "baseAttributes": {
+        "power": 14,
+        "wisdom": 14,
+        "spirit": 14,
+        "vitality": 18,
+        "agility": 8,
+        "luck": 9
+      }
     },
     {
       "id": "ROY005",
@@ -87,8 +115,15 @@
       "evasion": 38,
       "exp": 150,
       "gold": 140,
-      "agility": 12,
-      "magicDef": 51
+      "magicDef": 51,
+      "baseAttributes": {
+        "power": 17,
+        "wisdom": 17,
+        "spirit": 13,
+        "vitality": 17,
+        "agility": 12,
+        "luck": 10
+      }
     }
   ],
   "patterns": [

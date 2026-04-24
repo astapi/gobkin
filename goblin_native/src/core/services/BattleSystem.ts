@@ -934,7 +934,7 @@ export class BattleSystem {
       currentHP: enemy.hp,
       maxHP: enemy.hp,
       initialHP: enemy.hp,
-      agility: enemy.agility,
+      agility: enemy.baseAttributes.agility,
       attackCount: enemy.attackCount,
       accuracy: enemy.accuracy,
       evasion: enemy.evasion,

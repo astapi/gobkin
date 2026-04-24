@@ -10,13 +10,20 @@
       "hp": 4,
       "atk": 2,
       "def": 1,
-      "agility": 6,
       "attackCount": 1,
       "accuracy": 70,
       "evasion": 9,
       "exp": 1,
       "gold": 1,
-      "magicDef": 0
+      "magicDef": 0,
+      "baseAttributes": {
+        "power": 1,
+        "wisdom": 1,
+        "spirit": 1,
+        "vitality": 1,
+        "agility": 6,
+        "luck": 2
+      }
     },
     {
       "id": "B_SLIME",
@@ -28,7 +35,6 @@
       "hp": 20,
       "atk": 3,
       "def": 2,
-      "agility": 8,
       "attackCount": 1,
       "accuracy": 100,
       "evasion": 11,
@@ -40,7 +46,15 @@
           "probability": 1
         }
       ],
-      "magicDef": 1
+      "magicDef": 1,
+      "baseAttributes": {
+        "power": 1,
+        "wisdom": 1,
+        "spirit": 1,
+        "vitality": 1,
+        "agility": 8,
+        "luck": 3
+      }
     }
   ],
   "patterns": [

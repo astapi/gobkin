@@ -11,12 +11,19 @@
       "atk": 40,
       "def": 16,
       "magicDef": 24,
-      "agility": 12,
       "attackCount": 1,
       "accuracy": 340,
       "evasion": 20,
       "exp": 68,
-      "gold": 60
+      "gold": 60,
+      "baseAttributes": {
+        "power": 10,
+        "wisdom": 10,
+        "spirit": 6,
+        "vitality": 8,
+        "agility": 12,
+        "luck": 5
+      }
     },
     {
       "id": "VIL002",
@@ -29,12 +36,19 @@
       "atk": 35,
       "def": 26,
       "magicDef": 39,
-      "agility": 10,
       "attackCount": 1,
       "accuracy": 330,
       "evasion": 18,
       "exp": 78,
-      "gold": 68
+      "gold": 68,
+      "baseAttributes": {
+        "power": 9,
+        "wisdom": 9,
+        "spirit": 10,
+        "vitality": 13,
+        "agility": 10,
+        "luck": 5
+      }
     },
     {
       "id": "VIL003",
@@ -47,7 +61,6 @@
       "atk": 70,
       "def": 16,
       "magicDef": 24,
-      "agility": 16,
       "attackCount": 5,
       "accuracy": 420,
       "evasion": 26,
@@ -59,7 +72,15 @@
           "name": "先制攻撃",
           "actionOrderMultiplier": 2
         }
-      ]
+      ],
+      "baseAttributes": {
+        "power": 18,
+        "wisdom": 18,
+        "spirit": 6,
+        "vitality": 8,
+        "agility": 16,
+        "luck": 7
+      }
     },
     {
       "id": "B_CANNON",
@@ -72,9 +93,8 @@
       "atk": 250,
       "def": 20,
       "magicDef": 30,
-      "agility": 2,
       "attackCount": 1,
-      "accuracy": 160,
+      "accuracy": 600,
       "evasion": 5,
       "exp": 200,
       "gold": 160,
@@ -83,7 +103,15 @@
           "factorId": "human",
           "probability": 1
         }
-      ]
+      ],
+      "baseAttributes": {
+        "power": 63,
+        "wisdom": 63,
+        "spirit": 8,
+        "vitality": 10,
+        "agility": 2,
+        "luck": 1
+      }
     }
   ],
   "patterns": [

@@ -135,9 +135,7 @@
       "unlockNext": "human_village",
       "unlockNexts": [
         "orc_fortress_1"
-      ],
-      "isBaseCapture": true,
-      "rankUpTarget": 3
+      ]
     },
     {
       "id": "human_village",
@@ -148,7 +146,9 @@
       "exploration_time_sec": 1800,
       "description": "辺境の村の中心部。自警団と猟師を退け、西方にゴブリンの脅威を刻みつけろ。",
       "unlockRequires": "orc_camp_3",
-      "unlockNext": "wolf_grassland_1"
+      "unlockNext": "wolf_grassland_1",
+      "isBaseCapture": true,
+      "rankUpTarget": 3
     },
     {
       "id": "wolf_grassland_1",
@@ -192,9 +192,7 @@
       "exploration_time_sec": 2000,
       "description": "辺境城騎士団長が自ら前線に立つ。精鋭部隊との最終決戦。撃退せよ。",
       "unlockRequires": "subjugation_force_2",
-      "unlockNext": "spider_forest_1",
-      "isBaseCapture": true,
-      "rankUpTarget": 4
+      "unlockNext": "spider_forest_1"
     },
     {
       "id": "spider_forest_1",
@@ -278,9 +276,7 @@
       "exploration_time_sec_first": 6300,
       "exploration_time_sec": 2100,
       "description": "坑道の最深部。坑道守護者と擲弾兵に守られた鍛冶王が待ち受ける。鍛冶能力をゴブリン国家に取り込め。",
-      "unlockRequires": "dwarf_mine_2",
-      "isBaseCapture": true,
-      "rankUpTarget": 5
+      "unlockRequires": "dwarf_mine_2"
     },
     {
       "id": "elf_forest_1",
@@ -354,7 +350,9 @@
       "exploration_time_sec": 3600,
       "description": "オークの本拠地。狼騎兵と毒の戦術を揃え、ついに挑む本格要塞。ここを落とした時、人間は討伐軍を差し向ける。",
       "unlockRequires": "orc_camp_3",
-      "unlockNext": "subjugation_force_1"
+      "unlockNext": "subjugation_force_1",
+      "isBaseCapture": true,
+      "rankUpTarget": 4
     },
     {
       "id": "harpy_cliff_1",
@@ -443,7 +441,7 @@
       "unlockRequires": "human_fortress_2",
       "unlockNext": "vampire_castle_1",
       "isBaseCapture": true,
-      "rankUpTarget": 6
+      "rankUpTarget": 5
     },
     {
       "id": "vampire_castle_1",
@@ -454,7 +452,9 @@
       "exploration_time_sec": 3900,
       "description": "王都へ向かう街道を見下ろす古城。夜の眷属を率いるヴァンパイアが影から進軍を阻む。",
       "unlockRequires": "human_fortress_3",
-      "unlockNext": "royal_capital_1"
+      "unlockNext": "royal_capital_1",
+      "isBaseCapture": true,
+      "rankUpTarget": 6
     },
     {
       "id": "royal_capital_1",

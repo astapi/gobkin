@@ -24,7 +24,7 @@ goblin_native の戦闘システムで使用されるステータスの仕様書
 
 | ステータス | 型 | 説明 |
 |---|---|---|
-| agility | number | 行動順決定に使う敏捷。ゴブリンは基本能力値、敵はEnemy定義の値を使う |
+| agility | number | 行動順決定に使う敏捷。ゴブリン/敵ともに基本能力値の敏捷を使う |
 | damageReduction | number | 被ダメージ軽減率（0〜上限値%）。Modと装備から算出 |
 | row | number | 隊列の行番号（0-based）。前列ほど狙われやすい |
 | rowSlot | number | 行内のスロット番号（0-based） |
@@ -128,7 +128,7 @@ HP以外の基礎ステータスは、以下の式で決定される。
 ```
 
 - ゴブリンの敏捷は `baseAttributes.agility` を使用
-- 敵の敏捷は `Enemy.agility` を使用
+- 敵の敏捷も `baseAttributes.agility` を使用
 - `乱数B` は `0.21〜1.0`
 - 行動順値が高い順に行動
 - 同値時は元の並び順 (`originalIndex`) を優先

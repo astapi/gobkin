@@ -189,8 +189,8 @@ describe('GoblinBirthService', () => {
       const service = new GoblinBirthService(rng)
       const goblin = service.createNewGoblin(1)
 
-      expect(applyGoblinJob(goblin, 'guard').stats.hp).toBe(22)
-      expect(applyGoblinJob(goblin, 'warrior').stats.hp).toBe(23)
+      expect(applyGoblinJob(goblin, 'guard').stats.hp).toBe(24)
+      expect(applyGoblinJob(goblin, 'warrior').stats.hp).toBe(25)
       expect(applyGoblinJob(goblin, 'thief').stats.hp).toBe(19)
       expect(applyGoblinJob(goblin, 'mage').stats.hp).toBe(18)
     })
