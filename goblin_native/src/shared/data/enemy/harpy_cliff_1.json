@@ -15,8 +15,15 @@
       "evasion": 48,
       "exp": 78,
       "gold": 70,
-      "agility": 24,
-      "magicDef": 18
+      "magicDef": 18,
+      "baseAttributes": {
+        "power": 11,
+        "wisdom": 11,
+        "spirit": 5,
+        "vitality": 7,
+        "agility": 24,
+        "luck": 12
+      }
     },
     {
       "id": "HRP002",
@@ -33,8 +40,15 @@
       "evasion": 52,
       "exp": 84,
       "gold": 76,
-      "agility": 27,
-      "magicDef": 20
+      "magicDef": 20,
+      "baseAttributes": {
+        "power": 12,
+        "wisdom": 12,
+        "spirit": 5,
+        "vitality": 8,
+        "agility": 27,
+        "luck": 13
+      }
     },
     {
       "id": "B_HARPY_MATRIARCH",
@@ -51,8 +65,15 @@
       "evasion": 58,
       "exp": 420,
       "gold": 360,
-      "agility": 30,
-      "magicDef": 30
+      "magicDef": 30,
+      "baseAttributes": {
+        "power": 17,
+        "wisdom": 17,
+        "spirit": 8,
+        "vitality": 14,
+        "agility": 30,
+        "luck": 15
+      }
     }
   ],
   "patterns": [

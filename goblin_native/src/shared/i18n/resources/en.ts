@@ -455,10 +455,10 @@ const en = {
     baseLocation: {
       rank1: 'Nest of Beginnings',
       rank2: 'Goblin Settlement',
-      rank3: 'Orc Camp',
-      rank4: 'Subjugation Defense Base',
-      rank5: 'Dwarven Mine',
-      rank6: 'Human Fortress',
+      rank3: 'Frontier Village',
+      rank4: 'Orc Fortress',
+      rank5: 'Frontier Castle Keep',
+      rank6: 'Vampire Castle',
       rank7: 'Royal Capital',
     },
     dungeon: {

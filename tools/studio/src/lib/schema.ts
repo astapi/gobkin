@@ -1,5 +1,14 @@
 import { z } from 'zod'
 
+export const GoblinBaseAttributesSchema = z.object({
+  power: z.number(),
+  wisdom: z.number(),
+  spirit: z.number(),
+  vitality: z.number(),
+  agility: z.number(),
+  luck: z.number(),
+})
+
 export const AreaConfigSchema = z.object({
   id: z.string(),
   name: z.string(),
@@ -43,13 +52,12 @@ export const EnemySchema = z
     raceTags: z.array(z.string()),
     level: z.number().int().nonnegative(),
     hp: z.number().int().nonnegative(),
-    vitality: z.number().int().nonnegative().optional(),
+    baseAttributes: GoblinBaseAttributesSchema,
     atk: z.number().int().nonnegative(),
     magicAtk: z.number().int().nonnegative().optional(),
     def: z.number().int().nonnegative(),
     magicDef: z.number().int().nonnegative().optional(),
     magicHeal: z.number().int().nonnegative().optional(),
-    agility: z.number().int().nonnegative(),
     attackCount: z.number().int().positive(),
     accuracy: z.number().nonnegative(),
     evasion: z.number().nonnegative(),
@@ -151,15 +159,6 @@ export interface StorySummary {
   rewardCount: number
   unlockLabel: string
 }
-
-export const GoblinBaseAttributesSchema = z.object({
-  power: z.number(),
-  wisdom: z.number(),
-  spirit: z.number(),
-  vitality: z.number(),
-  agility: z.number(),
-  luck: z.number(),
-})
 
 export const GoblinCombatStatsSchema = z.object({
   attackCount: z.number(),

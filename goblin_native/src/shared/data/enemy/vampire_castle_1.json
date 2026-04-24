@@ -16,8 +16,15 @@
       "evasion": 42,
       "exp": 120,
       "gold": 112,
-      "agility": 20,
-      "magicDef": 34
+      "magicDef": 34,
+      "baseAttributes": {
+        "power": 15,
+        "wisdom": 15,
+        "spirit": 9,
+        "vitality": 12,
+        "agility": 20,
+        "luck": 11
+      }
     },
     {
       "id": "VMP002",
@@ -36,8 +43,15 @@
       "evasion": 40,
       "exp": 130,
       "gold": 122,
-      "agility": 18,
-      "magicDef": 38
+      "magicDef": 38,
+      "baseAttributes": {
+        "power": 13,
+        "wisdom": 18,
+        "spirit": 10,
+        "vitality": 10,
+        "agility": 18,
+        "luck": 10
+      }
     },
     {
       "id": "B_VAMPIRE_LORD",
@@ -56,8 +70,15 @@
       "evasion": 50,
       "exp": 620,
       "gold": 520,
-      "agility": 24,
-      "magicDef": 48
+      "magicDef": 48,
+      "baseAttributes": {
+        "power": 21,
+        "wisdom": 22,
+        "spirit": 12,
+        "vitality": 20,
+        "agility": 24,
+        "luck": 13
+      }
     }
   ],
   "patterns": [

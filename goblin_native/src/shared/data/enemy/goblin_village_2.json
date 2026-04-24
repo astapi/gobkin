@@ -10,13 +10,20 @@
       "hp": 50,
       "atk": 6,
       "def": 3,
-      "agility": 8,
       "attackCount": 2,
       "accuracy": 200,
       "evasion": 11,
       "exp": 8,
       "gold": 6,
-      "magicDef": 4
+      "magicDef": 4,
+      "baseAttributes": {
+        "power": 2,
+        "wisdom": 2,
+        "spirit": 1,
+        "vitality": 2,
+        "agility": 8,
+        "luck": 3
+      }
     },
     {
       "id": "GOB002",
@@ -28,13 +35,20 @@
       "hp": 45,
       "atk": 7,
       "def": 2,
-      "agility": 11,
       "attackCount": 2,
       "accuracy": 215,
       "evasion": 12,
       "exp": 12,
       "gold": 10,
-      "magicDef": 1
+      "magicDef": 1,
+      "baseAttributes": {
+        "power": 2,
+        "wisdom": 2,
+        "spirit": 1,
+        "vitality": 1,
+        "agility": 11,
+        "luck": 3
+      }
     },
     {
       "id": "GOB003",
@@ -46,13 +60,20 @@
       "hp": 120,
       "atk": 20,
       "def": 6,
-      "agility": 8,
       "attackCount": 2,
       "accuracy": 230,
       "evasion": 13,
       "exp": 15,
       "gold": 12,
-      "magicDef": 7
+      "magicDef": 7,
+      "baseAttributes": {
+        "power": 5,
+        "wisdom": 5,
+        "spirit": 2,
+        "vitality": 3,
+        "agility": 8,
+        "luck": 3
+      }
     },
     {
       "id": "GOB004",
@@ -65,7 +86,6 @@
       "atk": 9,
       "magicAtk": 9,
       "def": 3,
-      "agility": 7,
       "attackCount": 2,
       "accuracy": 230,
       "evasion": 13,
@@ -78,7 +98,15 @@
           "grantsSpellId": "fireball"
         }
       ],
-      "magicDef": 4
+      "magicDef": 4,
+      "baseAttributes": {
+        "power": 2,
+        "wisdom": 2,
+        "spirit": 1,
+        "vitality": 2,
+        "agility": 7,
+        "luck": 3
+      }
     },
     {
       "id": "GOB005",
@@ -90,13 +118,20 @@
       "hp": 80,
       "atk": 7,
       "def": 30,
-      "agility": 6,
       "attackCount": 2,
       "accuracy": 240,
       "evasion": 14,
       "exp": 20,
       "gold": 18,
-      "magicDef": 36
+      "magicDef": 36,
+      "baseAttributes": {
+        "power": 2,
+        "wisdom": 2,
+        "spirit": 9,
+        "vitality": 15,
+        "agility": 6,
+        "luck": 4
+      }
     }
   ],
   "patterns": [

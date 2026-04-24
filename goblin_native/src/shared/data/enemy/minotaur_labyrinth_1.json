@@ -15,8 +15,15 @@
       "evasion": 24,
       "exp": 100,
       "gold": 88,
-      "agility": 8,
-      "magicDef": 24
+      "magicDef": 24,
+      "baseAttributes": {
+        "power": 15,
+        "wisdom": 15,
+        "spirit": 6,
+        "vitality": 14,
+        "agility": 8,
+        "luck": 6
+      }
     },
     {
       "id": "MNT002",
@@ -34,8 +41,15 @@
       "criticalRate": 0.08,
       "exp": 112,
       "gold": 98,
-      "agility": 7,
-      "magicDef": 27
+      "magicDef": 27,
+      "baseAttributes": {
+        "power": 17,
+        "wisdom": 17,
+        "spirit": 7,
+        "vitality": 16,
+        "agility": 7,
+        "luck": 6
+      }
     },
     {
       "id": "B_LABYRINTH_KEEPER",
@@ -53,8 +67,15 @@
       "criticalRate": 0.1,
       "exp": 520,
       "gold": 430,
-      "agility": 9,
-      "magicDef": 36
+      "magicDef": 36,
+      "baseAttributes": {
+        "power": 21,
+        "wisdom": 21,
+        "spirit": 9,
+        "vitality": 21,
+        "agility": 9,
+        "luck": 7
+      }
     }
   ],
   "patterns": [

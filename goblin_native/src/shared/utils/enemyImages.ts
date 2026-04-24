@@ -80,6 +80,7 @@ const enemyImagesByName: Record<string, ImageSourcePropType> = {
   ダイアウルフ: enemyImagesById.WFG002,
   牙王の眷属: enemyImagesById.WFG003,
   銀牙のアルファ: enemyImagesById.B_WOLF_ALPHA,
+  グランダイアウルフ: enemyImagesById.B_WOLF_ALPHA,
 }
 
 export function getEnemyImage(enemy: Pick<EnemySnap, 'id' | 'name'>): ImageSourcePropType | null {

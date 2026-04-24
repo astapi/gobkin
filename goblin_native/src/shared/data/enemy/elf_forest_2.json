@@ -15,8 +15,15 @@
       "evasion": 24,
       "exp": 45,
       "gold": 40,
-      "agility": 12,
-      "magicDef": 10
+      "magicDef": 10,
+      "baseAttributes": {
+        "power": 6,
+        "wisdom": 6,
+        "spirit": 3,
+        "vitality": 4,
+        "agility": 12,
+        "luck": 6
+      }
     },
     {
       "id": "ELF002",
@@ -33,8 +40,15 @@
       "evasion": 25,
       "exp": 50,
       "gold": 44,
-      "agility": 11,
-      "magicDef": 8
+      "magicDef": 8,
+      "baseAttributes": {
+        "power": 8,
+        "wisdom": 8,
+        "spirit": 2,
+        "vitality": 4,
+        "agility": 11,
+        "luck": 6
+      }
     },
     {
       "id": "ELF003",
@@ -51,8 +65,15 @@
       "evasion": 24,
       "exp": 55,
       "gold": 48,
-      "agility": 9,
-      "magicDef": 12
+      "magicDef": 12,
+      "baseAttributes": {
+        "power": 8,
+        "wisdom": 8,
+        "spirit": 3,
+        "vitality": 5,
+        "agility": 9,
+        "luck": 6
+      }
     },
     {
       "id": "ELF004",
@@ -69,8 +90,15 @@
       "evasion": 26,
       "exp": 52,
       "gold": 46,
-      "agility": 10,
-      "magicDef": 19
+      "magicDef": 19,
+      "baseAttributes": {
+        "power": 6,
+        "wisdom": 6,
+        "spirit": 5,
+        "vitality": 8,
+        "agility": 10,
+        "luck": 7
+      }
     },
     {
       "id": "ELF005",
@@ -88,8 +116,15 @@
       "evasion": 22,
       "exp": 58,
       "gold": 50,
-      "agility": 6,
-      "magicDef": 24
+      "magicDef": 24,
+      "baseAttributes": {
+        "power": 7,
+        "wisdom": 7,
+        "spirit": 6,
+        "vitality": 10,
+        "agility": 6,
+        "luck": 6
+      }
     }
   ],
   "patterns": [

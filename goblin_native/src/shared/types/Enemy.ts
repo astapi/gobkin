@@ -1,3 +1,4 @@
+import type { GoblinBaseAttributes } from './Goblin'
 import type { CharacterSkill } from './CharacterSkill'
 import type { FactorDropConfig } from './Factor'
 import type { LearnedSpell } from './Spell'
@@ -14,13 +15,12 @@ export interface Enemy {
   raceTags: string[]
   level: number
   hp: number
-  vitality?: number
+  baseAttributes: GoblinBaseAttributes
   atk: number
   magicAtk?: number        // 魔法攻撃力
   def: number
   magicDef?: number       // 魔法防御力
   magicHeal?: number      // 魔法回復量
-  agility: number
   attackCount: number  // 攻撃回数
   accuracy: number     // 命中精度
   evasion: number      // 回避能力

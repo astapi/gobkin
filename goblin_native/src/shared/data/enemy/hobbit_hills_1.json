@@ -15,8 +15,15 @@
       "evasion": 38,
       "exp": 48,
       "gold": 52,
-      "agility": 18,
-      "magicDef": 16
+      "magicDef": 16,
+      "baseAttributes": {
+        "power": 6,
+        "wisdom": 6,
+        "spirit": 4,
+        "vitality": 7,
+        "agility": 18,
+        "luck": 10
+      }
     },
     {
       "id": "HBT002",
@@ -33,8 +40,15 @@
       "evasion": 34,
       "exp": 52,
       "gold": 56,
-      "agility": 16,
-      "magicDef": 14
+      "magicDef": 14,
+      "baseAttributes": {
+        "power": 8,
+        "wisdom": 8,
+        "spirit": 4,
+        "vitality": 6,
+        "agility": 16,
+        "luck": 9
+      }
     },
     {
       "id": "HBT003",
@@ -51,8 +65,15 @@
       "evasion": 42,
       "exp": 240,
       "gold": 260,
-      "agility": 18,
-      "magicDef": 24
+      "magicDef": 24,
+      "baseAttributes": {
+        "power": 11,
+        "wisdom": 11,
+        "spirit": 6,
+        "vitality": 11,
+        "agility": 18,
+        "luck": 11
+      }
     }
   ],
   "patterns": [

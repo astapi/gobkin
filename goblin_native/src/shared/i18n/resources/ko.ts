@@ -455,10 +455,10 @@ const ko = {
     baseLocation: {
       rank1: '시작의 둥지',
       rank2: '고블린 집락',
-      rank3: '오크 야영지',
-      rank4: '토벌대 방어 거점',
-      rank5: '드워프 갱도',
-      rank6: '인간 성채',
+      rank3: '변경의 마을',
+      rank4: '오크의 요새',
+      rank5: '변경의 성 본환',
+      rank6: '뱀파이어의 고성',
       rank7: '왕도',
     },
     dungeon: {

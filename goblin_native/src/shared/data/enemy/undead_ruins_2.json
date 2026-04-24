@@ -10,13 +10,20 @@
       "hp": 120,
       "atk": 20,
       "def": 6,
-      "agility": 7,
       "attackCount": 2,
       "accuracy": 230,
       "evasion": 13,
       "exp": 24,
       "gold": 21,
-      "magicDef": 5
+      "magicDef": 5,
+      "baseAttributes": {
+        "power": 5,
+        "wisdom": 5,
+        "spirit": 1,
+        "vitality": 3,
+        "agility": 7,
+        "luck": 3
+      }
     },
     {
       "id": "UND002",
@@ -28,13 +35,20 @@
       "hp": 100,
       "atk": 12,
       "def": 4,
-      "agility": 6,
       "attackCount": 1,
       "accuracy": 240,
       "evasion": 14,
       "exp": 22,
       "gold": 19,
-      "magicDef": 4
+      "magicDef": 4,
+      "baseAttributes": {
+        "power": 3,
+        "wisdom": 3,
+        "spirit": 1,
+        "vitality": 2,
+        "agility": 6,
+        "luck": 4
+      }
     },
     {
       "id": "UND003",
@@ -46,13 +60,20 @@
       "hp": 100,
       "atk": 14,
       "def": 2,
-      "agility": 9,
       "attackCount": 1,
       "accuracy": 240,
       "evasion": 16,
       "exp": 28,
       "gold": 24,
-      "magicDef": 2
+      "magicDef": 2,
+      "baseAttributes": {
+        "power": 4,
+        "wisdom": 4,
+        "spirit": 1,
+        "vitality": 1,
+        "agility": 9,
+        "luck": 4
+      }
     },
     {
       "id": "UND004",
@@ -64,13 +85,20 @@
       "hp": 60,
       "atk": 15,
       "def": 5,
-      "agility": 10,
       "attackCount": 1,
       "accuracy": 255,
       "evasion": 15,
       "exp": 30,
       "gold": 26,
-      "magicDef": 5
+      "magicDef": 5,
+      "baseAttributes": {
+        "power": 4,
+        "wisdom": 4,
+        "spirit": 1,
+        "vitality": 3,
+        "agility": 10,
+        "luck": 4
+      }
     },
     {
       "id": "UND005",
@@ -82,13 +110,20 @@
       "hp": 55,
       "atk": 50,
       "def": 10,
-      "agility": 5,
       "attackCount": 1,
       "accuracy": 180,
       "evasion": 16,
       "exp": 36,
       "gold": 32,
-      "magicDef": 9
+      "magicDef": 9,
+      "baseAttributes": {
+        "power": 13,
+        "wisdom": 13,
+        "spirit": 2,
+        "vitality": 5,
+        "agility": 5,
+        "luck": 4
+      }
     }
   ],
   "patterns": [

@@ -15,8 +15,15 @@
       "evasion": 30,
       "exp": 135,
       "gold": 126,
-      "agility": 16,
-      "magicDef": 34
+      "magicDef": 34,
+      "baseAttributes": {
+        "power": 16,
+        "wisdom": 16,
+        "spirit": 9,
+        "vitality": 15,
+        "agility": 16,
+        "luck": 8
+      }
     },
     {
       "id": "DRG002",
@@ -33,8 +40,15 @@
       "evasion": 38,
       "exp": 155,
       "gold": 144,
-      "agility": 22,
-      "magicDef": 36
+      "magicDef": 36,
+      "baseAttributes": {
+        "power": 18,
+        "wisdom": 18,
+        "spirit": 9,
+        "vitality": 17,
+        "agility": 22,
+        "luck": 10
+      }
     },
     {
       "id": "DRG003",
@@ -51,8 +65,15 @@
       "evasion": 34,
       "exp": 190,
       "gold": 176,
-      "agility": 18,
-      "magicDef": 44
+      "magicDef": 44,
+      "baseAttributes": {
+        "power": 21,
+        "wisdom": 21,
+        "spirit": 11,
+        "vitality": 21,
+        "agility": 18,
+        "luck": 9
+      }
     },
     {
       "id": "B_FLAME_DRAGON",
@@ -70,8 +91,15 @@
       "criticalRate": 0.12,
       "exp": 780,
       "gold": 680,
-      "agility": 20,
-      "magicDef": 56
+      "magicDef": 56,
+      "baseAttributes": {
+        "power": 26,
+        "wisdom": 26,
+        "spirit": 14,
+        "vitality": 29,
+        "agility": 20,
+        "luck": 11
+      }
     }
   ],
   "patterns": [

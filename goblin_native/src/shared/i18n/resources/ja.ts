@@ -455,10 +455,10 @@ const ja = {
     baseLocation: {
       rank1: 'はじまりの巣穴',
       rank2: 'ゴブリンの集落',
-      rank3: 'オークの野営地',
-      rank4: '討伐隊防衛拠点',
-      rank5: 'ドワーフ坑道',
-      rank6: '人間の城塞',
+      rank3: '辺境の村',
+      rank4: 'オークの砦',
+      rank5: '辺境の城・本丸',
+      rank6: 'ヴァンパイアの古城',
       rank7: '王都',
     },
     dungeon: {
