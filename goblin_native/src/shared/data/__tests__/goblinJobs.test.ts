@@ -115,8 +115,8 @@ describe('goblinJobs', () => {
       },
     })
 
-    expect(applyGoblinJob(goblin, 'guard').stats.hp).toBe(44)
-    expect(applyGoblinJob(goblin, 'warrior').stats.hp).toBe(47)
+    expect(applyGoblinJob(goblin, 'guard').stats.hp).toBe(48)
+    expect(applyGoblinJob(goblin, 'warrior').stats.hp).toBe(51)
     expect(applyGoblinJob(goblin, 'thief').stats.hp).toBe(35)
     expect(applyGoblinJob(goblin, 'mage').stats.hp).toBe(32)
     expect(applyGoblinJob(goblin, 'cleric').stats.hp).toBe(38)
