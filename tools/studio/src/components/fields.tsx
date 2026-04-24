@@ -137,6 +137,36 @@ export function OptionalTextField({
   )
 }
 
+export function TextAreaField({
+  label,
+  value,
+  onChange,
+  placeholder,
+  rows = 6,
+  size,
+}: {
+  label: string
+  value: string
+  onChange: (v: string) => void
+  placeholder?: string
+  rows?: number
+  size?: FieldSize
+}) {
+  return (
+    <label className={fieldClass(size)}>
+      <span className="field-label">{label}</span>
+      <span className="field-input textarea">
+        <textarea
+          value={value}
+          rows={rows}
+          placeholder={placeholder}
+          onChange={(e) => onChange(e.target.value)}
+        />
+      </span>
+    </label>
+  )
+}
+
 export function FieldGroup({ children, columns = 2 }: { children: ReactNode; columns?: number }) {
   return (
     <div className="field-group" style={{ gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))` }}>

@@ -630,7 +630,8 @@ code {
 }
 
 .field-input input,
-.field-input select {
+.field-input select,
+.field-input textarea {
   flex: 1;
   background: transparent;
   border: none;
@@ -642,8 +643,18 @@ code {
 }
 
 .field-input input:focus,
-.field-input select:focus {
+.field-input select:focus,
+.field-input textarea:focus {
   outline: none;
+}
+
+.field-input.textarea {
+  align-items: stretch;
+}
+
+.field-input textarea {
+  resize: vertical;
+  line-height: 1.55;
 }
 
 .field-suffix {
@@ -902,6 +913,133 @@ code {
 .slot-add:disabled {
   opacity: 0.4;
   cursor: not-allowed;
+}
+
+/* story */
+
+.list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.page-title {
+  margin: 0 0 0.25rem;
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+
+.section-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.85rem;
+  flex-wrap: wrap;
+}
+
+.section-head h3 {
+  margin: 0;
+}
+
+.story-block-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.story-block {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface-muted);
+  padding: 0.85rem;
+}
+
+.story-block-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.story-detail .card {
+  overflow: hidden;
+}
+
+/* goblin data */
+
+.goblin-data-layout {
+  display: grid;
+  grid-template-columns: 18rem 1fr;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+@media (max-width: 1100px) {
+  .goblin-data-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.goblin-data-list {
+  position: sticky;
+  top: 5rem;
+  max-height: calc(100vh - 6rem);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.goblin-list-items {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  overflow-y: auto;
+}
+
+.goblin-list-item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.15rem;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  cursor: pointer;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+}
+
+.goblin-list-item:hover {
+  background: var(--surface-muted);
+}
+
+.goblin-list-item.active {
+  border-color: var(--text);
+  background: var(--highlight);
+}
+
+.goblin-derived {
+  margin-top: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.goblin-skill-search {
+  width: min(28rem, 100%);
+}
+
+.goblin-skill-meta {
+  margin-top: 0.55rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
 }
 
 /* dropzone / party / simulate */

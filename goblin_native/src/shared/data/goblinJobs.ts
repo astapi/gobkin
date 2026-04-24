@@ -42,92 +42,132 @@ type GoblinJobDefinitionSeed = {
 
 const GOBLIN_JOB_DEFINITION_SEEDS: Record<GoblinJob, GoblinJobDefinitionSeed> = {
   guard: {
-    id: 'guard',
-    accentColor: '#2563EB',
+    accentColor: "#2563EB",
+    id: "guard",
     skills: [
       {
-        skillId: 'talent_def_150',
+        skillId: "talent_def_150"
       },
       {
-        skillId: 'armor_mastery_150',
+        skillId: "armor_mastery_150"
       },
       {
-        skillId: 'physical_reduction_5',
+        skillId: "physical_reduction_5"
       },
       {
-        unlockLevel: 15,
-        skillId: 'cover_low_hp_ally',
+        skillId: "cover_low_hp_ally",
+        unlockLevel: 15
       },
       {
-        unlockLevel: 15,
-        skillId: 'rear_guard',
-      },
+        skillId: "rear_guard",
+        unlockLevel: 15
+      }
     ],
+    baseAttributes: {
+      power: 10,
+      wisdom: 10,
+      spirit: 10,
+      vitality: 11,
+      agility: 10,
+      luck: 10
+    }
   },
   thief: {
-    id: 'thief',
-    accentColor: '#059669',
+    accentColor: "#059669",
+    id: "thief",
     skills: [
       {
-        skillId: 'action_order_150',
+        skillId: "action_order_150"
       },
       {
-        skillId: 'gold_bonus_50',
+        skillId: "gold_bonus_50"
       },
       {
-        unlockLevel: 15,
-        skillId: 'evasion_150',
-      },
+        skillId: "evasion_150",
+        unlockLevel: 15
+      }
     ],
-  },
-  mage: {
-    id: 'mage',
-    accentColor: '#B91C1C',
-    skills: [
-      {
-        skillId: 'mage_magic_lv7',
-      },
-    ],
-  },
-  warrior: {
-    id: 'warrior',
-    accentColor: '#EA580C',
-    skills: [
-      {
-        skillId: 'talent_attackCount_150',
-      },
-      {
-        skillId: 'armor_mastery_120',
-      },
-      {
-        skillId: 'inspire_150',
-      },
-    ],
-  },
-  cleric: {
-    id: 'cleric',
-    accentColor: '#0D9488',
-    unlockRequiresClearedArea: 'road_1',
-    skills: [
-      {
-        skillId: 'recovery_magic_lv7',
-      },
-    ],
-  },
-  rider: {
-    id: 'rider',
-    accentColor: '#7C3AED',
-    unlockRequiresReadStory: 'story_after_wolf_grassland',
     baseAttributes: {
-      power: 12,
-      wisdom: 8,
+      power: 10,
+      wisdom: 10,
       spirit: 10,
       vitality: 10,
+      agility: 11,
+      luck: 11
+    }
+  },
+  mage: {
+    accentColor: "#B91C1C",
+    id: "mage",
+    skills: [
+      {
+        skillId: "mage_magic_lv7"
+      }
+    ],
+    baseAttributes: {
+      power: 10,
+      wisdom: 11,
+      spirit: 10,
+      vitality: 10,
+      agility: 10,
+      luck: 10
+    }
+  },
+  warrior: {
+    accentColor: "#EA580C",
+    id: "warrior",
+    skills: [
+      {
+        skillId: "talent_attackCount_150"
+      },
+      {
+        skillId: "armor_mastery_120"
+      },
+      {
+        skillId: "inspire_150"
+      }
+    ],
+    baseAttributes: {
+      power: 10,
+      wisdom: 10,
+      spirit: 10,
+      vitality: 11,
+      agility: 10,
+      luck: 10
+    }
+  },
+  cleric: {
+    accentColor: "#0D9488",
+    id: "cleric",
+    skills: [
+      {
+        skillId: "recovery_magic_lv7"
+      }
+    ],
+    unlockRequiresClearedArea: "road_1",
+    baseAttributes: {
+      power: 10,
+      wisdom: 10,
+      spirit: 11,
+      vitality: 10,
+      agility: 10,
+      luck: 10
+    }
+  },
+  rider: {
+    accentColor: "#7C3AED",
+    baseAttributes: {
       agility: 15,
       luck: 12,
+      power: 12,
+      spirit: 10,
+      vitality: 10,
+      wisdom: 8
     },
+    id: "rider",
     skills: [],
-  },
+    unlockRequiresReadStory: "story_after_wolf_grassland"
+  }
 }
 
 function buildGoblinJobDefinition(seed: GoblinJobDefinitionSeed): GoblinJobDefinition {

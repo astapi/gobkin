@@ -47,211 +47,389 @@ export const DEFAULT_GOBLIN_COMBAT_STATS: GoblinCombatStats = {
 
 export const goblinVariantDefinitions: Record<string, GoblinVariantDefinition> = {
   slime: {
-    factorId: 'slime',
-    factorName: 'スライム因子',
-    factorDescription: 'スライムの特性を宿した因子。耐久性が増す。',
-    inheritProbability: 0.3,
-    factorEffects: [
-      { type: 'stat_bonus', target: 'hp', value: 100 },
-    ],
-    variantProbability: 0.2,
-    raceId: 'slime',
-    raceName: 'スライムゴブリン',
-    avatar: '/src/assets/goblin/slime_goblin.png',
-    imageKey: 'slime_goblin',
     additionalEffects: [
-      { type: 'stat_bonus', target: 'def', value: 20 },
+      {
+        target: "def",
+        type: "stat_bonus",
+        value: 20
+      }
     ],
-    baseAttributes: { power: 8, wisdom: 8, spirit: 13, vitality: 13, agility: 8, luck: 10 },
-    hpCoefficient: 1.2,
-    combatStats: { attackCount: 2, accuracy: 20, evasion: 15 },
+    avatar: "/src/assets/goblin/slime_goblin.png",
+    baseAttributes: {
+      agility: 8,
+      luck: 10,
+      power: 8,
+      spirit: 13,
+      vitality: 13,
+      wisdom: 8
+    },
+    combatStats: {
+      accuracy: 20,
+      attackCount: 2,
+      evasion: 15
+    },
     defaultSkillIds: [
-      'talent_hp_150',
-      'armor_mastery_130',
-      'rear_guard',
-      'hp_regen_20',
+      "talent_hp_150",
+      "armor_mastery_130",
+      "rear_guard",
+      "hp_regen_20"
     ],
+    factorDescription: "スライムの特性を宿した因子。耐久性が増す。",
+    factorEffects: [
+      {
+        target: "hp",
+        type: "stat_bonus",
+        value: 100
+      }
+    ],
+    factorId: "slime",
+    factorName: "スライム因子",
+    hpCoefficient: 1.2,
+    imageKey: "slime_goblin",
+    inheritProbability: 0.3,
+    raceId: "slime",
+    raceName: "スライムゴブリン",
+    variantProbability: 0.2
   },
   wolf: {
-    factorId: 'wolf',
-    factorName: 'ウルフ因子',
-    factorDescription: 'ウルフの特性を宿した因子。敏捷性が増す。',
-    inheritProbability: 0.25,
-    factorEffects: [
-      { type: 'stat_bonus', target: 'atk', value: 15 },
-    ],
-    variantProbability: 0.15,
-    raceId: 'wolf',
-    raceName: 'ウルフゴブリン',
-    avatar: '/src/assets/goblin/wolf_goblin.png',
-    imageKey: 'wolf_goblin',
     additionalEffects: [],
-    baseAttributes: { power: 11, wisdom: 9, spirit: 10, vitality: 10, agility: 13, luck: 12 },
-    hpCoefficient: 0.9,
-    combatStats: { attackCount: 3, accuracy: 20, evasion: 15 },
+    avatar: "/src/assets/goblin/wolf_goblin.png",
+    baseAttributes: {
+      agility: 13,
+      luck: 12,
+      power: 11,
+      spirit: 10,
+      vitality: 10,
+      wisdom: 9
+    },
+    combatStats: {
+      accuracy: 20,
+      attackCount: 3,
+      evasion: 15
+    },
     defaultSkillIds: [
-      'talent_accuracy_150',
-      'attack_count_up_2',
-      'equipment_accuracy_200',
-      'additional_damage_13',
+      "talent_accuracy_150",
+      "attack_count_up_2",
+      "equipment_accuracy_200",
+      "additional_damage_13"
     ],
+    factorDescription: "ウルフの特性を宿した因子。敏捷性が増す。",
+    factorEffects: [
+      {
+        target: "atk",
+        type: "stat_bonus",
+        value: 15
+      }
+    ],
+    factorId: "wolf",
+    factorName: "ウルフ因子",
+    hpCoefficient: 0.9,
+    imageKey: "wolf_goblin",
+    inheritProbability: 0.25,
+    raceId: "wolf",
+    raceName: "ウルフゴブリン",
+    variantProbability: 0.15
   },
   orc: {
-    factorId: 'orc',
-    factorName: 'オーク因子',
-    factorDescription: 'オークの特性を宿した因子。攻撃力と防御力が増す。',
-    inheritProbability: 0.2,
-    factorEffects: [
-      { type: 'stat_bonus', target: 'atk', value: 25 },
-      { type: 'stat_bonus', target: 'def', value: 20 },
-    ],
-    variantProbability: 0.1,
-    raceId: 'orc',
-    raceName: 'オークゴブリン',
-    avatar: '/src/assets/goblin/orc_goblin.png',
-    imageKey: 'orc_goblin',
     additionalEffects: [
-      { type: 'stat_bonus', target: 'hp', value: 50 },
-      { type: 'stat_bonus', target: 'atk', value: 10 },
+      {
+        target: "hp",
+        type: "stat_bonus",
+        value: 50
+      },
+      {
+        target: "atk",
+        type: "stat_bonus",
+        value: 10
+      }
     ],
-    baseAttributes: { power: 15, wisdom: 8, spirit: 9, vitality: 15, agility: 7, luck: 8 },
-    hpCoefficient: 1.5,
-    combatStats: { attackCount: 2, accuracy: 20, evasion: 15 },
+    avatar: "/src/assets/goblin/orc_goblin.png",
+    baseAttributes: {
+      agility: 7,
+      luck: 8,
+      power: 15,
+      spirit: 9,
+      vitality: 15,
+      wisdom: 8
+    },
+    combatStats: {
+      accuracy: 20,
+      attackCount: 2,
+      evasion: 15
+    },
     defaultSkillIds: [],
+    factorDescription: "オークの特性を宿した因子。攻撃力と防御力が増す。",
+    factorEffects: [
+      {
+        target: "atk",
+        type: "stat_bonus",
+        value: 25
+      },
+      {
+        target: "def",
+        type: "stat_bonus",
+        value: 20
+      }
+    ],
+    factorId: "orc",
+    factorName: "オーク因子",
+    hpCoefficient: 1.5,
+    imageKey: "orc_goblin",
+    inheritProbability: 0.2,
+    raceId: "orc",
+    raceName: "オークゴブリン",
+    variantProbability: 0.1
   },
   undead: {
-    factorId: 'undead',
-    factorName: 'アンデッド因子',
-    factorDescription: 'アンデッドの特性を宿した因子。生命力と耐毒性が増す。',
-    inheritProbability: 0.2,
-    factorEffects: [
-      { type: 'stat_bonus', target: 'hp', value: 80 },
-      { type: 'stat_bonus', target: 'def', value: 15 },
-    ],
-    variantProbability: 0.15,
-    raceId: 'undead',
-    raceName: 'アンデッドゴブリン',
-    avatar: '/src/assets/goblin/skelton_goblin.png',
-    imageKey: 'skelton_goblin',
     additionalEffects: [
-      { type: 'stat_bonus', target: 'hp', value: 40 },
-      { type: 'stat_bonus', target: 'atk', value: 10 },
+      {
+        target: "hp",
+        type: "stat_bonus",
+        value: 40
+      },
+      {
+        target: "atk",
+        type: "stat_bonus",
+        value: 10
+      }
     ],
-    baseAttributes: { power: 11, wisdom: 8, spirit: 10, vitality: 15, agility: 7, luck: 9 },
+    avatar: "/src/assets/goblin/skelton_goblin.png",
+    baseAttributes: {
+      agility: 7,
+      luck: 9,
+      power: 11,
+      spirit: 10,
+      vitality: 15,
+      wisdom: 8
+    },
     defaultSkillIds: [
-      'talent_itemSlots',
-      'undead_trait',
-      'hp_regen_20',
+      "talent_itemSlots",
+      "undead_trait",
+      "hp_regen_20"
     ],
+    factorDescription: "アンデッドの特性を宿した因子。生命力と耐毒性が増す。",
+    factorEffects: [
+      {
+        target: "hp",
+        type: "stat_bonus",
+        value: 80
+      },
+      {
+        target: "def",
+        type: "stat_bonus",
+        value: 15
+      }
+    ],
+    factorId: "undead",
+    factorName: "アンデッド因子",
+    imageKey: "skelton_goblin",
+    inheritProbability: 0.2,
+    raceId: "undead",
+    raceName: "アンデッドゴブリン",
+    variantProbability: 0.15
   },
   hobgoblin: {
-    factorId: 'hobgoblin',
-    factorName: 'ホブゴブリン因子',
-    factorDescription: '上位ゴブリンの特性を宿した因子。全能力が底上げされる。',
-    inheritProbability: 0.25,
-    factorEffects: [
-      { type: 'stat_bonus', target: 'atk', value: 15 },
-      { type: 'stat_bonus', target: 'def', value: 10 },
-    ],
-    variantProbability: 0.2,
-    raceId: 'hobgoblin',
-    raceName: 'ホブゴブリン',
-    avatar: '/src/assets/goblin/hobgoblin.png',
-    imageKey: 'hobgoblin',
     additionalEffects: [
-      { type: 'stat_bonus', target: 'hp', value: 30 },
-      { type: 'stat_bonus', target: 'atk', value: 10 },
+      {
+        target: "hp",
+        type: "stat_bonus",
+        value: 30
+      },
+      {
+        target: "atk",
+        type: "stat_bonus",
+        value: 10
+      }
     ],
-    baseAttributes: { power: 13, wisdom: 11, spirit: 11, vitality: 11, agility: 11, luck: 10 },
-    hpCoefficient: 1.2,
-    combatStats: { attackCount: 2, accuracy: 20, evasion: 15 },
+    avatar: "/src/assets/goblin/hobgoblin.png",
+    baseAttributes: {
+      agility: 11,
+      luck: 10,
+      power: 13,
+      spirit: 11,
+      vitality: 11,
+      wisdom: 11
+    },
+    combatStats: {
+      accuracy: 20,
+      attackCount: 2,
+      evasion: 15
+    },
     defaultSkillIds: [
-      'talent_atk_150',
-      'inspire_150',
-      'survive_lethal_hp1',
+      "talent_atk_150",
+      "inspire_150",
+      "survive_lethal_hp1"
     ],
+    factorDescription: "上位ゴブリンの特性を宿した因子。全能力が底上げされる。",
+    factorEffects: [
+      {
+        target: "atk",
+        type: "stat_bonus",
+        value: 15
+      },
+      {
+        target: "def",
+        type: "stat_bonus",
+        value: 10
+      }
+    ],
+    factorId: "hobgoblin",
+    factorName: "ホブゴブリン因子",
+    hpCoefficient: 1.2,
+    imageKey: "hobgoblin",
+    inheritProbability: 0.25,
+    raceId: "hobgoblin",
+    raceName: "ホブゴブリン",
+    variantProbability: 0.2
   },
   dwarf: {
-    factorId: 'dwarf',
-    factorName: 'ドワーフ因子',
-    factorDescription: 'ドワーフの特性を宿した因子。防御力と耐久性が大幅に増す。',
-    inheritProbability: 0.2,
-    factorEffects: [
-      { type: 'stat_bonus', target: 'def', value: 30 },
-      { type: 'stat_bonus', target: 'hp', value: 60 },
-    ],
-    variantProbability: 0.1,
-    raceId: 'dwarf',
-    raceName: 'ドワーフゴブリン',
-    avatar: '/src/assets/goblin/dwarf_goblin.png',
-    imageKey: 'dwarf_goblin',
     additionalEffects: [
-      { type: 'stat_bonus', target: 'def', value: 20 },
-      { type: 'stat_bonus', target: 'atk', value: 15 },
+      {
+        target: "def",
+        type: "stat_bonus",
+        value: 20
+      },
+      {
+        target: "atk",
+        type: "stat_bonus",
+        value: 15
+      }
     ],
+    avatar: "/src/assets/goblin/dwarf_goblin.png",
     defaultSkillIds: [],
+    factorDescription: "ドワーフの特性を宿した因子。防御力と耐久性が大幅に増す。",
+    factorEffects: [
+      {
+        target: "def",
+        type: "stat_bonus",
+        value: 30
+      },
+      {
+        target: "hp",
+        type: "stat_bonus",
+        value: 60
+      }
+    ],
+    factorId: "dwarf",
+    factorName: "ドワーフ因子",
+    imageKey: "dwarf_goblin",
+    inheritProbability: 0.2,
+    raceId: "dwarf",
+    raceName: "ドワーフゴブリン",
+    variantProbability: 0.1
   },
   elf: {
-    factorId: 'elf',
-    factorName: 'エルフ因子',
-    factorDescription: 'エルフの特性を宿した因子。敏捷性と精神力が増す。',
-    inheritProbability: 0.2,
-    factorEffects: [
-      { type: 'stat_bonus', target: 'def', value: 15 },
-    ],
-    variantProbability: 0.1,
-    raceId: 'elf',
-    raceName: 'エルフゴブリン',
-    avatar: '/src/assets/goblin/elf_goblin.png',
-    imageKey: 'elf_goblin',
     additionalEffects: [
-      { type: 'stat_bonus', target: 'atk', value: 10 },
+      {
+        target: "atk",
+        type: "stat_bonus",
+        value: 10
+      }
     ],
+    avatar: "/src/assets/goblin/elf_goblin.png",
     defaultSkillIds: [],
+    factorDescription: "エルフの特性を宿した因子。敏捷性と精神力が増す。",
+    factorEffects: [
+      {
+        target: "def",
+        type: "stat_bonus",
+        value: 15
+      }
+    ],
+    factorId: "elf",
+    factorName: "エルフ因子",
+    imageKey: "elf_goblin",
+    inheritProbability: 0.2,
+    raceId: "elf",
+    raceName: "エルフゴブリン",
+    variantProbability: 0.1
   },
   lizardman: {
-    factorId: 'lizardman',
-    factorName: 'リザードマン因子',
-    factorDescription: 'リザードマンの特性を宿した因子。全体的な耐性とHPが増す。',
-    inheritProbability: 0.15,
-    factorEffects: [
-      { type: 'stat_bonus', target: 'hp', value: 70 },
-      { type: 'stat_bonus', target: 'def', value: 20 },
-      { type: 'stat_bonus', target: 'atk', value: 10 },
-    ],
-    variantProbability: 0.1,
-    raceId: 'lizardman',
-    raceName: 'リザードゴブリン',
-    avatar: '/src/assets/goblin/lizard_goblin.png',
-    imageKey: 'lizard_goblin',
     additionalEffects: [
-      { type: 'stat_bonus', target: 'def', value: 15 },
+      {
+        target: "def",
+        type: "stat_bonus",
+        value: 15
+      }
     ],
+    avatar: "/src/assets/goblin/lizard_goblin.png",
     defaultSkillIds: [],
+    factorDescription: "リザードマンの特性を宿した因子。全体的な耐性とHPが増す。",
+    factorEffects: [
+      {
+        target: "hp",
+        type: "stat_bonus",
+        value: 70
+      },
+      {
+        target: "def",
+        type: "stat_bonus",
+        value: 20
+      },
+      {
+        target: "atk",
+        type: "stat_bonus",
+        value: 10
+      }
+    ],
+    factorId: "lizardman",
+    factorName: "リザードマン因子",
+    imageKey: "lizard_goblin",
+    inheritProbability: 0.15,
+    raceId: "lizardman",
+    raceName: "リザードゴブリン",
+    variantProbability: 0.1
   },
   troll: {
-    factorId: 'troll',
-    factorName: 'トロル因子',
-    factorDescription: 'トロルの特性を宿した因子。HPが大幅に増し、防御力も上がる。',
-    inheritProbability: 0.15,
-    factorEffects: [
-      { type: 'stat_bonus', target: 'hp', value: 150 },
-      { type: 'stat_bonus', target: 'def', value: 15 },
-    ],
-    variantProbability: 0.08,
-    raceId: 'troll',
-    raceName: 'トロルゴブリン',
-    avatar: '/src/assets/goblin/troll_goblin.png',
-    imageKey: 'troll_goblin',
     additionalEffects: [
-      { type: 'stat_bonus', target: 'hp', value: 80 },
-      { type: 'stat_bonus', target: 'atk', value: 20 },
+      {
+        target: "hp",
+        type: "stat_bonus",
+        value: 80
+      },
+      {
+        target: "atk",
+        type: "stat_bonus",
+        value: 20
+      }
     ],
-    baseAttributes: { power: 16, wisdom: 7, spirit: 8, vitality: 18, agility: 5, luck: 7 },
-    hpCoefficient: 1.7,
-    combatStats: { attackCount: 2, accuracy: 20, evasion: 15 },
+    avatar: "/src/assets/goblin/troll_goblin.png",
+    baseAttributes: {
+      agility: 5,
+      luck: 7,
+      power: 16,
+      spirit: 8,
+      vitality: 18,
+      wisdom: 7
+    },
+    combatStats: {
+      accuracy: 20,
+      attackCount: 2,
+      evasion: 15
+    },
     defaultSkillIds: [],
-  },
+    factorDescription: "トロルの特性を宿した因子。HPが大幅に増し、防御力も上がる。",
+    factorEffects: [
+      {
+        target: "hp",
+        type: "stat_bonus",
+        value: 150
+      },
+      {
+        target: "def",
+        type: "stat_bonus",
+        value: 15
+      }
+    ],
+    factorId: "troll",
+    factorName: "トロル因子",
+    hpCoefficient: 1.7,
+    imageKey: "troll_goblin",
+    inheritProbability: 0.15,
+    raceId: "troll",
+    raceName: "トロルゴブリン",
+    variantProbability: 0.08
+  }
 }
 
 export function getGoblinVariantByFactorId(factorId: string): GoblinVariantDefinition | undefined {
