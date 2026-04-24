@@ -104,7 +104,7 @@
     {
       "id": "orc_camp_1",
       "name": "オークの野営地・前哨",
-      "areaLevel": 12,
+      "areaLevel": 20,
       "floors": 2,
       "exploration_time_sec_first": 2160,
       "exploration_time_sec": 720,
@@ -115,7 +115,7 @@
     {
       "id": "orc_camp_2",
       "name": "オークの野営地・陣営",
-      "areaLevel": 13,
+      "areaLevel": 21,
       "floors": 2,
       "exploration_time_sec_first": 2340,
       "exploration_time_sec": 780,
@@ -126,7 +126,7 @@
     {
       "id": "orc_camp_3",
       "name": "オークの野営地・本陣",
-      "areaLevel": 14,
+      "areaLevel": 22,
       "floors": 2,
       "exploration_time_sec_first": 2700,
       "exploration_time_sec": 900,
@@ -142,7 +142,7 @@
     {
       "id": "human_village",
       "name": "辺境の村",
-      "areaLevel": 4,
+      "areaLevel": 24,
       "floors": 4,
       "exploration_time_sec_first": 5400,
       "exploration_time_sec": 1800,
@@ -153,7 +153,7 @@
     {
       "id": "wolf_grassland_1",
       "name": "ウルフ草原",
-      "areaLevel": 5,
+      "areaLevel": 34,
       "floors": 3,
       "exploration_time_sec_first": 5880,
       "exploration_time_sec": 1960,
@@ -164,7 +164,7 @@
     {
       "id": "subjugation_force_1",
       "name": "vs討伐隊防衛戦・先遣隊",
-      "areaLevel": 6,
+      "areaLevel": 40,
       "floors": 3,
       "exploration_time_sec_first": 5700,
       "exploration_time_sec": 1900,
@@ -175,7 +175,7 @@
     {
       "id": "subjugation_force_2",
       "name": "vs討伐隊防衛戦・本隊",
-      "areaLevel": 6,
+      "areaLevel": 42,
       "floors": 3,
       "exploration_time_sec_first": 5820,
       "exploration_time_sec": 1940,
@@ -186,7 +186,7 @@
     {
       "id": "subjugation_force_3",
       "name": "vs討伐隊防衛戦・決戦",
-      "areaLevel": 6,
+      "areaLevel": 44,
       "floors": 3,
       "exploration_time_sec_first": 6000,
       "exploration_time_sec": 2000,
@@ -199,7 +199,7 @@
     {
       "id": "spider_forest_1",
       "name": "蜘蛛影の森",
-      "areaLevel": 6,
+      "areaLevel": 46,
       "floors": 3,
       "exploration_time_sec_first": 6600,
       "exploration_time_sec": 2200,
@@ -210,7 +210,7 @@
     {
       "id": "dead_grave_1",
       "name": "死霊の墓原・外縁",
-      "areaLevel": 6,
+      "areaLevel": 46,
       "floors": 2,
       "exploration_time_sec_first": 6900,
       "exploration_time_sec": 2300,
@@ -221,7 +221,7 @@
     {
       "id": "dead_grave_2",
       "name": "死霊の墓原・墓群",
-      "areaLevel": 6,
+      "areaLevel": 46,
       "floors": 2,
       "exploration_time_sec_first": 7080,
       "exploration_time_sec": 2360,
@@ -232,7 +232,7 @@
     {
       "id": "dead_grave_3",
       "name": "死霊の墓原・霊廟",
-      "areaLevel": 6,
+      "areaLevel": 46,
       "floors": 2,
       "exploration_time_sec_first": 7320,
       "exploration_time_sec": 2440,
@@ -243,7 +243,7 @@
     {
       "id": "hobbit_hills_1",
       "name": "ホビットの丘陵村",
-      "areaLevel": 4,
+      "areaLevel": 25,
       "floors": 2,
       "exploration_time_sec_first": 5700,
       "exploration_time_sec": 1900,
@@ -252,7 +252,7 @@
     {
       "id": "dwarf_mine_1",
       "name": "ドワーフ坑道・入口",
-      "areaLevel": 5,
+      "areaLevel": 25,
       "floors": 2,
       "exploration_time_sec_first": 6000,
       "exploration_time_sec": 2000,
@@ -262,7 +262,7 @@
     {
       "id": "dwarf_mine_2",
       "name": "ドワーフ坑道・深層",
-      "areaLevel": 5,
+      "areaLevel": 27,
       "floors": 2,
       "exploration_time_sec_first": 6120,
       "exploration_time_sec": 2040,
@@ -273,7 +273,7 @@
     {
       "id": "dwarf_mine_3",
       "name": "ドワーフ坑道・最深部",
-      "areaLevel": 5,
+      "areaLevel": 29,
       "floors": 2,
       "exploration_time_sec_first": 6300,
       "exploration_time_sec": 2100,
@@ -285,7 +285,7 @@
     {
       "id": "elf_forest_1",
       "name": "エルフの隠れ里・外縁",
-      "areaLevel": 5,
+      "areaLevel": 45,
       "floors": 2,
       "exploration_time_sec_first": 6900,
       "exploration_time_sec": 2300,
@@ -295,7 +295,7 @@
     {
       "id": "elf_forest_2",
       "name": "エルフの隠れ里・内部",
-      "areaLevel": 5,
+      "areaLevel": 45,
       "floors": 2,
       "exploration_time_sec_first": 7020,
       "exploration_time_sec": 2340,
@@ -306,7 +306,7 @@
     {
       "id": "elf_forest_3",
       "name": "エルフの隠れ里・中枢",
-      "areaLevel": 5,
+      "areaLevel": 45,
       "floors": 2,
       "exploration_time_sec_first": 7200,
       "exploration_time_sec": 2400,
@@ -316,7 +316,7 @@
     {
       "id": "lizardman_swamp_1",
       "name": "リザードマンの沼砦・浅瀬",
-      "areaLevel": 6,
+      "areaLevel": 46,
       "floors": 2,
       "exploration_time_sec_first": 6300,
       "exploration_time_sec": 2100,
@@ -327,7 +327,7 @@
     {
       "id": "lizardman_swamp_2",
       "name": "リザードマンの沼砦・深沼",
-      "areaLevel": 6,
+      "areaLevel": 46,
       "floors": 2,
       "exploration_time_sec_first": 6420,
       "exploration_time_sec": 2140,
@@ -338,7 +338,7 @@
     {
       "id": "lizardman_swamp_3",
       "name": "リザードマンの沼砦・本拠",
-      "areaLevel": 6,
+      "areaLevel": 46,
       "floors": 2,
       "exploration_time_sec_first": 6600,
       "exploration_time_sec": 2200,
@@ -348,7 +348,7 @@
     {
       "id": "orc_fortress_1",
       "name": "オークの砦",
-      "areaLevel": 6,
+      "areaLevel": 75,
       "floors": 5,
       "exploration_time_sec_first": 10800,
       "exploration_time_sec": 3600,
@@ -359,7 +359,7 @@
     {
       "id": "harpy_cliff_1",
       "name": "風切りの断崖",
-      "areaLevel": 6,
+      "areaLevel": 46,
       "floors": 2,
       "exploration_time_sec_first": 7200,
       "exploration_time_sec": 2400,
@@ -370,7 +370,7 @@
     {
       "id": "troll_canyon_1",
       "name": "トロルの峡谷・入口",
-      "areaLevel": 6,
+      "areaLevel": 46,
       "floors": 2,
       "exploration_time_sec_first": 7800,
       "exploration_time_sec": 2600,
@@ -381,7 +381,7 @@
     {
       "id": "troll_canyon_2",
       "name": "トロルの峡谷・深部",
-      "areaLevel": 6,
+      "areaLevel": 46,
       "floors": 2,
       "exploration_time_sec_first": 7920,
       "exploration_time_sec": 2640,
@@ -392,7 +392,7 @@
     {
       "id": "troll_canyon_3",
       "name": "トロルの峡谷・暴君の間",
-      "areaLevel": 6,
+      "areaLevel": 46,
       "floors": 2,
       "exploration_time_sec_first": 8100,
       "exploration_time_sec": 2700,
@@ -403,7 +403,7 @@
     {
       "id": "minotaur_labyrinth_1",
       "name": "ミノタウロス迷宮",
-      "areaLevel": 7,
+      "areaLevel": 47,
       "floors": 2,
       "exploration_time_sec_first": 8700,
       "exploration_time_sec": 2900,
@@ -413,7 +413,7 @@
     {
       "id": "human_fortress_1",
       "name": "辺境の城・外郭",
-      "areaLevel": 7,
+      "areaLevel": 47,
       "floors": 2,
       "exploration_time_sec_first": 9900,
       "exploration_time_sec": 3300,
@@ -424,7 +424,7 @@
     {
       "id": "human_fortress_2",
       "name": "辺境の城・城内",
-      "areaLevel": 7,
+      "areaLevel": 47,
       "floors": 2,
       "exploration_time_sec_first": 10200,
       "exploration_time_sec": 3400,
@@ -435,7 +435,7 @@
     {
       "id": "human_fortress_3",
       "name": "辺境の城・本丸",
-      "areaLevel": 7,
+      "areaLevel": 47,
       "floors": 2,
       "exploration_time_sec_first": 10500,
       "exploration_time_sec": 3500,
@@ -448,7 +448,7 @@
     {
       "id": "vampire_castle_1",
       "name": "ヴァンパイアの古城",
-      "areaLevel": 8,
+      "areaLevel": 55,
       "floors": 2,
       "exploration_time_sec_first": 11700,
       "exploration_time_sec": 3900,
@@ -459,7 +459,7 @@
     {
       "id": "royal_capital_1",
       "name": "王都決戦・城門",
-      "areaLevel": 8,
+      "areaLevel": 160,
       "floors": 2,
       "exploration_time_sec_first": 13200,
       "exploration_time_sec": 4400,
@@ -470,7 +470,7 @@
     {
       "id": "royal_capital_2",
       "name": "王都決戦・王城内部",
-      "areaLevel": 8,
+      "areaLevel": 170,
       "floors": 2,
       "exploration_time_sec_first": 13500,
       "exploration_time_sec": 4500,
@@ -481,7 +481,7 @@
     {
       "id": "dragon_volcano_1",
       "name": "ドラゴンの火山巣",
-      "areaLevel": 8,
+      "areaLevel": 48,
       "floors": 3,
       "exploration_time_sec_first": 15600,
       "exploration_time_sec": 5200,
@@ -492,7 +492,7 @@
     {
       "id": "royal_capital_3",
       "name": "王都決戦・玉座の間",
-      "areaLevel": 8,
+      "areaLevel": 180,
       "floors": 2,
       "exploration_time_sec_first": 18000,
       "exploration_time_sec": 6000,
