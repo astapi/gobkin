@@ -75,8 +75,45 @@ export const EnemyDatabaseSchema = z.object({
   patterns: z.array(EnemyPatternSchema),
 })
 
+export const StoryUnlockConditionSchema = z
+  .object({
+    type: z.literal('dungeon_cleared'),
+    dungeonId: z.string(),
+  })
+  .nullable()
+
+export const StoryRewardSchema = z.object({
+  type: z.enum(['gold', 'goblin', 'equipment']),
+  value: z.union([z.number(), z.string()]),
+})
+
+export const StoryChapterSchema = z.object({
+  id: z.string(),
+  text: z.string(),
+})
+
+export const StorySchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  category: z.enum(['main', 'side']),
+  order: z.number().int(),
+  unlockCondition: StoryUnlockConditionSchema,
+  rewards: z.array(StoryRewardSchema),
+  chapters: z.array(StoryChapterSchema),
+})
+
+export const StoryCollectionSchema = z.object({
+  stories: z.array(StorySchema),
+})
+
 export type AreaConfig = z.infer<typeof AreaConfigSchema>
 export type EnemyDatabase = z.infer<typeof EnemyDatabaseSchema>
+export type StoryUnlockCondition = z.infer<typeof StoryUnlockConditionSchema>
+export type StoryReward = z.infer<typeof StoryRewardSchema>
+export type StoryChapter = z.infer<typeof StoryChapterSchema>
+export type Story = z.infer<typeof StorySchema>
+export type StoryCollection = z.infer<typeof StoryCollectionSchema>
+export type StoryCategory = Story['category']
 
 export interface DungeonSummary {
   areaId: string
@@ -93,3 +130,96 @@ export interface DungeonDetailDto {
   area: AreaConfig
   enemy: EnemyDatabase | null
 }
+
+export interface StorySummary {
+  id: string
+  title: string
+  category: Story['category']
+  order: number
+  chapterCount: number
+  rewardCount: number
+  unlockLabel: string
+}
+
+export const GoblinBaseAttributesSchema = z.object({
+  power: z.number(),
+  wisdom: z.number(),
+  spirit: z.number(),
+  vitality: z.number(),
+  agility: z.number(),
+  luck: z.number(),
+})
+
+export const GoblinCombatStatsSchema = z.object({
+  attackCount: z.number(),
+  accuracy: z.number(),
+  evasion: z.number(),
+})
+
+export const GoblinFactorEffectSchema = z.object({
+  type: z.enum(['stat_bonus', 'resistance', 'skill_unlock']),
+  target: z.enum([
+    'hp',
+    'atk',
+    'magicAtk',
+    'def',
+    'magicDef',
+    'attackCount',
+    'accuracy',
+    'evasion',
+    'magicHeal',
+  ]),
+  value: z.number(),
+})
+
+export const GoblinRaceEntrySchema = z.object({
+  id: z.string(),
+  label: z.string(),
+})
+
+export const GoblinJobSkillSeedSchema = z.object({
+  unlockLevel: z.number().optional(),
+  skillId: z.string(),
+})
+
+export const GoblinJobSeedSchema = z.object({
+  id: z.string(),
+  accentColor: z.string(),
+  skills: z.array(GoblinJobSkillSeedSchema),
+  unlockRequiresClearedArea: z.string().optional(),
+  unlockRequiresReadStory: z.string().optional(),
+  baseAttributes: GoblinBaseAttributesSchema.optional(),
+})
+
+export const GoblinVariantSeedSchema = z.object({
+  factorId: z.string(),
+  factorName: z.string(),
+  factorDescription: z.string(),
+  inheritProbability: z.number(),
+  factorEffects: z.array(GoblinFactorEffectSchema),
+  variantProbability: z.number(),
+  raceId: z.string(),
+  raceName: z.string(),
+  avatar: z.string(),
+  imageKey: z.string(),
+  additionalEffects: z.array(GoblinFactorEffectSchema),
+  baseAttributes: GoblinBaseAttributesSchema.optional(),
+  hpCoefficient: z.number().optional(),
+  combatStats: GoblinCombatStatsSchema.optional(),
+  defaultSkillIds: z.array(z.string()).optional(),
+})
+
+export const GoblinStudioDataSchema = z.object({
+  races: z.array(GoblinRaceEntrySchema),
+  jobs: z.array(GoblinJobSeedSchema),
+  variants: z.array(GoblinVariantSeedSchema),
+})
+
+export type GoblinBaseAttributes = z.infer<typeof GoblinBaseAttributesSchema>
+export type GoblinCombatStats = z.infer<typeof GoblinCombatStatsSchema>
+export type GoblinFactorEffect = z.infer<typeof GoblinFactorEffectSchema>
+export type GoblinRaceEntry = z.infer<typeof GoblinRaceEntrySchema>
+export type GoblinJobSkillSeed = z.infer<typeof GoblinJobSkillSeedSchema>
+export type GoblinJobSeed = z.infer<typeof GoblinJobSeedSchema>
+export type GoblinVariantSeed = z.infer<typeof GoblinVariantSeedSchema>
+export type GoblinStudioData = z.infer<typeof GoblinStudioDataSchema>

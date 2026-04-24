@@ -2,6 +2,7 @@ import fs from 'node:fs/promises'
 import path from 'node:path'
 import type { IncomingMessage, ServerResponse } from 'node:http'
 import type { Plugin } from 'vite'
+import vm from 'node:vm'
 
 interface Options {
   appSrc: string
@@ -18,9 +19,110 @@ interface DungeonSummary {
   patternCount: number
 }
 
+interface StoryRecord {
+  id: string
+  title: string
+  category: 'main' | 'side'
+  order: number
+  unlockCondition: { type: 'dungeon_cleared'; dungeonId: string } | null
+  rewards: unknown[]
+  chapters: Array<{ id: string; text: string }>
+}
+
+interface StoryFile {
+  stories: StoryRecord[]
+}
+
+interface StorySummary {
+  id: string
+  title: string
+  category: StoryRecord['category']
+  order: number
+  chapterCount: number
+  rewardCount: number
+  unlockLabel: string
+}
+
+interface GoblinRaceEntry {
+  id: string
+  label: string
+}
+
+interface GoblinJobSkillSeed {
+  unlockLevel?: number
+  skillId: string
+}
+
+interface GoblinBaseAttributes {
+  power: number
+  wisdom: number
+  spirit: number
+  vitality: number
+  agility: number
+  luck: number
+}
+
+interface GoblinFactorEffect {
+  type: 'stat_bonus' | 'resistance' | 'skill_unlock'
+  target:
+    | 'hp'
+    | 'atk'
+    | 'magicAtk'
+    | 'def'
+    | 'magicDef'
+    | 'attackCount'
+    | 'accuracy'
+    | 'evasion'
+    | 'magicHeal'
+  value: number
+}
+
+interface GoblinCombatStats {
+  attackCount: number
+  accuracy: number
+  evasion: number
+}
+
+interface GoblinJobSeed {
+  id: string
+  accentColor: string
+  skills: GoblinJobSkillSeed[]
+  unlockRequiresClearedArea?: string
+  unlockRequiresReadStory?: string
+  baseAttributes?: GoblinBaseAttributes
+}
+
+interface GoblinVariantSeed {
+  factorId: string
+  factorName: string
+  factorDescription: string
+  inheritProbability: number
+  factorEffects: GoblinFactorEffect[]
+  variantProbability: number
+  raceId: string
+  raceName: string
+  avatar: string
+  imageKey: string
+  additionalEffects: GoblinFactorEffect[]
+  baseAttributes?: GoblinBaseAttributes
+  hpCoefficient?: number
+  combatStats?: GoblinCombatStats
+  defaultSkillIds?: string[]
+}
+
+interface GoblinStudioData {
+  races: GoblinRaceEntry[]
+  jobs: GoblinJobSeed[]
+  variants: GoblinVariantSeed[]
+}
+
 export function dataApiPlugin(options: Options): Plugin {
   const areaDir = path.join(options.appSrc, 'shared', 'data', 'expeditionArea')
   const enemyDir = path.join(options.appSrc, 'shared', 'data', 'enemy')
+  const storyFile = path.join(options.appSrc, 'shared', 'data', 'story', 'stories.json')
+  const racesFile = path.join(options.appSrc, 'shared', 'data', 'races.ts')
+  const jobsFile = path.join(options.appSrc, 'shared', 'data', 'goblinJobs.ts')
+  const variantsFile = path.join(options.appSrc, 'shared', 'data', 'goblinVariants.ts')
   const presetsFile = path.join(options.dataDir, 'party-presets.json')
 
   return {
@@ -67,6 +169,72 @@ export function dataApiPlugin(options: Options): Plugin {
             const body = await readBody(req)
             await writePresets(presetsFile, body)
             return json(res, 200, { ok: true })
+          }
+          return json(res, 405, { error: 'Method not allowed' })
+        } catch (err) {
+          const message = err instanceof Error ? err.message : 'Unknown error'
+          return json(res, 500, { error: message })
+        }
+      })
+
+      server.middlewares.use('/api/stories', async (req, res) => {
+        try {
+          const url = new URL(req.url ?? '/', 'http://localhost')
+          const segments = url.pathname.split('/').filter(Boolean)
+
+          if (segments.length === 0) {
+            if (req.method === 'GET') {
+              return json(res, 200, await listStories(storyFile))
+            }
+            if (req.method === 'POST') {
+              const body = await readBody(req)
+              return json(res, 200, await createStory(storyFile, body))
+            }
+            return json(res, 405, { error: 'Method not allowed' })
+          }
+
+          const storyId = segments[0]
+          if (!isSafeId(storyId)) {
+            return json(res, 400, { error: 'Invalid storyId' })
+          }
+
+          if (req.method === 'GET') {
+            return json(res, 200, await readStory(storyFile, storyId))
+          }
+          if (req.method === 'PUT') {
+            const body = await readBody(req)
+            return json(res, 200, await updateStory(storyFile, storyId, body))
+          }
+          if (req.method === 'DELETE') {
+            return json(res, 200, await deleteStory(storyFile, storyId))
+          }
+          return json(res, 405, { error: 'Method not allowed' })
+        } catch (err) {
+          const message = err instanceof Error ? err.message : 'Unknown error'
+          const status = message.startsWith('NOT_FOUND') ? 404 : 500
+          return json(res, status, { error: message })
+        }
+      })
+
+      server.middlewares.use('/api/goblin-data', async (req, res) => {
+        try {
+          if (req.method === 'GET') {
+            return json(
+              res,
+              200,
+              await readGoblinStudioData({ racesFile, jobsFile, variantsFile }),
+            )
+          }
+          if (req.method === 'PUT') {
+            const body = await readBody(req)
+            return json(
+              res,
+              200,
+              await writeGoblinStudioData(
+                { racesFile, jobsFile, variantsFile },
+                body,
+              ),
+            )
           }
           return json(res, 405, { error: 'Method not allowed' })
         } catch (err) {
@@ -135,6 +303,23 @@ async function listDungeons(areaDir: string, enemyDir: string): Promise<DungeonS
   return filtered
 }
 
+async function listStories(storyFile: string): Promise<StorySummary[]> {
+  const data = await readStoryFile(storyFile)
+  return data.stories
+    .map((story) => ({
+      id: story.id,
+      title: story.title,
+      category: story.category,
+      order: story.order,
+      chapterCount: Array.isArray(story.chapters) ? story.chapters.length : 0,
+      rewardCount: Array.isArray(story.rewards) ? story.rewards.length : 0,
+      unlockLabel: story.unlockCondition
+        ? `dungeon_cleared: ${story.unlockCondition.dungeonId}`
+        : '常時解放',
+    }))
+    .sort((a, b) => a.order - b.order || a.id.localeCompare(b.id))
+}
+
 function isAreaConfigShape(value: unknown): value is Record<string, unknown> {
   if (!value || typeof value !== 'object') return false
   const record = value as Record<string, unknown>
@@ -151,6 +336,15 @@ async function readDungeon(areaDir: string, enemyDir: string, areaId: string) {
     readJson(enemyPath).catch(() => null),
   ])
   return { areaId, area, enemy }
+}
+
+async function readStory(storyFile: string, storyId: string) {
+  const data = await readStoryFile(storyFile)
+  const story = data.stories.find((entry) => entry.id === storyId)
+  if (!story) {
+    throw new Error(`NOT_FOUND: story ${storyId}`)
+  }
+  return story
 }
 
 async function writeDungeon(
@@ -171,6 +365,59 @@ async function writeDungeon(
     writes.push(writeJson(path.join(enemyDir, `${areaId}.json`), enemy))
   }
   await Promise.all(writes)
+  return { ok: true }
+}
+
+async function createStory(storyFile: string, body: unknown) {
+  if (!body || typeof body !== 'object') {
+    throw new Error('Invalid body')
+  }
+  const { story } = body as { story?: unknown }
+  if (!isStoryShape(story)) {
+    throw new Error('Invalid story payload')
+  }
+  const data = await readStoryFile(storyFile)
+  if (data.stories.some((entry) => entry.id === story.id)) {
+    throw new Error(`Story already exists: ${story.id}`)
+  }
+  data.stories.push(story)
+  sortStories(data.stories)
+  await writeJson(storyFile, data)
+  return { ok: true, id: story.id }
+}
+
+async function updateStory(storyFile: string, storyId: string, body: unknown) {
+  if (!body || typeof body !== 'object') {
+    throw new Error('Invalid body')
+  }
+  const { story } = body as { story?: unknown }
+  if (!isStoryShape(story)) {
+    throw new Error('Invalid story payload')
+  }
+  const data = await readStoryFile(storyFile)
+  const index = data.stories.findIndex((entry) => entry.id === storyId)
+  if (index < 0) {
+    throw new Error(`NOT_FOUND: story ${storyId}`)
+  }
+  const duplicate = data.stories.findIndex(
+    (entry, entryIndex) => entry.id === story.id && entryIndex !== index,
+  )
+  if (duplicate >= 0) {
+    throw new Error(`Story already exists: ${story.id}`)
+  }
+  data.stories[index] = story
+  sortStories(data.stories)
+  await writeJson(storyFile, data)
+  return { ok: true, id: story.id }
+}
+
+async function deleteStory(storyFile: string, storyId: string) {
+  const data = await readStoryFile(storyFile)
+  const nextStories = data.stories.filter((entry) => entry.id !== storyId)
+  if (nextStories.length === data.stories.length) {
+    throw new Error(`NOT_FOUND: story ${storyId}`)
+  }
+  await writeJson(storyFile, { stories: nextStories })
   return { ok: true }
 }
 
@@ -201,4 +448,254 @@ function json(res: ServerResponse, status: number, body: unknown) {
 
 function isSafeId(id: string): boolean {
   return /^[a-z0-9_]+$/.test(id)
+}
+
+async function readStoryFile(filePath: string): Promise<StoryFile> {
+  const raw = await readJson(filePath)
+  if (
+    !raw ||
+    typeof raw !== 'object' ||
+    !Array.isArray((raw as { stories?: unknown[] }).stories)
+  ) {
+    throw new Error('Invalid story file')
+  }
+  return raw as StoryFile
+}
+
+function isStoryShape(value: unknown): value is StoryRecord {
+  if (!value || typeof value !== 'object') return false
+  const record = value as Record<string, unknown>
+  return (
+    typeof record.id === 'string' &&
+    typeof record.title === 'string' &&
+    (record.category === 'main' || record.category === 'side') &&
+    typeof record.order === 'number' &&
+    Array.isArray(record.rewards) &&
+    Array.isArray(record.chapters)
+  )
+}
+
+function sortStories(stories: StoryRecord[]) {
+  stories.sort((a, b) => a.order - b.order || a.id.localeCompare(b.id))
+}
+
+async function readGoblinStudioData(paths: {
+  racesFile: string
+  jobsFile: string
+  variantsFile: string
+}): Promise<GoblinStudioData> {
+  const [racesSource, jobsSource, variantsSource] = await Promise.all([
+    fs.readFile(paths.racesFile, 'utf8'),
+    fs.readFile(paths.jobsFile, 'utf8'),
+    fs.readFile(paths.variantsFile, 'utf8'),
+  ])
+
+  const racesObject = evaluateObjectLiteral<Record<string, { label: string }>>(
+    extractConstObjectLiteral(racesSource, 'races'),
+  )
+  const jobsObject = evaluateObjectLiteral<Record<string, GoblinJobSeed>>(
+    extractConstObjectLiteral(jobsSource, 'GOBLIN_JOB_DEFINITION_SEEDS'),
+  )
+  const variantsObject = evaluateObjectLiteral<Record<string, GoblinVariantSeed>>(
+    extractConstObjectLiteral(variantsSource, 'goblinVariantDefinitions'),
+  )
+
+  return {
+    races: Object.entries(racesObject).map(([id, value]) => ({ id, label: value.label })),
+    jobs: Object.values(jobsObject),
+    variants: Object.values(variantsObject),
+  }
+}
+
+async function writeGoblinStudioData(
+  paths: {
+    racesFile: string
+    jobsFile: string
+    variantsFile: string
+  },
+  body: unknown,
+) {
+  if (!isGoblinStudioDataShape(body)) {
+    throw new Error('Invalid goblin data payload')
+  }
+
+  const [racesSource, jobsSource, variantsSource] = await Promise.all([
+    fs.readFile(paths.racesFile, 'utf8'),
+    fs.readFile(paths.jobsFile, 'utf8'),
+    fs.readFile(paths.variantsFile, 'utf8'),
+  ])
+
+  const racesObject = Object.fromEntries(
+    body.races.map((race) => [race.id, { label: race.label }]),
+  )
+  const jobsObject = Object.fromEntries(body.jobs.map((job) => [job.id, job]))
+  const variantsObject = Object.fromEntries(
+    body.variants.map((variant) => [variant.factorId, variant]),
+  )
+
+  const nextRaces = replaceConstObjectLiteral(
+    racesSource,
+    'races',
+    formatJsValue(racesObject, 0),
+  )
+  const nextJobs = replaceConstObjectLiteral(
+    jobsSource,
+    'GOBLIN_JOB_DEFINITION_SEEDS',
+    formatJsValue(jobsObject, 0),
+  )
+  const nextVariants = replaceConstObjectLiteral(
+    variantsSource,
+    'goblinVariantDefinitions',
+    formatJsValue(variantsObject, 0),
+  )
+
+  await Promise.all([
+    fs.writeFile(paths.racesFile, nextRaces, 'utf8'),
+    fs.writeFile(paths.jobsFile, nextJobs, 'utf8'),
+    fs.writeFile(paths.variantsFile, nextVariants, 'utf8'),
+  ])
+
+  return { ok: true }
+}
+
+function extractConstObjectLiteral(source: string, constName: string): string {
+  const marker = `const ${constName}`
+  const markerIndex = source.indexOf(marker)
+  if (markerIndex < 0) {
+    throw new Error(`Const not found: ${constName}`)
+  }
+  const eqIndex = source.indexOf('=', markerIndex)
+  if (eqIndex < 0) {
+    throw new Error(`Assignment not found: ${constName}`)
+  }
+  const start = source.indexOf('{', eqIndex)
+  if (start < 0) {
+    throw new Error(`Object literal not found: ${constName}`)
+  }
+  const end = findMatchingBrace(source, start)
+  return source.slice(start, end + 1)
+}
+
+function replaceConstObjectLiteral(source: string, constName: string, nextObjectLiteral: string): string {
+  const marker = `const ${constName}`
+  const markerIndex = source.indexOf(marker)
+  if (markerIndex < 0) {
+    throw new Error(`Const not found: ${constName}`)
+  }
+  const eqIndex = source.indexOf('=', markerIndex)
+  if (eqIndex < 0) {
+    throw new Error(`Assignment not found: ${constName}`)
+  }
+  const start = source.indexOf('{', eqIndex)
+  if (start < 0) {
+    throw new Error(`Object literal not found: ${constName}`)
+  }
+  const end = findMatchingBrace(source, start)
+  return `${source.slice(0, start)}${nextObjectLiteral}${source.slice(end + 1)}`
+}
+
+function findMatchingBrace(source: string, start: number): number {
+  let depth = 0
+  let quote: '"' | "'" | '`' | null = null
+  let escape = false
+  let lineComment = false
+  let blockComment = false
+
+  for (let i = start; i < source.length; i++) {
+    const ch = source[i]
+    const next = source[i + 1]
+
+    if (lineComment) {
+      if (ch === '\n') lineComment = false
+      continue
+    }
+    if (blockComment) {
+      if (ch === '*' && next === '/') {
+        blockComment = false
+        i++
+      }
+      continue
+    }
+    if (quote) {
+      if (escape) {
+        escape = false
+        continue
+      }
+      if (ch === '\\') {
+        escape = true
+        continue
+      }
+      if (ch === quote) {
+        quote = null
+      }
+      continue
+    }
+    if (ch === '/' && next === '/') {
+      lineComment = true
+      i++
+      continue
+    }
+    if (ch === '/' && next === '*') {
+      blockComment = true
+      i++
+      continue
+    }
+    if (ch === '"' || ch === "'" || ch === '`') {
+      quote = ch
+      continue
+    }
+    if (ch === '{') {
+      depth++
+      continue
+    }
+    if (ch === '}') {
+      depth--
+      if (depth === 0) return i
+    }
+  }
+
+  throw new Error('Matching brace not found')
+}
+
+function evaluateObjectLiteral<T>(literal: string): T {
+  return vm.runInNewContext(`(${literal})`) as T
+}
+
+function formatJsValue(value: unknown, indent: number): string {
+  const pad = '  '.repeat(indent)
+  const childPad = '  '.repeat(indent + 1)
+
+  if (Array.isArray(value)) {
+    if (value.length === 0) return '[]'
+    return `[\n${value
+      .map((item) => `${childPad}${formatJsValue(item, indent + 1)}`)
+      .join(',\n')}\n${pad}]`
+  }
+
+  if (value && typeof value === 'object') {
+    const entries = Object.entries(value).filter(([, v]) => v !== undefined)
+    if (entries.length === 0) return '{}'
+    return `{\n${entries
+      .map(([key, entryValue]) => `${childPad}${formatKey(key)}: ${formatJsValue(entryValue, indent + 1)}`)
+      .join(',\n')}\n${pad}}`
+  }
+
+  if (typeof value === 'string') return JSON.stringify(value)
+  if (typeof value === 'number' || typeof value === 'boolean') return String(value)
+  if (value === null) return 'null'
+  throw new Error(`Unsupported value type: ${typeof value}`)
+}
+
+function formatKey(key: string): string {
+  return /^[A-Za-z_$][A-Za-z0-9_$]*$/.test(key) ? key : JSON.stringify(key)
+}
+
+function isGoblinStudioDataShape(value: unknown): value is GoblinStudioData {
+  if (!value || typeof value !== 'object') return false
+  const record = value as Record<string, unknown>
+  return (
+    Array.isArray(record.races) &&
+    Array.isArray(record.jobs) &&
+    Array.isArray(record.variants)
+  )
 }
