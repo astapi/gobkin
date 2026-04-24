@@ -1,10 +1,10 @@
 {
   "id": "harpy_cliff_1",
-  "name": "ハーピィの崖巣",
+  "name": "風切りの断崖",
   "areaLevel": 46,
   "floors": 2,
   "baseDurationSec": 7200,
-  "description": "沼地を抜けた断崖。空から急襲するハーピィたちが峡谷への道を塞いでいる。",
+  "description": "死霊の墓原を越えた先にある断崖。急降下するハーピィたちが空と谷筋を支配している。",
   "encounter": {
     "perFloorEvents": 3,
     "eventWeights": {
@@ -12,5 +12,5 @@
       "exploring": 30
     }
   },
-  "unlockNext": "troll_canyon_1"
+  "unlockNext": "human_fortress_1"
 }

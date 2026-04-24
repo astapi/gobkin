@@ -1,10 +1,10 @@
 {
   "id": "human_fortress_3",
-  "name": "人間の城塞・本丸",
+  "name": "辺境の城・本丸",
   "areaLevel": 47,
   "floors": 2,
   "baseDurationSec": 10500,
-  "description": "城塞の本丸。精鋭近衛兵に守られた城塞司令官との最終決戦。異種族の力を総動員して突破せよ。",
+  "description": "辺境の城の本丸。近衛兵と司令官が最後の守りを固める、西方戦線の決着となる戦場。",
   "encounter": {
     "perFloorEvents": 3,
     "eventWeights": {

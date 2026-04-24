@@ -16,6 +16,7 @@ const GOBLIN_JOB_HP_COEFFICIENTS: Record<NonNullable<Goblin['job']>, number> = {
   thief: 0.8,
   mage: 0.7,
   cleric: 0.9,
+  rider: 0.95,
 }
 
 type GoblinRaceContext = Pick<Goblin, 'race' | 'baseAttributes'> & { raceId?: Goblin['raceId']; job?: Goblin['job'] }

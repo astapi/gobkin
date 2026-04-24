@@ -1,0 +1,16 @@
+{
+  "id": "dead_grave_2",
+  "name": "死霊の墓原・墓群",
+  "areaLevel": 46,
+  "floors": 2,
+  "baseDurationSec": 7080,
+  "description": "崩れた墓所が密集する地帯。霊体と骨兵が入り混じり、足を止めた者から喰われていく。",
+  "encounter": {
+    "perFloorEvents": 3,
+    "eventWeights": {
+      "battle": 65,
+      "exploring": 35
+    }
+  },
+  "unlockNext": "dead_grave_3"
+}

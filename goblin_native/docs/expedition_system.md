@@ -314,10 +314,10 @@ goldGained = Σ(各戦闘の enemy.gold)
 |------------|------------|
 | 1 | slime_cave |
 | 2 | forest_outskirts, goblin_village_1/2/3 |
-| 3 | orc_camp_1/2/3, undead_ruins_1/2/3, subjugation_force_1/2/3 |
+| 3 | orc_camp_1/2/3, undead_ruins_1/2/3 |
 | 4 | human_village |
-| 5 | dwarf_mine_1/2/3, elf_forest_1/2/3 |
-| 6 | lizardman_swamp_1/2/3, troll_canyon_1/2/3 |
+| 5 | wolf_grassland_1, dwarf_mine_1/2/3, elf_forest_1/2/3 |
+| 6 | lizardman_swamp_1/2/3, subjugation_force_1/2/3, spider_forest_1, dead_grave_1/2/3, harpy_cliff_1, troll_canyon_1/2/3 |
 | 7 | human_fortress_1/2/3 |
 | 8 | royal_capital_1/2/3 |
 

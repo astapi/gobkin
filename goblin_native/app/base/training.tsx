@@ -6,6 +6,7 @@ import { useBaseStore, selectRank } from '@/presentation/stores/useBaseStore'
 import { useDungeonStore } from '@/presentation/stores/useDungeonStore'
 import { useGoblinStore } from '@/presentation/stores/useGoblinStore'
 import { usePartyStore } from '@/presentation/stores/usePartyStore'
+import { useStoryStore } from '@/presentation/stores/useStoryStore'
 import { describeCharacterSkill } from '@/shared/data/characterSkills'
 import { applyGoblinJob, canTrainGoblin, formatGoblinJobSkillName, getGoblinTrainingJobDefinitions, getGoblinJobDefinition, getGoblinJobSkillEntries, GOBLIN_TRAINING_UNLOCK_RANK } from '@/shared/data/goblinJobs'
 import { getCharacterSkill } from '@/shared/data/skillCatalog'
@@ -20,6 +21,7 @@ export default function BaseTrainingScreen() {
   const saveGoblin = useGoblinStore((state) => state.saveGoblin)
   const parties = usePartyStore((state) => state.parties)
   const dungeonProgress = useDungeonStore((state) => state.progress)
+  const stories = useStoryStore((state) => state.stories)
 
   const [selectedGoblinId, setSelectedGoblinId] = useState<number | null>(null)
   const [selectedJob, setSelectedJob] = useState<GoblinJob | undefined>(undefined)
@@ -32,9 +34,14 @@ export default function BaseTrainingScreen() {
       .filter(([, progress]) => progress.cleared)
       .map(([areaId]) => areaId)
   ), [dungeonProgress])
+  const readStoryIds = useMemo(() => new Set(
+    stories
+      .filter((story) => story.read)
+      .map((story) => story.id)
+  ), [stories])
   const jobDefinitions = useMemo(
-    () => getGoblinTrainingJobDefinitions(clearedAreaIds),
-    [clearedAreaIds, i18n.resolvedLanguage]
+    () => getGoblinTrainingJobDefinitions(clearedAreaIds, readStoryIds),
+    [clearedAreaIds, i18n.resolvedLanguage, readStoryIds]
   )
 
   const trainableGoblins = useMemo(() => {

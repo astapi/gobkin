@@ -40,12 +40,20 @@ import undeadRuins1 from './undead_ruins_1.json'
 import undeadRuins2 from './undead_ruins_2.json'
 import undeadRuins3 from './undead_ruins_3.json'
 import vampireCastle1 from './vampire_castle_1.json'
+import wolfGrassland1 from './wolf_grassland_1.json'
+import spiderForest1 from './spider_forest_1.json'
+import deadGrave1 from './dead_grave_1.json'
+import deadGrave2 from './dead_grave_2.json'
+import deadGrave3 from './dead_grave_3.json'
 
 const areaDatabases: Record<string, AreaConfig> = {
   dwarf_mine_1: dwarfMine1 as AreaConfig,
   dwarf_mine_2: dwarfMine2 as AreaConfig,
   dwarf_mine_3: dwarfMine3 as AreaConfig,
   dragon_volcano_1: dragonVolcano1 as AreaConfig,
+  dead_grave_1: deadGrave1 as AreaConfig,
+  dead_grave_2: deadGrave2 as AreaConfig,
+  dead_grave_3: deadGrave3 as AreaConfig,
   elf_forest_1: elfForest1 as AreaConfig,
   elf_forest_2: elfForest2 as AreaConfig,
   elf_forest_3: elfForest3 as AreaConfig,
@@ -72,6 +80,7 @@ const areaDatabases: Record<string, AreaConfig> = {
   royal_capital_3: royalCapital3 as AreaConfig,
   road_1: road1 as AreaConfig,
   slime_cave: slimeCave as AreaConfig,
+  spider_forest_1: spiderForest1 as AreaConfig,
   subjugation_force_1: subjugationForce1 as AreaConfig,
   subjugation_force_2: subjugationForce2 as AreaConfig,
   subjugation_force_3: subjugationForce3 as AreaConfig,
@@ -82,6 +91,7 @@ const areaDatabases: Record<string, AreaConfig> = {
   undead_ruins_2: undeadRuins2 as AreaConfig,
   undead_ruins_3: undeadRuins3 as AreaConfig,
   vampire_castle_1: vampireCastle1 as AreaConfig,
+  wolf_grassland_1: wolfGrassland1 as AreaConfig,
 }
 
 export function getAreaConfig(areaId: string): AreaConfig | null {

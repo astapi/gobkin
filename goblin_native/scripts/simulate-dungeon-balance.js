@@ -103,9 +103,21 @@ const DUNGEON_ROUTE = [
   'orc_camp_2',
   'orc_camp_3',
   'human_village',
+  'wolf_grassland_1',
+  'lizardman_swamp_1',
+  'lizardman_swamp_2',
+  'lizardman_swamp_3',
   'subjugation_force_1',
   'subjugation_force_2',
   'subjugation_force_3',
+  'spider_forest_1',
+  'dead_grave_1',
+  'dead_grave_2',
+  'dead_grave_3',
+  'harpy_cliff_1',
+  'human_fortress_1',
+  'human_fortress_2',
+  'human_fortress_3',
 ]
 
 const DEFAULT_OPTIONS = {

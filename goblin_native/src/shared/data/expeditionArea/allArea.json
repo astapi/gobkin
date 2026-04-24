@@ -140,46 +140,46 @@
       "rankUpTarget": 3
     },
     {
-      "id": "orc_fortress_1",
-      "name": "オークの砦",
-      "areaLevel": 35,
-      "floors": 5,
-      "exploration_time_sec_first": 10800,
-      "exploration_time_sec": 3600,
-      "description": "オークの本拠地。砦というよりはもはやオークの国といっていい規模だ。",
-      "unlockRequires": "orc_camp_3"
-    },
-    {
       "id": "human_village",
       "name": "辺境の村",
-      "areaLevel": 18,
+      "areaLevel": 4,
       "floors": 4,
       "exploration_time_sec_first": 5400,
       "exploration_time_sec": 1800,
-      "description": "人間の村。",
+      "description": "辺境の村の中心部。自警団と猟師を退け、西方にゴブリンの脅威を刻みつけろ。",
       "unlockRequires": "orc_camp_3",
-      "unlockNext": "subjugation_force_1",
+      "unlockNext": "wolf_grassland_1",
       "unlockNexts": [
         "hobbit_hills_1",
-        "dwarf_mine_1",
-        "lizardman_swamp_1"
+        "dwarf_mine_1"
       ]
+    },
+    {
+      "id": "wolf_grassland_1",
+      "name": "ウルフ草原",
+      "areaLevel": 5,
+      "floors": 3,
+      "exploration_time_sec_first": 5880,
+      "exploration_time_sec": 1960,
+      "description": "辺境の村の西に広がる草原。大型ウルフの群れを屈服させ、騎獣と機動戦力を手に入れろ。",
+      "unlockRequires": "human_village",
+      "unlockNext": "lizardman_swamp_1"
     },
     {
       "id": "subjugation_force_1",
       "name": "vs討伐隊防衛戦・先遣隊",
-      "areaLevel": 3,
+      "areaLevel": 6,
       "floors": 3,
       "exploration_time_sec_first": 5700,
       "exploration_time_sec": 1900,
-      "description": "辺境城から先遣隊が接近。正規兵と弓兵を中心とした少数部隊を迎撃せよ。",
-      "unlockRequires": "human_village",
+      "description": "周辺種族を従えた脅威に対し、辺境城から先遣隊が接近。正規兵と弓兵中心の部隊を迎撃せよ。",
+      "unlockRequires": "lizardman_swamp_3",
       "unlockNext": "subjugation_force_2"
     },
     {
       "id": "subjugation_force_2",
       "name": "vs討伐隊防衛戦・本隊",
-      "areaLevel": 3,
+      "areaLevel": 6,
       "floors": 3,
       "exploration_time_sec_first": 5820,
       "exploration_time_sec": 1940,
@@ -190,15 +190,59 @@
     {
       "id": "subjugation_force_3",
       "name": "vs討伐隊防衛戦・決戦",
-      "areaLevel": 3,
+      "areaLevel": 6,
       "floors": 3,
       "exploration_time_sec_first": 6000,
       "exploration_time_sec": 2000,
       "description": "辺境城騎士団長が自ら前線に立つ。精鋭部隊との最終決戦。撃退せよ。",
       "unlockRequires": "subjugation_force_2",
-      "unlockNext": "human_fortress_1",
+      "unlockNext": "spider_forest_1",
       "isBaseCapture": true,
       "rankUpTarget": 4
+    },
+    {
+      "id": "spider_forest_1",
+      "name": "蜘蛛影の森",
+      "areaLevel": 6,
+      "floors": 3,
+      "exploration_time_sec_first": 6600,
+      "exploration_time_sec": 2200,
+      "description": "リザードマン湿原の先に広がる深い森。アラクネの巣網を越え、協力を引き出すだけの実力を示せ。",
+      "unlockRequires": "subjugation_force_3",
+      "unlockNext": "dead_grave_1"
+    },
+    {
+      "id": "dead_grave_1",
+      "name": "死霊の墓原・外縁",
+      "areaLevel": 6,
+      "floors": 2,
+      "exploration_time_sec_first": 6900,
+      "exploration_time_sec": 2300,
+      "description": "墓標が乱立する荒野の外縁。眠りを失った亡者たちが夜ごと這い出してくる。",
+      "unlockRequires": "spider_forest_1",
+      "unlockNext": "dead_grave_2"
+    },
+    {
+      "id": "dead_grave_2",
+      "name": "死霊の墓原・墓群",
+      "areaLevel": 6,
+      "floors": 2,
+      "exploration_time_sec_first": 7080,
+      "exploration_time_sec": 2360,
+      "description": "崩れた墓所が密集する地帯。霊体と骨兵が入り混じり、足を止めた者から喰われていく。",
+      "unlockRequires": "dead_grave_1",
+      "unlockNext": "dead_grave_3"
+    },
+    {
+      "id": "dead_grave_3",
+      "name": "死霊の墓原・霊廟",
+      "areaLevel": 6,
+      "floors": 2,
+      "exploration_time_sec_first": 7320,
+      "exploration_time_sec": 2440,
+      "description": "墓原の中心にある古い霊廟。死の気配を束ねる主を倒し、断崖へ続く道を切り開け。",
+      "unlockRequires": "dead_grave_2",
+      "unlockNext": "harpy_cliff_1"
     },
     {
       "id": "hobbit_hills_1",
@@ -286,7 +330,7 @@
       "exploration_time_sec_first": 6300,
       "exploration_time_sec": 2100,
       "description": "沼砦の浅瀬。沼の戦士と毒牙兵が水際で襲いかかる。",
-      "unlockRequires": "human_village",
+      "unlockRequires": "wolf_grassland_1",
       "unlockNext": "lizardman_swamp_2"
     },
     {
@@ -307,20 +351,33 @@
       "floors": 2,
       "exploration_time_sec_first": 6600,
       "exploration_time_sec": 2200,
-      "description": "砦の本拠。鱗の重装兵に守られた沼王が待ち受ける。水棲戦力を手に入れろ。",
+      "description": "砦の本拠。鱗の重装兵に守られた沼王が待ち受ける。毒と夜襲の術を奪い、次の大戦に備えろ。",
       "unlockRequires": "lizardman_swamp_2",
-      "unlockNext": "harpy_cliff_1"
+      "unlockNext": "subjugation_force_1",
+      "unlockNexts": [
+        "orc_fortress_1"
+      ]
+    },
+    {
+      "id": "orc_fortress_1",
+      "name": "オークの砦",
+      "areaLevel": 6,
+      "floors": 5,
+      "exploration_time_sec_first": 10800,
+      "exploration_time_sec": 3600,
+      "description": "オークの本拠地。狼騎兵と毒の戦術を揃えてなお正面攻略は危険な高難度エリア。",
+      "unlockRequires": "lizardman_swamp_3"
     },
     {
       "id": "harpy_cliff_1",
-      "name": "ハーピィの崖巣",
+      "name": "風切りの断崖",
       "areaLevel": 6,
       "floors": 2,
       "exploration_time_sec_first": 7200,
       "exploration_time_sec": 2400,
-      "description": "沼地を抜けた断崖。空から急襲するハーピィたちが峡谷への道を塞いでいる。",
-      "unlockRequires": "lizardman_swamp_3",
-      "unlockNext": "troll_canyon_1"
+      "description": "墓原の先にそびえる断崖。ハーピィの群れが空を支配し、辺境の城へ向かう空路を閉ざしている。",
+      "unlockRequires": "dead_grave_3",
+      "unlockNext": "human_fortress_1"
     },
     {
       "id": "troll_canyon_1",
@@ -367,34 +424,34 @@
     },
     {
       "id": "human_fortress_1",
-      "name": "人間の城塞・外壁",
+      "name": "辺境の城・外郭",
       "areaLevel": 7,
       "floors": 2,
       "exploration_time_sec_first": 9900,
       "exploration_time_sec": 3300,
-      "description": "城塞の外壁。騎士と宮廷魔術師が城壁から迎え撃つ。",
-      "unlockRequires": "subjugation_force_3",
+      "description": "辺境の城の外郭。城壁上の弓兵と騎士、魔術師が籠城戦で迎え撃つ。",
+      "unlockRequires": "harpy_cliff_1",
       "unlockNext": "human_fortress_2"
     },
     {
       "id": "human_fortress_2",
-      "name": "人間の城塞・城内",
+      "name": "辺境の城・城内",
       "areaLevel": 7,
       "floors": 2,
       "exploration_time_sec_first": 10200,
       "exploration_time_sec": 3400,
-      "description": "城内へ侵入。重装騎兵と攻城兵器操手が待ち構える。",
+      "description": "辺境の城内へ侵入。重装騎兵と城内守備隊が最後の防衛線を張る。",
       "unlockRequires": "human_fortress_1",
       "unlockNext": "human_fortress_3"
     },
     {
       "id": "human_fortress_3",
-      "name": "人間の城塞・本丸",
+      "name": "辺境の城・本丸",
       "areaLevel": 7,
       "floors": 2,
       "exploration_time_sec_first": 10500,
       "exploration_time_sec": 3500,
-      "description": "城塞の本丸。精鋭近衛兵に守られた城塞司令官との最終決戦。異種族の力を総動員して突破せよ。",
+      "description": "辺境の城の本丸。精鋭近衛兵に守られた城代との最終決戦。異種族戦力を総動員して突破せよ。",
       "unlockRequires": "human_fortress_2",
       "unlockNext": "vampire_castle_1",
       "isBaseCapture": true,
