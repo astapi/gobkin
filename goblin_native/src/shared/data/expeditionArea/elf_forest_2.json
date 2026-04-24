@@ -1,7 +1,7 @@
 {
   "id": "elf_forest_2",
   "name": "エルフの隠れ里・内部",
-  "areaLevel": 5,
+  "areaLevel": 45,
   "floors": 2,
   "baseDurationSec": 7020,
   "description": "里の内部。精霊使いや月の衛士が守りを固めている。",

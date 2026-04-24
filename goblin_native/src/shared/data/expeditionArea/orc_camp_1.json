@@ -1,7 +1,7 @@
 {
   "id": "orc_camp_1",
   "name": "オークの野営地・前哨",
-  "areaLevel": 12,
+  "areaLevel": 20,
   "floors": 2,
   "baseDurationSec": 2160,
   "description": "オーク野営地の前哨。前線のブルートと、その後方に控える兵たちが見張りに立っている。",

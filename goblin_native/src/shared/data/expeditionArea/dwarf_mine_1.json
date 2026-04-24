@@ -1,7 +1,7 @@
 {
   "id": "dwarf_mine_1",
   "name": "ドワーフ坑道・入口",
-  "areaLevel": 5,
+  "areaLevel": 25,
   "floors": 2,
   "baseDurationSec": 6000,
   "description": "坑道の入口。ドワーフ坑夫たちが工具を武器に抵抗してくる。",
