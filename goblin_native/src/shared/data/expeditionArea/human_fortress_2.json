@@ -1,10 +1,10 @@
 {
   "id": "human_fortress_2",
-  "name": "人間の城塞・城内",
+  "name": "辺境の城・城内",
   "areaLevel": 47,
   "floors": 2,
   "baseDurationSec": 10200,
-  "description": "城内へ侵入。重装騎兵と攻城兵器操手が待ち構える。",
+  "description": "辺境の城の城内区画。重装騎兵と精鋭兵が反撃し、侵入した異形の軍勢を押し返そうとする。",
   "encounter": {
     "perFloorEvents": 3,
     "eventWeights": {

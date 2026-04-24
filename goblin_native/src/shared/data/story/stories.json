@@ -104,7 +104,7 @@
     },
     {
       "id": "story_after_village",
-      "title": "討伐隊の接近",
+      "title": "辺境城の静観",
       "category": "main",
       "order": 7,
       "unlockCondition": { "type": "dungeon_cleared", "dungeonId": "human_village" },
@@ -112,35 +112,105 @@
       "chapters": [
         {
           "id": "story_after_village_1",
-          "text": "辺境の村を落とした報せは、瞬く間に城塞都市へ伝わった。\n\n人間たちは討伐隊を編成し、こちらに向かっているという。\n\n迎え撃つ準備をしなければならない。"
+          "text": "辺境の村を落とした報せは、辺境の城にも届いた。\n\nだが人間たちは、まだ一つの魔物集団の暴走と見ているらしい。\n\n本格的な討伐軍が動く前に、周辺種族の力を奪って軍を作り替えねばならない。"
+        }
+      ]
+    },
+    {
+      "id": "story_after_wolf_grassland",
+      "title": "狼を駆る者",
+      "category": "main",
+      "order": 8,
+      "unlockCondition": { "type": "dungeon_cleared", "dungeonId": "wolf_grassland_1" },
+      "rewards": [],
+      "chapters": [
+        {
+          "id": "story_after_wolf_grassland_1",
+          "text": "草原の狼群れを屈服させた。\n\n大狼は騎獣となり、一部のゴブリンはその背に乗って戦場を駆け始める。\n\n機動力を得た今、次は湿地に潜むリザードマンから毒と夜襲の術を奪う番だ。"
+        }
+      ]
+    },
+    {
+      "id": "story_after_lizardman_swamp",
+      "title": "脅威の拡大",
+      "category": "main",
+      "order": 9,
+      "unlockCondition": { "type": "dungeon_cleared", "dungeonId": "lizardman_swamp_3" },
+      "rewards": [],
+      "chapters": [
+        {
+          "id": "story_after_lizardman_swamp_1",
+          "text": "沼王を倒し、毒と夜襲の術を取り込んだ。\n\n狼騎兵と湿地戦術を備えた我らは、もはや辺境では看過できぬ脅威となった。\n\nついに辺境の城は討伐隊の派遣を決めたようだ。"
         }
       ]
     },
     {
       "id": "story_after_subjugation",
-      "title": "城塞への進軍",
+      "title": "落とせぬ城",
       "category": "main",
-      "order": 8,
+      "order": 10,
       "unlockCondition": { "type": "dungeon_cleared", "dungeonId": "subjugation_force_3" },
       "rewards": [],
       "chapters": [
         {
           "id": "story_after_subjugation_1",
-          "text": "討伐隊を撃退した。人間たちの恐怖が伝わってくる。\n\nだが、守りに入るつもりはない。城塞を落とさなければ、いずれまた大軍が押し寄せる。\n\n攻めるなら今だ。城塞の壁を越えろ。"
+          "text": "討伐隊を撃退した。辺境の城は大打撃を受けたが、城門を閉ざし、籠城に徹すればまだ攻め落とせない。\n\n野戦で勝つ力は得た。だが、城を崩すにはまだ何かが足りない。\n\n湿原の先にある蜘蛛影の森へ向かい、アラクネの知恵と巣網の力を借りるしかない。"
+        }
+      ]
+    },
+    {
+      "id": "story_after_spider_forest",
+      "title": "巣森の盟約",
+      "category": "main",
+      "order": 11,
+      "unlockCondition": { "type": "dungeon_cleared", "dungeonId": "spider_forest_1" },
+      "rewards": [],
+      "chapters": [
+        {
+          "id": "story_after_spider_forest_1",
+          "text": "アラクネは我らを試し、その力を認めた。\n\n巣網、罠、伝令狩り。正面戦だけでは得られぬ戦い方が、今や軍勢に加わる。\n\n次は死霊の墓原だ。断崖へ向かう道を開くには、あの亡者の荒野を越えねばならない。"
+        }
+      ]
+    },
+    {
+      "id": "story_after_dead_grave",
+      "title": "墓原の先",
+      "category": "main",
+      "order": 12,
+      "unlockCondition": { "type": "dungeon_cleared", "dungeonId": "dead_grave_3" },
+      "rewards": [],
+      "chapters": [
+        {
+          "id": "story_after_dead_grave_1",
+          "text": "墓原を支配する死の気配は薄れ、断崖への道が開けた。\n\n亡者の群れを越えたことで、軍は消耗戦にも耐える胆力を得た。\n\n次に必要なのは空だ。風切りの断崖でハーピィの力を取り込み、城壁の上にまで目を届かせる。"
+        }
+      ]
+    },
+    {
+      "id": "story_after_harpy_cliff",
+      "title": "空を得る",
+      "category": "main",
+      "order": 13,
+      "unlockCondition": { "type": "dungeon_cleared", "dungeonId": "harpy_cliff_1" },
+      "rewards": [],
+      "chapters": [
+        {
+          "id": "story_after_harpy_cliff_1",
+          "text": "断崖を制し、空から辺境の城を見下ろす目を得た。\n\n巣網は壁を縛り、亡者は前線を削り、ハーピィは城壁の内外をかき乱す。\n\n今なら落とせる。辺境の城を奪い、西方の支配を決定的なものにしよう。"
         }
       ]
     },
     {
       "id": "story_after_fortress",
-      "title": "闇の領域",
+      "title": "西方防衛線の崩壊",
       "category": "main",
-      "order": 9,
+      "order": 14,
       "unlockCondition": { "type": "dungeon_cleared", "dungeonId": "human_fortress_3" },
       "rewards": [],
       "chapters": [
         {
           "id": "story_after_fortress_1",
-          "text": "城塞を攻略し、人間の防衛線は崩壊した。\n\nしかし、王都への道はまだ遠い。街道を見下ろす古城からは、不気味な気配が漂っている。\n\nヴァンパイア……夜の支配者が、我らの進軍を阻んでいる。"
+          "text": "辺境の城を攻略し、人間の西方防衛線は崩壊した。\n\nだが、王都への道はまだ遠い。街道を見下ろす古城からは、不気味な気配が漂っている。\n\nヴァンパイア……夜の支配者が、我らの進軍を阻んでいる。"
         }
       ]
     },
@@ -148,7 +218,7 @@
       "id": "story_after_vampire",
       "title": "王都への道",
       "category": "main",
-      "order": 10,
+      "order": 15,
       "unlockCondition": { "type": "dungeon_cleared", "dungeonId": "vampire_castle_1" },
       "rewards": [],
       "chapters": [
@@ -162,7 +232,7 @@
       "id": "story_after_royal_capital_2",
       "title": "最後の試練",
       "category": "main",
-      "order": 11,
+      "order": 16,
       "unlockCondition": { "type": "dungeon_cleared", "dungeonId": "royal_capital_2" },
       "rewards": [],
       "chapters": [
@@ -176,7 +246,7 @@
       "id": "story_ending",
       "title": "ゴブリンキングダム",
       "category": "main",
-      "order": 12,
+      "order": 17,
       "unlockCondition": { "type": "dungeon_cleared", "dungeonId": "royal_capital_3" },
       "rewards": [],
       "chapters": [
@@ -200,7 +270,7 @@
       "chapters": [
         {
           "id": "side_orc_fortress_1",
-          "text": "オークの砦を攻略した。\n\n砦と呼ぶには巨大すぎるその拠点は、もはや一つの国と言ってよい規模だった。\n\nオークの力を完全に手中に収めた。"
+          "text": "オークの砦を攻略した。\n\n狼騎兵の機動力と、湿地で奪った毒や夜襲の術がなければ落とせなかった拠点だ。\n\nオークの重装戦力までも手中に収め、軍勢はさらに危険な姿へ変わっていく。"
         }
       ]
     },

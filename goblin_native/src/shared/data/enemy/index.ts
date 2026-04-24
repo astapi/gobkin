@@ -41,12 +41,20 @@ import undeadRuins1 from './undead_ruins_1.json'
 import undeadRuins2 from './undead_ruins_2.json'
 import undeadRuins3 from './undead_ruins_3.json'
 import vampireCastle1 from './vampire_castle_1.json'
+import wolfGrassland1 from './wolf_grassland_1.json'
+import spiderForest1 from './spider_forest_1.json'
+import deadGrave1 from './dead_grave_1.json'
+import deadGrave2 from './dead_grave_2.json'
+import deadGrave3 from './dead_grave_3.json'
 
 const enemyDatabases: Record<string, EnemyDatabase> = {
   dwarf_mine_1: dwarfMine1 as EnemyDatabase,
   dwarf_mine_2: dwarfMine2 as EnemyDatabase,
   dwarf_mine_3: dwarfMine3 as EnemyDatabase,
   dragon_volcano_1: dragonVolcano1 as EnemyDatabase,
+  dead_grave_1: deadGrave1 as EnemyDatabase,
+  dead_grave_2: deadGrave2 as EnemyDatabase,
+  dead_grave_3: deadGrave3 as EnemyDatabase,
   elf_forest_1: elfForest1 as EnemyDatabase,
   elf_forest_2: elfForest2 as EnemyDatabase,
   elf_forest_3: elfForest3 as EnemyDatabase,
@@ -73,6 +81,7 @@ const enemyDatabases: Record<string, EnemyDatabase> = {
   royal_capital_3: royalCapital3 as EnemyDatabase,
   road_1: road1 as EnemyDatabase,
   slime_cave: slimeCave as EnemyDatabase,
+  spider_forest_1: spiderForest1 as EnemyDatabase,
   subjugation_force_1: subjugationForce1 as EnemyDatabase,
   subjugation_force_2: subjugationForce2 as EnemyDatabase,
   subjugation_force_3: subjugationForce3 as EnemyDatabase,
@@ -83,6 +92,7 @@ const enemyDatabases: Record<string, EnemyDatabase> = {
   undead_ruins_2: undeadRuins2 as EnemyDatabase,
   undead_ruins_3: undeadRuins3 as EnemyDatabase,
   vampire_castle_1: vampireCastle1 as EnemyDatabase,
+  wolf_grassland_1: wolfGrassland1 as EnemyDatabase,
 }
 
 export function getEnemyDatabase(areaId: string): EnemyDatabase | null {

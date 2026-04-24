@@ -1,0 +1,77 @@
+{
+  "enemies": [
+    {
+      "id": "SPF001",
+      "name": "巣糸蜘蛛",
+      "raceTags": ["insect"],
+      "level": 22,
+      "hp": 96,
+      "atk": 40,
+      "def": 16,
+      "attackCount": 2,
+      "accuracy": 540,
+      "evasion": 42,
+      "exp": 80,
+      "gold": 70,
+      "agility": 20,
+      "magicDef": 18
+    },
+    {
+      "id": "SPF002",
+      "name": "毒牙蜘蛛",
+      "raceTags": ["insect"],
+      "level": 23,
+      "hp": 108,
+      "atk": 46,
+      "def": 18,
+      "attackCount": 2,
+      "accuracy": 560,
+      "evasion": 44,
+      "exp": 86,
+      "gold": 76,
+      "agility": 22,
+      "magicDef": 20
+    },
+    {
+      "id": "SPF003",
+      "name": "森影アラクネ",
+      "raceTags": ["spider"],
+      "level": 24,
+      "hp": 136,
+      "atk": 50,
+      "magicAtk": 30,
+      "def": 20,
+      "attackCount": 3,
+      "accuracy": 585,
+      "evasion": 48,
+      "exp": 96,
+      "gold": 84,
+      "agility": 24,
+      "magicDef": 24
+    },
+    {
+      "id": "B_ARACHNE",
+      "name": "巣森のアラクネ",
+      "raceTags": ["spider"],
+      "level": 28,
+      "hp": 840,
+      "atk": 64,
+      "magicAtk": 40,
+      "def": 30,
+      "attackCount": 3,
+      "accuracy": 650,
+      "evasion": 56,
+      "exp": 440,
+      "gold": 380,
+      "agility": 28,
+      "magicDef": 34
+    }
+  ],
+  "patterns": [
+    { "id": "SF1_001", "floors": [1], "enemies": [["SPF001", "SPF001"], ["SPF002"]] },
+    { "id": "SF1_002", "floors": [1], "enemies": [["SPF002", "SPF001"], ["SPF001", "SPF001"]] },
+    { "id": "SF1_003", "floors": [2], "enemies": [["SPF002", "SPF002"], ["SPF003"]] },
+    { "id": "SF1_004", "floors": [2], "enemies": [["SPF003", "SPF001"], ["SPF002", "SPF001"]] },
+    { "id": "BOSS", "floors": [3], "enemies": [["B_ARACHNE"], ["SPF003", "SPF002"]], "isBoss": true }
+  ]
+}

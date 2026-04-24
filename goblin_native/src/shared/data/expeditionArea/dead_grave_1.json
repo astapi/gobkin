@@ -1,0 +1,16 @@
+{
+  "id": "dead_grave_1",
+  "name": "死霊の墓原・外縁",
+  "areaLevel": 46,
+  "floors": 2,
+  "baseDurationSec": 6900,
+  "description": "墓標が乱立する荒野の外縁。眠りを失った亡者たちが夜ごと這い出してくる。",
+  "encounter": {
+    "perFloorEvents": 3,
+    "eventWeights": {
+      "battle": 65,
+      "exploring": 35
+    }
+  },
+  "unlockNext": "dead_grave_2"
+}

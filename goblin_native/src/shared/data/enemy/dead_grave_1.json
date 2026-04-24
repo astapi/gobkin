@@ -1,0 +1,59 @@
+{
+  "enemies": [
+    {
+      "id": "DGR001",
+      "name": "墓兵",
+      "raceTags": ["undead"],
+      "level": 22,
+      "hp": 140,
+      "atk": 34,
+      "def": 16,
+      "attackCount": 2,
+      "accuracy": 500,
+      "evasion": 24,
+      "exp": 74,
+      "gold": 66,
+      "agility": 14,
+      "magicDef": 16
+    },
+    {
+      "id": "DGR002",
+      "name": "墓荒らしの亡者",
+      "raceTags": ["undead"],
+      "level": 22,
+      "hp": 170,
+      "atk": 28,
+      "def": 14,
+      "attackCount": 1,
+      "accuracy": 495,
+      "evasion": 20,
+      "exp": 70,
+      "gold": 62,
+      "agility": 11,
+      "magicDef": 14
+    },
+    {
+      "id": "DGR003",
+      "name": "嘆きの霊",
+      "raceTags": ["undead"],
+      "level": 23,
+      "hp": 110,
+      "atk": 40,
+      "magicAtk": 34,
+      "def": 10,
+      "attackCount": 1,
+      "accuracy": 520,
+      "evasion": 30,
+      "exp": 82,
+      "gold": 74,
+      "agility": 18,
+      "magicDef": 12
+    }
+  ],
+  "patterns": [
+    { "id": "DG1_001", "floors": [1], "enemies": [["DGR001", "DGR001"]] },
+    { "id": "DG1_002", "floors": [1], "enemies": [["DGR002"], ["DGR001", "DGR001"]] },
+    { "id": "DG1_003", "floors": [2], "enemies": [["DGR001", "DGR002"], ["DGR003"]] },
+    { "id": "DG1_004", "floors": [2], "enemies": [["DGR002", "DGR002"], ["DGR003"]] }
+  ]
+}

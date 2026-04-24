@@ -1,0 +1,75 @@
+{
+  "enemies": [
+    {
+      "id": "DGR001",
+      "name": "墓兵",
+      "raceTags": ["undead"],
+      "level": 22,
+      "hp": 140,
+      "atk": 34,
+      "def": 16,
+      "attackCount": 2,
+      "accuracy": 500,
+      "evasion": 24,
+      "exp": 74,
+      "gold": 66,
+      "agility": 14,
+      "magicDef": 16
+    },
+    {
+      "id": "DGR003",
+      "name": "嘆きの霊",
+      "raceTags": ["undead"],
+      "level": 23,
+      "hp": 110,
+      "atk": 40,
+      "magicAtk": 34,
+      "def": 10,
+      "attackCount": 1,
+      "accuracy": 520,
+      "evasion": 30,
+      "exp": 82,
+      "gold": 74,
+      "agility": 18,
+      "magicDef": 12
+    },
+    {
+      "id": "DGR004",
+      "name": "墓守の骨弓兵",
+      "raceTags": ["undead"],
+      "level": 23,
+      "hp": 98,
+      "atk": 44,
+      "def": 14,
+      "attackCount": 2,
+      "accuracy": 535,
+      "evasion": 28,
+      "exp": 84,
+      "gold": 76,
+      "agility": 17,
+      "magicDef": 16
+    },
+    {
+      "id": "DGR005",
+      "name": "墓喰らいの屍鬼",
+      "raceTags": ["undead"],
+      "level": 24,
+      "hp": 180,
+      "atk": 54,
+      "def": 22,
+      "attackCount": 2,
+      "accuracy": 540,
+      "evasion": 22,
+      "exp": 92,
+      "gold": 82,
+      "agility": 12,
+      "magicDef": 20
+    }
+  ],
+  "patterns": [
+    { "id": "DG2_001", "floors": [1], "enemies": [["DGR001", "DGR003"], ["DGR004"]] },
+    { "id": "DG2_002", "floors": [1], "enemies": [["DGR003", "DGR003"], ["DGR004"]] },
+    { "id": "DG2_003", "floors": [2], "enemies": [["DGR005"], ["DGR004", "DGR003"]] },
+    { "id": "DG2_004", "floors": [2], "enemies": [["DGR005", "DGR001"], ["DGR004", "DGR003"]] }
+  ]
+}

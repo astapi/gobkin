@@ -1,10 +1,10 @@
 {
   "id": "human_fortress_1",
-  "name": "人間の城塞・外壁",
+  "name": "辺境の城・外郭",
   "areaLevel": 47,
   "floors": 2,
   "baseDurationSec": 9900,
-  "description": "城塞の外壁。騎士と宮廷魔術師が城壁から迎え撃つ。",
+  "description": "辺境の城の外郭防衛線。討伐軍敗北の報を受けた騎士団が城門と外壁で迎え撃つ。",
   "encounter": {
     "perFloorEvents": 3,
     "eventWeights": {

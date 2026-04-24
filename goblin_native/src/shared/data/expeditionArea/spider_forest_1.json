@@ -1,0 +1,16 @@
+{
+  "id": "spider_forest_1",
+  "name": "蜘蛛影の森",
+  "areaLevel": 46,
+  "floors": 3,
+  "baseDurationSec": 6600,
+  "description": "リザードマン湿原の先に広がる深い森。アラクネの巣網を越え、協力を引き出すだけの実力を示せ。",
+  "encounter": {
+    "perFloorEvents": 3,
+    "eventWeights": {
+      "battle": 70,
+      "exploring": 30
+    }
+  },
+  "unlockNext": "dead_grave_1"
+}

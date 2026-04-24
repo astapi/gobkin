@@ -36,6 +36,10 @@ const enemyImagesById: Record<string, ImageSourcePropType> = {
   GOB003: require('../../../assets/enemy/goblin_warrior.png'),
   GOB004: require('../../../assets/enemy/goblin_mage.png'),
   GOB005: require('../../../assets/enemy/goblin_guard.png'),
+  WFG001: require('../../../assets/enemy/wolf.png'),
+  WFG002: require('../../../assets/enemy/gray_wolf.png'),
+  WFG003: require('../../../assets/enemy/gray_wolf.png'),
+  B_WOLF_ALPHA: require('../../../assets/enemy/gray_wolf.png'),
 }
 
 const enemyImagesByName: Record<string, ImageSourcePropType> = {
@@ -72,6 +76,10 @@ const enemyImagesByName: Record<string, ImageSourcePropType> = {
   ゴブリンウォリアー: enemyImagesById.GOB003,
   ゴブリンメイジ: enemyImagesById.GOB004,
   ゴブリンガード: enemyImagesById.GOB005,
+  草原ウルフ: enemyImagesById.WFG001,
+  ダイアウルフ: enemyImagesById.WFG002,
+  牙王の眷属: enemyImagesById.WFG003,
+  銀牙のアルファ: enemyImagesById.B_WOLF_ALPHA,
 }
 
 export function getEnemyImage(enemy: Pick<EnemySnap, 'id' | 'name'>): ImageSourcePropType | null {

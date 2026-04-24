@@ -1,0 +1,16 @@
+{
+  "id": "dead_grave_3",
+  "name": "死霊の墓原・霊廟",
+  "areaLevel": 46,
+  "floors": 2,
+  "baseDurationSec": 7320,
+  "description": "墓原の中心にある古い霊廟。死の気配を束ねる主を倒し、断崖へ続く道を切り開け。",
+  "encounter": {
+    "perFloorEvents": 3,
+    "eventWeights": {
+      "battle": 65,
+      "exploring": 35
+    }
+  },
+  "unlockNext": "harpy_cliff_1"
+}

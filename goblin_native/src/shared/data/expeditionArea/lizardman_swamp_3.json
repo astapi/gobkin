@@ -4,7 +4,7 @@
   "areaLevel": 46,
   "floors": 2,
   "baseDurationSec": 6600,
-  "description": "砦の本拠。鱗の重装兵に守られた沼王が待ち受ける。水棲戦力を手に入れろ。",
+  "description": "砦の本拠。鱗の重装兵に守られた沼王が待ち受ける。毒と夜襲の術を奪い、次の大戦に備えろ。",
   "encounter": {
     "perFloorEvents": 3,
     "eventWeights": {
@@ -12,5 +12,5 @@
       "exploring": 35
     }
   },
-  "unlockNext": "harpy_cliff_1"
+  "unlockNext": "subjugation_force_1"
 }

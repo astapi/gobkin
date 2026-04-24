@@ -4,7 +4,7 @@
   "areaLevel": 24,
   "floors": 4,
   "baseDurationSec": 5400,
-  "description": "村の中心部。自警団長が最後の砦として立ちはだかる。制圧してゴブリン国家の礎を築け。",
+  "description": "辺境の村の中心部。自警団と猟師を退け、西方にゴブリンの脅威を刻みつけろ。",
   "encounter": {
     "perFloorEvents": 3,
     "eventWeights": {
@@ -12,5 +12,5 @@
       "exploring": 35
     }
   },
-  "unlockNext": "subjugation_force_1"
+  "unlockNext": "wolf_grassland_1"
 }

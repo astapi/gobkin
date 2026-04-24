@@ -1,4 +1,4 @@
-import type { CharacterSkill, Goblin, GoblinJob } from '../types'
+import type { CharacterSkill, Goblin, GoblinBaseAttributes, GoblinJob } from '../types'
 import { cloneCharacterSkills } from './characterSkills'
 import { getDefaultSkillsForRace } from './raceSkills'
 import { syncGoblinDerivedStats } from '../utils/goblinStats'
@@ -27,6 +27,8 @@ type GoblinJobDefinition = {
   description: string
   skills: GoblinJobSkill[]
   unlockRequiresClearedArea?: string
+  unlockRequiresReadStory?: string
+  baseAttributes?: GoblinBaseAttributes
 }
 
 type GoblinJobDefinitionSeed = {
@@ -34,6 +36,8 @@ type GoblinJobDefinitionSeed = {
   accentColor: string
   skills: GoblinJobSkill[]
   unlockRequiresClearedArea?: string
+  unlockRequiresReadStory?: string
+  baseAttributes?: GoblinBaseAttributes
 }
 
 const GOBLIN_JOB_DEFINITION_SEEDS: Record<GoblinJob, GoblinJobDefinitionSeed> = {
@@ -110,6 +114,20 @@ const GOBLIN_JOB_DEFINITION_SEEDS: Record<GoblinJob, GoblinJobDefinitionSeed> = 
       },
     ],
   },
+  rider: {
+    id: 'rider',
+    accentColor: '#7C3AED',
+    unlockRequiresReadStory: 'story_after_wolf_grassland',
+    baseAttributes: {
+      power: 12,
+      wisdom: 8,
+      spirit: 10,
+      vitality: 10,
+      agility: 15,
+      luck: 12,
+    },
+    skills: [],
+  },
 }
 
 function buildGoblinJobDefinition(seed: GoblinJobDefinitionSeed): GoblinJobDefinition {
@@ -138,9 +156,13 @@ export function getGoblinJobDefinitions(): GoblinJobDefinition[] {
   return Object.values(GOBLIN_JOB_DEFINITION_SEEDS).map(buildGoblinJobDefinition)
 }
 
-export function getGoblinTrainingJobDefinitions(clearedAreaIds: ReadonlySet<string>): GoblinJobDefinition[] {
+export function getGoblinTrainingJobDefinitions(
+  clearedAreaIds: ReadonlySet<string>,
+  readStoryIds: ReadonlySet<string> = new Set(),
+): GoblinJobDefinition[] {
   return getGoblinJobDefinitions().filter((job) => (
-    !job.unlockRequiresClearedArea || clearedAreaIds.has(job.unlockRequiresClearedArea)
+    (!job.unlockRequiresClearedArea || clearedAreaIds.has(job.unlockRequiresClearedArea)) &&
+    (!job.unlockRequiresReadStory || readStoryIds.has(job.unlockRequiresReadStory))
   ))
 }
 
@@ -177,9 +199,10 @@ export function normalizeGoblinJobSkills(goblin: Goblin): Goblin {
 }
 
 export function applyGoblinJob(goblin: Goblin, job?: GoblinJob): Goblin {
+  const jobDefinition = job ? getGoblinJobDefinition(job) : null
   return syncGoblinDerivedStats(normalizeGoblinJobSkills({
     ...goblin,
-    baseAttributes: getGoblinBaseAttributes(goblin),
+    baseAttributes: jobDefinition?.baseAttributes ?? getGoblinBaseAttributes(goblin),
     job,
   }))
 }

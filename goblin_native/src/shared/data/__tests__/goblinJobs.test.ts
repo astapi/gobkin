@@ -83,6 +83,14 @@ describe('goblinJobs', () => {
     expect(getGoblinTrainingJobDefinitions(new Set(['road_1'])).some((job) => job.id === 'cleric')).toBe(true)
   })
 
+  it('ウルフ草原後のストーリー読了でライダー訓練が解放される', () => {
+    expect(getGoblinTrainingJobDefinitions(new Set(['human_village'])).some((job) => job.id === 'rider')).toBe(false)
+    expect(
+      getGoblinTrainingJobDefinitions(new Set(['human_village']), new Set(['story_after_wolf_grassland']))
+        .some((job) => job.id === 'rider')
+    ).toBe(true)
+  })
+
   it('クレリックは回復魔法Lv7スキルを持つ', () => {
     const level1 = applyGoblinJob(createGoblin({ level: 1 }), 'cleric')
 
@@ -112,5 +120,18 @@ describe('goblinJobs', () => {
     expect(applyGoblinJob(goblin, 'thief').stats.hp).toBe(35)
     expect(applyGoblinJob(goblin, 'mage').stats.hp).toBe(32)
     expect(applyGoblinJob(goblin, 'cleric').stats.hp).toBe(38)
+  })
+
+  it('ライダーは指定した基礎能力値を使う', () => {
+    const trained = applyGoblinJob(createGoblin({ level: 1 }), 'rider')
+
+    expect(trained.baseAttributes).toEqual({
+      power: 12,
+      wisdom: 8,
+      spirit: 10,
+      vitality: 10,
+      agility: 15,
+      luck: 12,
+    })
   })
 })
