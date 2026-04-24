@@ -105,6 +105,7 @@ const DUNGEON_ROUTE = [
   'lizardman_swamp_1',
   'lizardman_swamp_2',
   'lizardman_swamp_3',
+  'orc_fortress_1',
   'subjugation_force_1',
   'subjugation_force_2',
   'subjugation_force_3',

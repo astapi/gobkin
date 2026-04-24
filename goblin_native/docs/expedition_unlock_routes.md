@@ -6,7 +6,8 @@
 
 - 実線: メインの `unlockNext`
 - 点線: 寄り道・高難度などの追加解放 `unlockNexts`
-- `辺境の村` クリア後は、まず `ウルフ草原` がメイン進行として解放されます。ここで騎獣と機動戦力を獲得します。
+- `辺境の村` クリア後は、まず `ウルフ草原` から `リザードマンの沼砦` へ進み、機動力と湿地戦術を獲得します。
+- `オークの野営地・本陣` からは `オークの砦` にも分岐し、ここを制圧すると `vs討伐隊防衛戦` が解放されます。
 - `vs討伐隊防衛戦・決戦` の後は、`蜘蛛影の森 -> 死霊の墓原 -> 風切りの断崖` を経て、ようやく `辺境の城` 攻略へ進みます。
 
 ## 解放ルート
@@ -72,9 +73,14 @@ flowchart TD
   orc_camp_2 --> orc_camp_3
   orc_camp_3 --> human_village
   human_village --> wolf_grassland_1
-  human_village -.-> hobbit_hills_1
-  human_village -.-> dwarf_mine_1
   wolf_grassland_1 --> lizardman_swamp_1
+  orc_camp_3 -.-> orc_fortress_1
+  hobbit_hills_1
+  dwarf_mine_1 --> dwarf_mine_2
+  dwarf_mine_2 --> dwarf_mine_3
+  elf_forest_1 --> elf_forest_2
+  elf_forest_2 --> elf_forest_3
+  orc_fortress_1 --> subjugation_force_1
   subjugation_force_1 --> subjugation_force_2
   subjugation_force_2 --> subjugation_force_3
   subjugation_force_3 --> spider_forest_1
@@ -83,16 +89,8 @@ flowchart TD
   dead_grave_2 --> dead_grave_3
   dead_grave_3 --> harpy_cliff_1
   harpy_cliff_1 --> human_fortress_1
-  dwarf_mine_1 --> dwarf_mine_2
-  dwarf_mine_2 --> dwarf_mine_3
-  dwarf_mine_3 --> elf_forest_1
-  elf_forest_1 --> elf_forest_2
-  elf_forest_2 --> elf_forest_3
-  elf_forest_3 -.-> lizardman_swamp_1
   lizardman_swamp_1 --> lizardman_swamp_2
   lizardman_swamp_2 --> lizardman_swamp_3
-  lizardman_swamp_3 --> subjugation_force_1
-  lizardman_swamp_3 -.-> orc_fortress_1
   harpy_cliff_1 -.-> troll_canyon_1
   troll_canyon_1 --> troll_canyon_2
   troll_canyon_2 --> troll_canyon_3
@@ -107,7 +105,7 @@ flowchart TD
 
   classDef sideQuest fill:#fff7d6,stroke:#b8860b,stroke-width:2px,color:#222;
   classDef finalArea fill:#ffe4e4,stroke:#b22222,stroke-width:2px,color:#222;
-  class orc_fortress_1,hobbit_hills_1,dwarf_mine_1 sideQuest;
+  class orc_fortress_1,hobbit_hills_1,dwarf_mine_1,elf_forest_1 sideQuest;
   class royal_capital_3 finalArea;
 ```
 
@@ -115,8 +113,9 @@ flowchart TD
 
 | 解放元 | 寄り道エリア | 位置づけ |
 | --- | --- | --- |
-| 辺境の村 | ホビットの丘陵村 | 強化・資源目的の寄り道エリア。 |
-| 辺境の村 | ドワーフ坑道・入口 | 装備強化ルートの入口。 |
-| リザードマンの沼砦・本拠 | オークの砦 | 狼騎兵と毒戦術を揃えて挑む高難度エリア。 |
+| 解放元なし | ホビットの丘陵村 | いったん宙に置かれた独立寄り道エリア。 |
+| 解放元なし | ドワーフ坑道・入口 | いったん宙に置かれた装備強化ルート。 |
+| 解放元なし | エルフの隠れ里・外縁 | いったん宙に置かれた独立支線。 |
+| オークの野営地・本陣 | オークの砦 | 討伐隊派遣の直接要因となる分岐ルート。 |
 | vs討伐隊防衛戦・決戦 | 蜘蛛影の森 | アラクネの協力を得るための次章メインルート。 |
 | 死霊の墓原・霊廟 | 風切りの断崖 | 辺境の城攻略前に空の戦力を得る中継ルート。 |

@@ -148,11 +148,7 @@
       "exploration_time_sec": 1800,
       "description": "辺境の村の中心部。自警団と猟師を退け、西方にゴブリンの脅威を刻みつけろ。",
       "unlockRequires": "orc_camp_3",
-      "unlockNext": "wolf_grassland_1",
-      "unlockNexts": [
-        "hobbit_hills_1",
-        "dwarf_mine_1"
-      ]
+      "unlockNext": "wolf_grassland_1"
     },
     {
       "id": "wolf_grassland_1",
@@ -173,7 +169,7 @@
       "exploration_time_sec_first": 5700,
       "exploration_time_sec": 1900,
       "description": "周辺種族を従えた脅威に対し、辺境城から先遣隊が接近。正規兵と弓兵中心の部隊を迎撃せよ。",
-      "unlockRequires": "lizardman_swamp_3",
+      "unlockRequires": "orc_fortress_1",
       "unlockNext": "subjugation_force_2"
     },
     {
@@ -251,8 +247,7 @@
       "floors": 2,
       "exploration_time_sec_first": 5700,
       "exploration_time_sec": 1900,
-      "description": "辺境の村の先に広がる丘陵地。身軽なホビットの斥候と投石手が補給路を守っている。",
-      "unlockRequires": "human_village"
+      "description": "辺境の外れにある丘陵地。身軽なホビットの斥候と投石手が補給路を守っている。"
     },
     {
       "id": "dwarf_mine_1",
@@ -262,7 +257,6 @@
       "exploration_time_sec_first": 6000,
       "exploration_time_sec": 2000,
       "description": "坑道の入口。ドワーフ坑夫たちが工具を武器に抵抗してくる。",
-      "unlockRequires": "human_village",
       "unlockNext": "dwarf_mine_2"
     },
     {
@@ -285,7 +279,6 @@
       "exploration_time_sec": 2100,
       "description": "坑道の最深部。坑道守護者と擲弾兵に守られた鍛冶王が待ち受ける。鍛冶能力をゴブリン国家に取り込め。",
       "unlockRequires": "dwarf_mine_2",
-      "unlockNext": "elf_forest_1",
       "isBaseCapture": true,
       "rankUpTarget": 5
     },
@@ -297,7 +290,6 @@
       "exploration_time_sec_first": 6900,
       "exploration_time_sec": 2300,
       "description": "隠れ里の外縁。森の斥候と射手が素早い攻撃を仕掛けてくる。",
-      "unlockRequires": "dwarf_mine_3",
       "unlockNext": "elf_forest_2"
     },
     {
@@ -319,8 +311,7 @@
       "exploration_time_sec_first": 7200,
       "exploration_time_sec": 2400,
       "description": "里の中枢。古樹の戦士に守られた森の番人が最後の壁として立ちはだかる。魔法の力を手に入れろ。",
-      "unlockRequires": "elf_forest_2",
-      "unlockNext": "lizardman_swamp_1"
+      "unlockRequires": "elf_forest_2"
     },
     {
       "id": "lizardman_swamp_1",
@@ -352,11 +343,7 @@
       "exploration_time_sec_first": 6600,
       "exploration_time_sec": 2200,
       "description": "砦の本拠。鱗の重装兵に守られた沼王が待ち受ける。毒と夜襲の術を奪い、次の大戦に備えろ。",
-      "unlockRequires": "lizardman_swamp_2",
-      "unlockNext": "subjugation_force_1",
-      "unlockNexts": [
-        "orc_fortress_1"
-      ]
+      "unlockRequires": "lizardman_swamp_2"
     },
     {
       "id": "orc_fortress_1",
@@ -365,8 +352,9 @@
       "floors": 5,
       "exploration_time_sec_first": 10800,
       "exploration_time_sec": 3600,
-      "description": "オークの本拠地。狼騎兵と毒の戦術を揃えてなお正面攻略は危険な高難度エリア。",
-      "unlockRequires": "lizardman_swamp_3"
+      "description": "オークの本拠地。狼騎兵と毒の戦術を揃え、ついに挑む本格要塞。ここを落とした時、人間は討伐軍を差し向ける。",
+      "unlockRequires": "orc_camp_3",
+      "unlockNext": "subjugation_force_1"
     },
     {
       "id": "harpy_cliff_1",

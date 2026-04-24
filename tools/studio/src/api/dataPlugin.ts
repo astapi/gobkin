@@ -160,6 +160,15 @@ export function dataApiPlugin(options: Options): Plugin {
         }
       })
 
+      server.middlewares.use('/api/dungeon-unlocks', async (_req, res) => {
+        try {
+          return json(res, 200, await readDungeonUnlocks(areaDir))
+        } catch (err) {
+          const message = err instanceof Error ? err.message : 'Unknown error'
+          return json(res, 500, { error: message })
+        }
+      })
+
       server.middlewares.use('/api/party-presets', async (req, res) => {
         try {
           if (req.method === 'GET') {
@@ -318,6 +327,31 @@ async function listStories(storyFile: string): Promise<StorySummary[]> {
         : '常時解放',
     }))
     .sort((a, b) => a.order - b.order || a.id.localeCompare(b.id))
+}
+
+async function readDungeonUnlocks(areaDir: string) {
+  const allAreaPath = path.join(areaDir, 'allArea.json')
+  const raw = await readJson(allAreaPath)
+  const areas = Array.isArray((raw as { areas?: unknown[] }).areas)
+    ? (raw as { areas: Array<Record<string, unknown>> }).areas
+    : []
+
+  return areas
+    .filter((area) => typeof area.id === 'string')
+    .map((area) => ({
+      areaId: String(area.id),
+      name: String(area.name ?? area.id),
+      areaLevel: Number(area.areaLevel ?? 0),
+      unlockRequires:
+        typeof area.unlockRequires === 'string' ? area.unlockRequires : undefined,
+      unlockNext: typeof area.unlockNext === 'string' ? area.unlockNext : undefined,
+      unlockNexts: Array.isArray(area.unlockNexts)
+        ? area.unlockNexts.filter((entry): entry is string => typeof entry === 'string')
+        : [],
+      unlocked: area.unlocked === true,
+      isBaseCapture: area.isBaseCapture === true,
+    }))
+    .sort((a, b) => a.areaLevel - b.areaLevel || a.areaId.localeCompare(b.areaId))
 }
 
 function isAreaConfigShape(value: unknown): value is Record<string, unknown> {

@@ -125,6 +125,17 @@ export interface DungeonSummary {
   patternCount: number
 }
 
+export interface DungeonUnlockNode {
+  areaId: string
+  name: string
+  areaLevel: number
+  unlockRequires?: string
+  unlockNext?: string
+  unlockNexts: string[]
+  unlocked: boolean
+  isBaseCapture: boolean
+}
+
 export interface DungeonDetailDto {
   areaId: string
   area: AreaConfig

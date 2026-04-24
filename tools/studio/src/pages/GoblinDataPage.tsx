@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 
 import { getCharacterSkillDefinition } from '@app/shared/data/skillCatalog'
-import { getCharacterSkillDescription } from '@app/shared/data/characterSkills'
 import { getGoblinJobDefinition } from '@app/shared/data/goblinJobs'
 import { getSkillLabel } from '@app/shared/i18n/entityLocalization'
 
@@ -34,7 +33,7 @@ type SaveState =
   | { kind: 'error'; message: string }
   | { kind: 'success' }
 
-type Tab = 'races' | 'variants' | 'jobs' | 'skills'
+type Tab = 'races' | 'variants' | 'jobs'
 
 const EMPTY_ATTRIBUTES: GoblinBaseAttributes = {
   power: 10,
@@ -78,7 +77,6 @@ export function GoblinDataPage() {
   const [selectedRaceId, setSelectedRaceId] = useState<string | null>(null)
   const [selectedVariantId, setSelectedVariantId] = useState<string | null>(null)
   const [selectedJobId, setSelectedJobId] = useState<string | null>(null)
-  const [skillQuery, setSkillQuery] = useState('')
   const originalRef = useRef<string | null>(null)
 
   useEffect(() => {
@@ -167,31 +165,6 @@ export function GoblinDataPage() {
     draft?.variants.find((variant) => variant.factorId === selectedVariantId) ?? null
   const selectedJob = draft?.jobs.find((job) => job.id === selectedJobId) ?? null
 
-  const skillRows = useMemo(() => {
-    const rows = new Set<string>()
-    draft?.jobs.forEach((job) => job.skills.forEach((entry) => rows.add(entry.skillId)))
-    draft?.variants.forEach((variant) =>
-      (variant.defaultSkillIds ?? []).forEach((entry) => rows.add(entry)),
-    )
-
-    const query = skillQuery.trim().toLowerCase()
-    return [...rows]
-      .filter((skillId) => {
-        if (query === '') return true
-        try {
-          const skill = getCharacterSkillDefinition(skillId)
-          const description = getCharacterSkillDescription(skill)
-          return (
-            skillId.toLowerCase().includes(query) ||
-            description.toLowerCase().includes(query)
-          )
-        } catch {
-          return skillId.toLowerCase().includes(query)
-        }
-      })
-      .sort()
-  }, [draft, skillQuery])
-
   if (loadState.kind === 'loading') return <p className="state-msg">読み込み中…</p>
   if (loadState.kind === 'error') {
     return <p className="state-msg error">読み込みに失敗しました: {loadState.message}</p>
@@ -204,7 +177,7 @@ export function GoblinDataPage() {
         <div>
           <h2>ゴブリンデータ</h2>
           <p className="subtle">
-            race / variant / job / skill を確認し、主要定義は編集できます。
+            race / variant / job を確認し、主要定義を編集できます。
           </p>
         </div>
         <div className="save-bar">
@@ -239,9 +212,6 @@ export function GoblinDataPage() {
         </button>
         <button className={tab === 'jobs' ? 'tab active' : 'tab'} onClick={() => setTab('jobs')}>
           Job
-        </button>
-        <button className={tab === 'skills' ? 'tab active' : 'tab'} onClick={() => setTab('skills')}>
-          Skill
         </button>
       </div>
 
@@ -385,61 +355,6 @@ export function GoblinDataPage() {
               />
             )}
           </DataEditorLayout>
-        )}
-
-        {tab === 'skills' && (
-          <section className="card">
-            <div className="section-head">
-              <h3>使用中スキル</h3>
-              <input
-                type="search"
-                className="search-input goblin-skill-search"
-                placeholder="skillId / 説明で絞り込み"
-                value={skillQuery}
-                onChange={(e) => setSkillQuery(e.target.value)}
-              />
-            </div>
-            <table className="enemy-table">
-              <thead>
-                <tr>
-                  <th>skillId</th>
-                  <th>i18n key</th>
-                  <th>日本語名</th>
-                  <th>説明</th>
-                  <th>定義</th>
-                </tr>
-              </thead>
-              <tbody>
-                {skillRows.map((skillId) => {
-                  try {
-                    const skill = getCharacterSkillDefinition(skillId)
-                    const i18nKey = getSkillNameKey(skillId)
-                    return (
-                      <tr key={skillId}>
-                        <td><code>{skillId}</code></td>
-                        <td><code>{i18nKey}</code></td>
-                        <td>{getSkillLabel(skill)}</td>
-                        <td>{getCharacterSkillDescription(skill)}</td>
-                        <td>
-                          <code>{compactSkill(skill)}</code>
-                        </td>
-                      </tr>
-                    )
-                  } catch {
-                    return (
-                      <tr key={skillId}>
-                        <td><code>{skillId}</code></td>
-                        <td><code>{getSkillNameKey(skillId)}</code></td>
-                        <td className="save-error">未定義</td>
-                        <td className="save-error">skillCatalog に存在しません</td>
-                        <td />
-                      </tr>
-                    )
-                  }
-                })}
-              </tbody>
-            </table>
-          </section>
         )}
       </div>
     </div>
@@ -1013,13 +928,6 @@ function moveItem<T>(items: T[], index: number, direction: -1 | 1): T[] {
   const next = items.slice()
   ;[next[index], next[target]] = [next[target], next[index]]
   return next
-}
-
-function compactSkill(skill: object): string {
-  const filtered = Object.fromEntries(
-    Object.entries(skill as Record<string, unknown>).filter(([key]) => key !== 'id'),
-  )
-  return JSON.stringify(filtered)
 }
 
 function getSkillNameKey(skillId: string): string {
