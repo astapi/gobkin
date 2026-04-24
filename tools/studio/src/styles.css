@@ -1035,11 +1035,152 @@ code {
   width: min(28rem, 100%);
 }
 
+.skill-catalog-table {
+  table-layout: fixed;
+}
+
+.skill-catalog-table .skill-col-id {
+  width: 16%;
+}
+
+.skill-catalog-table .skill-col-name {
+  width: 32%;
+}
+
+.skill-catalog-table .skill-col-description {
+  width: 20%;
+}
+
+.skill-catalog-table .skill-col-definition {
+  width: 32%;
+}
+
+.skill-catalog-table .skill-col-id code,
+.skill-catalog-table .skill-col-definition code {
+  word-break: break-all;
+}
+
+.skill-catalog-table .skill-col-name,
+.skill-catalog-table .skill-col-description {
+  word-break: break-word;
+}
+
 .goblin-skill-meta {
   margin-top: 0.55rem;
   display: flex;
   flex-direction: column;
   gap: 0.2rem;
+}
+
+.unlock-flow-card {
+  margin-top: 1rem;
+  padding: 1rem;
+}
+
+.unlock-flow-legend {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.9rem;
+}
+
+.unlock-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.3rem 0.6rem;
+  border-radius: var(--radius-pill);
+  background: var(--surface-muted);
+  color: var(--text-sub);
+  font-size: 0.8rem;
+}
+
+.unlock-chip.branch {
+  background: #eef5ea;
+  color: #4d6b3c;
+}
+
+.unlock-chip.capture {
+  background: var(--boss-bg);
+  color: #8a6700;
+}
+
+.unlock-flow-scroll {
+  overflow: auto;
+  padding-bottom: 0.4rem;
+}
+
+.unlock-flow-canvas {
+  position: relative;
+}
+
+.unlock-flow-svg {
+  position: absolute;
+  inset: 0;
+  overflow: visible;
+}
+
+.unlock-flow-edge {
+  fill: none;
+  stroke: #b7b0a5;
+  stroke-width: 2;
+}
+
+.unlock-node {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.8rem 0.9rem;
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: 14px;
+  box-shadow: 0 6px 14px rgba(26, 26, 26, 0.04);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.unlock-node:hover {
+  text-decoration: none;
+  transform: translateY(-1px);
+  box-shadow: 0 10px 22px rgba(26, 26, 26, 0.08);
+  border-color: #b9b2a8;
+}
+
+.unlock-node.is-root {
+  background: #eef5ea;
+  border-color: #c5d6ba;
+}
+
+.unlock-node.is-capture {
+  background: linear-gradient(180deg, #fffdf6 0%, var(--boss-bg) 100%);
+  border-color: #dfcc8a;
+}
+
+.unlock-node-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.75rem;
+  line-height: 1.35;
+}
+
+.unlock-node-id code {
+  display: inline-block;
+  max-width: 100%;
+  word-break: break-all;
+}
+
+.unlock-node-meta {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  color: var(--text-sub);
+  font-size: 0.78rem;
+}
+
+.unlock-node-meta span {
+  background: var(--surface-muted);
+  border-radius: var(--radius-pill);
+  padding: 0.18rem 0.5rem;
 }
 
 /* dropzone / party / simulate */

@@ -7,6 +7,8 @@ import { SimulatePage } from './pages/SimulatePage'
 import { StoryListPage } from './pages/StoryListPage'
 import { StoryDetailPage } from './pages/StoryDetailPage'
 import { GoblinDataPage } from './pages/GoblinDataPage'
+import { SkillCatalogPage } from './pages/SkillCatalogPage'
+import { DungeonUnlockFlowPage } from './pages/DungeonUnlockFlowPage'
 import { PartyStoreProvider } from './stores/partyStore'
 
 export function App() {
@@ -19,8 +21,10 @@ export function App() {
           </h1>
           <nav>
             <Link to="/">ダンジョン</Link>
+            <Link to="/unlock-flow">解放図</Link>
             <Link to="/stories">ストーリー</Link>
             <Link to="/goblins">ゴブリン</Link>
+            <Link to="/skills">Skill</Link>
             <Link to="/party">PT編成</Link>
             <Link to="/simulate">シミュレーション</Link>
           </nav>
@@ -28,11 +32,13 @@ export function App() {
         <main className="app-main">
           <Routes>
             <Route path="/" element={<DungeonList />} />
+            <Route path="/unlock-flow" element={<DungeonUnlockFlowPage />} />
             <Route path="/dungeons/:areaId" element={<DungeonDetail />} />
             <Route path="/stories" element={<StoryListPage />} />
             <Route path="/stories/new" element={<StoryDetailPage />} />
             <Route path="/stories/:storyId" element={<StoryDetailPage />} />
             <Route path="/goblins" element={<GoblinDataPage />} />
+            <Route path="/skills" element={<SkillCatalogPage />} />
             <Route path="/party" element={<PartyPage />} />
             <Route path="/simulate" element={<SimulatePage />} />
           </Routes>
