@@ -565,64 +565,6 @@ function VariantEditor({
         )}
       </section>
 
-      <section className="card">
-        <div className="section-head">
-          <h3>戦闘補正</h3>
-          <button
-            className="btn ghost small"
-            onClick={() =>
-              onChange({
-                ...variant,
-                combatStats: variant.combatStats
-                  ? undefined
-                  : { attackCount: 2, accuracy: 20, evasion: 15 },
-              })
-            }
-          >
-            {variant.combatStats ? '削除' : '追加'}
-          </button>
-        </div>
-        {variant.combatStats ? (
-          <FieldRow>
-            <NumberField
-              size="sm"
-              label="attackCount"
-              value={variant.combatStats.attackCount}
-              onChange={(value) =>
-                onChange({
-                  ...variant,
-                  combatStats: { ...variant.combatStats!, attackCount: value },
-                })
-              }
-            />
-            <NumberField
-              size="sm"
-              label="accuracy"
-              value={variant.combatStats.accuracy}
-              onChange={(value) =>
-                onChange({
-                  ...variant,
-                  combatStats: { ...variant.combatStats!, accuracy: value },
-                })
-              }
-            />
-            <NumberField
-              size="sm"
-              label="evasion"
-              value={variant.combatStats.evasion}
-              onChange={(value) =>
-                onChange({
-                  ...variant,
-                  combatStats: { ...variant.combatStats!, evasion: value },
-                })
-              }
-            />
-          </FieldRow>
-        ) : (
-          <p className="subtle">未設定</p>
-        )}
-      </section>
-
       <EffectListEditor
         title="因子効果"
         effects={variant.factorEffects}

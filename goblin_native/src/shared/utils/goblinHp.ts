@@ -1,4 +1,3 @@
-import { getBloodlineAttackCountBonus } from '../data/equipmentConfig'
 import {
   BASE_GOBLIN_BASE_ATTRIBUTES,
   BASE_GOBLIN_HP_COEFFICIENT,
@@ -195,14 +194,13 @@ export function calculateGoblinBaseAttackCount(level: number, goblin: GoblinStat
   const attributes = getGoblinBaseAttributesAtLevel(goblin, level)
   const levelScale = getGoblinStatLevelScale(level, goblin.raceId ?? goblin.race)
   const coefficient = getGoblinStatCoefficient(goblin)
-  const bloodlineAttackCountBonus = getBloodlineAttackCountBonus(goblin.raceId ?? goblin.race)
   const agilityScale = (attributes.agility / 10) * (1 + levelScale * 0.025 * coefficient) * 0.5
   const primary = Math.round(agilityScale + 0.1)
   const secondary = Math.round(agilityScale - 0.3)
   const combined = Math.max(1, primary + secondary)
   const multiplier = getBaseStatMultiplier(goblin, 'attackCount')
 
-  return Math.round((combined * 2 + bloodlineAttackCountBonus) * multiplier)
+  return Math.round(combined * 2 * multiplier)
 }
 
 export function calculateGoblinBaseMagicAtk(level: number, goblin: GoblinStatContext): number {

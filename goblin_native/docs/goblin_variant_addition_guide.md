@@ -90,14 +90,10 @@
 | `baseAttributes.agility` | 敏捷 |
 | `baseAttributes.luck` | 運 |
 | `hpCoefficient` | HP成長係数 |
-| `combatStats.attackCount` | 攻撃回数基準値 |
-| `combatStats.accuracy` | 命中基準値 |
-| `combatStats.evasion` | 回避基準値 |
 | `defaultSkillIds` | 初期スキル ID 一覧 |
 
 補足:
 - `baseAttributes` と `hpCoefficient` を定義しない場合、種族性能はデフォルト寄りになる
-- `combatStats.attackCount` を定義しない場合、攻撃回数差を持たせにくい
 - `defaultSkillIds` を空配列にすれば、固有スキルなしの亜種として扱える
 
 ### 2.3 命名上の注意
