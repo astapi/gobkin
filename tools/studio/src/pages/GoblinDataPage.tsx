@@ -1,18 +1,16 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 
-import { getCharacterSkillDefinition } from '@app/shared/data/skillCatalog'
 import { getGoblinJobDefinition } from '@app/shared/data/goblinJobs'
-import { getSkillLabel } from '@app/shared/i18n/entityLocalization'
 
 import type {
   GoblinBaseAttributes,
   GoblinJobSeed,
-  GoblinJobSkillSeed,
   GoblinRaceEntry,
   GoblinStudioData,
   GoblinVariantSeed,
 } from '../lib/schema'
 import { GoblinStudioDataSchema } from '../lib/schema'
+import { JobSkillListEditor, SkillIdListEditor } from '../components/SkillEditors'
 import {
   FieldRow,
   NumberField,
@@ -348,6 +346,20 @@ export function GoblinDataPage() {
                 <p className="subtle">
                   例: <code>slime</code> → <code>beast</code>, <code>undead</code> → <code>demon_race</code>
                 </p>
+                <section className="card nested-card">
+                  <h3>Race スキル</h3>
+                  <SkillIdListEditor
+                    skillIds={selectedRace.skillIds ?? []}
+                    onChange={(skillIds) =>
+                      updateDraft((prev) => ({
+                        ...prev,
+                        races: prev.races.map((race) =>
+                          race.id === selectedRaceId ? { ...race, skillIds } : race,
+                        ),
+                      }))
+                    }
+                  />
+                </section>
               </section>
             )}
           </DataEditorLayout>
@@ -727,73 +739,8 @@ function JobEditor({
             + 追加
           </button>
         </div>
-        <div className="story-block-list">
-          {job.skills.map((skill, index) => (
-            <div key={`${skill.skillId}-${index}`} className="story-block">
-              <div className="story-block-head">
-                <strong>{skill.skillId || '(skill 未設定)'}</strong>
-                <div className="pattern-actions">
-                  <button
-                    className="icon-btn"
-                    onClick={() => onChange({ ...job, skills: moveItem(job.skills, index, -1) })}
-                  >
-                    ↑
-                  </button>
-                  <button
-                    className="icon-btn"
-                    onClick={() => onChange({ ...job, skills: moveItem(job.skills, index, 1) })}
-                  >
-                    ↓
-                  </button>
-                  <button
-                    className="icon-btn danger"
-                    onClick={() =>
-                      onChange({
-                        ...job,
-                        skills: job.skills.filter((_, entryIndex) => entryIndex !== index),
-                      })
-                    }
-                  >
-                    ×
-                  </button>
-                </div>
-              </div>
-              <FieldRow>
-                <TextField
-                  size="lg"
-                  label="skillId"
-                  value={skill.skillId}
-                  onChange={(value) =>
-                    onChange({
-                      ...job,
-                      skills: job.skills.map((entry, entryIndex) =>
-                        entryIndex === index ? { ...entry, skillId: value } : entry,
-                      ),
-                    })
-                  }
-                />
-                <OptionalNumberField
-                  size="sm"
-                  label="unlockLevel"
-                  value={skill.unlockLevel}
-                  min={1}
-                  onChange={(value) =>
-                    onChange({
-                      ...job,
-                      skills: job.skills.map((entry, entryIndex) =>
-                        entryIndex === index
-                          ? { ...entry, unlockLevel: value }
-                          : entry,
-                      ),
-                    })
-                  }
-                />
-              </FieldRow>
-              <SkillMeta skillId={skill.skillId} />
-            </div>
-          ))}
-          {job.skills.length === 0 && <p className="subtle">未設定</p>}
-        </div>
+        <JobSkillListEditor skills={job.skills} onChange={(skills) => onChange({ ...job, skills })} />
+        {job.skills.length === 0 && <p className="subtle">未設定</p>}
       </section>
     </div>
   )
@@ -929,88 +876,12 @@ function EffectListEditor({
   )
 }
 
-function SkillIdListEditor({
-  skillIds,
-  onChange,
-}: {
-  skillIds: string[]
-  onChange: (skillIds: string[]) => void
-}) {
-  return (
-    <div className="story-block-list">
-      {skillIds.map((skillId, index) => (
-            <div key={`${skillId}-${index}`} className="story-block">
-          <div className="story-block-head">
-            <strong>{skillId || '(skill 未設定)'}</strong>
-            <div className="pattern-actions">
-              <button className="icon-btn" onClick={() => onChange(moveItem(skillIds, index, -1))}>
-                ↑
-              </button>
-              <button className="icon-btn" onClick={() => onChange(moveItem(skillIds, index, 1))}>
-                ↓
-              </button>
-              <button
-                className="icon-btn danger"
-                onClick={() => onChange(skillIds.filter((_, entryIndex) => entryIndex !== index))}
-              >
-                ×
-              </button>
-            </div>
-          </div>
-          <TextField
-            size="xl"
-            label="skillId"
-            value={skillId}
-            onChange={(value) =>
-              onChange(
-                skillIds.map((entry, entryIndex) => (entryIndex === index ? value : entry)),
-              )
-            }
-          />
-          <SkillMeta skillId={skillId} />
-        </div>
-      ))}
-      <button className="btn ghost small" onClick={() => onChange([...skillIds, ''])}>
-        + 追加
-      </button>
-    </div>
-  )
-}
-
-function SkillMeta({ skillId }: { skillId: string }) {
-  if (!skillId) return null
-  try {
-    const skill = getCharacterSkillDefinition(skillId)
-    return (
-      <div className="goblin-skill-meta">
-        <div className="subtle">
-          <code>{getSkillNameKey(skillId)}</code>
-        </div>
-        <div>{getSkillLabel(skill)}</div>
-      </div>
-    )
-  } catch {
-    return (
-      <div className="goblin-skill-meta">
-        <div className="subtle">
-          <code>{getSkillNameKey(skillId)}</code>
-        </div>
-        <div className="save-error">skillCatalog に存在しません</div>
-      </div>
-    )
-  }
-}
-
 function moveItem<T>(items: T[], index: number, direction: -1 | 1): T[] {
   const target = index + direction
   if (target < 0 || target >= items.length) return items
   const next = items.slice()
   ;[next[index], next[target]] = [next[target], next[index]]
   return next
-}
-
-function getSkillNameKey(skillId: string): string {
-  return `entities.skill.${skillId}.name`
 }
 
 function stableStringify(value: unknown): string {

@@ -15,23 +15,39 @@ const resources = {
 } as const
 
 function detectLanguage(): SupportedLanguage {
-  if (process.env.NODE_ENV === 'test' || process.env.JEST_WORKER_ID) {
+  const nodeEnv =
+    typeof process !== 'undefined' && process.env
+      ? process.env.NODE_ENV
+      : undefined
+  const jestWorkerId =
+    typeof process !== 'undefined' && process.env
+      ? process.env.JEST_WORKER_ID
+      : undefined
+
+  if (nodeEnv === 'test' || jestWorkerId) {
     return DEFAULT_LANGUAGE
   }
 
   try {
-    const localizationModule = require('expo-localization') as {
-      getLocales?: () => Array<{ languageCode?: string | null }>
-    }
-    const locale = localizationModule.getLocales?.()[0]?.languageCode?.toLowerCase()
-    if (locale && SUPPORTED_LANGUAGES.includes(locale as SupportedLanguage)) {
-      return locale as SupportedLanguage
+    if (typeof require === 'function') {
+      const localizationModule = require('expo-localization') as {
+        getLocales?: () => Array<{ languageCode?: string | null }>
+      }
+      const locale = localizationModule.getLocales?.()[0]?.languageCode?.toLowerCase()
+      if (locale && SUPPORTED_LANGUAGES.includes(locale as SupportedLanguage)) {
+        return locale as SupportedLanguage
+      }
     }
   } catch {
     const locale = Intl.DateTimeFormat().resolvedOptions().locale.slice(0, 2).toLowerCase()
     if (SUPPORTED_LANGUAGES.includes(locale as SupportedLanguage)) {
       return locale as SupportedLanguage
     }
+  }
+
+  const locale = Intl.DateTimeFormat().resolvedOptions().locale.slice(0, 2).toLowerCase()
+  if (SUPPORTED_LANGUAGES.includes(locale as SupportedLanguage)) {
+    return locale as SupportedLanguage
   }
   return DEFAULT_LANGUAGE
 }

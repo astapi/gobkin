@@ -10,6 +10,7 @@ export type RaceKey = string;
 export type RaceDefinition = {
   label: string;
   implies?: RaceKey[];
+  skillIds?: string[];
   physicalResistancePercent?: number;
   penetrationResistancePercent?: number;
   criticalResistancePercent?: number;

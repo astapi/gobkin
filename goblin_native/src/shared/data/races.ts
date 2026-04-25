@@ -1,4 +1,6 @@
 import type { RaceDict } from '../../core/services/DamageCalculator';
+import type { CharacterSkill } from '../types/CharacterSkill';
+import { getCharacterSkills } from './skillCatalog';
 
 export const races: RaceDict = {
   beast: {
@@ -181,4 +183,35 @@ export function getRaceResistanceTotals(raceTags: readonly string[]): RaceResist
     },
     { ...ZERO_RACE_RESISTANCE },
   )
+}
+
+export function getRaceSkillIds(raceTags: readonly string[]): string[] {
+  const uniqueSkillIds = new Set<string>()
+  const visitedRaceTags = new Set<string>()
+
+  const visit = (raceTag: string) => {
+    if (visitedRaceTags.has(raceTag)) return
+    visitedRaceTags.add(raceTag)
+
+    const race = races[raceTag]
+    if (!race) return
+
+    for (const skillId of race.skillIds ?? []) {
+      uniqueSkillIds.add(skillId)
+    }
+
+    for (const implied of race.implies ?? []) {
+      visit(implied)
+    }
+  }
+
+  for (const raceTag of raceTags) {
+    visit(raceTag)
+  }
+
+  return [...uniqueSkillIds]
+}
+
+export function getRaceSkills(raceTags: readonly string[]): CharacterSkill[] {
+  return getCharacterSkills(getRaceSkillIds(raceTags))
 }

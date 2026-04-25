@@ -47,6 +47,7 @@ interface GoblinRaceEntry {
   id: string
   label: string
   implies?: string[]
+  skillIds?: string[]
   physicalResistancePercent?: number
   penetrationResistancePercent?: number
   criticalResistancePercent?: number
@@ -535,6 +536,7 @@ async function readGoblinStudioData(paths: {
       {
         label: string
         implies?: string[]
+        skillIds?: string[]
         physicalResistancePercent?: number
         penetrationResistancePercent?: number
         criticalResistancePercent?: number
@@ -556,6 +558,7 @@ async function readGoblinStudioData(paths: {
       id,
       label: value.label,
       implies: Array.isArray(value.implies) ? value.implies : undefined,
+      skillIds: Array.isArray(value.skillIds) ? value.skillIds : undefined,
       physicalResistancePercent: value.physicalResistancePercent,
       penetrationResistancePercent: value.penetrationResistancePercent,
       criticalResistancePercent: value.criticalResistancePercent,
@@ -590,6 +593,7 @@ async function writeGoblinStudioData(
       {
         label: race.label,
         ...(race.implies && race.implies.length > 0 ? { implies: race.implies } : {}),
+        ...(race.skillIds && race.skillIds.length > 0 ? { skillIds: race.skillIds } : {}),
         ...(race.physicalResistancePercent !== undefined ? { physicalResistancePercent: race.physicalResistancePercent } : {}),
         ...(race.penetrationResistancePercent !== undefined ? { penetrationResistancePercent: race.penetrationResistancePercent } : {}),
         ...(race.criticalResistancePercent !== undefined ? { criticalResistancePercent: race.criticalResistancePercent } : {}),

@@ -25,7 +25,8 @@ import i18n from '../../shared/i18n'
 import { getSpellLabel } from '../../shared/i18n/entityLocalization'
 import { normalizeBattleActionPolicy, shouldRunRate } from '../../shared/utils/battleActionPolicy'
 import { races as RACE_DICT } from '../../shared/data/races'
-import { getRaceResistanceTotals } from '../../shared/data/races'
+import { getRaceResistanceTotals, getRaceSkills } from '../../shared/data/races'
+import { getUniqueSkillsById } from '../../shared/data/characterSkills'
 import type {
   Combatant,
   DamageOptions,
@@ -921,7 +922,7 @@ export class BattleSystem {
 
   private createEnemyUnit(enemy: Enemy, originalIndex: number, row: number, rowSlot: number): BattleUnit {
     const combatant = this.combatantManager.fromEnemy(enemy)
-    const skills = enemy.skills ?? []
+    const skills = getUniqueSkillsById([...(enemy.skills ?? []), ...getRaceSkills(enemy.raceTags)])
     const learnedSpells = this.mergeLearnedSpells(enemy.spells, skills, enemy.level)
     const raceResistance = getRaceResistanceTotals(enemy.raceTags)
     return {
