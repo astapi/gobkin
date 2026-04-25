@@ -612,6 +612,10 @@ const ja = {
       survive_lethal_hp1: { name: '気合い' },
       exp_bonus_70: { name: '[+70%]獲得経験値' },
       gold_bonus_50: { name: '[+50%]取得Gold' },
+      light_footed_4_5: {
+        name: '軽足',
+        description: 'PTに1人でもいると探索時間が4/5になります。複数いても重複しません。',
+      },
       beast_slayer_1_2: { name: '[1.2倍]魔獣特攻' },
       beast_slayer_1_5: { name: '[1.5倍]魔獣特攻' },
       beast_slayer_2_0: { name: '[2.0倍]魔獣特攻' },

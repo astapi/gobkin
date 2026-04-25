@@ -603,6 +603,10 @@ const ko = {
       inspire_150: { name: '고무' },
       rear_guard: { name: '후열 보호' },
       survive_lethal_hp1: { name: '근성' },
+      light_footed_4_5: {
+        name: '경쾌한 발',
+        description: 'PT에 1명이라도 이 스킬이 있으면 탐색 시간이 4/5가 됩니다. 여러 명이 있어도 중첩되지 않습니다.',
+      },
       beast_slayer_1_2: { name: '[1.2배] 마수 특공' },
       beast_slayer_1_5: { name: '[1.5배] 마수 특공' },
       beast_slayer_2_0: { name: '[2.0배] 마수 특공' },

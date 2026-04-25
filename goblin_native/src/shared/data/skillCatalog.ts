@@ -335,6 +335,12 @@ export const CHARACTER_SKILL_CATALOG = {
     goldBonusPercent: 50,
   },
 
+  light_footed_4_5: {
+    id: 'light_footed_4_5',
+    expeditionTimeMultiplier: 4 / 5,
+    descriptionKey: 'entities.skill.light_footed_4_5.description',
+  },
+
   beast_slayer_1_2: createRaceSlayerSkill('beast', 1.2),
   beast_slayer_1_5: createRaceSlayerSkill('beast', 1.5),
   beast_slayer_2_0: createRaceSlayerSkill('beast', 2.0),

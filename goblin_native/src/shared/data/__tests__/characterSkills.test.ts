@@ -3,6 +3,7 @@ import {
   getActionOrderMultiplierFromSkills,
   describeCharacterSkill,
   getAdditionalDamageFromSkills,
+  getExpeditionTimeMultiplierFromSkills,
   getLearnedSpellsFromSkills,
   getPhysicalDamageReductionFromSkills,
   getRearAllyDamageMultiplierFromSkills,
@@ -81,6 +82,16 @@ describe('characterSkills - 物理ダメージ軽減', () => {
     ]
 
     expect(getRearAllyDamageMultiplierFromSkills(skills)).toBe(1.5)
+  })
+
+  it('遠征時間倍率スキルはPT内で重複せず乗算される', () => {
+    const skills: CharacterSkill[] = [
+      { id: 'light_footed_4_5', expeditionTimeMultiplier: 0.8 },
+      { id: 'light_footed_4_5', expeditionTimeMultiplier: 0.8 },
+      { id: 'other_time_0_5', expeditionTimeMultiplier: 0.5 },
+    ]
+
+    expect(getExpeditionTimeMultiplierFromSkills(skills)).toBeCloseTo(0.4)
   })
 
   it('呪文ごとの被ダメ倍率は対象呪文だけ乗算する', () => {
@@ -281,6 +292,9 @@ describe('characterSkills - 物理ダメージ軽減', () => {
   })
 
   it('カタログ定義の説明キーからスキル説明文を返す', () => {
+    expect(getCharacterSkillDescription(getCharacterSkill('light_footed_4_5'))).toBe(
+      'PTに1人でもいると探索時間が4/5になります。複数いても重複しません。',
+    )
     expect(getCharacterSkillDescription(getCharacterSkill('weapon_melee_attack'))).toBe(
       '隊列の後ろに行くほど通常攻撃のダメージが低下します。',
     )

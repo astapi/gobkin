@@ -35,6 +35,7 @@ export interface CharacterSkill {
   extraSpellCharges?: number
   expBonusPercent?: number
   goldBonusPercent?: number
+  expeditionTimeMultiplier?: number
   raceBonus?: RaceBuckets
   raceTakenBonus?: RaceBuckets
   spellTakenMultipliers?: Partial<Record<string, number>>
