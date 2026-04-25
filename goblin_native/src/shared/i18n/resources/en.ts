@@ -603,6 +603,10 @@ const en = {
       inspire_150: { name: 'Inspire' },
       rear_guard: { name: 'Rear Guard' },
       survive_lethal_hp1: { name: 'Guts' },
+      light_footed_4_5: {
+        name: 'Light Footed',
+        description: 'If at least one party member has this skill, expedition time becomes 4/5. It does not stack.',
+      },
       beast_slayer_1_2: { name: '[1.2x] Beast Slayer' },
       beast_slayer_1_5: { name: '[1.5x] Beast Slayer' },
       beast_slayer_2_0: { name: '[2.0x] Beast Slayer' },

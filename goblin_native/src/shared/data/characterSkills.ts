@@ -363,6 +363,13 @@ export function getGoldBonusPercentFromSkills(skills: CharacterSkill[]): number 
   )
 }
 
+export function getExpeditionTimeMultiplierFromSkills(skills: CharacterSkill[]): number {
+  return getUniqueSkillsById(skills).reduce(
+    (product, skill) => product * (skill.expeditionTimeMultiplier ?? 1),
+    1,
+  )
+}
+
 export function hasUndeadSkill(skills: CharacterSkill[]): boolean {
   return getUniqueSkillsById(skills).some((skill) => skill.undead)
 }

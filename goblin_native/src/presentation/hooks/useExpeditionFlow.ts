@@ -23,6 +23,8 @@ import { useStoryStore } from '../stores/useStoryStore'
 import { useExpeditionNotification } from '../hooks/useExpeditionNotification'
 import { getDungeonName } from '../../shared/i18n/entityLocalization'
 import { getDungeonTierAreaLevel, getDungeonTierDisplayName } from '../../shared/types'
+import { getExpeditionTimeMultiplierFromSkills } from '../../shared/data/characterSkills'
+import { EquipmentService } from '../../core/services/EquipmentService'
 import i18n from '../../shared/i18n'
 
 interface UseExpeditionFlowParams {
@@ -100,6 +102,24 @@ export const useExpeditionFlow = ({
     return new CompleteExpeditionUseCase(goblinRepository, partyRepository, baseStateRepository, SQLiteEquipmentRepository.getInstance())
   }, [goblinRepository, partyRepository, baseStateRepository])
 
+  const getPartyExpeditionTimeMultiplier = useCallback(async (party: Party): Promise<number> => {
+    const members = (
+      await Promise.all(party.memberIds.map((id) => goblinRepository.getGoblin(id)))
+    ).filter((goblin): goblin is NonNullable<typeof goblin> => goblin !== null)
+
+    if (members.length === 0) {
+      return 1
+    }
+
+    const skillSets = await Promise.all(members.map(async (goblin) => {
+      const equippedItems = await equipmentRepository.getByGoblinId(goblin.id)
+      const equipmentSkills = EquipmentService.collectGrantedSkills(equippedItems)
+      return [...goblin.skills, ...equipmentSkills]
+    }))
+
+    return getExpeditionTimeMultiplierFromSkills(skillSets.flat())
+  }, [equipmentRepository, goblinRepository])
+
   const handleDungeonClear = useCallback(async (record: ExpeditionRecord) => {
     if (!record.replay || isPendingLoading || isBaseLoading) return
 
@@ -145,6 +165,7 @@ export const useExpeditionFlow = ({
   const estimateExplorationTime = useCallback((
     dungeon: Dungeon,
     returnPolicy: ExpeditionRequest['returnPolicy'],
+    partyExpeditionTimeMultiplier: number = 1,
   ): number => {
     if (instantDungeonExploration) {
       return 1
@@ -163,7 +184,7 @@ export const useExpeditionFlow = ({
     }
     const multiplier = multiplierMap[returnPolicy] ?? 1.0
     const speedMultiplier = getSpeedMultiplier()
-    return Math.floor(baseTime * multiplier * speedMultiplier)
+    return Math.floor(baseTime * multiplier * speedMultiplier * partyExpeditionTimeMultiplier)
   }, [instantDungeonExploration])
 
   const formatTime = useCallback((date: Date) => {
@@ -206,7 +227,8 @@ export const useExpeditionFlow = ({
     async ({ party, dungeon, returnPolicy, tier }: StartExpeditionInput): Promise<StartExpeditionResult> => {
       setIsProcessing(true)
       try {
-        const durationSec = estimateExplorationTime(dungeon, returnPolicy)
+        const partyExpeditionTimeMultiplier = await getPartyExpeditionTimeMultiplier(party)
+        const durationSec = estimateExplorationTime(dungeon, returnPolicy, partyExpeditionTimeMultiplier)
         const request: ExpeditionRequest = {
           partyId: party.id.toString(),
           areaId: dungeon.id,
@@ -253,7 +275,7 @@ export const useExpeditionFlow = ({
         setIsProcessing(false)
       }
     },
-    [estimateExplorationTime, saveExpeditionRecord, startExpeditionUseCase, scheduleExpeditionNotification],
+    [estimateExplorationTime, getPartyExpeditionTimeMultiplier, saveExpeditionRecord, startExpeditionUseCase, scheduleExpeditionNotification],
   )
 
   interface BulkStartResult {
@@ -269,7 +291,8 @@ export const useExpeditionFlow = ({
 
       try {
         for (const { party, dungeon, returnPolicy, tier } of inputs) {
-          const durationSec = estimateExplorationTime(dungeon, returnPolicy)
+          const partyExpeditionTimeMultiplier = await getPartyExpeditionTimeMultiplier(party)
+          const durationSec = estimateExplorationTime(dungeon, returnPolicy, partyExpeditionTimeMultiplier)
           const request: ExpeditionRequest = {
             partyId: party.id.toString(),
             areaId: dungeon.id,
@@ -324,7 +347,7 @@ export const useExpeditionFlow = ({
         setIsProcessing(false)
       }
     },
-    [estimateExplorationTime, saveBulkExpeditionRecords, startExpeditionUseCase, scheduleExpeditionNotification],
+    [estimateExplorationTime, getPartyExpeditionTimeMultiplier, saveBulkExpeditionRecords, startExpeditionUseCase, scheduleExpeditionNotification],
   )
 
   const updateExpeditionReplay = useExpeditionStore((state) => state.updateExpeditionReplay)
