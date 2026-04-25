@@ -11,7 +11,6 @@ import {
   getSkillStatMultipliers,
 } from '../../shared/data/characterSkills'
 import { FactorInheritanceService } from './FactorInheritanceService'
-import { factorDatabase } from '../../shared/data/factors'
 import {
   calculateGoblinBaseAccuracy,
   calculateGoblinBaseAtk,
@@ -54,9 +53,8 @@ export class ModStatCalculator {
     }
     const mods = goblin.mods ?? []
 
-    // 1. 因子ボーナスを計算（亜種の追加効果も含む）
-    const variantFactor = goblin.variantFactorId ? factorDatabase[goblin.variantFactorId] : undefined
-    const factorBonuses = FactorInheritanceService.calculateFactorBonuses(goblin.factors ?? [], variantFactor)
+    // 1. 因子ボーナスを計算
+    const factorBonuses = FactorInheritanceService.calculateFactorBonuses(goblin.factors ?? [])
 
     // 2. Modフラット加算を集計
     const flatBonuses = this.aggregateFlatBonuses(mods)

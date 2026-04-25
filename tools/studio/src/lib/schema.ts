@@ -218,7 +218,6 @@ export const GoblinVariantSeedSchema = z.object({
   raceName: z.string(),
   avatar: z.string(),
   imageKey: z.string(),
-  additionalEffects: z.array(GoblinFactorEffectSchema),
   baseAttributes: GoblinBaseAttributesSchema.optional(),
   hpCoefficient: z.number().optional(),
   combatStats: GoblinCombatStatsSchema.optional(),

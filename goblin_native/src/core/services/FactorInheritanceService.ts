@@ -1,5 +1,5 @@
 import type { Goblin, GoblinStats } from '../../shared/types/Goblin'
-import type { Factor, FactorEffect } from '../../shared/types/Factor'
+import type { FactorEffect } from '../../shared/types/Factor'
 import { factorDatabase } from '../../shared/data/factors'
 
 /**
@@ -20,7 +20,7 @@ export interface InheritanceResult {
   variantRaceId?: string       // 亜種の場合の種族ID
   variantRace?: string         // 亜種の場合の種族名
   variantAvatar?: string       // 亜種の場合のアバター
-  variantFactorId?: string     // 亜種の元となった因子ID（追加効果適用に使用）
+  variantFactorId?: string     // 亜種の元となった因子ID
 }
 
 /**
@@ -149,12 +149,8 @@ export class FactorInheritanceService {
   /**
    * 因子による合計ステータスボーナスを計算
    * @param factorIds 因子IDの配列
-   * @param variantFactor 亜種の元となった因子（亜種の場合のみ）
    */
-  static calculateFactorBonuses(
-    factorIds: string[],
-    variantFactor?: Factor
-  ): GoblinStats {
+  static calculateFactorBonuses(factorIds: string[]): GoblinStats {
     const bonuses: GoblinStats = { hp: 0, atk: 0, magicAtk: 0, def: 0, magicDef: 0, attackCount: 0, accuracy: 0, evasion: 0, magicHeal: 0, criticalRate: 0 }
 
     // 各因子のeffectsを合算
@@ -163,11 +159,6 @@ export class FactorInheritanceService {
       if (!factor) continue
 
       this.applyEffects(bonuses, factor.effects)
-    }
-
-    // 亜種の場合は追加効果も適用
-    if (variantFactor?.variantConfig?.additionalEffects) {
-      this.applyEffects(bonuses, variantFactor.variantConfig.additionalEffects)
     }
 
     return bonuses

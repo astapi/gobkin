@@ -59,7 +59,6 @@ const EMPTY_VARIANT: GoblinVariantSeed = {
   raceName: '',
   avatar: '',
   imageKey: '',
-  additionalEffects: [],
 }
 
 const EMPTY_JOB: GoblinJobSeed = {
@@ -629,12 +628,6 @@ function VariantEditor({
         effects={variant.factorEffects}
         onChange={(effects) => onChange({ ...variant, factorEffects: effects })}
       />
-      <EffectListEditor
-        title="追加効果"
-        effects={variant.additionalEffects}
-        onChange={(effects) => onChange({ ...variant, additionalEffects: effects })}
-      />
-
       <section className="card">
         <h3>デフォルトスキル</h3>
         <SkillIdListEditor

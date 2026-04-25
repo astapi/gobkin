@@ -109,7 +109,6 @@ interface GoblinVariantSeed {
   raceName: string
   avatar: string
   imageKey: string
-  additionalEffects: GoblinFactorEffect[]
   baseAttributes?: GoblinBaseAttributes
   hpCoefficient?: number
   combatStats?: GoblinCombatStats

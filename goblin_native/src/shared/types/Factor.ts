@@ -29,7 +29,6 @@ export interface FactorVariantConfig {
   raceId: GoblinRaceId
   raceName: string     // 亜種の種族名 例: "スライムゴブリン"
   avatar: string       // 亜種専用アバター画像パス
-  additionalEffects?: FactorEffect[]  // 亜種限定の追加効果
 }
 
 /**

@@ -71,7 +71,7 @@ export interface PartyState {
   mods: ModInstance[]
   skills: CharacterSkill[]
   factors: string[]   // 因子ID配列（ModStatCalculatorでボーナス計算に使用）
-  variantFactorId?: string  // 亜種の元となった因子ID（追加効果適用に使用）
+  variantFactorId?: string  // 亜種の元となった因子ID
   spells?: LearnedSpell[]
   battleActionPolicy?: BattleActionPolicy
   level: number

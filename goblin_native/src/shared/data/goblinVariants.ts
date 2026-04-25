@@ -21,7 +21,6 @@ export interface GoblinVariantDefinition {
   raceName: string
   avatar: string
   imageKey: string
-  additionalEffects: FactorEffect[]
   baseAttributes?: GoblinBaseAttributes
   hpCoefficient?: number
   combatStats?: GoblinCombatStats
@@ -47,13 +46,6 @@ export const DEFAULT_GOBLIN_COMBAT_STATS: GoblinCombatStats = {
 
 export const goblinVariantDefinitions: Record<string, GoblinVariantDefinition> = {
   slime: {
-    additionalEffects: [
-      {
-        target: "def",
-        type: "stat_bonus",
-        value: 20
-      }
-    ],
     avatar: "/src/assets/goblin/slime_goblin.png",
     baseAttributes: {
       agility: 8,
@@ -92,7 +84,6 @@ export const goblinVariantDefinitions: Record<string, GoblinVariantDefinition> =
     variantProbability: 0.2
   },
   wolf: {
-    additionalEffects: [],
     avatar: "/src/assets/goblin/wolf_goblin.png",
     baseAttributes: {
       agility: 13,
@@ -131,18 +122,6 @@ export const goblinVariantDefinitions: Record<string, GoblinVariantDefinition> =
     variantProbability: 0.15
   },
   orc: {
-    additionalEffects: [
-      {
-        target: "hp",
-        type: "stat_bonus",
-        value: 50
-      },
-      {
-        target: "atk",
-        type: "stat_bonus",
-        value: 10
-      }
-    ],
     avatar: "/src/assets/goblin/orc_goblin.png",
     baseAttributes: {
       agility: 7,
@@ -181,18 +160,6 @@ export const goblinVariantDefinitions: Record<string, GoblinVariantDefinition> =
     variantProbability: 0.1
   },
   undead: {
-    additionalEffects: [
-      {
-        target: "hp",
-        type: "stat_bonus",
-        value: 40
-      },
-      {
-        target: "atk",
-        type: "stat_bonus",
-        value: 10
-      }
-    ],
     avatar: "/src/assets/goblin/skelton_goblin.png",
     baseAttributes: {
       agility: 7,
@@ -229,18 +196,6 @@ export const goblinVariantDefinitions: Record<string, GoblinVariantDefinition> =
     variantProbability: 0.15
   },
   hobgoblin: {
-    additionalEffects: [
-      {
-        target: "hp",
-        type: "stat_bonus",
-        value: 30
-      },
-      {
-        target: "atk",
-        type: "stat_bonus",
-        value: 10
-      }
-    ],
     avatar: "/src/assets/goblin/hobgoblin.png",
     baseAttributes: {
       agility: 11,
@@ -283,18 +238,6 @@ export const goblinVariantDefinitions: Record<string, GoblinVariantDefinition> =
     variantProbability: 0.2
   },
   dwarf: {
-    additionalEffects: [
-      {
-        target: "def",
-        type: "stat_bonus",
-        value: 20
-      },
-      {
-        target: "atk",
-        type: "stat_bonus",
-        value: 15
-      }
-    ],
     avatar: "/src/assets/goblin/dwarf_goblin.png",
     defaultSkillIds: [],
     factorDescription: "ドワーフの特性を宿した因子。防御力と耐久性が大幅に増す。",
@@ -319,13 +262,6 @@ export const goblinVariantDefinitions: Record<string, GoblinVariantDefinition> =
     variantProbability: 0.1
   },
   elf: {
-    additionalEffects: [
-      {
-        target: "atk",
-        type: "stat_bonus",
-        value: 10
-      }
-    ],
     avatar: "/src/assets/goblin/elf_goblin.png",
     defaultSkillIds: [],
     factorDescription: "エルフの特性を宿した因子。敏捷性と精神力が増す。",
@@ -345,13 +281,6 @@ export const goblinVariantDefinitions: Record<string, GoblinVariantDefinition> =
     variantProbability: 0.1
   },
   lizardman: {
-    additionalEffects: [
-      {
-        target: "def",
-        type: "stat_bonus",
-        value: 15
-      }
-    ],
     avatar: "/src/assets/goblin/lizard_goblin.png",
     defaultSkillIds: [],
     factorDescription: "リザードマンの特性を宿した因子。全体的な耐性とHPが増す。",
@@ -381,18 +310,6 @@ export const goblinVariantDefinitions: Record<string, GoblinVariantDefinition> =
     variantProbability: 0.1
   },
   troll: {
-    additionalEffects: [
-      {
-        target: "hp",
-        type: "stat_bonus",
-        value: 80
-      },
-      {
-        target: "atk",
-        type: "stat_bonus",
-        value: 20
-      }
-    ],
     avatar: "/src/assets/goblin/troll_goblin.png",
     baseAttributes: {
       agility: 5,

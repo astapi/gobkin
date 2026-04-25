@@ -76,7 +76,6 @@
 | `raceName` | 種族名 | `オークゴブリン` |
 | `avatar` | 保存用画像パス | `/src/assets/goblin/orc_goblin.png` |
 | `imageKey` | 画像マップ参照キー | `orc_goblin` |
-| `additionalEffects` | 亜種追加効果 | `HP +50`, `ATK +10` |
 
 ### 2.2 性能項目
 
