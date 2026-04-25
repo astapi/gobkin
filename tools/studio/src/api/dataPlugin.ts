@@ -46,6 +46,11 @@ interface StorySummary {
 interface GoblinRaceEntry {
   id: string
   label: string
+  implies?: string[]
+  physicalResistancePercent?: number
+  penetrationResistancePercent?: number
+  criticalResistancePercent?: number
+  magicResistancePercent?: number
 }
 
 interface GoblinJobSkillSeed {
@@ -524,7 +529,19 @@ async function readGoblinStudioData(paths: {
     fs.readFile(paths.variantsFile, 'utf8'),
   ])
 
-  const racesObject = evaluateObjectLiteral<Record<string, { label: string }>>(
+  const racesObject = evaluateObjectLiteral<
+    Record<
+      string,
+      {
+        label: string
+        implies?: string[]
+        physicalResistancePercent?: number
+        penetrationResistancePercent?: number
+        criticalResistancePercent?: number
+        magicResistancePercent?: number
+      }
+    >
+  >(
     extractConstObjectLiteral(racesSource, 'races'),
   )
   const jobsObject = evaluateObjectLiteral<Record<string, GoblinJobSeed>>(
@@ -535,7 +552,15 @@ async function readGoblinStudioData(paths: {
   )
 
   return {
-    races: Object.entries(racesObject).map(([id, value]) => ({ id, label: value.label })),
+    races: Object.entries(racesObject).map(([id, value]) => ({
+      id,
+      label: value.label,
+      implies: Array.isArray(value.implies) ? value.implies : undefined,
+      physicalResistancePercent: value.physicalResistancePercent,
+      penetrationResistancePercent: value.penetrationResistancePercent,
+      criticalResistancePercent: value.criticalResistancePercent,
+      magicResistancePercent: value.magicResistancePercent,
+    })),
     jobs: Object.values(jobsObject),
     variants: Object.values(variantsObject),
   }
@@ -560,7 +585,17 @@ async function writeGoblinStudioData(
   ])
 
   const racesObject = Object.fromEntries(
-    body.races.map((race) => [race.id, { label: race.label }]),
+    body.races.map((race) => [
+      race.id,
+      {
+        label: race.label,
+        ...(race.implies && race.implies.length > 0 ? { implies: race.implies } : {}),
+        ...(race.physicalResistancePercent !== undefined ? { physicalResistancePercent: race.physicalResistancePercent } : {}),
+        ...(race.penetrationResistancePercent !== undefined ? { penetrationResistancePercent: race.penetrationResistancePercent } : {}),
+        ...(race.criticalResistancePercent !== undefined ? { criticalResistancePercent: race.criticalResistancePercent } : {}),
+        ...(race.magicResistancePercent !== undefined ? { magicResistancePercent: race.magicResistancePercent } : {}),
+      },
+    ]),
   )
   const jobsObject = Object.fromEntries(body.jobs.map((job) => [job.id, job]))
   const variantsObject = Object.fromEntries(

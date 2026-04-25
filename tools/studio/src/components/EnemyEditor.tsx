@@ -1,14 +1,24 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import {
+  calculateEnemyBaseHpFromInputs,
+  detectEnemyHpSpecies,
+  getEnemyHpSpeciesCoefficient,
+  type EnemyHpSpecies,
+} from '@app/shared/utils/enemyStats'
+import { races } from '@app/shared/data/races'
+import { getRaceResistanceTotals } from '@app/shared/data/races'
 
 import type { EnemyDatabase } from '../lib/schema'
 import {
   FieldGroup,
+  FieldRow,
   NumberField,
   OptionalNumberField,
   TextField,
 } from './fields'
 
 type Enemy = EnemyDatabase['enemies'][number]
+const raceEntries = Object.entries(races).sort((a, b) => a[1].label.localeCompare(b[1].label, 'ja'))
 
 export function EnemyEditor({
   enemy,
@@ -105,6 +115,10 @@ function EnemyForm({
   enemy: Enemy
   onChange: (updater: (prev: Enemy) => Enemy) => void
 }) {
+  const [hpSpecies, setHpSpecies] = useState<EnemyHpSpecies>(() => detectEnemyHpSpecies(enemy.raceTags))
+  useEffect(() => {
+    setHpSpecies(detectEnemyHpSpecies(enemy.raceTags))
+  }, [enemy.id, enemy.raceTags])
   const set = <K extends keyof Enemy>(key: K, value: Enemy[K]) =>
     onChange((prev) => ({ ...prev, [key]: value }))
   const setBaseAttribute = (key: keyof Enemy['baseAttributes'], value: number) =>
@@ -115,6 +129,16 @@ function EnemyForm({
         [key]: value,
       },
     }))
+  const calculatedHp = calculateEnemyBaseHpFromInputs(enemy.level, enemy.baseAttributes.vitality, hpSpecies)
+  const hpCoefficient = getEnemyHpSpeciesCoefficient(hpSpecies)
+  const raceResistance = getRaceResistanceTotals(enemy.raceTags)
+  const toggleRaceTag = (raceId: string) =>
+    set(
+      'raceTags',
+      enemy.raceTags.includes(raceId)
+        ? enemy.raceTags.filter((tag) => tag !== raceId)
+        : [...enemy.raceTags, raceId],
+    )
 
   return (
     <aside className="card enemy-detail">
@@ -146,8 +170,43 @@ function EnemyForm({
           }
         />
       </FieldGroup>
+      <div className="race-tag-picker">
+        {raceEntries.map(([raceId, race]) => (
+          <button
+            key={raceId}
+            type="button"
+            className={enemy.raceTags.includes(raceId) ? 'btn ghost small active-filter' : 'btn ghost small'}
+            onClick={() => toggleRaceTag(raceId)}
+            title={race.implies?.length ? `implies: ${race.implies.join(', ')}` : undefined}
+          >
+            {race.label}
+          </button>
+        ))}
+      </div>
+      <p className="subtle">
+        race由来耐性: 物理 {raceResistance.physicalResistancePercent}% / 貫通 {raceResistance.penetrationResistancePercent}% / 必殺 {raceResistance.criticalResistancePercent}% / 魔法 {raceResistance.magicResistancePercent}%
+      </p>
 
       <h4>ステータス</h4>
+      <FieldRow>
+        <label className="field field-size-md">
+          <span className="field-label">HP算出用種族</span>
+          <span className="field-input">
+            <select value={hpSpecies} onChange={(e) => setHpSpecies(e.target.value as EnemyHpSpecies)}>
+              <option value="goblin">ゴブリン x0.8</option>
+              <option value="beast">魔獣 x1.1</option>
+              <option value="human">人間 x1.0</option>
+              <option value="demon_race">魔族 x1.3</option>
+            </select>
+          </span>
+        </label>
+        <button type="button" className="btn ghost small" onClick={() => set('hp', calculatedHp)}>
+          算出HPを反映
+        </button>
+      </FieldRow>
+      <p className="subtle">
+        Lv {enemy.level} / 体力 {enemy.baseAttributes.vitality} / 種族係数 {hpCoefficient} → 算出HP {calculatedHp}
+      </p>
       <FieldGroup columns={2}>
         <NumberField label="level" value={enemy.level} min={0} onChange={(v) => set('level', v)} />
         <NumberField label="hp" value={enemy.hp} min={0} onChange={(v) => set('hp', v)} />

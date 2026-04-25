@@ -1,6 +1,11 @@
 import type { EquipmentCategory, EquipmentStat } from './Equipment'
 import type { GoblinStats } from './Goblin'
 
+export type RaceBuckets = {
+  add?: Partial<Record<string, number>>
+  mult?: Partial<Record<string, number>>
+}
+
 export interface CharacterSkill {
   id: string
   descriptionKey?: string
@@ -30,6 +35,9 @@ export interface CharacterSkill {
   extraSpellCharges?: number
   expBonusPercent?: number
   goldBonusPercent?: number
+  raceBonus?: RaceBuckets
+  raceTakenBonus?: RaceBuckets
+  spellTakenMultipliers?: Partial<Record<string, number>>
   undead?: boolean
   hpRegenPercent?: number
   itemSlotsBonus?: boolean
