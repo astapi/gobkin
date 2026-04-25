@@ -18,7 +18,6 @@ export const factorDatabase: Record<string, Factor> = Object.fromEntries(
         raceId: variant.raceId,
         raceName: variant.raceName,
         avatar: variant.avatar,
-        additionalEffects: variant.additionalEffects,
       },
     },
   ])
