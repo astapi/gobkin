@@ -186,6 +186,7 @@ export const GoblinRaceEntrySchema = z.object({
   id: z.string(),
   label: z.string(),
   implies: z.array(z.string()).optional(),
+  skillIds: z.array(z.string()).optional(),
   physicalResistancePercent: z.number().optional(),
   penetrationResistancePercent: z.number().optional(),
   criticalResistancePercent: z.number().optional(),

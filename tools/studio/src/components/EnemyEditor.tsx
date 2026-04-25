@@ -7,6 +7,7 @@ import {
 } from '@app/shared/utils/enemyStats'
 import { races } from '@app/shared/data/races'
 import { getRaceResistanceTotals } from '@app/shared/data/races'
+import type { CharacterSkill } from '@app/shared/types/CharacterSkill'
 
 import type { EnemyDatabase } from '../lib/schema'
 import {
@@ -16,6 +17,7 @@ import {
   OptionalNumberField,
   TextField,
 } from './fields'
+import { EnemySkillListEditor } from './SkillEditors'
 
 type Enemy = EnemyDatabase['enemies'][number]
 const raceEntries = Object.entries(races).sort((a, b) => a[1].label.localeCompare(b[1].label, 'ja'))
@@ -296,8 +298,12 @@ function EnemyForm({
         />
       </FieldGroup>
 
+      <EnemySkillListEditor
+        skills={(enemy as Enemy & { skills?: CharacterSkill[] }).skills}
+        onChange={(skills) => onChange((prev) => ({ ...prev, skills }) as Enemy)}
+      />
       <ExtraJsonSection
-        label="skills"
+        label="skills JSON"
         value={(enemy as any).skills}
         onChange={(v) => onChange((prev) => ({ ...prev, skills: v }) as Enemy)}
       />
@@ -334,6 +340,12 @@ function ExtraJsonSection({
   )
   const [dirtyLocal, setDirtyLocal] = useState(false)
   const [parseError, setParseError] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (dirtyLocal) return
+    setText(value === undefined ? '' : JSON.stringify(value, null, 2))
+    setParseError(null)
+  }, [dirtyLocal, value])
 
   return (
     <details className="json-section">
