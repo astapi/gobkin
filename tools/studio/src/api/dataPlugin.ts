@@ -83,12 +83,6 @@ interface GoblinFactorEffect {
   value: number
 }
 
-interface GoblinCombatStats {
-  attackCount: number
-  accuracy: number
-  evasion: number
-}
-
 interface GoblinJobSeed {
   id: string
   accentColor: string
@@ -111,7 +105,6 @@ interface GoblinVariantSeed {
   imageKey: string
   baseAttributes?: GoblinBaseAttributes
   hpCoefficient?: number
-  combatStats?: GoblinCombatStats
   defaultSkillIds?: string[]
 }
 

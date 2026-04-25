@@ -4,12 +4,6 @@ import type { CharacterSkillId } from './skillCatalog'
 import type { GoblinRaceId } from '../types/Race'
 import { normalizeGoblinRaceId } from '../types/Race'
 
-export interface GoblinCombatStats {
-  attackCount: number
-  accuracy: number
-  evasion: number
-}
-
 export interface GoblinVariantDefinition {
   factorId: string
   factorName: string
@@ -23,7 +17,6 @@ export interface GoblinVariantDefinition {
   imageKey: string
   baseAttributes?: GoblinBaseAttributes
   hpCoefficient?: number
-  combatStats?: GoblinCombatStats
   defaultSkillIds?: CharacterSkillId[]
 }
 
@@ -38,12 +31,6 @@ export const BASE_GOBLIN_BASE_ATTRIBUTES: GoblinBaseAttributes = {
 
 export const BASE_GOBLIN_HP_COEFFICIENT = 0.8
 
-export const DEFAULT_GOBLIN_COMBAT_STATS: GoblinCombatStats = {
-  attackCount: 2,
-  accuracy: 20,
-  evasion: 15,
-}
-
 export const goblinVariantDefinitions: Record<string, GoblinVariantDefinition> = {
   slime: {
     avatar: "/src/assets/goblin/slime_goblin.png",
@@ -54,11 +41,6 @@ export const goblinVariantDefinitions: Record<string, GoblinVariantDefinition> =
       spirit: 13,
       vitality: 13,
       wisdom: 8
-    },
-    combatStats: {
-      accuracy: 20,
-      attackCount: 2,
-      evasion: 15
     },
     defaultSkillIds: [
       "talent_hp_150",
@@ -93,11 +75,6 @@ export const goblinVariantDefinitions: Record<string, GoblinVariantDefinition> =
       vitality: 10,
       wisdom: 9
     },
-    combatStats: {
-      accuracy: 20,
-      attackCount: 3,
-      evasion: 15
-    },
     defaultSkillIds: [
       "talent_accuracy_150",
       "attack_count_up_2",
@@ -130,11 +107,6 @@ export const goblinVariantDefinitions: Record<string, GoblinVariantDefinition> =
       spirit: 9,
       vitality: 15,
       wisdom: 8
-    },
-    combatStats: {
-      accuracy: 20,
-      attackCount: 2,
-      evasion: 15
     },
     defaultSkillIds: [],
     factorDescription: "オークの特性を宿した因子。攻撃力と防御力が増す。",
@@ -204,11 +176,6 @@ export const goblinVariantDefinitions: Record<string, GoblinVariantDefinition> =
       spirit: 11,
       vitality: 11,
       wisdom: 11
-    },
-    combatStats: {
-      accuracy: 20,
-      attackCount: 2,
-      evasion: 15
     },
     defaultSkillIds: [
       "talent_atk_150",
@@ -318,11 +285,6 @@ export const goblinVariantDefinitions: Record<string, GoblinVariantDefinition> =
       spirit: 8,
       vitality: 18,
       wisdom: 7
-    },
-    combatStats: {
-      accuracy: 20,
-      attackCount: 2,
-      evasion: 15
     },
     defaultSkillIds: [],
     factorDescription: "トロルの特性を宿した因子。HPが大幅に増し、防御力も上がる。",

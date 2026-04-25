@@ -160,12 +160,6 @@ export interface StorySummary {
   unlockLabel: string
 }
 
-export const GoblinCombatStatsSchema = z.object({
-  attackCount: z.number(),
-  accuracy: z.number(),
-  evasion: z.number(),
-})
-
 export const GoblinFactorEffectSchema = z.object({
   type: z.enum(['stat_bonus', 'resistance', 'skill_unlock']),
   target: z.enum([
@@ -220,7 +214,6 @@ export const GoblinVariantSeedSchema = z.object({
   imageKey: z.string(),
   baseAttributes: GoblinBaseAttributesSchema.optional(),
   hpCoefficient: z.number().optional(),
-  combatStats: GoblinCombatStatsSchema.optional(),
   defaultSkillIds: z.array(z.string()).optional(),
 })
 
@@ -231,7 +224,6 @@ export const GoblinStudioDataSchema = z.object({
 })
 
 export type GoblinBaseAttributes = z.infer<typeof GoblinBaseAttributesSchema>
-export type GoblinCombatStats = z.infer<typeof GoblinCombatStatsSchema>
 export type GoblinFactorEffect = z.infer<typeof GoblinFactorEffectSchema>
 export type GoblinRaceEntry = z.infer<typeof GoblinRaceEntrySchema>
 export type GoblinJobSkillSeed = z.infer<typeof GoblinJobSkillSeedSchema>

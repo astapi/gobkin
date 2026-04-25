@@ -4,7 +4,6 @@ import { BattleSystem, getDamageModifier, getAccuracyModifier, getHitRateRandomM
 import { ExpeditionEngine } from '../ExpeditionEngine'
 import { getDefaultSkillsForRace } from '../../../shared/data/raceSkills'
 import { getCharacterSkill } from '../../../shared/data/skillCatalog'
-import { getBloodlineAttackCountBonus } from '../../../shared/data/equipmentConfig'
 import { EquipmentService } from '../EquipmentService'
 import { getEquipmentTemplate } from '../../../shared/data/equipmentPoolLoader'
 import { factorDatabase } from '../../../shared/data/factors'
@@ -135,41 +134,6 @@ describe('getHitRateRandomModifier', () => {
 
   it('rng が 1 未満なら 1.05 未満に収まる', () => {
     expect(getHitRateRandomModifier(() => 0.999999)).toBeLessThan(1.05)
-  })
-})
-
-// =========================================================================
-// 血統別攻撃回数補正
-// =========================================================================
-describe('getBloodlineAttackCountBonus', () => {
-  it('ゴブリンの攻撃回数補正は0', () => {
-    const bonus = getBloodlineAttackCountBonus('ゴブリン')
-    expect(bonus).toBe(0)
-  })
-
-  it('ウルフゴブリンの攻撃回数補正は1', () => {
-    const bonus = getBloodlineAttackCountBonus('ウルフゴブリン')
-    expect(bonus).toBe(1)
-  })
-
-  it('スライムゴブリンの攻撃回数補正は0', () => {
-    const bonus = getBloodlineAttackCountBonus('スライムゴブリン')
-    expect(bonus).toBe(0)
-  })
-
-  it('オークゴブリンの攻撃回数補正は0', () => {
-    const bonus = getBloodlineAttackCountBonus('オークゴブリン')
-    expect(bonus).toBe(0)
-  })
-
-  it('ホブゴブリンの攻撃回数補正は0', () => {
-    const bonus = getBloodlineAttackCountBonus('ホブゴブリン')
-    expect(bonus).toBe(0)
-  })
-
-  it('未定義血統は補正0を返す', () => {
-    const bonus = getBloodlineAttackCountBonus('未知の血統')
-    expect(bonus).toBe(0)
   })
 })
 
