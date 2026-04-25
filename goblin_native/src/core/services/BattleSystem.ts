@@ -9,6 +9,7 @@ import {
   getPhysicalDamageReductionFromSkills,
   getRearProtectionMultiplierFromSkills,
   getRowDamageMultiplierFromSkills,
+  getSpellTakenMultiplierFromSkills,
   getSpellDamagePercentFromSkills,
   hasCoverLowHpAllySkill,
   hasSurviveLethalDamageAtHp1Skill,
@@ -23,6 +24,8 @@ import { getEffectiveStats } from '../../shared/utils/goblinStats'
 import i18n from '../../shared/i18n'
 import { getSpellLabel } from '../../shared/i18n/entityLocalization'
 import { normalizeBattleActionPolicy, shouldRunRate } from '../../shared/utils/battleActionPolicy'
+import { races as RACE_DICT } from '../../shared/data/races'
+import { getRaceResistanceTotals } from '../../shared/data/races'
 import type {
   Combatant,
   DamageOptions,
@@ -81,16 +84,6 @@ export interface BattleResult {
   allyHPDelta: number[]
   enemyDefeated: number
   detailedLog: BattleLogEntry[]
-}
-
-const RACE_DICT: RaceDict = {
-  goblin: { label: 'ゴブリン' },
-  wolf: { label: '狼' },
-  bat: { label: 'コウモリ' },
-  slime: { label: 'スライム' },
-  skeleton: { label: 'スケルトン' },
-  orc: { label: 'オーク' },
-  troll: { label: 'トロール' },
 }
 
 const BASIC_ATTACK_SKILL: Skill = {
@@ -757,11 +750,12 @@ export class BattleSystem {
         ) + spellBonusDamage
         const rearDamageMultiplier = this.getRearDamageMultiplier(unit, sourceGroup)
         const spellDamageFactor = 1 + unit.spellDamagePercent / 100
+        const spellTakenMultiplier = getSpellTakenMultiplierFromSkills(target.skills, spellDef.id)
         const reductionFactor = 1 - target.damageReduction / 100
         const magicReductionFactor = 1 - target.magicDamageReduction / 100
         const magicBarrierFactor = 1 - target.magicBarrierDamageReduction / 100
         const defendingFactor = this.getDefendingDamageFactor(target)
-        const damage = Math.max(1, Math.floor(baseDamage * rearDamageMultiplier * spellDamageFactor * reductionFactor * magicReductionFactor * magicBarrierFactor * defendingFactor))
+        const damage = Math.max(1, Math.floor(baseDamage * rearDamageMultiplier * spellDamageFactor * spellTakenMultiplier * reductionFactor * magicReductionFactor * magicBarrierFactor * defendingFactor))
 
         this.applyDamage(target, damage)
         totalHitCount++
@@ -788,11 +782,12 @@ export class BattleSystem {
         ) + spellBonusDamage
         const rearDamageMultiplier = this.getRearDamageMultiplier(unit, sourceGroup)
         const spellDamageFactor = 1 + unit.spellDamagePercent / 100
+        const spellTakenMultiplier = getSpellTakenMultiplierFromSkills(target.skills, spellDef.id)
         const reductionFactor = 1 - target.damageReduction / 100
         const magicReductionFactor = 1 - target.magicDamageReduction / 100
         const magicBarrierFactor = 1 - target.magicBarrierDamageReduction / 100
         const defendingFactor = this.getDefendingDamageFactor(target)
-        const damage = Math.max(1, Math.floor(baseDamage * rearDamageMultiplier * spellDamageFactor * reductionFactor * magicReductionFactor * magicBarrierFactor * defendingFactor))
+        const damage = Math.max(1, Math.floor(baseDamage * rearDamageMultiplier * spellDamageFactor * spellTakenMultiplier * reductionFactor * magicReductionFactor * magicBarrierFactor * defendingFactor))
 
         this.applyDamage(target, damage)
         totalHitCount++
@@ -928,6 +923,7 @@ export class BattleSystem {
     const combatant = this.combatantManager.fromEnemy(enemy)
     const skills = enemy.skills ?? []
     const learnedSpells = this.mergeLearnedSpells(enemy.spells, skills, enemy.level)
+    const raceResistance = getRaceResistanceTotals(enemy.raceTags)
     return {
       instanceId: `enemy:${combatant.id}:${originalIndex}`,
       combatant,
@@ -941,8 +937,13 @@ export class BattleSystem {
       isAlly: false,
       originalIndex,
       damageReduction: 0,  // 敵は被ダメージ軽減なし
-      physicalDamageReduction: (enemy.physicalResistancePercent ?? 0) + getPhysicalDamageReductionFromSkills(skills),
-      magicDamageReduction: enemy.magicResistancePercent ?? 0,
+      physicalDamageReduction:
+        raceResistance.physicalResistancePercent +
+        (enemy.physicalResistancePercent ?? 0) +
+        getPhysicalDamageReductionFromSkills(skills),
+      magicDamageReduction:
+        raceResistance.magicResistancePercent +
+        (enemy.magicResistancePercent ?? 0),
       breathDamageReduction: 0,
       shieldBarrierDamageReduction: 0,
       shieldBarrierBreathDamageReduction: 0,

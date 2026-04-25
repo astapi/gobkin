@@ -32,7 +32,7 @@
         "human"
       ],
       "level": 23,
-      "hp": 250,
+      "hp": 310,
       "atk": 35,
       "def": 26,
       "magicDef": 39,
@@ -57,7 +57,7 @@
         "human"
       ],
       "level": 23,
-      "hp": 150,
+      "hp": 190,
       "atk": 70,
       "def": 16,
       "magicDef": 24,
@@ -89,7 +89,7 @@
         "construct"
       ],
       "level": 25,
-      "hp": 400,
+      "hp": 520,
       "atk": 250,
       "def": 20,
       "magicDef": 30,
@@ -108,7 +108,7 @@
         "power": 63,
         "wisdom": 63,
         "spirit": 8,
-        "vitality": 10,
+        "vitality": 20,
         "agility": 2,
         "luck": 1
       }

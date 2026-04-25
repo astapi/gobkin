@@ -8,6 +8,7 @@ import {
   getRearAllyDamageMultiplierFromSkills,
   getRearProtectionMultiplierFromSkills,
   getRowDamageMultiplierFromSkills,
+  getSpellTakenMultiplierFromSkills,
   getSkillStatBonuses,
   getSkillStatMultipliers,
   hasCoverLowHpAllySkill,
@@ -80,6 +81,27 @@ describe('characterSkills - 物理ダメージ軽減', () => {
     ]
 
     expect(getRearAllyDamageMultiplierFromSkills(skills)).toBe(1.5)
+  })
+
+  it('呪文ごとの被ダメ倍率は対象呪文だけ乗算する', () => {
+    const skills: CharacterSkill[] = [
+      { id: 'fireball_taken_0_6', spellTakenMultipliers: { fireball: 0.6 } },
+      { id: 'fireball_taken_1_5', spellTakenMultipliers: { fireball: 1.5 } },
+      { id: 'magic_arrow_taken_2_0', spellTakenMultipliers: { magic_arrow: 2.0 } },
+    ]
+
+    expect(getSpellTakenMultiplierFromSkills(skills, 'fireball')).toBeCloseTo(0.9)
+    expect(getSpellTakenMultiplierFromSkills(skills, 'magic_arrow')).toBeCloseTo(2.0)
+    expect(getSpellTakenMultiplierFromSkills(skills, 'blizzard')).toBeCloseTo(1.0)
+  })
+
+  it('同じidの呪文被ダメ倍率スキルは重複計算しない', () => {
+    const skills: CharacterSkill[] = [
+      { id: 'fireball_taken_shared', spellTakenMultipliers: { fireball: 0.6 } },
+      { id: 'fireball_taken_shared', spellTakenMultipliers: { fireball: 0.6 } },
+    ]
+
+    expect(getSpellTakenMultiplierFromSkills(skills, 'fireball')).toBeCloseTo(0.6)
   })
 
   it('近距離攻撃スキルは前列ほど高い隊列補正を返す', () => {

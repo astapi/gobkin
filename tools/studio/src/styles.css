@@ -499,6 +499,18 @@ code {
   overflow-y: auto;
 }
 
+.race-tag-picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-top: 0.75rem;
+}
+
+.btn.active-filter {
+  background: var(--highlight);
+  border-color: var(--border-strong);
+}
+
 /* save bar / buttons */
 
 .save-bar {

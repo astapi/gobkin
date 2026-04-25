@@ -70,7 +70,7 @@
         "power": 2,
         "wisdom": 2,
         "spirit": 1,
-        "vitality": 2,
+        "vitality": 3,
         "agility": 8,
         "luck": 3
       }
@@ -126,7 +126,7 @@
         "power": 5,
         "wisdom": 5,
         "spirit": 3,
-        "vitality": 5,
+        "vitality": 10,
         "agility": 15,
         "luck": 4
       }

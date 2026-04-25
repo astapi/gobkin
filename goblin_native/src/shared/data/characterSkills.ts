@@ -14,6 +14,21 @@ import { getMageMagicSpellIds } from './mageMagic'
 export function cloneCharacterSkill(skill: CharacterSkill): CharacterSkill {
   return {
     ...skill,
+    raceBonus: skill.raceBonus
+      ? {
+          add: skill.raceBonus.add ? { ...skill.raceBonus.add } : undefined,
+          mult: skill.raceBonus.mult ? { ...skill.raceBonus.mult } : undefined,
+        }
+      : undefined,
+    raceTakenBonus: skill.raceTakenBonus
+      ? {
+          add: skill.raceTakenBonus.add ? { ...skill.raceTakenBonus.add } : undefined,
+          mult: skill.raceTakenBonus.mult ? { ...skill.raceTakenBonus.mult } : undefined,
+        }
+      : undefined,
+    spellTakenMultipliers: skill.spellTakenMultipliers
+      ? { ...skill.spellTakenMultipliers }
+      : undefined,
     statBonuses: skill.statBonuses ? { ...skill.statBonuses } : undefined,
     statMultipliers: skill.statMultipliers ? { ...skill.statMultipliers } : undefined,
     baseStatMultipliers: skill.baseStatMultipliers ? { ...skill.baseStatMultipliers } : undefined,
@@ -214,6 +229,13 @@ export function getActionOrderMultiplierFromSkills(skills: CharacterSkill[]): nu
     (product, skill) => product * (skill.actionOrderMultiplier ?? 1),
     1,
   )
+}
+
+export function getSpellTakenMultiplierFromSkills(skills: CharacterSkill[], spellId: string): number {
+  return getUniqueSkillsById(skills).reduce((product, skill) => {
+    const multiplier = skill.spellTakenMultipliers?.[spellId]
+    return product * (multiplier ?? 1)
+  }, 1)
 }
 
 export function getAdditionalDamageFromSkills(skills: CharacterSkill[]): number {

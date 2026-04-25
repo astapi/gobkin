@@ -3,6 +3,21 @@ import type { CharacterSkill } from '../types/CharacterSkill'
 function cloneSkill(skill: CharacterSkill): CharacterSkill {
   return {
     ...skill,
+    raceBonus: skill.raceBonus
+      ? {
+          add: skill.raceBonus.add ? { ...skill.raceBonus.add } : undefined,
+          mult: skill.raceBonus.mult ? { ...skill.raceBonus.mult } : undefined,
+        }
+      : undefined,
+    raceTakenBonus: skill.raceTakenBonus
+      ? {
+          add: skill.raceTakenBonus.add ? { ...skill.raceTakenBonus.add } : undefined,
+          mult: skill.raceTakenBonus.mult ? { ...skill.raceTakenBonus.mult } : undefined,
+        }
+      : undefined,
+    spellTakenMultipliers: skill.spellTakenMultipliers
+      ? { ...skill.spellTakenMultipliers }
+      : undefined,
     statBonuses: skill.statBonuses ? { ...skill.statBonuses } : undefined,
     statMultipliers: skill.statMultipliers ? { ...skill.statMultipliers } : undefined,
     baseStatMultipliers: skill.baseStatMultipliers ? { ...skill.baseStatMultipliers } : undefined,
@@ -111,6 +126,28 @@ function createMageMagicSkill(level: number): CharacterSkill {
   return {
     id: `mage_magic_lv${level}`,
     mageMagicLevel: level,
+  }
+}
+
+function createRaceSlayerSkill(raceTag: string, multiplier: number): CharacterSkill {
+  const suffix = multiplier.toFixed(1).replace('.', '_')
+  return {
+    id: `${raceTag}_slayer_${suffix}`,
+    raceBonus: {
+      mult: {
+        [raceTag]: multiplier - 1,
+      },
+    },
+  }
+}
+
+function createSpellTakenSkill(spellId: string, multiplier: number): CharacterSkill {
+  const suffix = multiplier.toFixed(1).replace('.', '_')
+  return {
+    id: `${spellId}_taken_${suffix}`,
+    spellTakenMultipliers: {
+      [spellId]: multiplier,
+    },
   }
 }
 
@@ -297,6 +334,31 @@ export const CHARACTER_SKILL_CATALOG = {
     id: 'gold_bonus_50',
     goldBonusPercent: 50,
   },
+
+  beast_slayer_1_2: createRaceSlayerSkill('beast', 1.2),
+  beast_slayer_1_5: createRaceSlayerSkill('beast', 1.5),
+  beast_slayer_2_0: createRaceSlayerSkill('beast', 2.0),
+  undead_slayer_1_2: createRaceSlayerSkill('undead', 1.2),
+  undead_slayer_1_5: createRaceSlayerSkill('undead', 1.5),
+  undead_slayer_2_0: createRaceSlayerSkill('undead', 2.0),
+  human_slayer_1_2: createRaceSlayerSkill('human', 1.2),
+  human_slayer_1_5: createRaceSlayerSkill('human', 1.5),
+  human_slayer_2_0: createRaceSlayerSkill('human', 2.0),
+  demon_race_slayer_1_2: createRaceSlayerSkill('demon_race', 1.2),
+  demon_race_slayer_1_5: createRaceSlayerSkill('demon_race', 1.5),
+  demon_race_slayer_2_0: createRaceSlayerSkill('demon_race', 2.0),
+  dragon_slayer_1_2: createRaceSlayerSkill('dragon', 1.2),
+  dragon_slayer_1_5: createRaceSlayerSkill('dragon', 1.5),
+  dragon_slayer_2_0: createRaceSlayerSkill('dragon', 2.0),
+  fireball_taken_0_6: createSpellTakenSkill('fireball', 0.6),
+  fireball_taken_1_5: createSpellTakenSkill('fireball', 1.5),
+  fireball_taken_2_0: createSpellTakenSkill('fireball', 2.0),
+  magic_arrow_taken_0_6: createSpellTakenSkill('magic_arrow', 0.6),
+  magic_arrow_taken_1_5: createSpellTakenSkill('magic_arrow', 1.5),
+  magic_arrow_taken_2_0: createSpellTakenSkill('magic_arrow', 2.0),
+  blizzard_taken_0_6: createSpellTakenSkill('blizzard', 0.6),
+  blizzard_taken_1_5: createSpellTakenSkill('blizzard', 1.5),
+  blizzard_taken_2_0: createSpellTakenSkill('blizzard', 2.0),
 
   undead_trait: {
     id: 'undead_trait',

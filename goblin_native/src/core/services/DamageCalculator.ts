@@ -7,11 +7,20 @@ export type Skill = SourceWithRaceBonus & {
 
 export type RaceKey = string;
 
-export type RaceDict = Record<RaceKey, { label: string; implies?: RaceKey[] }>;
+export type RaceDefinition = {
+  label: string;
+  implies?: RaceKey[];
+  physicalResistancePercent?: number;
+  penetrationResistancePercent?: number;
+  criticalResistancePercent?: number;
+  magicResistancePercent?: number;
+};
+
+export type RaceDict = Record<RaceKey, RaceDefinition>;
 
 export type RaceBuckets = {
-  add: Partial<Record<RaceKey, number>>;
-  mult: Partial<Record<RaceKey, number>>;
+  add?: Partial<Record<RaceKey, number>>;
+  mult?: Partial<Record<RaceKey, number>>;
 };
 
 export type SourceWithRaceBonus = {
@@ -145,7 +154,9 @@ export class DamageCalculator {
       ...(attacker.buffs ?? []),
       skill,
     ];
-    const atkRace = aggregateRaceBonusForAttacker(atkSources, targetTags);
+    const atkRace = opt.isMagic
+      ? { addSum: 0, multProd: 1 }
+      : aggregateRaceBonusForAttacker(atkSources, targetTags);
 
     const defSources: SourceWithRaceBonus[] = [
       ...(defender.items ?? []),

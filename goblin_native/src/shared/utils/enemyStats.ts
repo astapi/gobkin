@@ -1,50 +1,57 @@
-import type { Enemy, EnemyDatabase } from '../types'
+import type { Enemy } from '../types'
+import { races } from '../data/races'
 import { getGoblinHpLevelScale } from './goblinHp'
 
-const ENEMY_HP_COEFFICIENTS: Record<string, number> = {
-  human: 0.9,
+export type EnemyHpSpecies = 'goblin' | 'beast' | 'human' | 'demon_race'
+
+const ENEMY_HP_SPECIES_COEFFICIENTS: Record<EnemyHpSpecies, number> = {
+  goblin: 0.8,
+  beast: 1.1,
+  human: 1.0,
+  demon_race: 1.3,
 }
 
-const ENEMY_HP_MULTIPLIERS: Record<string, number> = {
-  human: 1.5,
+export function getEnemyHpSpeciesCoefficient(species: EnemyHpSpecies): number {
+  return ENEMY_HP_SPECIES_COEFFICIENTS[species]
 }
 
-export function getEnemyHpCoefficient(enemy: Pick<Enemy, 'raceTags'>): number {
-  for (const raceTag of enemy.raceTags) {
-    const coefficient = ENEMY_HP_COEFFICIENTS[raceTag]
-    if (coefficient !== undefined) return coefficient
+function raceHasAncestor(raceTag: string, target: EnemyHpSpecies, visited = new Set<string>()): boolean {
+  if (raceTag === target) return true
+  if (visited.has(raceTag)) return false
+  visited.add(raceTag)
+  const implied = races[raceTag]?.implies ?? []
+  return implied.some((entry) => raceHasAncestor(entry, target, visited))
+}
+
+export function detectEnemyHpSpecies(raceTags: readonly string[]): EnemyHpSpecies {
+  for (const raceTag of raceTags) {
+    if (raceHasAncestor(raceTag, 'goblin')) return 'goblin'
+    if (raceHasAncestor(raceTag, 'beast')) return 'beast'
+    if (raceHasAncestor(raceTag, 'human')) return 'human'
+    if (raceHasAncestor(raceTag, 'demon_race')) return 'demon_race'
   }
-  return 1
-}
-
-function getEnemyHpMultiplier(enemy: Pick<Enemy, 'raceTags'>): number {
-  for (const raceTag of enemy.raceTags) {
-    const multiplier = ENEMY_HP_MULTIPLIERS[raceTag]
-    if (multiplier !== undefined) return multiplier
-  }
-  return 1
+  return 'human'
 }
 
 function roundOnesPlace(value: number): number {
   return Math.round(value / 10) * 10
 }
 
+export function calculateEnemyBaseHpFromInputs(
+  level: number,
+  vitality: number,
+  species: EnemyHpSpecies,
+): number {
+  const levelScale = getGoblinHpLevelScale(level, species)
+  const coefficient = getEnemyHpSpeciesCoefficient(species)
+  const baseHp = Math.floor(vitality * (1 + levelScale * 10 * coefficient) + 1)
+  return roundOnesPlace(baseHp)
+}
+
 export function calculateEnemyBaseHp(enemy: Pick<Enemy, 'level' | 'raceTags' | 'baseAttributes'>): number {
-  const raceTag = enemy.raceTags[0] ?? ''
-  const levelScale = getGoblinHpLevelScale(enemy.level, raceTag)
-  const coefficient = getEnemyHpCoefficient(enemy)
-  const baseHp = Math.floor(enemy.baseAttributes.vitality * (1 + levelScale * 10 * coefficient) + 1)
-  return roundOnesPlace(baseHp * getEnemyHpMultiplier(enemy))
-}
-
-export function resolveEnemyStats(enemy: Enemy): Enemy {
-  const hp = calculateEnemyBaseHp(enemy)
-  return { ...enemy, hp }
-}
-
-export function resolveEnemyDatabaseStats(database: EnemyDatabase): EnemyDatabase {
-  return {
-    ...database,
-    enemies: database.enemies.map(resolveEnemyStats),
-  }
+  return calculateEnemyBaseHpFromInputs(
+    enemy.level,
+    enemy.baseAttributes.vitality,
+    detectEnemyHpSpecies(enemy.raceTags),
+  )
 }

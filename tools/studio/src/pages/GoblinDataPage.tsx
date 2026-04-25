@@ -47,6 +47,7 @@ const EMPTY_ATTRIBUTES: GoblinBaseAttributes = {
 const EMPTY_RACE: GoblinRaceEntry = {
   id: '',
   label: '',
+  implies: [],
 }
 
 const EMPTY_VARIANT: GoblinVariantSeed = {
@@ -177,7 +178,7 @@ export function GoblinDataPage() {
         <div>
           <h2>ゴブリンデータ</h2>
           <p className="subtle">
-            race / variant / job を確認し、主要定義を編集できます。
+            race / variant / job を確認し、主要定義を編集できます。Race は敵味方共通の種族タグ辞書です。
           </p>
         </div>
         <div className="save-bar">
@@ -268,7 +269,85 @@ export function GoblinDataPage() {
                       }))
                     }
                   />
+                  <TextField
+                    size="xl"
+                    label="implies (カンマ区切り)"
+                    value={(selectedRace.implies ?? []).join(', ')}
+                    onChange={(value) =>
+                      updateDraft((prev) => ({
+                        ...prev,
+                        races: prev.races.map((race) =>
+                          race.id === selectedRaceId
+                            ? {
+                                ...race,
+                                implies: value
+                                  .split(',')
+                                  .map((entry) => entry.trim())
+                                  .filter(Boolean),
+                              }
+                            : race,
+                        ),
+                      }))
+                    }
+                  />
                 </FieldRow>
+                <FieldRow>
+                  <OptionalNumberField
+                    size="sm"
+                    label="physicalResistance%"
+                    value={selectedRace.physicalResistancePercent}
+                    onChange={(value) =>
+                      updateDraft((prev) => ({
+                        ...prev,
+                        races: prev.races.map((race) =>
+                          race.id === selectedRaceId ? { ...race, physicalResistancePercent: value } : race,
+                        ),
+                      }))
+                    }
+                  />
+                  <OptionalNumberField
+                    size="sm"
+                    label="penetrationResistance%"
+                    value={selectedRace.penetrationResistancePercent}
+                    onChange={(value) =>
+                      updateDraft((prev) => ({
+                        ...prev,
+                        races: prev.races.map((race) =>
+                          race.id === selectedRaceId ? { ...race, penetrationResistancePercent: value } : race,
+                        ),
+                      }))
+                    }
+                  />
+                  <OptionalNumberField
+                    size="sm"
+                    label="criticalResistance%"
+                    value={selectedRace.criticalResistancePercent}
+                    onChange={(value) =>
+                      updateDraft((prev) => ({
+                        ...prev,
+                        races: prev.races.map((race) =>
+                          race.id === selectedRaceId ? { ...race, criticalResistancePercent: value } : race,
+                        ),
+                      }))
+                    }
+                  />
+                  <OptionalNumberField
+                    size="sm"
+                    label="magicResistance%"
+                    value={selectedRace.magicResistancePercent}
+                    onChange={(value) =>
+                      updateDraft((prev) => ({
+                        ...prev,
+                        races: prev.races.map((race) =>
+                          race.id === selectedRaceId ? { ...race, magicResistancePercent: value } : race,
+                        ),
+                      }))
+                    }
+                  />
+                </FieldRow>
+                <p className="subtle">
+                  例: <code>slime</code> → <code>beast</code>, <code>undead</code> → <code>demon_race</code>
+                </p>
               </section>
             )}
           </DataEditorLayout>
