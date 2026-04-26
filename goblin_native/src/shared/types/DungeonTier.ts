@@ -22,10 +22,6 @@ export const DUNGEON_TIER_SCALING = [
     defScale: 1.0,
     evasionScale: 1.0,
     magicDefScale: 1.0,
-    physicalResistancePercent: 44.2,
-    penetrationResistancePercent: 100.0,
-    criticalResistancePercent: 50.0,
-    magicResistancePercent: 42.5,
   },
   {
     statScale: 1.58,
@@ -40,10 +36,6 @@ export const DUNGEON_TIER_SCALING = [
     defScale: 3950 / 2500,
     evasionScale: 1.58,
     magicDefScale: 1.58,
-    physicalResistancePercent: 38.0,
-    penetrationResistancePercent: 100.0,
-    criticalResistancePercent: 50.0,
-    magicResistancePercent: 36.5,
   },
   {
     statScale: 2.10,
@@ -57,10 +49,6 @@ export const DUNGEON_TIER_SCALING = [
     defScale: 5250 / 2500,
     evasionScale: 2.10,
     magicDefScale: 2.10,
-    physicalResistancePercent: 32.7,
-    penetrationResistancePercent: 100.0,
-    criticalResistancePercent: 50.0,
-    magicResistancePercent: 34.8,
   },
   {
     statScale: 2.75,
@@ -70,10 +58,6 @@ export const DUNGEON_TIER_SCALING = [
     defScale: 6875 / 2500,
     evasionScale: 2.75,
     magicDefScale: 2.75,
-    physicalResistancePercent: 28.3,
-    penetrationResistancePercent: 100.0,
-    criticalResistancePercent: 50.0,
-    magicResistancePercent: 33.1,
   },
   {
     statScale: 3.50,
@@ -83,10 +67,6 @@ export const DUNGEON_TIER_SCALING = [
     defScale: 7.0,
     evasionScale: 7.0,
     magicDefScale: 7.0,
-    physicalResistancePercent: 24.3,
-    penetrationResistancePercent: 100.0,
-    criticalResistancePercent: 50.0,
-    magicResistancePercent: 31.4,
   },
   {
     statScale: 5.00,
@@ -96,10 +76,6 @@ export const DUNGEON_TIER_SCALING = [
     defScale: 10.0,
     evasionScale: 10.0,
     magicDefScale: 10.0,
-    physicalResistancePercent: 21.2,
-    penetrationResistancePercent: 100.0,
-    criticalResistancePercent: 50.0,
-    magicResistancePercent: 29.7,
   },
 ] as const
 

@@ -187,8 +187,6 @@ describe('ExpeditionEngine dungeon tier scaling', () => {
     cases.forEach(({ enemy, expected }) => {
       const scaledByTier = DUNGEON_TIER_SCALING.map((scaling) => {
         const [[scaled]] = (engine as any).applyTierScaling([[{ ...baseEnemy, ...enemy }]], scaling)
-        expect(scaled.penetrationResistancePercent).toBe(100)
-        expect(scaled.criticalResistancePercent).toBe(50)
         return scaled
       })
 

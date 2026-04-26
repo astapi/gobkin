@@ -122,6 +122,7 @@ export function dataApiPlugin(options: Options): Plugin {
   const jobsFile = path.join(options.appSrc, 'shared', 'data', 'goblinJobs.ts')
   const variantsFile = path.join(options.appSrc, 'shared', 'data', 'goblinVariants.ts')
   const presetsFile = path.join(options.dataDir, 'party-presets.json')
+  const libraryFile = path.join(options.dataDir, 'character-library.json')
 
   return {
     name: 'studio-data-api',
@@ -161,6 +162,27 @@ export function dataApiPlugin(options: Options): Plugin {
       server.middlewares.use('/api/dungeon-unlocks', async (_req, res) => {
         try {
           return json(res, 200, await readDungeonUnlocks(areaDir))
+        } catch (err) {
+          const message = err instanceof Error ? err.message : 'Unknown error'
+          return json(res, 500, { error: message })
+        }
+      })
+
+      server.middlewares.use('/api/character-library', async (req, res) => {
+        try {
+          if (req.method === 'GET') {
+            return json(res, 200, await readLibrary(libraryFile))
+          }
+          if (req.method === 'PUT') {
+            const body = await readBody(req)
+            await writeLibrary(libraryFile, body)
+            return json(res, 200, { ok: true })
+          }
+          if (req.method === 'DELETE') {
+            await deleteLibrary(libraryFile)
+            return json(res, 200, { ok: true })
+          }
+          return json(res, 405, { error: 'Method not allowed' })
         } catch (err) {
           const message = err instanceof Error ? err.message : 'Unknown error'
           return json(res, 500, { error: message })
@@ -250,6 +272,44 @@ export function dataApiPlugin(options: Options): Plugin {
         }
       })
     },
+  }
+}
+
+async function readLibrary(filePath: string): Promise<unknown> {
+  try {
+    const raw = await fs.readFile(filePath, 'utf8')
+    return JSON.parse(raw)
+  } catch (err) {
+    if ((err as NodeJS.ErrnoException).code === 'ENOENT') {
+      return { goblins: [], equipment: [], parties: [], meta: null }
+    }
+    throw err
+  }
+}
+
+async function writeLibrary(filePath: string, body: unknown): Promise<void> {
+  if (!body || typeof body !== 'object') {
+    throw new Error('Body must be an object')
+  }
+  const record = body as Record<string, unknown>
+  if (
+    !Array.isArray(record.goblins) ||
+    !Array.isArray(record.equipment) ||
+    !Array.isArray(record.parties)
+  ) {
+    throw new Error('Library must contain goblins, equipment, parties arrays')
+  }
+  await fs.mkdir(path.dirname(filePath), { recursive: true })
+  const formatted = `${JSON.stringify(body, null, 2)}\n`
+  await fs.writeFile(filePath, formatted, 'utf8')
+}
+
+async function deleteLibrary(filePath: string): Promise<void> {
+  try {
+    await fs.unlink(filePath)
+  } catch (err) {
+    if ((err as NodeJS.ErrnoException).code === 'ENOENT') return
+    throw err
   }
 }
 

@@ -5,8 +5,12 @@ import type { BackupGoblin } from '../lib/goblinMapper'
 
 type SortKey = 'id' | 'level' | 'name' | 'job' | 'race'
 
-export function GoblinBrowser() {
-  const { backup, draft, addMember } = usePartyStore()
+export function GoblinBrowser({
+  onEditGoblin,
+}: {
+  onEditGoblin?: (id: number) => void
+}) {
+  const { library, draft, addMember } = usePartyStore()
   const [query, setQuery] = useState('')
   const [sortKey, setSortKey] = useState<SortKey>('level')
   const [sortDesc, setSortDesc] = useState(true)
@@ -17,9 +21,8 @@ export function GoblinBrowser() {
   )
 
   const filtered = useMemo(() => {
-    if (!backup) return []
     const q = query.trim().toLowerCase()
-    let list = backup.goblins
+    let list = library.goblins
     if (q !== '') {
       list = list.filter(
         (g) =>
@@ -32,10 +35,10 @@ export function GoblinBrowser() {
     const sorted = list.slice().sort((a, b) => compareByKey(a, b, sortKey))
     if (sortDesc) sorted.reverse()
     return sorted
-  }, [backup, query, sortKey, sortDesc])
+  }, [library, query, sortKey, sortDesc])
 
-  if (!backup) return null
-  const equipmentByGoblin = backup.equipmentByGoblin
+  if (library.goblins.length === 0) return null
+  const equipmentByGoblin = library.equipmentByGoblin
 
   return (
     <div>
@@ -47,7 +50,7 @@ export function GoblinBrowser() {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
         />
-        <span className="subtle">{filtered.length} / {backup.goblins.length} 体表示</span>
+        <span className="subtle">{filtered.length} / {library.goblins.length} 体表示</span>
       </div>
       <table className="enemy-table">
         <thead>
@@ -81,13 +84,24 @@ export function GoblinBrowser() {
                 <td className="num">{stats.def}</td>
                 <td className="num">{equipCount}</td>
                 <td>
-                  <button
-                    className="btn ghost small"
-                    disabled={inParty}
-                    onClick={() => addMember(g.id)}
-                  >
-                    {inParty ? '編成済' : '+ PT'}
-                  </button>
+                  <div style={{ display: 'flex', gap: '0.3rem' }}>
+                    <button
+                      className="btn ghost small"
+                      disabled={inParty}
+                      onClick={() => addMember(g.id)}
+                    >
+                      {inParty ? '編成済' : '+ PT'}
+                    </button>
+                    {onEditGoblin && (
+                      <button
+                        className="btn ghost small"
+                        onClick={() => onEditGoblin(g.id)}
+                        title="編集"
+                      >
+                        編集
+                      </button>
+                    )}
+                  </div>
                 </td>
               </tr>
             )

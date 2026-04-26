@@ -456,10 +456,6 @@ export class ExpeditionEngine {
         attackCount: Math.max(1, Math.floor(enemy.attackCount * countScale)),
         accuracy: Math.round(enemy.accuracy * statScale),
         evasion: this.scaleDefensiveStat(enemy.evasion, scaling.evasionScale),
-        physicalResistancePercent: scaling.physicalResistancePercent,
-        penetrationResistancePercent: scaling.penetrationResistancePercent,
-        criticalResistancePercent: scaling.criticalResistancePercent,
-        magicResistancePercent: scaling.magicResistancePercent,
         exp: Math.floor(enemy.exp * statScale),
         gold: Math.floor(enemy.gold * goldScale),
       }))

@@ -10,11 +10,21 @@ import {
 } from 'react'
 
 import { parseBackupFile } from '../lib/backup'
-import type { BackupExtract, BackupGoblin, BackupParty } from '../lib/goblinMapper'
-import { extractBackup } from '../lib/goblinMapper'
+import {
+  EMPTY_LIBRARY,
+  backupToLibrary,
+  buildLibraryView,
+  extractBackup,
+  isCharacterLibraryShape,
+  type BackupGoblin,
+  type BackupParty,
+  type CharacterLibrary,
+  type CharacterLibraryView,
+} from '../lib/goblinMapper'
 
 export const MAX_PARTY_MEMBERS = 6
 const PRESET_API_URL = '/api/party-presets'
+const LIBRARY_API_URL = '/api/character-library'
 const LEGACY_STORAGE_KEY = 'goblin-studio:party-presets:v1'
 
 export interface PartyPreset {
@@ -31,11 +41,13 @@ export interface PartyDraft {
 }
 
 interface PartyStoreValue {
-  backup: BackupExtract | null
-  backupError: string | null
-  backupLoading: boolean
-  loadBackup: (file: File) => Promise<void>
-  clearBackup: () => void
+  library: CharacterLibraryView
+  libraryLoading: boolean
+  libraryError: string | null
+  importBackup: (file: File) => Promise<void>
+  importBackupBusy: boolean
+  importBackupError: string | null
+  clearLibrary: () => Promise<void>
 
   draft: PartyDraft
   setDraftName: (name: string) => void
@@ -44,8 +56,11 @@ interface PartyStoreValue {
   removeMember: (index: number) => void
   clearDraft: () => void
 
-  loadBackupParty: (partyId: number) => void
-  importBackupPartyAsPreset: (partyId: number) => PartyPreset | null
+  loadLibraryParty: (partyId: number) => void
+  importLibraryPartyAsPreset: (partyId: number) => PartyPreset | null
+
+  upsertCharacter: (goblin: BackupGoblin) => Promise<void>
+  removeCharacter: (id: number) => Promise<void>
 
   presets: PartyPreset[]
   presetsLoading: boolean
@@ -65,14 +80,36 @@ const EMPTY_DRAFT: PartyDraft = {
 }
 
 export function PartyStoreProvider({ children }: { children: ReactNode }) {
-  const [backup, setBackup] = useState<BackupExtract | null>(null)
-  const [backupError, setBackupError] = useState<string | null>(null)
-  const [backupLoading, setBackupLoading] = useState(false)
+  const [library, setLibrary] = useState<CharacterLibrary>(EMPTY_LIBRARY)
+  const [libraryLoading, setLibraryLoading] = useState(true)
+  const [libraryError, setLibraryError] = useState<string | null>(null)
+  const [importBackupBusy, setImportBackupBusy] = useState(false)
+  const [importBackupError, setImportBackupError] = useState<string | null>(null)
   const [draft, setDraft] = useState<PartyDraft>(EMPTY_DRAFT)
   const [presets, setPresets] = useState<PartyPreset[]>([])
   const [presetsLoading, setPresetsLoading] = useState(true)
   const [presetsError, setPresetsError] = useState<string | null>(null)
-  const hasLoadedRef = useRef(false)
+  const presetsLoadedRef = useRef(false)
+
+  useEffect(() => {
+    let cancelled = false
+    ;(async () => {
+      try {
+        const fromServer = await fetchLibrary()
+        if (cancelled) return
+        setLibrary(fromServer)
+      } catch (err) {
+        if (!cancelled) {
+          setLibraryError(err instanceof Error ? err.message : String(err))
+        }
+      } finally {
+        if (!cancelled) setLibraryLoading(false)
+      }
+    })()
+    return () => {
+      cancelled = true
+    }
+  }, [])
 
   useEffect(() => {
     let cancelled = false
@@ -82,7 +119,6 @@ export function PartyStoreProvider({ children }: { children: ReactNode }) {
         if (cancelled) return
         const legacy = consumeLegacyLocalStorage()
         if (legacy.length > 0 && fromServer.length === 0) {
-          // 初回移行: localStorage のプリセットをファイルに昇格
           await persistPresets(legacy)
           setPresets(legacy)
         } else {
@@ -95,7 +131,7 @@ export function PartyStoreProvider({ children }: { children: ReactNode }) {
       } finally {
         if (!cancelled) {
           setPresetsLoading(false)
-          hasLoadedRef.current = true
+          presetsLoadedRef.current = true
         }
       }
     })()
@@ -105,7 +141,7 @@ export function PartyStoreProvider({ children }: { children: ReactNode }) {
   }, [])
 
   useEffect(() => {
-    if (!hasLoadedRef.current) return
+    if (!presetsLoadedRef.current) return
     let cancelled = false
     ;(async () => {
       try {
@@ -122,24 +158,33 @@ export function PartyStoreProvider({ children }: { children: ReactNode }) {
     }
   }, [presets])
 
-  const loadBackup = useCallback(async (file: File) => {
-    setBackupLoading(true)
-    setBackupError(null)
+  const libraryView = useMemo(() => buildLibraryView(library), [library])
+
+  const importBackup = useCallback(async (file: File) => {
+    setImportBackupBusy(true)
+    setImportBackupError(null)
     try {
       const doc = await parseBackupFile(file)
       const extract = extractBackup(doc)
-      setBackup(extract)
+      const next = backupToLibrary(extract)
+      await persistLibrary(next)
+      setLibrary(next)
+      setLibraryError(null)
     } catch (err) {
-      setBackupError(err instanceof Error ? err.message : String(err))
-      setBackup(null)
+      setImportBackupError(err instanceof Error ? err.message : String(err))
     } finally {
-      setBackupLoading(false)
+      setImportBackupBusy(false)
     }
   }, [])
 
-  const clearBackup = useCallback(() => {
-    setBackup(null)
-    setBackupError(null)
+  const clearLibrary = useCallback(async () => {
+    try {
+      await deleteLibrary()
+      setLibrary(EMPTY_LIBRARY)
+      setLibraryError(null)
+    } catch (err) {
+      setLibraryError(err instanceof Error ? err.message : String(err))
+    }
   }, [])
 
   const setDraftName = useCallback((name: string) => {
@@ -182,10 +227,10 @@ export function PartyStoreProvider({ children }: { children: ReactNode }) {
     setDraft({ ...EMPTY_DRAFT, members: EMPTY_DRAFT.members.slice() })
   }, [])
 
-  const loadBackupParty = useCallback((partyId: number) => {
-    setBackup((current) => {
-      const party = current?.parties.find((p) => p.id === partyId)
-      if (!party) return current
+  const loadLibraryParty = useCallback(
+    (partyId: number) => {
+      const party = library.parties.find((p) => p.id === partyId)
+      if (!party) return
       setDraft({
         name: party.name,
         members: Array.from(
@@ -193,17 +238,65 @@ export function PartyStoreProvider({ children }: { children: ReactNode }) {
           (_, i) => party.memberIds[i] ?? null,
         ),
       })
-      return current
+    },
+    [library],
+  )
+
+  const upsertCharacter = useCallback(async (goblin: BackupGoblin) => {
+    let next: CharacterLibrary | null = null
+    setLibrary((prev) => {
+      const existingIndex = prev.goblins.findIndex((g) => g.id === goblin.id)
+      const goblins =
+        existingIndex >= 0
+          ? prev.goblins.map((g, i) => (i === existingIndex ? goblin : g))
+          : [...prev.goblins, goblin]
+      const meta = prev.meta ?? { importedAt: new Date().toISOString() }
+      next = { ...prev, goblins, meta }
+      return next
     })
+    if (next) {
+      try {
+        await persistLibrary(next)
+        setLibraryError(null)
+      } catch (err) {
+        setLibraryError(err instanceof Error ? err.message : String(err))
+      }
+    }
   }, [])
 
-  const importBackupPartyAsPreset = useCallback(
+  const removeCharacter = useCallback(async (id: number) => {
+    let next: CharacterLibrary | null = null
+    setLibrary((prev) => {
+      const goblins = prev.goblins.filter((g) => g.id !== id)
+      const equipment = prev.equipment.filter((e) => e.goblinId !== id)
+      const parties = prev.parties.map((p) => ({
+        ...p,
+        memberIds: p.memberIds.filter((mid) => mid !== id),
+      }))
+      next = { ...prev, goblins, equipment, parties }
+      return next
+    })
+    setDraft((prev) => ({
+      ...prev,
+      members: prev.members.map((m) => (m === id ? null : m)),
+    }))
+    if (next) {
+      try {
+        await persistLibrary(next)
+        setLibraryError(null)
+      } catch (err) {
+        setLibraryError(err instanceof Error ? err.message : String(err))
+      }
+    }
+  }, [])
+
+  const importLibraryPartyAsPreset = useCallback(
     (partyId: number): PartyPreset | null => {
-      const party = backup?.parties.find((p) => p.id === partyId)
+      const party = library.parties.find((p) => p.id === partyId)
       if (!party) return null
       const now = new Date().toISOString()
       const preset: PartyPreset = {
-        id: `preset_backup_${party.id}_${Date.now()}`,
+        id: `preset_library_${party.id}_${Date.now()}`,
         name: party.name,
         memberIds: party.memberIds.slice(),
         createdAt: now,
@@ -212,7 +305,7 @@ export function PartyStoreProvider({ children }: { children: ReactNode }) {
       setPresets((prev) => [preset, ...prev])
       return preset
     },
-    [backup],
+    [library],
   )
 
   const savePreset = useCallback((): PartyPreset | null => {
@@ -278,19 +371,23 @@ export function PartyStoreProvider({ children }: { children: ReactNode }) {
 
   const value = useMemo<PartyStoreValue>(
     () => ({
-      backup,
-      backupError,
-      backupLoading,
-      loadBackup,
-      clearBackup,
+      library: libraryView,
+      libraryLoading,
+      libraryError,
+      importBackup,
+      importBackupBusy,
+      importBackupError,
+      clearLibrary,
       draft,
       setDraftName,
       setMemberAt,
       addMember,
       removeMember,
       clearDraft,
-      loadBackupParty,
-      importBackupPartyAsPreset,
+      loadLibraryParty,
+      importLibraryPartyAsPreset,
+      upsertCharacter,
+      removeCharacter,
       presets,
       presetsLoading,
       presetsError,
@@ -301,19 +398,23 @@ export function PartyStoreProvider({ children }: { children: ReactNode }) {
       renamePreset,
     }),
     [
-      backup,
-      backupError,
-      backupLoading,
-      loadBackup,
-      clearBackup,
+      libraryView,
+      libraryLoading,
+      libraryError,
+      importBackup,
+      importBackupBusy,
+      importBackupError,
+      clearLibrary,
       draft,
       setDraftName,
       setMemberAt,
       addMember,
       removeMember,
       clearDraft,
-      loadBackupParty,
-      importBackupPartyAsPreset,
+      loadLibraryParty,
+      importLibraryPartyAsPreset,
+      upsertCharacter,
+      removeCharacter,
       presets,
       presetsLoading,
       presetsError,
@@ -335,14 +436,47 @@ export function usePartyStore(): PartyStoreValue {
 }
 
 export function useGoblinById(id: number | null | undefined): BackupGoblin | null {
-  const { backup } = usePartyStore()
+  const { library } = usePartyStore()
   return useMemo(() => {
-    if (!backup || id === null || id === undefined) return null
-    return backup.goblins.find((g) => g.id === id) ?? null
-  }, [backup, id])
+    if (id === null || id === undefined) return null
+    return library.goblins.find((g) => g.id === id) ?? null
+  }, [library, id])
 }
 
 export type { BackupParty }
+
+async function fetchLibrary(): Promise<CharacterLibrary> {
+  const res = await fetch(LIBRARY_API_URL)
+  if (!res.ok) throw new Error(`キャラクター読み込み失敗: HTTP ${res.status}`)
+  const data = (await res.json()) as unknown
+  if (!isCharacterLibraryShape(data)) return EMPTY_LIBRARY
+  return {
+    goblins: data.goblins,
+    equipment: data.equipment,
+    parties: data.parties,
+    meta: (data as { meta?: CharacterLibrary['meta'] }).meta ?? null,
+  }
+}
+
+async function persistLibrary(library: CharacterLibrary): Promise<void> {
+  const res = await fetch(LIBRARY_API_URL, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(library),
+  })
+  if (!res.ok) {
+    const err = await res.json().catch(() => null)
+    throw new Error(err?.error ?? `キャラクター保存失敗: HTTP ${res.status}`)
+  }
+}
+
+async function deleteLibrary(): Promise<void> {
+  const res = await fetch(LIBRARY_API_URL, { method: 'DELETE' })
+  if (!res.ok) {
+    const err = await res.json().catch(() => null)
+    throw new Error(err?.error ?? `キャラクター削除失敗: HTTP ${res.status}`)
+  }
+}
 
 async function fetchPresets(): Promise<PartyPreset[]> {
   const res = await fetch(PRESET_API_URL)

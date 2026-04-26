@@ -188,6 +188,40 @@ export async function runSimulationBatch(
   }
 }
 
+export interface SingleRunOptions {
+  areaId: string
+  party: BackupGoblin[]
+  tier?: DungeonTier
+  returnPolicy: ReturnPolicy
+  seed?: number
+}
+
+export interface SingleRunResult {
+  options: SingleRunOptions
+  seed: number
+  replay: ExpeditionReplay
+  party: Goblin[]
+}
+
+export async function runSingleExpedition(
+  opts: SingleRunOptions,
+): Promise<SingleRunResult> {
+  const { areaId, party, tier, returnPolicy, seed } = opts
+  const trialSeed =
+    seed !== undefined ? seed : Math.floor(Math.random() * 0x7fffffff)
+  const goblinParty = party.map(backupGoblinToGoblin)
+  const baseRequest: ExpeditionRequest = {
+    partyId: 'studio',
+    areaId,
+    tier,
+    returnPolicy,
+    clientVersion: 'studio',
+  }
+  const engine = new ExpeditionEngine(trialSeed)
+  const replay = await engine.generateExpedition(baseRequest, goblinParty)
+  return { options: opts, seed: trialSeed, replay, party: goblinParty }
+}
+
 export const RETURN_POLICIES: { value: ReturnPolicy; label: string }[] = [
   { value: 'never', label: '帰還しない（到達階まで進む）' },
   { value: 'until_floor2', label: '2F到達で帰還' },

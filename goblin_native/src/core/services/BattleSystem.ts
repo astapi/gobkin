@@ -84,6 +84,17 @@ interface BattleUnit {
   isDefending: boolean
 }
 
+function toCombatBuffsFromSkills(skills: CharacterSkill[]) {
+  return getUniqueSkillsById(skills)
+    .filter((skill) => skill.raceBonus || skill.raceTakenBonus)
+    .map((skill) => ({
+      id: skill.id,
+      name: skill.id,
+      raceBonus: skill.raceBonus,
+      raceTakenBonus: skill.raceTakenBonus,
+    }))
+}
+
 export interface BattleResult {
   rounds: number
   outcome: 'win' | 'lose' | 'retreat'
@@ -1042,7 +1053,9 @@ export class BattleSystem {
   }
 
   private createAllyUnit(goblin: Goblin, initialHP: number | undefined, originalIndex: number): BattleUnit {
+    const skills = getUniqueSkillsById(goblin.skills)
     const combatant = this.combatantManager.fromGoblin(goblin)
+    combatant.buffs = toCombatBuffsFromSkills(skills)
     const actionOrderAgility = (goblin as Goblin & { agility?: number }).agility
     // Mod適用後のステータスを使用
     const effectiveStats = getEffectiveStats(goblin)
@@ -1081,15 +1094,16 @@ export class BattleSystem {
       rowSlot: 0,
       level: goblin.level,
       spellCharges: this.initSpellCharges(learnedSpells),
-      skills: goblin.skills,
+      skills,
       battleActionPolicy: normalizeBattleActionPolicy(goblin.battleActionPolicy),
       isDefending: false,
     }
   }
 
   private createEnemyUnit(enemy: Enemy, originalIndex: number, row: number, rowSlot: number): BattleUnit {
-    const combatant = this.combatantManager.fromEnemy(enemy)
     const skills = getUniqueSkillsById([...(enemy.skills ?? []), ...getRaceSkills(enemy.raceTags)])
+    const combatant = this.combatantManager.fromEnemy(enemy)
+    combatant.buffs = toCombatBuffsFromSkills(skills)
     const learnedSpells = this.mergeLearnedSpells(enemy.spells, skills, enemy.level)
     const raceResistance = getRaceResistanceTotals(enemy.raceTags)
     return {

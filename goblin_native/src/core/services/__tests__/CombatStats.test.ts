@@ -848,6 +848,60 @@ describe('BattleSystem — 命中判定と複数回攻撃', () => {
     expect(wolfDamage - normalDamage).toBe(13 * wolfLog.hitCount)
   })
 
+  it.each([
+    {
+      name: '魔獣特攻',
+      skillId: 'beast_slayer_2_0' as const,
+      raceTags: ['slime'],
+    },
+    {
+      name: 'アンデッド特攻',
+      skillId: 'undead_slayer_2_0' as const,
+      raceTags: ['skeleton'],
+    },
+    {
+      name: '人間特攻',
+      skillId: 'human_slayer_2_0' as const,
+      raceTags: ['elf'],
+    },
+    {
+      name: '魔族特攻',
+      skillId: 'demon_race_slayer_2_0' as const,
+      raceTags: ['construct'],
+    },
+    {
+      name: 'ドラゴン特攻',
+      skillId: 'dragon_slayer_2_0' as const,
+      raceTags: ['dragon'],
+    },
+  ])('$name は通常攻撃へ適用される', ({ skillId, raceTags }) => {
+    const plainEnemy = [[createTestEnemy({ raceTags, hp: 9999, agility: 1, evasion: 0, def: 0 })]]
+    const buffedEnemy = [[createTestEnemy({ raceTags, hp: 9999, agility: 1, evasion: 0, def: 0 })]]
+    const rngA = createSeededRng(77)
+    const rngB = createSeededRng(77)
+
+    const plainResult = new BattleSystem().executeBattle([
+      createTestGoblin({
+        race: 'ゴブリン',
+        stats: { hp: 100, atk: 50, agility: 100, def: 10, attackCount: 1, accuracy: 999, evasion: 10 },
+        skills: [],
+      }),
+    ], [100], plainEnemy, rngA, 1)
+    const buffedResult = new BattleSystem().executeBattle([
+      createTestGoblin({
+        race: 'ゴブリン',
+        stats: { hp: 100, atk: 50, agility: 100, def: 10, attackCount: 1, accuracy: 999, evasion: 10 },
+        skills: [getCharacterSkill(skillId)],
+      }),
+    ], [100], buffedEnemy, rngB, 1)
+
+    const plainLog = plainResult.detailedLog.find(log => log.action === '通常攻撃' && log.isAlly)!
+    const buffedLog = buffedResult.detailedLog.find(log => log.action === '通常攻撃' && log.isAlly)!
+
+    expect(buffedLog.hitCount).toBe(plainLog.hitCount)
+    expect(buffedLog.targets[0].totalDamage).toBe(plainLog.targets[0].totalDamage * 2)
+  })
+
   it('スライムゴブリンより後列の仲間は通常攻撃ダメージが軽減される', () => {
     const protectedAllies = [
       createTestGoblin({
