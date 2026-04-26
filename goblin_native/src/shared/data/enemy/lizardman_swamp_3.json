@@ -127,15 +127,15 @@
     },
     {
       "id": "B_SWAMPKING",
-      "name": "沼王",
+      "name": "キングリザードマン",
       "raceTags": [
         "lizardman"
       ],
-      "level": 23,
-      "hp": 700,
-      "atk": 58,
-      "def": 30,
-      "attackCount": 2,
+      "level": 70,
+      "hp": 2710,
+      "atk": 1500,
+      "def": 300,
+      "attackCount": 3,
       "accuracy": 540,
       "evasion": 31,
       "exp": 320,
@@ -148,10 +148,10 @@
       ],
       "magicDef": 36,
       "baseAttributes": {
-        "power": 15,
+        "power": 23,
         "wisdom": 15,
         "spirit": 9,
-        "vitality": 15,
+        "vitality": 25,
         "agility": 9,
         "luck": 8
       }
