@@ -67,11 +67,8 @@ export function CharacterEditor({
 
   const filteredSkills = useMemo(() => {
     const q = skillQuery.trim().toLowerCase()
-    if (q === '') return SKILL_OPTIONS.slice(0, 60)
-    return SKILL_OPTIONS.filter((s) => s.label.toLowerCase().includes(q)).slice(
-      0,
-      120,
-    )
+    if (q === '') return SKILL_OPTIONS
+    return SKILL_OPTIONS.filter((s) => s.label.toLowerCase().includes(q))
   }, [skillQuery])
 
   if (!open) return null
