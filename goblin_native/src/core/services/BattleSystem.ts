@@ -13,6 +13,7 @@ import {
   getSpellTakenMultiplierFromSkills,
   getSpellDamagePercentFromSkills,
   hasCoverLowHpAllySkill,
+  hasActTwicePerTurnSkill,
   hasSurviveLethalDamageAtHp1Skill,
   getHpRegenPercentFromSkills,
 } from '../../shared/data/characterSkills'
@@ -231,6 +232,10 @@ export function selectTarget(aliveUnits: BattleUnit[], rng: () => number): Battl
   return sorted[sorted.length - 1]
 }
 
+function getActionsPerTurn(unit: Pick<BattleUnit, 'skills'>): number {
+  return hasActTwicePerTurnSkill(unit.skills) ? 2 : 1
+}
+
 export class BattleSystem {
   private readonly combatantManager: CombatantManager
   private readonly damageCalculator: DamageCalculator
@@ -312,17 +317,22 @@ export class BattleSystem {
 
       const actingUnits = [...allyUnits, ...enemyUnits]
         .filter(unit => unit.currentHP > 0)
-        .map((unit) => ({
-          unit,
-          actionOrder: getActionOrderValue(
+        .flatMap((unit) => {
+          const actionOrder = getActionOrderValue(
             unit.agility,
             getActionOrderMultiplierFromSkills(unit.skills),
             getActionOrderRandomFactor(rng),
-          ),
-        }))
+          )
+          return Array.from({ length: getActionsPerTurn(unit) }, (_, actionIndex) => ({
+            unit,
+            actionOrder,
+            actionIndex,
+          }))
+        })
         .sort((a, b) => {
           if (b.actionOrder !== a.actionOrder) return b.actionOrder - a.actionOrder
-          return a.unit.originalIndex - b.unit.originalIndex
+          if (a.unit.originalIndex !== b.unit.originalIndex) return a.unit.originalIndex - b.unit.originalIndex
+          return a.actionIndex - b.actionIndex
         })
         .map(({ unit }) => unit)
 

@@ -250,6 +250,11 @@ export const CHARACTER_SKILL_CATALOG = {
     coverLowHpAlly: true,
   },
 
+  two_actions: {
+    id: 'two_actions',
+    actTwicePerTurn: true,
+  },
+
   critical_damage_bonus_6: createCriticalDamageBonusSkill(6),
   critical_damage_bonus_7: createCriticalDamageBonusSkill(7),
   critical_damage_bonus_8: createCriticalDamageBonusSkill(8),
