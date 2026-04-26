@@ -34,6 +34,7 @@ export interface CharacterSkill {
   actTwicePerTurn?: boolean
   surviveLethalDamageAtHp1?: boolean
   recoverRandomUsedSpellOnDefend?: boolean
+  immediateReviveOnAllyDeath?: boolean
   grantsSpellId?: string
   spellChargeBonusForId?: string
   extraSpellCharges?: number

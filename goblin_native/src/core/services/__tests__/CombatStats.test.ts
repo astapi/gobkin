@@ -2313,6 +2313,84 @@ describe('BattleSystem — ジョブ系スキル', () => {
     expect(result.outcome).not.toBe('lose')
   })
 
+  it('即時蘇生は未行動なら味方の死亡直後に発動し、そのターンの行動を消費する', () => {
+    const battleSystem = new BattleSystem()
+    const victim = createTestGoblin({
+      id: 1,
+      name: '前衛',
+      stats: { hp: 40, atk: 5, agility: 1, def: 5, attackCount: 1, accuracy: 1, evasion: 0 },
+      skills: [],
+    })
+    const reviver = createTestGoblin({
+      id: 2,
+      name: '僧侶',
+      stats: { hp: 80, atk: 20, magicHeal: 30, agility: 10, def: 10, attackCount: 1, accuracy: 999, evasion: 0 },
+      skills: [
+        { id: 'instant_revive', immediateReviveOnAllyDeath: true },
+        { id: 'recovery_magic_lv1', recoveryMagicLevel: 1 },
+      ],
+    })
+    const enemy = createTestEnemy({
+      id: 'EXECUTIONER',
+      name: '処刑人',
+      hp: 999,
+      atk: 999,
+      def: 1,
+      agility: 100,
+      attackCount: 1,
+      accuracy: 999,
+      evasion: 0,
+    })
+
+    const result = battleSystem.executeBattle([victim, reviver], [victim.stats.hp, reviver.stats.hp], [[enemy]], () => 0, 1)
+    const reviverLogs = result.detailedLog.filter(log => log.actorId === '2')
+
+    expect(reviverLogs.map(log => log.action)).toEqual(['ヒール'])
+    expect(reviverLogs[0].targets[0].targetId).toBe('1')
+    expect(reviverLogs[0].targets[0].totalDamage).toBe(-30)
+    expect(reviverLogs[0].targets[0].targetHP).toBe(30)
+  })
+
+  it('即時蘇生持ちがそのターンに行動済みなら蘇生しない', () => {
+    const battleSystem = new BattleSystem()
+    const victim = createTestGoblin({
+      id: 1,
+      name: '前衛',
+      stats: { hp: 40, atk: 5, agility: 1, def: 5, attackCount: 1, accuracy: 1, evasion: 0 },
+      skills: [],
+    })
+    const reviver = createTestGoblin({
+      id: 2,
+      name: '僧侶',
+      stats: { hp: 80, atk: 20, magicHeal: 30, agility: 100, def: 10, attackCount: 1, accuracy: 999, evasion: 0 },
+      skills: [
+        { id: 'instant_revive', immediateReviveOnAllyDeath: true },
+        { id: 'recovery_magic_lv1', recoveryMagicLevel: 1 },
+      ],
+      battleActionPolicy: { attackRate: 0, clericMagicRate: 100, mageMagicRate: 100 },
+    })
+    const enemy = createTestEnemy({
+      id: 'EXECUTIONER',
+      name: '処刑人',
+      hp: 999,
+      atk: 999,
+      def: 1,
+      agility: 50,
+      attackCount: 1,
+      accuracy: 999,
+      evasion: 0,
+    })
+
+    const result = battleSystem.executeBattle([victim, reviver], [victim.stats.hp, reviver.stats.hp], [[enemy]], () => 0, 1)
+    const reviverLogs = result.detailedLog.filter(log => log.actorId === '2')
+    const victimTurnState = result.detailedLog.find(log => log.actorId === 'EXECUTIONER' && log.action === '通常攻撃')
+
+    expect(reviverLogs.map(log => log.action)).toEqual(['防御'])
+    expect(victimTurnState?.targets[0].targetId).toBe('1')
+    expect(victimTurnState?.targets[0].defeated).toBe(true)
+    expect(victimTurnState?.targets[0].targetHP).toBe(0)
+  })
+
   it('気合い持ちでもHP1の状態で致死ダメージを受けたら倒れる', () => {
     const battleSystem = new BattleSystem()
     const hobgoblin = createTestGoblin({

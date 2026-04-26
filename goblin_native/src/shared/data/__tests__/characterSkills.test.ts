@@ -15,6 +15,7 @@ import {
   getSkillStatMultipliers,
   hasCoverLowHpAllySkill,
   hasActTwicePerTurnSkill,
+  hasImmediateReviveSkill,
   hasRecoverRandomUsedSpellOnDefendSkill,
   hasSurviveLethalDamageAtHp1Skill,
   getUniqueSkillsById,
@@ -294,6 +295,14 @@ describe('characterSkills - 物理ダメージ軽減', () => {
     expect(hasRecoverRandomUsedSpellOnDefendSkill(skills)).toBe(true)
   })
 
+  it('即時蘇生スキルを判定できる', () => {
+    const skills: CharacterSkill[] = [
+      { id: 'instant_revive', immediateReviveOnAllyDeath: true },
+    ]
+
+    expect(hasImmediateReviveSkill(skills)).toBe(true)
+  })
+
   it('スキル一覧取得時も同じidは1件にまとまる', () => {
     const skills: CharacterSkill[] = [
       { id: 'shared' },
@@ -464,6 +473,15 @@ describe('characterSkills - 物理ダメージ軽減', () => {
     }
 
     expect(describeCharacterSkill(skill)).toBe('防御すると使用済みの呪文をランダムで1つ回復する')
+  })
+
+  it('即時蘇生スキルの説明文を返す', () => {
+    const skill: CharacterSkill = {
+      id: 'instant_revive',
+      immediateReviveOnAllyDeath: true,
+    }
+
+    expect(describeCharacterSkill(skill)).toBe('未行動なら味方が倒れた直後に回復魔法で蘇生し、そのターンは行動済みになる')
   })
 
   it('カタログ定義の説明キーからスキル説明文を返す', () => {
