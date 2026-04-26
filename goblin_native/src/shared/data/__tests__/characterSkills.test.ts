@@ -15,6 +15,7 @@ import {
   getSkillStatMultipliers,
   hasCoverLowHpAllySkill,
   hasActTwicePerTurnSkill,
+  hasRecoverRandomUsedSpellOnDefendSkill,
   hasSurviveLethalDamageAtHp1Skill,
   getUniqueSkillsById,
   getCharacterSkillDescription,
@@ -285,6 +286,14 @@ describe('characterSkills - 物理ダメージ軽減', () => {
     expect(hasActTwicePerTurnSkill(skills)).toBe(true)
   })
 
+  it('魔力回復スキルを判定できる', () => {
+    const skills: CharacterSkill[] = [
+      { id: 'mana_recovery', recoverRandomUsedSpellOnDefend: true },
+    ]
+
+    expect(hasRecoverRandomUsedSpellOnDefendSkill(skills)).toBe(true)
+  })
+
   it('スキル一覧取得時も同じidは1件にまとまる', () => {
     const skills: CharacterSkill[] = [
       { id: 'shared' },
@@ -446,6 +455,15 @@ describe('characterSkills - 物理ダメージ軽減', () => {
     }
 
     expect(describeCharacterSkill(skill)).toBe('1ターンに2回行動する')
+  })
+
+  it('魔力回復スキルの説明文を返す', () => {
+    const skill: CharacterSkill = {
+      id: 'mana_recovery',
+      recoverRandomUsedSpellOnDefend: true,
+    }
+
+    expect(describeCharacterSkill(skill)).toBe('防御すると使用済みの呪文をランダムで1つ回復する')
   })
 
   it('カタログ定義の説明キーからスキル説明文を返す', () => {

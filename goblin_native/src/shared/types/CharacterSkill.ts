@@ -33,6 +33,7 @@ export interface CharacterSkill {
   coverLowHpAlly?: boolean
   actTwicePerTurn?: boolean
   surviveLethalDamageAtHp1?: boolean
+  recoverRandomUsedSpellOnDefend?: boolean
   grantsSpellId?: string
   spellChargeBonusForId?: string
   extraSpellCharges?: number

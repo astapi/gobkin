@@ -65,6 +65,7 @@ describe('goblinJobs', () => {
     const trained = applyGoblinJob(createGoblin({ level: 14 }), 'guard')
     expect(trained.skills.some((skill) => skill.id === 'cover_low_hp_ally')).toBe(false)
     expect(trained.skills.some((skill) => skill.id === 'rear_guard')).toBe(false)
+    expect(trained.skills.some((skill) => skill.id === 'mana_recovery')).toBe(false)
   })
 
   it('メイジはLv7魔法使い魔法スキルを持つ', () => {
@@ -76,6 +77,7 @@ describe('goblinJobs', () => {
   it('ゴブリンガードはレベル15で後列防護を習得する', () => {
     const trained = applyGoblinJob(createGoblin({ level: 15 }), 'guard')
     expect(trained.skills.some((skill) => skill.id === 'rear_guard')).toBe(true)
+    expect(trained.skills.some((skill) => skill.id === 'mana_recovery')).toBe(true)
   })
 
   it('街道クリア後にクレリック訓練が解放される', () => {

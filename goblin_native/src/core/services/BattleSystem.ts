@@ -14,6 +14,7 @@ import {
   getSpellDamagePercentFromSkills,
   hasCoverLowHpAllySkill,
   hasActTwicePerTurnSkill,
+  hasRecoverRandomUsedSpellOnDefendSkill,
   hasSurviveLethalDamageAtHp1Skill,
   getHpRegenPercentFromSkills,
 } from '../../shared/data/characterSkills'
@@ -457,6 +458,7 @@ export class BattleSystem {
           })
         } else {
           unit.isDefending = true
+          this.recoverRandomUsedSpellOnDefend(unit, rng)
           detailedLog.push({
             turn: currentTurn,
             actorId: unit.combatant.id,
@@ -645,6 +647,20 @@ export class BattleSystem {
     }
 
     return false
+  }
+
+  private recoverRandomUsedSpellOnDefend(unit: BattleUnit, rng: () => number): void {
+    if (!hasRecoverRandomUsedSpellOnDefendSkill(unit.skills)) {
+      return
+    }
+
+    const usedSpellCharges = unit.spellCharges.filter((charge) => charge.remaining < charge.maxCharges)
+    if (usedSpellCharges.length === 0) {
+      return
+    }
+
+    const selectedCharge = usedSpellCharges[Math.floor(rng() * usedSpellCharges.length)]
+    selectedCharge.remaining = Math.min(selectedCharge.remaining + 1, selectedCharge.maxCharges)
   }
 
   /**
