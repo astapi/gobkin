@@ -1590,6 +1590,73 @@ describe('spell charges', () => {
     expect(spellLogs).toHaveLength(2)
   })
 
+  it('魔力回復があると防御時に使用済み呪文を1つ回復して再使用できる', () => {
+    const battleSystem = new BattleSystem()
+    const ally = createTestGoblin({
+      level: 20,
+      stats: { hp: 9999, atk: 12, agility: 1, def: 10, attackCount: 1, accuracy: 20, evasion: 15 },
+    })
+    const enemy = createTestEnemy({
+      id: 'MANA_GUARD',
+      name: '魔力守兵',
+      level: 20,
+      hp: 999,
+      atk: 1,
+      def: 1,
+      agility: 50,
+      attackCount: 0,
+      skills: [
+        { id: 'grant_fireball', grantsSpellId: 'fireball' },
+        { id: 'mana_recovery', recoverRandomUsedSpellOnDefend: true },
+      ],
+      battleActionPolicy: {
+        attackRate: 0,
+        mageMagicRate: 100,
+        clericMagicRate: 100,
+      },
+    })
+
+    const result = battleSystem.executeBattle([ally], [ally.stats.hp], [[enemy]], createSeededRng(42), 3)
+    const spellLogs = result.detailedLog.filter(log => log.actorId === 'MANA_GUARD' && log.action === 'ファイヤーボール')
+    const defendLogs = result.detailedLog.filter(log => log.actorId === 'MANA_GUARD' && log.action === '防御')
+
+    expect(spellLogs).toHaveLength(2)
+    expect(defendLogs).toHaveLength(1)
+  })
+
+  it('魔力回復がなくても防御では使用済み呪文を回復しない', () => {
+    const battleSystem = new BattleSystem()
+    const ally = createTestGoblin({
+      level: 20,
+      stats: { hp: 9999, atk: 12, agility: 1, def: 10, attackCount: 1, accuracy: 20, evasion: 15 },
+    })
+    const enemy = createTestEnemy({
+      id: 'PLAIN_GUARD',
+      name: '通常守兵',
+      level: 20,
+      hp: 999,
+      atk: 1,
+      def: 1,
+      agility: 50,
+      attackCount: 0,
+      skills: [
+        { id: 'grant_fireball', grantsSpellId: 'fireball' },
+      ],
+      battleActionPolicy: {
+        attackRate: 0,
+        mageMagicRate: 100,
+        clericMagicRate: 100,
+      },
+    })
+
+    const result = battleSystem.executeBattle([ally], [ally.stats.hp], [[enemy]], createSeededRng(42), 3)
+    const spellLogs = result.detailedLog.filter(log => log.actorId === 'PLAIN_GUARD' && log.action === 'ファイヤーボール')
+    const defendLogs = result.detailedLog.filter(log => log.actorId === 'PLAIN_GUARD' && log.action === '防御')
+
+    expect(spellLogs).toHaveLength(1)
+    expect(defendLogs).toHaveLength(2)
+  })
+
   it('ブリザードはレベル15メイジ相当で使用できる', () => {
     const battleSystem = new BattleSystem()
     const enemy = createTestEnemy({

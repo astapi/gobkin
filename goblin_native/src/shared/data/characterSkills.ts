@@ -85,6 +85,10 @@ export function describeCharacterSkill(skill: CharacterSkill): string {
     return i18n.t('battle.actTwicePerTurn')
   }
 
+  if (skill.recoverRandomUsedSpellOnDefend) {
+    return i18n.t('battle.recoverRandomUsedSpellOnDefend')
+  }
+
   if (skill.surviveLethalDamageAtHp1) {
     return i18n.t('battle.surviveLethal')
   }
@@ -316,6 +320,10 @@ export function hasCoverLowHpAllySkill(skills: CharacterSkill[]): boolean {
 
 export function hasActTwicePerTurnSkill(skills: CharacterSkill[]): boolean {
   return getUniqueSkillsById(skills).some((skill) => skill.actTwicePerTurn)
+}
+
+export function hasRecoverRandomUsedSpellOnDefendSkill(skills: CharacterSkill[]): boolean {
+  return getUniqueSkillsById(skills).some((skill) => skill.recoverRandomUsedSpellOnDefend)
 }
 
 export function hasSurviveLethalDamageAtHp1Skill(skills: CharacterSkill[]): boolean {

@@ -61,6 +61,10 @@ const GOBLIN_JOB_DEFINITION_SEEDS: Record<GoblinJob, GoblinJobDefinitionSeed> = 
       {
         skillId: "rear_guard",
         unlockLevel: 15
+      },
+      {
+        skillId: "mana_recovery",
+        unlockLevel: 15
       }
     ],
     baseAttributes: {
