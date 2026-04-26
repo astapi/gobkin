@@ -81,6 +81,10 @@ export function describeCharacterSkill(skill: CharacterSkill): string {
     return i18n.t('battle.coverLowHp')
   }
 
+  if (skill.actTwicePerTurn) {
+    return i18n.t('battle.actTwicePerTurn')
+  }
+
   if (skill.surviveLethalDamageAtHp1) {
     return i18n.t('battle.surviveLethal')
   }
@@ -308,6 +312,10 @@ export function getRearAllyDamageMultiplierFromSkills(skills: CharacterSkill[]):
 
 export function hasCoverLowHpAllySkill(skills: CharacterSkill[]): boolean {
   return getUniqueSkillsById(skills).some((skill) => skill.coverLowHpAlly)
+}
+
+export function hasActTwicePerTurnSkill(skills: CharacterSkill[]): boolean {
+  return getUniqueSkillsById(skills).some((skill) => skill.actTwicePerTurn)
 }
 
 export function hasSurviveLethalDamageAtHp1Skill(skills: CharacterSkill[]): boolean {

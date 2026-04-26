@@ -14,6 +14,7 @@ import {
   getSkillStatBonuses,
   getSkillStatMultipliers,
   hasCoverLowHpAllySkill,
+  hasActTwicePerTurnSkill,
   hasSurviveLethalDamageAtHp1Skill,
   getUniqueSkillsById,
   getCharacterSkillDescription,
@@ -276,6 +277,14 @@ describe('characterSkills - 物理ダメージ軽減', () => {
     expect(hasSurviveLethalDamageAtHp1Skill(skills)).toBe(true)
   })
 
+  it('2回行動スキルを判定できる', () => {
+    const skills: CharacterSkill[] = [
+      { id: 'two_actions', actTwicePerTurn: true },
+    ]
+
+    expect(hasActTwicePerTurnSkill(skills)).toBe(true)
+  })
+
   it('スキル一覧取得時も同じidは1件にまとまる', () => {
     const skills: CharacterSkill[] = [
       { id: 'shared' },
@@ -428,6 +437,15 @@ describe('characterSkills - 物理ダメージ軽減', () => {
     }
 
     expect(describeCharacterSkill(skill)).toBe('HPが0になる攻撃を受けてもHP1で耐える')
+  })
+
+  it('2回行動スキルの説明文を返す', () => {
+    const skill: CharacterSkill = {
+      id: 'two_actions',
+      actTwicePerTurn: true,
+    }
+
+    expect(describeCharacterSkill(skill)).toBe('1ターンに2回行動する')
   })
 
   it('カタログ定義の説明キーからスキル説明文を返す', () => {

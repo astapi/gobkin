@@ -580,6 +580,65 @@ describe('ModStatCalculator — 戦闘ステータス計算', () => {
   })
 })
 
+describe('BattleSystem - 2回行動', () => {
+  it('2回行動スキルを持つユニットは1ターンに2回行動する', () => {
+    const battleSystem = new BattleSystem()
+    const rng = createSeededRng(1234)
+    const attacker = createTestGoblin({
+      id: 1,
+      skills: [getCharacterSkill('two_actions')],
+      stats: { atk: 20, attackCount: 1, accuracy: 999, criticalRate: 0, agility: 50 },
+      battleActionPolicy: { attackRate: 100, clericMagicRate: 0, mageMagicRate: 0 },
+    })
+    const enemy = createTestEnemy({
+      id: 'DOUBLE_ACTION_TARGET',
+      hp: 999,
+      atk: 1,
+      def: 1,
+      attackCount: 1,
+      accuracy: 0,
+      evasion: 0,
+      agility: 1,
+      battleActionPolicy: { attackRate: 0, clericMagicRate: 0, mageMagicRate: 0 },
+    })
+
+    const result = battleSystem.executeBattle([attacker], [60], [[enemy]], rng, 1)
+    const attackerLogs = result.detailedLog.filter(
+      log => log.turn === 1 && log.actorId === '1' && log.action === '通常攻撃',
+    )
+
+    expect(attackerLogs).toHaveLength(2)
+  })
+
+  it('2回行動スキルがないユニットは1ターンに1回だけ行動する', () => {
+    const battleSystem = new BattleSystem()
+    const rng = createSeededRng(1234)
+    const attacker = createTestGoblin({
+      id: 1,
+      stats: { atk: 20, attackCount: 1, accuracy: 999, criticalRate: 0, agility: 50 },
+      battleActionPolicy: { attackRate: 100, clericMagicRate: 0, mageMagicRate: 0 },
+    })
+    const enemy = createTestEnemy({
+      id: 'SINGLE_ACTION_TARGET',
+      hp: 999,
+      atk: 1,
+      def: 1,
+      attackCount: 1,
+      accuracy: 0,
+      evasion: 0,
+      agility: 1,
+      battleActionPolicy: { attackRate: 0, clericMagicRate: 0, mageMagicRate: 0 },
+    })
+
+    const result = battleSystem.executeBattle([attacker], [60], [[enemy]], rng, 1)
+    const attackerLogs = result.detailedLog.filter(
+      log => log.turn === 1 && log.actorId === '1' && log.action === '通常攻撃',
+    )
+
+    expect(attackerLogs).toHaveLength(1)
+  })
+})
+
 // =========================================================================
 // BattleSystem — 命中判定と複数回攻撃（集約ログ）
 // =========================================================================
