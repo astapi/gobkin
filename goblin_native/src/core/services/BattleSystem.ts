@@ -14,6 +14,7 @@ import {
   getSpellDamagePercentFromSkills,
   hasCoverLowHpAllySkill,
   hasActTwicePerTurnSkill,
+  hasImmediateReviveSkill,
   hasRecoverRandomUsedSpellOnDefendSkill,
   hasSurviveLethalDamageAtHp1Skill,
   getHpRegenPercentFromSkills,
@@ -316,6 +317,9 @@ export class BattleSystem {
 
       detailedLog.push(this.createTurnStartLog(currentTurn, allyUnits, enemyUnits))
 
+      const turnActedUnitKeys = new Set<string>()
+      const turnConsumedUnitKeys = new Set<string>()
+
       const actingUnits = [...allyUnits, ...enemyUnits]
         .filter(unit => unit.currentHP > 0)
         .flatMap((unit) => {
@@ -339,6 +343,8 @@ export class BattleSystem {
 
       for (const unit of actingUnits) {
         if (unit.currentHP <= 0) continue
+        const unitKey = this.getUnitKey(unit)
+        if (turnConsumedUnitKeys.has(unitKey)) continue
 
         const targetGroup = unit.isAlly ? enemyUnits : allyUnits
         const sourceGroup = unit.isAlly ? allyUnits : enemyUnits
@@ -353,6 +359,10 @@ export class BattleSystem {
             spellAction,
             targetGroup,
             sourceGroup,
+            currentTurn,
+            detailedLog,
+            turnActedUnitKeys,
+            turnConsumedUnitKeys,
             rng,
           )
 
@@ -374,6 +384,7 @@ export class BattleSystem {
             actionEffect: spellAction.effect ?? 'damage',
             targets: [...targetDetails.values()],
           })
+          turnActedUnitKeys.add(unitKey)
         } else if (shouldRunRate(unit.battleActionPolicy.attackRate, rng)) {
           // 通常攻撃
           let totalHitCount = 0
@@ -437,6 +448,14 @@ export class BattleSystem {
             )
 
             this.applyDamage(target, damage)
+            this.tryImmediateReviveForFallenAlly(
+              target,
+              target.isAlly ? allyUnits : enemyUnits,
+              currentTurn,
+              detailedLog,
+              turnActedUnitKeys,
+              turnConsumedUnitKeys,
+            )
 
             // ターゲットごとの結果を集約
             this.accumulateTargetDetail(targetDetails, target, damage)
@@ -456,6 +475,7 @@ export class BattleSystem {
             isCritical,
             targets: [...targetDetails.values()],
           })
+          turnActedUnitKeys.add(unitKey)
         } else {
           unit.isDefending = true
           this.recoverRandomUsedSpellOnDefend(unit, rng)
@@ -473,6 +493,7 @@ export class BattleSystem {
             actionEffect: 'defend',
             targets: [],
           })
+          turnActedUnitKeys.add(unitKey)
         }
 
         // 敵または味方が全滅したら即座にターン終了
@@ -685,6 +706,10 @@ export class BattleSystem {
     spellDef: SpellDef,
     targetGroup: BattleUnit[],
     sourceGroup: BattleUnit[],
+    currentTurn: number,
+    detailedLog: BattleLogEntry[],
+    turnActedUnitKeys: Set<string>,
+    turnConsumedUnitKeys: Set<string>,
     rng: () => number,
   ): { targetDetails: Map<string, AttackTargetDetail>; totalHitCount: number } {
     const targetDetails: Map<string, AttackTargetDetail> = new Map()
@@ -788,6 +813,14 @@ export class BattleSystem {
         const damage = Math.max(1, Math.floor(baseDamage * rearDamageMultiplier * spellDamageFactor * spellTakenMultiplier * reductionFactor * magicReductionFactor * magicBarrierFactor * defendingFactor))
 
         this.applyDamage(target, damage)
+        this.tryImmediateReviveForFallenAlly(
+          target,
+          targetGroup,
+          currentTurn,
+          detailedLog,
+          turnActedUnitKeys,
+          turnConsumedUnitKeys,
+        )
         totalHitCount++
 
         this.accumulateTargetDetail(targetDetails, target, damage)
@@ -820,6 +853,14 @@ export class BattleSystem {
         const damage = Math.max(1, Math.floor(baseDamage * rearDamageMultiplier * spellDamageFactor * spellTakenMultiplier * reductionFactor * magicReductionFactor * magicBarrierFactor * defendingFactor))
 
         this.applyDamage(target, damage)
+        this.tryImmediateReviveForFallenAlly(
+          target,
+          targetGroup,
+          currentTurn,
+          detailedLog,
+          turnActedUnitKeys,
+          turnConsumedUnitKeys,
+        )
         totalHitCount++
 
         this.accumulateTargetDetail(targetDetails, target, damage)
@@ -892,6 +933,102 @@ export class BattleSystem {
     }
 
     target.currentHP = Math.max(0, nextHP)
+  }
+
+  private tryImmediateReviveForFallenAlly(
+    target: BattleUnit,
+    alliedUnits: BattleUnit[],
+    currentTurn: number,
+    detailedLog: BattleLogEntry[],
+    turnActedUnitKeys: Set<string>,
+    turnConsumedUnitKeys: Set<string>,
+  ): void {
+    if (target.currentHP > 0) {
+      return
+    }
+
+    const reviver = [...alliedUnits]
+      .filter((unit) => {
+        if (unit.currentHP <= 0) return false
+        if (this.getUnitKey(unit) === this.getUnitKey(target)) return false
+        if (turnActedUnitKeys.has(this.getUnitKey(unit))) return false
+        return hasImmediateReviveSkill(unit.skills) && this.getImmediateReviveSpell(unit, target) !== null
+      })
+      .sort((a, b) => {
+        if (a.row !== b.row) return a.row - b.row
+        if (a.rowSlot !== b.rowSlot) return a.rowSlot - b.rowSlot
+        return a.originalIndex - b.originalIndex
+      })[0]
+
+    if (!reviver) {
+      return
+    }
+
+    const revival = this.getImmediateReviveSpell(reviver, target)
+    if (!revival) {
+      return
+    }
+
+    const healed = this.applyHealing(target, revival.healAmount)
+    if (healed <= 0) {
+      return
+    }
+
+    revival.charge.remaining--
+    const reviverKey = this.getUnitKey(reviver)
+    turnActedUnitKeys.add(reviverKey)
+    turnConsumedUnitKeys.add(reviverKey)
+
+    detailedLog.push({
+      turn: currentTurn,
+      actorId: reviver.combatant.id,
+      actorName: this.getLogName(reviver),
+      actorRow: reviver.row + 1,
+      action: revival.spellDef.name,
+      attackCount: 1,
+      hitCount: 1,
+      actorHP: reviver.currentHP,
+      actorMaxHP: reviver.maxHP,
+      isAlly: reviver.isAlly,
+      actionEffect: 'heal',
+      targets: [{
+        targetId: target.combatant.id,
+        targetName: this.getLogName(target),
+        targetRow: target.row + 1,
+        totalDamage: -healed,
+        hitCount: 1,
+        defeated: false,
+        targetHP: target.currentHP,
+      }],
+    })
+  }
+
+  private getImmediateReviveSpell(
+    unit: BattleUnit,
+    target: BattleUnit,
+  ): { charge: SpellCharge; spellDef: SpellDef; healAmount: number } | null {
+    let best: { charge: SpellCharge; spellDef: SpellDef; healAmount: number } | null = null
+
+    for (const charge of unit.spellCharges) {
+      if (charge.remaining <= 0 || charge.category !== 'cleric') continue
+      const spellDef = SPELL_DEFS[charge.spellId]
+      if (!spellDef || (spellDef.effect ?? 'damage') !== 'heal') continue
+      const healAmount = this.getImmediateReviveHealAmount(unit, target, spellDef)
+      if (healAmount <= 0) continue
+      if (!best || healAmount > best.healAmount) {
+        best = { charge, spellDef, healAmount }
+      }
+    }
+
+    return best
+  }
+
+  private getImmediateReviveHealAmount(unit: BattleUnit, target: BattleUnit, spellDef: SpellDef): number {
+    if (spellDef.fullHeal) {
+      return target.maxHP
+    }
+
+    return Math.max(0, Math.floor(unit.magicHeal + (spellDef.healBonus ?? 0)))
   }
 
   private applyHealing(target: BattleUnit, amount: number): number {

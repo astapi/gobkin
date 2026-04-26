@@ -260,6 +260,11 @@ export const CHARACTER_SKILL_CATALOG = {
     recoverRandomUsedSpellOnDefend: true,
   },
 
+  instant_revive: {
+    id: 'instant_revive',
+    immediateReviveOnAllyDeath: true,
+  },
+
   critical_damage_bonus_6: createCriticalDamageBonusSkill(6),
   critical_damage_bonus_7: createCriticalDamageBonusSkill(7),
   critical_damage_bonus_8: createCriticalDamageBonusSkill(8),
