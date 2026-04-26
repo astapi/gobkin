@@ -24,6 +24,9 @@ function cloneSkill(skill: CharacterSkill): CharacterSkill {
     equipmentCategoryMultiplier: skill.equipmentCategoryMultiplier
       ? { ...skill.equipmentCategoryMultiplier }
       : undefined,
+    weaponSubCategoryMultiplier: skill.weaponSubCategoryMultiplier
+      ? { ...skill.weaponSubCategoryMultiplier }
+      : undefined,
     equipmentStatMultipliers: skill.equipmentStatMultipliers
       ? { ...skill.equipmentStatMultipliers }
       : undefined,

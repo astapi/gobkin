@@ -4,6 +4,7 @@ import { RECOVERY_MAGIC_SPELL_TABLE } from '../../shared/data/recoveryMagic'
 import {
   getActionOrderMultiplierFromSkills,
   getAdditionalDamageFromSkills,
+  getPhysicalDamagePercentFromSkills,
   getRearAllyDamageMultiplierFromSkills,
   getLearnedSpellsFromSkills,
   getPhysicalDamageReductionFromSkills,
@@ -64,6 +65,7 @@ interface BattleUnit {
   shieldBarrierBreathDamageReduction: number // シールドバリアのブレスダメージ軽減率（0〜100）
   magicBarrierDamageReduction: number // マジックバリアの魔法ダメージ軽減率（0〜100）
   physicalDamageDealtMultiplier: number // 物理与ダメージ倍率
+  physicalDamagePercent: number   // 物理威力の増減（%）
   magicAtk: number              // 魔法攻撃力
   magicHeal: number             // 魔法回復量
   criticalRate: number          // 必殺率（%）
@@ -417,9 +419,10 @@ export class BattleSystem {
             const shieldBarrierReductionFactor = 1 - target.shieldBarrierDamageReduction / 100
             const protectionFactor = this.getRearGuardReductionFactor(target, allyUnits)
             const defendingFactor = this.getDefendingDamageFactor(target)
+            const physicalDamageFactor = 1 + unit.physicalDamagePercent / 100
             const damage = Math.max(
               1,
-              Math.floor((baseDamage * dmgMod * rearDamageMultiplier * rowDamageMultiplier + additionalDamage) * unit.physicalDamageDealtMultiplier * reductionFactor * physicalReductionFactor * shieldBarrierReductionFactor * protectionFactor * defendingFactor),
+              Math.floor((baseDamage * dmgMod * rearDamageMultiplier * rowDamageMultiplier + additionalDamage) * physicalDamageFactor * unit.physicalDamageDealtMultiplier * reductionFactor * physicalReductionFactor * shieldBarrierReductionFactor * protectionFactor * defendingFactor),
             )
 
             this.applyDamage(target, damage)
@@ -904,6 +907,7 @@ export class BattleSystem {
       shieldBarrierBreathDamageReduction: 0,
       magicBarrierDamageReduction: 0,
       physicalDamageDealtMultiplier: 1,
+      physicalDamagePercent: getPhysicalDamagePercentFromSkills(goblin.skills),
       magicAtk: effectiveStats.magicAtk,
       magicHeal: effectiveStats.magicHeal,
       criticalRate: effectiveStats.criticalRate,
@@ -950,6 +954,7 @@ export class BattleSystem {
       shieldBarrierBreathDamageReduction: 0,
       magicBarrierDamageReduction: 0,
       physicalDamageDealtMultiplier: 1,
+      physicalDamagePercent: getPhysicalDamagePercentFromSkills(skills),
       magicAtk: enemy.magicAtk ?? enemy.atk,
       magicHeal: enemy.magicHeal ?? 0,
       criticalRate: enemy.criticalRate ?? 0,

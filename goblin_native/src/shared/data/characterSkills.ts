@@ -35,6 +35,9 @@ export function cloneCharacterSkill(skill: CharacterSkill): CharacterSkill {
     equipmentCategoryMultiplier: skill.equipmentCategoryMultiplier
       ? { ...skill.equipmentCategoryMultiplier }
       : undefined,
+    weaponSubCategoryMultiplier: skill.weaponSubCategoryMultiplier
+      ? { ...skill.weaponSubCategoryMultiplier }
+      : undefined,
     equipmentStatMultipliers: skill.equipmentStatMultipliers
       ? { ...skill.equipmentStatMultipliers }
       : undefined,
@@ -94,6 +97,10 @@ export function describeCharacterSkill(skill: CharacterSkill): string {
     return i18n.t('battle.breathReduction', { value: skill.breathDamageReductionPercent })
   }
 
+  if (skill.physicalDamagePercent !== undefined) {
+    return i18n.t('battle.physicalDamagePercent', { value: skill.physicalDamagePercent })
+  }
+
   if (skill.spellDamagePercent !== undefined) {
     return i18n.t('battle.spellDamagePercent', { value: skill.spellDamagePercent })
   }
@@ -151,6 +158,22 @@ export function describeCharacterSkill(skill: CharacterSkill): string {
     return i18n.t('battle.armorMultiplier', { value: skill.equipmentCategoryMultiplier.armor.toFixed(1) })
   }
 
+  if (skill.equipmentCategoryMultiplier?.wand !== undefined) {
+    return i18n.t('battle.wandMultiplier', { value: skill.equipmentCategoryMultiplier.wand.toFixed(1) })
+  }
+
+  if (skill.equipmentCategoryMultiplier?.rod !== undefined) {
+    return i18n.t('battle.rodMultiplier', { value: skill.equipmentCategoryMultiplier.rod.toFixed(1) })
+  }
+
+  if (skill.weaponSubCategoryMultiplier?.sword !== undefined) {
+    return i18n.t('battle.swordMultiplier', { value: skill.weaponSubCategoryMultiplier.sword.toFixed(1) })
+  }
+
+  if (skill.weaponSubCategoryMultiplier?.claw !== undefined) {
+    return i18n.t('battle.clawMultiplier', { value: skill.weaponSubCategoryMultiplier.claw.toFixed(1) })
+  }
+
   for (const [key, value] of Object.entries(skill.baseStatMultipliers ?? {})) {
     if (value !== undefined) {
       return i18n.t('battle.baseStatMultiplier', {
@@ -166,6 +189,10 @@ export function describeCharacterSkill(skill: CharacterSkill): string {
 
   if (skill.equipmentStatMultipliers?.accuracy_flat !== undefined) {
     return i18n.t('battle.accuracyMultiplier', { value: skill.equipmentStatMultipliers.accuracy_flat.toFixed(1) })
+  }
+
+  if (skill.equipmentStatMultipliers?.magic_atk_flat !== undefined) {
+    return i18n.t('battle.magicAtkMultiplier', { value: skill.equipmentStatMultipliers.magic_atk_flat.toFixed(1) })
   }
 
   if (skill.statBonuses?.attackCount !== undefined) {
@@ -308,6 +335,13 @@ export function getSpellDamagePercentFromSkills(skills: CharacterSkill[]): numbe
   )
 }
 
+export function getPhysicalDamagePercentFromSkills(skills: CharacterSkill[]): number {
+  return getUniqueSkillsById(skills).reduce(
+    (sum, skill) => sum + (skill.physicalDamagePercent ?? 0),
+    0,
+  )
+}
+
 export function getLearnedSpellsFromSkills(skills: CharacterSkill[], level?: number): LearnedSpell[] {
   const spellMap = new Map<string, LearnedSpell>()
 
@@ -388,6 +422,7 @@ export function getHpRegenPercentFromSkills(skills: CharacterSkill[]): number {
 function getEquipmentValueMultiplier(
   skills: CharacterSkill[],
   category: EquipmentCategory | undefined,
+  subCategory: EquipmentStatBonus['sourceSubCategory'],
   stat: EquipmentStat | undefined,
 ): number {
   return getUniqueSkillsById(skills).reduce((product, skill) => {
@@ -395,6 +430,10 @@ function getEquipmentValueMultiplier(
 
     if (category) {
       next *= skill.equipmentCategoryMultiplier?.[category] ?? 1
+    }
+
+    if (subCategory) {
+      next *= skill.weaponSubCategoryMultiplier?.[subCategory] ?? 1
     }
 
     if (stat) {
@@ -418,7 +457,12 @@ export function applySkillBonusesToEquipmentBonuses(
   bonuses: EquipmentStatBonus[],
 ): EquipmentStatBonus[] {
   return bonuses.map((bonus) => {
-    const multiplier = getEquipmentValueMultiplier(skills, bonus.sourceCategory, bonus.stat)
+    const multiplier = getEquipmentValueMultiplier(
+      skills,
+      bonus.sourceCategory,
+      bonus.sourceSubCategory,
+      bonus.stat,
+    )
 
     return {
       ...bonus,

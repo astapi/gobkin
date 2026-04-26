@@ -141,6 +141,7 @@ export class EquipmentService {
           ...bonus,
           value: this.scaleValueByTitle(bonus.value, eq),
           sourceCategory: template.category,
+          sourceSubCategory: template.subCategory,
         })
       }
     }

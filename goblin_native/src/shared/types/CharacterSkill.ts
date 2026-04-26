@@ -1,4 +1,4 @@
-import type { EquipmentCategory, EquipmentStat } from './Equipment'
+import type { EquipmentCategory, EquipmentStat, WeaponSubCategory } from './Equipment'
 import type { GoblinStats } from './Goblin'
 
 export type RaceBuckets = {
@@ -18,12 +18,14 @@ export interface CharacterSkill {
   criticalDamageBonusPercent?: number
   actionOrderMultiplier?: number
   equipmentCategoryMultiplier?: Partial<Record<EquipmentCategory, number>>
+  weaponSubCategoryMultiplier?: Partial<Record<WeaponSubCategory, number>>
   equipmentStatMultipliers?: Partial<Record<EquipmentStat, number>>
   enablesMeleeRowDamagePenalty?: boolean
   enablesRangedRowDamagePenalty?: boolean
   physicalDamageReductionPercent?: number
   breathDamageReductionPercent?: number
   breathDamageMultiplier?: number
+  physicalDamagePercent?: number
   spellDamagePercent?: number
   additionalDamage?: number
   protectRearAllyNormalAttackMultiplier?: number
