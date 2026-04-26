@@ -5,19 +5,24 @@ import type { DungeonSummary } from '../lib/schema'
 import {
   RETURN_POLICIES,
   runSimulationBatch,
+  runSingleExpedition,
   type ReturnPolicy,
   type SimulationResult,
+  type SingleRunResult,
 } from '../lib/runExpedition'
 import type { BackupGoblin } from '../lib/goblinMapper'
 import { usePartyStore } from '../stores/partyStore'
 import { SimulationResultView } from '../components/SimulationResultView'
+import { ExpeditionReplayView } from '../components/ExpeditionReplayView'
 
-type PartySource = 'draft' | `preset:${string}` | `backup:${number}`
+type PartySource = 'draft' | `preset:${string}` | `library:${number}`
+type RunMode = 'batch' | 'single'
 
 const TRIAL_OPTIONS = [50, 200, 500, 1000, 3000]
 
 export function SimulatePage() {
-  const { backup, draft, presets } = usePartyStore()
+  const { library, draft, presets } = usePartyStore()
+  const hasCharacters = library.goblins.length > 0
 
   const [dungeons, setDungeons] = useState<DungeonSummary[]>([])
   const [dungeonsError, setDungeonsError] = useState<string | null>(null)
@@ -28,9 +33,11 @@ export function SimulatePage() {
   const [seedMode, setSeedMode] = useState<'random' | 'fixed'>('random')
   const [fixedSeed, setFixedSeed] = useState<number>(1)
   const [partySource, setPartySource] = useState<PartySource>('draft')
+  const [runMode, setRunMode] = useState<RunMode>('batch')
   const [running, setRunning] = useState(false)
   const [progress, setProgress] = useState<{ completed: number; total: number } | null>(null)
   const [result, setResult] = useState<SimulationResult | null>(null)
+  const [singleResult, setSingleResult] = useState<SingleRunResult | null>(null)
   const [runError, setRunError] = useState<string | null>(null)
 
   useEffect(() => {
@@ -56,7 +63,6 @@ export function SimulatePage() {
   }, [])
 
   const resolvedParty = useMemo<BackupGoblin[]>(() => {
-    if (!backup) return []
     let ids: number[] = []
     if (partySource === 'draft') {
       ids = draft.members.filter((m): m is number => m !== null)
@@ -64,53 +70,75 @@ export function SimulatePage() {
       ids =
         presets.find((p) => p.id === partySource.slice('preset:'.length))
           ?.memberIds ?? []
-    } else if (partySource.startsWith('backup:')) {
-      const partyId = Number(partySource.slice('backup:'.length))
-      ids = backup.parties.find((p) => p.id === partyId)?.memberIds ?? []
+    } else if (partySource.startsWith('library:')) {
+      const partyId = Number(partySource.slice('library:'.length))
+      ids = library.parties.find((p) => p.id === partyId)?.memberIds ?? []
     }
     return ids
-      .map((id) => backup.goblins.find((g) => g.id === id))
+      .map((id) => library.goblins.find((g) => g.id === id))
       .filter((g): g is BackupGoblin => g !== undefined)
-  }, [backup, draft, presets, partySource])
+  }, [library, draft, presets, partySource])
 
   const canRun =
     !running &&
     areaId !== '' &&
     resolvedParty.length > 0 &&
-    trials > 0 &&
-    backup !== null
+    (runMode === 'single' || trials > 0) &&
+    hasCharacters
 
   const runSimulation = useCallback(async () => {
     setRunning(true)
     setResult(null)
+    setSingleResult(null)
     setRunError(null)
-    setProgress({ completed: 0, total: trials })
     try {
-      const res = await runSimulationBatch({
-        areaId,
-        party: resolvedParty,
-        trials,
-        tier: tier as never,
-        returnPolicy,
-        seed: seedMode === 'fixed' ? fixedSeed : undefined,
-        onProgress: (completed, total) => setProgress({ completed, total }),
-      })
-      setResult(res)
+      if (runMode === 'single') {
+        const single = await runSingleExpedition({
+          areaId,
+          party: resolvedParty,
+          tier: tier as never,
+          returnPolicy,
+          seed: seedMode === 'fixed' ? fixedSeed : undefined,
+        })
+        setSingleResult(single)
+      } else {
+        setProgress({ completed: 0, total: trials })
+        const res = await runSimulationBatch({
+          areaId,
+          party: resolvedParty,
+          trials,
+          tier: tier as never,
+          returnPolicy,
+          seed: seedMode === 'fixed' ? fixedSeed : undefined,
+          onProgress: (completed, total) => setProgress({ completed, total }),
+        })
+        setResult(res)
+      }
     } catch (err) {
       setRunError(err instanceof Error ? err.message : String(err))
     } finally {
       setRunning(false)
     }
-  }, [areaId, resolvedParty, trials, tier, returnPolicy, seedMode, fixedSeed])
+  }, [
+    runMode,
+    areaId,
+    resolvedParty,
+    trials,
+    tier,
+    returnPolicy,
+    seedMode,
+    fixedSeed,
+  ])
 
-  if (!backup) {
+  if (!hasCharacters) {
     return (
       <div className="panel-stack">
         <section className="card">
           <h2>シミュレーション</h2>
           <p className="subtle">
-            シミュレーションには PT を編成する必要があります。まず{' '}
-            <Link to="/party">PT編成</Link> 画面でバックアップを読み込んでください。
+            シミュレーションにはキャラクター情報が必要です。まず{' '}
+            <Link to="/party">PT編成</Link> 画面でバックアップ JSON を取り込んでください。
+            一度取り込めばローカルに保存され、以降はバックアップ無しで利用できます。
           </p>
         </section>
       </div>
@@ -162,11 +190,25 @@ export function SimulatePage() {
             </span>
           </label>
           <label className="field">
+            <span className="field-label">実行モード</span>
+            <span className="field-input">
+              <select
+                value={runMode}
+                onChange={(e) => setRunMode(e.target.value as RunMode)}
+              >
+                <option value="batch">バッチ（統計を取る）</option>
+                <option value="single">単発（戦闘ログを見る）</option>
+              </select>
+            </span>
+          </label>
+          <label className="field">
             <span className="field-label">試行回数</span>
             <span className="field-input">
               <select
                 value={trials}
                 onChange={(e) => setTrials(Number(e.target.value))}
+                disabled={runMode === 'single'}
+                title={runMode === 'single' ? '単発モードでは1回固定です' : undefined}
               >
                 {TRIAL_OPTIONS.map((n) => (
                   <option key={n} value={n}>
@@ -206,9 +248,9 @@ export function SimulatePage() {
                 <option value="draft">
                   編集中のPT（{draft.members.filter((m) => m !== null).length}体）
                 </option>
-                {backup.parties.map((p) => (
-                  <option key={`backup-${p.id}`} value={`backup:${p.id}`}>
-                    [バックアップ] {p.name}（{p.memberIds.length}体）
+                {library.parties.map((p) => (
+                  <option key={`library-${p.id}`} value={`library:${p.id}`}>
+                    [取込PT] {p.name}（{p.memberIds.length}体）
                   </option>
                 ))}
                 {presets.map((p) => (
@@ -224,22 +266,30 @@ export function SimulatePage() {
         {dungeonsError && <p className="save-error">{dungeonsError}</p>}
         {runError && <p className="save-error">{runError}</p>}
         <div className="simulate-actions">
-          {running && progress && (
+          {running && runMode === 'batch' && progress && (
             <span className="subtle">
               実行中… {progress.completed} / {progress.total}
             </span>
+          )}
+          {running && runMode === 'single' && (
+            <span className="subtle">実行中…</span>
           )}
           <button
             className="btn primary"
             onClick={runSimulation}
             disabled={!canRun}
           >
-            {running ? '実行中…' : 'シミュレーション実行'}
+            {running
+              ? '実行中…'
+              : runMode === 'single'
+              ? '単発実行（ログ取得）'
+              : 'シミュレーション実行'}
           </button>
         </div>
       </section>
 
       {result && <SimulationResultView result={result} />}
+      {singleResult && <ExpeditionReplayView result={singleResult} />}
     </div>
   )
 }

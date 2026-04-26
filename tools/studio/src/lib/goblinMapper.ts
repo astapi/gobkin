@@ -65,6 +65,62 @@ export interface BackupExtract {
   rawBackup: BackupDocument
 }
 
+export interface CharacterLibraryMeta {
+  importedAt: string
+  sourceExportedAt?: string
+}
+
+export interface CharacterLibrary {
+  goblins: BackupGoblin[]
+  equipment: BackupEquipment[]
+  parties: BackupParty[]
+  meta: CharacterLibraryMeta | null
+}
+
+export interface CharacterLibraryView extends CharacterLibrary {
+  equipmentByGoblin: Map<number, BackupEquipment[]>
+}
+
+export const EMPTY_LIBRARY: CharacterLibrary = {
+  goblins: [],
+  equipment: [],
+  parties: [],
+  meta: null,
+}
+
+export function buildLibraryView(library: CharacterLibrary): CharacterLibraryView {
+  const equipmentByGoblin = new Map<number, BackupEquipment[]>()
+  for (const eq of library.equipment) {
+    if (eq.goblinId === null) continue
+    const list = equipmentByGoblin.get(eq.goblinId) ?? []
+    list.push(eq)
+    equipmentByGoblin.set(eq.goblinId, list)
+  }
+  return { ...library, equipmentByGoblin }
+}
+
+export function backupToLibrary(extract: BackupExtract): CharacterLibrary {
+  return {
+    goblins: extract.goblins,
+    equipment: extract.equipmentAll,
+    parties: extract.parties,
+    meta: {
+      importedAt: new Date().toISOString(),
+      sourceExportedAt: extract.rawBackup.meta.exportedAt,
+    },
+  }
+}
+
+export function isCharacterLibraryShape(value: unknown): value is CharacterLibrary {
+  if (!value || typeof value !== 'object') return false
+  const record = value as Record<string, unknown>
+  return (
+    Array.isArray(record.goblins) &&
+    Array.isArray(record.equipment) &&
+    Array.isArray(record.parties)
+  )
+}
+
 export function extractBackup(doc: BackupDocument): BackupExtract {
   const goblinRows = doc.tables.goblins ?? []
   const equipmentRows = doc.tables.equipment ?? []

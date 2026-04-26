@@ -3,13 +3,13 @@ import { useRef, useState } from 'react'
 import { usePartyStore } from '../stores/partyStore'
 
 export function BackupDropzone({ compact = false }: { compact?: boolean }) {
-  const { loadBackup, backupLoading } = usePartyStore()
+  const { importBackup, importBackupBusy } = usePartyStore()
   const inputRef = useRef<HTMLInputElement | null>(null)
   const [dragging, setDragging] = useState(false)
 
   const handleFile = (file: File | undefined | null) => {
     if (!file) return
-    void loadBackup(file)
+    void importBackup(file)
   }
 
   if (compact) {
@@ -18,9 +18,9 @@ export function BackupDropzone({ compact = false }: { compact?: boolean }) {
         <button
           className="btn ghost"
           onClick={() => inputRef.current?.click()}
-          disabled={backupLoading}
+          disabled={importBackupBusy}
         >
-          別のバックアップを読み込む
+          バックアップを再取り込み
         </button>
         <input
           ref={inputRef}
@@ -57,7 +57,7 @@ export function BackupDropzone({ compact = false }: { compact?: boolean }) {
       <p className="subtle">
         対応形式: ゴブリンキングダムのバックアップ JSON（<code>meta.app = "goblin_kingdom"</code>）
       </p>
-      {backupLoading && <p className="subtle">読み込み中…</p>}
+      {importBackupBusy && <p className="subtle">読み込み中…</p>}
       <input
         ref={inputRef}
         type="file"
