@@ -42,6 +42,7 @@ export interface EquipmentStatBonus {
   stat: EquipmentStat
   value: number
   sourceCategory?: EquipmentCategory
+  sourceSubCategory?: WeaponSubCategory
 }
 
 /**

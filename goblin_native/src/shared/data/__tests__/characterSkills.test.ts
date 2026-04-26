@@ -5,6 +5,7 @@ import {
   getAdditionalDamageFromSkills,
   getExpeditionTimeMultiplierFromSkills,
   getLearnedSpellsFromSkills,
+  getPhysicalDamagePercentFromSkills,
   getPhysicalDamageReductionFromSkills,
   getRearAllyDamageMultiplierFromSkills,
   getRearProtectionMultiplierFromSkills,
@@ -64,6 +65,25 @@ describe('characterSkills - 物理ダメージ軽減', () => {
     ]
 
     expect(getAdditionalDamageFromSkills(skills)).toBe(13)
+  })
+
+  it('物理威力スキルの値を合算する', () => {
+    const skills: CharacterSkill[] = [
+      { id: 'physical_damage_10', physicalDamagePercent: 10 },
+      { id: 'physical_damage_20', physicalDamagePercent: 20 },
+      { id: 'other', additionalDamage: 13 },
+    ]
+
+    expect(getPhysicalDamagePercentFromSkills(skills)).toBe(30)
+  })
+
+  it('同じidの物理威力スキルは重複計算しない', () => {
+    const skills: CharacterSkill[] = [
+      { id: 'physical_damage_shared', physicalDamagePercent: 10 },
+      { id: 'physical_damage_shared', physicalDamagePercent: 10 },
+    ]
+
+    expect(getPhysicalDamagePercentFromSkills(skills)).toBe(10)
   })
 
   it('同じidの後列保護スキルは重複計算しない', () => {
@@ -175,6 +195,71 @@ describe('characterSkills - 物理ダメージ軽減', () => {
     expect(bonuses[0].value).toBe(-2)
   })
 
+  it('剣装備倍率スキルは剣サブカテゴリ装備だけを強化する', () => {
+    const skills: CharacterSkill[] = [
+      { id: 'sword_mastery', weaponSubCategoryMultiplier: { sword: 1.5 } },
+    ]
+    const bonuses = applySkillBonusesToEquipmentBonuses(skills, [
+      { stat: 'atk_flat', value: 10, sourceCategory: 'weapon', sourceSubCategory: 'sword' },
+      { stat: 'atk_flat', value: 10, sourceCategory: 'weapon', sourceSubCategory: 'bow' },
+    ])
+
+    expect(bonuses[0].value).toBe(15)
+    expect(bonuses[1].value).toBe(10)
+  })
+
+  it('爪装備倍率スキルは爪サブカテゴリ装備だけを強化する', () => {
+    const skills: CharacterSkill[] = [
+      { id: 'claw_mastery', weaponSubCategoryMultiplier: { claw: 1.5 } },
+    ]
+    const bonuses = applySkillBonusesToEquipmentBonuses(skills, [
+      { stat: 'atk_flat', value: 10, sourceCategory: 'weapon', sourceSubCategory: 'claw' },
+      { stat: 'atk_flat', value: 10, sourceCategory: 'weapon', sourceSubCategory: 'sword' },
+    ])
+
+    expect(bonuses[0].value).toBe(15)
+    expect(bonuses[1].value).toBe(10)
+  })
+
+  it('ワンド装備倍率スキルはワンドカテゴリ装備だけを強化する', () => {
+    const skills: CharacterSkill[] = [
+      { id: 'wand_mastery', equipmentCategoryMultiplier: { wand: 1.5 } },
+    ]
+    const bonuses = applySkillBonusesToEquipmentBonuses(skills, [
+      { stat: 'magic_atk_flat', value: 10, sourceCategory: 'wand' },
+      { stat: 'magic_atk_flat', value: 10, sourceCategory: 'rod' },
+    ])
+
+    expect(bonuses[0].value).toBe(15)
+    expect(bonuses[1].value).toBe(10)
+  })
+
+  it('アイテム魔法攻撃力スキルは装備由来の魔法攻撃力だけを強化する', () => {
+    const skills: CharacterSkill[] = [
+      { id: 'equipment_magic_atk', equipmentStatMultipliers: { magic_atk_flat: 2 } },
+    ]
+    const bonuses = applySkillBonusesToEquipmentBonuses(skills, [
+      { stat: 'magic_atk_flat', value: 10, sourceCategory: 'wand' },
+      { stat: 'accuracy_flat', value: 10, sourceCategory: 'wand' },
+    ])
+
+    expect(bonuses[0].value).toBe(20)
+    expect(bonuses[1].value).toBe(10)
+  })
+
+  it('ロッド装備倍率スキルはロッドカテゴリ装備だけを強化する', () => {
+    const skills: CharacterSkill[] = [
+      { id: 'rod_mastery', equipmentCategoryMultiplier: { rod: 1.5 } },
+    ]
+    const bonuses = applySkillBonusesToEquipmentBonuses(skills, [
+      { stat: 'magic_atk_flat', value: 10, sourceCategory: 'rod' },
+      { stat: 'magic_atk_flat', value: 10, sourceCategory: 'wand' },
+    ])
+
+    expect(bonuses[0].value).toBe(15)
+    expect(bonuses[1].value).toBe(10)
+  })
+
   it('かばうスキルを判定できる', () => {
     const skills: CharacterSkill[] = [
       { id: 'cover', coverLowHpAlly: true },
@@ -235,6 +320,60 @@ describe('characterSkills - 物理ダメージ軽減', () => {
     }
 
     expect(describeCharacterSkill(skill)).toBe('[+10%]魔法威力の増減(%)')
+  })
+
+  it('物理威力スキルの説明文を表記ルールどおり返す', () => {
+    const skill: CharacterSkill = {
+      id: 'physical_damage_10',
+      physicalDamagePercent: 10,
+    }
+
+    expect(describeCharacterSkill(skill)).toBe('[+10%]攻撃威力の増減(%)')
+  })
+
+  it('剣装備スキルの説明文を表記ルールどおり返す', () => {
+    const skill: CharacterSkill = {
+      id: 'sword_mastery_150',
+      weaponSubCategoryMultiplier: { sword: 1.5 },
+    }
+
+    expect(describeCharacterSkill(skill)).toBe('剣カテゴリ装備の能力値が×1.5')
+  })
+
+  it('爪装備スキルの説明文を表記ルールどおり返す', () => {
+    const skill: CharacterSkill = {
+      id: 'claw_mastery_150',
+      weaponSubCategoryMultiplier: { claw: 1.5 },
+    }
+
+    expect(describeCharacterSkill(skill)).toBe('爪カテゴリ装備の能力値が×1.5')
+  })
+
+  it('ワンド装備スキルの説明文を表記ルールどおり返す', () => {
+    const skill: CharacterSkill = {
+      id: 'wand_mastery_150',
+      equipmentCategoryMultiplier: { wand: 1.5 },
+    }
+
+    expect(describeCharacterSkill(skill)).toBe('ワンドカテゴリ装備の能力値が×1.5')
+  })
+
+  it('ロッド装備スキルの説明文を表記ルールどおり返す', () => {
+    const skill: CharacterSkill = {
+      id: 'rod_mastery_150',
+      equipmentCategoryMultiplier: { rod: 1.5 },
+    }
+
+    expect(describeCharacterSkill(skill)).toBe('ロッドカテゴリ装備の能力値が×1.5')
+  })
+
+  it('アイテム魔法攻撃力スキルの説明文を表記ルールどおり返す', () => {
+    const skill: CharacterSkill = {
+      id: 'equipment_magic_atk_200',
+      equipmentStatMultipliers: { magic_atk_flat: 2 },
+    }
+
+    expect(describeCharacterSkill(skill)).toBe('装備由来の魔法攻撃力補正が×2.0')
   })
 
   it('攻撃回数スキルの説明文を表記ルールどおり返す', () => {

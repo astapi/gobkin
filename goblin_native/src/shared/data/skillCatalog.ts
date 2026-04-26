@@ -24,6 +24,9 @@ function cloneSkill(skill: CharacterSkill): CharacterSkill {
     equipmentCategoryMultiplier: skill.equipmentCategoryMultiplier
       ? { ...skill.equipmentCategoryMultiplier }
       : undefined,
+    weaponSubCategoryMultiplier: skill.weaponSubCategoryMultiplier
+      ? { ...skill.weaponSubCategoryMultiplier }
+      : undefined,
     equipmentStatMultipliers: skill.equipmentStatMultipliers
       ? { ...skill.equipmentStatMultipliers }
       : undefined,
@@ -71,6 +74,14 @@ function createSpellDamageSkill(value: number): CharacterSkill {
   return {
     id,
     spellDamagePercent: value,
+  }
+}
+
+function createPhysicalDamageSkill(value: number): CharacterSkill {
+  const id = `physical_damage_${value}`
+  return {
+    id,
+    physicalDamagePercent: value,
   }
 }
 
@@ -174,6 +185,38 @@ export const CHARACTER_SKILL_CATALOG = {
     id: 'armor_mastery_150',
     equipmentCategoryMultiplier: { armor: 1.5 },
   },
+  sword_mastery_120: {
+    id: 'sword_mastery_120',
+    weaponSubCategoryMultiplier: { sword: 1.2 },
+  },
+  sword_mastery_150: {
+    id: 'sword_mastery_150',
+    weaponSubCategoryMultiplier: { sword: 1.5 },
+  },
+  claw_mastery_120: {
+    id: 'claw_mastery_120',
+    weaponSubCategoryMultiplier: { claw: 1.2 },
+  },
+  claw_mastery_150: {
+    id: 'claw_mastery_150',
+    weaponSubCategoryMultiplier: { claw: 1.5 },
+  },
+  wand_mastery_120: {
+    id: 'wand_mastery_120',
+    equipmentCategoryMultiplier: { wand: 1.2 },
+  },
+  wand_mastery_150: {
+    id: 'wand_mastery_150',
+    equipmentCategoryMultiplier: { wand: 1.5 },
+  },
+  rod_mastery_120: {
+    id: 'rod_mastery_120',
+    equipmentCategoryMultiplier: { rod: 1.2 },
+  },
+  rod_mastery_150: {
+    id: 'rod_mastery_150',
+    equipmentCategoryMultiplier: { rod: 1.5 },
+  },
 
   talent_itemSlots: {
     id: 'talent_itemSlots',
@@ -252,6 +295,18 @@ export const CHARACTER_SKILL_CATALOG = {
       accuracy_flat: 2,
     },
   },
+  equipment_magic_atk_150: {
+    id: 'equipment_magic_atk_150',
+    equipmentStatMultipliers: {
+      magic_atk_flat: 1.5,
+    },
+  },
+  equipment_magic_atk_200: {
+    id: 'equipment_magic_atk_200',
+    equipmentStatMultipliers: {
+      magic_atk_flat: 2,
+    },
+  },
   evasion_up_20: createEvasionUpSkill(20),
   evasion_up_30: createEvasionUpSkill(30),
   evasion_up_40: createEvasionUpSkill(40),
@@ -314,6 +369,12 @@ export const CHARACTER_SKILL_CATALOG = {
   physical_reduction_10: createPhysicalReductionSkill(10),
   physical_reduction_11: createPhysicalReductionSkill(11),
   physical_reduction_12: createPhysicalReductionSkill(12),
+
+  physical_damage_10: createPhysicalDamageSkill(10),
+  physical_damage_20: createPhysicalDamageSkill(20),
+  physical_damage_30: createPhysicalDamageSkill(30),
+  physical_damage_40: createPhysicalDamageSkill(40),
+  physical_damage_50: createPhysicalDamageSkill(50),
 
   rear_guard: {
     id: 'rear_guard',

@@ -369,12 +369,130 @@ describe('ModStatCalculator — 戦闘ステータス計算', () => {
     expect(result.accuracy).toBe(40)
   })
 
+  it('アイテム魔法攻撃力スキルは装備の魔法攻撃力補正を2倍にする', () => {
+    const goblin = createTestGoblin({
+      skills: [{ id: 'equipment_magic_atk_200', equipmentStatMultipliers: { magic_atk_flat: 2 } }],
+    })
+    const result = ModStatCalculator.calculate(goblin, [
+      { stat: 'magic_atk_flat', value: 10, sourceCategory: 'wand' },
+    ])
+
+    expect(result.magicAtk).toBe(20)
+  })
+
+  it('アイテム魔法攻撃力スキルは他の装備ステータス補正を強化しない', () => {
+    const goblin = createTestGoblin({
+      skills: [{ id: 'equipment_magic_atk_200', equipmentStatMultipliers: { magic_atk_flat: 2 } }],
+    })
+    const result = ModStatCalculator.calculate(goblin, [
+      { stat: 'accuracy_flat', value: 10, sourceCategory: 'wand' },
+    ])
+
+    expect(result.accuracy).toBe(30)
+  })
+
+  it('剣装備スキルは剣カテゴリ装備の能力値を倍率強化する', () => {
+    const goblin = createTestGoblin({
+      skills: [{ id: 'sword_mastery_150', weaponSubCategoryMultiplier: { sword: 1.5 } }],
+    })
+    const result = ModStatCalculator.calculate(goblin, [
+      { stat: 'atk_flat', value: 10, sourceCategory: 'weapon', sourceSubCategory: 'sword' },
+    ])
+
+    expect(result.atk).toBe(27)
+  })
+
+  it('剣装備スキルは弓カテゴリ装備の能力値を強化しない', () => {
+    const goblin = createTestGoblin({
+      skills: [{ id: 'sword_mastery_150', weaponSubCategoryMultiplier: { sword: 1.5 } }],
+    })
+    const result = ModStatCalculator.calculate(goblin, [
+      { stat: 'atk_flat', value: 10, sourceCategory: 'weapon', sourceSubCategory: 'bow' },
+    ])
+
+    expect(result.atk).toBe(22)
+  })
+
+  it('爪装備スキルは爪カテゴリ装備の能力値を倍率強化する', () => {
+    const goblin = createTestGoblin({
+      skills: [{ id: 'claw_mastery_150', weaponSubCategoryMultiplier: { claw: 1.5 } }],
+    })
+    const result = ModStatCalculator.calculate(goblin, [
+      { stat: 'atk_flat', value: 10, sourceCategory: 'weapon', sourceSubCategory: 'claw' },
+    ])
+
+    expect(result.atk).toBe(27)
+  })
+
+  it('爪装備スキルは剣カテゴリ装備の能力値を強化しない', () => {
+    const goblin = createTestGoblin({
+      skills: [{ id: 'claw_mastery_150', weaponSubCategoryMultiplier: { claw: 1.5 } }],
+    })
+    const result = ModStatCalculator.calculate(goblin, [
+      { stat: 'atk_flat', value: 10, sourceCategory: 'weapon', sourceSubCategory: 'sword' },
+    ])
+
+    expect(result.atk).toBe(22)
+  })
+
+  it('ワンド装備スキルはワンドカテゴリ装備の能力値を倍率強化する', () => {
+    const goblin = createTestGoblin({
+      skills: [{ id: 'wand_mastery_150', equipmentCategoryMultiplier: { wand: 1.5 } }],
+    })
+    const result = ModStatCalculator.calculate(goblin, [
+      { stat: 'magic_atk_flat', value: 10, sourceCategory: 'wand' },
+    ])
+
+    expect(result.magicAtk).toBe(15)
+  })
+
+  it('ワンド装備スキルはロッドカテゴリ装備の能力値を強化しない', () => {
+    const goblin = createTestGoblin({
+      skills: [{ id: 'wand_mastery_150', equipmentCategoryMultiplier: { wand: 1.5 } }],
+    })
+    const result = ModStatCalculator.calculate(goblin, [
+      { stat: 'magic_atk_flat', value: 10, sourceCategory: 'rod' },
+    ])
+
+    expect(result.magicAtk).toBe(10)
+  })
+
+  it('ロッド装備スキルはロッドカテゴリ装備の能力値を倍率強化する', () => {
+    const goblin = createTestGoblin({
+      skills: [{ id: 'rod_mastery_150', equipmentCategoryMultiplier: { rod: 1.5 } }],
+    })
+    const result = ModStatCalculator.calculate(goblin, [
+      { stat: 'magic_atk_flat', value: 10, sourceCategory: 'rod' },
+    ])
+
+    expect(result.magicAtk).toBe(15)
+  })
+
+  it('ロッド装備スキルはワンドカテゴリ装備の能力値を強化しない', () => {
+    const goblin = createTestGoblin({
+      skills: [{ id: 'rod_mastery_150', equipmentCategoryMultiplier: { rod: 1.5 } }],
+    })
+    const result = ModStatCalculator.calculate(goblin, [
+      { stat: 'magic_atk_flat', value: 10, sourceCategory: 'wand' },
+    ])
+
+    expect(result.magicAtk).toBe(10)
+  })
+
   it('EquipmentServiceは装備カテゴリをボーナスへ保持する', () => {
     const bonuses = EquipmentService.calculateEquipmentBonuses([
       { id: 'eq1', templateId: 'sword_cypress_stick', slotIndex: 0, goblinId: 1 },
     ])
 
     expect(bonuses[0].sourceCategory).toBe('weapon')
+  })
+
+  it('EquipmentServiceは武器サブカテゴリをボーナスへ保持する', () => {
+    const bonuses = EquipmentService.calculateEquipmentBonuses([
+      { id: 'eq1', templateId: 'sword_cypress_stick', slotIndex: 0, goblinId: 1 },
+    ])
+
+    expect(bonuses[0].sourceSubCategory).toBe('sword')
   })
 
   it('EquipmentServiceは称号付き装備のプラス補正を倍率適用する', () => {
@@ -1110,6 +1228,7 @@ describe('selectTarget — 隊列ターゲット選択', () => {
       shieldBarrierBreathDamageReduction: 0,
       magicBarrierDamageReduction: 0,
       physicalDamageDealtMultiplier: 1,
+      physicalDamagePercent: 0,
       magicAtk: 0,
       magicHeal: 0,
       criticalRate: 0,
@@ -1651,6 +1770,97 @@ describe('spell charges', () => {
     expect(attackUpLog?.targets).toEqual([])
     expect(buffedDamage).toBeGreaterThanOrEqual(Math.floor(plainDamage * 1.55))
     expect(buffedDamage).toBeLessThanOrEqual(Math.ceil(plainDamage * 1.65))
+  })
+
+  it('物理威力スキルは通常攻撃ダメージを増加させる', () => {
+    const boostedAttacker = createTestGoblin({
+      id: 1,
+      skills: [{ id: 'physical_damage_50', physicalDamagePercent: 50 }],
+      stats: { hp: 300, atk: 90, agility: 50, def: 10, attackCount: 1, accuracy: 999, evasion: 0 },
+    })
+    const plainAttacker = createTestGoblin({
+      id: 1,
+      skills: [],
+      stats: { hp: 300, atk: 90, agility: 50, def: 10, attackCount: 1, accuracy: 999, evasion: 0 },
+    })
+    const target = createTestEnemy({
+      id: 'TARGET',
+      name: '標的',
+      hp: 999,
+      atk: 1,
+      def: 1,
+      agility: 1,
+      attackCount: 0,
+      evasion: 0,
+    })
+
+    const boostedResult = new BattleSystem().executeBattle(
+      [boostedAttacker],
+      [boostedAttacker.stats.hp],
+      [[target]],
+      () => 0.5,
+      1,
+    )
+    const plainResult = new BattleSystem().executeBattle(
+      [plainAttacker],
+      [plainAttacker.stats.hp],
+      [[createTestEnemy({ ...target })]],
+      () => 0.5,
+      1,
+    )
+
+    const boostedDamage = boostedResult.detailedLog.find(log => log.actorId === '1' && log.action === '通常攻撃')!.targets[0].totalDamage
+    const plainDamage = plainResult.detailedLog.find(log => log.actorId === '1' && log.action === '通常攻撃')!.targets[0].totalDamage
+
+    expect(boostedDamage).toBeGreaterThanOrEqual(Math.floor(plainDamage * 1.45))
+    expect(boostedDamage).toBeLessThanOrEqual(Math.ceil(plainDamage * 1.55))
+  })
+
+  it('物理威力スキルは呪文ダメージを増加させない', () => {
+    const boostedCaster = createTestGoblin({
+      id: 1,
+      level: 13,
+      spells: [{ spellId: 'magic_arrow' }],
+      skills: [{ id: 'physical_damage_50', physicalDamagePercent: 50 }],
+      stats: { hp: 300, atk: 1, magicAtk: 100, agility: 100, def: 10, attackCount: 0, accuracy: 999, evasion: 0 },
+    })
+    const plainCaster = createTestGoblin({
+      id: 1,
+      level: 13,
+      spells: [{ spellId: 'magic_arrow' }],
+      skills: [],
+      stats: { hp: 300, atk: 1, magicAtk: 100, agility: 100, def: 10, attackCount: 0, accuracy: 999, evasion: 0 },
+    })
+    const target = createTestEnemy({
+      id: 'TARGET',
+      name: '標的',
+      hp: 999,
+      atk: 1,
+      def: 1,
+      agility: 1,
+      attackCount: 0,
+      evasion: 0,
+    })
+
+    const boostedResult = new BattleSystem().executeBattle(
+      [boostedCaster],
+      [boostedCaster.stats.hp],
+      [[target]],
+      () => 0.5,
+      1,
+    )
+    const plainResult = new BattleSystem().executeBattle(
+      [plainCaster],
+      [plainCaster.stats.hp],
+      [[createTestEnemy({ ...target })]],
+      () => 0.5,
+      1,
+    )
+
+    const boostedDamage = boostedResult.detailedLog.find(log => log.actorId === '1' && log.action === 'マジックアロー')!.targets[0].totalDamage
+    const plainDamage = plainResult.detailedLog.find(log => log.actorId === '1' && log.action === 'マジックアロー')!.targets[0].totalDamage
+
+    expect(boostedDamage).toBe(plainDamage)
   })
 
   it('パーティヒールは魔法回復量+50で傷ついた味方全員を回復する', () => {
