@@ -1,7 +1,11 @@
 import type { ExpeditionReplay, Goblin, MemberLevelUp, TimelineEvent, TreasureDrop } from '../../shared/types'
 import { getEnemyDatabase } from '../../shared/data/enemy'
 import { getEffectiveStats } from '../../shared/utils/goblinStats'
-import { getExpBonusPercentFromSkills, hasUndeadSkill } from '../../shared/data/characterSkills'
+import {
+  getExpBonusPercentFromSkills,
+  getExpMultiplierFromSkills,
+  hasUndeadSkill,
+} from '../../shared/data/characterSkills'
 import { GoblinEntity } from '../domain'
 import type { IGoblinRepository, IPartyRepository, IBaseStateRepository } from '../repositories'
 import type { IEquipmentRepository } from '../repositories/IEquipmentRepository'
@@ -112,10 +116,10 @@ export class CompleteExpeditionUseCase {
     for (const goblin of goblins) {
       // 獲得経験値スキルによるボーナス適用
       const expBonusPercent = getExpBonusPercentFromSkills(goblin.skills)
+      const expMultiplier = getExpMultiplierFromSkills(goblin.skills)
       const baseExp = perGoblinExp.get(goblin.id) ?? 0
-      const expToGain = expBonusPercent > 0
-        ? Math.floor(baseExp * (1 + expBonusPercent / 100))
-        : baseExp
+      const totalMultiplier = (1 + Math.max(0, expBonusPercent) / 100) * expMultiplier
+      const expToGain = Math.max(0, Math.floor(baseExp * totalMultiplier))
       if (expToGain <= 0) continue
 
       const entity = new GoblinEntity(goblin)

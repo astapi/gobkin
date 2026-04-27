@@ -401,9 +401,69 @@ export const CHARACTER_SKILL_CATALOG = {
     surviveLethalDamageAtHp1: true,
   },
 
+  exp_bonus_10: {
+    id: 'exp_bonus_10',
+    expBonusPercent: 10,
+  },
+
+  exp_bonus_30: {
+    id: 'exp_bonus_30',
+    expBonusPercent: 30,
+  },
+
+  exp_bonus_50: {
+    id: 'exp_bonus_50',
+    expBonusPercent: 50,
+  },
+
+  exp_bonus_60: {
+    id: 'exp_bonus_60',
+    expBonusPercent: 60,
+  },
+
   exp_bonus_70: {
     id: 'exp_bonus_70',
     expBonusPercent: 70,
+  },
+
+  exp_bonus_80: {
+    id: 'exp_bonus_80',
+    expBonusPercent: 80,
+  },
+
+  exp_bonus_90: {
+    id: 'exp_bonus_90',
+    expBonusPercent: 90,
+  },
+
+  exp_mult_0_7: {
+    id: 'exp_mult_0_7',
+    expMultiplier: 0.7,
+  },
+
+  exp_mult_0_8: {
+    id: 'exp_mult_0_8',
+    expMultiplier: 0.8,
+  },
+
+  exp_mult_1_1: {
+    id: 'exp_mult_1_1',
+    expMultiplier: 1.1,
+  },
+
+  exp_mult_1_3: {
+    id: 'exp_mult_1_3',
+    expMultiplier: 1.3,
+  },
+
+  exp_mult_1_4: {
+    id: 'exp_mult_1_4',
+    expMultiplier: 1.4,
+  },
+
+  exp_mult_1_5: {
+    id: 'exp_mult_1_5',
+    expMultiplier: 1.5,
   },
 
   gold_bonus_50: {
