@@ -6,7 +6,7 @@ import type { BattleActionPolicy } from './Battle'
 
 export interface EquipmentDropConfig {
   templateId: string   // EquipmentTemplate.id
-  probability: number  // 0.0〜1.0
+  probability: number  // 0.0〜1.0（敵個別レアドロップの抽選確率）
 }
 
 export interface Enemy {
@@ -32,7 +32,7 @@ export interface Enemy {
   exp: number
   gold: number
   factorDrops?: FactorDropConfig[]      // この敵を倒すと得られる可能性のある因子
-  equipmentDrops?: EquipmentDropConfig[] // この敵を倒すと得られる可能性のある装備
+  rareEquipmentDrops?: EquipmentDropConfig[] // この敵固有のレアドロップ候補（運乱数によるレア抽選で当選した場合に1点抽選）
   skills?: CharacterSkill[]              // パッシブ/呪文付与スキル
   spells?: LearnedSpell[]               // この敵が使える呪文リスト
   battleActionPolicy?: BattleActionPolicy // 戦闘時の行動率設定

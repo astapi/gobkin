@@ -23,7 +23,13 @@
         "vitality": 1,
         "agility": 6,
         "luck": 2
-      }
+      },
+      "rareEquipmentDrops": [
+        {
+          "templateId": "accessory_split_core",
+          "probability": 1
+        }
+      ]
     },
     {
       "id": "B_SLIME",

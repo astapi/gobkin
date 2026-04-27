@@ -71,6 +71,7 @@ export const equipmentJa = {
   rod_ancient: { name: 'エンシェントロッド' },
   rod_dragon: { name: 'ドラゴンロッド' },
   rod_adamant: { name: 'アダマントロッド' },
+  accessory_split_core: { name: '分裂核' },
 } as const
 
 export const equipmentEn = {
@@ -146,6 +147,7 @@ export const equipmentEn = {
   rod_ancient: { name: 'Ancient Rod' },
   rod_dragon: { name: 'Dragon Rod' },
   rod_adamant: { name: 'Adamant Rod' },
+  accessory_split_core: { name: 'Splitting Core' },
 } as const
 
 export const equipmentKo = {
@@ -221,4 +223,5 @@ export const equipmentKo = {
   rod_ancient: { name: '에인션트 로드' },
   rod_dragon: { name: '드래곤 로드' },
   rod_adamant: { name: '아다만트 로드' },
+  accessory_split_core: { name: '분열핵' },
 } as const
