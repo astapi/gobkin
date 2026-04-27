@@ -18,6 +18,7 @@ import {
   hasRecoverRandomUsedSpellOnDefendSkill,
   hasSurviveLethalDamageAtHp1Skill,
   getHpRegenPercentFromSkills,
+  getHpRegenAmountFromSkills,
 } from '../../shared/data/characterSkills'
 import type { SpellDef } from '../../shared/types/Spell'
 import { CombatantManager } from './CombatantManager'
@@ -517,8 +518,8 @@ export class BattleSystem {
       for (const unit of [...allyUnits, ...enemyUnits]) {
         if (unit.currentHP <= 0) continue
         const regenPercent = getHpRegenPercentFromSkills(unit.skills)
-        if (regenPercent <= 0) continue
-        const regenAmount = Math.floor(unit.maxHP * regenPercent / 100)
+        const regenFlat = getHpRegenAmountFromSkills(unit.skills)
+        const regenAmount = Math.floor(unit.maxHP * regenPercent / 100) + regenFlat
         if (regenAmount <= 0) continue
         const before = unit.currentHP
         unit.currentHP = Math.min(unit.maxHP, unit.currentHP + regenAmount)
