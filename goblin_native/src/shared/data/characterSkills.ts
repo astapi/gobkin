@@ -145,6 +145,10 @@ export function describeCharacterSkill(skill: CharacterSkill): string {
     return i18n.t('battle.expBonus', { value: skill.expBonusPercent })
   }
 
+  if (skill.expMultiplier !== undefined) {
+    return i18n.t('battle.expMultiplier', { value: skill.expMultiplier.toFixed(1) })
+  }
+
   if (skill.goldBonusPercent !== undefined) {
     return i18n.t('battle.goldBonus', { value: skill.goldBonusPercent })
   }
@@ -415,6 +419,13 @@ export function getExpBonusPercentFromSkills(skills: CharacterSkill[]): number {
   return getUniqueSkillsById(skills).reduce(
     (sum, skill) => sum + (skill.expBonusPercent ?? 0),
     0,
+  )
+}
+
+export function getExpMultiplierFromSkills(skills: CharacterSkill[]): number {
+  return getUniqueSkillsById(skills).reduce(
+    (product, skill) => product * (skill.expMultiplier ?? 1),
+    1,
   )
 }
 

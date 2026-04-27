@@ -39,6 +39,7 @@ export interface CharacterSkill {
   spellChargeBonusForId?: string
   extraSpellCharges?: number
   expBonusPercent?: number
+  expMultiplier?: number
   goldBonusPercent?: number
   expeditionTimeMultiplier?: number
   raceBonus?: RaceBuckets
