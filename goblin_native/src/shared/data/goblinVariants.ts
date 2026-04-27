@@ -308,6 +308,49 @@ export const goblinVariantDefinitions: Record<string, GoblinVariantDefinition> =
     raceId: "troll",
     raceName: "トロルゴブリン",
     variantProbability: 0.08
+  },
+  shadow: {
+    avatar: "/src/assets/goblin/goblin_thief.png",
+    baseAttributes: {
+      agility: 18,
+      luck: 14,
+      power: 12,
+      spirit: 9,
+      vitality: 8,
+      wisdom: 10
+    },
+    defaultSkillIds: [
+      "action_order_150",
+      "attack_count_up_1",
+      "evasion_up_30",
+      "critical_rate_up_10"
+    ],
+    factorDescription: "猫獣人の影を宿した因子。素早さと連撃性能、回避能力が高まる。",
+    factorEffects: [
+      {
+        target: "atk",
+        type: "stat_bonus",
+        value: 18
+      },
+      {
+        target: "attackCount",
+        type: "stat_bonus",
+        value: 1
+      },
+      {
+        target: "evasion",
+        type: "stat_bonus",
+        value: 20
+      }
+    ],
+    factorId: "shadow",
+    factorName: "影猫因子",
+    hpCoefficient: 0.85,
+    imageKey: "goblin_thief",
+    inheritProbability: 0.18,
+    raceId: "shadow",
+    raceName: "シャドウゴブリン",
+    variantProbability: 0.12
   }
 }
 

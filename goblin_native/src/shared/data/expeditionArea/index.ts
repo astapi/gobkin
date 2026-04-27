@@ -45,11 +45,13 @@ import spiderForest1 from './spider_forest_1.json'
 import deadGrave1 from './dead_grave_1.json'
 import deadGrave2 from './dead_grave_2.json'
 import deadGrave3 from './dead_grave_3.json'
+import catFortress1 from './cat_fortress_1.json'
 
 const areaDatabases: Record<string, AreaConfig> = {
   dwarf_mine_1: dwarfMine1 as AreaConfig,
   dwarf_mine_2: dwarfMine2 as AreaConfig,
   dwarf_mine_3: dwarfMine3 as AreaConfig,
+  cat_fortress_1: catFortress1 as AreaConfig,
   dragon_volcano_1: dragonVolcano1 as AreaConfig,
   dead_grave_1: deadGrave1 as AreaConfig,
   dead_grave_2: deadGrave2 as AreaConfig,
