@@ -157,6 +157,10 @@ export function describeCharacterSkill(skill: CharacterSkill): string {
     return i18n.t('battle.hpRegen', { value: skill.hpRegenPercent })
   }
 
+  if (skill.hpRegenAmount !== undefined) {
+    return i18n.t('battle.hpRegenFlat', { value: skill.hpRegenAmount })
+  }
+
   if (skill.itemSlotsBonus) {
     return i18n.t('battle.itemSlotsBonus')
   }
@@ -439,6 +443,13 @@ export function hasItemSlotsBonusSkill(skills: CharacterSkill[]): boolean {
 export function getHpRegenPercentFromSkills(skills: CharacterSkill[]): number {
   return getUniqueSkillsById(skills).reduce(
     (sum, skill) => sum + (skill.hpRegenPercent ?? 0),
+    0,
+  )
+}
+
+export function getHpRegenAmountFromSkills(skills: CharacterSkill[]): number {
+  return getUniqueSkillsById(skills).reduce(
+    (sum, skill) => sum + (skill.hpRegenAmount ?? 0),
     0,
   )
 }

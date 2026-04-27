@@ -46,6 +46,7 @@ export interface CharacterSkill {
   spellTakenMultipliers?: Partial<Record<string, number>>
   undead?: boolean
   hpRegenPercent?: number
+  hpRegenAmount?: number
   itemSlotsBonus?: boolean
   recoveryMagicLevel?: number
   mageMagicLevel?: number

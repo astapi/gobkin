@@ -660,6 +660,7 @@ const ja = {
       blizzard_taken_2_0: { name: '[2.0倍]ブリザード被ダメージ' },
       undead_trait: { name: 'アンデッド' },
       hp_regen_20: { name: '[20%]回復能力' },
+      hp_regen_flat_10: { name: '[10]回復能力' },
       weapon_melee_attack: {
         name: '[武器]近距離攻撃',
         description: '隊列の後ろに行くほど通常攻撃のダメージが低下します。',
@@ -736,6 +737,7 @@ const ja = {
     goldBonus: '[+{{value}}%]取得Gold（PT内1つのみ有効）',
     undead: '遠征終了時にHP0でも治療不要で全回復する',
     hpRegen: '[{{value}}%]毎ターン終了時に最大HPの{{value}}%を回復',
+    hpRegenFlat: '[{{value}}]毎ターン終了時にHPを{{value}}回復',
     hpRegenAction: '回復能力',
     itemSlotsBonus: 'アイテム装備可能数が増加する',
   },

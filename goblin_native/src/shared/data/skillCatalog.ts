@@ -452,6 +452,11 @@ export const CHARACTER_SKILL_CATALOG = {
     hpRegenPercent: 20,
   },
 
+  hp_regen_flat_10: {
+    id: 'hp_regen_flat_10',
+    hpRegenAmount: 10,
+  },
+
   recovery_magic_lv1: createRecoveryMagicSkill(1),
   recovery_magic_lv2: createRecoveryMagicSkill(2),
   recovery_magic_lv3: createRecoveryMagicSkill(3),
