@@ -118,6 +118,12 @@ export const races: RaceDict = {
       "beast"
     ]
   },
+  cat: {
+    label: "猫獣人",
+    implies: [
+      "beast"
+    ]
+  },
   spider: {
     label: "スパイダー",
     implies: [
@@ -132,6 +138,12 @@ export const races: RaceDict = {
   },
   troll: {
     label: "トロル",
+    implies: [
+      "beast"
+    ]
+  },
+  shadow: {
+    label: "影種",
     implies: [
       "beast"
     ]

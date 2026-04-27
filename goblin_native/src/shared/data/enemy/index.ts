@@ -45,11 +45,13 @@ import spiderForest1 from './spider_forest_1.json'
 import deadGrave1 from './dead_grave_1.json'
 import deadGrave2 from './dead_grave_2.json'
 import deadGrave3 from './dead_grave_3.json'
+import catFortress1 from './cat_fortress_1.json'
 
 const enemyDatabases: Record<string, EnemyDatabase> = {
   dwarf_mine_1: dwarfMine1 as EnemyDatabase,
   dwarf_mine_2: dwarfMine2 as EnemyDatabase,
   dwarf_mine_3: dwarfMine3 as EnemyDatabase,
+  cat_fortress_1: catFortress1 as EnemyDatabase,
   dragon_volcano_1: dragonVolcano1 as EnemyDatabase,
   dead_grave_1: deadGrave1 as EnemyDatabase,
   dead_grave_2: deadGrave2 as EnemyDatabase,

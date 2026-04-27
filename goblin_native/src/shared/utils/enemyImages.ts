@@ -48,6 +48,9 @@ const enemyImagesById: Record<string, ImageSourcePropType> = {
   WFG002: require('../../../assets/enemy/dire_wolf.png'),
   WFG003: require('../../../assets/enemy/gray_wolf.png'),
   B_WOLF_ALPHA: require('../../../assets/enemy/grand_dire_wolf.png'),
+  CAT001: require('../../../assets/enemy/cat_shadow_scout.png'),
+  CAT002: require('../../../assets/enemy/cat_moonfang_duelist.png'),
+  B_CAT_SHADOWLORD: require('../../../assets/enemy/cat_shadowlord_nekomata.png'),
 }
 
 const enemyImagesByName: Record<string, ImageSourcePropType> = {
@@ -97,6 +100,9 @@ const enemyImagesByName: Record<string, ImageSourcePropType> = {
   牙王の眷属: enemyImagesById.WFG003,
   銀牙のアルファ: enemyImagesById.B_WOLF_ALPHA,
   グランダイアウルフ: enemyImagesById.B_WOLF_ALPHA,
+  影爪の斥候: enemyImagesById.CAT001,
+  月牙の双刃兵: enemyImagesById.CAT002,
+  月影の遺跡主ネコマタ: enemyImagesById.B_CAT_SHADOWLORD,
 }
 
 export function getEnemyImage(enemy: Pick<EnemySnap, 'id' | 'name'>): ImageSourcePropType | null {
