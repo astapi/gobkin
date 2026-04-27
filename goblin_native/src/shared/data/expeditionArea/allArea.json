@@ -490,6 +490,15 @@
       "unlockNext": "royal_capital_3"
     },
     {
+      "id": "cat_fortress_1",
+      "name": "猫獣人の影遺跡",
+      "areaLevel": 70,
+      "floors": 3,
+      "exploration_time_sec_first": 21000,
+      "exploration_time_sec": 7000,
+      "description": "朽ちた遺跡を住処にした猫系獣人の巣。素早い連撃と奇襲を得意とする暗殺兵が回廊を駆け、最奥では百戦錬磨の遺跡主が待つ。撃破できれば影の因子を奪える可能性がある。"
+    },
+    {
       "id": "royal_capital_3",
       "name": "王都決戦・玉座の間",
       "areaLevel": 180,

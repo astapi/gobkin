@@ -1,0 +1,237 @@
+{
+  "enemies": [
+    {
+      "id": "CAT001",
+      "name": "影爪の斥候",
+      "raceTags": [
+        "cat",
+        "beast"
+      ],
+      "level": 70,
+      "hp": 980,
+      "atk": 220,
+      "def": 84,
+      "magicDef": 90,
+      "attackCount": 3,
+      "accuracy": 980,
+      "evasion": 88,
+      "criticalRate": 0.12,
+      "exp": 620,
+      "gold": 520,
+      "skills": [
+        {
+          "id": "action_order_150",
+          "actionOrderMultiplier": 1.5
+        },
+        {
+          "id": "evasion_up_40",
+          "statBonuses": {
+            "evasion": 40
+          }
+        }
+      ],
+      "baseAttributes": {
+        "power": 30,
+        "wisdom": 24,
+        "spirit": 18,
+        "vitality": 22,
+        "agility": 38,
+        "luck": 24
+      }
+    },
+    {
+      "id": "CAT002",
+      "name": "月牙の双刃兵",
+      "raceTags": [
+        "cat",
+        "beast"
+      ],
+      "level": 76,
+      "hp": 1280,
+      "atk": 265,
+      "def": 96,
+      "magicDef": 92,
+      "attackCount": 4,
+      "accuracy": 1030,
+      "evasion": 82,
+      "criticalRate": 0.15,
+      "exp": 760,
+      "gold": 610,
+      "skills": [
+        {
+          "id": "critical_rate_up_10",
+          "criticalRateBonusPercent": 10
+        }
+      ],
+      "baseAttributes": {
+        "power": 35,
+        "wisdom": 24,
+        "spirit": 18,
+        "vitality": 25,
+        "agility": 40,
+        "luck": 28
+      }
+    },
+    {
+      "id": "B_CAT_SHADOWLORD",
+      "name": "月影の遺跡主ネコマタ",
+      "raceTags": [
+        "cat",
+        "beast"
+      ],
+      "level": 100,
+      "hp": 7800,
+      "atk": 520,
+      "magicAtk": 410,
+      "def": 180,
+      "magicDef": 170,
+      "attackCount": 5,
+      "accuracy": 1320,
+      "evasion": 96,
+      "criticalRate": 0.2,
+      "exp": 3600,
+      "gold": 2800,
+      "factorDrops": [
+        {
+          "factorId": "shadow",
+          "probability": 0.4
+        }
+      ],
+      "skills": [
+        {
+          "id": "action_order_150",
+          "actionOrderMultiplier": 1.5
+        },
+        {
+          "id": "attack_count_up_2",
+          "statBonuses": {
+            "attackCount": 2
+          }
+        },
+        {
+          "id": "critical_rate_up_10",
+          "criticalRateBonusPercent": 10
+        }
+      ],
+      "baseAttributes": {
+        "power": 52,
+        "wisdom": 38,
+        "spirit": 28,
+        "vitality": 42,
+        "agility": 48,
+        "luck": 34
+      }
+    }
+  ],
+  "patterns": [
+    {
+      "id": "CF1_001",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "CAT001",
+          "CAT001",
+          "CAT002"
+        ],
+        [
+          "CAT002",
+          "CAT001"
+        ]
+      ]
+    },
+    {
+      "id": "CF1_002",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "CAT001",
+          "CAT002"
+        ],
+        [
+          "CAT002",
+          "CAT001",
+          "CAT001"
+        ]
+      ]
+    },
+    {
+      "id": "CF1_003",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "CAT002",
+          "CAT002"
+        ],
+        [
+          "CAT002",
+          "CAT001",
+          "CAT001"
+        ]
+      ]
+    },
+    {
+      "id": "CF1_004",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "CAT002",
+          "CAT001",
+          "CAT001"
+        ],
+        [
+          "CAT001",
+          "CAT002"
+        ]
+      ]
+    },
+    {
+      "id": "CF1_005",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "CAT002",
+          "CAT002"
+        ],
+        [
+          "CAT002",
+          "CAT001"
+        ],
+        [
+          "CAT001",
+          "CAT001"
+        ]
+      ]
+    },
+    {
+      "id": "BOSS",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "B_CAT_SHADOWLORD"
+        ],
+        [
+          "CAT002",
+          "CAT002"
+        ],
+        [
+          "CAT002",
+          "CAT001",
+          "CAT001"
+        ]
+      ],
+      "isBoss": true
+    }
+  ]
+}

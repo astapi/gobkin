@@ -9,6 +9,7 @@ export const GOBLIN_RACE_IDS = [
   'elf',
   'lizardman',
   'troll',
+  'shadow',
 ] as const
 
 export type GoblinRaceId = (typeof GOBLIN_RACE_IDS)[number]
@@ -24,6 +25,7 @@ const LEGACY_RACE_NAME_MAP: Record<string, GoblinRaceId> = {
   エルフゴブリン: 'elf',
   リザードゴブリン: 'lizardman',
   トロルゴブリン: 'troll',
+  シャドウゴブリン: 'shadow',
 }
 
 const RACE_ID_TO_LEGACY_NAME: Record<GoblinRaceId, string> = {
@@ -37,6 +39,7 @@ const RACE_ID_TO_LEGACY_NAME: Record<GoblinRaceId, string> = {
   elf: 'エルフゴブリン',
   lizardman: 'リザードゴブリン',
   troll: 'トロルゴブリン',
+  shadow: 'シャドウゴブリン',
 }
 
 export function isGoblinRaceId(value: string): value is GoblinRaceId {
