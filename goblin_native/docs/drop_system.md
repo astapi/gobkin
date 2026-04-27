@@ -5,13 +5,15 @@
 遠征中の戦闘勝利時に装備アイテムや因子を獲得できるシステム。
 ドロップは3種類に分類される:
 
-1. **装備ドロップ（宝箱）**: 敵レベル→アイテムランク抽選でランク別プールから抽選
-2. **敵個別ドロップ**: 敵ごとに設定された固有装備ドロップ（現在未使用）
+1. **ノーマルドロップ（宝箱）**: 敵レベル→アイテムランク抽選でランク別プールから抽選
+2. **レアドロップ（敵固有）**: 敵ごとに設定された `rareEquipmentDrops` から抽選
 3. **因子ドロップ**: ボス撃破時に因子を獲得
+
+ノーマル / レアドロップはいずれも **PTの平均運値（luck）から算出した運乱数** をベースに判定される。固定確率ではなく、運値が高いほど閾値を超えやすくなる仕組み。
 
 すべてのドロップはシード値ベースの決定論的乱数で処理されるため、同じシードなら同じ結果が再現される。
 
-## 装備ドロップ（宝箱）
+## ノーマルドロップ（宝箱）
 
 ### 発生条件
 
@@ -19,17 +21,49 @@
 
 ```
 敵1体ごとに:
-1. rng() < DROP_CHANCE（15%）で確率判定
+1. PT平均運値から運乱数 luckRoll を抽選（rollLuckValue）
+2. 100 - rare * 10 < luckRoll なら当選（rare はPT倍率の rare 値）
    └─ 失敗 → この敵からはドロップなし
-2. 敵レベルからアイテムランクを抽選（DropRankRoller）
-3. 該当ランクの装備プールから、同一遠征で既にドロップ済みの装備を除外
-4. 残りの候補から均等抽選
-5. 称号を抽選して装備名に付与
+3. 敵レベルからアイテムランクを抽選（DropRankRoller）
+4. 該当ランクの装備プールから、同一遠征で既にドロップ済みの装備を除外
+5. 残りの候補から均等抽選
+6. 称号を抽選して装備名に付与
 ```
 
-### ドロップ確率
+### ドロップ判定式
 
-全エリア共通で **15%**（`DROP_CHANCE = 0.15`）。`ExpeditionEngine.ts` に定数として定義。
+固定 15% から **運乱数ベース** に変更された。
+
+```
+normalThreshold = 100 - rare * 10
+当選条件: normalThreshold < luckRoll
+```
+
+- `rare` は `PartyRewardMultipliers.rare`（PTの「レア倍率」、デフォルト 1.0）。
+- `luckRoll` は PT平均運値から `LuckRoller.rollLuckValue()` で抽選した値（敵ごとに振り直し）。
+- 例: `rare = 1.0` のとき閾値は 90 → 運乱数が 90 を超えれば当選。
+- 例: `rare = 5.0` のとき閾値は 50 → 運乱数の上限 99.99 に対し当選確率が大きく上がる。
+
+### 運乱数（LuckRoller）
+
+PTメンバーの基本運値 `luck` の平均（小数切り捨て）を `LUCK_ROLL_TABLE` で参照し、`[min, max)` の連続値を抽選する。`max` は全ステップ共通で 99.99 固定。
+
+| minLuck | min | max |
+|--------:|----:|----:|
+| 35 | 37.00 | 99.99 |
+| 30 | 30.00 | 99.99 |
+| 25 | 22.00 | 99.99 |
+| 20 | 15.00 | 99.99 |
+| 15 |  7.00 | 99.99 |
+|  0 |  0.00 | 99.99 |
+
+`luck >= minLuck` を満たす最上段のステップを採用する切り捨て方式。例:
+
+- 運値 27 → 25枠（min 22.00）
+- 運値 9  → 最下段（min 0.00）
+- 運値 50 → 35枠固定（上限超過は最上段に留まる）
+
+運値が高いほど `min` が押し上げられるため、`100 - rare * 10` の閾値を超えやすくなる。逆に運値が低いと `[0, 99.99)` の広い範囲を引き、低い数値が出るとそもそも閾値に届かない。
 
 ### アイテムランク
 
@@ -181,25 +215,53 @@ droppedTemplateIds: Set<string> で遠征全体を通じて追跡
 
 `EquipmentTitleService.formatTitledName(titleName, baseName)` で生成。
 
-## 敵個別ドロップ
+## レアドロップ（敵固有）
 
 ### 仕組み
 
-敵データの `equipmentDrops` フィールドで個別設定:
+敵データの `rareEquipmentDrops` フィールドで個別設定（旧 `equipmentDrops` からリネーム）:
 
 ```typescript
 interface EquipmentDropConfig {
   templateId: string   // EquipmentTemplate.id
-  probability: number  // 0.0〜1.0
+  probability: number  // 0.0〜1.0（候補内の重み付けに利用）
 }
 ```
 
-装備ドロップ（宝箱）とは**独立に**判定される。同じ重複制限（`droppedTemplateIds`）が適用される。
+ノーマルドロップ（宝箱）とは**独立に**判定され、同じ重複制限（`droppedTemplateIds`）が適用される。
+
+### 判定式
+
+```
+effectiveRare    = rare * rareDropMultiplierBoost   // boost 未指定時は 1
+rareThreshold    = 100 - effectiveRare * 0.1
+当選条件: rareThreshold < luckRoll
+```
+
+- 敵1体ごとに `luckRoll` を振り直す（ノーマルドロップとは別の抽選）。
+- `rare` はPT倍率の `rare`、`rareDropMultiplierBoost` は `ExpeditionBoost.rareDropMultiplier`。
+- ノーマルドロップが `rare * 10` であるのに対し、レアドロップは `rare * 0.1` と影響が桁違いに小さい。レアの上振れには PT倍率の積み上げと boost 倍率の併用が必要。
+- 当選時は敵の `rareEquipmentDrops` から `probability` を重みとした加重抽選で 1 点選出する。
+
+### ExpeditionBoost.rareDropMultiplier
+
+出撃時に消費する課金/補助アイテムを想定したブースト枠。レアドロップ判定の `effectiveRare` にのみ乗算される（**ノーマルドロップには波及しない**）。
+
+```typescript
+interface ExpeditionBoost {
+  rareDropMultiplier?: number  // 1 を基準に乗算。未指定または 0 以下は 1 として扱う
+}
+```
+
+将来的に「探索時間1/2」「称号付与倍率2倍」など他のブースト項目も追加予定。
 
 ### 現在の使用状況
 
-**実装済みだが、敵データでは未使用**。テストコードでのみ利用されている。
-将来的なレアドロップ実装用のインフラとして存在。
+| エリア | 敵ID | 名前 | レアドロップ | 確率重み |
+|-------|------|------|------------|---------:|
+| スライムの洞窟 | S001 | スライム | `accessory_split_core`（分裂核 / `[10]回復能力` 付与） | 1 |
+
+※ 分裂核は `equipmentPool.json` のアクセサリ枠（rank 未設定 / 価格 0 / 称号は通常通り抽選）に追加されている。
 
 ## 因子ドロップ
 
@@ -309,20 +371,24 @@ interface RewardSummary {
 
 | ファイル | 内容 |
 |---------|------|
-| `src/core/services/ExpeditionEngine.ts` | rollTreasureDrops()、ドロップ判定の呼び出し元 |
+| `src/core/services/ExpeditionEngine.ts` | rollTreasureDrops()、ノーマル/レア両方のドロップ判定 |
+| `src/core/services/LuckRoller.ts` | PT平均運値→運乱数 (rollLuckValue) の抽選テーブル |
 | `src/core/services/EquipmentTitleService.ts` | 称号抽選ロジック（rollTitle） |
 | `src/core/services/FactorService.ts` | 因子ドロップ判定（rollFactorDrops） |
 | `src/core/usecases/CompleteExpeditionUseCase.ts` | ドロップの永続化処理 |
-| `src/shared/data/equipmentPool.json` | 装備テンプレート一覧（rank定義） |
+| `src/shared/data/equipmentPool.json` | 装備テンプレート一覧（rank定義、accessory_split_core 等） |
 | `src/shared/data/equipmentPoolLoader.ts` | ランク別プール取得（getEquipmentByRank） |
 | `src/core/services/DropRankRoller.ts` | 敵レベル→アイテムランク抽選テーブル・ロジック |
 | `src/shared/data/equipmentTitleConfig.ts` | 称号定義（重み・補正値） |
-| `src/shared/types/Equipment.ts` | EquipmentTemplate, EquipmentDropConfig 型 |
+| `src/shared/types/Equipment.ts` | EquipmentTemplate 型 |
+| `src/shared/types/Enemy.ts` | EquipmentDropConfig, Enemy.rareEquipmentDrops 型 |
 | `src/shared/types/EquipmentTitle.ts` | EquipmentTitleId, EquipmentTitleDef 型 |
-| `src/shared/types/Expedition.ts` | TreasureDrop, RewardSummary 型 |
-| `src/shared/data/enemy/*.json` | 敵データ（factorDrops 定義） |
-| `src/shared/data/expeditionArea/*.json` | エリア定義（dropChance 定義） |
+| `src/shared/types/Expedition.ts` | TreasureDrop, RewardSummary, ExpeditionBoost 型 |
+| `src/shared/types/Party.ts` | PartyState.luck, PartyRewardMultipliers 型 |
+| `src/shared/data/enemy/*.json` | 敵データ（factorDrops / rareEquipmentDrops 定義） |
+| `src/shared/data/expeditionArea/*.json` | エリア定義 |
 | `src/core/services/__tests__/TreasureDrop.test.ts` | ドロップシステムのテスト |
+| `src/core/services/__tests__/LuckRoller.test.ts` | 運乱数抽選のテスト |
 
 ## 関連ドキュメント
 
