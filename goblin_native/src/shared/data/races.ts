@@ -90,7 +90,8 @@ export const races: RaceDict = {
   lizardman: {
     label: "リザードマン",
     implies: [
-      "beast"
+      "beast",
+      "dragon"
     ]
   },
   minotaur: {
