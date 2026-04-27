@@ -1962,6 +1962,16 @@
         "magic_heal_to_hp_12"
       ],
       "rank": 8
+    },
+    {
+      "id": "accessory_split_core",
+      "name": "分裂核",
+      "category": "accessory",
+      "statBonuses": [],
+      "grantedSkillIds": [
+        "hp_regen_flat_10"
+      ],
+      "price": 0
     }
   ]
 }

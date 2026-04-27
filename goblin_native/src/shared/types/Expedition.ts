@@ -61,6 +61,17 @@ export type TimelineEvent =
   | { type: "return"; at: number; reason: ExpeditionEndReason }
 
 /**
+ * 出撃時に消費する課金/補助アイテムによるブースト設定。
+ * 現状はレアドロップの確率倍率のみ用意。今後「探索時間1/2」「称号付与倍率2倍」を追加予定。
+ *
+ * - rareDropMultiplier: 1 を基準に乗算する倍率。レアドロップ判定にのみ適用される。
+ *   未指定または 1 の場合はブーストなし。
+ */
+export interface ExpeditionBoost {
+  rareDropMultiplier?: number
+}
+
+/**
  * 遅延計算用メタデータ
  * 出撃時にシミュレーションを実行せず、このメタ情報を保存する。
  * プレイバック画面表示時または帰還時に、このデータから ExpeditionReplay を再計算する。
@@ -70,6 +81,7 @@ export interface ExpeditionMeta {
   request: ExpeditionRequest
   departingGoblins: Goblin[]
   rewardMultipliers: PartyRewardMultipliers
+  expeditionBoost?: ExpeditionBoost
 }
 
 export interface ExpeditionRecord {

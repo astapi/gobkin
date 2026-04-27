@@ -61,6 +61,7 @@ export type {
   TreasureDrop,
   ExpeditionRecord,
   ExpeditionMeta,
+  ExpeditionBoost,
   RewardSummary,
   MemberLevelUp,
   AreaConfig,

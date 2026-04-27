@@ -13,6 +13,7 @@ import type {
   ExpeditionEndReason,
   AreaConfig,
   PartyRewardMultipliers,
+  ExpeditionBoost,
 } from '../../shared/types'
 import { getAreaConfig } from '../../shared/data/expeditionArea'
 import { getEnemyDatabase } from '../../shared/data/enemy'
@@ -21,13 +22,11 @@ import { BattleSystem } from './BattleSystem'
 import { ModStatCalculator } from './ModStatCalculator'
 import { EquipmentTitleService } from './EquipmentTitleService'
 import { rollDropRank } from './DropRankRoller'
+import { rollLuckValue } from './LuckRoller'
 import { normalizePartyRewardMultipliers, DUNGEON_TIER_SCALING, getDungeonTierAreaLevel } from '../../shared/types'
 import { getGoldBonusPercentFromSkills } from '../../shared/data/characterSkills'
 import { getGoblinBaseAttributesAtLevel } from '../../shared/utils/goblinHp'
 import { getEffectiveStats } from '../../shared/utils/goblinStats'
-
-/** 全エリア共通の宝箱ドロップ確率（敵1体ごと） */
-const DROP_CHANCE = 0.15
 
 export class ExpeditionEngine {
   private rng: () => number
@@ -56,10 +55,14 @@ export class ExpeditionEngine {
   public async generateExpedition(
     request: ExpeditionRequest,
     party: Goblin[],
-    rewardMultipliers?: PartyRewardMultipliers
+    rewardMultipliers?: PartyRewardMultipliers,
+    expeditionBoost?: ExpeditionBoost
   ): Promise<ExpeditionReplay> {
     console.log('ExpeditionEngine: Starting generateExpedition', { request, partySize: party.length })
     const normalizedRewardMultipliers = normalizePartyRewardMultipliers(rewardMultipliers)
+    const rareDropMultiplierBoost = expeditionBoost?.rareDropMultiplier && expeditionBoost.rareDropMultiplier > 0
+      ? expeditionBoost.rareDropMultiplier
+      : 1
     const tier = request.tier ?? 0
     const tierScaling = DUNGEON_TIER_SCALING[tier] ?? DUNGEON_TIER_SCALING[0]
     // ダンジョンIDからエリアIDにマッピング
@@ -95,6 +98,10 @@ export class ExpeditionEngine {
     let currentFloor = 1
     let currentTime = 0
     const partyState = this.initializePartyState(party)
+    // PTメンバーの基本運値の平均（小数切り捨て）。ドロップ判定の運乱数算出に使用する。
+    const partyLuckAverage = partyState.length > 0
+      ? Math.floor(partyState.reduce((sum, member) => sum + member.luck, 0) / partyState.length)
+      : 0
     let shouldReturn = false
     let returnReason: ExpeditionEndReason | null = null
     const droppedTemplateIds = new Set<string>()  // 遠征中に既にドロップしたアイテム
@@ -157,7 +164,9 @@ export class ExpeditionEngine {
             const treasureDrops = this.rollTreasureDrops(
               enemies.flat(),
               droppedTemplateIds,
-              normalizedRewardMultipliers
+              partyLuckAverage,
+              normalizedRewardMultipliers,
+              rareDropMultiplierBoost
             )
             if (treasureDrops.length > 0) {
               events.push({
@@ -217,7 +226,9 @@ export class ExpeditionEngine {
             const defaultTreasure = this.rollTreasureDrops(
               enemies.flat(),
               droppedTemplateIds,
-              normalizedRewardMultipliers
+              partyLuckAverage,
+              normalizedRewardMultipliers,
+              rareDropMultiplierBoost
             )
             if (defaultTreasure.length > 0) {
               events.push({
@@ -285,7 +296,9 @@ export class ExpeditionEngine {
           const bossTreasure = this.rollTreasureDrops(
             bossEnemies.flat(),
             droppedTemplateIds,
-            normalizedRewardMultipliers
+            partyLuckAverage,
+            normalizedRewardMultipliers,
+            rareDropMultiplierBoost
           )
           if (bossTreasure.length > 0) {
             events.push({
@@ -351,6 +364,7 @@ export class ExpeditionEngine {
       // HP0の負傷者は治療されるまで0のまま、それ以外は出発時に最大HPで開始する
       const effectiveStats = getEffectiveStats(goblin)
       const currentHP = goblin.currentHp === 0 ? 0 : effectiveStats.hp
+      const baseAttributes = getGoblinBaseAttributesAtLevel(goblin, goblin.level)
       return {
         id: goblin.id.toString(),
         name: goblin.name,
@@ -362,7 +376,8 @@ export class ExpeditionEngine {
         baseHP: goblin.stats.hp,
         atk: goblin.stats.atk,
         def: goblin.stats.def,
-        agility: getGoblinBaseAttributesAtLevel(goblin, goblin.level).agility,
+        agility: baseAttributes.agility,
+        luck: baseAttributes.luck,
         attackCount: goblin.stats.attackCount,
         accuracy: goblin.stats.accuracy,
         evasion: goblin.stats.evasion,
@@ -629,36 +644,53 @@ export class ExpeditionEngine {
 
   /**
    * 宝箱ドロップを判定（同一遠征中に同じアイテムは1個まで）
-   * 1. 敵1体ごとに 15% でドロップ判定
-   * 2. ドロップ時は敵レベルからアイテムランクを抽選し、そのランクの装備プールから均等抽選
-   * 3. 敵個別の equipmentDrops は独立に判定
-   * 4. 戦闘終了後、ドロップしたtemplateIdを遠征全体の重複防止に登録する
-   * 5. ドロップ時に称号を抽選して付与
+   *
+   * ノーマルドロップ:
+   *  - 敵1体ごとに `100 - rare * 10 < 運乱数` で当落判定。
+   *  - 当選時は敵レベルから DROP_RANK_TABLE で装備ランクを抽選し、
+   *    そのランクの装備プールから1点を均等抽選する。
+   *
+   * レアドロップ:
+   *  - 敵に `rareEquipmentDrops` が設定されているときのみ判定する。
+   *  - 敵1体ごとに `100 - effectiveRare * 0.1 < 運乱数` で当落判定。
+   *  - effectiveRare = `rare * rareDropMultiplierBoost`（boost は課金アイテム等で 2 倍化）。
+   *  - 当選時はその敵の `rareEquipmentDrops` から1点を確率重みで抽選する。
+   *
+   * 共通:
+   *  - 運乱数は PT平均運値から `rollLuckValue` で算出する（敵ごとに振り直し）。
+   *  - 戦闘終了後、ドロップした templateId を遠征全体の重複防止に登録する。
+   *  - ドロップ時は称号倍率に応じて称号を抽選する。
    */
   private rollTreasureDrops(
     enemies: Enemy[],
     droppedIds: Set<string>,
-    rewardMultipliers?: PartyRewardMultipliers
+    partyLuckAverage: number,
+    rewardMultipliers?: PartyRewardMultipliers,
+    rareDropMultiplierBoost: number = 1
   ): TreasureDrop[] {
     const { title: titleMultiplier, rare: rareMultiplier } = normalizePartyRewardMultipliers(rewardMultipliers)
     const drops: TreasureDrop[] = []
     const expeditionDroppedIds = new Set(droppedIds)
     const pendingDroppedIds = new Set<string>()
 
-    // 敵1体ごとにドロップ判定し、敵レベルに応じたランクから装備を抽選
+    const normalThreshold = 100 - rareMultiplier * 10
+    const effectiveRareMultiplier = rareMultiplier * (rareDropMultiplierBoost > 0 ? rareDropMultiplierBoost : 1)
+    const rareThreshold = 100 - effectiveRareMultiplier * 0.1
+
+    // ノーマルドロップ判定（敵1体ごと）
     for (const enemy of enemies) {
-      if (this.rng() >= DROP_CHANCE) continue
+      const luckRoll = rollLuckValue(partyLuckAverage, this.rng)
+      if (!(normalThreshold < luckRoll)) continue
 
       const rank = rollDropRank(enemy.level, this.rng)
       const candidates = getEquipmentByRank(rank).filter(
-        (t) => !expeditionDroppedIds.has(t.id)
+        (t) => !expeditionDroppedIds.has(t.id) && !pendingDroppedIds.has(t.id)
       )
       if (candidates.length === 0) continue
 
       const index = Math.floor(this.rng() * candidates.length)
       const selected = candidates[index]
 
-      // 称号を抽選
       const title = EquipmentTitleService.rollTitle(titleMultiplier, this.rng)
       drops.push({
         templateId: selected.id,
@@ -667,25 +699,41 @@ export class ExpeditionEngine {
       pendingDroppedIds.add(selected.id)
     }
 
-    // 敵個別のレアアイテムドロップ（将来用）
+    // レアドロップ判定（敵1体ごとに、敵固有の rareEquipmentDrops から1点）
     for (const enemy of enemies) {
-      if (!enemy.equipmentDrops) continue
-      for (const drop of enemy.equipmentDrops) {
-        if (expeditionDroppedIds.has(drop.templateId)) continue
-        const dropProbability = Math.min(1, drop.probability * rareMultiplier)
-        if (this.rng() < dropProbability) {
-          const template = getEquipmentTemplate(drop.templateId)
-          if (template) {
-            // 称号を抽選
-            const title = EquipmentTitleService.rollTitle(titleMultiplier, this.rng)
-            drops.push({
-              templateId: drop.templateId,
-              titleId: title.titleId !== 'none' ? title.titleId : undefined,
-            })
-            pendingDroppedIds.add(drop.templateId)
-          }
+      if (!enemy.rareEquipmentDrops || enemy.rareEquipmentDrops.length === 0) continue
+
+      const luckRoll = rollLuckValue(partyLuckAverage, this.rng)
+      if (!(rareThreshold < luckRoll)) continue
+
+      const rareCandidates = enemy.rareEquipmentDrops.filter(
+        (drop) =>
+          !expeditionDroppedIds.has(drop.templateId) &&
+          !pendingDroppedIds.has(drop.templateId) &&
+          getEquipmentTemplate(drop.templateId) !== undefined
+      )
+      if (rareCandidates.length === 0) continue
+
+      const totalWeight = rareCandidates.reduce((sum, drop) => sum + Math.max(0, drop.probability), 0)
+      if (totalWeight <= 0) continue
+
+      let pick = this.rng() * totalWeight
+      let selectedDrop = rareCandidates[rareCandidates.length - 1]
+      for (const drop of rareCandidates) {
+        const weight = Math.max(0, drop.probability)
+        if (pick < weight) {
+          selectedDrop = drop
+          break
         }
+        pick -= weight
       }
+
+      const title = EquipmentTitleService.rollTitle(titleMultiplier, this.rng)
+      drops.push({
+        templateId: selectedDrop.templateId,
+        titleId: title.titleId !== 'none' ? title.titleId : undefined,
+      })
+      pendingDroppedIds.add(selectedDrop.templateId)
     }
 
     for (const templateId of pendingDroppedIds) {

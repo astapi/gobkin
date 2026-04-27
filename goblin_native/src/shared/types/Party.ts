@@ -62,6 +62,7 @@ export interface PartyState {
   def: number
   magicDef: number
   agility: number
+  luck: number       // 運（基礎能力値、ドロップ判定の運乱数算出に使用）
   attackCount: number
   accuracy: number
   evasion: number

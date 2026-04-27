@@ -12,5 +12,6 @@ export async function computeExpeditionReplay(meta: ExpeditionMeta): Promise<Exp
     meta.request,
     meta.departingGoblins,
     meta.rewardMultipliers,
+    meta.expeditionBoost,
   )
 }
