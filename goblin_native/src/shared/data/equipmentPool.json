@@ -347,12 +347,12 @@
           "value": 16
         }
       ],
-      "range": "melee",
-      "price": 5,
-      "unlockRank": 1,
       "grantedSkillIds": [
         "attack_count_up_1"
       ],
+      "range": "melee",
+      "price": 5,
+      "unlockRank": 1,
       "rank": 0
     },
     {
@@ -370,12 +370,12 @@
           "value": 24
         }
       ],
-      "range": "melee",
-      "price": 15,
-      "unlockRank": 1,
       "grantedSkillIds": [
         "attack_count_up_2"
       ],
+      "range": "melee",
+      "price": 15,
+      "unlockRank": 1,
       "rank": 0
     },
     {
@@ -393,12 +393,12 @@
           "value": 32
         }
       ],
-      "range": "melee",
-      "price": 30,
-      "unlockRank": 1,
       "grantedSkillIds": [
         "attack_count_up_3"
       ],
+      "range": "melee",
+      "price": 30,
+      "unlockRank": 1,
       "rank": 0
     },
     {
@@ -416,12 +416,12 @@
           "value": 40
         }
       ],
-      "range": "melee",
-      "price": 60,
-      "unlockRank": 1,
       "grantedSkillIds": [
         "attack_count_up_4"
       ],
+      "range": "melee",
+      "price": 60,
+      "unlockRank": 1,
       "rank": 1
     },
     {
@@ -439,12 +439,12 @@
           "value": 56
         }
       ],
-      "range": "melee",
-      "price": 100,
-      "unlockRank": 1,
       "grantedSkillIds": [
         "attack_count_up_5"
       ],
+      "range": "melee",
+      "price": 100,
+      "unlockRank": 1,
       "rank": 2
     },
     {
@@ -462,12 +462,12 @@
           "value": 80
         }
       ],
-      "range": "melee",
-      "price": 500,
-      "unlockRank": 2,
       "grantedSkillIds": [
         "attack_count_up_6"
       ],
+      "range": "melee",
+      "price": 500,
+      "unlockRank": 2,
       "rank": 3
     },
     {
@@ -485,12 +485,12 @@
           "value": 104
         }
       ],
-      "range": "melee",
-      "price": 2500,
-      "unlockRank": 2,
       "grantedSkillIds": [
         "attack_count_up_7"
       ],
+      "range": "melee",
+      "price": 2500,
+      "unlockRank": 2,
       "rank": 4
     },
     {
@@ -508,12 +508,12 @@
           "value": 152
         }
       ],
-      "range": "melee",
-      "price": 12500,
-      "unlockRank": 3,
       "grantedSkillIds": [
         "attack_count_up_8"
       ],
+      "range": "melee",
+      "price": 12500,
+      "unlockRank": 3,
       "rank": 5
     },
     {
@@ -531,12 +531,12 @@
           "value": 208
         }
       ],
-      "range": "melee",
-      "price": 60000,
-      "unlockRank": 5,
       "grantedSkillIds": [
         "attack_count_up_9"
       ],
+      "range": "melee",
+      "price": 60000,
+      "unlockRank": 5,
       "rank": 6
     },
     {
@@ -554,11 +554,11 @@
           "value": 304
         }
       ],
-      "range": "melee",
-      "price": 240000,
       "grantedSkillIds": [
         "attack_count_up_10"
       ],
+      "range": "melee",
+      "price": 240000,
       "rank": 7
     },
     {
@@ -576,11 +576,11 @@
           "value": 400
         }
       ],
-      "range": "melee",
-      "price": 720000,
       "grantedSkillIds": [
         "attack_count_up_11"
       ],
+      "range": "melee",
+      "price": 720000,
       "rank": 8
     },
     {
@@ -862,11 +862,11 @@
           "value": 5
         }
       ],
-      "price": 5,
-      "unlockRank": 1,
       "grantedSkillIds": [
         "physical_reduction_1"
       ],
+      "price": 5,
+      "unlockRank": 1,
       "rank": 0
     },
     {
@@ -883,11 +883,11 @@
           "value": 8
         }
       ],
-      "price": 15,
-      "unlockRank": 1,
       "grantedSkillIds": [
         "physical_reduction_2"
       ],
+      "price": 15,
+      "unlockRank": 1,
       "rank": 0
     },
     {
@@ -904,11 +904,11 @@
           "value": 10
         }
       ],
-      "price": 30,
-      "unlockRank": 1,
       "grantedSkillIds": [
         "physical_reduction_3"
       ],
+      "price": 30,
+      "unlockRank": 1,
       "rank": 1
     },
     {
@@ -929,11 +929,11 @@
           "value": 15
         }
       ],
-      "price": 100,
-      "unlockRank": 1,
       "grantedSkillIds": [
         "physical_reduction_6"
       ],
+      "price": 100,
+      "unlockRank": 1,
       "rank": 2
     },
     {
@@ -954,11 +954,11 @@
           "value": 22
         }
       ],
-      "price": 500,
-      "unlockRank": 2,
       "grantedSkillIds": [
         "physical_reduction_7"
       ],
+      "price": 500,
+      "unlockRank": 2,
       "rank": 3
     },
     {
@@ -979,11 +979,11 @@
           "value": 30
         }
       ],
-      "price": 2500,
-      "unlockRank": 2,
       "grantedSkillIds": [
         "physical_reduction_8"
       ],
+      "price": 2500,
+      "unlockRank": 2,
       "rank": 4
     },
     {
@@ -1004,11 +1004,11 @@
           "value": 40
         }
       ],
-      "price": 12500,
-      "unlockRank": 3,
       "grantedSkillIds": [
         "physical_reduction_9"
       ],
+      "price": 12500,
+      "unlockRank": 3,
       "rank": 5
     },
     {
@@ -1029,11 +1029,11 @@
           "value": 60
         }
       ],
-      "price": 60000,
-      "unlockRank": 5,
       "grantedSkillIds": [
         "physical_reduction_10"
       ],
+      "price": 60000,
+      "unlockRank": 5,
       "rank": 6
     },
     {
@@ -1054,10 +1054,10 @@
           "value": 80
         }
       ],
-      "price": 240000,
       "grantedSkillIds": [
         "physical_reduction_11"
       ],
+      "price": 240000,
       "rank": 7
     },
     {
@@ -1078,10 +1078,10 @@
           "value": 120
         }
       ],
-      "price": 720000,
       "grantedSkillIds": [
         "physical_reduction_12"
       ],
+      "price": 720000,
       "rank": 8
     },
     {
@@ -1149,13 +1149,13 @@
           "value": 8
         }
       ],
-      "price": 80,
-      "unlockRank": 1,
       "grantedSkillIds": [
         "breath_damage_4_5",
         "evasion_up_20",
         "breath_reduction_6"
       ],
+      "price": 80,
+      "unlockRank": 1,
       "rank": 2
     },
     {
@@ -1180,13 +1180,13 @@
           "value": 12
         }
       ],
-      "price": 400,
-      "unlockRank": 2,
       "grantedSkillIds": [
         "breath_damage_4_5",
         "evasion_up_30",
         "breath_reduction_7"
       ],
+      "price": 400,
+      "unlockRank": 2,
       "rank": 3
     },
     {
@@ -1211,13 +1211,13 @@
           "value": 16
         }
       ],
-      "price": 2000,
-      "unlockRank": 2,
       "grantedSkillIds": [
         "breath_damage_4_5",
         "evasion_up_40",
         "breath_reduction_8"
       ],
+      "price": 2000,
+      "unlockRank": 2,
       "rank": 4
     },
     {
@@ -1242,13 +1242,13 @@
           "value": 20
         }
       ],
-      "price": 10000,
-      "unlockRank": 3,
       "grantedSkillIds": [
         "breath_damage_4_5",
         "evasion_up_50",
         "breath_reduction_9"
       ],
+      "price": 10000,
+      "unlockRank": 3,
       "rank": 5
     },
     {
@@ -1273,13 +1273,13 @@
           "value": 28
         }
       ],
-      "price": 50000,
-      "unlockRank": 5,
       "grantedSkillIds": [
         "breath_damage_4_5",
         "evasion_up_60",
         "breath_reduction_10"
       ],
+      "price": 50000,
+      "unlockRank": 5,
       "rank": 6
     },
     {
@@ -1304,12 +1304,12 @@
           "value": 36
         }
       ],
-      "price": 200000,
       "grantedSkillIds": [
         "breath_damage_4_5",
         "evasion_up_70",
         "breath_reduction_11"
       ],
+      "price": 200000,
       "rank": 7
     },
     {
@@ -1334,12 +1334,12 @@
           "value": 48
         }
       ],
-      "price": 600000,
       "grantedSkillIds": [
         "breath_damage_4_5",
         "evasion_up_80",
         "breath_reduction_12"
       ],
+      "price": 600000,
       "rank": 8
     },
     {
@@ -1363,12 +1363,12 @@
           "value": 0.8
         }
       ],
-      "price": 5,
-      "unlockRank": 1,
       "grantedSkillIds": [
         "attack_count_up_1",
         "critical_rate_up_10"
       ],
+      "price": 5,
+      "unlockRank": 1,
       "rank": 0
     },
     {
@@ -1389,12 +1389,12 @@
           "value": 0.5
         }
       ],
-      "price": 15,
-      "unlockRank": 1,
       "grantedSkillIds": [
         "attack_count_up_2",
         "critical_rate_up_10"
       ],
+      "price": 15,
+      "unlockRank": 1,
       "rank": 0
     },
     {
@@ -1415,12 +1415,12 @@
           "value": 0.5
         }
       ],
-      "price": 30,
-      "unlockRank": 1,
       "grantedSkillIds": [
         "attack_count_up_3",
         "critical_rate_up_10"
       ],
+      "price": 30,
+      "unlockRank": 1,
       "rank": 1
     },
     {
@@ -1441,12 +1441,12 @@
           "value": 0.5
         }
       ],
-      "price": 2000,
-      "unlockRank": 1,
       "grantedSkillIds": [
         "attack_count_up_4",
         "critical_rate_up_10"
       ],
+      "price": 2000,
+      "unlockRank": 1,
       "rank": 2
     },
     {
@@ -1467,12 +1467,12 @@
           "value": 0.4
         }
       ],
-      "price": 10000,
-      "unlockRank": 2,
       "grantedSkillIds": [
         "attack_count_up_5",
         "critical_rate_up_10"
       ],
+      "price": 10000,
+      "unlockRank": 2,
       "rank": 3
     },
     {
@@ -1493,12 +1493,12 @@
           "value": 0.3
         }
       ],
-      "price": 50000,
-      "unlockRank": 2,
       "grantedSkillIds": [
         "attack_count_up_6",
         "critical_rate_up_10"
       ],
+      "price": 50000,
+      "unlockRank": 2,
       "rank": 4
     },
     {
@@ -1519,12 +1519,12 @@
           "value": 0.2
         }
       ],
-      "price": 250000,
-      "unlockRank": 3,
       "grantedSkillIds": [
         "attack_count_up_7",
         "critical_rate_up_10"
       ],
+      "price": 250000,
+      "unlockRank": 3,
       "rank": 5
     },
     {
@@ -1545,12 +1545,12 @@
           "value": 0.2
         }
       ],
-      "price": 1250000,
-      "unlockRank": 5,
       "grantedSkillIds": [
         "attack_count_up_8",
         "critical_rate_up_10"
       ],
+      "price": 1250000,
+      "unlockRank": 5,
       "rank": 6
     },
     {
@@ -1571,11 +1571,11 @@
           "value": 0.1
         }
       ],
-      "price": 2500000,
       "grantedSkillIds": [
         "attack_count_up_9",
         "critical_rate_up_10"
       ],
+      "price": 2500000,
       "rank": 7
     },
     {
@@ -1596,11 +1596,11 @@
           "value": 0.1
         }
       ],
-      "price": 5000000,
       "grantedSkillIds": [
         "attack_count_up_10",
         "critical_rate_up_10"
       ],
+      "price": 5000000,
       "rank": 8
     },
     {
@@ -1652,11 +1652,11 @@
           "value": 20
         }
       ],
-      "price": 200,
-      "unlockRank": 1,
       "grantedSkillIds": [
         "spell_damage_10"
       ],
+      "price": 200,
+      "unlockRank": 1,
       "rank": 2
     },
     {
@@ -1673,11 +1673,11 @@
           "value": 30
         }
       ],
-      "price": 1000,
-      "unlockRank": 2,
       "grantedSkillIds": [
         "spell_damage_11"
       ],
+      "price": 1000,
+      "unlockRank": 2,
       "rank": 3
     },
     {
@@ -1694,11 +1694,11 @@
           "value": 40
         }
       ],
-      "price": 5000,
-      "unlockRank": 2,
       "grantedSkillIds": [
         "spell_damage_12"
       ],
+      "price": 5000,
+      "unlockRank": 2,
       "rank": 4
     },
     {
@@ -1715,11 +1715,11 @@
           "value": 50
         }
       ],
-      "price": 25000,
-      "unlockRank": 3,
       "grantedSkillIds": [
         "spell_damage_13"
       ],
+      "price": 25000,
+      "unlockRank": 3,
       "rank": 5
     },
     {
@@ -1736,11 +1736,11 @@
           "value": 60
         }
       ],
-      "price": 125000,
-      "unlockRank": 5,
       "grantedSkillIds": [
         "spell_damage_14"
       ],
+      "price": 125000,
+      "unlockRank": 5,
       "rank": 6
     },
     {
@@ -1757,10 +1757,10 @@
           "value": 80
         }
       ],
-      "price": 500000,
       "grantedSkillIds": [
         "spell_damage_15"
       ],
+      "price": 500000,
       "rank": 7
     },
     {
@@ -1777,10 +1777,10 @@
           "value": 110
         }
       ],
-      "price": 1500000,
       "grantedSkillIds": [
         "spell_damage_16"
       ],
+      "price": 1500000,
       "rank": 8
     },
     {
@@ -1832,11 +1832,11 @@
           "value": 20
         }
       ],
-      "price": 200,
-      "unlockRank": 1,
       "grantedSkillIds": [
         "magic_heal_to_hp_6"
       ],
+      "price": 200,
+      "unlockRank": 1,
       "rank": 2
     },
     {
@@ -1853,11 +1853,11 @@
           "value": 30
         }
       ],
-      "price": 1000,
-      "unlockRank": 2,
       "grantedSkillIds": [
         "magic_heal_to_hp_7"
       ],
+      "price": 1000,
+      "unlockRank": 2,
       "rank": 3
     },
     {
@@ -1874,11 +1874,11 @@
           "value": 45
         }
       ],
-      "price": 5000,
-      "unlockRank": 2,
       "grantedSkillIds": [
         "magic_heal_to_hp_8"
       ],
+      "price": 5000,
+      "unlockRank": 2,
       "rank": 4
     },
     {
@@ -1895,11 +1895,11 @@
           "value": 60
         }
       ],
-      "price": 25000,
-      "unlockRank": 3,
       "grantedSkillIds": [
         "magic_heal_to_hp_9"
       ],
+      "price": 25000,
+      "unlockRank": 3,
       "rank": 5
     },
     {
@@ -1916,11 +1916,11 @@
           "value": 120
         }
       ],
-      "price": 125000,
-      "unlockRank": 5,
       "grantedSkillIds": [
         "magic_heal_to_hp_10"
       ],
+      "price": 125000,
+      "unlockRank": 5,
       "rank": 6
     },
     {
@@ -1937,10 +1937,10 @@
           "value": 180
         }
       ],
-      "price": 500000,
       "grantedSkillIds": [
         "magic_heal_to_hp_11"
       ],
+      "price": 500000,
       "rank": 7
     },
     {
@@ -1957,10 +1957,10 @@
           "value": 240
         }
       ],
-      "price": 1500000,
       "grantedSkillIds": [
         "magic_heal_to_hp_12"
       ],
+      "price": 1500000,
       "rank": 8
     },
     {
@@ -1971,7 +1971,57 @@
       "grantedSkillIds": [
         "hp_regen_flat_10"
       ],
-      "price": 0
+      "price": 12500,
+      "isRare": true
+    },
+    {
+      "id": "accessory_luck_medal",
+      "name": "ラッキーメダル",
+      "category": "accessory",
+      "statBonuses": [
+        {
+          "stat": "def_flat",
+          "value": 3
+        }
+      ],
+      "grantedSkillIds": [
+        "exp_bonus_50"
+      ],
+      "price": 12500,
+      "isRare": true
+    },
+    {
+      "id": "claw_beast_slayer",
+      "name": "魔獣の爪",
+      "category": "weapon",
+      "subCategory": "claw",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 5
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 20
+        }
+      ],
+      "grantedSkillIds": [
+        "beast_slayer_1_5"
+      ],
+      "range": "melee",
+      "price": 12500,
+      "isRare": true
+    },
+    {
+      "id": "accessory_human_slayer",
+      "name": "人間に対する殺意",
+      "category": "accessory",
+      "statBonuses": [],
+      "grantedSkillIds": [
+        "human_slayer_1_5"
+      ],
+      "price": 15000,
+      "isRare": true
     }
   ]
 }

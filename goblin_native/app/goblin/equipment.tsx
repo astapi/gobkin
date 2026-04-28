@@ -89,7 +89,7 @@ function getDisplaySkills(eq: EquipmentInstance) {
   return EquipmentService.collectGrantedSkills([eq])
 }
 
-/** カテゴリ→定義順→称号レア度（低→高）でソート */
+/** カテゴリ→ノーマル→レア→定義順→称号レア度（低→高）でソート */
 function sortEquipment(items: EquipmentInstance[]): EquipmentInstance[] {
   const allTemplates = getEquipmentTemplates()
   const templateOrder = new Map(allTemplates.map((t, i) => [t.id, i]))
@@ -100,6 +100,8 @@ function sortEquipment(items: EquipmentInstance[]): EquipmentInstance[] {
     if (!tA || !tB) return 0
     const catDiff = CATEGORY_ORDER[tA.category] - CATEGORY_ORDER[tB.category]
     if (catDiff !== 0) return catDiff
+    const rareDiff = (tA.isRare ? 1 : 0) - (tB.isRare ? 1 : 0)
+    if (rareDiff !== 0) return rareDiff
     const orderA = templateOrder.get(a.templateId) ?? 0
     const orderB = templateOrder.get(b.templateId) ?? 0
     if (orderA !== orderB) return orderA - orderB

@@ -224,7 +224,6 @@ droppedTemplateIds: Set<string> で遠征全体を通じて追跡
 ```typescript
 interface EquipmentDropConfig {
   templateId: string   // EquipmentTemplate.id
-  probability: number  // 0.0〜1.0（候補内の重み付けに利用）
 }
 ```
 
@@ -238,10 +237,10 @@ rareThreshold    = 100 - effectiveRare * 0.1
 当選条件: rareThreshold < luckRoll
 ```
 
-- 敵1体ごとに `luckRoll` を振り直す（ノーマルドロップとは別の抽選）。
+- 敵の `rareEquipmentDrops` の **アイテム1つごとに** `luckRoll` を振り直す（ノーマルドロップとも別の抽選）。
 - `rare` はPT倍率の `rare`、`rareDropMultiplierBoost` は `ExpeditionBoost.rareDropMultiplier`。
 - ノーマルドロップが `rare * 10` であるのに対し、レアドロップは `rare * 0.1` と影響が桁違いに小さい。レアの上振れには PT倍率の積み上げと boost 倍率の併用が必要。
-- 当選時は敵の `rareEquipmentDrops` から `probability` を重みとした加重抽選で 1 点選出する。
+- 当選したアイテムをそれぞれドロップに追加する（同じ敵から複数種ドロップ可能）。重複防止により遠征中に同じ `templateId` は 1 個まで。
 
 ### ExpeditionBoost.rareDropMultiplier
 
@@ -257,9 +256,9 @@ interface ExpeditionBoost {
 
 ### 現在の使用状況
 
-| エリア | 敵ID | 名前 | レアドロップ | 確率重み |
-|-------|------|------|------------|---------:|
-| スライムの洞窟 | S001 | スライム | `accessory_split_core`（分裂核 / `[10]回復能力` 付与） | 1 |
+| エリア | 敵ID | 名前 | レアドロップ |
+|-------|------|------|------------|
+| スライムの洞窟 | S001 | スライム | `accessory_split_core`（分裂核 / `[10]回復能力` 付与） |
 
 ※ 分裂核は `equipmentPool.json` のアクセサリ枠（rank 未設定 / 価格 0 / 称号は通常通り抽選）に追加されている。
 

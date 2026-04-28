@@ -121,6 +121,7 @@ export function dataApiPlugin(options: Options): Plugin {
   const racesFile = path.join(options.appSrc, 'shared', 'data', 'races.ts')
   const jobsFile = path.join(options.appSrc, 'shared', 'data', 'goblinJobs.ts')
   const variantsFile = path.join(options.appSrc, 'shared', 'data', 'goblinVariants.ts')
+  const equipmentPoolFile = path.join(options.appSrc, 'shared', 'data', 'equipmentPool.json')
   const presetsFile = path.join(options.dataDir, 'party-presets.json')
   const libraryFile = path.join(options.dataDir, 'character-library.json')
 
@@ -242,6 +243,23 @@ export function dataApiPlugin(options: Options): Plugin {
           const message = err instanceof Error ? err.message : 'Unknown error'
           const status = message.startsWith('NOT_FOUND') ? 404 : 500
           return json(res, status, { error: message })
+        }
+      })
+
+      server.middlewares.use('/api/equipment-pool', async (req, res) => {
+        try {
+          if (req.method === 'GET') {
+            return json(res, 200, await readJson(equipmentPoolFile))
+          }
+          if (req.method === 'PUT') {
+            const body = await readBody(req)
+            await writeEquipmentPool(equipmentPoolFile, body)
+            return json(res, 200, { ok: true })
+          }
+          return json(res, 405, { error: 'Method not allowed' })
+        } catch (err) {
+          const message = err instanceof Error ? err.message : 'Unknown error'
+          return json(res, 500, { error: message })
         }
       })
 
@@ -511,6 +529,41 @@ async function deleteStory(storyFile: string, storyId: string) {
   }
   await writeJson(storyFile, { stories: nextStories })
   return { ok: true }
+}
+
+async function writeEquipmentPool(filePath: string, body: unknown): Promise<void> {
+  if (!body || typeof body !== 'object') {
+    throw new Error('Body must be an object')
+  }
+  const record = body as Record<string, unknown>
+  if (typeof record.version !== 'string' || !Array.isArray(record.templates)) {
+    throw new Error('equipment pool must contain version (string) and templates (array)')
+  }
+  const ids = new Set<string>()
+  for (const entry of record.templates as unknown[]) {
+    if (!entry || typeof entry !== 'object') {
+      throw new Error('Each template entry must be an object')
+    }
+    const e = entry as Record<string, unknown>
+    if (typeof e._comment === 'string') continue
+    if (typeof e.id !== 'string' || e.id === '') {
+      throw new Error('Template entry missing id')
+    }
+    if (ids.has(e.id)) {
+      throw new Error(`Duplicate template id: ${e.id}`)
+    }
+    ids.add(e.id)
+    if (typeof e.name !== 'string' || typeof e.category !== 'string') {
+      throw new Error(`Template ${e.id} missing required fields (name/category)`)
+    }
+    if (!Array.isArray(e.statBonuses)) {
+      throw new Error(`Template ${e.id} statBonuses must be an array`)
+    }
+    if (typeof e.price !== 'number') {
+      throw new Error(`Template ${e.id} price must be a number`)
+    }
+  }
+  await writeJson(filePath, body)
 }
 
 async function readJson(filePath: string): Promise<any> {

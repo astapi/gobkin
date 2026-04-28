@@ -83,6 +83,98 @@ export const EnemyDatabaseSchema = z.object({
   patterns: z.array(EnemyPatternSchema),
 })
 
+export const EquipmentCategorySchema = z.enum([
+  'weapon',
+  'armor',
+  'shield',
+  'gauntlet',
+  'wand',
+  'rod',
+  'accessory',
+])
+
+export const WeaponSubCategorySchema = z.enum([
+  'sword',
+  'axe',
+  'spear',
+  'bow',
+  'staff',
+  'claw',
+])
+
+export const WeaponRangeSchema = z.enum(['melee', 'ranged'])
+
+export const EquipmentStatSchema = z.enum([
+  'hp_flat',
+  'atk_flat',
+  'def_flat',
+  'magic_atk_flat',
+  'magic_def_flat',
+  'attackCount_flat',
+  'accuracy_flat',
+  'evasion_flat',
+  'magicHeal_flat',
+  'hp_percent',
+  'atk_percent',
+  'def_percent',
+  'critical_rate_percent',
+  'damage_reduction',
+])
+
+export const EquipmentStatBonusSchema = z.object({
+  stat: EquipmentStatSchema,
+  value: z.number(),
+  sourceCategory: EquipmentCategorySchema.optional(),
+  sourceSubCategory: WeaponSubCategorySchema.optional(),
+})
+
+export const EquipmentTemplateSchema = z
+  .object({
+    id: z.string(),
+    name: z.string(),
+    category: EquipmentCategorySchema,
+    subCategory: WeaponSubCategorySchema.optional(),
+    statBonuses: z.array(EquipmentStatBonusSchema),
+    grantedSkillIds: z.array(z.string()).optional(),
+    grantedSkills: z.array(z.object({ id: z.string() }).passthrough()).optional(),
+    range: WeaponRangeSchema.optional(),
+    price: z.number().nonnegative(),
+    unlockRank: z.number().int().nonnegative().optional(),
+    rank: z.number().int().nonnegative().optional(),
+    isRare: z.boolean().optional(),
+  })
+  .passthrough()
+
+export const EquipmentPoolCommentSchema = z
+  .object({ _comment: z.string() })
+  .passthrough()
+
+export const EquipmentPoolEntrySchema = z.union([
+  EquipmentTemplateSchema,
+  EquipmentPoolCommentSchema,
+])
+
+export const EquipmentPoolSchema = z.object({
+  version: z.string(),
+  templates: z.array(EquipmentPoolEntrySchema),
+})
+
+export type EquipmentCategory = z.infer<typeof EquipmentCategorySchema>
+export type WeaponSubCategory = z.infer<typeof WeaponSubCategorySchema>
+export type WeaponRange = z.infer<typeof WeaponRangeSchema>
+export type EquipmentStat = z.infer<typeof EquipmentStatSchema>
+export type EquipmentStatBonus = z.infer<typeof EquipmentStatBonusSchema>
+export type EquipmentTemplate = z.infer<typeof EquipmentTemplateSchema>
+export type EquipmentPoolComment = z.infer<typeof EquipmentPoolCommentSchema>
+export type EquipmentPoolEntry = z.infer<typeof EquipmentPoolEntrySchema>
+export type EquipmentPool = z.infer<typeof EquipmentPoolSchema>
+
+export function isEquipmentTemplate(
+  entry: EquipmentPoolEntry,
+): entry is EquipmentTemplate {
+  return typeof (entry as { id?: unknown }).id === 'string'
+}
+
 export const StoryUnlockConditionSchema = z
   .object({
     type: z.literal('dungeon_cleared'),

@@ -60,6 +60,7 @@ export interface EquipmentTemplate {
   price: number
   unlockRank?: number  // 店売り解放に必要な拠点ランク（未設定=店売りなし）
   rank?: number  // アイテムランク（敵レベル→ランク抽選時の対象。未設定=敵ドロップ対象外）
+  isRare?: boolean  // レアアイテム判定（true なら装備一覧で同カテゴリ内のレア枠に並ぶ）
 }
 
 /**
