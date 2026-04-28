@@ -175,7 +175,12 @@
         "vitality": 12,
         "agility": 8,
         "luck": 6
-      }
+      },
+      "rareEquipmentDrops": [
+        {
+          "templateId": "accessory_human_slayer"
+        }
+      ]
     }
   ],
   "patterns": [

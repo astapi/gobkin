@@ -8,6 +8,7 @@ import { StoryListPage } from './pages/StoryListPage'
 import { StoryDetailPage } from './pages/StoryDetailPage'
 import { GoblinDataPage } from './pages/GoblinDataPage'
 import { SkillCatalogPage } from './pages/SkillCatalogPage'
+import { EquipmentPoolPage } from './pages/EquipmentPoolPage'
 import { DungeonUnlockFlowPage } from './pages/DungeonUnlockFlowPage'
 import { PartyStoreProvider } from './stores/partyStore'
 
@@ -24,6 +25,7 @@ export function App() {
             <Link to="/unlock-flow">解放図</Link>
             <Link to="/stories">ストーリー</Link>
             <Link to="/goblins">ゴブリン</Link>
+            <Link to="/equipment">アイテム</Link>
             <Link to="/skills">Skill</Link>
             <Link to="/party">PT編成</Link>
             <Link to="/simulate">シミュレーション</Link>
@@ -38,6 +40,7 @@ export function App() {
             <Route path="/stories/new" element={<StoryDetailPage />} />
             <Route path="/stories/:storyId" element={<StoryDetailPage />} />
             <Route path="/goblins" element={<GoblinDataPage />} />
+            <Route path="/equipment" element={<EquipmentPoolPage />} />
             <Route path="/skills" element={<SkillCatalogPage />} />
             <Route path="/party" element={<PartyPage />} />
             <Route path="/simulate" element={<SimulatePage />} />

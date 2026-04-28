@@ -18,6 +18,7 @@ import {
   TextField,
 } from './fields'
 import { EnemySkillListEditor } from './SkillEditors'
+import { RareEquipmentDropsEditor } from './RareEquipmentDropsEditor'
 
 type Enemy = EnemyDatabase['enemies'][number]
 const raceEntries = Object.entries(races).sort((a, b) => a[1].label.localeCompare(b[1].label, 'ja'))
@@ -317,10 +318,21 @@ function EnemyForm({
         value={(enemy as any).factorDrops}
         onChange={(v) => onChange((prev) => ({ ...prev, factorDrops: v }) as Enemy)}
       />
-      <ExtraJsonSection
-        label="equipmentDrops"
-        value={(enemy as any).equipmentDrops}
-        onChange={(v) => onChange((prev) => ({ ...prev, equipmentDrops: v }) as Enemy)}
+      <RareEquipmentDropsEditor
+        rareEquipmentDrops={
+          (enemy as Enemy & { rareEquipmentDrops?: Array<{ templateId: string }> }).rareEquipmentDrops
+        }
+        onChange={(rareEquipmentDrops) =>
+          onChange((prev) => {
+            const next = { ...prev } as Enemy & { rareEquipmentDrops?: Array<{ templateId: string }> }
+            if (!rareEquipmentDrops || rareEquipmentDrops.length === 0) {
+              delete next.rareEquipmentDrops
+            } else {
+              next.rareEquipmentDrops = rareEquipmentDrops
+            }
+            return next as Enemy
+          })
+        }
       />
     </aside>
   )

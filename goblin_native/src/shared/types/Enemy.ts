@@ -6,7 +6,6 @@ import type { BattleActionPolicy } from './Battle'
 
 export interface EquipmentDropConfig {
   templateId: string   // EquipmentTemplate.id
-  probability: number  // 0.0〜1.0（敵個別レアドロップの抽選確率）
 }
 
 export interface Enemy {

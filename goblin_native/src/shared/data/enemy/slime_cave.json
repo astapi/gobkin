@@ -26,8 +26,7 @@
       },
       "rareEquipmentDrops": [
         {
-          "templateId": "accessory_split_core",
-          "probability": 1
+          "templateId": "accessory_split_core"
         }
       ]
     },
@@ -60,7 +59,12 @@
         "vitality": 1,
         "agility": 8,
         "luck": 3
-      }
+      },
+      "rareEquipmentDrops": [
+        {
+          "templateId": "accessory_locuk_medal"
+        }
+      ]
     }
   ],
   "patterns": [

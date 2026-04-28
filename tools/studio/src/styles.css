@@ -1275,6 +1275,34 @@ code {
   flex: 1;
 }
 
+.equipment-toolbar {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.equipment-toolbar .search-input {
+  flex: 1;
+}
+
+.rare-drop-select {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.rare-drop-select-toolbar {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.rare-drop-select-toolbar input,
+.rare-drop-select-toolbar select {
+  flex: 1;
+  min-width: 0;
+}
+
 .sortable {
   cursor: pointer;
   user-select: none;

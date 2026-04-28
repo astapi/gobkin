@@ -652,9 +652,9 @@ export class ExpeditionEngine {
    *
    * レアドロップ:
    *  - 敵に `rareEquipmentDrops` が設定されているときのみ判定する。
-   *  - 敵1体ごとに `100 - effectiveRare * 0.1 < 運乱数` で当落判定。
+   *  - rareEquipmentDrops の **アイテム1つごとに** `100 - effectiveRare * 0.1 < 運乱数` で当落判定。
    *  - effectiveRare = `rare * rareDropMultiplierBoost`（boost は課金アイテム等で 2 倍化）。
-   *  - 当選時はその敵の `rareEquipmentDrops` から1点を確率重みで抽選する。
+   *  - 当選したアイテムをそれぞれドロップに追加する（同じ敵から複数種ドロップ可能）。
    *
    * 共通:
    *  - 運乱数は PT平均運値から `rollLuckValue` で算出する（敵ごとに振り直し）。
@@ -699,41 +699,27 @@ export class ExpeditionEngine {
       pendingDroppedIds.add(selected.id)
     }
 
-    // レアドロップ判定（敵1体ごとに、敵固有の rareEquipmentDrops から1点）
+    // レアドロップ判定（rareEquipmentDrops のアイテム1つごとに当落判定）
     for (const enemy of enemies) {
       if (!enemy.rareEquipmentDrops || enemy.rareEquipmentDrops.length === 0) continue
 
-      const luckRoll = rollLuckValue(partyLuckAverage, this.rng)
-      if (!(rareThreshold < luckRoll)) continue
+      for (const drop of enemy.rareEquipmentDrops) {
+        if (
+          expeditionDroppedIds.has(drop.templateId) ||
+          pendingDroppedIds.has(drop.templateId) ||
+          getEquipmentTemplate(drop.templateId) === undefined
+        ) continue
 
-      const rareCandidates = enemy.rareEquipmentDrops.filter(
-        (drop) =>
-          !expeditionDroppedIds.has(drop.templateId) &&
-          !pendingDroppedIds.has(drop.templateId) &&
-          getEquipmentTemplate(drop.templateId) !== undefined
-      )
-      if (rareCandidates.length === 0) continue
+        const luckRoll = rollLuckValue(partyLuckAverage, this.rng)
+        if (!(rareThreshold < luckRoll)) continue
 
-      const totalWeight = rareCandidates.reduce((sum, drop) => sum + Math.max(0, drop.probability), 0)
-      if (totalWeight <= 0) continue
-
-      let pick = this.rng() * totalWeight
-      let selectedDrop = rareCandidates[rareCandidates.length - 1]
-      for (const drop of rareCandidates) {
-        const weight = Math.max(0, drop.probability)
-        if (pick < weight) {
-          selectedDrop = drop
-          break
-        }
-        pick -= weight
+        const title = EquipmentTitleService.rollTitle(titleMultiplier, this.rng)
+        drops.push({
+          templateId: drop.templateId,
+          titleId: title.titleId !== 'none' ? title.titleId : undefined,
+        })
+        pendingDroppedIds.add(drop.templateId)
       }
-
-      const title = EquipmentTitleService.rollTitle(titleMultiplier, this.rng)
-      drops.push({
-        templateId: selectedDrop.templateId,
-        titleId: title.titleId !== 'none' ? title.titleId : undefined,
-      })
-      pendingDroppedIds.add(selectedDrop.templateId)
     }
 
     for (const templateId of pendingDroppedIds) {

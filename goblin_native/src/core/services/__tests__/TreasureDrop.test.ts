@@ -443,7 +443,7 @@ describe('rollTreasureDrops', () => {
 
     it('rareEquipmentDrops が設定された敵からレアドロップが発生する', () => {
       const enemy = createDummyEnemy({
-        rareEquipmentDrops: [{ templateId: 'sword_royal', probability: 1.0 }],
+        rareEquipmentDrops: [{ templateId: 'sword_royal' }],
       })
 
       let found = false
@@ -463,7 +463,7 @@ describe('rollTreasureDrops', () => {
       // 敵レベル1のためノーマルは rank0 のみ → sword_kaiser (rank5) はノーマルでは出ない
       const enemy = createDummyEnemy({
         level: 1,
-        rareEquipmentDrops: [{ templateId: 'sword_kaiser', probability: 1.0 }],
+        rareEquipmentDrops: [{ templateId: 'sword_kaiser' }],
       })
 
       let rareDrops = 0
@@ -481,7 +481,7 @@ describe('rollTreasureDrops', () => {
       // 敵レベル1のためノーマルは rank0 のみ → sword_kaiser (rank5) はノーマルでは出ない
       const enemy = createDummyEnemy({
         level: 1,
-        rareEquipmentDrops: [{ templateId: 'sword_kaiser', probability: 1.0 }],
+        rareEquipmentDrops: [{ templateId: 'sword_kaiser' }],
       })
 
       const iterations = 2000
@@ -511,7 +511,7 @@ describe('rollTreasureDrops', () => {
 
     it('レアドロップにも称号が付与される', () => {
       const enemy = createDummyEnemy({
-        rareEquipmentDrops: [{ templateId: 'sword_royal', probability: 1.0 }],
+        rareEquipmentDrops: [{ templateId: 'sword_royal' }],
       })
 
       let foundTitle = false
@@ -529,7 +529,7 @@ describe('rollTreasureDrops', () => {
 
     it('レアドロップも遠征中の重複防止に登録される', () => {
       const enemy = createDummyEnemy({
-        rareEquipmentDrops: [{ templateId: 'sword_royal', probability: 1.0 }],
+        rareEquipmentDrops: [{ templateId: 'sword_royal' }],
       })
       const droppedIds = new Set<string>()
 
