@@ -6,23 +6,29 @@
       "raceTags": [
         "human"
       ],
-      "level": 30,
-      "hp": 760,
-      "atk": 200,
-      "def": 40,
-      "magicDef": 27,
+      "level": 64,
+      "hp": 1621,
+      "atk": 427,
+      "def": 85,
+      "magicDef": 58,
       "attackCount": 4,
-      "accuracy": 320,
-      "evasion": 16,
-      "exp": 32,
-      "gold": 26,
+      "accuracy": 560,
+      "evasion": 46,
+      "exp": 68,
+      "gold": 55,
+      "skills": [
+        {
+          "id": "physical_reduction_10",
+          "physicalDamageReductionPercent": 10
+        }
+      ],
       "baseAttributes": {
-        "power": 50,
-        "wisdom": 50,
+        "power": 18,
+        "wisdom": 18,
         "spirit": 7,
-        "vitality": 18,
-        "agility": 6,
-        "luck": 4
+        "vitality": 22,
+        "agility": 10,
+        "luck": 5
       }
     },
     {
@@ -31,16 +37,16 @@
       "raceTags": [
         "human"
       ],
-      "level": 30,
-      "hp": 590,
-      "atk": 110,
-      "def": 8,
-      "magicDef": 20,
+      "level": 64,
+      "hp": 1259,
+      "atk": 235,
+      "def": 17,
+      "magicDef": 43,
       "attackCount": 1,
-      "accuracy": 330,
-      "evasion": 15,
-      "exp": 38,
-      "gold": 32,
+      "accuracy": 560,
+      "evasion": 46,
+      "exp": 81,
+      "gold": 68,
       "skills": [
         {
           "id": "grant_fireball",
@@ -51,15 +57,19 @@
           "id": "grant_magic_arrow",
           "name": "マジックアロー",
           "grantsSpellId": "magic_arrow"
+        },
+        {
+          "id": "physical_reduction_10",
+          "physicalDamageReductionPercent": 10
         }
       ],
       "baseAttributes": {
-        "power": 28,
-        "wisdom": 28,
+        "power": 18,
+        "wisdom": 18,
         "spirit": 5,
-        "vitality": 14,
-        "agility": 7,
-        "luck": 4
+        "vitality": 17,
+        "agility": 10,
+        "luck": 5
       }
     },
     {
@@ -68,23 +78,29 @@
       "raceTags": [
         "human"
       ],
-      "level": 30,
-      "hp": 630,
-      "atk": 150,
-      "def": 10,
-      "magicDef": 15,
+      "level": 64,
+      "hp": 1344,
+      "atk": 320,
+      "def": 21,
+      "magicDef": 32,
       "attackCount": 4,
-      "accuracy": 340,
-      "evasion": 18,
-      "exp": 34,
-      "gold": 28,
+      "accuracy": 560,
+      "evasion": 46,
+      "exp": 73,
+      "gold": 60,
+      "skills": [
+        {
+          "id": "physical_reduction_10",
+          "physicalDamageReductionPercent": 10
+        }
+      ],
       "baseAttributes": {
-        "power": 38,
-        "wisdom": 38,
+        "power": 18,
+        "wisdom": 18,
         "spirit": 4,
-        "vitality": 15,
-        "agility": 10,
-        "luck": 5
+        "vitality": 18,
+        "agility": 12,
+        "luck": 6
       }
     },
     {
@@ -93,31 +109,35 @@
       "raceTags": [
         "human"
       ],
-      "level": 30,
-      "hp": 630,
-      "atk": 70,
-      "def": 16,
-      "magicDef": 24,
-      "magicHeal": 100,
+      "level": 64,
+      "hp": 1344,
+      "atk": 149,
+      "def": 34,
+      "magicDef": 51,
       "attackCount": 1,
-      "accuracy": 310,
-      "evasion": 14,
-      "exp": 36,
-      "gold": 30,
+      "accuracy": 560,
+      "evasion": 46,
+      "exp": 77,
+      "gold": 64,
       "skills": [
         {
           "id": "recovery_magic_lv7",
           "recoveryMagicLevel": 7
+        },
+        {
+          "id": "physical_reduction_10",
+          "physicalDamageReductionPercent": 10
         }
       ],
       "baseAttributes": {
         "power": 18,
         "wisdom": 18,
         "spirit": 6,
-        "vitality": 15,
-        "agility": 5,
-        "luck": 4
-      }
+        "vitality": 18,
+        "agility": 8,
+        "luck": 5
+      },
+      "magicHeal": 213
     },
     {
       "id": "HUM005",
@@ -125,23 +145,29 @@
       "raceTags": [
         "human"
       ],
-      "level": 30,
-      "hp": 760,
-      "atk": 210,
-      "def": 50,
-      "magicDef": 36,
-      "attackCount": 4,
-      "accuracy": 300,
-      "evasion": 12,
-      "exp": 42,
-      "gold": 36,
+      "level": 66,
+      "hp": 1672,
+      "atk": 462,
+      "def": 110,
+      "magicDef": 79,
+      "attackCount": 5,
+      "accuracy": 560,
+      "evasion": 46,
+      "exp": 92,
+      "gold": 79,
+      "skills": [
+        {
+          "id": "physical_reduction_10",
+          "physicalDamageReductionPercent": 10
+        }
+      ],
       "baseAttributes": {
-        "power": 53,
-        "wisdom": 53,
+        "power": 18,
+        "wisdom": 18,
         "spirit": 9,
-        "vitality": 18,
-        "agility": 4,
-        "luck": 3
+        "vitality": 22,
+        "agility": 8,
+        "luck": 5
       }
     }
   ],

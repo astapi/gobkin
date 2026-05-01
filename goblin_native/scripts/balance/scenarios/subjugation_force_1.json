@@ -1,0 +1,787 @@
+{
+  "$schema": "balance-reference-scenario-v1",
+  "areaId": "subjugation_force_1",
+  "description": "vs討伐隊防衛戦・先遣隊。areaLevel=40。敵: 正規兵Lv30 atk200/騎士Lv30 atk210 def50/弓兵Lv30 atk150 attackCount4/魔術師Lv30(火球)/クレリックLv30(回復)。装備rank≤4(stack=27%)。",
+  "iterations": 100,
+  "levelRange": {
+    "min": 25,
+    "max": 75,
+    "step": 2
+  },
+  "equipmentFilter": {
+    "maxUnlockRank": 4,
+    "maxDropRank": 4
+  },
+  "loadouts": [
+    {
+      "name": "A_optimal",
+      "description": "1列目 スライム盾 軽減stack 27%(armor_royal+mithril+armor+fur_vest+leather_vest+tattered_cloth)。2列目 ホブゴブリン前衛(inspire)。3列目 ウルフ弓。4〜5列目 通常シーフ。6列目 通常クレリック(回復)。敵クレリックの回復に対抗するため自軍クレリックで耐久戦に備える。",
+      "party": [
+        {
+          "name": "スライム盾",
+          "variantFactorId": "slime",
+          "equipmentTemplateIds": [
+            "armor_royal",
+            "armor_mithril",
+            "armor_armor",
+            "armor_fur_vest",
+            "armor_leather_vest",
+            "armor_tattered_cloth",
+            "shield_royal",
+            "sword_royal",
+            "gauntlet_royal",
+            "shield_mithril"
+          ]
+        },
+        {
+          "name": "ホブゴブリン前衛",
+          "variantFactorId": "hobgoblin",
+          "equipmentTemplateIds": [
+            "sword_royal",
+            "armor_royal",
+            "armor_mithril",
+            "shield_royal",
+            "armor_armor",
+            "armor_fur_vest",
+            "sword_mithril",
+            "gauntlet_royal",
+            "armor_leather_vest",
+            "armor_tattered_cloth"
+          ]
+        },
+        {
+          "name": "ウルフ弓",
+          "variantFactorId": "wolf",
+          "equipmentTemplateIds": [
+            "bow_royal",
+            "gauntlet_royal",
+            "gauntlet_mithril",
+            "gauntlet_gauntlet",
+            "gauntlet_copper",
+            "armor_royal",
+            "armor_mithril",
+            "armor_armor",
+            "armor_fur_vest",
+            "armor_leather_vest"
+          ]
+        },
+        {
+          "name": "通常シーフ1",
+          "job": "thief",
+          "equipmentTemplateIds": [
+            "bow_royal",
+            "gauntlet_royal",
+            "gauntlet_mithril",
+            "gauntlet_gauntlet",
+            "gauntlet_copper",
+            "armor_royal",
+            "armor_mithril",
+            "armor_armor",
+            "armor_fur_vest",
+            "armor_leather_vest"
+          ]
+        },
+        {
+          "name": "通常シーフ2",
+          "job": "thief",
+          "equipmentTemplateIds": [
+            "bow_royal",
+            "gauntlet_royal",
+            "gauntlet_mithril",
+            "gauntlet_gauntlet",
+            "gauntlet_copper",
+            "armor_royal",
+            "armor_mithril",
+            "armor_armor",
+            "armor_fur_vest",
+            "armor_leather_vest"
+          ]
+        },
+        {
+          "name": "通常クレリック",
+          "job": "cleric",
+          "equipmentTemplateIds": [
+            "rod_royal",
+            "rod_mithril",
+            "armor_royal",
+            "armor_mithril",
+            "shield_royal",
+            "armor_armor",
+            "armor_fur_vest",
+            "armor_leather_vest",
+            "gauntlet_royal",
+            "armor_tattered_cloth"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "B_no_reduction",
+      "description": "Aと同じPT構成だが、1列目スライム盾から物理軽減%装備(armor)を全部外し、shield/sword/gauntletの素値で組む。",
+      "party": [
+        {
+          "name": "スライム盾",
+          "variantFactorId": "slime",
+          "equipmentTemplateIds": [
+            "shield_royal",
+            "shield_mithril",
+            "shield_shield",
+            "shield_wooden",
+            "sword_royal",
+            "sword_mithril",
+            "sword_long",
+            "gauntlet_royal",
+            "gauntlet_mithril",
+            "gauntlet_gauntlet"
+          ]
+        },
+        {
+          "name": "ホブゴブリン前衛",
+          "variantFactorId": "hobgoblin",
+          "equipmentTemplateIds": [
+            "sword_royal",
+            "armor_royal",
+            "armor_mithril",
+            "shield_royal",
+            "armor_armor",
+            "armor_fur_vest",
+            "sword_mithril",
+            "gauntlet_royal",
+            "armor_leather_vest",
+            "armor_tattered_cloth"
+          ]
+        },
+        {
+          "name": "ウルフ弓",
+          "variantFactorId": "wolf",
+          "equipmentTemplateIds": [
+            "bow_royal",
+            "gauntlet_royal",
+            "gauntlet_mithril",
+            "gauntlet_gauntlet",
+            "gauntlet_copper",
+            "armor_royal",
+            "armor_mithril",
+            "armor_armor",
+            "armor_fur_vest",
+            "armor_leather_vest"
+          ]
+        },
+        {
+          "name": "通常シーフ1",
+          "job": "thief",
+          "equipmentTemplateIds": [
+            "bow_royal",
+            "gauntlet_royal",
+            "gauntlet_mithril",
+            "gauntlet_gauntlet",
+            "gauntlet_copper",
+            "armor_royal",
+            "armor_mithril",
+            "armor_armor",
+            "armor_fur_vest",
+            "armor_leather_vest"
+          ]
+        },
+        {
+          "name": "通常シーフ2",
+          "job": "thief",
+          "equipmentTemplateIds": [
+            "bow_royal",
+            "gauntlet_royal",
+            "gauntlet_mithril",
+            "gauntlet_gauntlet",
+            "gauntlet_copper",
+            "armor_royal",
+            "armor_mithril",
+            "armor_armor",
+            "armor_fur_vest",
+            "armor_leather_vest"
+          ]
+        },
+        {
+          "name": "通常クレリック",
+          "job": "cleric",
+          "equipmentTemplateIds": [
+            "rod_royal",
+            "rod_mithril",
+            "armor_royal",
+            "armor_mithril",
+            "shield_royal",
+            "armor_armor",
+            "armor_fur_vest",
+            "armor_leather_vest",
+            "gauntlet_royal",
+            "armor_tattered_cloth"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "D_no_defense",
+      "description": "1列目スライム盾の装備を**武器のみ（弓/爪/手袋）**にして、armor/shield/swordを完全排除。物理軽減・evasion・def_to_hpを全部消した『真の無防御タンク』。後衛はAと同じ。",
+      "party": [
+        {
+          "name": "スライム盾",
+          "variantFactorId": "slime",
+          "equipmentTemplateIds": [
+            "claw_royal",
+            "claw_mithril",
+            "claw_steel",
+            "claw_iron",
+            "claw_copper",
+            "claw_beast",
+            "gauntlet_royal",
+            "gauntlet_mithril",
+            "gauntlet_gauntlet",
+            "gauntlet_copper"
+          ]
+        },
+        {
+          "name": "ホブゴブリン前衛",
+          "variantFactorId": "hobgoblin",
+          "equipmentTemplateIds": [
+            "sword_royal",
+            "armor_royal",
+            "armor_mithril",
+            "shield_royal",
+            "armor_armor",
+            "armor_fur_vest",
+            "sword_mithril",
+            "gauntlet_royal",
+            "armor_leather_vest",
+            "armor_tattered_cloth"
+          ]
+        },
+        {
+          "name": "ウルフ弓",
+          "variantFactorId": "wolf",
+          "equipmentTemplateIds": [
+            "bow_royal",
+            "gauntlet_royal",
+            "gauntlet_mithril",
+            "gauntlet_gauntlet",
+            "gauntlet_copper",
+            "armor_royal",
+            "armor_mithril",
+            "armor_armor",
+            "armor_fur_vest",
+            "armor_leather_vest"
+          ]
+        },
+        {
+          "name": "通常シーフ1",
+          "job": "thief",
+          "equipmentTemplateIds": [
+            "bow_royal",
+            "gauntlet_royal",
+            "gauntlet_mithril",
+            "gauntlet_gauntlet",
+            "gauntlet_copper",
+            "armor_royal",
+            "armor_mithril",
+            "armor_armor",
+            "armor_fur_vest",
+            "armor_leather_vest"
+          ]
+        },
+        {
+          "name": "通常シーフ2",
+          "job": "thief",
+          "equipmentTemplateIds": [
+            "bow_royal",
+            "gauntlet_royal",
+            "gauntlet_mithril",
+            "gauntlet_gauntlet",
+            "gauntlet_copper",
+            "armor_royal",
+            "armor_mithril",
+            "armor_armor",
+            "armor_fur_vest",
+            "armor_leather_vest"
+          ]
+        },
+        {
+          "name": "通常クレリック",
+          "job": "cleric",
+          "equipmentTemplateIds": [
+            "rod_royal",
+            "rod_mithril",
+            "armor_royal",
+            "armor_mithril",
+            "shield_royal",
+            "armor_armor",
+            "armor_fur_vest",
+            "armor_leather_vest",
+            "gauntlet_royal",
+            "armor_tattered_cloth"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "C_misformation",
+      "description": "Aと同じ装備・亜種・ジョブだが隊列を反転：1〜3列目に通常後衛、4列目にウルフ弓、5列目にホブゴブリン、6列目にスライム盾。",
+      "party": [
+        {
+          "name": "通常クレリック",
+          "job": "cleric",
+          "equipmentTemplateIds": [
+            "rod_royal",
+            "rod_mithril",
+            "armor_royal",
+            "armor_mithril",
+            "shield_royal",
+            "armor_armor",
+            "armor_fur_vest",
+            "armor_leather_vest",
+            "gauntlet_royal",
+            "armor_tattered_cloth"
+          ]
+        },
+        {
+          "name": "通常シーフ1",
+          "job": "thief",
+          "equipmentTemplateIds": [
+            "bow_royal",
+            "gauntlet_royal",
+            "gauntlet_mithril",
+            "gauntlet_gauntlet",
+            "gauntlet_copper",
+            "armor_royal",
+            "armor_mithril",
+            "armor_armor",
+            "armor_fur_vest",
+            "armor_leather_vest"
+          ]
+        },
+        {
+          "name": "通常シーフ2",
+          "job": "thief",
+          "equipmentTemplateIds": [
+            "bow_royal",
+            "gauntlet_royal",
+            "gauntlet_mithril",
+            "gauntlet_gauntlet",
+            "gauntlet_copper",
+            "armor_royal",
+            "armor_mithril",
+            "armor_armor",
+            "armor_fur_vest",
+            "armor_leather_vest"
+          ]
+        },
+        {
+          "name": "ウルフ弓",
+          "variantFactorId": "wolf",
+          "equipmentTemplateIds": [
+            "bow_royal",
+            "gauntlet_royal",
+            "gauntlet_mithril",
+            "gauntlet_gauntlet",
+            "gauntlet_copper",
+            "armor_royal",
+            "armor_mithril",
+            "armor_armor",
+            "armor_fur_vest",
+            "armor_leather_vest"
+          ]
+        },
+        {
+          "name": "ホブゴブリン前衛",
+          "variantFactorId": "hobgoblin",
+          "equipmentTemplateIds": [
+            "sword_royal",
+            "armor_royal",
+            "armor_mithril",
+            "shield_royal",
+            "armor_armor",
+            "armor_fur_vest",
+            "sword_mithril",
+            "gauntlet_royal",
+            "armor_leather_vest",
+            "armor_tattered_cloth"
+          ]
+        },
+        {
+          "name": "スライム盾",
+          "variantFactorId": "slime",
+          "equipmentTemplateIds": [
+            "armor_royal",
+            "armor_mithril",
+            "armor_armor",
+            "armor_fur_vest",
+            "armor_leather_vest",
+            "armor_tattered_cloth",
+            "shield_royal",
+            "sword_royal",
+            "gauntlet_royal",
+            "shield_mithril"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "F_with_cleric",
+      "description": "亜種3体(slime/hobgoblin/wolf)+通常thief×2+通常cleric。スライムのhp_regen_20は自分しか回復しないので、PT全体回復にcleric(recovery_magic_lv7)を入れる。",
+      "party": [
+        {
+          "name": "スライム盾",
+          "variantFactorId": "slime",
+          "equipmentTemplateIds": [
+            "armor_royal",
+            "armor_mithril",
+            "armor_armor",
+            "armor_fur_vest",
+            "armor_leather_vest",
+            "armor_tattered_cloth",
+            "shield_royal",
+            "sword_royal",
+            "gauntlet_royal",
+            "shield_mithril"
+          ]
+        },
+        {
+          "name": "ホブゴブリン前衛",
+          "variantFactorId": "hobgoblin",
+          "equipmentTemplateIds": [
+            "sword_royal",
+            "armor_royal",
+            "armor_mithril",
+            "shield_royal",
+            "armor_armor",
+            "armor_fur_vest",
+            "sword_mithril",
+            "gauntlet_royal",
+            "armor_leather_vest",
+            "armor_tattered_cloth"
+          ]
+        },
+        {
+          "name": "ウルフ弓",
+          "variantFactorId": "wolf",
+          "equipmentTemplateIds": [
+            "bow_royal",
+            "gauntlet_royal",
+            "gauntlet_mithril",
+            "gauntlet_gauntlet",
+            "gauntlet_copper",
+            "armor_royal",
+            "armor_mithril",
+            "armor_armor",
+            "armor_fur_vest",
+            "armor_leather_vest"
+          ]
+        },
+        {
+          "name": "通常シーフ1",
+          "job": "thief",
+          "equipmentTemplateIds": [
+            "bow_royal",
+            "gauntlet_royal",
+            "gauntlet_mithril",
+            "gauntlet_gauntlet",
+            "gauntlet_copper",
+            "armor_royal",
+            "armor_mithril",
+            "armor_armor",
+            "armor_fur_vest",
+            "armor_leather_vest"
+          ]
+        },
+        {
+          "name": "通常シーフ2",
+          "job": "thief",
+          "equipmentTemplateIds": [
+            "bow_royal",
+            "gauntlet_royal",
+            "gauntlet_mithril",
+            "gauntlet_gauntlet",
+            "gauntlet_copper",
+            "armor_royal",
+            "armor_mithril",
+            "armor_armor",
+            "armor_fur_vest",
+            "armor_leather_vest"
+          ]
+        },
+        {
+          "name": "通常クレリック",
+          "job": "cleric",
+          "equipmentTemplateIds": [
+            "rod_royal",
+            "rod_mithril",
+            "armor_royal",
+            "armor_mithril",
+            "shield_royal",
+            "armor_armor",
+            "armor_fur_vest",
+            "armor_leather_vest",
+            "gauntlet_royal",
+            "armor_tattered_cloth"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "G_jobs_only",
+      "description": "亜種なし、ジョブのみのバランス構成: ガード/ウォリアー/シーフ×2/メイジ/クレリック。ウォリアーは2列目で後列火力+50%(inspire)。亜種シナジー無しの「素のジョブPT」性能を測定。",
+      "party": [
+        {
+          "name": "ゴブリンガード",
+          "job": "guard",
+          "equipmentTemplateIds": [
+            "armor_royal",
+            "armor_mithril",
+            "armor_armor",
+            "armor_fur_vest",
+            "armor_leather_vest",
+            "armor_tattered_cloth",
+            "shield_royal",
+            "sword_royal",
+            "gauntlet_royal",
+            "shield_mithril"
+          ]
+        },
+        {
+          "name": "ゴブリンウォリアー",
+          "job": "warrior",
+          "equipmentTemplateIds": [
+            "sword_royal",
+            "armor_royal",
+            "armor_mithril",
+            "shield_royal",
+            "armor_armor",
+            "armor_fur_vest",
+            "sword_mithril",
+            "gauntlet_royal",
+            "armor_leather_vest",
+            "armor_tattered_cloth"
+          ]
+        },
+        {
+          "name": "ゴブリンシーフ1",
+          "job": "thief",
+          "equipmentTemplateIds": [
+            "bow_royal",
+            "gauntlet_royal",
+            "gauntlet_mithril",
+            "gauntlet_gauntlet",
+            "gauntlet_copper",
+            "armor_royal",
+            "armor_mithril",
+            "armor_armor",
+            "armor_fur_vest",
+            "armor_leather_vest"
+          ]
+        },
+        {
+          "name": "ゴブリンシーフ2",
+          "job": "thief",
+          "equipmentTemplateIds": [
+            "bow_royal",
+            "gauntlet_royal",
+            "gauntlet_mithril",
+            "gauntlet_gauntlet",
+            "gauntlet_copper",
+            "armor_royal",
+            "armor_mithril",
+            "armor_armor",
+            "armor_fur_vest",
+            "armor_leather_vest"
+          ]
+        },
+        {
+          "name": "ゴブリンメイジ",
+          "job": "mage",
+          "equipmentTemplateIds": [
+            "wand_royal",
+            "armor_royal",
+            "armor_mithril",
+            "shield_royal",
+            "armor_armor",
+            "wand_mithril",
+            "wand_wand",
+            "armor_fur_vest",
+            "armor_leather_vest",
+            "gauntlet_royal"
+          ]
+        },
+        {
+          "name": "ゴブリンクレリック",
+          "job": "cleric",
+          "equipmentTemplateIds": [
+            "rod_royal",
+            "rod_mithril",
+            "armor_royal",
+            "armor_mithril",
+            "shield_royal",
+            "armor_armor",
+            "armor_fur_vest",
+            "armor_leather_vest",
+            "gauntlet_royal",
+            "armor_tattered_cloth"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "H_no_mage",
+      "description": "亜種なし、メイジ無し: ガード/ウォリアー/シーフ×3/クレリック。物理火力(range)に振り切った構成。魔法ダメージ無しで物理だけで殴る。",
+      "party": [
+        {
+          "name": "ゴブリンガード",
+          "job": "guard",
+          "equipmentTemplateIds": [
+            "armor_royal",
+            "armor_mithril",
+            "armor_armor",
+            "armor_fur_vest",
+            "armor_leather_vest",
+            "armor_tattered_cloth",
+            "shield_royal",
+            "sword_royal",
+            "gauntlet_royal",
+            "shield_mithril"
+          ]
+        },
+        {
+          "name": "ゴブリンウォリアー",
+          "job": "warrior",
+          "equipmentTemplateIds": [
+            "sword_royal",
+            "armor_royal",
+            "armor_mithril",
+            "shield_royal",
+            "armor_armor",
+            "armor_fur_vest",
+            "sword_mithril",
+            "gauntlet_royal",
+            "armor_leather_vest",
+            "armor_tattered_cloth"
+          ]
+        },
+        {
+          "name": "ゴブリンシーフ1",
+          "job": "thief",
+          "equipmentTemplateIds": [
+            "bow_royal",
+            "gauntlet_royal",
+            "gauntlet_mithril",
+            "gauntlet_gauntlet",
+            "gauntlet_copper",
+            "armor_royal",
+            "armor_mithril",
+            "armor_armor",
+            "armor_fur_vest",
+            "armor_leather_vest"
+          ]
+        },
+        {
+          "name": "ゴブリンシーフ2",
+          "job": "thief",
+          "equipmentTemplateIds": [
+            "bow_royal",
+            "gauntlet_royal",
+            "gauntlet_mithril",
+            "gauntlet_gauntlet",
+            "gauntlet_copper",
+            "armor_royal",
+            "armor_mithril",
+            "armor_armor",
+            "armor_fur_vest",
+            "armor_leather_vest"
+          ]
+        },
+        {
+          "name": "ゴブリンシーフ3",
+          "job": "thief",
+          "equipmentTemplateIds": [
+            "bow_royal",
+            "gauntlet_royal",
+            "gauntlet_mithril",
+            "gauntlet_gauntlet",
+            "gauntlet_copper",
+            "armor_royal",
+            "armor_mithril",
+            "armor_armor",
+            "armor_fur_vest",
+            "armor_leather_vest"
+          ]
+        },
+        {
+          "name": "ゴブリンクレリック",
+          "job": "cleric",
+          "equipmentTemplateIds": [
+            "rod_royal",
+            "rod_mithril",
+            "armor_royal",
+            "armor_mithril",
+            "shield_royal",
+            "armor_armor",
+            "armor_fur_vest",
+            "armor_leather_vest",
+            "gauntlet_royal",
+            "armor_tattered_cloth"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "E_brute_force",
+      "description": "全員通常ゴブリン（亜種なし・ジョブなし）。rank0のショップ最低装備のみ。完全に無対策。レベルだけで殴る。",
+      "party": [
+        {
+          "name": "ゴブリン1",
+          "equipmentTemplateIds": [
+            "sword_cypress_stick",
+            "shield_pot_lid",
+            "sword_club",
+            "gauntlet_cloth_gloves"
+          ]
+        },
+        {
+          "name": "ゴブリン2",
+          "equipmentTemplateIds": [
+            "sword_cypress_stick",
+            "shield_pot_lid",
+            "sword_club",
+            "gauntlet_cloth_gloves"
+          ]
+        },
+        {
+          "name": "ゴブリン3",
+          "equipmentTemplateIds": [
+            "bow_slingshot",
+            "gauntlet_cloth_gloves",
+            "gauntlet_leather"
+          ]
+        },
+        {
+          "name": "ゴブリン4",
+          "equipmentTemplateIds": [
+            "bow_slingshot",
+            "gauntlet_cloth_gloves",
+            "gauntlet_leather"
+          ]
+        },
+        {
+          "name": "ゴブリン5",
+          "equipmentTemplateIds": [
+            "bow_slingshot",
+            "gauntlet_cloth_gloves",
+            "gauntlet_leather"
+          ]
+        },
+        {
+          "name": "ゴブリン6",
+          "equipmentTemplateIds": [
+            "bow_slingshot",
+            "gauntlet_cloth_gloves",
+            "gauntlet_leather"
+          ]
+        }
+      ]
+    }
+  ]
+}

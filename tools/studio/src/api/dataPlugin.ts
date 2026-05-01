@@ -7,6 +7,7 @@ import vm from 'node:vm'
 interface Options {
   appSrc: string
   dataDir: string
+  scenariosDir: string
 }
 
 interface DungeonSummary {
@@ -124,6 +125,7 @@ export function dataApiPlugin(options: Options): Plugin {
   const equipmentPoolFile = path.join(options.appSrc, 'shared', 'data', 'equipmentPool.json')
   const presetsFile = path.join(options.dataDir, 'party-presets.json')
   const libraryFile = path.join(options.dataDir, 'character-library.json')
+  const scenariosDir = options.scenariosDir
 
   return {
     name: 'studio-data-api',
@@ -260,6 +262,39 @@ export function dataApiPlugin(options: Options): Plugin {
         } catch (err) {
           const message = err instanceof Error ? err.message : 'Unknown error'
           return json(res, 500, { error: message })
+        }
+      })
+
+      server.middlewares.use('/api/balance-scenarios', async (req, res) => {
+        try {
+          const url = new URL(req.url ?? '/', 'http://localhost')
+          const segments = url.pathname.split('/').filter(Boolean)
+
+          if (segments.length === 0) {
+            if (req.method === 'GET') {
+              return json(res, 200, await listBalanceScenarios(scenariosDir))
+            }
+            return json(res, 405, { error: 'Method not allowed' })
+          }
+
+          const scenarioId = segments[0]
+          if (!isSafeId(scenarioId)) {
+            return json(res, 400, { error: 'Invalid scenarioId' })
+          }
+
+          if (req.method === 'GET') {
+            return json(res, 200, await readBalanceScenario(scenariosDir, scenarioId))
+          }
+          if (req.method === 'PUT') {
+            const body = await readBody(req)
+            await writeBalanceScenario(scenariosDir, scenarioId, body)
+            return json(res, 200, { ok: true })
+          }
+          return json(res, 405, { error: 'Method not allowed' })
+        } catch (err) {
+          const message = err instanceof Error ? err.message : 'Unknown error'
+          const status = message.startsWith('NOT_FOUND') ? 404 : 500
+          return json(res, status, { error: message })
         }
       })
 
@@ -569,6 +604,79 @@ async function writeEquipmentPool(filePath: string, body: unknown): Promise<void
 async function readJson(filePath: string): Promise<any> {
   const raw = await fs.readFile(filePath, 'utf8')
   return JSON.parse(raw)
+}
+
+interface BalanceScenarioSummary {
+  scenarioId: string
+  areaId: string
+  description?: string
+  iterations?: number
+  levelRange?: { min: number; max: number; step?: number }
+  loadoutCount: number
+}
+
+async function listBalanceScenarios(scenariosDir: string): Promise<BalanceScenarioSummary[]> {
+  let entries: string[]
+  try {
+    entries = await fs.readdir(scenariosDir)
+  } catch (err) {
+    if ((err as NodeJS.ErrnoException).code === 'ENOENT') return []
+    throw err
+  }
+  const summaries: BalanceScenarioSummary[] = []
+  for (const entry of entries) {
+    if (!entry.endsWith('.json')) continue
+    const scenarioId = entry.slice(0, -'.json'.length)
+    try {
+      const raw = await readJson(path.join(scenariosDir, entry))
+      summaries.push({
+        scenarioId,
+        areaId: typeof raw?.areaId === 'string' ? raw.areaId : scenarioId,
+        description: typeof raw?.description === 'string' ? raw.description : undefined,
+        iterations: typeof raw?.iterations === 'number' ? raw.iterations : undefined,
+        levelRange:
+          raw?.levelRange && typeof raw.levelRange === 'object'
+            ? raw.levelRange
+            : undefined,
+        loadoutCount: Array.isArray(raw?.loadouts) ? raw.loadouts.length : 0,
+      })
+    } catch {
+      // skip broken files silently
+    }
+  }
+  summaries.sort((a, b) => a.scenarioId.localeCompare(b.scenarioId))
+  return summaries
+}
+
+async function readBalanceScenario(scenariosDir: string, scenarioId: string): Promise<unknown> {
+  const filePath = path.join(scenariosDir, `${scenarioId}.json`)
+  try {
+    return await readJson(filePath)
+  } catch (err) {
+    if ((err as NodeJS.ErrnoException).code === 'ENOENT') {
+      throw new Error(`NOT_FOUND: scenario ${scenarioId}`)
+    }
+    throw err
+  }
+}
+
+async function writeBalanceScenario(
+  scenariosDir: string,
+  scenarioId: string,
+  body: unknown,
+): Promise<void> {
+  if (!body || typeof body !== 'object') {
+    throw new Error('Body must be an object')
+  }
+  const record = body as Record<string, unknown>
+  if (typeof record.areaId !== 'string') {
+    throw new Error('Scenario must have areaId (string)')
+  }
+  if (!Array.isArray(record.loadouts)) {
+    throw new Error('Scenario must have loadouts (array)')
+  }
+  await fs.mkdir(scenariosDir, { recursive: true })
+  await writeJson(path.join(scenariosDir, `${scenarioId}.json`), body)
 }
 
 async function writeJson(filePath: string, value: unknown): Promise<void> {

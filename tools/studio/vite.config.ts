@@ -8,9 +8,13 @@ import { dataApiPlugin } from './src/api/dataPlugin'
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const APP_SRC = path.resolve(__dirname, '../../goblin_native/src')
 const DATA_DIR = path.resolve(__dirname, 'data')
+const SCENARIOS_DIR = path.resolve(__dirname, '../../goblin_native/scripts/balance/scenarios')
 
 export default defineConfig({
-  plugins: [react(), dataApiPlugin({ appSrc: APP_SRC, dataDir: DATA_DIR })],
+  plugins: [
+    react(),
+    dataApiPlugin({ appSrc: APP_SRC, dataDir: DATA_DIR, scenariosDir: SCENARIOS_DIR }),
+  ],
   resolve: {
     alias: {
       '@studio': path.resolve(__dirname, 'src'),

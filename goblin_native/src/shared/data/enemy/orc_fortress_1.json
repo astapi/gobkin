@@ -6,23 +6,29 @@
       "raceTags": [
         "orc"
       ],
-      "level": 13,
-      "hp": 520,
-      "atk": 115,
-      "def": 24,
-      "attackCount": 1,
-      "accuracy": 245,
-      "evasion": 13,
-      "exp": 58,
-      "gold": 44,
-      "magicDef": 29,
+      "level": 48,
+      "hp": 1216,
+      "atk": 336,
+      "def": 80,
+      "magicDef": 58,
+      "attackCount": 5,
+      "accuracy": 560,
+      "evasion": 46,
+      "exp": 67,
+      "gold": 58,
+      "skills": [
+        {
+          "id": "physical_reduction_10",
+          "physicalDamageReductionPercent": 10
+        }
+      ],
       "baseAttributes": {
-        "power": 29,
-        "wisdom": 29,
-        "spirit": 7,
-        "vitality": 12,
-        "agility": 7,
-        "luck": 3
+        "power": 18,
+        "wisdom": 18,
+        "spirit": 9,
+        "vitality": 22,
+        "agility": 8,
+        "luck": 5
       }
     },
     {
@@ -31,23 +37,29 @@
       "raceTags": [
         "orc"
       ],
-      "level": 13,
-      "hp": 360,
-      "atk": 98,
-      "def": 16,
-      "attackCount": 1,
-      "accuracy": 275,
-      "evasion": 18,
-      "exp": 54,
-      "gold": 42,
-      "magicDef": 14,
+      "level": 46,
+      "hp": 966,
+      "atk": 230,
+      "def": 15,
+      "magicDef": 23,
+      "attackCount": 4,
+      "accuracy": 560,
+      "evasion": 46,
+      "exp": 52,
+      "gold": 43,
+      "skills": [
+        {
+          "id": "physical_reduction_10",
+          "physicalDamageReductionPercent": 10
+        }
+      ],
       "baseAttributes": {
-        "power": 25,
-        "wisdom": 25,
+        "power": 18,
+        "wisdom": 18,
         "spirit": 4,
-        "vitality": 8,
-        "agility": 10,
-        "luck": 5
+        "vitality": 18,
+        "agility": 12,
+        "luck": 6
       }
     },
     {
@@ -56,23 +68,29 @@
       "raceTags": [
         "troll"
       ],
-      "level": 15,
-      "hp": 680,
-      "atk": 132,
-      "def": 28,
-      "attackCount": 1,
-      "accuracy": 250,
-      "evasion": 10,
-      "exp": 72,
-      "gold": 56,
-      "magicDef": 34,
+      "level": 50,
+      "hp": 1267,
+      "atk": 350,
+      "def": 83,
+      "magicDef": 60,
+      "attackCount": 5,
+      "accuracy": 560,
+      "evasion": 46,
+      "exp": 70,
+      "gold": 60,
+      "skills": [
+        {
+          "id": "physical_reduction_10",
+          "physicalDamageReductionPercent": 10
+        }
+      ],
       "baseAttributes": {
-        "power": 33,
-        "wisdom": 33,
+        "power": 18,
+        "wisdom": 18,
         "spirit": 9,
-        "vitality": 14,
-        "agility": 4,
-        "luck": 3
+        "vitality": 22,
+        "agility": 8,
+        "luck": 5
       }
     },
     {
@@ -81,29 +99,29 @@
       "raceTags": [
         "orc"
       ],
-      "level": 18,
-      "hp": 980,
-      "atk": 150,
-      "def": 36,
-      "attackCount": 2,
-      "accuracy": 305,
-      "evasion": 16,
-      "exp": 260,
-      "gold": 220,
-      "factorDrops": [
+      "level": 60,
+      "hp": 2055,
+      "atk": 525,
+      "def": 150,
+      "magicDef": 68,
+      "attackCount": 7,
+      "accuracy": 640,
+      "evasion": 52,
+      "exp": 300,
+      "gold": 240,
+      "skills": [
         {
-          "factorId": "orc",
-          "probability": 1
+          "id": "physical_reduction_10",
+          "physicalDamageReductionPercent": 10
         }
       ],
-      "magicDef": 43,
       "baseAttributes": {
-        "power": 38,
-        "wisdom": 38,
+        "power": 23,
+        "wisdom": 23,
         "spirit": 11,
-        "vitality": 18,
+        "vitality": 27,
         "agility": 9,
-        "luck": 4
+        "luck": 5
       }
     }
   ],
@@ -115,7 +133,12 @@
       ],
       "enemies": [
         [
+          "ORF001",
           "ORF001"
+        ],
+        [
+          "ORF002",
+          "ORF002"
         ],
         [
           "ORF002",
@@ -134,6 +157,14 @@
           "ORF001"
         ],
         [
+          "ORF001"
+        ],
+        [
+          "ORF002",
+          "ORF002"
+        ],
+        [
+          "ORF002",
           "ORF002"
         ]
       ]
@@ -141,14 +172,20 @@
     {
       "id": "OF1_003",
       "floors": [
-        2
+        1
       ],
       "enemies": [
         [
-          "ORF003"
+          "ORF001",
+          "ORF001"
         ],
         [
-          "ORF001",
+          "ORF002",
+          "ORF002",
+          "ORF002"
+        ],
+        [
+          "ORF002",
           "ORF002"
         ]
       ]
@@ -160,8 +197,15 @@
       ],
       "enemies": [
         [
-          "ORF003",
+          "ORF003"
+        ],
+        [
+          "ORF001",
           "ORF001"
+        ],
+        [
+          "ORF002",
+          "ORF002"
         ],
         [
           "ORF002",
@@ -172,6 +216,78 @@
     {
       "id": "OF1_005",
       "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "ORF003",
+          "ORF001"
+        ],
+        [
+          "ORF001",
+          "ORF001"
+        ],
+        [
+          "ORF002",
+          "ORF002"
+        ],
+        [
+          "ORF002",
+          "ORF002"
+        ]
+      ]
+    },
+    {
+      "id": "OF1_006",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "ORF003"
+        ],
+        [
+          "ORF001",
+          "ORF001",
+          "ORF001"
+        ],
+        [
+          "ORF002",
+          "ORF002"
+        ],
+        [
+          "ORF002",
+          "ORF002"
+        ]
+      ]
+    },
+    {
+      "id": "OF1_007",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "ORF003",
+          "ORF003"
+        ],
+        [
+          "ORF001",
+          "ORF001"
+        ],
+        [
+          "ORF002",
+          "ORF002"
+        ],
+        [
+          "ORF002",
+          "ORF002"
+        ]
+      ]
+    },
+    {
+      "id": "OF1_008",
+      "floors": [
         3
       ],
       "enemies": [
@@ -183,6 +299,14 @@
           "ORF001"
         ],
         [
+          "ORF001"
+        ],
+        [
+          "ORF002",
+          "ORF002"
+        ],
+        [
+          "ORF002",
           "ORF002"
         ]
       ]
@@ -192,19 +316,28 @@
       "floors": [
         3
       ],
+      "isBoss": true,
       "enemies": [
         [
           "B_ORC_FORTRESS"
         ],
         [
+          "ORF003",
           "ORF003"
         ],
         [
           "ORF001",
+          "ORF001"
+        ],
+        [
+          "ORF002",
+          "ORF002"
+        ],
+        [
+          "ORF002",
           "ORF002"
         ]
-      ],
-      "isBoss": true
+      ]
     }
   ]
 }

@@ -12,6 +12,7 @@
     "sim:balance:club": "node scripts/simulate-dungeon-balance-club.js",
     "sim:balance:loadout": "node scripts/simulate-dungeon-balance-loadout.js",
     "sim:subjugation:optimized": "node scripts/simulate-subjugation-optimized.js",
+    "sim:balance:reference": "node scripts/simulate-balance-reference.js",
     "deploy:ios": "./scripts/deploy-ios.sh",
     "deploy:ios:quick": "./scripts/deploy-ios.sh --no-clean"
   },
