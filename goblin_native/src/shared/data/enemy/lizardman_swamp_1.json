@@ -6,25 +6,30 @@
       "raceTags": [
         "lizardman"
       ],
-      "level": 50,
-      "hp": 1540,
-      "atk": 1000,
-      "def": 160,
-      "attackCount": 4,
-      "accuracy": 430,
-      "evasion": 120,
-      "exp": 55,
-      "gold": 48,
-      "magicDef": 190,
+      "level": 36,
+      "hp": 912,
+      "atk": 240,
+      "def": 48,
+      "magicDef": 32,
+      "attackCount": 5,
+      "accuracy": 600,
+      "evasion": 46,
+      "exp": 38,
+      "gold": 31,
+      "skills": [
+        {
+          "id": "physical_reduction_10",
+          "physicalDamageReductionPercent": 10
+        }
+      ],
       "baseAttributes": {
-        "power": 23,
-        "wisdom": 8,
-        "spirit": 9,
-        "vitality": 23,
-        "agility": 15,
-        "luck": 15
-      },
-      "physicalResistancePercent": 15
+        "power": 18,
+        "wisdom": 18,
+        "spirit": 7,
+        "vitality": 22,
+        "agility": 10,
+        "luck": 5
+      }
     },
     {
       "id": "LIZ002",
@@ -32,100 +37,29 @@
       "raceTags": [
         "lizardman"
       ],
-      "level": 48,
-      "hp": 770,
-      "atk": 32,
+      "level": 36,
+      "hp": 756,
+      "atk": 180,
       "def": 12,
-      "attackCount": 1,
-      "accuracy": 445,
-      "evasion": 26,
-      "exp": 60,
-      "gold": 52,
-      "magicDef": 14,
+      "magicDef": 18,
+      "attackCount": 5,
+      "accuracy": 620,
+      "evasion": 60,
+      "exp": 41,
+      "gold": 34,
+      "skills": [
+        {
+          "id": "physical_reduction_10",
+          "physicalDamageReductionPercent": 10
+        }
+      ],
       "baseAttributes": {
-        "power": 13,
-        "wisdom": 8,
+        "power": 18,
+        "wisdom": 18,
         "spirit": 4,
-        "vitality": 12,
-        "agility": 20,
-        "luck": 15
-      },
-      "physicalResistancePercent": 5
-    },
-    {
-      "id": "LIZ003",
-      "name": "沼の呪術師",
-      "raceTags": [
-        "lizardman"
-      ],
-      "level": 19,
-      "hp": 65,
-      "atk": 37,
-      "def": 10,
-      "attackCount": 1,
-      "accuracy": 460,
-      "evasion": 27,
-      "exp": 65,
-      "gold": 56,
-      "magicDef": 12,
-      "baseAttributes": {
-        "power": 9,
-        "wisdom": 9,
-        "spirit": 3,
-        "vitality": 5,
-        "agility": 8,
-        "luck": 7
-      }
-    },
-    {
-      "id": "LIZ004",
-      "name": "重装リザードマン",
-      "raceTags": [
-        "lizardman"
-      ],
-      "level": 55,
-      "hp": 1880,
-      "atk": 1200,
-      "def": 500,
-      "attackCount": 2,
-      "accuracy": 475,
-      "evasion": 24,
-      "exp": 68,
-      "gold": 60,
-      "magicDef": 31,
-      "baseAttributes": {
-        "power": 25,
-        "wisdom": 8,
-        "spirit": 8,
-        "vitality": 25,
-        "agility": 5,
-        "luck": 8
-      },
-      "physicalResistancePercent": 30
-    },
-    {
-      "id": "LIZ005",
-      "name": "沼の暗殺者",
-      "raceTags": [
-        "lizardman"
-      ],
-      "level": 19,
-      "hp": 70,
-      "atk": 34,
-      "def": 10,
-      "attackCount": 2,
-      "accuracy": 460,
-      "evasion": 29,
-      "exp": 62,
-      "gold": 54,
-      "magicDef": 12,
-      "baseAttributes": {
-        "power": 9,
-        "wisdom": 9,
-        "spirit": 3,
-        "vitality": 5,
-        "agility": 13,
-        "luck": 7
+        "vitality": 18,
+        "agility": 12,
+        "luck": 6
       }
     }
   ],
@@ -137,8 +71,8 @@
       ],
       "enemies": [
         [
-          "LIZ004",
-          "LIZ004"
+          "LIZ001",
+          "LIZ001"
         ],
         [
           "LIZ001",
@@ -154,8 +88,8 @@
       ],
       "enemies": [
         [
-          "LIZ004",
-          "LIZ004"
+          "LIZ001",
+          "LIZ001"
         ],
         [
           "LIZ001",
@@ -171,9 +105,9 @@
       ],
       "enemies": [
         [
-          "LIZ004",
-          "LIZ004",
-          "LIZ004"
+          "LIZ001",
+          "LIZ001",
+          "LIZ001"
         ],
         [
           "LIZ001",
@@ -190,9 +124,9 @@
       ],
       "enemies": [
         [
-          "LIZ004",
-          "LIZ004",
-          "LIZ004"
+          "LIZ001",
+          "LIZ001",
+          "LIZ001"
         ],
         [
           "LIZ001",

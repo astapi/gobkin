@@ -2,127 +2,64 @@
   "enemies": [
     {
       "id": "LIZ001",
-      "name": "沼の戦士",
+      "name": "リザードマン",
       "raceTags": [
         "lizardman"
       ],
-      "level": 17,
-      "hp": 80,
-      "atk": 27,
-      "def": 16,
-      "attackCount": 1,
-      "accuracy": 430,
-      "evasion": 25,
-      "exp": 55,
-      "gold": 48,
-      "magicDef": 19,
+      "level": 42,
+      "hp": 1064,
+      "atk": 280,
+      "def": 56,
+      "magicDef": 38,
+      "attackCount": 5,
+      "accuracy": 630,
+      "evasion": 46,
+      "exp": 45,
+      "gold": 36,
+      "skills": [
+        {
+          "id": "physical_reduction_10",
+          "physicalDamageReductionPercent": 10
+        }
+      ],
       "baseAttributes": {
-        "power": 7,
-        "wisdom": 7,
-        "spirit": 5,
-        "vitality": 8,
-        "agility": 7,
-        "luck": 6
+        "power": 18,
+        "wisdom": 18,
+        "spirit": 7,
+        "vitality": 22,
+        "agility": 10,
+        "luck": 5
       }
     },
     {
       "id": "LIZ002",
-      "name": "毒牙兵",
+      "name": "アサシンリザード",
       "raceTags": [
         "lizardman"
       ],
-      "level": 18,
-      "hp": 75,
-      "atk": 32,
-      "def": 12,
-      "attackCount": 1,
-      "accuracy": 445,
-      "evasion": 26,
-      "exp": 60,
-      "gold": 52,
-      "magicDef": 14,
+      "level": 42,
+      "hp": 882,
+      "atk": 210,
+      "def": 14,
+      "magicDef": 21,
+      "attackCount": 5,
+      "accuracy": 650,
+      "evasion": 68,
+      "exp": 48,
+      "gold": 39,
+      "skills": [
+        {
+          "id": "physical_reduction_10",
+          "physicalDamageReductionPercent": 10
+        }
+      ],
       "baseAttributes": {
-        "power": 8,
-        "wisdom": 8,
+        "power": 18,
+        "wisdom": 18,
         "spirit": 4,
-        "vitality": 6,
-        "agility": 9,
-        "luck": 7
-      }
-    },
-    {
-      "id": "LIZ003",
-      "name": "沼の呪術師",
-      "raceTags": [
-        "lizardman"
-      ],
-      "level": 19,
-      "hp": 65,
-      "atk": 37,
-      "def": 10,
-      "attackCount": 1,
-      "accuracy": 460,
-      "evasion": 27,
-      "exp": 65,
-      "gold": 56,
-      "magicDef": 12,
-      "baseAttributes": {
-        "power": 9,
-        "wisdom": 9,
-        "spirit": 3,
-        "vitality": 5,
-        "agility": 8,
-        "luck": 7
-      }
-    },
-    {
-      "id": "LIZ004",
-      "name": "鱗の重装兵",
-      "raceTags": [
-        "lizardman"
-      ],
-      "level": 20,
-      "hp": 130,
-      "atk": 30,
-      "def": 26,
-      "attackCount": 1,
-      "accuracy": 475,
-      "evasion": 24,
-      "exp": 68,
-      "gold": 60,
-      "magicDef": 31,
-      "baseAttributes": {
-        "power": 8,
-        "wisdom": 8,
-        "spirit": 8,
-        "vitality": 13,
-        "agility": 4,
+        "vitality": 18,
+        "agility": 12,
         "luck": 6
-      }
-    },
-    {
-      "id": "LIZ005",
-      "name": "沼の暗殺者",
-      "raceTags": [
-        "lizardman"
-      ],
-      "level": 19,
-      "hp": 70,
-      "atk": 34,
-      "def": 10,
-      "attackCount": 2,
-      "accuracy": 460,
-      "evasion": 29,
-      "exp": 62,
-      "gold": 54,
-      "magicDef": 12,
-      "baseAttributes": {
-        "power": 9,
-        "wisdom": 9,
-        "spirit": 3,
-        "vitality": 5,
-        "agility": 13,
-        "luck": 7
       }
     }
   ],
@@ -135,8 +72,15 @@
       "enemies": [
         [
           "LIZ001",
+          "LIZ001"
+        ],
+        [
           "LIZ002",
-          "LIZ003"
+          "LIZ002",
+          "LIZ002"
+        ],
+        [
+          "LIZ002"
         ]
       ]
     },
@@ -147,12 +91,16 @@
       ],
       "enemies": [
         [
-          "LIZ002",
-          "LIZ003"
+          "LIZ001",
+          "LIZ001"
         ],
         [
-          "LIZ001",
-          "LIZ005"
+          "LIZ002",
+          "LIZ002"
+        ],
+        [
+          "LIZ002",
+          "LIZ002"
         ]
       ]
     },
@@ -164,50 +112,57 @@
       "enemies": [
         [
           "LIZ001",
-          "LIZ003",
+          "LIZ001",
+          "LIZ001"
+        ],
+        [
+          "LIZ002",
           "LIZ002"
         ],
         [
-          "LIZ005",
-          "LIZ001"
+          "LIZ002",
+          "LIZ002"
         ]
       ]
     },
     {
       "id": "LS2_004",
       "floors": [
-        1
+        2
       ],
       "enemies": [
         [
-          "LIZ003",
-          "LIZ005"
+          "LIZ001",
+          "LIZ001"
         ],
         [
-          "LIZ001",
           "LIZ002",
-          "LIZ004"
+          "LIZ002"
+        ],
+        [
+          "LIZ002",
+          "LIZ002",
+          "LIZ002"
         ]
       ]
     },
     {
       "id": "LS2_005",
       "floors": [
-        1
+        2
       ],
       "enemies": [
         [
-          "LIZ002",
-          "LIZ003"
-        ],
-        [
-          "LIZ005",
+          "LIZ001",
           "LIZ001"
         ],
         [
-          "LIZ004",
           "LIZ002",
-          "LIZ001"
+          "LIZ002"
+        ],
+        [
+          "LIZ002",
+          "LIZ002"
         ]
       ]
     },
@@ -218,9 +173,18 @@
       ],
       "enemies": [
         [
-          "LIZ004",
+          "LIZ001",
+          "LIZ001",
+          "LIZ001"
+        ],
+        [
           "LIZ002",
-          "LIZ003"
+          "LIZ002"
+        ],
+        [
+          "LIZ002",
+          "LIZ002",
+          "LIZ002"
         ]
       ]
     },
@@ -231,11 +195,16 @@
       ],
       "enemies": [
         [
-          "LIZ003",
-          "LIZ005"
+          "LIZ001",
+          "LIZ001",
+          "LIZ001"
         ],
         [
-          "LIZ004",
+          "LIZ002",
+          "LIZ002"
+        ],
+        [
+          "LIZ002",
           "LIZ002"
         ]
       ]
@@ -243,16 +212,21 @@
     {
       "id": "LS2_008",
       "floors": [
-        2
+        3
       ],
       "enemies": [
         [
-          "LIZ004",
           "LIZ001",
-          "LIZ003"
+          "LIZ001",
+          "LIZ001"
         ],
         [
-          "LIZ005",
+          "LIZ002",
+          "LIZ002",
+          "LIZ002"
+        ],
+        [
+          "LIZ002",
           "LIZ002"
         ]
       ]
@@ -260,40 +234,47 @@
     {
       "id": "LS2_009",
       "floors": [
-        2
+        3
       ],
       "enemies": [
         [
-          "LIZ004",
-          "LIZ003",
-          "LIZ005"
+          "LIZ001",
+          "LIZ001"
+        ],
+        [
+          "LIZ001"
         ],
         [
           "LIZ002",
-          "LIZ001",
-          "LIZ005"
+          "LIZ002",
+          "LIZ002"
+        ],
+        [
+          "LIZ002",
+          "LIZ002"
         ]
       ]
     },
     {
       "id": "LS2_010",
       "floors": [
-        2
+        3
       ],
       "enemies": [
         [
-          "LIZ004",
-          "LIZ003"
-        ],
-        [
-          "LIZ005",
-          "LIZ002",
+          "LIZ001",
+          "LIZ001",
           "LIZ001"
         ],
         [
-          "LIZ004",
-          "LIZ005",
-          "LIZ003"
+          "LIZ002",
+          "LIZ002",
+          "LIZ002"
+        ],
+        [
+          "LIZ002",
+          "LIZ002",
+          "LIZ002"
         ]
       ]
     }

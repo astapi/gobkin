@@ -10,6 +10,7 @@ import { GoblinDataPage } from './pages/GoblinDataPage'
 import { SkillCatalogPage } from './pages/SkillCatalogPage'
 import { EquipmentPoolPage } from './pages/EquipmentPoolPage'
 import { DungeonUnlockFlowPage } from './pages/DungeonUnlockFlowPage'
+import { BalanceReferencePage } from './pages/BalanceReferencePage'
 import { PartyStoreProvider } from './stores/partyStore'
 
 export function App() {
@@ -29,6 +30,7 @@ export function App() {
             <Link to="/skills">Skill</Link>
             <Link to="/party">PT編成</Link>
             <Link to="/simulate">シミュレーション</Link>
+            <Link to="/balance-reference">バランス基準</Link>
           </nav>
         </header>
         <main className="app-main">
@@ -44,6 +46,7 @@ export function App() {
             <Route path="/skills" element={<SkillCatalogPage />} />
             <Route path="/party" element={<PartyPage />} />
             <Route path="/simulate" element={<SimulatePage />} />
+            <Route path="/balance-reference" element={<BalanceReferencePage />} />
           </Routes>
         </main>
       </div>

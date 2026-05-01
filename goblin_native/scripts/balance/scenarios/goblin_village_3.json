@@ -1,0 +1,315 @@
+{
+  "$schema": "balance-reference-scenario-v1",
+  "areaId": "goblin_village_3",
+  "description": "ゴブリン集落 中枢。ホブゴブリン討伐（推奨Lv 8〜10 / ゴリ押しLv 15〜20 想定）。6人PT・ジョブ無し。亜種(スライム1+ウルフ1)+通常ゴブリン4の現実的な構成。",
+  "iterations": 200,
+  "levelRange": { "min": 5, "max": 25, "step": 1 },
+  "equipmentFilter": {
+    "maxUnlockRank": 1,
+    "maxDropRank": 1
+  },
+  "loadouts": [
+    {
+      "name": "A_optimal",
+      "description": "スライム亜種1体を1列目タンクとして物理軽減%を別種で重ねる。2列目は通常ゴブリンの前衛アタッカー（剣+盾）。3列目にウルフ亜種rangeアタッカー、4〜6列目に通常ゴブリンrangeアタッカー（弓+gauntlet）。",
+      "party": [
+        {
+          "name": "スライム盾",
+          "variantFactorId": "slime",
+          "equipmentTemplateIds": [
+            "armor_fur_vest",
+            "armor_leather_vest",
+            "armor_tattered_cloth",
+            "shield_wooden",
+            "sword_broad",
+            "gauntlet_copper",
+            "sword_copper",
+            "shield_pot_lid"
+          ]
+        },
+        {
+          "name": "通常前衛",
+          "equipmentTemplateIds": [
+            "sword_broad",
+            "armor_leather_vest",
+            "shield_wooden",
+            "armor_tattered_cloth",
+            "sword_copper",
+            "gauntlet_copper",
+            "armor_fur_vest",
+            "shield_pot_lid"
+          ]
+        },
+        {
+          "name": "ウルフ弓",
+          "variantFactorId": "wolf",
+          "equipmentTemplateIds": [
+            "bow_short",
+            "gauntlet_copper",
+            "gauntlet_leather",
+            "gauntlet_cloth_gloves",
+            "armor_fur_vest",
+            "armor_leather_vest",
+            "armor_tattered_cloth"
+          ]
+        },
+        {
+          "name": "通常弓1",
+          "equipmentTemplateIds": [
+            "bow_short",
+            "gauntlet_copper",
+            "gauntlet_leather",
+            "gauntlet_cloth_gloves",
+            "armor_fur_vest",
+            "armor_leather_vest",
+            "armor_tattered_cloth"
+          ]
+        },
+        {
+          "name": "通常弓2",
+          "equipmentTemplateIds": [
+            "bow_short",
+            "gauntlet_copper",
+            "gauntlet_leather",
+            "gauntlet_cloth_gloves",
+            "armor_fur_vest",
+            "armor_leather_vest",
+            "armor_tattered_cloth"
+          ]
+        },
+        {
+          "name": "通常弓3",
+          "equipmentTemplateIds": [
+            "bow_short",
+            "gauntlet_copper",
+            "gauntlet_leather",
+            "gauntlet_cloth_gloves",
+            "armor_fur_vest",
+            "armor_leather_vest",
+            "armor_tattered_cloth"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "B_no_reduction",
+      "description": "Aと同じPT構成（スライム1+ウルフ1+通常4）だが、1列目スライムタンクから物理軽減%装備（armor）を全部外し、shield/sword/gauntletの素値で組む。他はAと同じ。",
+      "party": [
+        {
+          "name": "スライム盾",
+          "variantFactorId": "slime",
+          "equipmentTemplateIds": [
+            "shield_wooden",
+            "shield_pot_lid",
+            "sword_broad",
+            "sword_copper",
+            "sword_club",
+            "gauntlet_copper",
+            "gauntlet_leather",
+            "gauntlet_cloth_gloves"
+          ]
+        },
+        {
+          "name": "通常前衛",
+          "equipmentTemplateIds": [
+            "sword_broad",
+            "armor_leather_vest",
+            "shield_wooden",
+            "armor_tattered_cloth",
+            "sword_copper",
+            "gauntlet_copper",
+            "armor_fur_vest",
+            "shield_pot_lid"
+          ]
+        },
+        {
+          "name": "ウルフ弓",
+          "variantFactorId": "wolf",
+          "equipmentTemplateIds": [
+            "bow_short",
+            "gauntlet_copper",
+            "gauntlet_leather",
+            "gauntlet_cloth_gloves",
+            "armor_fur_vest",
+            "armor_leather_vest",
+            "armor_tattered_cloth"
+          ]
+        },
+        {
+          "name": "通常弓1",
+          "equipmentTemplateIds": [
+            "bow_short",
+            "gauntlet_copper",
+            "gauntlet_leather",
+            "gauntlet_cloth_gloves",
+            "armor_fur_vest",
+            "armor_leather_vest",
+            "armor_tattered_cloth"
+          ]
+        },
+        {
+          "name": "通常弓2",
+          "equipmentTemplateIds": [
+            "bow_short",
+            "gauntlet_copper",
+            "gauntlet_leather",
+            "gauntlet_cloth_gloves",
+            "armor_fur_vest",
+            "armor_leather_vest",
+            "armor_tattered_cloth"
+          ]
+        },
+        {
+          "name": "通常弓3",
+          "equipmentTemplateIds": [
+            "bow_short",
+            "gauntlet_copper",
+            "gauntlet_leather",
+            "gauntlet_cloth_gloves",
+            "armor_fur_vest",
+            "armor_leather_vest",
+            "armor_tattered_cloth"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "C_misformation",
+      "description": "Aと同じ装備・亜種だが隊列を反転：1〜3列目に通常弓、4列目にウルフ弓、5列目に通常前衛、6列目にスライムタンクを配置。低耐久キャラが集中砲火される。",
+      "party": [
+        {
+          "name": "通常弓1",
+          "equipmentTemplateIds": [
+            "bow_short",
+            "gauntlet_copper",
+            "gauntlet_leather",
+            "gauntlet_cloth_gloves",
+            "armor_fur_vest",
+            "armor_leather_vest",
+            "armor_tattered_cloth"
+          ]
+        },
+        {
+          "name": "通常弓2",
+          "equipmentTemplateIds": [
+            "bow_short",
+            "gauntlet_copper",
+            "gauntlet_leather",
+            "gauntlet_cloth_gloves",
+            "armor_fur_vest",
+            "armor_leather_vest",
+            "armor_tattered_cloth"
+          ]
+        },
+        {
+          "name": "通常弓3",
+          "equipmentTemplateIds": [
+            "bow_short",
+            "gauntlet_copper",
+            "gauntlet_leather",
+            "gauntlet_cloth_gloves",
+            "armor_fur_vest",
+            "armor_leather_vest",
+            "armor_tattered_cloth"
+          ]
+        },
+        {
+          "name": "ウルフ弓",
+          "variantFactorId": "wolf",
+          "equipmentTemplateIds": [
+            "bow_short",
+            "gauntlet_copper",
+            "gauntlet_leather",
+            "gauntlet_cloth_gloves",
+            "armor_fur_vest",
+            "armor_leather_vest",
+            "armor_tattered_cloth"
+          ]
+        },
+        {
+          "name": "通常前衛",
+          "equipmentTemplateIds": [
+            "sword_broad",
+            "armor_leather_vest",
+            "shield_wooden",
+            "armor_tattered_cloth",
+            "sword_copper",
+            "gauntlet_copper",
+            "armor_fur_vest",
+            "shield_pot_lid"
+          ]
+        },
+        {
+          "name": "スライム盾",
+          "variantFactorId": "slime",
+          "equipmentTemplateIds": [
+            "armor_fur_vest",
+            "armor_leather_vest",
+            "armor_tattered_cloth",
+            "shield_wooden",
+            "sword_broad",
+            "gauntlet_copper",
+            "sword_copper",
+            "shield_pot_lid"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "E_brute_force",
+      "description": "全員通常ゴブリン（亜種なし）。rank0のショップ最低装備のみ。物理軽減%なし、武器も最低、後衛も最低装備。レベルだけで殴る。",
+      "party": [
+        {
+          "name": "ゴブリン1",
+          "equipmentTemplateIds": [
+            "sword_cypress_stick",
+            "shield_pot_lid",
+            "sword_club",
+            "gauntlet_cloth_gloves"
+          ]
+        },
+        {
+          "name": "ゴブリン2",
+          "equipmentTemplateIds": [
+            "sword_cypress_stick",
+            "shield_pot_lid",
+            "sword_club",
+            "gauntlet_cloth_gloves"
+          ]
+        },
+        {
+          "name": "ゴブリン3",
+          "equipmentTemplateIds": [
+            "bow_slingshot",
+            "gauntlet_cloth_gloves",
+            "gauntlet_leather"
+          ]
+        },
+        {
+          "name": "ゴブリン4",
+          "equipmentTemplateIds": [
+            "bow_slingshot",
+            "gauntlet_cloth_gloves",
+            "gauntlet_leather"
+          ]
+        },
+        {
+          "name": "ゴブリン5",
+          "equipmentTemplateIds": [
+            "bow_slingshot",
+            "gauntlet_cloth_gloves",
+            "gauntlet_leather"
+          ]
+        },
+        {
+          "name": "ゴブリン6",
+          "equipmentTemplateIds": [
+            "bow_slingshot",
+            "gauntlet_cloth_gloves",
+            "gauntlet_leather"
+          ]
+        }
+      ]
+    }
+  ]
+}

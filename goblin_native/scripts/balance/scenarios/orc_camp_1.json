@@ -1,0 +1,604 @@
+{
+  "$schema": "balance-reference-scenario-v1",
+  "areaId": "orc_camp_1",
+  "description": "オーク野営地・前哨。areaLevel=20。敵: オーク兵(Lv14, atk70) / オークブルート(Lv17, atk100)。推奨Lv 22〜24 / ゴリ押しLv 50〜60 想定。装備理解（軽減stack/手数）と隊列が初めて決定的に効くと予想されるエリア。",
+  "iterations": 100,
+  "levelRange": {
+    "min": 10,
+    "max": 60,
+    "step": 2
+  },
+  "equipmentFilter": {
+    "maxUnlockRank": 2,
+    "maxDropRank": 2
+  },
+  "loadouts": [
+    {
+      "name": "A_optimal",
+      "description": "1列目 スライム盾（軽減stack: armor_armor 6% + fur_vest 3% + leather_vest 2% + tattered_cloth 1% = 計12%）。2列目 ホブゴブリン前衛（inspire_150 で後列火力+50%）。3列目 ウルフ弓、4〜6列目 通常弓。装備プール rank≤2.",
+      "party": [
+        {
+          "name": "スライム盾",
+          "variantFactorId": "slime",
+          "equipmentTemplateIds": [
+            "armor_armor",
+            "armor_fur_vest",
+            "armor_leather_vest",
+            "armor_tattered_cloth",
+            "shield_shield",
+            "sword_long",
+            "gauntlet_gauntlet",
+            "shield_wooden"
+          ]
+        },
+        {
+          "name": "ホブゴブリン前衛",
+          "variantFactorId": "hobgoblin",
+          "equipmentTemplateIds": [
+            "sword_long",
+            "armor_armor",
+            "armor_fur_vest",
+            "shield_shield",
+            "armor_leather_vest",
+            "sword_broad",
+            "gauntlet_gauntlet",
+            "armor_tattered_cloth"
+          ]
+        },
+        {
+          "name": "ウルフ弓",
+          "variantFactorId": "wolf",
+          "equipmentTemplateIds": [
+            "bow_long",
+            "gauntlet_gauntlet",
+            "gauntlet_copper",
+            "gauntlet_leather",
+            "gauntlet_cloth_gloves",
+            "armor_armor",
+            "armor_fur_vest",
+            "armor_leather_vest"
+          ]
+        },
+        {
+          "name": "通常弓1",
+          "equipmentTemplateIds": [
+            "bow_long",
+            "gauntlet_gauntlet",
+            "gauntlet_copper",
+            "gauntlet_leather",
+            "gauntlet_cloth_gloves",
+            "armor_armor",
+            "armor_fur_vest",
+            "armor_leather_vest"
+          ]
+        },
+        {
+          "name": "通常弓2",
+          "equipmentTemplateIds": [
+            "bow_long",
+            "gauntlet_gauntlet",
+            "gauntlet_copper",
+            "gauntlet_leather",
+            "gauntlet_cloth_gloves",
+            "armor_armor",
+            "armor_fur_vest",
+            "armor_leather_vest"
+          ]
+        },
+        {
+          "name": "通常弓3",
+          "equipmentTemplateIds": [
+            "bow_long",
+            "gauntlet_gauntlet",
+            "gauntlet_copper",
+            "gauntlet_leather",
+            "gauntlet_cloth_gloves",
+            "armor_armor",
+            "armor_fur_vest",
+            "armor_leather_vest"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "B_no_reduction",
+      "description": "Aと同じPT構成だが、1列目スライム盾から物理軽減%装備（armor）を全部外し、shield/sword/gauntletの素値で組む。他はAと同じ。軽減stackの効きを単独で測定。",
+      "party": [
+        {
+          "name": "スライム盾",
+          "variantFactorId": "slime",
+          "equipmentTemplateIds": [
+            "shield_shield",
+            "shield_wooden",
+            "shield_pot_lid",
+            "sword_long",
+            "sword_broad",
+            "sword_copper",
+            "gauntlet_gauntlet",
+            "gauntlet_copper"
+          ]
+        },
+        {
+          "name": "ホブゴブリン前衛",
+          "variantFactorId": "hobgoblin",
+          "equipmentTemplateIds": [
+            "sword_long",
+            "armor_armor",
+            "armor_fur_vest",
+            "shield_shield",
+            "armor_leather_vest",
+            "sword_broad",
+            "gauntlet_gauntlet",
+            "armor_tattered_cloth"
+          ]
+        },
+        {
+          "name": "ウルフ弓",
+          "variantFactorId": "wolf",
+          "equipmentTemplateIds": [
+            "bow_long",
+            "gauntlet_gauntlet",
+            "gauntlet_copper",
+            "gauntlet_leather",
+            "gauntlet_cloth_gloves",
+            "armor_armor",
+            "armor_fur_vest",
+            "armor_leather_vest"
+          ]
+        },
+        {
+          "name": "通常弓1",
+          "equipmentTemplateIds": [
+            "bow_long",
+            "gauntlet_gauntlet",
+            "gauntlet_copper",
+            "gauntlet_leather",
+            "gauntlet_cloth_gloves",
+            "armor_armor",
+            "armor_fur_vest",
+            "armor_leather_vest"
+          ]
+        },
+        {
+          "name": "通常弓2",
+          "equipmentTemplateIds": [
+            "bow_long",
+            "gauntlet_gauntlet",
+            "gauntlet_copper",
+            "gauntlet_leather",
+            "gauntlet_cloth_gloves",
+            "armor_armor",
+            "armor_fur_vest",
+            "armor_leather_vest"
+          ]
+        },
+        {
+          "name": "通常弓3",
+          "equipmentTemplateIds": [
+            "bow_long",
+            "gauntlet_gauntlet",
+            "gauntlet_copper",
+            "gauntlet_leather",
+            "gauntlet_cloth_gloves",
+            "armor_armor",
+            "armor_fur_vest",
+            "armor_leather_vest"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "C_misformation",
+      "description": "Aと同じ装備・亜種だが隊列を反転：1〜3列目に通常弓、4列目にウルフ弓、5列目にホブゴブリン前衛、6列目にスライム盾。低耐久キャラが集中砲火される。",
+      "party": [
+        {
+          "name": "通常弓1",
+          "equipmentTemplateIds": [
+            "bow_long",
+            "gauntlet_gauntlet",
+            "gauntlet_copper",
+            "gauntlet_leather",
+            "gauntlet_cloth_gloves",
+            "armor_armor",
+            "armor_fur_vest",
+            "armor_leather_vest"
+          ]
+        },
+        {
+          "name": "通常弓2",
+          "equipmentTemplateIds": [
+            "bow_long",
+            "gauntlet_gauntlet",
+            "gauntlet_copper",
+            "gauntlet_leather",
+            "gauntlet_cloth_gloves",
+            "armor_armor",
+            "armor_fur_vest",
+            "armor_leather_vest"
+          ]
+        },
+        {
+          "name": "通常弓3",
+          "equipmentTemplateIds": [
+            "bow_long",
+            "gauntlet_gauntlet",
+            "gauntlet_copper",
+            "gauntlet_leather",
+            "gauntlet_cloth_gloves",
+            "armor_armor",
+            "armor_fur_vest",
+            "armor_leather_vest"
+          ]
+        },
+        {
+          "name": "ウルフ弓",
+          "variantFactorId": "wolf",
+          "equipmentTemplateIds": [
+            "bow_long",
+            "gauntlet_gauntlet",
+            "gauntlet_copper",
+            "gauntlet_leather",
+            "gauntlet_cloth_gloves",
+            "armor_armor",
+            "armor_fur_vest",
+            "armor_leather_vest"
+          ]
+        },
+        {
+          "name": "ホブゴブリン前衛",
+          "variantFactorId": "hobgoblin",
+          "equipmentTemplateIds": [
+            "sword_long",
+            "armor_armor",
+            "armor_fur_vest",
+            "shield_shield",
+            "armor_leather_vest",
+            "sword_broad",
+            "gauntlet_gauntlet",
+            "armor_tattered_cloth"
+          ]
+        },
+        {
+          "name": "スライム盾",
+          "variantFactorId": "slime",
+          "equipmentTemplateIds": [
+            "armor_armor",
+            "armor_fur_vest",
+            "armor_leather_vest",
+            "armor_tattered_cloth",
+            "shield_shield",
+            "sword_long",
+            "gauntlet_gauntlet",
+            "shield_wooden"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "F_with_cleric",
+      "description": "亜種3体(slime/hobgoblin/wolf)+通常thief×2+通常cleric。スライムのhp_regen_20は自分しか回復しないので、PT全体回復にcleric(recovery_magic_lv7)を入れる。",
+      "party": [
+        {
+          "name": "スライム盾",
+          "variantFactorId": "slime",
+          "equipmentTemplateIds": [
+            "armor_armor",
+            "armor_fur_vest",
+            "armor_leather_vest",
+            "armor_tattered_cloth",
+            "shield_shield",
+            "sword_long",
+            "gauntlet_gauntlet",
+            "shield_wooden"
+          ]
+        },
+        {
+          "name": "ホブゴブリン前衛",
+          "variantFactorId": "hobgoblin",
+          "equipmentTemplateIds": [
+            "sword_long",
+            "armor_armor",
+            "armor_fur_vest",
+            "shield_shield",
+            "armor_leather_vest",
+            "sword_broad",
+            "gauntlet_gauntlet",
+            "armor_tattered_cloth"
+          ]
+        },
+        {
+          "name": "ウルフ弓",
+          "variantFactorId": "wolf",
+          "equipmentTemplateIds": [
+            "bow_long",
+            "gauntlet_gauntlet",
+            "gauntlet_copper",
+            "gauntlet_leather",
+            "gauntlet_cloth_gloves",
+            "armor_armor",
+            "armor_fur_vest",
+            "armor_leather_vest"
+          ]
+        },
+        {
+          "name": "通常シーフ1",
+          "job": "thief",
+          "equipmentTemplateIds": [
+            "bow_long",
+            "gauntlet_gauntlet",
+            "gauntlet_copper",
+            "gauntlet_leather",
+            "gauntlet_cloth_gloves",
+            "armor_armor",
+            "armor_fur_vest",
+            "armor_leather_vest"
+          ]
+        },
+        {
+          "name": "通常シーフ2",
+          "job": "thief",
+          "equipmentTemplateIds": [
+            "bow_long",
+            "gauntlet_gauntlet",
+            "gauntlet_copper",
+            "gauntlet_leather",
+            "gauntlet_cloth_gloves",
+            "armor_armor",
+            "armor_fur_vest",
+            "armor_leather_vest"
+          ]
+        },
+        {
+          "name": "通常クレリック",
+          "job": "cleric",
+          "equipmentTemplateIds": [
+            "rod_rod",
+            "armor_armor",
+            "armor_fur_vest",
+            "shield_shield",
+            "armor_leather_vest",
+            "rod_wooden",
+            "gauntlet_gauntlet",
+            "armor_tattered_cloth"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "G_jobs_only",
+      "description": "亜種なし、ジョブのみのバランス構成: ガード/ウォリアー/シーフ×2/メイジ/クレリック。ウォリアーは2列目で後列火力+50%(inspire)。亜種シナジー無しの「素のジョブPT」性能を測定。",
+      "party": [
+        {
+          "name": "ゴブリンガード",
+          "job": "guard",
+          "equipmentTemplateIds": [
+            "armor_armor",
+            "armor_fur_vest",
+            "armor_leather_vest",
+            "armor_tattered_cloth",
+            "shield_shield",
+            "sword_long",
+            "gauntlet_gauntlet",
+            "shield_wooden"
+          ]
+        },
+        {
+          "name": "ゴブリンウォリアー",
+          "job": "warrior",
+          "equipmentTemplateIds": [
+            "sword_long",
+            "armor_armor",
+            "armor_fur_vest",
+            "shield_shield",
+            "armor_leather_vest",
+            "sword_broad",
+            "gauntlet_gauntlet",
+            "armor_tattered_cloth"
+          ]
+        },
+        {
+          "name": "ゴブリンシーフ1",
+          "job": "thief",
+          "equipmentTemplateIds": [
+            "bow_long",
+            "gauntlet_gauntlet",
+            "gauntlet_copper",
+            "gauntlet_leather",
+            "gauntlet_cloth_gloves",
+            "armor_armor",
+            "armor_fur_vest",
+            "armor_leather_vest"
+          ]
+        },
+        {
+          "name": "ゴブリンシーフ2",
+          "job": "thief",
+          "equipmentTemplateIds": [
+            "bow_long",
+            "gauntlet_gauntlet",
+            "gauntlet_copper",
+            "gauntlet_leather",
+            "gauntlet_cloth_gloves",
+            "armor_armor",
+            "armor_fur_vest",
+            "armor_leather_vest"
+          ]
+        },
+        {
+          "name": "ゴブリンメイジ",
+          "job": "mage",
+          "equipmentTemplateIds": [
+            "wand_wand",
+            "armor_armor",
+            "armor_fur_vest",
+            "shield_shield",
+            "armor_leather_vest",
+            "wand_apprentice",
+            "gauntlet_gauntlet",
+            "armor_tattered_cloth"
+          ]
+        },
+        {
+          "name": "ゴブリンクレリック",
+          "job": "cleric",
+          "equipmentTemplateIds": [
+            "rod_rod",
+            "armor_armor",
+            "armor_fur_vest",
+            "shield_shield",
+            "armor_leather_vest",
+            "rod_wooden",
+            "gauntlet_gauntlet",
+            "armor_tattered_cloth"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "H_no_mage",
+      "description": "亜種なし、メイジ無し: ガード/ウォリアー/シーフ×3/クレリック。物理火力(range)に振り切った構成。魔法ダメージ無しで物理だけで殴る。",
+      "party": [
+        {
+          "name": "ゴブリンガード",
+          "job": "guard",
+          "equipmentTemplateIds": [
+            "armor_armor",
+            "armor_fur_vest",
+            "armor_leather_vest",
+            "armor_tattered_cloth",
+            "shield_shield",
+            "sword_long",
+            "gauntlet_gauntlet",
+            "shield_wooden"
+          ]
+        },
+        {
+          "name": "ゴブリンウォリアー",
+          "job": "warrior",
+          "equipmentTemplateIds": [
+            "sword_long",
+            "armor_armor",
+            "armor_fur_vest",
+            "shield_shield",
+            "armor_leather_vest",
+            "sword_broad",
+            "gauntlet_gauntlet",
+            "armor_tattered_cloth"
+          ]
+        },
+        {
+          "name": "ゴブリンシーフ1",
+          "job": "thief",
+          "equipmentTemplateIds": [
+            "bow_long",
+            "gauntlet_gauntlet",
+            "gauntlet_copper",
+            "gauntlet_leather",
+            "gauntlet_cloth_gloves",
+            "armor_armor",
+            "armor_fur_vest",
+            "armor_leather_vest"
+          ]
+        },
+        {
+          "name": "ゴブリンシーフ2",
+          "job": "thief",
+          "equipmentTemplateIds": [
+            "bow_long",
+            "gauntlet_gauntlet",
+            "gauntlet_copper",
+            "gauntlet_leather",
+            "gauntlet_cloth_gloves",
+            "armor_armor",
+            "armor_fur_vest",
+            "armor_leather_vest"
+          ]
+        },
+        {
+          "name": "ゴブリンシーフ3",
+          "job": "thief",
+          "equipmentTemplateIds": [
+            "bow_long",
+            "gauntlet_gauntlet",
+            "gauntlet_copper",
+            "gauntlet_leather",
+            "gauntlet_cloth_gloves",
+            "armor_armor",
+            "armor_fur_vest",
+            "armor_leather_vest"
+          ]
+        },
+        {
+          "name": "ゴブリンクレリック",
+          "job": "cleric",
+          "equipmentTemplateIds": [
+            "rod_rod",
+            "armor_armor",
+            "armor_fur_vest",
+            "shield_shield",
+            "armor_leather_vest",
+            "rod_wooden",
+            "gauntlet_gauntlet",
+            "armor_tattered_cloth"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "E_brute_force",
+      "description": "全員通常ゴブリン（亜種なし）。rank0のショップ最低装備のみ。軽減なし、武器も最低、後衛も最低装備。レベルだけで殴る。",
+      "party": [
+        {
+          "name": "ゴブリン1",
+          "equipmentTemplateIds": [
+            "sword_cypress_stick",
+            "shield_pot_lid",
+            "sword_club",
+            "gauntlet_cloth_gloves"
+          ]
+        },
+        {
+          "name": "ゴブリン2",
+          "equipmentTemplateIds": [
+            "sword_cypress_stick",
+            "shield_pot_lid",
+            "sword_club",
+            "gauntlet_cloth_gloves"
+          ]
+        },
+        {
+          "name": "ゴブリン3",
+          "equipmentTemplateIds": [
+            "bow_slingshot",
+            "gauntlet_cloth_gloves",
+            "gauntlet_leather"
+          ]
+        },
+        {
+          "name": "ゴブリン4",
+          "equipmentTemplateIds": [
+            "bow_slingshot",
+            "gauntlet_cloth_gloves",
+            "gauntlet_leather"
+          ]
+        },
+        {
+          "name": "ゴブリン5",
+          "equipmentTemplateIds": [
+            "bow_slingshot",
+            "gauntlet_cloth_gloves",
+            "gauntlet_leather"
+          ]
+        },
+        {
+          "name": "ゴブリン6",
+          "equipmentTemplateIds": [
+            "bow_slingshot",
+            "gauntlet_cloth_gloves",
+            "gauntlet_leather"
+          ]
+        }
+      ]
+    }
+  ]
+}
