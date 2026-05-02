@@ -6,16 +6,16 @@
       "raceTags": [
         "orc"
       ],
-      "level": 48,
-      "hp": 1400,
-      "atk": 336,
-      "def": 80,
-      "magicDef": 58,
+      "level": 42,
+      "hp": 1064,
+      "atk": 294,
+      "def": 70,
+      "magicDef": 50,
       "attackCount": 5,
       "accuracy": 560,
       "evasion": 46,
-      "exp": 67,
-      "gold": 58,
+      "exp": 59,
+      "gold": 50,
       "skills": [
         {
           "id": "physical_reduction_10",
@@ -44,16 +44,16 @@
       "raceTags": [
         "orc"
       ],
-      "level": 46,
-      "hp": 1090,
-      "atk": 230,
-      "def": 15,
-      "magicDef": 23,
+      "level": 40,
+      "hp": 840,
+      "atk": 200,
+      "def": 13,
+      "magicDef": 20,
       "attackCount": 4,
       "accuracy": 560,
       "evasion": 46,
-      "exp": 52,
-      "gold": 43,
+      "exp": 45,
+      "gold": 37,
       "skills": [
         {
           "id": "physical_reduction_10",
@@ -75,16 +75,16 @@
       "raceTags": [
         "troll"
       ],
-      "level": 50,
-      "hp": 1480,
-      "atk": 350,
-      "def": 83,
-      "magicDef": 60,
+      "level": 44,
+      "hp": 1115,
+      "atk": 308,
+      "def": 73,
+      "magicDef": 53,
       "attackCount": 5,
       "accuracy": 560,
       "evasion": 46,
-      "exp": 70,
-      "gold": 60,
+      "exp": 62,
+      "gold": 53,
       "skills": [
         {
           "id": "physical_reduction_10",
@@ -96,11 +96,11 @@
         }
       ],
       "baseAttributes": {
-        "power": 25,
-        "wisdom": 2,
+        "power": 18,
+        "wisdom": 18,
         "spirit": 9,
-        "vitality": 25,
-        "agility": 5,
+        "vitality": 22,
+        "agility": 8,
         "luck": 5
       }
     },
@@ -110,16 +110,16 @@
       "raceTags": [
         "orc"
       ],
-      "level": 60,
-      "hp": 2260,
-      "atk": 525,
-      "def": 150,
-      "magicDef": 68,
+      "level": 54,
+      "hp": 1850,
+      "atk": 473,
+      "def": 135,
+      "magicDef": 61,
       "attackCount": 7,
       "accuracy": 640,
       "evasion": 52,
-      "exp": 300,
-      "gold": 240,
+      "exp": 270,
+      "gold": 216,
       "skills": [
         {
           "id": "physical_reduction_10",
@@ -135,9 +135,9 @@
       ],
       "baseAttributes": {
         "power": 23,
-        "wisdom": 12,
+        "wisdom": 23,
         "spirit": 11,
-        "vitality": 23,
+        "vitality": 27,
         "agility": 9,
         "luck": 5
       }
