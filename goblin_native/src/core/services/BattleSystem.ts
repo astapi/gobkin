@@ -10,6 +10,7 @@ import {
   getPureGoblinPartyStatBonusPercentFromSkills,
   getRearAllyDamageMultiplierFromSkills,
   getLearnedSpellsFromSkills,
+  getMagicDamageReductionFromSkills,
   getPhysicalDamageReductionFromSkills,
   getRearProtectionMultiplierFromSkills,
   getRowDamageMultiplierFromSkills,
@@ -1235,6 +1236,7 @@ export class BattleSystem {
       : Math.min(initialHP, maxHP)
     const damageReduction = ModStatCalculator.getDamageReduction(goblin)
     const physicalDamageReduction = getPhysicalDamageReductionFromSkills(goblin.skills)
+    const magicDamageReduction = getMagicDamageReductionFromSkills(goblin.skills)
     const learnedSpells = this.mergeLearnedSpells(goblin.spells, goblin.skills, goblin.level)
     return {
       instanceId: `ally:${combatant.id}`,
@@ -1251,7 +1253,7 @@ export class BattleSystem {
       originalIndex,
       damageReduction,
       physicalDamageReduction,
-      magicDamageReduction: 0,
+      magicDamageReduction,
       breathDamageReduction: 0,
       shieldBarrierDamageReduction: 0,
       shieldBarrierBreathDamageReduction: 0,
@@ -1300,7 +1302,8 @@ export class BattleSystem {
         getPhysicalDamageReductionFromSkills(skills),
       magicDamageReduction:
         raceResistance.magicResistancePercent +
-        (enemy.magicResistancePercent ?? 0),
+        (enemy.magicResistancePercent ?? 0) +
+        getMagicDamageReductionFromSkills(skills),
       breathDamageReduction: 0,
       shieldBarrierDamageReduction: 0,
       shieldBarrierBreathDamageReduction: 0,
