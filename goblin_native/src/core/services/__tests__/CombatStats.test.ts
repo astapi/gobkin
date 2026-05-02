@@ -1804,6 +1804,107 @@ describe('spell charges', () => {
     expect(spellLogs).toHaveLength(1)
   })
 
+  it('魔法使い魔法は使用可能な習得呪文からランダムに選ぶ', () => {
+    const caster = createTestEnemy({
+      id: 'RANDOM_MAGE',
+      name: 'ランダム術師',
+      level: 13,
+      hp: 999,
+      atk: 1,
+      magicAtk: 100,
+      def: 1,
+      agility: 100,
+      attackCount: 0,
+      spells: [{ spellId: 'magic_arrow' }, { spellId: 'fireball' }],
+      battleActionPolicy: { attackRate: 0, clericMagicRate: 0, mageMagicRate: 100 },
+    })
+    const target = createTestGoblin({
+      stats: { hp: 999, atk: 1, agility: 1, def: 10, attackCount: 0, accuracy: 20, evasion: 15 },
+    })
+    const rngValues = [0.5, 0.5, 0.99, 0.5, 0.5, 0.5]
+    let rngIndex = 0
+    const rng = () => rngValues[rngIndex++] ?? 0.5
+
+    const result = new BattleSystem().executeBattle([target], [target.stats.hp], [[caster]], rng, 1)
+
+    expect(result.detailedLog.some(log => log.actorId === 'RANDOM_MAGE' && log.action === 'ファイヤーボール')).toBe(true)
+    expect(result.detailedLog.some(log => log.actorId === 'RANDOM_MAGE' && log.action === 'マジックアロー')).toBe(false)
+  })
+
+  it('僧侶魔法は全員のHPが80%超ならバリアを優先する', () => {
+    const cleric = createTestGoblin({
+      id: 1,
+      stats: { hp: 300, atk: 1, agility: 100, def: 10, attackCount: 0, accuracy: 999, evasion: 0 },
+      spells: [{ spellId: 'shield_barrier' }, { spellId: 'magic_barrier' }, { spellId: 'heal' }],
+      battleActionPolicy: { attackRate: 0, clericMagicRate: 100, mageMagicRate: 0 },
+    })
+    const enemy = createTestEnemy({ hp: 999, atk: 1, def: 1, agility: 1, attackCount: 0 })
+
+    const result = new BattleSystem().executeBattle([cleric], [270], [[enemy]], () => 0.5, 1)
+
+    expect(result.detailedLog.some(log => log.actorId === '1' && log.action === 'シールドバリア')).toBe(true)
+    expect(result.detailedLog.some(log => log.actorId === '1' && log.action === 'ヒール')).toBe(false)
+  })
+
+  it('僧侶魔法は79%以下の味方が複数いる場合にパーティヒールを優先する', () => {
+    const wounded = createTestGoblin({
+      id: 1,
+      stats: { hp: 300, atk: 1, agility: 1, def: 10, attackCount: 0, accuracy: 999, evasion: 0 },
+      battleActionPolicy: { attackRate: 0, clericMagicRate: 0, mageMagicRate: 0 },
+    })
+    const cleric = createTestGoblin({
+      id: 2,
+      stats: { hp: 300, atk: 1, agility: 100, def: 10, attackCount: 0, accuracy: 999, evasion: 0, magicHeal: 30 },
+      spells: [{ spellId: 'heal' }, { spellId: 'party_heal' }],
+      battleActionPolicy: { attackRate: 0, clericMagicRate: 100, mageMagicRate: 0 },
+    })
+    const enemy = createTestEnemy({ hp: 999, atk: 1, def: 1, agility: 1, attackCount: 0 })
+
+    const result = new BattleSystem().executeBattle([wounded, cleric], [200, 200], [[enemy]], () => 0.5, 1)
+
+    expect(result.detailedLog.some(log => log.actorId === '2' && log.action === 'パーティヒール')).toBe(true)
+    expect(result.detailedLog.some(log => log.actorId === '2' && log.action === 'ヒール')).toBe(false)
+  })
+
+  it('僧侶魔法はパーティヒールがない場合に重症の味方へフルヒールを使う', () => {
+    const wounded = createTestGoblin({
+      id: 1,
+      stats: { hp: 300, atk: 1, agility: 1, def: 10, attackCount: 0, accuracy: 999, evasion: 0 },
+      battleActionPolicy: { attackRate: 0, clericMagicRate: 0, mageMagicRate: 0 },
+    })
+    const cleric = createTestGoblin({
+      id: 2,
+      stats: { hp: 300, atk: 1, agility: 100, def: 10, attackCount: 0, accuracy: 999, evasion: 0, magicHeal: 30 },
+      spells: [{ spellId: 'heal' }, { spellId: 'heal_plus' }, { spellId: 'full_heal' }],
+      battleActionPolicy: { attackRate: 0, clericMagicRate: 100, mageMagicRate: 0 },
+    })
+    const enemy = createTestEnemy({ hp: 999, atk: 1, def: 1, agility: 1, attackCount: 0 })
+
+    const result = new BattleSystem().executeBattle([wounded, cleric], [120, 200], [[enemy]], () => 0.5, 1)
+
+    expect(result.detailedLog.some(log => log.actorId === '2' && log.action === 'フルヒール')).toBe(true)
+  })
+
+  it('僧侶魔法は単体回復でヒールプラスをヒールより優先する', () => {
+    const wounded = createTestGoblin({
+      id: 1,
+      stats: { hp: 300, atk: 1, agility: 1, def: 10, attackCount: 0, accuracy: 999, evasion: 0 },
+      battleActionPolicy: { attackRate: 0, clericMagicRate: 0, mageMagicRate: 0 },
+    })
+    const cleric = createTestGoblin({
+      id: 2,
+      stats: { hp: 300, atk: 1, agility: 100, def: 10, attackCount: 0, accuracy: 999, evasion: 0, magicHeal: 30 },
+      spells: [{ spellId: 'heal' }, { spellId: 'heal_plus' }],
+      battleActionPolicy: { attackRate: 0, clericMagicRate: 100, mageMagicRate: 0 },
+    })
+    const enemy = createTestEnemy({ hp: 999, atk: 1, def: 1, agility: 1, attackCount: 0 })
+
+    const result = new BattleSystem().executeBattle([wounded, cleric], [210, 300], [[enemy]], () => 0.5, 1)
+
+    expect(result.detailedLog.some(log => log.actorId === '2' && log.action === 'ヒールプラス')).toBe(true)
+    expect(result.detailedLog.some(log => log.actorId === '2' && log.action === 'ヒール')).toBe(false)
+  })
+
   it('魔法支援持ちは味方のダメージ魔法に追撃する', () => {
     const caster = createTestGoblin({
       id: 1,
