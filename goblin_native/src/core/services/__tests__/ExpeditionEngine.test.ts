@@ -131,19 +131,18 @@ describe('ExpeditionEngine dungeon tier scaling', () => {
   it('称号ごとの表と同じ法則で主要ステータスをスケールする', () => {
     const engine = new ExpeditionEngine(1)
     const expected = [
-      { level: 28, exp: 200, gold: 2800, atk: 340, accuracy: 284, attackCount: 7, evasion: 1800, magicDef: 8000 },
-      { level: 45, exp: 316, gold: 5560, atk: 537, accuracy: 449, attackCount: 8, evasion: 2844, magicDef: 12640 },
-      { level: 61, exp: 420, gold: 8520, atk: 714, accuracy: 596, attackCount: 10, evasion: 3780, magicDef: 16800 },
-      { level: 83, exp: 550, gold: 12769, atk: 935, accuracy: 781, attackCount: 11, evasion: 4950, magicDef: 22000 },
-      { level: 109, exp: 700, gold: 18334, atk: 1190, accuracy: 994, attackCount: 13, evasion: 12600, magicDef: 56000 },
-      { level: 164, exp: 1000, gold: 31304, atk: 1700, accuracy: 1420, attackCount: 15, evasion: 18000, magicDef: 80000 },
+      { level: 28, gold: 2800, atk: 340, accuracy: 284, attackCount: 7, evasion: 1800, magicDef: 8000 },
+      { level: 45, gold: 5560, atk: 537, accuracy: 449, attackCount: 8, evasion: 2844, magicDef: 12640 },
+      { level: 61, gold: 8520, atk: 714, accuracy: 596, attackCount: 10, evasion: 3780, magicDef: 16800 },
+      { level: 83, gold: 12769, atk: 935, accuracy: 781, attackCount: 11, evasion: 4950, magicDef: 22000 },
+      { level: 109, gold: 18334, atk: 1190, accuracy: 994, attackCount: 13, evasion: 12600, magicDef: 56000 },
+      { level: 164, gold: 31304, atk: 1700, accuracy: 1420, attackCount: 15, evasion: 18000, magicDef: 80000 },
     ]
 
     DUNGEON_TIER_SCALING.forEach((scaling, index) => {
       const [[scaled]] = (engine as any).applyTierScaling([[baseEnemy]], scaling)
       expect({
         level: scaled.level,
-        exp: scaled.exp,
         gold: scaled.gold,
         atk: scaled.atk,
         accuracy: scaled.accuracy,
@@ -201,61 +200,50 @@ describe('ExpeditionEngine dungeon tier scaling', () => {
 })
 
 describe('ExpeditionEngine enemy XP rewards', () => {
-  it('敵ごとのexp合計を戦闘経験値として扱う', () => {
-    const engine = new ExpeditionEngine(1)
-    const enemies: Enemy[][] = [
-      [
-        {
-          id: 'slime-a',
-          name: 'スライムA',
-          raceTags: ['slime'],
-          level: 1,
-          hp: 4,
-          baseAttributes: { power: 2, wisdom: 2, spirit: 2, vitality: 2, agility: 6, luck: 2 },
-          atk: 2,
-          def: 1,
-          attackCount: 1,
-          accuracy: 70,
-          evasion: 9,
-          exp: 1,
-          gold: 1,
-        },
-        {
-          id: 'slime-b',
-          name: 'スライムB',
-          raceTags: ['slime'],
-          level: 1,
-          hp: 4,
-          baseAttributes: { power: 2, wisdom: 2, spirit: 2, vitality: 2, agility: 6, luck: 2 },
-          atk: 2,
-          def: 1,
-          attackCount: 1,
-          accuracy: 70,
-          evasion: 9,
-          exp: 1,
-          gold: 1,
-        },
-      ],
-      [
-        {
-          id: 'boss-slime',
-          name: 'ボススライム',
-          raceTags: ['slime'],
-          level: 3,
-          hp: 20,
-          baseAttributes: { power: 3, wisdom: 3, spirit: 3, vitality: 3, agility: 8, luck: 3 },
-          atk: 3,
-          def: 2,
-          attackCount: 1,
-          accuracy: 100,
-          evasion: 11,
-          exp: 5,
-          gold: 5,
-        },
-      ],
-    ]
+  const engine = new ExpeditionEngine(1)
+  const enemies: Enemy[][] = [
+    [
+      {
+        id: 'slime-a',
+        name: 'スライムA',
+        raceTags: ['slime'],
+        level: 5,
+        hp: 4,
+        baseAttributes: { power: 2, wisdom: 2, spirit: 2, vitality: 2, agility: 6, luck: 2 },
+        atk: 2,
+        def: 1,
+        attackCount: 1,
+        accuracy: 70,
+        evasion: 9,
+        gold: 1,
+      },
+      {
+        id: 'human-a',
+        name: '人間兵士',
+        raceTags: ['human'],
+        level: 5,
+        hp: 4,
+        baseAttributes: { power: 2, wisdom: 2, spirit: 2, vitality: 2, agility: 6, luck: 2 },
+        atk: 2,
+        def: 1,
+        attackCount: 1,
+        accuracy: 70,
+        evasion: 9,
+        gold: 1,
+      },
+    ],
+  ]
 
-    expect((engine as any).calculateEnemyXp(enemies)).toBe(7)
+  it('通常戦闘ではLv×3×種族係数で経験値を算出する', () => {
+    // slime(beast) Lv5 → 5*3*1.0 = 15
+    // human Lv5 → 5*3*1.15 = 17.25 → 17
+    expect((engine as any).calculateEnemyXp(enemies, false)).toBe(32)
+  })
+
+  it('ボス戦ではボス係数1.5が乗算される', () => {
+    // slime(beast) Lv5 ボス → 5*3*1.0*1.5 = 22.5 → 23
+    // human Lv5 ボス → 5*3*1.15*1.5 = 25.875 → 26
+    expect((engine as any).calculateEnemyXp(enemies, true)).toBe(49)
   })
 })
 
