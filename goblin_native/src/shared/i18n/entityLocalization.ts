@@ -8,6 +8,22 @@ function translateWithFallback(key: string, fallback: string, options?: Record<s
   return i18n.exists(key) ? i18n.t(key, options) : fallback
 }
 
+const FRACTION_LABELS: ReadonlyArray<readonly [number, string]> = [
+  [1 / 4, '1/4'],
+  [1 / 3, '1/3'],
+  [1 / 2, '1/2'],
+  [2 / 5, '2/5'],
+  [3 / 5, '3/5'],
+  [3 / 4, '3/4'],
+  [2 / 3, '2/3'],
+  [4 / 5, '4/5'],
+]
+
+function formatMultiplierFraction(value: number): string {
+  return FRACTION_LABELS.find(([multiplier]) => Math.abs(multiplier - value) < 0.000001)?.[1]
+    ?? value.toFixed(2)
+}
+
 export function getRaceLabel(race: string | GoblinRaceId): string {
   const raceId = normalizeGoblinRaceId(race)
   return translateWithFallback(`entities.race.${raceId}`, getLegacyRaceName(raceId))
@@ -61,6 +77,22 @@ export function getSkillLabel(skill: CharacterSkill): string {
 
   if (skill.physicalDamageReductionPercent !== undefined) {
     return i18n.t('battle.physicalReduction', { value: skill.physicalDamageReductionPercent })
+  }
+
+  if (skill.physicalDamageTakenMultiplier !== undefined) {
+    return i18n.t('battle.attackResistant', {
+      value: formatMultiplierFraction(skill.physicalDamageTakenMultiplier),
+    })
+  }
+
+  if (skill.magicDamageReductionPercent !== undefined) {
+    return i18n.t('battle.magicReduction', { value: skill.magicDamageReductionPercent })
+  }
+
+  if (skill.magicDamageTakenMultiplier !== undefined) {
+    return i18n.t('battle.magicResistant', {
+      value: formatMultiplierFraction(skill.magicDamageTakenMultiplier),
+    })
   }
 
   if (skill.breathDamageMultiplier !== undefined) {

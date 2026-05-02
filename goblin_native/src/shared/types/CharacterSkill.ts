@@ -28,6 +28,9 @@ export interface CharacterSkill {
   enablesMeleeRowDamagePenalty?: boolean
   enablesRangedRowDamagePenalty?: boolean
   physicalDamageReductionPercent?: number
+  physicalDamageTakenMultiplier?: number
+  magicDamageReductionPercent?: number
+  magicDamageTakenMultiplier?: number
   breathDamageReductionPercent?: number
   breathDamageMultiplier?: number
   physicalDamagePercent?: number

@@ -132,6 +132,30 @@ function createPhysicalReductionSkill(value: number): CharacterSkill {
   }
 }
 
+function createMagicReductionSkill(value: number): CharacterSkill {
+  const id = `magic_reduction_${value}`
+  return {
+    id,
+    magicDamageReductionPercent: value,
+  }
+}
+
+function createAttackResistantSkill(numerator: number, denominator: number): CharacterSkill {
+  const id = `attack_resistant_${numerator}_${denominator}`
+  return {
+    id,
+    physicalDamageTakenMultiplier: numerator / denominator,
+  }
+}
+
+function createMagicResistantSkill(numerator: number, denominator: number): CharacterSkill {
+  const id = `magic_resistant_${numerator}_${denominator}`
+  return {
+    id,
+    magicDamageTakenMultiplier: numerator / denominator,
+  }
+}
+
 function createRecoveryMagicSkill(level: number): CharacterSkill {
   return {
     id: `recovery_magic_lv${level}`,
@@ -418,6 +442,36 @@ export const CHARACTER_SKILL_CATALOG = {
   physical_reduction_10: createPhysicalReductionSkill(10),
   physical_reduction_11: createPhysicalReductionSkill(11),
   physical_reduction_12: createPhysicalReductionSkill(12),
+
+  attack_resistant_1_4: createAttackResistantSkill(1, 4),
+  attack_resistant_1_3: createAttackResistantSkill(1, 3),
+  attack_resistant_1_2: createAttackResistantSkill(1, 2),
+  attack_resistant_2_5: createAttackResistantSkill(2, 5),
+  attack_resistant_3_5: createAttackResistantSkill(3, 5),
+  attack_resistant_3_4: createAttackResistantSkill(3, 4),
+  attack_resistant_2_3: createAttackResistantSkill(2, 3),
+  attack_resistant_4_5: createAttackResistantSkill(4, 5),
+
+  magic_reduction_1: createMagicReductionSkill(1),
+  magic_reduction_2: createMagicReductionSkill(2),
+  magic_reduction_3: createMagicReductionSkill(3),
+  magic_reduction_5: createMagicReductionSkill(5),
+  magic_reduction_6: createMagicReductionSkill(6),
+  magic_reduction_7: createMagicReductionSkill(7),
+  magic_reduction_8: createMagicReductionSkill(8),
+  magic_reduction_9: createMagicReductionSkill(9),
+  magic_reduction_10: createMagicReductionSkill(10),
+  magic_reduction_11: createMagicReductionSkill(11),
+  magic_reduction_12: createMagicReductionSkill(12),
+
+  magic_resistant_1_4: createMagicResistantSkill(1, 4),
+  magic_resistant_1_3: createMagicResistantSkill(1, 3),
+  magic_resistant_1_2: createMagicResistantSkill(1, 2),
+  magic_resistant_2_5: createMagicResistantSkill(2, 5),
+  magic_resistant_3_5: createMagicResistantSkill(3, 5),
+  magic_resistant_3_4: createMagicResistantSkill(3, 4),
+  magic_resistant_2_3: createMagicResistantSkill(2, 3),
+  magic_resistant_4_5: createMagicResistantSkill(4, 5),
 
   physical_damage_10: createPhysicalDamageSkill(10),
   physical_damage_20: createPhysicalDamageSkill(20),

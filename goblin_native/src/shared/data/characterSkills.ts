@@ -11,6 +11,22 @@ import { getSkillDescription, getSkillLabel } from '../i18n/entityLocalization'
 import { getRecoveryMagicSpellIds } from './recoveryMagic'
 import { getMageMagicSpellIds } from './mageMagic'
 
+const FRACTION_LABELS: ReadonlyArray<readonly [number, string]> = [
+  [1 / 4, '1/4'],
+  [1 / 3, '1/3'],
+  [1 / 2, '1/2'],
+  [2 / 5, '2/5'],
+  [3 / 5, '3/5'],
+  [3 / 4, '3/4'],
+  [2 / 3, '2/3'],
+  [4 / 5, '4/5'],
+]
+
+function formatMultiplierFraction(value: number): string {
+  return FRACTION_LABELS.find(([multiplier]) => Math.abs(multiplier - value) < 0.000001)?.[1]
+    ?? value.toFixed(2)
+}
+
 export function cloneCharacterSkill(skill: CharacterSkill): CharacterSkill {
   return {
     ...skill,
@@ -126,6 +142,22 @@ export function describeCharacterSkill(skill: CharacterSkill): string {
 
   if (skill.physicalDamageReductionPercent !== undefined) {
     return i18n.t('battle.physicalReduction', { value: skill.physicalDamageReductionPercent })
+  }
+
+  if (skill.physicalDamageTakenMultiplier !== undefined) {
+    return i18n.t('battle.attackResistant', {
+      value: formatMultiplierFraction(skill.physicalDamageTakenMultiplier),
+    })
+  }
+
+  if (skill.magicDamageReductionPercent !== undefined) {
+    return i18n.t('battle.magicReduction', { value: skill.magicDamageReductionPercent })
+  }
+
+  if (skill.magicDamageTakenMultiplier !== undefined) {
+    return i18n.t('battle.magicResistant', {
+      value: formatMultiplierFraction(skill.magicDamageTakenMultiplier),
+    })
   }
 
   if (skill.breathDamageMultiplier !== undefined) {
@@ -398,10 +430,35 @@ export function hasSurviveLethalDamageAtHp1Skill(skills: CharacterSkill[]): bool
 }
 
 export function getPhysicalDamageReductionFromSkills(skills: CharacterSkill[]): number {
-  return getUniqueSkillsById(skills).reduce(
+  const uniqueSkills = getUniqueSkillsById(skills)
+  const reductionPercent = uniqueSkills.reduce(
     (sum, skill) => sum + (skill.physicalDamageReductionPercent ?? 0),
     0,
   )
+  const takenMultiplier = uniqueSkills.reduce(
+    (product, skill) => product * (skill.physicalDamageTakenMultiplier ?? 1),
+    1,
+  )
+  let damageTakenPercent = Math.floor(100 * takenMultiplier)
+  damageTakenPercent = Math.floor(damageTakenPercent * (1 - reductionPercent / 100))
+
+  return 100 - damageTakenPercent
+}
+
+export function getMagicDamageReductionFromSkills(skills: CharacterSkill[]): number {
+  const uniqueSkills = getUniqueSkillsById(skills)
+  const reductionPercent = uniqueSkills.reduce(
+    (sum, skill) => sum + (skill.magicDamageReductionPercent ?? 0),
+    0,
+  )
+  const takenMultiplier = uniqueSkills.reduce(
+    (product, skill) => product * (skill.magicDamageTakenMultiplier ?? 1),
+    1,
+  )
+  let damageTakenPercent = Math.floor(100 * takenMultiplier)
+  damageTakenPercent = Math.floor(damageTakenPercent * (1 - reductionPercent / 100))
+
+  return 100 - damageTakenPercent
 }
 
 export function getCriticalRateBonusFromSkills(skills: CharacterSkill[]): number {

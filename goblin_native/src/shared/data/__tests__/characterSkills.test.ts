@@ -6,6 +6,7 @@ import {
   getExpeditionTimeMultiplierFromSkills,
   getLearnedSpellsFromSkills,
   getMagicDamageFollowUpFromSkills,
+  getMagicDamageReductionFromSkills,
   getPhysicalDamagePercentFromSkills,
   getPhysicalDamageReductionFromSkills,
   getPureGoblinPartyStatBonusPercentFromSkills,
@@ -53,6 +54,88 @@ describe('characterSkills - 物理ダメージ軽減', () => {
     ]
 
     expect(getPhysicalDamageReductionFromSkills(skills)).toBe(1)
+  })
+
+  it('攻撃に強いスキルは被物理ダメージ倍率を軽減率へ変換する', () => {
+    const skills: CharacterSkill[] = [
+      { id: 'attack_resistant_1_2', physicalDamageTakenMultiplier: 1 / 2 },
+    ]
+
+    expect(getPhysicalDamageReductionFromSkills(skills)).toBe(50)
+  })
+
+  it('攻撃に強いスキル同士は乗算する', () => {
+    const skills: CharacterSkill[] = [
+      { id: 'attack_resistant_1_2', physicalDamageTakenMultiplier: 1 / 2 },
+      { id: 'attack_resistant_2_3', physicalDamageTakenMultiplier: 2 / 3 },
+    ]
+
+    expect(getPhysicalDamageReductionFromSkills(skills)).toBe(67)
+  })
+
+  it('攻撃に強いスキルと物理ダメージ軽減スキルを合成する', () => {
+    const skills: CharacterSkill[] = [
+      { id: 'attack_resistant_1_2', physicalDamageTakenMultiplier: 1 / 2 },
+      { id: 'attack_resistant_2_3', physicalDamageTakenMultiplier: 2 / 3 },
+      { id: 'physical_reduction_10', physicalDamageReductionPercent: 10 },
+    ]
+
+    expect(getPhysicalDamageReductionFromSkills(skills)).toBe(71)
+  })
+
+  it('同じidの攻撃に強いスキルは重複計算しない', () => {
+    const skills: CharacterSkill[] = [
+      { id: 'attack_resistant_1_2', physicalDamageTakenMultiplier: 1 / 2 },
+      { id: 'attack_resistant_1_2', physicalDamageTakenMultiplier: 1 / 2 },
+    ]
+
+    expect(getPhysicalDamageReductionFromSkills(skills)).toBe(50)
+  })
+
+  it('魔法ダメージ軽減スキルの値を合算する', () => {
+    const skills: CharacterSkill[] = [
+      { id: 'magic_reduction_3', magicDamageReductionPercent: 3 },
+      { id: 'magic_reduction_6', magicDamageReductionPercent: 6 },
+      { id: 'other', additionalDamage: 13 },
+    ]
+
+    expect(getMagicDamageReductionFromSkills(skills)).toBe(9)
+  })
+
+  it('魔法に強いスキルは被魔法ダメージ倍率を軽減率へ変換する', () => {
+    const skills: CharacterSkill[] = [
+      { id: 'magic_resistant_1_2', magicDamageTakenMultiplier: 1 / 2 },
+    ]
+
+    expect(getMagicDamageReductionFromSkills(skills)).toBe(50)
+  })
+
+  it('魔法に強いスキル同士は乗算する', () => {
+    const skills: CharacterSkill[] = [
+      { id: 'magic_resistant_1_2', magicDamageTakenMultiplier: 1 / 2 },
+      { id: 'magic_resistant_2_3', magicDamageTakenMultiplier: 2 / 3 },
+    ]
+
+    expect(getMagicDamageReductionFromSkills(skills)).toBe(67)
+  })
+
+  it('魔法に強いスキルと魔法ダメージ軽減スキルを合成する', () => {
+    const skills: CharacterSkill[] = [
+      { id: 'magic_resistant_1_2', magicDamageTakenMultiplier: 1 / 2 },
+      { id: 'magic_resistant_2_3', magicDamageTakenMultiplier: 2 / 3 },
+      { id: 'magic_reduction_10', magicDamageReductionPercent: 10 },
+    ]
+
+    expect(getMagicDamageReductionFromSkills(skills)).toBe(71)
+  })
+
+  it('同じidの魔法に強いスキルは重複計算しない', () => {
+    const skills: CharacterSkill[] = [
+      { id: 'magic_resistant_1_2', magicDamageTakenMultiplier: 1 / 2 },
+      { id: 'magic_resistant_1_2', magicDamageTakenMultiplier: 1 / 2 },
+    ]
+
+    expect(getMagicDamageReductionFromSkills(skills)).toBe(50)
   })
 
   it('同じidの攻撃回数スキルは重複計算しない', () => {
@@ -360,6 +443,24 @@ describe('characterSkills - 物理ダメージ軽減', () => {
     }
 
     expect(describeCharacterSkill(skill)).toBe('[4/5]ブレスに強い')
+  })
+
+  it('攻撃に強いスキルの説明文を表記ルールどおり返す', () => {
+    const skill = getCharacterSkill('attack_resistant_2_3')
+
+    expect(describeCharacterSkill(skill)).toBe('[2/3]攻撃に強い')
+  })
+
+  it('魔法ダメージ軽減スキルの説明文を表記ルールどおり返す', () => {
+    const skill = getCharacterSkill('magic_reduction_10')
+
+    expect(describeCharacterSkill(skill)).toBe('[-10%] 魔法ダメージ軽減(%)')
+  })
+
+  it('魔法に強いスキルの説明文を表記ルールどおり返す', () => {
+    const skill = getCharacterSkill('magic_resistant_2_3')
+
+    expect(describeCharacterSkill(skill)).toBe('[2/3]魔法に強い')
   })
 
   it('魔法威力スキルの説明文を表記ルールどおり返す', () => {
