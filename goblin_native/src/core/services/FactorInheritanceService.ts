@@ -122,7 +122,16 @@ export class FactorInheritanceService {
     let variantAvatar: string | undefined
     let variantFactorId: string | undefined
 
-    for (const factorId of inheritedFactors) {
+    const variantCandidateFactorIds = [...inheritedFactors]
+    for (let i = variantCandidateFactorIds.length - 1; i > 0; i--) {
+      const j = Math.floor(rng() * (i + 1))
+      ;[variantCandidateFactorIds[i], variantCandidateFactorIds[j]] = [
+        variantCandidateFactorIds[j],
+        variantCandidateFactorIds[i],
+      ]
+    }
+
+    for (const factorId of variantCandidateFactorIds) {
       const factor = factorDatabase[factorId]
       if (factor?.variantConfig) {
         if (rng() < factor.variantConfig.probability) {

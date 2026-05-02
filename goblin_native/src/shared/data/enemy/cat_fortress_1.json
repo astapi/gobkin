@@ -94,7 +94,7 @@
       "factorDrops": [
         {
           "factorId": "shadow",
-          "probability": 0.4
+          "probability": 0.015
         }
       ],
       "skills": [

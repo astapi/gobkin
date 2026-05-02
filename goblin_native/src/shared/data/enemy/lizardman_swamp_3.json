@@ -99,7 +99,7 @@
       "factorDrops": [
         {
           "factorId": "lizardman",
-          "probability": 1
+          "probability": 0.015
         }
       ]
     }
