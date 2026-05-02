@@ -101,7 +101,7 @@
       "factorDrops": [
         {
           "factorId": "human",
-          "probability": 1
+          "probability": 0.015
         }
       ],
       "baseAttributes": {

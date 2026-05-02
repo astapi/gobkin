@@ -43,7 +43,7 @@
       "factorDrops": [
         {
           "factorId": "wolf",
-          "probability": 1
+          "probability": 0.015
         }
       ],
       "magicDef": 30,

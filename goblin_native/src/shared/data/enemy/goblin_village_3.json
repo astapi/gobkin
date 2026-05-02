@@ -164,7 +164,7 @@
       "factorDrops": [
         {
           "factorId": "hobgoblin",
-          "probability": 1
+          "probability": 0.015
         }
       ],
       "magicDef": 17,
