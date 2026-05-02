@@ -27,6 +27,7 @@ import { normalizePartyRewardMultipliers, DUNGEON_TIER_SCALING, getDungeonTierAr
 import { getGoldBonusPercentFromSkills } from '../../shared/data/characterSkills'
 import { getGoblinBaseAttributesAtLevel } from '../../shared/utils/goblinHp'
 import { getEffectiveStats } from '../../shared/utils/goblinStats'
+import { calculateEnemyExp } from '../../shared/utils/enemyExp'
 
 export class ExpeditionEngine {
   private rng: () => number
@@ -139,7 +140,7 @@ export class ExpeditionEngine {
             const pattern = this.selectEnemyPattern(enemyDatabase.patterns, currentFloor, false)
             const enemies = this.applyTierScaling(this.getEnemiesFromPattern(pattern, enemyDatabase.enemies), tierScaling)
             const combat = this.resolveCombat(partyState, enemies, area)
-            const xp = combat.outcome === 'win' ? this.calculateEnemyXp(enemies) : 0
+            const xp = combat.outcome === 'win' ? this.calculateEnemyXp(enemies, false) : 0
 
             events.push({
               type: "battle",
@@ -202,7 +203,7 @@ export class ExpeditionEngine {
             const pattern = this.selectEnemyPattern(enemyDatabase.patterns, currentFloor, false)
             const enemies = this.applyTierScaling(this.getEnemiesFromPattern(pattern, enemyDatabase.enemies), tierScaling)
             const combat = this.resolveCombat(partyState, enemies, area)
-            const xp = combat.outcome === 'win' ? this.calculateEnemyXp(enemies) : 0
+            const xp = combat.outcome === 'win' ? this.calculateEnemyXp(enemies, false) : 0
 
             events.push({
               type: "battle",
@@ -274,7 +275,7 @@ export class ExpeditionEngine {
         const bossEnemies = this.applyTierScaling(this.getEnemiesFromPattern(bossPattern, enemyDatabase.enemies), tierScaling)
 
         const bossCombat = this.resolveCombat(partyState, bossEnemies, area, true)
-        const bossXp = bossCombat.outcome === 'win' ? this.calculateEnemyXp(bossEnemies) : 0
+        const bossXp = bossCombat.outcome === 'win' ? this.calculateEnemyXp(bossEnemies, true) : 0
 
         // 規定時間の終端でボス戦を行う（最後の秒で戦闘開始）
         const bossTime = adjustedDuration
@@ -471,7 +472,6 @@ export class ExpeditionEngine {
         attackCount: Math.max(1, Math.floor(enemy.attackCount * countScale)),
         accuracy: Math.round(enemy.accuracy * statScale),
         evasion: this.scaleDefensiveStat(enemy.evasion, scaling.evasionScale),
-        exp: Math.floor(enemy.exp * statScale),
         gold: Math.floor(enemy.gold * goldScale),
       }))
     )
@@ -518,8 +518,11 @@ export class ExpeditionEngine {
     )
   }
 
-  private calculateEnemyXp(enemies2D: Enemy[][]): number {
-    return enemies2D.flat().reduce((sum, enemy) => sum + enemy.exp, 0)
+  private calculateEnemyXp(enemies2D: Enemy[][], isBoss: boolean): number {
+    return enemies2D.flat().reduce(
+      (sum, enemy) => sum + calculateEnemyExp(enemy.level, enemy.raceTags, isBoss),
+      0
+    )
   }
 
   private createEnemySnap(enemies2D: Enemy[][], isBoss = false): EnemySnap {
