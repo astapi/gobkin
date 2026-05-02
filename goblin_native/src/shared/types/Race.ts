@@ -7,8 +7,13 @@ export const GOBLIN_RACE_IDS = [
   'hobgoblin',
   'dwarf',
   'elf',
+  'harpy',
+  'hobbit',
   'lizardman',
+  'minotaur',
   'troll',
+  'vampire',
+  'dragon',
   'shadow',
 ] as const
 
@@ -22,9 +27,16 @@ const LEGACY_RACE_NAME_MAP: Record<string, GoblinRaceId> = {
   アンデッドゴブリン: 'undead',
   ホブゴブリン: 'hobgoblin',
   ドワーフゴブリン: 'dwarf',
+  アイアンゴブリン: 'dwarf',
   エルフゴブリン: 'elf',
+  フェイゴブリン: 'elf',
+  スカイゴブリン: 'harpy',
+  スクラッパーゴブリン: 'hobbit',
   スケイルゴブリン: 'lizardman',
+  ゴズゴブリン: 'minotaur',
   トロルゴブリン: 'troll',
+  ヴァンプゴブリン: 'vampire',
+  ドラゴンゴブリン: 'dragon',
   シャドウゴブリン: 'shadow',
 }
 
@@ -35,10 +47,15 @@ const RACE_ID_TO_LEGACY_NAME: Record<GoblinRaceId, string> = {
   orc: 'オークゴブリン',
   undead: 'アンデッドゴブリン',
   hobgoblin: 'ホブゴブリン',
-  dwarf: 'ドワーフゴブリン',
-  elf: 'エルフゴブリン',
+  dwarf: 'アイアンゴブリン',
+  elf: 'フェイゴブリン',
+  harpy: 'スカイゴブリン',
+  hobbit: 'スクラッパーゴブリン',
   lizardman: 'スケイルゴブリン',
+  minotaur: 'ゴズゴブリン',
   troll: 'トロルゴブリン',
+  vampire: 'ヴァンプゴブリン',
+  dragon: 'ドラゴンゴブリン',
   shadow: 'シャドウゴブリン',
 }
 

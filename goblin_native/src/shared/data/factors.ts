@@ -1,27 +1,32 @@
 import type { Factor } from '../types/Factor'
 import { goblinVariantDefinitions } from './goblinVariants'
 
+const standaloneFactorDatabase: Record<string, Factor> = {}
+
 /**
  * 因子マスターデータ
  */
-export const factorDatabase: Record<string, Factor> = Object.fromEntries(
-  Object.values(goblinVariantDefinitions).map((variant) => [
-    variant.factorId,
-    {
-      id: variant.factorId,
-      name: variant.factorName,
-      description: variant.factorDescription,
-      inheritProbability: variant.inheritProbability,
-      effects: variant.factorEffects,
-      variantConfig: {
-        probability: variant.variantProbability,
-        raceId: variant.raceId,
-        raceName: variant.raceName,
-        avatar: variant.avatar,
+export const factorDatabase: Record<string, Factor> = {
+  ...Object.fromEntries(
+    Object.values(goblinVariantDefinitions).map((variant) => [
+      variant.factorId,
+      {
+        id: variant.factorId,
+        name: variant.factorName,
+        description: variant.factorDescription,
+        inheritProbability: variant.inheritProbability,
+        effects: variant.factorEffects,
+        variantConfig: {
+          probability: variant.variantProbability,
+          raceId: variant.raceId,
+          raceName: variant.raceName,
+          avatar: variant.avatar,
+        },
       },
-    },
-  ])
-)
+    ])
+  ),
+  ...standaloneFactorDatabase,
+}
 
 /**
  * 因子IDから因子データを取得

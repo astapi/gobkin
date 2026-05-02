@@ -4,6 +4,7 @@ import { getGoblinJobDefinition } from '@app/shared/data/goblinJobs'
 
 import type {
   GoblinBaseAttributes,
+  GoblinFactorSeed,
   GoblinJobSeed,
   GoblinRaceEntry,
   GoblinStudioData,
@@ -31,7 +32,7 @@ type SaveState =
   | { kind: 'error'; message: string }
   | { kind: 'success' }
 
-type Tab = 'races' | 'variants' | 'jobs'
+type Tab = 'races' | 'factors' | 'variants' | 'jobs'
 
 const EMPTY_ATTRIBUTES: GoblinBaseAttributes = {
   power: 10,
@@ -61,6 +62,15 @@ const EMPTY_VARIANT: GoblinVariantSeed = {
   imageKey: '',
 }
 
+const EMPTY_FACTOR: GoblinFactorSeed = {
+  id: '',
+  name: '',
+  description: '',
+  inheritProbability: 0,
+  effects: [],
+  source: 'standalone',
+}
+
 const EMPTY_JOB: GoblinJobSeed = {
   id: '',
   accentColor: '#000000',
@@ -73,6 +83,7 @@ export function GoblinDataPage() {
   const [tab, setTab] = useState<Tab>('variants')
   const [draft, setDraft] = useState<GoblinStudioData | null>(null)
   const [selectedRaceId, setSelectedRaceId] = useState<string | null>(null)
+  const [selectedFactorId, setSelectedFactorId] = useState<string | null>(null)
   const [selectedVariantId, setSelectedVariantId] = useState<string | null>(null)
   const [selectedJobId, setSelectedJobId] = useState<string | null>(null)
   const originalRef = useRef<string | null>(null)
@@ -88,6 +99,7 @@ export function GoblinDataPage() {
         setDraft(data)
         originalRef.current = stableStringify(data)
         setSelectedRaceId(data.races[0]?.id ?? null)
+        setSelectedFactorId(data.factors[0]?.id ?? null)
         setSelectedVariantId(data.variants[0]?.factorId ?? null)
         setSelectedJobId(data.jobs[0]?.id ?? null)
         setLoadState({ kind: 'ready' })
@@ -153,12 +165,14 @@ export function GoblinDataPage() {
     const parsed = JSON.parse(originalRef.current) as GoblinStudioData
     setDraft(parsed)
     setSelectedRaceId(parsed.races[0]?.id ?? null)
+    setSelectedFactorId(parsed.factors[0]?.id ?? null)
     setSelectedVariantId(parsed.variants[0]?.factorId ?? null)
     setSelectedJobId(parsed.jobs[0]?.id ?? null)
     setSaveState({ kind: 'idle' })
   }, [])
 
   const selectedRace = draft?.races.find((race) => race.id === selectedRaceId) ?? null
+  const selectedFactor = draft?.factors.find((factor) => factor.id === selectedFactorId) ?? null
   const selectedVariant =
     draft?.variants.find((variant) => variant.factorId === selectedVariantId) ?? null
   const selectedJob = draft?.jobs.find((job) => job.id === selectedJobId) ?? null
@@ -201,6 +215,12 @@ export function GoblinDataPage() {
       <div className="tabs">
         <button className={tab === 'races' ? 'tab active' : 'tab'} onClick={() => setTab('races')}>
           Race
+        </button>
+        <button
+          className={tab === 'factors' ? 'tab active' : 'tab'}
+          onClick={() => setTab('factors')}
+        >
+          因子
         </button>
         <button
           className={tab === 'variants' ? 'tab active' : 'tab'}
@@ -364,16 +384,72 @@ export function GoblinDataPage() {
           </DataEditorLayout>
         )}
 
+        {tab === 'factors' && (
+          <DataEditorLayout
+            items={draft.factors}
+            getKey={(item) => item.id}
+            getLabel={(item) => item.name || item.id || '(新規因子)'}
+            selectedKey={selectedFactorId}
+            onSelect={setSelectedFactorId}
+            canDelete={selectedFactor?.source !== 'variant'}
+            onAdd={() => {
+              const next = { ...EMPTY_FACTOR, id: `new_factor_${Date.now()}` }
+              updateDraft((prev) => ({ ...prev, factors: [...prev.factors, next] }))
+              setSelectedFactorId(next.id)
+            }}
+            onDelete={() => {
+              if (!selectedFactorId) return
+              if (selectedFactor?.source === 'variant') return
+              updateDraft((prev) => ({
+                ...prev,
+                factors: prev.factors.filter((factor) => factor.id !== selectedFactorId),
+              }))
+              setSelectedFactorId(
+                draft.factors.find((factor) => factor.id !== selectedFactorId)?.id ?? null,
+              )
+            }}
+          >
+            {selectedFactor && (
+              <FactorEditor
+                factor={selectedFactor}
+                onIdChange={setSelectedFactorId}
+                onChange={(nextFactor) =>
+                  updateDraft((prev) => ({
+                    ...prev,
+                    factors: prev.factors.map((factor) =>
+                      factor.id === selectedFactorId ? nextFactor : factor,
+                    ),
+                    variants: prev.variants.map((variant) =>
+                      variant.factorId === selectedFactorId && selectedFactor.source === 'variant'
+                        ? { ...variant, factorId: nextFactor.id }
+                        : variant,
+                    ),
+                  }))
+                }
+              />
+            )}
+          </DataEditorLayout>
+        )}
+
         {tab === 'variants' && (
           <DataEditorLayout
             items={draft.variants}
             getKey={(item) => item.factorId}
-            getLabel={(item) => item.factorName || item.factorId || '(新規亜種)'}
+            getLabel={(item) => item.raceName || item.factorId || '(新規亜種)'}
             selectedKey={selectedVariantId}
             onSelect={setSelectedVariantId}
             onAdd={() => {
               const next = { ...EMPTY_VARIANT, factorId: `new_variant_${Date.now()}` }
-              updateDraft((prev) => ({ ...prev, variants: [...prev.variants, next] }))
+              const nextFactor: GoblinFactorSeed = {
+                ...EMPTY_FACTOR,
+                id: next.factorId,
+                source: 'variant',
+              }
+              updateDraft((prev) => ({
+                ...prev,
+                factors: [...prev.factors, nextFactor],
+                variants: [...prev.variants, next],
+              }))
               setSelectedVariantId(next.factorId)
             }}
             onDelete={() => {
@@ -395,6 +471,11 @@ export function GoblinDataPage() {
                 onChange={(nextVariant) =>
                   updateDraft((prev) => ({
                     ...prev,
+                    factors: prev.factors.map((factor) =>
+                      factor.id === selectedVariantId && factor.source === 'variant'
+                        ? { ...factor, id: nextVariant.factorId }
+                        : factor,
+                    ),
                     variants: prev.variants.map((variant) =>
                       variant.factorId === selectedVariantId ? nextVariant : variant,
                     ),
@@ -457,6 +538,7 @@ function DataEditorLayout<T>({
   getLabel,
   selectedKey,
   onSelect,
+  canDelete = true,
   onAdd,
   onDelete,
   children,
@@ -466,6 +548,7 @@ function DataEditorLayout<T>({
   getLabel: (item: T) => string
   selectedKey: string | null
   onSelect: (key: string | null) => void
+  canDelete?: boolean
   onAdd: () => void
   onDelete: () => void
   children: ReactNode
@@ -479,7 +562,7 @@ function DataEditorLayout<T>({
             <button className="btn ghost small" onClick={onAdd}>
               + 追加
             </button>
-            <button className="btn ghost small" onClick={onDelete} disabled={!selectedKey}>
+            <button className="btn ghost small" onClick={onDelete} disabled={!selectedKey || !canDelete}>
               削除
             </button>
           </div>
@@ -505,6 +588,70 @@ function DataEditorLayout<T>({
   )
 }
 
+function FactorEditor({
+  factor,
+  onIdChange,
+  onChange,
+}: {
+  factor: GoblinFactorSeed
+  onIdChange: (id: string) => void
+  onChange: (factor: GoblinFactorSeed) => void
+}) {
+  const isVariantFactor = factor.source === 'variant'
+
+  return (
+    <div className="panel-stack">
+      <section className="card">
+        <h3>基本情報</h3>
+        <FieldRow>
+          <TextField
+            size="md"
+            label="id"
+            value={factor.id}
+            onChange={(value) => {
+              onIdChange(value)
+              onChange({ ...factor, id: value })
+            }}
+          />
+          <TextField
+            size="lg"
+            label="name"
+            value={factor.name}
+            onChange={(value) => onChange({ ...factor, name: value })}
+          />
+          <NumberField
+            size="sm"
+            label="inheritProbability"
+            value={factor.inheritProbability}
+            step={0.01}
+            onChange={(value) => onChange({ ...factor, inheritProbability: value })}
+          />
+        </FieldRow>
+        <FieldRow>
+          <TextAreaField
+            size="xl"
+            label="description"
+            value={factor.description}
+            rows={4}
+            onChange={(value) => onChange({ ...factor, description: value })}
+          />
+        </FieldRow>
+        <p className="subtle">
+          {isVariantFactor
+            ? '亜種に紐づく因子です。保存時に goblinVariants.ts へ反映されます。'
+            : '因子のみの定義です。保存時に factors.ts へ反映されます。'}
+        </p>
+      </section>
+
+      <EffectListEditor
+        title="因子効果"
+        effects={factor.effects}
+        onChange={(effects) => onChange({ ...factor, effects })}
+      />
+    </div>
+  )
+}
+
 function VariantEditor({
   variant,
   onIdChange,
@@ -520,23 +667,12 @@ function VariantEditor({
         <h3>基本情報</h3>
         <FieldRow>
           <TextField size="md" label="factorId" value={variant.factorId} onChange={(value) => { onIdChange(value); onChange({ ...variant, factorId: value }) }} />
-          <TextField size="lg" label="factorName" value={variant.factorName} onChange={(value) => onChange({ ...variant, factorName: value })} />
           <TextField size="md" label="raceId" value={variant.raceId} onChange={(value) => onChange({ ...variant, raceId: value })} />
           <TextField size="lg" label="raceName" value={variant.raceName} onChange={(value) => onChange({ ...variant, raceName: value })} />
-          <NumberField size="sm" label="inheritProbability" value={variant.inheritProbability} step={0.01} onChange={(value) => onChange({ ...variant, inheritProbability: value })} />
           <NumberField size="sm" label="variantProbability" value={variant.variantProbability} step={0.01} onChange={(value) => onChange({ ...variant, variantProbability: value })} />
           <OptionalNumberField size="sm" label="hpCoefficient" value={variant.hpCoefficient} step={0.1} onChange={(value) => onChange({ ...variant, hpCoefficient: value })} />
           <TextField size="lg" label="avatar" value={variant.avatar} onChange={(value) => onChange({ ...variant, avatar: value })} />
           <TextField size="md" label="imageKey" value={variant.imageKey} onChange={(value) => onChange({ ...variant, imageKey: value })} />
-        </FieldRow>
-        <FieldRow>
-          <TextAreaField
-            size="xl"
-            label="factorDescription"
-            value={variant.factorDescription}
-            rows={4}
-            onChange={(value) => onChange({ ...variant, factorDescription: value })}
-          />
         </FieldRow>
       </section>
 
@@ -565,11 +701,6 @@ function VariantEditor({
         )}
       </section>
 
-      <EffectListEditor
-        title="因子効果"
-        effects={variant.factorEffects}
-        onChange={(effects) => onChange({ ...variant, factorEffects: effects })}
-      />
       <section className="card">
         <h3>デフォルトスキル</h3>
         <SkillIdListEditor
@@ -709,8 +840,8 @@ function EffectListEditor({
   onChange,
 }: {
   title: string
-  effects: GoblinVariantSeed['factorEffects']
-  onChange: (effects: GoblinVariantSeed['factorEffects']) => void
+  effects: GoblinFactorSeed['effects']
+  onChange: (effects: GoblinFactorSeed['effects']) => void
 }) {
   return (
     <section className="card">

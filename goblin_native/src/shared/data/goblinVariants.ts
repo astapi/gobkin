@@ -223,7 +223,7 @@ export const goblinVariantDefinitions: Record<string, GoblinVariantDefinition> =
     imageKey: "dwarf_goblin",
     inheritProbability: 0.2,
     raceId: "dwarf",
-    raceName: "ドワーフゴブリン",
+    raceName: "アイアンゴブリン",
     variantProbability: 0.1
   },
   elf: {
@@ -242,8 +242,74 @@ export const goblinVariantDefinitions: Record<string, GoblinVariantDefinition> =
     imageKey: "elf_goblin",
     inheritProbability: 0.2,
     raceId: "elf",
-    raceName: "エルフゴブリン",
+    raceName: "フェイゴブリン",
     variantProbability: 0.1
+  },
+  harpy: {
+    avatar: "/src/assets/goblin/goblin.png",
+    baseAttributes: {
+      agility: 16,
+      luck: 12,
+      power: 9,
+      spirit: 12,
+      vitality: 8,
+      wisdom: 10
+    },
+    defaultSkillIds: [],
+    factorDescription: "ハーピィの特性を宿した因子。回避力と魔法防御が増す。",
+    factorEffects: [
+      {
+        target: "evasion",
+        type: "stat_bonus",
+        value: 15
+      },
+      {
+        target: "magicDef",
+        type: "stat_bonus",
+        value: 15
+      }
+    ],
+    factorId: "harpy",
+    factorName: "ハーピィ因子",
+    hpCoefficient: 0.85,
+    imageKey: "goblin",
+    inheritProbability: 0.15,
+    raceId: "harpy",
+    raceName: "スカイゴブリン",
+    variantProbability: 0.08
+  },
+  hobbit: {
+    avatar: "/src/assets/goblin/goblin_thief.png",
+    baseAttributes: {
+      agility: 13,
+      luck: 16,
+      power: 9,
+      spirit: 10,
+      vitality: 9,
+      wisdom: 11
+    },
+    defaultSkillIds: [],
+    factorDescription: "ホビットの特性を宿した因子。命中力と幸運に由来する器用さが増す。",
+    factorEffects: [
+      {
+        target: "accuracy",
+        type: "stat_bonus",
+        value: 20
+      },
+      {
+        target: "evasion",
+        type: "stat_bonus",
+        value: 10
+      }
+    ],
+    factorId: "hobbit",
+    factorName: "ホビット因子",
+    hpCoefficient: 0.9,
+    imageKey: "goblin_thief",
+    inheritProbability: 0.15,
+    raceId: "hobbit",
+    raceName: "スクラッパーゴブリン",
+    variantProbability: 0.08
   },
   lizardman: {
     avatar: "/src/assets/goblin/scale_goblin.png",
@@ -308,6 +374,110 @@ export const goblinVariantDefinitions: Record<string, GoblinVariantDefinition> =
     raceId: "troll",
     raceName: "トロルゴブリン",
     variantProbability: 0.08
+  },
+  minotaur: {
+    avatar: "/src/assets/goblin/orc_goblin.png",
+    baseAttributes: {
+      agility: 6,
+      luck: 8,
+      power: 18,
+      spirit: 8,
+      vitality: 17,
+      wisdom: 7
+    },
+    defaultSkillIds: [],
+    factorDescription: "ミノタウロスの特性を宿した因子。攻撃力とHPが大きく増す。",
+    factorEffects: [
+      {
+        target: "atk",
+        type: "stat_bonus",
+        value: 35
+      },
+      {
+        target: "hp",
+        type: "stat_bonus",
+        value: 80
+      }
+    ],
+    factorId: "minotaur",
+    factorName: "ミノタウロス因子",
+    hpCoefficient: 1.45,
+    imageKey: "orc_goblin",
+    inheritProbability: 0.12,
+    raceId: "minotaur",
+    raceName: "ゴズゴブリン",
+    variantProbability: 0.06
+  },
+  vampire: {
+    avatar: "/src/assets/goblin/goblin_mage.png",
+    baseAttributes: {
+      agility: 12,
+      luck: 11,
+      power: 10,
+      spirit: 15,
+      vitality: 11,
+      wisdom: 16
+    },
+    defaultSkillIds: [],
+    factorDescription: "ヴァンパイアの特性を宿した因子。魔力と生命力が増す。",
+    factorEffects: [
+      {
+        target: "magicAtk",
+        type: "stat_bonus",
+        value: 30
+      },
+      {
+        target: "hp",
+        type: "stat_bonus",
+        value: 60
+      }
+    ],
+    factorId: "vampire",
+    factorName: "ヴァンパイア因子",
+    hpCoefficient: 1.05,
+    imageKey: "goblin_mage",
+    inheritProbability: 0.1,
+    raceId: "vampire",
+    raceName: "ヴァンプゴブリン",
+    variantProbability: 0.05
+  },
+  dragon: {
+    avatar: "/src/assets/goblin/scale_goblin.png",
+    baseAttributes: {
+      agility: 9,
+      luck: 10,
+      power: 18,
+      spirit: 14,
+      vitality: 18,
+      wisdom: 12
+    },
+    defaultSkillIds: [],
+    factorDescription: "ドラゴンの特性を宿した因子。攻防と生命力が大幅に増す。",
+    factorEffects: [
+      {
+        target: "hp",
+        type: "stat_bonus",
+        value: 120
+      },
+      {
+        target: "atk",
+        type: "stat_bonus",
+        value: 30
+      },
+      {
+        target: "def",
+        type: "stat_bonus",
+        value: 30
+      }
+    ],
+    factorId: "dragon",
+    factorName: "ドラゴン因子",
+    hpCoefficient: 1.6,
+    imageKey: "scale_goblin",
+    inheritProbability: 0.08,
+    raceId: "dragon",
+    raceName: "ドラゴンゴブリン",
+    variantProbability: 0.04
   },
   shadow: {
     avatar: "/src/assets/goblin/goblin_thief.png",
