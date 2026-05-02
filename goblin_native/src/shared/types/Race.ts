@@ -23,7 +23,7 @@ const LEGACY_RACE_NAME_MAP: Record<string, GoblinRaceId> = {
   ホブゴブリン: 'hobgoblin',
   ドワーフゴブリン: 'dwarf',
   エルフゴブリン: 'elf',
-  リザードゴブリン: 'lizardman',
+  スケイルゴブリン: 'lizardman',
   トロルゴブリン: 'troll',
   シャドウゴブリン: 'shadow',
 }
@@ -37,7 +37,7 @@ const RACE_ID_TO_LEGACY_NAME: Record<GoblinRaceId, string> = {
   hobgoblin: 'ホブゴブリン',
   dwarf: 'ドワーフゴブリン',
   elf: 'エルフゴブリン',
-  lizardman: 'リザードゴブリン',
+  lizardman: 'スケイルゴブリン',
   troll: 'トロルゴブリン',
   shadow: 'シャドウゴブリン',
 }

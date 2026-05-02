@@ -449,7 +449,7 @@ const en = {
       hobgoblin: 'Hobgoblin',
       dwarf: 'Dwarf Goblin',
       elf: 'Elf Goblin',
-      lizardman: 'Lizard Goblin',
+      lizardman: 'Scale Goblin',
       troll: 'Troll Goblin',
     },
     baseLocation: {
