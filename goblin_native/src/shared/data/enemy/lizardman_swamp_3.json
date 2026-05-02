@@ -91,7 +91,13 @@
         "vitality": 27,
         "agility": 9,
         "luck": 5
-      }
+      },
+      "factorDrops": [
+        {
+          "factorId": "lizardman",
+          "probability": 1
+        }
+      ]
     }
   ],
   "patterns": [

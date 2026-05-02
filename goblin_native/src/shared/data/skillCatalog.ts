@@ -18,6 +18,12 @@ function cloneSkill(skill: CharacterSkill): CharacterSkill {
     spellTakenMultipliers: skill.spellTakenMultipliers
       ? { ...skill.spellTakenMultipliers }
       : undefined,
+    magicDamageFollowUp: skill.magicDamageFollowUp
+      ? { ...skill.magicDamageFollowUp }
+      : undefined,
+    criticalAttackFollowUp: skill.criticalAttackFollowUp
+      ? { ...skill.criticalAttackFollowUp }
+      : undefined,
     statBonuses: skill.statBonuses ? { ...skill.statBonuses } : undefined,
     statMultipliers: skill.statMultipliers ? { ...skill.statMultipliers } : undefined,
     baseStatMultipliers: skill.baseStatMultipliers ? { ...skill.baseStatMultipliers } : undefined,
@@ -263,6 +269,34 @@ export const CHARACTER_SKILL_CATALOG = {
   instant_revive: {
     id: 'instant_revive',
     immediateReviveOnAllyDeath: true,
+  },
+
+  magic_support: {
+    id: 'magic_support',
+    magicDamageFollowUp: {
+      attackCountMultiplier: 0.7,
+      criticalRateMultiplier: 0.5,
+    },
+  },
+
+  critical_support: {
+    id: 'critical_support',
+    criticalAttackFollowUp: {
+      attackCountMultiplier: 0.7,
+      criticalRateMultiplier: 0.5,
+    },
+  },
+
+  goblin_pack_tactics: {
+    id: 'goblin_pack_tactics',
+    pureGoblinPartyStatBonusPercent: 5,
+    pureGoblinPartyStatBonusMinLevel: 15,
+  },
+
+  goblin_binder: {
+    id: 'goblin_binder',
+    pureGoblinPartyStatBonusPercent: 5,
+    pureGoblinPartyStatBonusMinLevel: 20,
   },
 
   critical_damage_bonus_6: createCriticalDamageBonusSkill(6),

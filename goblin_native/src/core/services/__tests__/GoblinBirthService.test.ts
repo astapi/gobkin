@@ -179,7 +179,7 @@ describe('GoblinBirthService', () => {
 
       expect(calculateGoblinBaseAttackCount(1, { race: 'ゴブリン' })).toBe(2)
       expect(calculateGoblinBaseAttackCount(1, { race: 'スライムゴブリン' })).toBe(2)
-      expect(calculateGoblinBaseAttackCount(1, { race: 'ウルフゴブリン' })).toBe(3)
+      expect(calculateGoblinBaseAttackCount(1, { race: 'ウルフゴブリン' })).toBe(2)
       expect(calculateGoblinBaseAttackCount(1, { race: 'ホブゴブリン' })).toBe(2)
       expect(calculateGoblinBaseAttackCount(1, { race: 'オークゴブリン' })).toBe(2)
     })

@@ -8,7 +8,7 @@ import { useBaseStore, selectRank } from '@/presentation/stores/useBaseStore'
 import { useDungeonStore } from '@/presentation/stores/useDungeonStore'
 import { useExpeditionFlow } from '@/presentation/hooks/useExpeditionFlow'
 import { getGoblinDisplayImage } from '@/shared/utils/goblinImages'
-import { getEffectiveStats } from '@/shared/utils/goblinStats'
+import { getPartyEffectiveStats } from '@/shared/utils/goblinStats'
 import { getGoldBonusPercentFromSkills } from '@/shared/data/characterSkills'
 import { normalizePartyRewardMultipliers, DUNGEON_TIER_META, getDungeonTierAreaLevel, getDungeonTierDisplayName } from '@/shared/types'
 import type { ExpeditionRequest, Goblin, Dungeon, Party, DungeonTier } from '@/shared/types'
@@ -29,12 +29,13 @@ function formatMultiplier(value: number): string {
 
 interface MemberSlotProps {
   goblin?: Goblin
+  partyMembers: readonly Goblin[]
   isEmpty: boolean
   slotSize: number
   avatarSize: number
 }
 
-function MemberSlot({ goblin, isEmpty, slotSize, avatarSize }: MemberSlotProps) {
+function MemberSlot({ goblin, partyMembers, isEmpty, slotSize, avatarSize }: MemberSlotProps) {
   if (isEmpty || !goblin) {
     return (
       <View style={[styles.memberSlot, { width: slotSize }]}>
@@ -45,7 +46,7 @@ function MemberSlot({ goblin, isEmpty, slotSize, avatarSize }: MemberSlotProps) 
     )
   }
 
-  const stats = getEffectiveStats(goblin)
+  const stats = getPartyEffectiveStats(goblin, partyMembers)
   const currentHp = goblin.currentHp ?? stats.hp
   const isInjured = currentHp === 0
 
@@ -393,7 +394,7 @@ export default function ExpeditionPreparationScreen() {
 
               <View style={styles.membersRow}>
                 {slots.map((goblin, index) => (
-                  <MemberSlot key={index} goblin={goblin} isEmpty={!goblin} slotSize={slotSize} avatarSize={avatarSize} />
+                  <MemberSlot key={index} goblin={goblin} partyMembers={partyMembers} isEmpty={!goblin} slotSize={slotSize} avatarSize={avatarSize} />
                 ))}
               </View>
             </TouchableOpacity>
