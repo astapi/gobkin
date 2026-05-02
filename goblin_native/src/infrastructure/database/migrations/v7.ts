@@ -9,7 +9,7 @@ const LEGACY_RACE_TO_ID: Record<string, string> = {
   ホブゴブリン: 'hobgoblin',
   ドワーフゴブリン: 'dwarf',
   エルフゴブリン: 'elf',
-  リザードゴブリン: 'lizardman',
+  スケイルゴブリン: 'lizardman',
   トロルゴブリン: 'troll',
 }
 

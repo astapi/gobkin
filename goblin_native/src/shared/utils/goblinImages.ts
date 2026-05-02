@@ -12,7 +12,8 @@ const goblinImages: Record<string, ImageSourcePropType> = {
   orc_goblin: require('../../../assets/goblin/orc_goblin.png'),
   skelton_goblin: require('../../../assets/goblin/skelton_goblin.png'),
   troll_goblin: require('../../../assets/goblin/troll_goblin.png'),
-  lizard_goblin: require('../../../assets/goblin/goblin.png'),
+  scale_goblin: require('../../../assets/goblin/scale_goblin.png'),
+  scale_goblin_battle: require('../../../assets/goblin/scale_goblin_battle.png'),
   elf_goblin: require('../../../assets/goblin/goblin.png'),
   dwarf_goblin: require('../../../assets/goblin/goblin.png'),
   goblin_guard: require('../../../assets/goblin/goblin_guard.png'),
@@ -93,6 +94,10 @@ export function getGoblinDisplayImage(goblin: Pick<Goblin, 'avatar' | 'race' | '
  * 一部ジョブは通常表示と別の戦闘専用画像を持つ
  */
 export function getGoblinBattleImage(goblin: Pick<Goblin, 'avatar' | 'race' | 'job' | 'raceId'>): ImageSourcePropType {
+  if (normalizeGoblinRaceId(goblin.raceId ?? goblin.race) === 'lizardman') {
+    return goblinImages.scale_goblin_battle
+  }
+
   if (normalizeGoblinRaceId(goblin.raceId ?? goblin.race) === 'goblin' && goblin.job === 'rider') {
     return goblinImages.goblin_rider_battle
   }

@@ -449,7 +449,7 @@ const ja = {
       hobgoblin: 'ホブゴブリン',
       dwarf: 'ドワーフゴブリン',
       elf: 'エルフゴブリン',
-      lizardman: 'リザードゴブリン',
+      lizardman: 'スケイルゴブリン',
       troll: 'トロルゴブリン',
     },
     baseLocation: {

@@ -424,8 +424,8 @@ describe('characterSkills - 物理ダメージ軽減', () => {
     expect(getDefaultSkillsForRace('ウルフゴブリン').map((skill) => skill.id)).not.toContain('goblin_pack_tactics')
   })
 
-  it('リザードゴブリンのデフォルトスキルに2列攻撃を含める', () => {
-    expect(getDefaultSkillsForRace('リザードゴブリン').map((skill) => skill.id)).toContain('two_column_attack')
+  it('スケイルゴブリンのデフォルトスキルに2列攻撃を含める', () => {
+    expect(getDefaultSkillsForRace('スケイルゴブリン').map((skill) => skill.id)).toContain('two_column_attack')
   })
 
   it('スキル一覧取得時も同じidは1件にまとまる', () => {

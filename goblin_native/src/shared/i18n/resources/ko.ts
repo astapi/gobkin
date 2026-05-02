@@ -449,7 +449,7 @@ const ko = {
       hobgoblin: '홉고블린',
       dwarf: '드워프 고블린',
       elf: '엘프 고블린',
-      lizardman: '리자드 고블린',
+      lizardman: '스케일 고블린',
       troll: '트롤 고블린',
     },
     baseLocation: {

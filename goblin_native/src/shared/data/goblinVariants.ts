@@ -246,7 +246,7 @@ export const goblinVariantDefinitions: Record<string, GoblinVariantDefinition> =
     variantProbability: 0.1
   },
   lizardman: {
-    avatar: "/src/assets/goblin/lizard_goblin.png",
+    avatar: "/src/assets/goblin/scale_goblin.png",
     defaultSkillIds: [
       "two_column_attack"
     ],
@@ -270,10 +270,10 @@ export const goblinVariantDefinitions: Record<string, GoblinVariantDefinition> =
     ],
     factorId: "lizardman",
     factorName: "リザードマン因子",
-    imageKey: "lizard_goblin",
+    imageKey: "scale_goblin",
     inheritProbability: 0.15,
     raceId: "lizardman",
-    raceName: "リザードゴブリン",
+    raceName: "スケイルゴブリン",
     variantProbability: 0.1
   },
   troll: {
