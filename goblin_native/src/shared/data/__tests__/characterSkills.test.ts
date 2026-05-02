@@ -18,6 +18,7 @@ import {
   getSkillStatBonuses,
   getSkillStatMultipliers,
   hasCoverLowHpAllySkill,
+  hasTwoColumnAttackSkill,
   hasActTwicePerTurnSkill,
   hasImmediateReviveSkill,
   hasRecoverRandomUsedSpellOnDefendSkill,
@@ -192,6 +193,11 @@ describe('characterSkills - 物理ダメージ軽減', () => {
     ]
 
     expect(getRearAllyDamageMultiplierFromSkills(skills)).toBe(1.5)
+  })
+
+  it('2列攻撃スキルの有無を判定できる', () => {
+    expect(hasTwoColumnAttackSkill([{ id: 'two_column_attack', twoColumnAttack: true }])).toBe(true)
+    expect(hasTwoColumnAttackSkill([{ id: 'other' }])).toBe(false)
   })
 
   it('遠征時間倍率スキルはPT内で重複せず乗算される', () => {
@@ -416,6 +422,10 @@ describe('characterSkills - 物理ダメージ軽減', () => {
   it('純粋なゴブリンのデフォルトスキルに群れを含める', () => {
     expect(getDefaultSkillsForRace('ゴブリン').map((skill) => skill.id)).toContain('goblin_pack_tactics')
     expect(getDefaultSkillsForRace('ウルフゴブリン').map((skill) => skill.id)).not.toContain('goblin_pack_tactics')
+  })
+
+  it('リザードゴブリンのデフォルトスキルに2列攻撃を含める', () => {
+    expect(getDefaultSkillsForRace('リザードゴブリン').map((skill) => skill.id)).toContain('two_column_attack')
   })
 
   it('スキル一覧取得時も同じidは1件にまとまる', () => {

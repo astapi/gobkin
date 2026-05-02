@@ -821,6 +821,73 @@ describe('BattleSystem — 命中判定と複数回攻撃', () => {
     }
   })
 
+  it('2列攻撃は対象の1列後ろの敵にも個別命中で攻撃する', () => {
+    const attacker = createTestGoblin({
+      stats: { hp: 100, atk: 50, agility: 100, def: 10, attackCount: 1, accuracy: 999, evasion: 10 },
+      skills: [{ id: 'two_column_attack', twoColumnAttack: true }],
+      battleActionPolicy: { attackRate: 100, clericMagicRate: 0, mageMagicRate: 0 },
+    })
+    const enemies = [
+      [createTestEnemy({ id: 'E_FRONT', name: '前列敵', hp: 9999, agility: 1, evasion: 0 })],
+      [createTestEnemy({ id: 'E_BACK', name: '後列敵', hp: 9999, agility: 1, evasion: 0 })],
+    ]
+
+    const result = new BattleSystem().executeBattle([attacker], [100], enemies, () => 0, 1)
+    const log = result.detailedLog.find(entry => entry.action === '通常攻撃' && entry.isAlly)!
+
+    expect(log.attackCount).toBe(1)
+    expect(log.hitCount).toBe(2)
+    expect(log.targets.map(target => target.targetId)).toEqual(['E_FRONT', 'E_BACK'])
+    expect(log.targets.map(target => target.targetRow)).toEqual([1, 2])
+    const frontDamage = log.targets.find(target => target.targetId === 'E_FRONT')!.totalDamage
+    const backDamage = log.targets.find(target => target.targetId === 'E_BACK')!.totalDamage
+    expect(backDamage).toBe(Math.floor(frontDamage * 0.5))
+  })
+
+  it('2列攻撃の追加対象は主対象のミスと独立して命中判定される', () => {
+    const attacker = createTestGoblin({
+      stats: { hp: 100, atk: 50, agility: 100, def: 10, attackCount: 1, accuracy: 999, evasion: 10 },
+      skills: [{ id: 'two_column_attack', twoColumnAttack: true }],
+      battleActionPolicy: { attackRate: 100, clericMagicRate: 0, mageMagicRate: 0 },
+    })
+    const enemies = [
+      [createTestEnemy({ id: 'E_FRONT', name: '前列敵', hp: 9999, agility: 1, evasion: 999 })],
+      [createTestEnemy({ id: 'E_BACK', name: '後列敵', hp: 9999, agility: 1, evasion: 0 })],
+    ]
+
+    const result = new BattleSystem().executeBattle([attacker], [100], enemies, () => 0.5, 1)
+    const log = result.detailedLog.find(entry => entry.action === '通常攻撃' && entry.isAlly)!
+
+    expect(log.attackCount).toBe(1)
+    expect(log.hitCount).toBe(1)
+    expect(log.targets.map(target => target.targetId)).toEqual(['E_BACK'])
+    expect(log.targets.map(target => target.targetRow)).toEqual([2])
+  })
+
+  it('2列攻撃は6列目を対象にした場合は追加攻撃しない', () => {
+    const attacker = createTestGoblin({
+      stats: { hp: 100, atk: 50, agility: 100, def: 10, attackCount: 1, accuracy: 999, evasion: 10 },
+      skills: [{ id: 'two_column_attack', twoColumnAttack: true }],
+      battleActionPolicy: { attackRate: 100, clericMagicRate: 0, mageMagicRate: 0 },
+    })
+    const enemies = [
+      [],
+      [],
+      [],
+      [],
+      [],
+      [createTestEnemy({ id: 'E_ROW_6', name: '6列目敵', hp: 9999, agility: 1, evasion: 0 })],
+    ]
+
+    const result = new BattleSystem().executeBattle([attacker], [100], enemies, () => 0, 1)
+    const log = result.detailedLog.find(entry => entry.action === '通常攻撃' && entry.isAlly)!
+
+    expect(log.attackCount).toBe(1)
+    expect(log.hitCount).toBe(1)
+    expect(log.targets.map(target => target.targetId)).toEqual(['E_ROW_6'])
+    expect(log.targets.map(target => target.targetRow)).toEqual([6])
+  })
+
   it('ウルフゴブリンの追加ダメージは通常攻撃へ固定値で加算される', () => {
     const enemies = [[createTestEnemy({ hp: 9999, agility: 1, evasion: 0, def: 0 })]]
     const rngA = createSeededRng(42)

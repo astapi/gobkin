@@ -283,6 +283,11 @@ export const CHARACTER_SKILL_CATALOG = {
     coverLowHpAlly: true,
   },
 
+  two_column_attack: {
+    id: 'two_column_attack',
+    twoColumnAttack: true,
+  },
+
   two_actions: {
     id: 'two_actions',
     actTwicePerTurn: true,
