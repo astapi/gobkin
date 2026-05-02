@@ -309,8 +309,18 @@ export const GoblinVariantSeedSchema = z.object({
   defaultSkillIds: z.array(z.string()).optional(),
 })
 
+export const GoblinFactorSeedSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  description: z.string(),
+  inheritProbability: z.number(),
+  effects: z.array(GoblinFactorEffectSchema),
+  source: z.enum(['variant', 'standalone']).optional(),
+})
+
 export const GoblinStudioDataSchema = z.object({
   races: z.array(GoblinRaceEntrySchema),
+  factors: z.array(GoblinFactorSeedSchema),
   jobs: z.array(GoblinJobSeedSchema),
   variants: z.array(GoblinVariantSeedSchema),
 })
@@ -321,4 +331,5 @@ export type GoblinRaceEntry = z.infer<typeof GoblinRaceEntrySchema>
 export type GoblinJobSkillSeed = z.infer<typeof GoblinJobSkillSeedSchema>
 export type GoblinJobSeed = z.infer<typeof GoblinJobSeedSchema>
 export type GoblinVariantSeed = z.infer<typeof GoblinVariantSeedSchema>
+export type GoblinFactorSeed = z.infer<typeof GoblinFactorSeedSchema>
 export type GoblinStudioData = z.infer<typeof GoblinStudioDataSchema>

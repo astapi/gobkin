@@ -109,8 +109,18 @@ interface GoblinVariantSeed {
   defaultSkillIds?: string[]
 }
 
+interface GoblinFactorSeed {
+  id: string
+  name: string
+  description: string
+  inheritProbability: number
+  effects: GoblinFactorEffect[]
+  source?: 'variant' | 'standalone'
+}
+
 interface GoblinStudioData {
   races: GoblinRaceEntry[]
+  factors: GoblinFactorSeed[]
   jobs: GoblinJobSeed[]
   variants: GoblinVariantSeed[]
 }
@@ -120,6 +130,7 @@ export function dataApiPlugin(options: Options): Plugin {
   const enemyDir = path.join(options.appSrc, 'shared', 'data', 'enemy')
   const storyFile = path.join(options.appSrc, 'shared', 'data', 'story', 'stories.json')
   const racesFile = path.join(options.appSrc, 'shared', 'data', 'races.ts')
+  const factorsFile = path.join(options.appSrc, 'shared', 'data', 'factors.ts')
   const jobsFile = path.join(options.appSrc, 'shared', 'data', 'goblinJobs.ts')
   const variantsFile = path.join(options.appSrc, 'shared', 'data', 'goblinVariants.ts')
   const equipmentPoolFile = path.join(options.appSrc, 'shared', 'data', 'equipmentPool.json')
@@ -304,7 +315,7 @@ export function dataApiPlugin(options: Options): Plugin {
             return json(
               res,
               200,
-              await readGoblinStudioData({ racesFile, jobsFile, variantsFile }),
+              await readGoblinStudioData({ racesFile, factorsFile, jobsFile, variantsFile }),
             )
           }
           if (req.method === 'PUT') {
@@ -313,7 +324,7 @@ export function dataApiPlugin(options: Options): Plugin {
               res,
               200,
               await writeGoblinStudioData(
-                { racesFile, jobsFile, variantsFile },
+                { racesFile, factorsFile, jobsFile, variantsFile },
                 body,
               ),
             )
@@ -734,11 +745,13 @@ function sortStories(stories: StoryRecord[]) {
 
 async function readGoblinStudioData(paths: {
   racesFile: string
+  factorsFile: string
   jobsFile: string
   variantsFile: string
 }): Promise<GoblinStudioData> {
-  const [racesSource, jobsSource, variantsSource] = await Promise.all([
+  const [racesSource, factorsSource, jobsSource, variantsSource] = await Promise.all([
     fs.readFile(paths.racesFile, 'utf8'),
+    fs.readFile(paths.factorsFile, 'utf8'),
     fs.readFile(paths.jobsFile, 'utf8'),
     fs.readFile(paths.variantsFile, 'utf8'),
   ])
@@ -765,6 +778,25 @@ async function readGoblinStudioData(paths: {
   const variantsObject = evaluateObjectLiteral<Record<string, GoblinVariantSeed>>(
     extractConstObjectLiteral(variantsSource, 'goblinVariantDefinitions'),
   )
+  const standaloneFactorsObject = evaluateObjectLiteral<Record<string, GoblinFactorSeed>>(
+    extractConstObjectLiteral(factorsSource, 'standaloneFactorDatabase'),
+  )
+  const variantFactors: GoblinFactorSeed[] = Object.values(variantsObject).map((variant) => ({
+    id: variant.factorId,
+    name: variant.factorName,
+    description: variant.factorDescription,
+    inheritProbability: variant.inheritProbability,
+    effects: variant.factorEffects,
+    source: 'variant',
+  }))
+  const standaloneFactors: GoblinFactorSeed[] = Object.values(standaloneFactorsObject).map((factor) => ({
+    id: factor.id,
+    name: factor.name,
+    description: factor.description,
+    inheritProbability: factor.inheritProbability,
+    effects: factor.effects,
+    source: 'standalone',
+  }))
 
   return {
     races: Object.entries(racesObject).map(([id, value]) => ({
@@ -777,6 +809,7 @@ async function readGoblinStudioData(paths: {
       criticalResistancePercent: value.criticalResistancePercent,
       magicResistancePercent: value.magicResistancePercent,
     })),
+    factors: [...variantFactors, ...standaloneFactors],
     jobs: Object.values(jobsObject),
     variants: Object.values(variantsObject),
   }
@@ -785,6 +818,7 @@ async function readGoblinStudioData(paths: {
 async function writeGoblinStudioData(
   paths: {
     racesFile: string
+    factorsFile: string
     jobsFile: string
     variantsFile: string
   },
@@ -794,8 +828,9 @@ async function writeGoblinStudioData(
     throw new Error('Invalid goblin data payload')
   }
 
-  const [racesSource, jobsSource, variantsSource] = await Promise.all([
+  const [racesSource, factorsSource, jobsSource, variantsSource] = await Promise.all([
     fs.readFile(paths.racesFile, 'utf8'),
+    fs.readFile(paths.factorsFile, 'utf8'),
     fs.readFile(paths.jobsFile, 'utf8'),
     fs.readFile(paths.variantsFile, 'utf8'),
   ])
@@ -814,9 +849,39 @@ async function writeGoblinStudioData(
       },
     ]),
   )
+  const factorsById = new Map(body.factors.map((factor) => [factor.id, factor]))
   const jobsObject = Object.fromEntries(body.jobs.map((job) => [job.id, job]))
   const variantsObject = Object.fromEntries(
-    body.variants.map((variant) => [variant.factorId, variant]),
+    body.variants.map((variant) => {
+      const factor = factorsById.get(variant.factorId)
+      return [
+        variant.factorId,
+        factor
+          ? {
+              ...variant,
+              factorName: factor.name,
+              factorDescription: factor.description,
+              inheritProbability: factor.inheritProbability,
+              factorEffects: factor.effects,
+            }
+          : variant,
+      ]
+    }),
+  )
+  const variantFactorIds = new Set(body.variants.map((variant) => variant.factorId))
+  const standaloneFactorsObject = Object.fromEntries(
+    body.factors
+      .filter((factor) => !variantFactorIds.has(factor.id))
+      .map((factor) => [
+        factor.id,
+        {
+          id: factor.id,
+          name: factor.name,
+          description: factor.description,
+          inheritProbability: factor.inheritProbability,
+          effects: factor.effects,
+        },
+      ]),
   )
 
   const nextRaces = replaceConstObjectLiteral(
@@ -829,6 +894,11 @@ async function writeGoblinStudioData(
     'GOBLIN_JOB_DEFINITION_SEEDS',
     formatJsValue(jobsObject, 0),
   )
+  const nextFactors = replaceConstObjectLiteral(
+    factorsSource,
+    'standaloneFactorDatabase',
+    formatJsValue(standaloneFactorsObject, 0),
+  )
   const nextVariants = replaceConstObjectLiteral(
     variantsSource,
     'goblinVariantDefinitions',
@@ -837,6 +907,7 @@ async function writeGoblinStudioData(
 
   await Promise.all([
     fs.writeFile(paths.racesFile, nextRaces, 'utf8'),
+    fs.writeFile(paths.factorsFile, nextFactors, 'utf8'),
     fs.writeFile(paths.jobsFile, nextJobs, 'utf8'),
     fs.writeFile(paths.variantsFile, nextVariants, 'utf8'),
   ])
@@ -981,6 +1052,7 @@ function isGoblinStudioDataShape(value: unknown): value is GoblinStudioData {
   const record = value as Record<string, unknown>
   return (
     Array.isArray(record.races) &&
+    Array.isArray(record.factors) &&
     Array.isArray(record.jobs) &&
     Array.isArray(record.variants)
   )
