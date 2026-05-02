@@ -77,30 +77,51 @@ const ROSTERS = {
   // アサシンリザードは evasion も大幅up（暗殺者らしさ）
   // _3 はボス B_SWAMPKING キングリザードマン
   'lizardman_swamp_1.json': [
+    // #207 で LIZ001 に two_column_attack を付与（前列攻撃時に1列後ろの敵にも 0.5倍ダメージ）
     { id: 'LIZ001', name: 'リザードマン', archetype: 'warrior', level: 36, raceTags: ['lizardman'],
-      overrides: { attackCount: 5, accuracy: 600 } },
+      overrides: { attackCount: 5, accuracy: 600 },
+      extraSkills: [{ id: 'two_column_attack', twoColumnAttack: true }] },
     { id: 'LIZ002', name: 'アサシンリザード', archetype: 'archer', level: 36, raceTags: ['lizardman'],
       overrides: { attackCount: 5, accuracy: 620, evasion: 60 } },
   ],
   'lizardman_swamp_2.json': [
     { id: 'LIZ001', name: 'リザードマン', archetype: 'warrior', level: 42, raceTags: ['lizardman'],
-      overrides: { attackCount: 5, accuracy: 630 } },
+      overrides: { attackCount: 5, accuracy: 630 },
+      extraSkills: [{ id: 'two_column_attack', twoColumnAttack: true }] },
     { id: 'LIZ002', name: 'アサシンリザード', archetype: 'archer', level: 42, raceTags: ['lizardman'],
       overrides: { attackCount: 5, accuracy: 650, evasion: 68 } },
   ],
   'lizardman_swamp_3.json': [
     { id: 'LIZ001', name: 'リザードマン', archetype: 'warrior', level: 44, raceTags: ['lizardman'],
-      overrides: { attackCount: 6, accuracy: 640 } },
+      overrides: { attackCount: 6, accuracy: 640 },
+      extraSkills: [{ id: 'two_column_attack', twoColumnAttack: true }] },
     { id: 'LIZ002', name: 'アサシンリザード', archetype: 'archer', level: 44, raceTags: ['lizardman'],
       overrides: { attackCount: 6, accuracy: 660, evasion: 70 } },
+    // factorDrops は #210 の確率統一対応（0.015）。boss 専用ドロップとして残す。
     { id: 'B_SWAMPKING', name: 'キングリザードマン', archetype: 'boss', level: 55, raceTags: ['lizardman'],
-      overrides: { attackCount: 8, accuracy: 680, evasion: 60 } },
+      overrides: {
+        attackCount: 8, accuracy: 680, evasion: 60,
+        factorDrops: [{ factorId: 'lizardman', probability: 0.015 }],
+      } },
   ],
   'orc_fortress_1.json': [
-    { id: 'ORF001', name: 'オーク重装兵', archetype: 'heavy', level: 48, raceTags: ['orc'] },
-    { id: 'ORF002', name: 'オーク砦弓兵', archetype: 'archer', level: 46, raceTags: ['orc'] },
-    { id: 'ORF003', name: '雇われトロル', archetype: 'heavy', level: 50, raceTags: ['troll'] },
-    { id: 'B_ORC_FORTRESS', name: 'オーク砦守将', archetype: 'boss', level: 60, raceTags: ['orc'] },
+    // 2026-05-02: counter_attack/physical_reduction_5 等のスキル追加で推奨Lvが
+    // 54→66 に跳ね上がったため、敵Lvを-6し推奨Lvを ~60 に戻す。
+    // 名前は #206 で確定した in-game 表記（オーク弓兵/トロル/オークチャンピオン）を維持。
+    // extraSkills は #206 で付与した追加スキル（archetype skills の上に重ねる）。
+    { id: 'ORF001', name: 'オーク重装兵', archetype: 'heavy', level: 42, raceTags: ['orc'],
+      extraSkills: [
+        { id: 'counter_attack', physicalCounterAttack: { attackCountMultiplier: 0.3, criticalRateMultiplier: 0.5 } },
+      ] },
+    { id: 'ORF002', name: 'オーク弓兵', archetype: 'archer', level: 40, raceTags: ['orc'] },
+    { id: 'ORF003', name: 'トロル', archetype: 'heavy', level: 44, raceTags: ['troll'],
+      extraSkills: [
+        { id: 'physical_reduction_5', physicalDamageReductionPercent: 5 },
+      ] },
+    { id: 'B_ORC_FORTRESS', name: 'オークチャンピオン', archetype: 'boss', level: 54, raceTags: ['orc'],
+      extraSkills: [
+        { id: 'counter_attack', physicalCounterAttack: { attackCountMultiplier: 0.3, criticalRateMultiplier: 0.5 } },
+      ] },
   ],
   'subjugation_force_1.json': [
     // orc_fortress(推奨Lv54) より上を目指す。Lv66+, HUM005 aC6
@@ -146,7 +167,7 @@ function buildEnemy(spec) {
     evasion: arch.evasion,
     exp: Math.round(arch.exp * ratio),
     gold: Math.round(arch.gold * ratio),
-    skills: arch.skills,
+    skills: spec.extraSkills ? [...arch.skills, ...spec.extraSkills] : arch.skills,
     baseAttributes: arch.baseAttributes,
   }
   if (arch.magicAtk !== undefined) out.magicAtk = Math.round(arch.magicAtk * ratio)
@@ -191,7 +212,8 @@ const PATTERN_OVERRIDES = {
     { id: 'SF1_010', floors: [3], enemies: [['HUM005', 'HUM005'], ['HUM001', 'HUM001'], ['HUM001', 'HUM001'], ['HUM003', 'HUM003'], ['HUM002', 'HUM004']] },
   ],
   'orc_fortress_1.json': [
-    // floor 1: 6-7 enemies, 重装+弓 mix
+    // #206 で 5階構成に拡張。floor 4-5 のパターン (OF1_009〜012) と BOSS は floor 5。
+    // floor 1: 重装+弓 mix
     { id: 'OF1_001', floors: [1], enemies: [
       ['ORF001', 'ORF001'],
       ['ORF002', 'ORF002'],
@@ -208,7 +230,7 @@ const PATTERN_OVERRIDES = {
       ['ORF002', 'ORF002', 'ORF002'],
       ['ORF002', 'ORF002'],
     ] },
-    // floor 2: 7-8 enemies, トロルが入る
+    // floor 2: トロルが入る
     { id: 'OF1_004', floors: [2], enemies: [
       ['ORF003'],
       ['ORF001', 'ORF001'],
@@ -227,7 +249,7 @@ const PATTERN_OVERRIDES = {
       ['ORF002', 'ORF002'],
       ['ORF002', 'ORF002'],
     ] },
-    // floor 3: 8 enemies non-boss + boss pattern
+    // floor 3
     { id: 'OF1_007', floors: [3], enemies: [
       ['ORF003', 'ORF003'],
       ['ORF001', 'ORF001'],
@@ -241,7 +263,37 @@ const PATTERN_OVERRIDES = {
       ['ORF002', 'ORF002'],
       ['ORF002', 'ORF002'],
     ] },
-    { id: 'BOSS', floors: [3], isBoss: true, enemies: [
+    // floor 4
+    { id: 'OF1_009', floors: [4], enemies: [
+      ['ORF003', 'ORF003'],
+      ['ORF001', 'ORF001'],
+      ['ORF001'],
+      ['ORF002', 'ORF002'],
+      ['ORF002', 'ORF002'],
+    ] },
+    { id: 'OF1_010', floors: [4], enemies: [
+      ['ORF003', 'ORF001'],
+      ['ORF003'],
+      ['ORF001', 'ORF001'],
+      ['ORF002', 'ORF002'],
+      ['ORF002', 'ORF002'],
+    ] },
+    // floor 5: 通常戦 + ボス
+    { id: 'OF1_011', floors: [5], enemies: [
+      ['ORF003', 'ORF003'],
+      ['ORF001', 'ORF001'],
+      ['ORF001', 'ORF002'],
+      ['ORF002', 'ORF002'],
+      ['ORF002', 'ORF002'],
+    ] },
+    { id: 'OF1_012', floors: [5], enemies: [
+      ['ORF003', 'ORF001'],
+      ['ORF003', 'ORF001'],
+      ['ORF001', 'ORF001'],
+      ['ORF002', 'ORF002'],
+      ['ORF002', 'ORF002'],
+    ] },
+    { id: 'BOSS', floors: [5], isBoss: true, enemies: [
       ['B_ORC_FORTRESS'],
       ['ORF003', 'ORF003'],
       ['ORF001', 'ORF001'],
