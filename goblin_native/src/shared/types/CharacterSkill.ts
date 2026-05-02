@@ -11,6 +11,11 @@ export type MagicDamageFollowUp = {
   criticalRateMultiplier: number
 }
 
+export type PhysicalCounterAttack = {
+  attackCountMultiplier: number
+  criticalRateMultiplier: number
+}
+
 export interface CharacterSkill {
   id: string
   descriptionKey?: string
@@ -61,6 +66,7 @@ export interface CharacterSkill {
   mageMagicLevel?: number
   magicDamageFollowUp?: MagicDamageFollowUp
   criticalAttackFollowUp?: MagicDamageFollowUp
+  physicalCounterAttack?: PhysicalCounterAttack
   pureGoblinPartyStatBonusPercent?: number
   pureGoblinPartyStatBonusMinLevel?: number
 }

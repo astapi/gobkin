@@ -30,6 +30,15 @@ function cloneSkill(skill: CharacterSkill): CharacterSkill {
     equipmentStatMultipliers: skill.equipmentStatMultipliers
       ? { ...skill.equipmentStatMultipliers }
       : undefined,
+    magicDamageFollowUp: skill.magicDamageFollowUp
+      ? { ...skill.magicDamageFollowUp }
+      : undefined,
+    criticalAttackFollowUp: skill.criticalAttackFollowUp
+      ? { ...skill.criticalAttackFollowUp }
+      : undefined,
+    physicalCounterAttack: skill.physicalCounterAttack
+      ? { ...skill.physicalCounterAttack }
+      : undefined,
   }
 }
 

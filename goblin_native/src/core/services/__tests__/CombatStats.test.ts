@@ -1802,6 +1802,105 @@ describe('spell charges', () => {
     expect(result.detailedLog.some(log => log.action === '魔法支援')).toBe(false)
   })
 
+  it('打ち合い持ちは物理攻撃を受けた時に攻撃者へ反撃する', () => {
+    const defender = createTestGoblin({
+      id: 1,
+      stats: { hp: 300, atk: 80, agility: 1, def: 10, attackCount: 10, accuracy: 999, evasion: 0, criticalRate: 100 },
+      effectiveStats: { hp: 300, atk: 80, magicAtk: 0, def: 10, magicDef: 10, attackCount: 10, accuracy: 999, evasion: 0, magicHeal: 10, criticalRate: 100 },
+      baseAttributes: { power: 100, wisdom: 10, spirit: 10, vitality: 10, agility: 1, luck: 10 },
+      skills: [getCharacterSkill('counter_attack')],
+      battleActionPolicy: { attackRate: 0, clericMagicRate: 0, mageMagicRate: 0 },
+    })
+    const enemy = createTestEnemy({
+      id: 'ATTACKER',
+      hp: 999,
+      atk: 20,
+      def: 1,
+      accuracy: 999,
+      evasion: 0,
+      agility: 100,
+    })
+
+    const result = new BattleSystem().executeBattle(
+      [defender],
+      [defender.stats.hp],
+      [[enemy]],
+      () => 0.4,
+      1,
+    )
+    const counterLog = result.detailedLog.find(log => log.actorId === '1' && log.action === '打ち合い')
+
+    expect(counterLog?.attackCount).toBe(3)
+    expect(counterLog?.hitCount).toBe(3)
+    expect(counterLog?.isCritical).toBe(true)
+    expect(counterLog?.targets[0]?.targetId).toBe('ATTACKER')
+  })
+
+  it('打ち合いによる反撃にも打ち合いが発生する', () => {
+    const defender = createTestGoblin({
+      id: 1,
+      stats: { hp: 120, atk: 20, agility: 1, def: 10, attackCount: 10, accuracy: 999, evasion: 0, criticalRate: 0 },
+      effectiveStats: { hp: 120, atk: 20, magicAtk: 0, def: 10, magicDef: 10, attackCount: 10, accuracy: 999, evasion: 0, magicHeal: 10, criticalRate: 0 },
+      baseAttributes: { power: 100, wisdom: 10, spirit: 10, vitality: 10, agility: 1, luck: 10 },
+      skills: [getCharacterSkill('counter_attack')],
+      battleActionPolicy: { attackRate: 0, clericMagicRate: 0, mageMagicRate: 0 },
+    })
+    const enemy = createTestEnemy({
+      id: 'ATTACKER',
+      hp: 160,
+      atk: 20,
+      def: 10,
+      attackCount: 1,
+      accuracy: 999,
+      evasion: 0,
+      agility: 100,
+      baseAttributes: { power: 100, wisdom: 10, spirit: 10, vitality: 10, agility: 100, luck: 10 },
+      skills: [getCharacterSkill('counter_attack')],
+    })
+
+    const result = new BattleSystem().executeBattle(
+      [defender],
+      [defender.stats.hp],
+      [[enemy]],
+      () => 0.4,
+      1,
+    )
+    const counterLogs = result.detailedLog.filter(log => log.action === '打ち合い')
+
+    expect(counterLogs.some(log => log.actorId === '1' && log.targets[0]?.targetId === 'ATTACKER')).toBe(true)
+    expect(counterLogs.some(log => log.actorId === 'ATTACKER' && log.targets[0]?.targetId === '1')).toBe(true)
+  })
+
+  it('打ち合いは力の発動率に失敗すると反撃しない', () => {
+    const defender = createTestGoblin({
+      id: 1,
+      stats: { hp: 300, atk: 80, agility: 1, def: 10, attackCount: 10, accuracy: 999, evasion: 0, criticalRate: 100 },
+      effectiveStats: { hp: 300, atk: 80, magicAtk: 0, def: 10, magicDef: 10, attackCount: 10, accuracy: 999, evasion: 0, magicHeal: 10, criticalRate: 100 },
+      baseAttributes: { power: 0, wisdom: 10, spirit: 10, vitality: 10, agility: 1, luck: 10 },
+      skills: [getCharacterSkill('counter_attack')],
+      battleActionPolicy: { attackRate: 0, clericMagicRate: 0, mageMagicRate: 0 },
+    })
+    const enemy = createTestEnemy({
+      id: 'ATTACKER',
+      hp: 999,
+      atk: 20,
+      def: 1,
+      accuracy: 999,
+      evasion: 0,
+      agility: 100,
+    })
+
+    const result = new BattleSystem().executeBattle(
+      [defender],
+      [defender.stats.hp],
+      [[enemy]],
+      () => 0,
+      1,
+    )
+
+    expect(result.detailedLog.some(log => log.action === '打ち合い')).toBe(false)
+  })
+
   it('ヒールは魔法回復量ぶん最も傷ついた味方を回復する', () => {
     const battleSystem = new BattleSystem()
     const attacker = createTestGoblin({
