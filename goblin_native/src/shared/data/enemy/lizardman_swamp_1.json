@@ -20,6 +20,10 @@
         {
           "id": "physical_reduction_10",
           "physicalDamageReductionPercent": 10
+        },
+        {
+          "id": "two_column_attack",
+          "twoColumnAttack": true
         }
       ],
       "baseAttributes": {

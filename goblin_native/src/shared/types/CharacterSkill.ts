@@ -44,6 +44,7 @@ export interface CharacterSkill {
   protectRearAllyNormalAttackMultiplier?: number
   rearAllyDamageMultiplier?: number
   coverLowHpAlly?: boolean
+  twoColumnAttack?: boolean
   actTwicePerTurn?: boolean
   surviveLethalDamageAtHp1?: boolean
   recoverRandomUsedSpellOnDefend?: boolean

@@ -247,7 +247,9 @@ export const goblinVariantDefinitions: Record<string, GoblinVariantDefinition> =
   },
   lizardman: {
     avatar: "/src/assets/goblin/lizard_goblin.png",
-    defaultSkillIds: [],
+    defaultSkillIds: [
+      "two_column_attack"
+    ],
     factorDescription: "リザードマンの特性を宿した因子。全体的な耐性とHPが増す。",
     factorEffects: [
       {

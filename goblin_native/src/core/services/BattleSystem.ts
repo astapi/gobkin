@@ -18,6 +18,7 @@ import {
   getSpellTakenMultiplierFromSkills,
   getSpellDamagePercentFromSkills,
   hasCoverLowHpAllySkill,
+  hasTwoColumnAttackSkill,
   hasActTwicePerTurnSkill,
   hasImmediateReviveSkill,
   hasRecoverRandomUsedSpellOnDefendSkill,
@@ -130,6 +131,7 @@ const SPELL_DAMAGE_OPTIONS: DamageOptions = {
 
 const CLERIC_MAGIC_SPELL_IDS = new Set(RECOVERY_MAGIC_SPELL_TABLE.map(entry => entry.spellId))
 const ATTACK_UP_PHYSICAL_DAMAGE_MULTIPLIER = 1.6
+const TWO_COLUMN_ATTACK_DAMAGE_MULTIPLIER = 0.5
 
 /** レベル帯ごとの魔法追加ダメージ制限倍率 */
 const SPELL_BONUS_LEVEL_LIMIT_BY_LEVEL: { maxLevel: number; multiplier: number }[] = [
@@ -606,55 +608,84 @@ export class BattleSystem {
 
       const initialTarget = fixedTarget ?? selectTarget(aliveTargets, rng)
       const target = fixedTarget ?? this.resolveCoverTarget(initialTarget, targetGroup)
+      const attackTargets = [{ target, damageMultiplier: 1 }]
+      const secondColumnTarget = this.selectSecondColumnAttackTarget(unit, target, targetGroup, rng)
+      if (secondColumnTarget) {
+        attackTargets.push({
+          target: secondColumnTarget,
+          damageMultiplier: TWO_COLUMN_ATTACK_DAMAGE_MULTIPLIER,
+        })
+      }
 
-      const hitRate = this.calculateHitRate(unit, target, atkIdx + 1, rng)
-      const isHit = rng() * 100 < hitRate
+      for (const { target: attackTarget, damageMultiplier } of attackTargets) {
+        if (unit.currentHP <= 0 || attackTarget.currentHP <= 0) continue
 
-      if (!isHit) continue
+        const hitRate = this.calculateHitRate(unit, attackTarget, atkIdx + 1, rng)
+        const isHit = rng() * 100 < hitRate
 
-      totalHitCount++
+        if (!isHit) continue
 
-      const damageTarget = isCritical
-        ? { ...target.combatant, def: Math.floor(target.combatant.def * 0.5) }
-        : target.combatant
-      const baseDamage = this.damageCalculator.calcDamage(
-        RACE_DICT,
-        unit.combatant,
-        damageTarget,
-        BASIC_ATTACK_SKILL,
-        DEFAULT_DAMAGE_OPTIONS,
-        rng,
-      )
-      const dmgMod = getDamageModifier(atkIdx + 1)
-      const additionalDamage = getAdditionalDamageFromSkills(unit.skills)
-      const rearDamageMultiplier = this.getRearDamageMultiplier(unit, sourceGroup)
-      const rowDamageMultiplier = getRowDamageMultiplierFromSkills(unit.skills, unit.row)
-      const reductionFactor = 1 - target.damageReduction / 100
-      const physicalReductionFactor = 1 - target.physicalDamageReduction / 100
-      const shieldBarrierReductionFactor = 1 - target.shieldBarrierDamageReduction / 100
-      const protectionFactor = this.getRearGuardReductionFactor(target, allyUnits)
-      const defendingFactor = this.getDefendingDamageFactor(target)
-      const physicalDamageFactor = 1 + unit.physicalDamagePercent / 100
-      const damage = Math.max(
-        1,
-        Math.floor((baseDamage * dmgMod * rearDamageMultiplier * rowDamageMultiplier + additionalDamage) * physicalDamageFactor * unit.physicalDamageDealtMultiplier * reductionFactor * physicalReductionFactor * shieldBarrierReductionFactor * protectionFactor * defendingFactor),
-      )
+        totalHitCount++
 
-      this.applyDamage(target, damage)
-      damagedTargets.set(this.getUnitKey(target), target)
-      this.tryImmediateReviveForFallenAlly(
-        target,
-        target.isAlly ? allyUnits : targetGroup,
-        currentTurn,
-        detailedLog,
-        turnActedUnitKeys,
-        turnConsumedUnitKeys,
-      )
+        const damageTarget = isCritical
+          ? { ...attackTarget.combatant, def: Math.floor(attackTarget.combatant.def * 0.5) }
+          : attackTarget.combatant
+        const baseDamage = this.damageCalculator.calcDamage(
+          RACE_DICT,
+          unit.combatant,
+          damageTarget,
+          BASIC_ATTACK_SKILL,
+          DEFAULT_DAMAGE_OPTIONS,
+          rng,
+        )
+        const dmgMod = getDamageModifier(atkIdx + 1)
+        const additionalDamage = getAdditionalDamageFromSkills(unit.skills)
+        const rearDamageMultiplier = this.getRearDamageMultiplier(unit, sourceGroup)
+        const rowDamageMultiplier = getRowDamageMultiplierFromSkills(unit.skills, unit.row)
+        const reductionFactor = 1 - attackTarget.damageReduction / 100
+        const physicalReductionFactor = 1 - attackTarget.physicalDamageReduction / 100
+        const shieldBarrierReductionFactor = 1 - attackTarget.shieldBarrierDamageReduction / 100
+        const protectionFactor = this.getRearGuardReductionFactor(attackTarget, allyUnits)
+        const defendingFactor = this.getDefendingDamageFactor(attackTarget)
+        const physicalDamageFactor = 1 + unit.physicalDamagePercent / 100
+        const damage = Math.max(
+          1,
+          Math.floor((baseDamage * dmgMod * rearDamageMultiplier * rowDamageMultiplier + additionalDamage) * physicalDamageFactor * unit.physicalDamageDealtMultiplier * reductionFactor * physicalReductionFactor * shieldBarrierReductionFactor * protectionFactor * defendingFactor * damageMultiplier),
+        )
 
-      this.accumulateTargetDetail(targetDetails, target, damage)
+        this.applyDamage(attackTarget, damage)
+        damagedTargets.set(this.getUnitKey(attackTarget), attackTarget)
+        this.tryImmediateReviveForFallenAlly(
+          attackTarget,
+          attackTarget.isAlly ? allyUnits : targetGroup,
+          currentTurn,
+          detailedLog,
+          turnActedUnitKeys,
+          turnConsumedUnitKeys,
+        )
+
+        this.accumulateTargetDetail(targetDetails, attackTarget, damage)
+      }
     }
 
     return { targetDetails, totalHitCount, isCritical, damagedTargets }
+  }
+
+  private selectSecondColumnAttackTarget(
+    attacker: BattleUnit,
+    primaryTarget: BattleUnit,
+    targetGroup: BattleUnit[],
+    rng: () => number,
+  ): BattleUnit | undefined {
+    if (!hasTwoColumnAttackSkill(attacker.skills)) return undefined
+    if (primaryTarget.row >= 5) return undefined
+
+    const backRowTargets = targetGroup.filter(
+      target => target.currentHP > 0 && target.row === primaryTarget.row + 1,
+    )
+    if (backRowTargets.length === 0) return undefined
+
+    return selectTarget(backRowTargets, rng)
   }
 
   private tryPhysicalCounterAttacks(
