@@ -132,6 +132,15 @@ const SPELL_DAMAGE_OPTIONS: DamageOptions = {
 const CLERIC_MAGIC_SPELL_IDS = new Set(RECOVERY_MAGIC_SPELL_TABLE.map(entry => entry.spellId))
 const ATTACK_UP_PHYSICAL_DAMAGE_MULTIPLIER = 1.6
 const TWO_COLUMN_ATTACK_DAMAGE_MULTIPLIER = 0.5
+const HEALTHY_HP_RATIO_THRESHOLD = 0.8
+const LOW_HP_RATIO_THRESHOLD = 0.79
+const CLERIC_BARRIER_SPELL_PRIORITY = ['shield_barrier', 'magic_barrier'] as const
+const CLERIC_SINGLE_HEAL_SPELL_PRIORITY = ['full_heal', 'heal_plus', 'heal'] as const
+
+interface UsableSpellCharge {
+  charge: SpellCharge
+  def: SpellDef
+}
 
 /** レベル帯ごとの魔法追加ダメージ制限倍率 */
 const SPELL_BONUS_LEVEL_LIMIT_BY_LEVEL: { maxLevel: number; multiplier: number }[] = [
@@ -925,15 +934,75 @@ export class BattleSystem {
     sourceGroup: BattleUnit[],
     rng: () => number,
   ): SpellDef | null {
-    for (const sc of unit.spellCharges) {
-      if (sc.remaining > 0) {
-        const def = SPELL_DEFS[sc.spellId]
-        if (!def || !this.canUseSpell(def, targetGroup, sourceGroup)) continue
-        const useRate = sc.category === 'cleric'
-          ? unit.battleActionPolicy.clericMagicRate
-          : unit.battleActionPolicy.mageMagicRate
-        if (shouldRunRate(useRate, rng)) return def
-      }
+    const usableCharges = this.getUsableSpellCharges(unit, targetGroup, sourceGroup)
+    const clericCandidates = usableCharges.filter(({ charge }) => charge.category === 'cleric')
+    if (clericCandidates.length > 0 && shouldRunRate(unit.battleActionPolicy.clericMagicRate, rng)) {
+      const spell = this.decideClericSpellAction(clericCandidates, sourceGroup)
+      if (spell) return spell
+    }
+
+    const mageCandidates = usableCharges.filter(({ charge }) => charge.category === 'mage')
+    if (mageCandidates.length > 0 && shouldRunRate(unit.battleActionPolicy.mageMagicRate, rng)) {
+      return this.decideMageSpellAction(mageCandidates, rng)
+    }
+
+    return null
+  }
+
+  private getUsableSpellCharges(
+    unit: BattleUnit,
+    targetGroup: BattleUnit[],
+    sourceGroup: BattleUnit[],
+  ): UsableSpellCharge[] {
+    return unit.spellCharges
+      .filter(charge => charge.remaining > 0)
+      .map(charge => ({ charge, def: SPELL_DEFS[charge.spellId] }))
+      .filter((entry): entry is UsableSpellCharge => Boolean(entry.def) && this.canUseSpell(entry.def, targetGroup, sourceGroup))
+  }
+
+  private decideMageSpellAction(
+    candidates: UsableSpellCharge[],
+    rng: () => number,
+  ): SpellDef | null {
+    if (candidates.length === 0) return null
+    return candidates[Math.floor(rng() * candidates.length)].def
+  }
+
+  private decideClericSpellAction(
+    candidates: UsableSpellCharge[],
+    sourceGroup: BattleUnit[],
+  ): SpellDef | null {
+    if (candidates.length === 0) return null
+
+    const aliveAllies = sourceGroup.filter(unit => unit.currentHP > 0 && unit.maxHP > 0)
+    if (aliveAllies.length === 0) return null
+
+    const allAlliesHealthy = aliveAllies.every(unit => unit.currentHP / unit.maxHP > HEALTHY_HP_RATIO_THRESHOLD)
+    if (allAlliesHealthy) {
+      return this.findUsableSpellByPriority(candidates, CLERIC_BARRIER_SPELL_PRIORITY)
+    }
+
+    const lowHpAllies = aliveAllies.filter(unit => unit.currentHP / unit.maxHP <= LOW_HP_RATIO_THRESHOLD)
+    if (lowHpAllies.length >= 2) {
+      const partyHeal = candidates.find(({ def }) => def.id === 'party_heal')
+      if (partyHeal) return partyHeal.def
+    }
+
+    const healTarget = this.selectLowestHpRatioAlly(sourceGroup)[0]
+    if (!healTarget) return null
+
+    return this.findUsableSpellByPriority(candidates, CLERIC_SINGLE_HEAL_SPELL_PRIORITY)
+      ?? candidates.find(({ def }) => def.id === 'party_heal')?.def
+      ?? null
+  }
+
+  private findUsableSpellByPriority(
+    candidates: UsableSpellCharge[],
+    priority: readonly string[],
+  ): SpellDef | null {
+    for (const spellId of priority) {
+      const found = candidates.find(({ def }) => def.id === spellId)
+      if (found) return found.def
     }
     return null
   }
