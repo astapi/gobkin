@@ -24,6 +24,9 @@ function cloneSkill(skill: CharacterSkill): CharacterSkill {
     criticalAttackFollowUp: skill.criticalAttackFollowUp
       ? { ...skill.criticalAttackFollowUp }
       : undefined,
+    physicalCounterAttack: skill.physicalCounterAttack
+      ? { ...skill.physicalCounterAttack }
+      : undefined,
     statBonuses: skill.statBonuses ? { ...skill.statBonuses } : undefined,
     statMultipliers: skill.statMultipliers ? { ...skill.statMultipliers } : undefined,
     baseStatMultipliers: skill.baseStatMultipliers ? { ...skill.baseStatMultipliers } : undefined,
@@ -307,6 +310,14 @@ export const CHARACTER_SKILL_CATALOG = {
     id: 'critical_support',
     criticalAttackFollowUp: {
       attackCountMultiplier: 0.7,
+      criticalRateMultiplier: 0.5,
+    },
+  },
+
+  counter_attack: {
+    id: 'counter_attack',
+    physicalCounterAttack: {
+      attackCountMultiplier: 0.3,
       criticalRateMultiplier: 0.5,
     },
   },

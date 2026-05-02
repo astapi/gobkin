@@ -6,6 +6,7 @@ import {
   getAdditionalDamageFromSkills,
   getMagicDamageFollowUpFromSkills,
   getCriticalAttackFollowUpFromSkills,
+  getPhysicalCounterAttackFromSkills,
   getPhysicalDamagePercentFromSkills,
   getPureGoblinPartyStatBonusPercentFromSkills,
   getRearAllyDamageMultiplierFromSkills,
@@ -59,6 +60,7 @@ interface BattleUnit {
   currentHP: number
   maxHP: number
   initialHP: number
+  power?: number
   agility: number
   luck: number
   attackCount: number
@@ -416,7 +418,7 @@ export class BattleSystem {
           )
           turnActedUnitKeys.add(unitKey)
         } else if (shouldRunRate(unit.battleActionPolicy.attackRate, rng)) {
-          const { targetDetails, totalHitCount, isCritical } = this.executeBasicAttack(
+          const { targetDetails, totalHitCount, isCritical, damagedTargets } = this.executeBasicAttack(
             unit,
             targetGroup,
             sourceGroup,
@@ -457,6 +459,17 @@ export class BattleSystem {
               rng,
             )
           }
+          this.tryPhysicalCounterAttacks(
+            unit,
+            damagedTargets,
+            allyUnits,
+            enemyUnits,
+            currentTurn,
+            detailedLog,
+            turnActedUnitKeys,
+            turnConsumedUnitKeys,
+            rng,
+          )
           turnActedUnitKeys.add(unitKey)
         } else {
           unit.isDefending = true
@@ -571,19 +584,28 @@ export class BattleSystem {
     rng: () => number,
     attackCount: number,
     criticalRate: number,
-  ): { targetDetails: Map<string, AttackTargetDetail>; totalHitCount: number; isCritical: boolean } {
+    fixedTarget?: BattleUnit,
+  ): {
+    targetDetails: Map<string, AttackTargetDetail>
+    totalHitCount: number
+    isCritical: boolean
+    damagedTargets: Map<string, BattleUnit>
+  } {
     let totalHitCount = 0
     const targetDetails: Map<string, AttackTargetDetail> = new Map()
+    const damagedTargets: Map<string, BattleUnit> = new Map()
     const isCritical = rng() * 100 < criticalRate
 
     for (let atkIdx = 0; atkIdx < attackCount; atkIdx++) {
       if (unit.currentHP <= 0) break
 
-      const aliveTargets = targetGroup.filter(target => target.currentHP > 0)
+      const aliveTargets = fixedTarget
+        ? (fixedTarget.currentHP > 0 ? [fixedTarget] : [])
+        : targetGroup.filter(target => target.currentHP > 0)
       if (aliveTargets.length === 0) break
 
-      const initialTarget = selectTarget(aliveTargets, rng)
-      const target = this.resolveCoverTarget(initialTarget, targetGroup)
+      const initialTarget = fixedTarget ?? selectTarget(aliveTargets, rng)
+      const target = fixedTarget ?? this.resolveCoverTarget(initialTarget, targetGroup)
 
       const hitRate = this.calculateHitRate(unit, target, atkIdx + 1, rng)
       const isHit = rng() * 100 < hitRate
@@ -619,6 +641,7 @@ export class BattleSystem {
       )
 
       this.applyDamage(target, damage)
+      damagedTargets.set(this.getUnitKey(target), target)
       this.tryImmediateReviveForFallenAlly(
         target,
         target.isAlly ? allyUnits : targetGroup,
@@ -631,7 +654,75 @@ export class BattleSystem {
       this.accumulateTargetDetail(targetDetails, target, damage)
     }
 
-    return { targetDetails, totalHitCount, isCritical }
+    return { targetDetails, totalHitCount, isCritical, damagedTargets }
+  }
+
+  private tryPhysicalCounterAttacks(
+    attacker: BattleUnit,
+    damagedTargets: Map<string, BattleUnit>,
+    allyUnits: BattleUnit[],
+    enemyUnits: BattleUnit[],
+    currentTurn: number,
+    detailedLog: BattleLogEntry[],
+    turnActedUnitKeys: Set<string>,
+    turnConsumedUnitKeys: Set<string>,
+    rng: () => number,
+  ): void {
+    if (attacker.currentHP <= 0) return
+
+    for (const defender of damagedTargets.values()) {
+      if (defender.currentHP <= 0 || attacker.currentHP <= 0) continue
+      const counterAttack = getPhysicalCounterAttackFromSkills(defender.skills)
+      if (!counterAttack) continue
+
+      const triggerRate = Math.max(0, Math.min(100, defender.power ?? 0))
+      if (rng() * 100 >= triggerRate) continue
+
+      const sourceGroup = defender.isAlly ? allyUnits : enemyUnits
+      const followUpAttackCount = Math.max(1, Math.floor(defender.attackCount * counterAttack.attackCountMultiplier))
+      const { targetDetails, totalHitCount, isCritical, damagedTargets: counterDamagedTargets } = this.executeBasicAttack(
+        defender,
+        [attacker],
+        sourceGroup,
+        allyUnits,
+        currentTurn,
+        detailedLog,
+        turnActedUnitKeys,
+        turnConsumedUnitKeys,
+        rng,
+        followUpAttackCount,
+        defender.criticalRate * counterAttack.criticalRateMultiplier,
+        attacker,
+      )
+
+      detailedLog.push({
+        turn: currentTurn,
+        actorId: defender.combatant.id,
+        actorName: this.getLogName(defender),
+        actorRow: defender.row + 1,
+        action: i18n.t('battle.physicalCounterAttackAction'),
+        attackCount: followUpAttackCount,
+        hitCount: totalHitCount,
+        actorHP: defender.currentHP,
+        actorMaxHP: defender.maxHP,
+        isAlly: defender.isAlly,
+        isCritical,
+        actionEffect: 'damage',
+        targets: [...targetDetails.values()],
+      })
+
+      this.tryPhysicalCounterAttacks(
+        defender,
+        counterDamagedTargets,
+        allyUnits,
+        enemyUnits,
+        currentTurn,
+        detailedLog,
+        turnActedUnitKeys,
+        turnConsumedUnitKeys,
+        rng,
+      )
+    }
   }
 
   private tryCriticalAttackFollowUps(
@@ -656,7 +747,7 @@ export class BattleSystem {
       if (rng() * 100 >= triggerRate) continue
 
       const followUpAttackCount = Math.max(1, Math.floor(supporter.attackCount * followUp.attackCountMultiplier))
-      const { targetDetails, totalHitCount, isCritical } = this.executeBasicAttack(
+      const { targetDetails, totalHitCount, isCritical, damagedTargets } = this.executeBasicAttack(
         supporter,
         targetGroup,
         sourceGroup,
@@ -685,6 +776,17 @@ export class BattleSystem {
         actionEffect: 'damage',
         targets: [...targetDetails.values()],
       })
+      this.tryPhysicalCounterAttacks(
+        supporter,
+        damagedTargets,
+        allyUnits,
+        supporter.isAlly ? targetGroup : sourceGroup,
+        currentTurn,
+        detailedLog,
+        turnActedUnitKeys,
+        turnConsumedUnitKeys,
+        rng,
+      )
 
       if (!targetGroup.some(target => target.currentHP > 0)) return
     }
@@ -714,7 +816,7 @@ export class BattleSystem {
       if (rng() * 100 >= triggerRate) continue
 
       const followUpAttackCount = Math.max(1, Math.floor(supporter.attackCount * followUp.attackCountMultiplier))
-      const { targetDetails, totalHitCount, isCritical } = this.executeBasicAttack(
+      const { targetDetails, totalHitCount, isCritical, damagedTargets } = this.executeBasicAttack(
         supporter,
         targetGroup,
         sourceGroup,
@@ -743,6 +845,17 @@ export class BattleSystem {
         actionEffect: 'damage',
         targets: [...targetDetails.values()],
       })
+      this.tryPhysicalCounterAttacks(
+        supporter,
+        damagedTargets,
+        allyUnits,
+        supporter.isAlly ? targetGroup : sourceGroup,
+        currentTurn,
+        detailedLog,
+        turnActedUnitKeys,
+        turnConsumedUnitKeys,
+        rng,
+      )
 
       if (!targetGroup.some(target => target.currentHP > 0)) return
     }
@@ -1244,6 +1357,7 @@ export class BattleSystem {
       currentHP: hp,
       maxHP,
       initialHP: hp,
+      power: baseAttributes.power,
       agility: actionOrderAgility ?? baseAttributes.agility,
       luck: baseAttributes.luck,
       attackCount: effectiveStats.attackCount,
@@ -1288,6 +1402,7 @@ export class BattleSystem {
       currentHP: enemy.hp,
       maxHP: enemy.hp,
       initialHP: enemy.hp,
+      power: enemy.baseAttributes.power,
       agility: enemy.baseAttributes.agility,
       luck: enemy.baseAttributes.luck,
       attackCount: enemy.attackCount,

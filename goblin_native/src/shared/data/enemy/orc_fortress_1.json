@@ -7,7 +7,7 @@
         "orc"
       ],
       "level": 48,
-      "hp": 1216,
+      "hp": 1400,
       "atk": 336,
       "def": 80,
       "magicDef": 58,
@@ -20,6 +20,13 @@
         {
           "id": "physical_reduction_10",
           "physicalDamageReductionPercent": 10
+        },
+        {
+          "id": "counter_attack",
+          "physicalCounterAttack": {
+            "attackCountMultiplier": 0.3,
+            "criticalRateMultiplier": 0.5
+          }
         }
       ],
       "baseAttributes": {
@@ -33,12 +40,12 @@
     },
     {
       "id": "ORF002",
-      "name": "オーク砦弓兵",
+      "name": "オーク弓兵",
       "raceTags": [
         "orc"
       ],
       "level": 46,
-      "hp": 966,
+      "hp": 1090,
       "atk": 230,
       "def": 15,
       "magicDef": 23,
@@ -64,12 +71,12 @@
     },
     {
       "id": "ORF003",
-      "name": "雇われトロル",
+      "name": "トロル",
       "raceTags": [
         "troll"
       ],
       "level": 50,
-      "hp": 1267,
+      "hp": 1480,
       "atk": 350,
       "def": 83,
       "magicDef": 60,
@@ -82,25 +89,29 @@
         {
           "id": "physical_reduction_10",
           "physicalDamageReductionPercent": 10
+        },
+        {
+          "id": "physical_reduction_5",
+          "physicalDamageReductionPercent": 5
         }
       ],
       "baseAttributes": {
-        "power": 18,
-        "wisdom": 18,
+        "power": 25,
+        "wisdom": 2,
         "spirit": 9,
-        "vitality": 22,
-        "agility": 8,
+        "vitality": 25,
+        "agility": 5,
         "luck": 5
       }
     },
     {
       "id": "B_ORC_FORTRESS",
-      "name": "オーク砦守将",
+      "name": "オークチャンピオン",
       "raceTags": [
         "orc"
       ],
       "level": 60,
-      "hp": 2055,
+      "hp": 2260,
       "atk": 525,
       "def": 150,
       "magicDef": 68,
@@ -113,13 +124,20 @@
         {
           "id": "physical_reduction_10",
           "physicalDamageReductionPercent": 10
+        },
+        {
+          "id": "counter_attack",
+          "physicalCounterAttack": {
+            "attackCountMultiplier": 0.3,
+            "criticalRateMultiplier": 0.5
+          }
         }
       ],
       "baseAttributes": {
         "power": 23,
-        "wisdom": 23,
+        "wisdom": 12,
         "spirit": 11,
-        "vitality": 27,
+        "vitality": 23,
         "agility": 9,
         "luck": 5
       }

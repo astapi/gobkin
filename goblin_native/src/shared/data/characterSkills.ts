@@ -51,6 +51,9 @@ export function cloneCharacterSkill(skill: CharacterSkill): CharacterSkill {
     criticalAttackFollowUp: skill.criticalAttackFollowUp
       ? { ...skill.criticalAttackFollowUp }
       : undefined,
+    physicalCounterAttack: skill.physicalCounterAttack
+      ? { ...skill.physicalCounterAttack }
+      : undefined,
     statBonuses: skill.statBonuses ? { ...skill.statBonuses } : undefined,
     statMultipliers: skill.statMultipliers ? { ...skill.statMultipliers } : undefined,
     baseStatMultipliers: skill.baseStatMultipliers ? { ...skill.baseStatMultipliers } : undefined,
@@ -126,6 +129,13 @@ export function describeCharacterSkill(skill: CharacterSkill): string {
     return i18n.t('battle.criticalAttackFollowUp', {
       attackCount: skill.criticalAttackFollowUp.attackCountMultiplier.toFixed(1),
       criticalRate: skill.criticalAttackFollowUp.criticalRateMultiplier.toFixed(1),
+    })
+  }
+
+  if (skill.physicalCounterAttack) {
+    return i18n.t('battle.physicalCounterAttack', {
+      attackCount: skill.physicalCounterAttack.attackCountMultiplier.toFixed(1),
+      criticalRate: skill.physicalCounterAttack.criticalRateMultiplier.toFixed(1),
     })
   }
 
@@ -411,6 +421,12 @@ export function getCriticalAttackFollowUpFromSkills(skills: CharacterSkill[]): C
   return getUniqueSkillsById(skills)
     .map((skill) => skill.criticalAttackFollowUp)
     .find((followUp) => followUp !== undefined)
+}
+
+export function getPhysicalCounterAttackFromSkills(skills: CharacterSkill[]): CharacterSkill['physicalCounterAttack'] | undefined {
+  return getUniqueSkillsById(skills)
+    .map((skill) => skill.physicalCounterAttack)
+    .find((counterAttack) => counterAttack !== undefined)
 }
 
 export function getPureGoblinPartyStatBonusPercentFromSkills(

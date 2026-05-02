@@ -7,6 +7,7 @@ import {
   getLearnedSpellsFromSkills,
   getMagicDamageFollowUpFromSkills,
   getMagicDamageReductionFromSkills,
+  getPhysicalCounterAttackFromSkills,
   getPhysicalDamagePercentFromSkills,
   getPhysicalDamageReductionFromSkills,
   getPureGoblinPartyStatBonusPercentFromSkills,
@@ -398,6 +399,15 @@ describe('characterSkills - 物理ダメージ軽減', () => {
     expect(getMagicDamageFollowUpFromSkills([{ id: 'plain' }])).toBeUndefined()
   })
 
+  it('打ち合いスキルの反撃設定を取得できる', () => {
+    const skills: CharacterSkill[] = [
+      { id: 'counter_attack', physicalCounterAttack: { attackCountMultiplier: 0.3, criticalRateMultiplier: 0.5 } },
+    ]
+
+    expect(getPhysicalCounterAttackFromSkills(skills)).toEqual({ attackCountMultiplier: 0.3, criticalRateMultiplier: 0.5 })
+    expect(getPhysicalCounterAttackFromSkills([{ id: 'plain' }])).toBeUndefined()
+  })
+
   it('群れスキルの純粋ゴブリン人数補正を取得できる', () => {
     expect(getPureGoblinPartyStatBonusPercentFromSkills([getCharacterSkill('goblin_pack_tactics')])).toBe(5)
     expect(getPureGoblinPartyStatBonusPercentFromSkills([{ id: 'plain' }])).toBe(0)
@@ -609,6 +619,10 @@ describe('characterSkills - 物理ダメージ軽減', () => {
 
   it('魔法支援スキルの説明文を返す', () => {
     expect(describeCharacterSkill(getCharacterSkill('magic_support'))).toContain('追撃')
+  })
+
+  it('打ち合いスキルの説明文を返す', () => {
+    expect(describeCharacterSkill(getCharacterSkill('counter_attack'))).toContain('反撃')
   })
 
   it('群れスキルの説明文を返す', () => {
