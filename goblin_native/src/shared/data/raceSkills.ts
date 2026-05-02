@@ -7,6 +7,7 @@ import { getRaceSkillIds } from './races'
 
 const PURE_GOBLIN_DEFAULT_SKILL_IDS: CharacterSkillId[] = [
   'exp_bonus_70',
+  'goblin_pack_tactics',
 ]
 
 export function getDefaultSkillsForRace(race: string): CharacterSkill[] {

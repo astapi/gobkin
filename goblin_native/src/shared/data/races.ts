@@ -72,6 +72,9 @@ export const races: RaceDict = {
     label: "ゴブリン",
     implies: [
       "beast"
+    ],
+    skillIds: [
+      "goblin_pack_tactics"
     ]
   },
   human: {

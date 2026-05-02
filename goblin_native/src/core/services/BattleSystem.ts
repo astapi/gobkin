@@ -4,7 +4,10 @@ import { RECOVERY_MAGIC_SPELL_TABLE } from '../../shared/data/recoveryMagic'
 import {
   getActionOrderMultiplierFromSkills,
   getAdditionalDamageFromSkills,
+  getMagicDamageFollowUpFromSkills,
+  getCriticalAttackFollowUpFromSkills,
   getPhysicalDamagePercentFromSkills,
+  getPureGoblinPartyStatBonusPercentFromSkills,
   getRearAllyDamageMultiplierFromSkills,
   getLearnedSpellsFromSkills,
   getPhysicalDamageReductionFromSkills,
@@ -25,7 +28,7 @@ import { CombatantManager } from './CombatantManager'
 import { DamageCalculator } from './DamageCalculator'
 import { ModStatCalculator } from './ModStatCalculator'
 import { getGoblinBaseAttributesAtLevel } from '../../shared/utils/goblinHp'
-import { getEffectiveStats } from '../../shared/utils/goblinStats'
+import { getEffectiveStats, isPureGoblin } from '../../shared/utils/goblinStats'
 import i18n from '../../shared/i18n'
 import { getSpellLabel } from '../../shared/i18n/entityLocalization'
 import { normalizeBattleActionPolicy, shouldRunRate } from '../../shared/utils/battleActionPolicy'
@@ -56,6 +59,7 @@ interface BattleUnit {
   maxHP: number
   initialHP: number
   agility: number
+  luck: number
   attackCount: number
   accuracy: number
   evasion: number
@@ -293,8 +297,9 @@ export class BattleSystem {
     rng: () => number,
     maxTurns: number = 20,
   ): BattleResult {
+    const pureGoblinCount = allies.filter((goblin) => isPureGoblin(goblin)).length
     const allyUnits = allies.map((goblin, index) =>
-      this.createAllyUnit(goblin, initialAllyHP[index], index),
+      this.createAllyUnit(goblin, initialAllyHP[index], index, pureGoblinCount),
     )
     // 2D敵配列をフラット化してBattleUnit生成（row/rowSlot付き）
     const enemyUnits: BattleUnit[] = []
@@ -396,82 +401,33 @@ export class BattleSystem {
             actionEffect: spellAction.effect ?? 'damage',
             targets: [...targetDetails.values()],
           })
+          this.tryMagicSupportFollowUps(
+            unit,
+            spellAction,
+            sourceGroup,
+            targetGroup,
+            allyUnits,
+            currentTurn,
+            detailedLog,
+            turnActedUnitKeys,
+            turnConsumedUnitKeys,
+            rng,
+          )
           turnActedUnitKeys.add(unitKey)
         } else if (shouldRunRate(unit.battleActionPolicy.attackRate, rng)) {
-          // 通常攻撃
-          let totalHitCount = 0
-          const targetDetails: Map<string, AttackTargetDetail> = new Map()
-
-          // 必殺判定（攻撃単位で1回判定し、全攻撃回数に適用）
-          const isCritical = rng() * 100 < unit.criticalRate
-
-          for (let atkIdx = 0; atkIdx < unit.attackCount; atkIdx++) {
-            if (unit.currentHP <= 0) break
-
-            const aliveTargets = targetGroup.filter(target => target.currentHP > 0)
-            if (aliveTargets.length === 0) break
-
-            const initialTarget = selectTarget(aliveTargets, rng)
-            const target = this.resolveCoverTarget(
-              initialTarget,
-              unit.isAlly ? enemyUnits : allyUnits,
-            )
-
-            // 命中判定
-            const hitRate = this.calculateHitRate(unit, target, atkIdx + 1, rng)
-            const isHit = rng() * 100 < hitRate
-
-            if (!isHit) continue
-
-            totalHitCount++
-
-            // ダメージ計算（必殺時は防御力を50%として扱う）
-            const damageTarget = isCritical
-              ? { ...target.combatant, def: Math.floor(target.combatant.def * 0.5) }
-              : target.combatant
-            const baseDamage = this.damageCalculator.calcDamage(
-              RACE_DICT,
-              unit.combatant,
-              damageTarget,
-              BASIC_ATTACK_SKILL,
-              DEFAULT_DAMAGE_OPTIONS,
-              rng,
-            )
-
-            // ダメージ補正: n<=2 → 1.0, n>=3 → 0.9^(n-2)
-            const dmgMod = getDamageModifier(atkIdx + 1)
-            const additionalDamage = getAdditionalDamageFromSkills(unit.skills)
-            const rearDamageMultiplier = this.getRearDamageMultiplier(
-              unit,
-              unit.isAlly ? allyUnits : enemyUnits,
-            )
-            const rowDamageMultiplier = getRowDamageMultiplierFromSkills(unit.skills, unit.row)
-
-            // スキル由来の物理ダメージ軽減を適用
-            const reductionFactor = 1 - target.damageReduction / 100
-            const physicalReductionFactor = 1 - target.physicalDamageReduction / 100
-            const shieldBarrierReductionFactor = 1 - target.shieldBarrierDamageReduction / 100
-            const protectionFactor = this.getRearGuardReductionFactor(target, allyUnits)
-            const defendingFactor = this.getDefendingDamageFactor(target)
-            const physicalDamageFactor = 1 + unit.physicalDamagePercent / 100
-            const damage = Math.max(
-              1,
-              Math.floor((baseDamage * dmgMod * rearDamageMultiplier * rowDamageMultiplier + additionalDamage) * physicalDamageFactor * unit.physicalDamageDealtMultiplier * reductionFactor * physicalReductionFactor * shieldBarrierReductionFactor * protectionFactor * defendingFactor),
-            )
-
-            this.applyDamage(target, damage)
-            this.tryImmediateReviveForFallenAlly(
-              target,
-              target.isAlly ? allyUnits : enemyUnits,
-              currentTurn,
-              detailedLog,
-              turnActedUnitKeys,
-              turnConsumedUnitKeys,
-            )
-
-            // ターゲットごとの結果を集約
-            this.accumulateTargetDetail(targetDetails, target, damage)
-          }
+          const { targetDetails, totalHitCount, isCritical } = this.executeBasicAttack(
+            unit,
+            targetGroup,
+            sourceGroup,
+            allyUnits,
+            currentTurn,
+            detailedLog,
+            turnActedUnitKeys,
+            turnConsumedUnitKeys,
+            rng,
+            unit.attackCount,
+            unit.criticalRate,
+          )
 
           detailedLog.push({
             turn: currentTurn,
@@ -487,6 +443,19 @@ export class BattleSystem {
             isCritical,
             targets: [...targetDetails.values()],
           })
+          if (isCritical) {
+            this.tryCriticalAttackFollowUps(
+              unit,
+              sourceGroup,
+              targetGroup,
+              allyUnits,
+              currentTurn,
+              detailedLog,
+              turnActedUnitKeys,
+              turnConsumedUnitKeys,
+              rng,
+            )
+          }
           turnActedUnitKeys.add(unitKey)
         } else {
           unit.isDefending = true
@@ -587,6 +556,195 @@ export class BattleSystem {
 
     // 限界値補正: 5% 〜 95%
     return Math.max(5, Math.min(95, hitRate))
+  }
+
+  private executeBasicAttack(
+    unit: BattleUnit,
+    targetGroup: BattleUnit[],
+    sourceGroup: BattleUnit[],
+    allyUnits: BattleUnit[],
+    currentTurn: number,
+    detailedLog: BattleLogEntry[],
+    turnActedUnitKeys: Set<string>,
+    turnConsumedUnitKeys: Set<string>,
+    rng: () => number,
+    attackCount: number,
+    criticalRate: number,
+  ): { targetDetails: Map<string, AttackTargetDetail>; totalHitCount: number; isCritical: boolean } {
+    let totalHitCount = 0
+    const targetDetails: Map<string, AttackTargetDetail> = new Map()
+    const isCritical = rng() * 100 < criticalRate
+
+    for (let atkIdx = 0; atkIdx < attackCount; atkIdx++) {
+      if (unit.currentHP <= 0) break
+
+      const aliveTargets = targetGroup.filter(target => target.currentHP > 0)
+      if (aliveTargets.length === 0) break
+
+      const initialTarget = selectTarget(aliveTargets, rng)
+      const target = this.resolveCoverTarget(initialTarget, targetGroup)
+
+      const hitRate = this.calculateHitRate(unit, target, atkIdx + 1, rng)
+      const isHit = rng() * 100 < hitRate
+
+      if (!isHit) continue
+
+      totalHitCount++
+
+      const damageTarget = isCritical
+        ? { ...target.combatant, def: Math.floor(target.combatant.def * 0.5) }
+        : target.combatant
+      const baseDamage = this.damageCalculator.calcDamage(
+        RACE_DICT,
+        unit.combatant,
+        damageTarget,
+        BASIC_ATTACK_SKILL,
+        DEFAULT_DAMAGE_OPTIONS,
+        rng,
+      )
+      const dmgMod = getDamageModifier(atkIdx + 1)
+      const additionalDamage = getAdditionalDamageFromSkills(unit.skills)
+      const rearDamageMultiplier = this.getRearDamageMultiplier(unit, sourceGroup)
+      const rowDamageMultiplier = getRowDamageMultiplierFromSkills(unit.skills, unit.row)
+      const reductionFactor = 1 - target.damageReduction / 100
+      const physicalReductionFactor = 1 - target.physicalDamageReduction / 100
+      const shieldBarrierReductionFactor = 1 - target.shieldBarrierDamageReduction / 100
+      const protectionFactor = this.getRearGuardReductionFactor(target, allyUnits)
+      const defendingFactor = this.getDefendingDamageFactor(target)
+      const physicalDamageFactor = 1 + unit.physicalDamagePercent / 100
+      const damage = Math.max(
+        1,
+        Math.floor((baseDamage * dmgMod * rearDamageMultiplier * rowDamageMultiplier + additionalDamage) * physicalDamageFactor * unit.physicalDamageDealtMultiplier * reductionFactor * physicalReductionFactor * shieldBarrierReductionFactor * protectionFactor * defendingFactor),
+      )
+
+      this.applyDamage(target, damage)
+      this.tryImmediateReviveForFallenAlly(
+        target,
+        target.isAlly ? allyUnits : targetGroup,
+        currentTurn,
+        detailedLog,
+        turnActedUnitKeys,
+        turnConsumedUnitKeys,
+      )
+
+      this.accumulateTargetDetail(targetDetails, target, damage)
+    }
+
+    return { targetDetails, totalHitCount, isCritical }
+  }
+
+  private tryCriticalAttackFollowUps(
+    attacker: BattleUnit,
+    sourceGroup: BattleUnit[],
+    targetGroup: BattleUnit[],
+    allyUnits: BattleUnit[],
+    currentTurn: number,
+    detailedLog: BattleLogEntry[],
+    turnActedUnitKeys: Set<string>,
+    turnConsumedUnitKeys: Set<string>,
+    rng: () => number,
+  ): void {
+    if (!targetGroup.some(target => target.currentHP > 0)) return
+
+    for (const supporter of sourceGroup) {
+      if (supporter.currentHP <= 0 || supporter === attacker) continue
+      const followUp = getCriticalAttackFollowUpFromSkills(supporter.skills)
+      if (!followUp) continue
+
+      const triggerRate = Math.max(0, Math.min(100, supporter.agility + supporter.luck))
+      if (rng() * 100 >= triggerRate) continue
+
+      const followUpAttackCount = Math.max(1, Math.floor(supporter.attackCount * followUp.attackCountMultiplier))
+      const { targetDetails, totalHitCount, isCritical } = this.executeBasicAttack(
+        supporter,
+        targetGroup,
+        sourceGroup,
+        allyUnits,
+        currentTurn,
+        detailedLog,
+        turnActedUnitKeys,
+        turnConsumedUnitKeys,
+        rng,
+        followUpAttackCount,
+        supporter.criticalRate * followUp.criticalRateMultiplier,
+      )
+
+      detailedLog.push({
+        turn: currentTurn,
+        actorId: supporter.combatant.id,
+        actorName: this.getLogName(supporter),
+        actorRow: supporter.row + 1,
+        action: i18n.t('battle.criticalSupportFollowUpAction'),
+        attackCount: followUpAttackCount,
+        hitCount: totalHitCount,
+        actorHP: supporter.currentHP,
+        actorMaxHP: supporter.maxHP,
+        isAlly: supporter.isAlly,
+        isCritical,
+        actionEffect: 'damage',
+        targets: [...targetDetails.values()],
+      })
+
+      if (!targetGroup.some(target => target.currentHP > 0)) return
+    }
+  }
+
+  private tryMagicSupportFollowUps(
+    caster: BattleUnit,
+    spellDef: SpellDef,
+    sourceGroup: BattleUnit[],
+    targetGroup: BattleUnit[],
+    allyUnits: BattleUnit[],
+    currentTurn: number,
+    detailedLog: BattleLogEntry[],
+    turnActedUnitKeys: Set<string>,
+    turnConsumedUnitKeys: Set<string>,
+    rng: () => number,
+  ): void {
+    if ((spellDef.effect ?? 'damage') !== 'damage') return
+    if (!targetGroup.some(target => target.currentHP > 0)) return
+
+    for (const supporter of sourceGroup) {
+      if (supporter.currentHP <= 0 || supporter === caster) continue
+      const followUp = getMagicDamageFollowUpFromSkills(supporter.skills)
+      if (!followUp) continue
+
+      const triggerRate = Math.max(0, Math.min(100, supporter.agility + supporter.luck))
+      if (rng() * 100 >= triggerRate) continue
+
+      const followUpAttackCount = Math.max(1, Math.floor(supporter.attackCount * followUp.attackCountMultiplier))
+      const { targetDetails, totalHitCount, isCritical } = this.executeBasicAttack(
+        supporter,
+        targetGroup,
+        sourceGroup,
+        allyUnits,
+        currentTurn,
+        detailedLog,
+        turnActedUnitKeys,
+        turnConsumedUnitKeys,
+        rng,
+        followUpAttackCount,
+        supporter.criticalRate * followUp.criticalRateMultiplier,
+      )
+
+      detailedLog.push({
+        turn: currentTurn,
+        actorId: supporter.combatant.id,
+        actorName: this.getLogName(supporter),
+        actorRow: supporter.row + 1,
+        action: i18n.t('battle.magicSupportFollowUpAction'),
+        attackCount: followUpAttackCount,
+        hitCount: totalHitCount,
+        actorHP: supporter.currentHP,
+        actorMaxHP: supporter.maxHP,
+        isAlly: supporter.isAlly,
+        isCritical,
+        actionEffect: 'damage',
+        targets: [...targetDetails.values()],
+      })
+
+      if (!targetGroup.some(target => target.currentHP > 0)) return
+    }
   }
 
   private initSpellCharges(spells: LearnedSpell[] | undefined): SpellCharge[] {
@@ -1053,14 +1211,28 @@ export class BattleSystem {
     return target.isDefending ? 0.5 : 1
   }
 
-  private createAllyUnit(goblin: Goblin, initialHP: number | undefined, originalIndex: number): BattleUnit {
+  private createAllyUnit(
+    goblin: Goblin,
+    initialHP: number | undefined,
+    originalIndex: number,
+    pureGoblinCount: number,
+  ): BattleUnit {
     const skills = getUniqueSkillsById(goblin.skills)
     const combatant = this.combatantManager.fromGoblin(goblin)
     combatant.buffs = toCombatBuffsFromSkills(skills)
     const actionOrderAgility = (goblin as Goblin & { agility?: number }).agility
+    const baseAttributes = getGoblinBaseAttributesAtLevel(goblin, goblin.level)
     // Mod適用後のステータスを使用
     const effectiveStats = getEffectiveStats(goblin)
-    const hp = initialHP ?? effectiveStats.hp
+    const packBonusPercent =
+      getPureGoblinPartyStatBonusPercentFromSkills(skills, goblin.level) * pureGoblinCount
+    const packStatMultiplier = 1 + packBonusPercent / 100
+    const maxHP = Math.floor(effectiveStats.hp * packStatMultiplier)
+    const atk = Math.floor(combatant.atk * packStatMultiplier)
+    combatant.atk = atk
+    const hp = initialHP === undefined || initialHP >= effectiveStats.hp
+      ? maxHP
+      : Math.min(initialHP, maxHP)
     const damageReduction = ModStatCalculator.getDamageReduction(goblin)
     const physicalDamageReduction = getPhysicalDamageReductionFromSkills(goblin.skills)
     const learnedSpells = this.mergeLearnedSpells(goblin.spells, goblin.skills, goblin.level)
@@ -1068,9 +1240,10 @@ export class BattleSystem {
       instanceId: `ally:${combatant.id}`,
       combatant,
       currentHP: hp,
-      maxHP: effectiveStats.hp,
+      maxHP,
       initialHP: hp,
-      agility: actionOrderAgility ?? getGoblinBaseAttributesAtLevel(goblin, goblin.level).agility,
+      agility: actionOrderAgility ?? baseAttributes.agility,
+      luck: baseAttributes.luck,
       attackCount: effectiveStats.attackCount,
       accuracy: effectiveStats.accuracy,
       evasion: effectiveStats.evasion,
@@ -1114,6 +1287,7 @@ export class BattleSystem {
       maxHP: enemy.hp,
       initialHP: enemy.hp,
       agility: enemy.baseAttributes.agility,
+      luck: enemy.baseAttributes.luck,
       attackCount: enemy.attackCount,
       accuracy: enemy.accuracy,
       evasion: enemy.evasion,

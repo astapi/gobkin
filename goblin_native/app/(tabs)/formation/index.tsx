@@ -10,7 +10,7 @@ import { useExpeditionFlow, type ExpeditionHistoryDisplay } from '@/presentation
 import { useCurrentTime } from '@/presentation/hooks/useCurrentTime'
 import { useDungeonStore } from '@/presentation/stores/useDungeonStore'
 import { getGoblinDisplayImage } from '@/shared/utils/goblinImages'
-import { getEffectiveStats } from '@/shared/utils/goblinStats'
+import { getPartyEffectiveStats } from '@/shared/utils/goblinStats'
 import { getGoldBonusPercentFromSkills } from '@/shared/data/characterSkills'
 import { normalizePartyRewardMultipliers } from '@/shared/types'
 import type { Party, Goblin, Dungeon, DungeonTier, ExpeditionRequest, ExpeditionRecord } from '@/shared/types'
@@ -23,12 +23,13 @@ function formatMultiplier(value: number): string {
 
 interface MemberSlotProps {
   goblin?: Goblin
+  partyMembers: readonly Goblin[]
   isEmpty: boolean
   slotSize: number
   avatarSize: number
 }
 
-const MemberSlot = memo(function MemberSlot({ goblin, isEmpty, slotSize, avatarSize }: MemberSlotProps) {
+const MemberSlot = memo(function MemberSlot({ goblin, partyMembers, isEmpty, slotSize, avatarSize }: MemberSlotProps) {
   if (isEmpty || !goblin) {
     return (
       <View style={[styles.memberSlot, { width: slotSize }]}>
@@ -39,7 +40,7 @@ const MemberSlot = memo(function MemberSlot({ goblin, isEmpty, slotSize, avatarS
     )
   }
 
-  const stats = getEffectiveStats(goblin)
+  const stats = getPartyEffectiveStats(goblin, partyMembers)
   const currentHp = goblin.currentHp ?? stats.hp
   const isInjured = currentHp === 0
 
@@ -137,7 +138,7 @@ const PartyCard = memo(function PartyCard({
 
         <View style={styles.membersRow}>
           {slots.map((goblin, index) => (
-            <MemberSlot key={index} goblin={goblin} isEmpty={!goblin} slotSize={slotSize} avatarSize={avatarSize} />
+            <MemberSlot key={index} goblin={goblin} partyMembers={members} isEmpty={!goblin} slotSize={slotSize} avatarSize={avatarSize} />
           ))}
         </View>
       </TouchableOpacity>
@@ -414,7 +415,7 @@ export default function FormationScreen() {
         </View>
         <View style={styles.membersRow}>
           {Array.from({ length: MAX_PARTY_SLOTS }).map((_, slotIndex) => (
-            <MemberSlot key={slotIndex} isEmpty slotSize={slotSize} avatarSize={avatarSize} />
+            <MemberSlot key={slotIndex} partyMembers={[]} isEmpty slotSize={slotSize} avatarSize={avatarSize} />
           ))}
         </View>
       </TouchableOpacity>

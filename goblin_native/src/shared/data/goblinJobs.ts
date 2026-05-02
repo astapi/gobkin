@@ -169,7 +169,11 @@ const GOBLIN_JOB_DEFINITION_SEEDS: Record<GoblinJob, GoblinJobDefinitionSeed> = 
       wisdom: 8
     },
     id: "rider",
-    skills: [],
+    skills: [
+      {
+        skillId: "critical_support"
+      }
+    ],
     unlockRequiresReadStory: "story_after_wolf_grassland"
   }
 }

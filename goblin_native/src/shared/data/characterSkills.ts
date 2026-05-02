@@ -29,6 +29,12 @@ export function cloneCharacterSkill(skill: CharacterSkill): CharacterSkill {
     spellTakenMultipliers: skill.spellTakenMultipliers
       ? { ...skill.spellTakenMultipliers }
       : undefined,
+    magicDamageFollowUp: skill.magicDamageFollowUp
+      ? { ...skill.magicDamageFollowUp }
+      : undefined,
+    criticalAttackFollowUp: skill.criticalAttackFollowUp
+      ? { ...skill.criticalAttackFollowUp }
+      : undefined,
     statBonuses: skill.statBonuses ? { ...skill.statBonuses } : undefined,
     statMultipliers: skill.statMultipliers ? { ...skill.statMultipliers } : undefined,
     baseStatMultipliers: skill.baseStatMultipliers ? { ...skill.baseStatMultipliers } : undefined,
@@ -91,6 +97,27 @@ export function describeCharacterSkill(skill: CharacterSkill): string {
 
   if (skill.immediateReviveOnAllyDeath) {
     return i18n.t('battle.immediateRevive')
+  }
+
+  if (skill.magicDamageFollowUp) {
+    return i18n.t('battle.magicDamageFollowUp', {
+      attackCount: skill.magicDamageFollowUp.attackCountMultiplier.toFixed(1),
+      criticalRate: skill.magicDamageFollowUp.criticalRateMultiplier.toFixed(1),
+    })
+  }
+
+  if (skill.criticalAttackFollowUp) {
+    return i18n.t('battle.criticalAttackFollowUp', {
+      attackCount: skill.criticalAttackFollowUp.attackCountMultiplier.toFixed(1),
+      criticalRate: skill.criticalAttackFollowUp.criticalRateMultiplier.toFixed(1),
+    })
+  }
+
+  if (skill.pureGoblinPartyStatBonusPercent !== undefined) {
+    return i18n.t('battle.pureGoblinPartyStatBonus', {
+      value: skill.pureGoblinPartyStatBonusPercent,
+      level: skill.pureGoblinPartyStatBonusMinLevel ?? 1,
+    })
   }
 
   if (skill.surviveLethalDamageAtHp1) {
@@ -340,6 +367,30 @@ export function hasRecoverRandomUsedSpellOnDefendSkill(skills: CharacterSkill[])
 
 export function hasImmediateReviveSkill(skills: CharacterSkill[]): boolean {
   return getUniqueSkillsById(skills).some((skill) => skill.immediateReviveOnAllyDeath)
+}
+
+export function getMagicDamageFollowUpFromSkills(skills: CharacterSkill[]): CharacterSkill['magicDamageFollowUp'] | undefined {
+  return getUniqueSkillsById(skills)
+    .map((skill) => skill.magicDamageFollowUp)
+    .find((followUp) => followUp !== undefined)
+}
+
+export function getCriticalAttackFollowUpFromSkills(skills: CharacterSkill[]): CharacterSkill['criticalAttackFollowUp'] | undefined {
+  return getUniqueSkillsById(skills)
+    .map((skill) => skill.criticalAttackFollowUp)
+    .find((followUp) => followUp !== undefined)
+}
+
+export function getPureGoblinPartyStatBonusPercentFromSkills(
+  skills: CharacterSkill[],
+  level?: number,
+): number {
+  return getUniqueSkillsById(skills).reduce((max, skill) => {
+    if (skill.pureGoblinPartyStatBonusPercent === undefined) return max
+    const minLevel = skill.pureGoblinPartyStatBonusMinLevel ?? 0
+    if (level !== undefined && level < minLevel) return max
+    return Math.max(max, skill.pureGoblinPartyStatBonusPercent)
+  }, 0)
 }
 
 export function hasSurviveLethalDamageAtHp1Skill(skills: CharacterSkill[]): boolean {

@@ -3,6 +3,7 @@ import { ModStatCalculator } from '@/core/services/ModStatCalculator'
 import { EquipmentService } from '@/core/services/EquipmentService'
 import { calculateGoblinDerivedStats, getGoblinBaseAttributes } from './goblinHp'
 import { getLegacyRaceName, normalizeGoblinRaceId } from '../types/Race'
+import { getPureGoblinPartyStatBonusPercentFromSkills } from '../data/characterSkills'
 
 export function calculateGoblinEffectiveStats(
   goblin: Goblin,
@@ -40,6 +41,27 @@ export function getEffectiveStats(goblin: Goblin): GoblinStats {
     }
   }
   return calculateGoblinEffectiveStats(goblin)
+}
+
+export function isPureGoblin(goblin: Goblin): boolean {
+  return normalizeGoblinRaceId(goblin.raceId ?? goblin.race) === 'goblin' && !goblin.variantFactorId
+}
+
+export function getPartyPackBonusPercent(goblin: Goblin, partyMembers: readonly Goblin[]): number {
+  const pureGoblinCount = partyMembers.filter(isPureGoblin).length
+  return getPureGoblinPartyStatBonusPercentFromSkills(goblin.skills, goblin.level) * pureGoblinCount
+}
+
+export function getPartyEffectiveStats(goblin: Goblin, partyMembers: readonly Goblin[]): GoblinStats {
+  const baseStats = getEffectiveStats(goblin)
+  const bonusPercent = getPartyPackBonusPercent(goblin, partyMembers)
+  if (bonusPercent === 0) return baseStats
+  const multiplier = 1 + bonusPercent / 100
+  return {
+    ...baseStats,
+    hp: Math.floor(baseStats.hp * multiplier),
+    atk: Math.floor(baseStats.atk * multiplier),
+  }
 }
 
 export function syncGoblinDerivedStats<T extends Goblin>(goblin: T): T {

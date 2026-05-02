@@ -5,8 +5,10 @@ import {
   getAdditionalDamageFromSkills,
   getExpeditionTimeMultiplierFromSkills,
   getLearnedSpellsFromSkills,
+  getMagicDamageFollowUpFromSkills,
   getPhysicalDamagePercentFromSkills,
   getPhysicalDamageReductionFromSkills,
+  getPureGoblinPartyStatBonusPercentFromSkills,
   getRearAllyDamageMultiplierFromSkills,
   getRearProtectionMultiplierFromSkills,
   getRowDamageMultiplierFromSkills,
@@ -23,6 +25,7 @@ import {
   applySkillBonusesToEquipmentBonuses,
 } from '../characterSkills'
 import { getCharacterSkill } from '../skillCatalog'
+import { getDefaultSkillsForRace } from '../raceSkills'
 
 describe('characterSkills - 物理ダメージ軽減', () => {
   it('物理ダメージ軽減スキルの値を合算する', () => {
@@ -303,6 +306,25 @@ describe('characterSkills - 物理ダメージ軽減', () => {
     expect(hasImmediateReviveSkill(skills)).toBe(true)
   })
 
+  it('魔法支援スキルの追撃設定を取得できる', () => {
+    const skills: CharacterSkill[] = [
+      { id: 'magic_support', magicDamageFollowUp: { attackCountMultiplier: 0.7, criticalRateMultiplier: 0.5 } },
+    ]
+
+    expect(getMagicDamageFollowUpFromSkills(skills)).toEqual({ attackCountMultiplier: 0.7, criticalRateMultiplier: 0.5 })
+    expect(getMagicDamageFollowUpFromSkills([{ id: 'plain' }])).toBeUndefined()
+  })
+
+  it('群れスキルの純粋ゴブリン人数補正を取得できる', () => {
+    expect(getPureGoblinPartyStatBonusPercentFromSkills([getCharacterSkill('goblin_pack_tactics')])).toBe(5)
+    expect(getPureGoblinPartyStatBonusPercentFromSkills([{ id: 'plain' }])).toBe(0)
+  })
+
+  it('純粋なゴブリンのデフォルトスキルに群れを含める', () => {
+    expect(getDefaultSkillsForRace('ゴブリン').map((skill) => skill.id)).toContain('goblin_pack_tactics')
+    expect(getDefaultSkillsForRace('ウルフゴブリン').map((skill) => skill.id)).not.toContain('goblin_pack_tactics')
+  })
+
   it('スキル一覧取得時も同じidは1件にまとまる', () => {
     const skills: CharacterSkill[] = [
       { id: 'shared' },
@@ -482,6 +504,14 @@ describe('characterSkills - 物理ダメージ軽減', () => {
     }
 
     expect(describeCharacterSkill(skill)).toBe('未行動なら味方が倒れた直後に回復魔法で蘇生し、そのターンは行動済みになる')
+  })
+
+  it('魔法支援スキルの説明文を返す', () => {
+    expect(describeCharacterSkill(getCharacterSkill('magic_support'))).toContain('追撃')
+  })
+
+  it('群れスキルの説明文を返す', () => {
+    expect(describeCharacterSkill(getCharacterSkill('goblin_pack_tactics'))).toContain('亜種ではないゴブリン')
   })
 
   it('カタログ定義の説明キーからスキル説明文を返す', () => {

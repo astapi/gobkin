@@ -53,7 +53,7 @@ export const goblinVariantDefinitions: Record<string, GoblinVariantDefinition> =
       {
         target: "hp",
         type: "stat_bonus",
-        value: 100
+        value: 20
       }
     ],
     factorId: "slime",
@@ -86,7 +86,7 @@ export const goblinVariantDefinitions: Record<string, GoblinVariantDefinition> =
       {
         target: "atk",
         type: "stat_bonus",
-        value: 15
+        value: 10
       }
     ],
     factorId: "wolf",
@@ -108,13 +108,15 @@ export const goblinVariantDefinitions: Record<string, GoblinVariantDefinition> =
       vitality: 15,
       wisdom: 8
     },
-    defaultSkillIds: [],
+    defaultSkillIds: [
+      "talent_atk_150"
+    ],
     factorDescription: "オークの特性を宿した因子。攻撃力と防御力が増す。",
     factorEffects: [
       {
         target: "atk",
         type: "stat_bonus",
-        value: 25
+        value: 20
       },
       {
         target: "def",
@@ -149,11 +151,6 @@ export const goblinVariantDefinitions: Record<string, GoblinVariantDefinition> =
     factorDescription: "アンデッドの特性を宿した因子。生命力と耐毒性が増す。",
     factorEffects: [
       {
-        target: "hp",
-        type: "stat_bonus",
-        value: 80
-      },
-      {
         target: "def",
         type: "stat_bonus",
         value: 15
@@ -180,19 +177,20 @@ export const goblinVariantDefinitions: Record<string, GoblinVariantDefinition> =
     defaultSkillIds: [
       "talent_atk_150",
       "inspire_150",
-      "survive_lethal_hp1"
+      "survive_lethal_hp1",
+      "goblin_binder"
     ],
     factorDescription: "上位ゴブリンの特性を宿した因子。全能力が底上げされる。",
     factorEffects: [
       {
         target: "atk",
         type: "stat_bonus",
-        value: 15
+        value: 5
       },
       {
         target: "def",
         type: "stat_bonus",
-        value: 10
+        value: 5
       }
     ],
     factorId: "hobgoblin",
@@ -265,7 +263,7 @@ export const goblinVariantDefinitions: Record<string, GoblinVariantDefinition> =
       {
         target: "atk",
         type: "stat_bonus",
-        value: 10
+        value: 20
       }
     ],
     factorId: "lizardman",
@@ -297,7 +295,7 @@ export const goblinVariantDefinitions: Record<string, GoblinVariantDefinition> =
       {
         target: "def",
         type: "stat_bonus",
-        value: 15
+        value: 25
       }
     ],
     factorId: "troll",

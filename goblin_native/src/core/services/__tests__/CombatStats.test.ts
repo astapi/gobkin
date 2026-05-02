@@ -1328,6 +1328,7 @@ describe('selectTarget — 隊列ターゲット選択', () => {
       maxHP: 100,
       initialHP: 100,
       agility: 10,
+      luck: 10,
       attackCount: 1,
       accuracy: 20,
       evasion: 10,
@@ -1734,6 +1735,71 @@ describe('spell charges', () => {
     const spellLogs = result.detailedLog.filter(log => log.actorId === 'ICE_MAGE' && log.action === 'ブリザード')
 
     expect(spellLogs).toHaveLength(1)
+  })
+
+  it('魔法支援持ちは味方のダメージ魔法に追撃する', () => {
+    const caster = createTestGoblin({
+      id: 1,
+      level: 20,
+      stats: { hp: 300, atk: 1, magicAtk: 100, agility: 100, def: 10, attackCount: 1, accuracy: 999, evasion: 0 },
+      skills: [getCharacterSkill('grant_fireball')],
+      battleActionPolicy: { attackRate: 0, clericMagicRate: 0, mageMagicRate: 100 },
+    })
+    const supporter = createTestGoblin({
+      id: 2,
+      stats: { hp: 300, atk: 80, agility: 50, def: 10, attackCount: 3, accuracy: 999, evasion: 0, criticalRate: 100 },
+      effectiveStats: { hp: 300, atk: 80, magicAtk: 0, def: 10, magicDef: 10, attackCount: 3, accuracy: 999, evasion: 0, magicHeal: 10, criticalRate: 100 },
+      baseAttributes: { power: 10, wisdom: 10, spirit: 10, vitality: 10, agility: 50, luck: 50 },
+      skills: [getCharacterSkill('magic_support')],
+      battleActionPolicy: { attackRate: 0, clericMagicRate: 0, mageMagicRate: 0 },
+    })
+    const enemy = createTestEnemy({ hp: 999, def: 1, evasion: 0, agility: 1 })
+
+    const result = new BattleSystem().executeBattle(
+      [caster, supporter],
+      [caster.stats.hp, supporter.stats.hp],
+      [[enemy]],
+      () => 0.75,
+      1,
+    )
+    const followUpLog = result.detailedLog.find(log => log.actorId === '2' && log.action === '魔法支援')
+
+    expect(followUpLog?.attackCount).toBe(2)
+    expect(followUpLog?.hitCount).toBe(2)
+    expect(followUpLog?.isCritical).toBe(false)
+    expect(followUpLog?.targets[0]?.totalDamage).toBeGreaterThan(0)
+  })
+
+  it('魔法支援は回復魔法では追撃しない', () => {
+    const wounded = createTestGoblin({
+      id: 1,
+      stats: { hp: 300, atk: 1, agility: 100, def: 10, attackCount: 1, accuracy: 999, evasion: 0 },
+    })
+    const cleric = createTestGoblin({
+      id: 2,
+      stats: { hp: 300, atk: 1, agility: 50, def: 10, attackCount: 1, accuracy: 999, evasion: 0, magicHeal: 30 },
+      skills: [getCharacterSkill('grant_heal')],
+      battleActionPolicy: { attackRate: 0, clericMagicRate: 100, mageMagicRate: 0 },
+    })
+    const supporter = createTestGoblin({
+      id: 3,
+      stats: { hp: 300, atk: 80, agility: 40, def: 10, attackCount: 3, accuracy: 999, evasion: 0 },
+      baseAttributes: { power: 10, wisdom: 10, spirit: 10, vitality: 10, agility: 50, luck: 50 },
+      skills: [getCharacterSkill('magic_support')],
+      battleActionPolicy: { attackRate: 0, clericMagicRate: 0, mageMagicRate: 0 },
+    })
+    const enemy = createTestEnemy({ hp: 999, atk: 1, def: 1, attackCount: 0, evasion: 0, agility: 1 })
+
+    const result = new BattleSystem().executeBattle(
+      [wounded, cleric, supporter],
+      [200, cleric.stats.hp, supporter.stats.hp],
+      [[enemy]],
+      () => 0,
+      1,
+    )
+
+    expect(result.detailedLog.some(log => log.action === 'ヒール')).toBe(true)
+    expect(result.detailedLog.some(log => log.action === '魔法支援')).toBe(false)
   })
 
   it('ヒールは魔法回復量ぶん最も傷ついた味方を回復する', () => {
@@ -2345,6 +2411,84 @@ describe('BattleSystem — ジョブ系スキル', () => {
     const attackerLog = result.detailedLog.find(log => log.actorId === String(attacker.id) && log.action === '通常攻撃')
 
     expect(attackerLog?.targets[0]?.totalDamage).toBe(49)
+  })
+
+  it('群れ持ちはLv15以上で純粋なゴブリン数に応じてHPと攻撃力が上がる', () => {
+    const baseStats = { hp: 100, atk: 100, magicAtk: 0, def: 10, magicDef: 10, attackCount: 1, accuracy: 999, evasion: 0, magicHeal: 10, criticalRate: 0 }
+    const packGoblin = createTestGoblin({
+      id: 1,
+      level: 15,
+      stats: baseStats,
+      effectiveStats: baseStats,
+      skills: [getCharacterSkill('goblin_pack_tactics')],
+      battleActionPolicy: { attackRate: 100, clericMagicRate: 0, mageMagicRate: 0 },
+    })
+    const plainGoblin = createTestGoblin({
+      id: 1,
+      level: 15,
+      stats: baseStats,
+      effectiveStats: baseStats,
+      skills: [],
+      battleActionPolicy: { attackRate: 100, clericMagicRate: 0, mageMagicRate: 0 },
+    })
+    const pureFriend = createTestGoblin({
+      id: 2,
+      stats: { hp: 100, atk: 1, agility: 1, def: 10, attackCount: 1, accuracy: 999, evasion: 0 },
+      battleActionPolicy: { attackRate: 0, clericMagicRate: 0, mageMagicRate: 0 },
+    })
+    const variantFriend = createTestGoblin({
+      id: 3,
+      race: 'ウルフゴブリン',
+      raceId: 'wolf',
+      variantFactorId: 'wolf',
+      stats: { hp: 100, atk: 1, agility: 1, def: 10, attackCount: 1, accuracy: 999, evasion: 0 },
+      battleActionPolicy: { attackRate: 0, clericMagicRate: 0, mageMagicRate: 0 },
+    })
+    const boostedResult = new BattleSystem().executeBattle(
+      [packGoblin, pureFriend, variantFriend],
+      [packGoblin.stats.hp, pureFriend.stats.hp, variantFriend.stats.hp],
+      [[createTestEnemy({ hp: 999, def: 1, evasion: 0, agility: 1 })]],
+      () => 0.5,
+      1,
+    )
+    const plainResult = new BattleSystem().executeBattle(
+      [plainGoblin, pureFriend, variantFriend],
+      [plainGoblin.stats.hp, pureFriend.stats.hp, variantFriend.stats.hp],
+      [[createTestEnemy({ hp: 999, def: 1, evasion: 0, agility: 1 })]],
+      () => 0.5,
+      1,
+    )
+    const boostedLog = boostedResult.detailedLog.find(log => log.actorId === '1' && log.action === '通常攻撃')!
+    const plainLog = plainResult.detailedLog.find(log => log.actorId === '1' && log.action === '通常攻撃')!
+
+    expect(boostedLog.actorMaxHP).toBe(110)
+    expect(boostedLog.targets[0].totalDamage).toBeGreaterThan(plainLog.targets[0].totalDamage)
+  })
+
+  it('群れはLv14以下では発動しない', () => {
+    const stats = { hp: 100, atk: 100, magicAtk: 0, def: 10, magicDef: 10, attackCount: 1, accuracy: 999, evasion: 0, magicHeal: 10, criticalRate: 0 }
+    const packGoblin = createTestGoblin({
+      id: 1,
+      level: 14,
+      stats,
+      effectiveStats: stats,
+      skills: [getCharacterSkill('goblin_pack_tactics')],
+      battleActionPolicy: { attackRate: 100, clericMagicRate: 0, mageMagicRate: 0 },
+    })
+    const pureFriend = createTestGoblin({
+      id: 2,
+      battleActionPolicy: { attackRate: 0, clericMagicRate: 0, mageMagicRate: 0 },
+    })
+    const result = new BattleSystem().executeBattle(
+      [packGoblin, pureFriend],
+      [packGoblin.stats.hp, pureFriend.stats.hp],
+      [[createTestEnemy({ hp: 999, def: 1, evasion: 0, agility: 1 })]],
+      () => 0.5,
+      1,
+    )
+    const log = result.detailedLog.find(entry => entry.actorId === '1' && entry.action === '通常攻撃')!
+
+    expect(log.actorMaxHP).toBe(100)
   })
 
   it('気合い持ちは致死ダメージを受けてもHP1で耐える', () => {

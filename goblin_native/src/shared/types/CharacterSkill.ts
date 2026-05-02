@@ -6,6 +6,11 @@ export type RaceBuckets = {
   mult?: Partial<Record<string, number>>
 }
 
+export type MagicDamageFollowUp = {
+  attackCountMultiplier: number
+  criticalRateMultiplier: number
+}
+
 export interface CharacterSkill {
   id: string
   descriptionKey?: string
@@ -51,4 +56,8 @@ export interface CharacterSkill {
   itemSlotsBonus?: boolean
   recoveryMagicLevel?: number
   mageMagicLevel?: number
+  magicDamageFollowUp?: MagicDamageFollowUp
+  criticalAttackFollowUp?: MagicDamageFollowUp
+  pureGoblinPartyStatBonusPercent?: number
+  pureGoblinPartyStatBonusMinLevel?: number
 }
