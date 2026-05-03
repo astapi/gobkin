@@ -2,11 +2,11 @@
   "stories": [
     {
       "id": "prologue",
-      "title": "ゴブリンの目覚め",
+      "title": "目覚め",
       "category": "main",
       "order": 0,
       "unlockCondition": null,
-      "rewards": [{ "type": "golden_acorn", "value": 5 }],
+      "rewards": [],
       "chapters": [
         {
           "id": "prologue_1",

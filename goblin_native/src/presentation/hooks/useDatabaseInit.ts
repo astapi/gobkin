@@ -3,6 +3,8 @@ import { getDatabase, resetDatabase } from '@/infrastructure/database'
 import { SQLiteDungeonProgressRepository } from '@/infrastructure/repositories/SQLiteDungeonProgressRepository'
 import { SQLiteBaseStateRepository } from '@/infrastructure/repositories/SQLiteBaseStateRepository'
 import { areasData } from '@/shared/data'
+import { useTutorialStore } from '@/presentation/stores/useTutorialStore'
+import { useTutorialOverlayStore } from '@/presentation/stores/useTutorialOverlayStore'
 
 async function ensureDefaults(): Promise<void> {
   await getDatabase()
@@ -29,6 +31,7 @@ async function ensureDefaults(): Promise<void> {
 export const useDatabaseInit = () => {
   const [ready, setReady] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [reloadKey, setReloadKey] = useState(0)
   const mountedRef = useRef(true)
 
   useEffect(() => {
@@ -50,9 +53,13 @@ export const useDatabaseInit = () => {
   const resetAndReinitialize = useCallback(async (): Promise<void> => {
     setReady(false)
     setError(null)
+    useTutorialOverlayStore.getState().clearAll()
     try {
       await resetDatabase()
       await ensureDefaults()
+      await useTutorialStore.getState().reset()
+      useTutorialOverlayStore.getState().clearAll()
+      setReloadKey(value => value + 1)
       setReady(true)
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Database reset failed')
@@ -67,13 +74,17 @@ export const useDatabaseInit = () => {
   const reloadAfterImport = useCallback(async (): Promise<void> => {
     setReady(false)
     setError(null)
+    useTutorialOverlayStore.getState().clearAll()
     try {
       await ensureDefaults()
+      await useTutorialStore.getState().initialize()
+      useTutorialOverlayStore.getState().clearAll()
+      setReloadKey(value => value + 1)
       setReady(true)
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Database reload failed')
     }
   }, [])
 
-  return { ready, error, resetAndReinitialize, reloadAfterImport }
+  return { ready, error, reloadKey, resetAndReinitialize, reloadAfterImport }
 }

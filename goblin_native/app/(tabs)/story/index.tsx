@@ -18,11 +18,6 @@ export default function StoryTabScreen() {
     messageKey: 'ui.tutorial.banner.readPrologue',
     placement: 'below',
   })
-  const afterStoryRef = useTutorialTarget<View>({
-    activeOn: ['read_after_story'],
-    messageKey: 'ui.tutorial.banner.readAfterStory',
-    placement: 'below',
-  })
 
   const handleStoryPress = useCallback((storyId: string) => {
     router.push({ pathname: '/story/reader', params: { storyId } })
@@ -41,9 +36,7 @@ export default function StoryTabScreen() {
             const ref =
               story.id === 'prologue'
                 ? prologueRef
-                : story.id === 'story_after_slime_cave'
-                  ? afterStoryRef
-                  : undefined
+                : undefined
             return (
               <StoryCard
                 key={story.id}

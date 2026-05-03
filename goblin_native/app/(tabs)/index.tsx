@@ -34,6 +34,7 @@ export default function GoblinListScreen() {
     activeOn: ['view_first_goblin'],
     messageKey: 'ui.tutorial.banner.viewFirstGoblin',
     placement: 'below',
+    allowThrough: false,
   })
   const goblins = useGoblinStore((state) => state.goblins)
   const isLoading = useGoblinStore((state) => state.isLoading)
@@ -96,6 +97,9 @@ export default function GoblinListScreen() {
   const handleGoblinPress = useCallback((goblin: Goblin) => {
     if (openSwipeableId !== null) {
       closeOpenSwipeable()
+      return
+    }
+    if (useTutorialStore.getState().step === 'view_first_goblin') {
       return
     }
     // チュートリアル: 確認できたので次は編成タブへ

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { View, ActivityIndicator, Text, StyleSheet, Pressable, Platform, AppState } from 'react-native'
-import { Stack } from 'expo-router'
+import { Stack, router } from 'expo-router'
 import { StatusBar } from 'expo-status-bar'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
@@ -24,7 +24,7 @@ import { initializeI18n } from '@/shared/i18n'
 
 export default function RootLayout() {
   const { t } = useTranslation()
-  const { ready, error, resetAndReinitialize, reloadAfterImport } = useDatabaseInit()
+  const { ready, error, reloadKey, resetAndReinitialize, reloadAfterImport } = useDatabaseInit()
   const [storesReady, setStoresReady] = useState(false)
   const tutorialStep = useTutorialStore(state => state.step)
   const tutorialLoading = useTutorialStore(state => state.isLoading)
@@ -66,7 +66,7 @@ export default function RootLayout() {
       setStoresReady(true)
     }
     void init()
-  }, [ready])
+  }, [ready, reloadKey])
 
   // フォアグラウンド復帰時にアプリアイコンのバッジをクリア
   useEffect(() => {
@@ -109,7 +109,7 @@ export default function RootLayout() {
     return (
       <GestureHandlerRootView style={{ flex: 1 }}>
         <SafeAreaProvider>
-          <StartScreen />
+          <StartScreen onStart={() => router.replace('/(tabs)/story')} />
           <StatusBar style="light" />
         </SafeAreaProvider>
       </GestureHandlerRootView>

@@ -2,7 +2,11 @@ import { useMemo } from 'react'
 import { View, Text, StyleSheet, useWindowDimensions, type ViewStyle } from 'react-native'
 import { useTranslation } from 'react-i18next'
 import { useTutorialStore } from '../stores/useTutorialStore'
-import { selectActiveEntry, useTutorialOverlayStore } from '../stores/useTutorialOverlayStore'
+import {
+  selectActionableEntry,
+  selectActiveEntries,
+  useTutorialOverlayStore,
+} from '../stores/useTutorialOverlayStore'
 
 const MASK_COLOR = 'rgba(15, 23, 42, 0.72)'
 
@@ -12,11 +16,13 @@ export function TutorialSpotlight() {
   const step = useTutorialStore(state => state.step)
   const entries = useTutorialOverlayStore(state => state.entries)
 
-  const target = useMemo(() => selectActiveEntry(entries, step), [entries, step])
+  const activeEntries = useMemo(() => selectActiveEntries(entries, step), [entries, step])
+  const target = useMemo(() => selectActionableEntry(entries, step), [entries, step])
 
   const layout = useMemo(() => {
-    if (!target) return null
-    if (!target.rect) {
+    const messageTarget = target ?? activeEntries[activeEntries.length - 1]
+    if (!messageTarget) return null
+    if (!messageTarget.rect) {
       const messagePosition: ViewStyle = {
         top: screenHeight / 2 - 40,
         left: 24,
@@ -24,22 +30,22 @@ export function TutorialSpotlight() {
       }
       return { rect: null, messagePosition }
     }
-    const rect = target.rect
-    const placement = target.placement === 'auto'
+    const rect = messageTarget.rect
+    const placement = messageTarget.placement === 'auto'
       ? rect.y + rect.height / 2 > screenHeight / 2 ? 'above' : 'below'
-      : target.placement
+      : messageTarget.placement
     const messagePosition: ViewStyle = placement === 'above'
       ? { bottom: Math.max(24, screenHeight - rect.y + 12), left: 24, right: 24 }
       : { top: rect.y + rect.height + 12, left: 24, right: 24 }
     return { rect, messagePosition }
-  }, [target, screenHeight])
+  }, [target, activeEntries, screenHeight])
 
   if (step === 'not_started' || step === 'completed') return null
-  if (!target || !layout) return null
+  if (activeEntries.length === 0 || !layout) return null
 
   // 穴あり: 4辺マスクで切り抜きを表現
-  if (layout.rect) {
-    const r = layout.rect
+  if (target?.rect) {
+    const r = target.rect
     const rightX = r.x + r.width
     const bottomY = r.y + r.height
     return (
@@ -80,10 +86,18 @@ export function TutorialSpotlight() {
           pointerEvents="auto"
         />
         {/* スポット枠 */}
-        <View
-          style={[styles.spotBorder, { top: r.y, left: r.x, width: r.width, height: r.height }]}
-          pointerEvents="none"
-        />
+        {activeEntries.map(entry => entry.rect ? (
+          <View
+            key={entry.id}
+            style={[styles.spotBorder, {
+              top: entry.rect.y,
+              left: entry.rect.x,
+              width: entry.rect.width,
+              height: entry.rect.height,
+            }]}
+            pointerEvents="none"
+          />
+        ) : null)}
         {/* メッセージ */}
         <View style={[styles.messageBox, layout.messagePosition]} pointerEvents="none">
           <Text style={styles.messageText}>{t(target.messageKey)}</Text>
@@ -96,8 +110,20 @@ export function TutorialSpotlight() {
   return (
     <View style={StyleSheet.absoluteFillObject} pointerEvents="box-none">
       <View style={[styles.mask, StyleSheet.absoluteFillObject]} pointerEvents="auto" />
+      {activeEntries.map(entry => entry.rect ? (
+        <View
+          key={entry.id}
+          style={[styles.spotBorder, {
+            top: entry.rect.y,
+            left: entry.rect.x,
+            width: entry.rect.width,
+            height: entry.rect.height,
+          }]}
+          pointerEvents="none"
+        />
+      ) : null)}
       <View style={[styles.messageBox, layout.messagePosition]} pointerEvents="none">
-        <Text style={styles.messageText}>{t(target.messageKey)}</Text>
+        <Text style={styles.messageText}>{t((target ?? activeEntries[activeEntries.length - 1]).messageKey)}</Text>
       </View>
     </View>
   )

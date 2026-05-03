@@ -5,10 +5,11 @@ export type TutorialStep =
   | 'view_first_goblin'
   | 'open_formation'
   | 'edit_party'
+  | 'select_party_member'
+  | 'save_party'
   | 'select_dungeon'
   | 'start_expedition'
   | 'wait_clear'
-  | 'read_after_story'
   | 'completed'
 
 export const TUTORIAL_STEPS: readonly TutorialStep[] = [
@@ -18,10 +19,11 @@ export const TUTORIAL_STEPS: readonly TutorialStep[] = [
   'view_first_goblin',
   'open_formation',
   'edit_party',
+  'select_party_member',
+  'save_party',
   'select_dungeon',
   'start_expedition',
   'wait_clear',
-  'read_after_story',
   'completed',
 ]
 
