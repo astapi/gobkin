@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import {
   View,
   Text,
@@ -9,28 +8,20 @@ import {
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useTranslation } from 'react-i18next'
-import { useTutorialStore } from '../stores/useTutorialStore'
 
 const startBackgroundImage = require('../../../assets/images/start-background.png')
 
 interface StartScreenProps {
   onStart?: () => void
+  starting?: boolean
 }
 
-export function StartScreen({ onStart }: StartScreenProps) {
+export function StartScreen({ onStart, starting = false }: StartScreenProps) {
   const { t } = useTranslation()
-  const advanceTo = useTutorialStore(state => state.advanceTo)
-  const [starting, setStarting] = useState(false)
 
-  const handleStart = async () => {
+  const handleStart = () => {
     if (starting) return
-    setStarting(true)
-    try {
-      await advanceTo('read_prologue')
-      onStart?.()
-    } finally {
-      setStarting(false)
-    }
+    onStart?.()
   }
 
   return (
@@ -40,7 +31,6 @@ export function StartScreen({ onStart }: StartScreenProps) {
       resizeMode="cover"
     >
       <View style={styles.topScrim} />
-      <View style={styles.bottomScrim} />
       <SafeAreaView style={styles.safeArea} edges={['top', 'bottom']}>
         <View style={styles.content}>
           <View style={styles.header}>
@@ -49,22 +39,24 @@ export function StartScreen({ onStart }: StartScreenProps) {
           </View>
 
           <View style={styles.footer}>
-            <Pressable
-              style={({ pressed }) => [
-                styles.startButton,
-                pressed && styles.startButtonPressed,
-                starting && styles.startButtonDisabled,
-              ]}
-              onPress={handleStart}
-              disabled={starting}
-            >
-              {starting ? (
-                <ActivityIndicator color="#1F2937" />
-              ) : (
-                <Text style={styles.startButtonText}>{t('ui.start.beginButton')}</Text>
-              )}
-            </Pressable>
-            <Text style={styles.tagline}>{t('ui.start.tagline')}</Text>
+            <View style={styles.buttonScrim}>
+              <Pressable
+                style={({ pressed }) => [
+                  styles.startButton,
+                  pressed && styles.startButtonPressed,
+                  starting && styles.startButtonDisabled,
+                ]}
+                onPress={handleStart}
+                disabled={starting}
+              >
+                {starting ? (
+                  <ActivityIndicator color="#1F2937" />
+                ) : (
+                  <Text style={styles.startButtonText}>{t('ui.start.beginButton')}</Text>
+                )}
+              </Pressable>
+              <Text style={styles.tagline}>{t('ui.start.tagline')}</Text>
+            </View>
           </View>
         </View>
       </SafeAreaView>
@@ -93,14 +85,6 @@ const styles = StyleSheet.create({
     height: 230,
     backgroundColor: 'rgba(6, 12, 24, 0.28)',
   },
-  bottomScrim: {
-    position: 'absolute',
-    right: 0,
-    bottom: 0,
-    left: 0,
-    height: 300,
-    backgroundColor: 'rgba(3, 8, 18, 0.56)',
-  },
   header: {
     alignItems: 'center',
     marginTop: 48,
@@ -127,6 +111,12 @@ const styles = StyleSheet.create({
   footer: {
     alignItems: 'center',
     paddingBottom: 26,
+  },
+  buttonScrim: {
+    width: '100%',
+    borderRadius: 22,
+    backgroundColor: 'rgba(3, 8, 18, 0.34)',
+    padding: 10,
   },
   startButton: {
     width: '100%',

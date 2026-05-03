@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { View, ActivityIndicator, Text, StyleSheet, Pressable, Platform, AppState } from 'react-native'
 import { Stack, router } from 'expo-router'
 import { StatusBar } from 'expo-status-bar'
@@ -26,8 +26,11 @@ export default function RootLayout() {
   const { t } = useTranslation()
   const { ready, error, reloadKey, resetAndReinitialize, reloadAfterImport } = useDatabaseInit()
   const [storesReady, setStoresReady] = useState(false)
+  const [showLaunchStartScreen, setShowLaunchStartScreen] = useState(true)
+  const [launchStartRequested, setLaunchStartRequested] = useState(false)
   const tutorialStep = useTutorialStore(state => state.step)
   const tutorialLoading = useTutorialStore(state => state.isLoading)
+  const startupReady = ready && storesReady && !tutorialLoading
 
   useEffect(() => {
     if (!ready) {
@@ -81,6 +84,25 @@ export default function RootLayout() {
     return () => subscription.remove()
   }, [])
 
+  const handleLaunchStart = useCallback(() => {
+    setLaunchStartRequested(true)
+  }, [])
+
+  useEffect(() => {
+    if (!launchStartRequested || !startupReady) return
+
+    const enterGame = async () => {
+      if (tutorialStep === 'not_started') {
+        await useTutorialStore.getState().advanceTo('read_prologue')
+        router.replace('/(tabs)/story')
+      }
+      setShowLaunchStartScreen(false)
+      setLaunchStartRequested(false)
+    }
+
+    void enterGame()
+  }, [launchStartRequested, startupReady, tutorialStep])
+
   if (error) {
     return (
       <SafeAreaProvider>
@@ -91,6 +113,20 @@ export default function RootLayout() {
           </Pressable>
         </View>
       </SafeAreaProvider>
+    )
+  }
+
+  if (showLaunchStartScreen) {
+    return (
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <SafeAreaProvider>
+          <StartScreen
+            onStart={handleLaunchStart}
+            starting={launchStartRequested}
+          />
+          <StatusBar style="light" />
+        </SafeAreaProvider>
+      </GestureHandlerRootView>
     )
   }
 
@@ -109,7 +145,13 @@ export default function RootLayout() {
     return (
       <GestureHandlerRootView style={{ flex: 1 }}>
         <SafeAreaProvider>
-          <StartScreen onStart={() => router.replace('/(tabs)/story')} />
+          <StartScreen
+            onStart={() => {
+              void useTutorialStore.getState().advanceTo('read_prologue').then(() => {
+                router.replace('/(tabs)/story')
+              })
+            }}
+          />
           <StatusBar style="light" />
         </SafeAreaProvider>
       </GestureHandlerRootView>
