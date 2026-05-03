@@ -7,13 +7,13 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   scheme: "gobkin",
   version: "1.0.0",
   orientation: "portrait",
-  icon: "./assets/icon.png",
+  icon: "./assets/images/icon.png",
   userInterfaceStyle: "light",
   newArchEnabled: true,
   splash: {
-    image: "./assets/splash-icon.png",
-    resizeMode: "contain",
-    backgroundColor: "#ffffff",
+    image: "./assets/images/splash.png",
+    resizeMode: "cover",
+    backgroundColor: "#07111C",
   },
   ios: {
     supportsTablet: true,
@@ -23,21 +23,36 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     infoPlist: {
       ITSAppUsesNonExemptEncryption: false,
     },
+    splash: {
+      image: "./assets/images/splash.png",
+      resizeMode: "cover",
+      backgroundColor: "#07111C",
+    },
   },
   android: {
     adaptiveIcon: {
-      foregroundImage: "./assets/adaptive-icon.png",
-      backgroundColor: "#ffffff",
+      foregroundImage: "./assets/images/adaptive-icon.png",
+      backgroundColor: "#07111C",
     },
     edgeToEdgeEnabled: true,
     predictiveBackGestureEnabled: false,
     package: "com.astapi.gobkin",
+    splash: {
+      image: "./assets/images/splash.png",
+      resizeMode: "cover",
+      backgroundColor: "#07111C",
+    },
   },
   web: {
-    favicon: "./assets/favicon.png",
+    favicon: "./assets/images/favicon.png",
     bundler: "metro",
   },
-  plugins: ["expo-router", "expo-sqlite", "expo-notifications"],
+  plugins: [
+    "expo-router",
+    "expo-splash-screen",
+    "expo-sqlite",
+    "expo-notifications",
+  ],
   experiments: {
     typedRoutes: true,
   },

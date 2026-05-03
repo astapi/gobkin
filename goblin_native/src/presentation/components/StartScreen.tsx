@@ -4,14 +4,14 @@ import {
   Text,
   Pressable,
   StyleSheet,
-  Image,
+  ImageBackground,
   ActivityIndicator,
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useTranslation } from 'react-i18next'
 import { useTutorialStore } from '../stores/useTutorialStore'
 
-const goblinImage = require('../../../assets/goblin/goblin.png')
+const startBackgroundImage = require('../../../assets/images/start-background.png')
 
 interface StartScreenProps {
   onStart?: () => void
@@ -34,37 +34,41 @@ export function StartScreen({ onStart }: StartScreenProps) {
   }
 
   return (
-    <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
-      <View style={styles.content}>
-        <View style={styles.header}>
-          <Text style={styles.title}>{t('ui.start.title')}</Text>
-          <Text style={styles.subtitle}>{t('ui.start.subtitle')}</Text>
-        </View>
+    <ImageBackground
+      source={startBackgroundImage}
+      style={styles.container}
+      resizeMode="cover"
+    >
+      <View style={styles.topScrim} />
+      <View style={styles.bottomScrim} />
+      <SafeAreaView style={styles.safeArea} edges={['top', 'bottom']}>
+        <View style={styles.content}>
+          <View style={styles.header}>
+            <Text style={styles.title}>{t('ui.start.title')}</Text>
+            <Text style={styles.subtitle}>{t('ui.start.subtitle')}</Text>
+          </View>
 
-        <View style={styles.imageWrapper}>
-          <Image source={goblinImage} style={styles.image} resizeMode="contain" />
+          <View style={styles.footer}>
+            <Pressable
+              style={({ pressed }) => [
+                styles.startButton,
+                pressed && styles.startButtonPressed,
+                starting && styles.startButtonDisabled,
+              ]}
+              onPress={handleStart}
+              disabled={starting}
+            >
+              {starting ? (
+                <ActivityIndicator color="#1F2937" />
+              ) : (
+                <Text style={styles.startButtonText}>{t('ui.start.beginButton')}</Text>
+              )}
+            </Pressable>
+            <Text style={styles.tagline}>{t('ui.start.tagline')}</Text>
+          </View>
         </View>
-
-        <View style={styles.footer}>
-          <Pressable
-            style={({ pressed }) => [
-              styles.startButton,
-              pressed && styles.startButtonPressed,
-              starting && styles.startButtonDisabled,
-            ]}
-            onPress={handleStart}
-            disabled={starting}
-          >
-            {starting ? (
-              <ActivityIndicator color="#FFFFFF" />
-            ) : (
-              <Text style={styles.startButtonText}>{t('ui.start.beginButton')}</Text>
-            )}
-          </Pressable>
-          <Text style={styles.tagline}>{t('ui.start.tagline')}</Text>
-        </View>
-      </View>
-    </SafeAreaView>
+      </SafeAreaView>
+    </ImageBackground>
   )
 }
 
@@ -73,47 +77,61 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#0F172A',
   },
+  safeArea: {
+    flex: 1,
+  },
   content: {
     flex: 1,
-    paddingHorizontal: 24,
+    paddingHorizontal: 22,
     justifyContent: 'space-between',
+  },
+  topScrim: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    left: 0,
+    height: 230,
+    backgroundColor: 'rgba(6, 12, 24, 0.28)',
+  },
+  bottomScrim: {
+    position: 'absolute',
+    right: 0,
+    bottom: 0,
+    left: 0,
+    height: 300,
+    backgroundColor: 'rgba(3, 8, 18, 0.56)',
   },
   header: {
     alignItems: 'center',
     marginTop: 48,
   },
   title: {
-    fontSize: 36,
+    fontSize: 38,
     fontWeight: '900',
     color: '#FBBF24',
-    letterSpacing: 2,
     textAlign: 'center',
+    textShadowColor: 'rgba(0, 0, 0, 0.75)',
+    textShadowOffset: { width: 0, height: 3 },
+    textShadowRadius: 8,
   },
   subtitle: {
-    marginTop: 12,
+    marginTop: 10,
     fontSize: 14,
     color: '#CBD5F5',
     letterSpacing: 4,
     textAlign: 'center',
-  },
-  imageWrapper: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  image: {
-    width: 220,
-    height: 220,
-    opacity: 0.95,
+    textShadowColor: 'rgba(0, 0, 0, 0.8)',
+    textShadowOffset: { width: 0, height: 2 },
+    textShadowRadius: 6,
   },
   footer: {
     alignItems: 'center',
-    paddingBottom: 24,
+    paddingBottom: 26,
   },
   startButton: {
     width: '100%',
-    paddingVertical: 18,
-    borderRadius: 16,
+    minHeight: 74,
+    borderRadius: 18,
     backgroundColor: '#F59E0B',
     alignItems: 'center',
     justifyContent: 'center',
@@ -122,6 +140,8 @@ const styles = StyleSheet.create({
     shadowRadius: 12,
     shadowOffset: { width: 0, height: 6 },
     elevation: 6,
+    borderWidth: 2,
+    borderColor: 'rgba(255, 214, 102, 0.45)',
   },
   startButtonPressed: {
     opacity: 0.85,
@@ -134,12 +154,14 @@ const styles = StyleSheet.create({
     color: '#1F2937',
     fontSize: 18,
     fontWeight: '800',
-    letterSpacing: 2,
   },
   tagline: {
-    marginTop: 16,
-    fontSize: 12,
-    color: '#94A3B8',
+    marginTop: 14,
+    fontSize: 13,
+    color: '#CBD5E1',
     textAlign: 'center',
+    textShadowColor: 'rgba(0, 0, 0, 0.9)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 4,
   },
 })
