@@ -10,6 +10,7 @@ import StoryIcon from '../../assets/tab/tab_story.svg'
 import SettingIcon from '../../assets/tab/tab_setting.svg'
 import { CurrentTimeBadge } from '@/presentation/components/CurrentTimeBadge'
 import { GoldBadge } from '@/presentation/components/GoldBadge'
+import { GoldenAcornBadge } from '@/presentation/components/GoldenAcornBadge'
 import { useStoryStore } from '@/presentation/stores/useStoryStore'
 
 interface TabIconProps {
@@ -107,6 +108,7 @@ export default function TabLayout() {
       />
     </Tabs>
     <CurrentTimeBadge bottom={baseHeight + safeAreaPadding + 8} />
+    <GoldenAcornBadge bottom={baseHeight + safeAreaPadding + 8} />
     <GoldBadge bottom={baseHeight + safeAreaPadding + 8} />
     </View>
   )
