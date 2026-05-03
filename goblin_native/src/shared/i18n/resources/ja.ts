@@ -12,6 +12,7 @@ const ja = {
       settings: '設定',
       goldSuffix: 'G',
       levelShort: 'Lv.',
+      goldenAcornBadge: 'ﾄﾞﾝｸﾞﾘ {{count}}',
     },
     tabs: {
       story: '物語',

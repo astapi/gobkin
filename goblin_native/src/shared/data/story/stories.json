@@ -6,7 +6,7 @@
       "category": "main",
       "order": 0,
       "unlockCondition": null,
-      "rewards": [],
+      "rewards": [{ "type": "golden_acorn", "value": 5 }],
       "chapters": [
         {
           "id": "prologue_1",
@@ -24,7 +24,7 @@
       "category": "main",
       "order": 1,
       "unlockCondition": { "type": "dungeon_cleared", "dungeonId": "slime_cave" },
-      "rewards": [],
+      "rewards": [{ "type": "golden_acorn", "value": 5 }],
       "chapters": [
         {
           "id": "story_after_slime_cave_1",
@@ -38,7 +38,7 @@
       "category": "main",
       "order": 2,
       "unlockCondition": { "type": "dungeon_cleared", "dungeonId": "forest_outskirts" },
-      "rewards": [],
+      "rewards": [{ "type": "golden_acorn", "value": 5 }],
       "chapters": [
         {
           "id": "story_after_forest_1",
@@ -52,7 +52,7 @@
       "category": "main",
       "order": 3,
       "unlockCondition": { "type": "dungeon_cleared", "dungeonId": "goblin_village_3" },
-      "rewards": [],
+      "rewards": [{ "type": "golden_acorn", "value": 5 }],
       "chapters": [
         {
           "id": "story_after_goblin_village_1",
@@ -66,7 +66,7 @@
       "category": "main",
       "order": 4,
       "unlockCondition": { "type": "dungeon_cleared", "dungeonId": "undead_ruins_3" },
-      "rewards": [],
+      "rewards": [{ "type": "golden_acorn", "value": 5 }],
       "chapters": [
         {
           "id": "story_after_ruins_1",
@@ -80,7 +80,7 @@
       "category": "main",
       "order": 5,
       "unlockCondition": { "type": "dungeon_cleared", "dungeonId": "road_1" },
-      "rewards": [],
+      "rewards": [{ "type": "golden_acorn", "value": 5 }],
       "chapters": [
         {
           "id": "story_after_road_1",
@@ -94,7 +94,7 @@
       "category": "main",
       "order": 6,
       "unlockCondition": { "type": "dungeon_cleared", "dungeonId": "orc_camp_3" },
-      "rewards": [],
+      "rewards": [{ "type": "golden_acorn", "value": 5 }],
       "chapters": [
         {
           "id": "story_after_orc_camp_1",
@@ -108,7 +108,7 @@
       "category": "main",
       "order": 7,
       "unlockCondition": { "type": "dungeon_cleared", "dungeonId": "human_village" },
-      "rewards": [],
+      "rewards": [{ "type": "golden_acorn", "value": 5 }],
       "chapters": [
         {
           "id": "story_after_village_1",
@@ -122,7 +122,7 @@
       "category": "main",
       "order": 8,
       "unlockCondition": { "type": "dungeon_cleared", "dungeonId": "wolf_grassland_1" },
-      "rewards": [],
+      "rewards": [{ "type": "golden_acorn", "value": 5 }],
       "chapters": [
         {
           "id": "story_after_wolf_grassland_1",
@@ -136,7 +136,7 @@
       "category": "main",
       "order": 9,
       "unlockCondition": { "type": "dungeon_cleared", "dungeonId": "lizardman_swamp_3" },
-      "rewards": [],
+      "rewards": [{ "type": "golden_acorn", "value": 5 }],
       "chapters": [
         {
           "id": "story_after_lizardman_swamp_1",
@@ -150,7 +150,7 @@
       "category": "main",
       "order": 10,
       "unlockCondition": { "type": "dungeon_cleared", "dungeonId": "subjugation_force_3" },
-      "rewards": [],
+      "rewards": [{ "type": "golden_acorn", "value": 5 }],
       "chapters": [
         {
           "id": "story_after_subjugation_1",
@@ -164,7 +164,7 @@
       "category": "main",
       "order": 11,
       "unlockCondition": { "type": "dungeon_cleared", "dungeonId": "spider_forest_1" },
-      "rewards": [],
+      "rewards": [{ "type": "golden_acorn", "value": 5 }],
       "chapters": [
         {
           "id": "story_after_spider_forest_1",
@@ -178,7 +178,7 @@
       "category": "main",
       "order": 12,
       "unlockCondition": { "type": "dungeon_cleared", "dungeonId": "dead_grave_3" },
-      "rewards": [],
+      "rewards": [{ "type": "golden_acorn", "value": 5 }],
       "chapters": [
         {
           "id": "story_after_dead_grave_1",
@@ -192,7 +192,7 @@
       "category": "main",
       "order": 13,
       "unlockCondition": { "type": "dungeon_cleared", "dungeonId": "harpy_cliff_1" },
-      "rewards": [],
+      "rewards": [{ "type": "golden_acorn", "value": 5 }],
       "chapters": [
         {
           "id": "story_after_harpy_cliff_1",
@@ -206,7 +206,7 @@
       "category": "main",
       "order": 14,
       "unlockCondition": { "type": "dungeon_cleared", "dungeonId": "human_fortress_3" },
-      "rewards": [],
+      "rewards": [{ "type": "golden_acorn", "value": 5 }],
       "chapters": [
         {
           "id": "story_after_fortress_1",
@@ -220,7 +220,7 @@
       "category": "main",
       "order": 15,
       "unlockCondition": { "type": "dungeon_cleared", "dungeonId": "vampire_castle_1" },
-      "rewards": [],
+      "rewards": [{ "type": "golden_acorn", "value": 5 }],
       "chapters": [
         {
           "id": "story_after_vampire_1",
@@ -234,7 +234,7 @@
       "category": "main",
       "order": 16,
       "unlockCondition": { "type": "dungeon_cleared", "dungeonId": "royal_capital_2" },
-      "rewards": [],
+      "rewards": [{ "type": "golden_acorn", "value": 5 }],
       "chapters": [
         {
           "id": "story_after_royal_capital_2_1",
@@ -248,7 +248,7 @@
       "category": "main",
       "order": 17,
       "unlockCondition": { "type": "dungeon_cleared", "dungeonId": "royal_capital_3" },
-      "rewards": [],
+      "rewards": [{ "type": "golden_acorn", "value": 5 }],
       "chapters": [
         {
           "id": "story_ending_1",
@@ -266,7 +266,7 @@
       "category": "side",
       "order": 100,
       "unlockCondition": { "type": "dungeon_cleared", "dungeonId": "orc_fortress_1" },
-      "rewards": [],
+      "rewards": [{ "type": "golden_acorn", "value": 5 }],
       "chapters": [
         {
           "id": "side_orc_fortress_1",
@@ -280,7 +280,7 @@
       "category": "side",
       "order": 101,
       "unlockCondition": { "type": "dungeon_cleared", "dungeonId": "hobbit_hills_1" },
-      "rewards": [],
+      "rewards": [{ "type": "golden_acorn", "value": 5 }],
       "chapters": [
         {
           "id": "side_hobbit_hills_1",
@@ -294,7 +294,7 @@
       "category": "side",
       "order": 102,
       "unlockCondition": { "type": "dungeon_cleared", "dungeonId": "dwarf_mine_3" },
-      "rewards": [],
+      "rewards": [{ "type": "golden_acorn", "value": 5 }],
       "chapters": [
         {
           "id": "side_dwarf_mine_1",
@@ -308,7 +308,7 @@
       "category": "side",
       "order": 103,
       "unlockCondition": { "type": "dungeon_cleared", "dungeonId": "elf_forest_3" },
-      "rewards": [],
+      "rewards": [{ "type": "golden_acorn", "value": 5 }],
       "chapters": [
         {
           "id": "side_elf_forest_1",
@@ -322,7 +322,7 @@
       "category": "side",
       "order": 104,
       "unlockCondition": { "type": "dungeon_cleared", "dungeonId": "lizardman_swamp_3" },
-      "rewards": [],
+      "rewards": [{ "type": "golden_acorn", "value": 5 }],
       "chapters": [
         {
           "id": "side_lizardman_swamp_1",
@@ -336,7 +336,7 @@
       "category": "side",
       "order": 105,
       "unlockCondition": { "type": "dungeon_cleared", "dungeonId": "troll_canyon_3" },
-      "rewards": [],
+      "rewards": [{ "type": "golden_acorn", "value": 5 }],
       "chapters": [
         {
           "id": "side_troll_canyon_1",
@@ -350,7 +350,7 @@
       "category": "side",
       "order": 106,
       "unlockCondition": { "type": "dungeon_cleared", "dungeonId": "minotaur_labyrinth_1" },
-      "rewards": [],
+      "rewards": [{ "type": "golden_acorn", "value": 5 }],
       "chapters": [
         {
           "id": "side_minotaur_1",
@@ -364,7 +364,7 @@
       "category": "side",
       "order": 107,
       "unlockCondition": { "type": "dungeon_cleared", "dungeonId": "harpy_cliff_1" },
-      "rewards": [],
+      "rewards": [{ "type": "golden_acorn", "value": 5 }],
       "chapters": [
         {
           "id": "side_harpy_cliff_1",

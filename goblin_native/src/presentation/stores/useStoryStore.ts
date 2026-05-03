@@ -1,8 +1,10 @@
 import { create } from 'zustand'
 import { SQLiteStoryProgressRepository } from '../../infrastructure/repositories/SQLiteStoryProgressRepository'
 import { storiesData } from '../../shared/data/story'
+import { TICKET_TYPES } from '../../shared/constants/purchases'
 import type { Story } from '../../shared/types/Story'
 import type { StoryProgressState } from '../../shared/types/StoryProgress'
+import { usePurchaseStore } from './usePurchaseStore'
 
 const repository = SQLiteStoryProgressRepository.getInstance()
 
@@ -87,7 +89,23 @@ export const useStoryStore = create<StoryStoreState & StoryStoreActions>()((set,
     },
 
     markStoryRead: async (storyId: string) => {
+      // 既読への遷移時のみ報酬を付与（再読での重複付与を防ぐ）
+      const wasUnread = !get().progress[storyId]?.read
       await repository.markRead(storyId)
+      if (wasUnread) {
+        const story = storiesData.find(s => s.id === storyId)
+        if (story) {
+          for (const reward of story.rewards) {
+            if (reward.type === 'golden_acorn' && typeof reward.value === 'number' && reward.value > 0) {
+              try {
+                await usePurchaseStore.getState().addTickets(TICKET_TYPES.GOLDEN_ACORN, reward.value)
+              } catch (error) {
+                console.error('[Story] Failed to grant golden acorn reward:', error)
+              }
+            }
+          }
+        }
+      }
       await refresh()
     },
   }

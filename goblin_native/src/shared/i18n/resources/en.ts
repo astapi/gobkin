@@ -12,6 +12,7 @@ const en = {
       settings: 'Settings',
       goldSuffix: 'G',
       levelShort: 'Lv.',
+      goldenAcornBadge: 'Acorn {{count}}',
     },
     tabs: {
       story: 'Story',

@@ -6,7 +6,7 @@ export type StoryUnlockCondition = {
 }
 
 export type StoryReward = {
-  type: 'gold' | 'goblin' | 'equipment'
+  type: 'gold' | 'goblin' | 'equipment' | 'golden_acorn'
   value: number | string
 }
 
