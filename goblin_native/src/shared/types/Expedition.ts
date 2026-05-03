@@ -61,14 +61,17 @@ export type TimelineEvent =
   | { type: "return"; at: number; reason: ExpeditionEndReason }
 
 /**
- * 出撃時に消費する課金/補助アイテムによるブースト設定。
- * 現状はレアドロップの確率倍率のみ用意。今後「探索時間1/2」「称号付与倍率2倍」を追加予定。
+ * 出撃時に消費する課金/補助アイテム（金のドングリ等）によるブースト設定。
+ * 探索時間の短縮は ExpeditionRequest.durationSec 計算時点で適用するため、ここでは扱わない。
  *
- * - rareDropMultiplier: 1 を基準に乗算する倍率。レアドロップ判定にのみ適用される。
- *   未指定または 1 の場合はブーストなし。
+ * - rareDropMultiplier: レアドロップ判定の倍率（1 で無効）
+ * - goldMultiplier: 戦闘で得られる Gold の倍率（1 で無効）
+ * - titleMultiplier: 装備に付与される称号の倍率（1 で無効）
  */
 export interface ExpeditionBoost {
   rareDropMultiplier?: number
+  goldMultiplier?: number
+  titleMultiplier?: number
 }
 
 /**

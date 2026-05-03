@@ -64,6 +64,12 @@ export class ExpeditionEngine {
     const rareDropMultiplierBoost = expeditionBoost?.rareDropMultiplier && expeditionBoost.rareDropMultiplier > 0
       ? expeditionBoost.rareDropMultiplier
       : 1
+    const goldMultiplierBoost = expeditionBoost?.goldMultiplier && expeditionBoost.goldMultiplier > 0
+      ? expeditionBoost.goldMultiplier
+      : 1
+    const titleMultiplierBoost = expeditionBoost?.titleMultiplier && expeditionBoost.titleMultiplier > 0
+      ? expeditionBoost.titleMultiplier
+      : 1
     const tier = request.tier ?? 0
     const tierScaling = DUNGEON_TIER_SCALING[tier] ?? DUNGEON_TIER_SCALING[0]
     // ダンジョンIDからエリアIDにマッピング
@@ -167,7 +173,8 @@ export class ExpeditionEngine {
               droppedTemplateIds,
               partyLuckAverage,
               normalizedRewardMultipliers,
-              rareDropMultiplierBoost
+              rareDropMultiplierBoost,
+              titleMultiplierBoost
             )
             if (treasureDrops.length > 0) {
               events.push({
@@ -229,7 +236,8 @@ export class ExpeditionEngine {
               droppedTemplateIds,
               partyLuckAverage,
               normalizedRewardMultipliers,
-              rareDropMultiplierBoost
+              rareDropMultiplierBoost,
+              titleMultiplierBoost
             )
             if (defaultTreasure.length > 0) {
               events.push({
@@ -299,7 +307,8 @@ export class ExpeditionEngine {
             droppedTemplateIds,
             partyLuckAverage,
             normalizedRewardMultipliers,
-            rareDropMultiplierBoost
+            rareDropMultiplierBoost,
+            titleMultiplierBoost
           )
           if (bossTreasure.length > 0) {
             events.push({
@@ -334,7 +343,7 @@ export class ExpeditionEngine {
       (max, member) => Math.max(max, getGoldBonusPercentFromSkills(member.skills)),
       0,
     )
-    const summary = this.calculateRewardSummary(events, partyState, normalizedRewardMultipliers, partyGoldBonusPercent)
+    const summary = this.calculateRewardSummary(events, partyState, normalizedRewardMultipliers, partyGoldBonusPercent, goldMultiplierBoost)
     console.log('ExpeditionEngine: Expedition complete', summary)
 
     return {
@@ -669,9 +678,11 @@ export class ExpeditionEngine {
     droppedIds: Set<string>,
     partyLuckAverage: number,
     rewardMultipliers?: PartyRewardMultipliers,
-    rareDropMultiplierBoost: number = 1
+    rareDropMultiplierBoost: number = 1,
+    titleMultiplierBoost: number = 1
   ): TreasureDrop[] {
     const { title: titleMultiplier, rare: rareMultiplier } = normalizePartyRewardMultipliers(rewardMultipliers)
+    const effectiveTitleMultiplier = titleMultiplier * (titleMultiplierBoost > 0 ? titleMultiplierBoost : 1)
     const drops: TreasureDrop[] = []
     const expeditionDroppedIds = new Set(droppedIds)
     const pendingDroppedIds = new Set<string>()
@@ -694,7 +705,7 @@ export class ExpeditionEngine {
       const index = Math.floor(this.rng() * candidates.length)
       const selected = candidates[index]
 
-      const title = EquipmentTitleService.rollTitle(titleMultiplier, this.rng)
+      const title = EquipmentTitleService.rollTitle(effectiveTitleMultiplier, this.rng)
       drops.push({
         templateId: selected.id,
         titleId: title.titleId !== 'none' ? title.titleId : undefined,
@@ -716,7 +727,7 @@ export class ExpeditionEngine {
         const luckRoll = rollLuckValue(partyLuckAverage, this.rng)
         if (!(rareThreshold < luckRoll)) continue
 
-        const title = EquipmentTitleService.rollTitle(titleMultiplier, this.rng)
+        const title = EquipmentTitleService.rollTitle(effectiveTitleMultiplier, this.rng)
         drops.push({
           templateId: drop.templateId,
           titleId: title.titleId !== 'none' ? title.titleId : undefined,
@@ -737,9 +748,11 @@ export class ExpeditionEngine {
     partyState: PartyState[],
     rewardMultipliers?: PartyRewardMultipliers,
     goldBonusPercent: number = 0,
+    goldMultiplierBoost: number = 1,
   ): RewardSummary {
     const { gold: goldMultiplier } = normalizePartyRewardMultipliers(rewardMultipliers)
     const skillGoldMultiplier = 1 + goldBonusPercent / 100
+    const effectiveGoldBoost = goldMultiplierBoost > 0 ? goldMultiplierBoost : 1
     let xpGained = 0
     let baseGoldGained = 0
     let maxFloorReached = 1
@@ -770,8 +783,8 @@ export class ExpeditionEngine {
       successReasons.has(event.reason)
     )
 
-    const goldGained = Math.floor(baseGoldGained * goldMultiplier * skillGoldMultiplier)
-    const totalGoldMultiplier = goldMultiplier * skillGoldMultiplier
+    const goldGained = Math.floor(baseGoldGained * goldMultiplier * skillGoldMultiplier * effectiveGoldBoost)
+    const totalGoldMultiplier = goldMultiplier * skillGoldMultiplier * effectiveGoldBoost
 
     return {
       success,

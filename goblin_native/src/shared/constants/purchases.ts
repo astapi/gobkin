@@ -52,6 +52,7 @@ export const MONTHLY_PASS_SPEED_MULTIPLIER = 0.8    // 遠征時間倍率（0.8 
 export const TICKET_TYPES = {
   SPEED: 'speed_ticket',
   BOOST: 'boost_ticket',
+  GOLDEN_ACORN: 'golden_acorn',
 } as const
 
 export type TicketType = typeof TICKET_TYPES[keyof typeof TICKET_TYPES]
@@ -59,6 +60,12 @@ export type TicketType = typeof TICKET_TYPES[keyof typeof TICKET_TYPES]
 // チケット効果
 export const SPEED_TICKET_MULTIPLIER = 0.5    // 遠征時間倍率（0.5 = 50%短縮）
 export const BOOST_TICKET_MULTIPLIER = 2.0    // ドロップ率・経験値倍率
+
+// 金のドングリ効果（出撃時に1個消費する Consumable）
+export const GOLDEN_ACORN_SPEED_MULTIPLIER = 0.5   // 探索時間 1/2
+export const GOLDEN_ACORN_GOLD_MULTIPLIER = 2.0    // Gold 倍率 2倍
+export const GOLDEN_ACORN_RARE_MULTIPLIER = 2.0    // レアドロップ倍率 2倍
+export const GOLDEN_ACORN_TITLE_MULTIPLIER = 2.0   // 称号倍率 2倍
 
 // 商品情報（UI表示用 + Package ID → Entitlement ID マッピング）
 export interface PurchaseProduct {
@@ -69,6 +76,11 @@ export interface PurchaseProduct {
   iconName: string         // アイコン名
   section: 'one_time' | 'subscription' | 'ticket'  // 表示セクション
   requiresEntitlement?: string  // この商品を購入するために必要な前提Entitlement
+  /**
+   * Consumable 商品で1回購入したときに付与されるチケット数。
+   * section='ticket' のときに必須。purchasePackage 成功時、entitlementId をキーに tickets テーブルへ加算される。
+   */
+  consumableQuantity?: number
 }
 
 export const PURCHASE_PRODUCTS: PurchaseProduct[] = [
@@ -155,6 +167,7 @@ export const PURCHASE_PRODUCTS: PurchaseProduct[] = [
     descriptionKey: 'shop.speedTicket.description',
     iconName: 'zap',
     section: 'ticket',
+    consumableQuantity: 5,
   },
   {
     packageId: 'boost_ticket_5',
@@ -163,6 +176,44 @@ export const PURCHASE_PRODUCTS: PurchaseProduct[] = [
     descriptionKey: 'shop.boostTicket.description',
     iconName: 'trending-up',
     section: 'ticket',
+    consumableQuantity: 5,
+  },
+  // 金のドングリ（バンドルが大きいほど割安）
+  {
+    packageId: 'golden_acorn_50',
+    entitlementId: TICKET_TYPES.GOLDEN_ACORN,
+    nameKey: 'shop.goldenAcorn.name50',
+    descriptionKey: 'shop.goldenAcorn.description',
+    iconName: 'gift',
+    section: 'ticket',
+    consumableQuantity: 50,
+  },
+  {
+    packageId: 'golden_acorn_100',
+    entitlementId: TICKET_TYPES.GOLDEN_ACORN,
+    nameKey: 'shop.goldenAcorn.name100',
+    descriptionKey: 'shop.goldenAcorn.descriptionDiscount',
+    iconName: 'gift',
+    section: 'ticket',
+    consumableQuantity: 100,
+  },
+  {
+    packageId: 'golden_acorn_200',
+    entitlementId: TICKET_TYPES.GOLDEN_ACORN,
+    nameKey: 'shop.goldenAcorn.name200',
+    descriptionKey: 'shop.goldenAcorn.descriptionDiscount',
+    iconName: 'gift',
+    section: 'ticket',
+    consumableQuantity: 200,
+  },
+  {
+    packageId: 'golden_acorn_500',
+    entitlementId: TICKET_TYPES.GOLDEN_ACORN,
+    nameKey: 'shop.goldenAcorn.name500',
+    descriptionKey: 'shop.goldenAcorn.descriptionDiscount',
+    iconName: 'gift',
+    section: 'ticket',
+    consumableQuantity: 500,
   },
 ]
 

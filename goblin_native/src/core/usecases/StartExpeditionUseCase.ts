@@ -1,4 +1,5 @@
 import type {
+  ExpeditionBoost,
   ExpeditionMeta,
   ExpeditionRequest,
   Goblin,
@@ -25,7 +26,10 @@ export class StartExpeditionUseCase {
     this.equipmentRepository = equipmentRepository
   }
 
-  public async execute(request: ExpeditionRequest): Promise<ExpeditionMeta> {
+  public async execute(
+    request: ExpeditionRequest,
+    expeditionBoost?: ExpeditionBoost,
+  ): Promise<ExpeditionMeta> {
     const partyId = Number.parseInt(request.partyId, 10)
     if (Number.isNaN(partyId)) {
       throw new Error('パーティIDが不正です')
@@ -60,6 +64,7 @@ export class StartExpeditionUseCase {
       request,
       departingGoblins,
       rewardMultipliers: normalizePartyRewardMultipliers(party.rewardMultipliers),
+      expeditionBoost,
     }
   }
 
