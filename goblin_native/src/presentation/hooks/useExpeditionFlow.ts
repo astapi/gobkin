@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Alert } from 'react-native'
+import { router } from 'expo-router'
 import type {
   Dungeon,
   DungeonTier,
@@ -151,9 +152,13 @@ export const useExpeditionFlow = ({
     await markDungeonCleared(dungeon, true, tier)
     await checkAndUnlockStories(dungeon.id)
 
-    // チュートリアル: スライム洞窟クリアでストーリー読了ステップへ
-    if (dungeon.id === 'slime_cave') {
-      await useTutorialStore.getState().advanceTo('read_after_story')
+    // チュートリアル: 初回スライム洞窟クリアで結果画面へ誘導して完了
+    if (dungeon.id === 'slime_cave' && useTutorialStore.getState().step === 'wait_clear') {
+      await useTutorialStore.getState().complete()
+      router.push({
+        pathname: '/formation/result',
+        params: { expeditionId: record.id, partyId: record.partyId.toString() },
+      })
     }
 
     const nextId = await getNextGoblinId()
@@ -269,7 +274,10 @@ export const useExpeditionFlow = ({
         }
 
         const partyExpeditionTimeMultiplier = await getPartyExpeditionTimeMultiplier(party)
-        const durationSec = estimateExplorationTime(
+        const isTutorialSlimeLaunch =
+          dungeon.id === 'slime_cave' &&
+          useTutorialStore.getState().step === 'start_expedition'
+        const durationSec = isTutorialSlimeLaunch ? 3 : estimateExplorationTime(
           dungeon,
           returnPolicy,
           partyExpeditionTimeMultiplier,

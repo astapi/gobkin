@@ -4,6 +4,8 @@ import { router, useLocalSearchParams, Stack } from 'expo-router'
 import { useTranslation } from 'react-i18next'
 import { usePartyStore } from '@/presentation/stores/usePartyStore'
 import { useGoblinStore } from '@/presentation/stores/useGoblinStore'
+import { useTutorialStore } from '@/presentation/stores/useTutorialStore'
+import { useTutorialTarget } from '@/presentation/hooks/useTutorialTarget'
 import { getGoblinDisplayImage } from '@/shared/utils/goblinImages'
 import { GoblinCard } from '@/presentation/components/GoblinCard'
 import type { Goblin, Party } from '@/shared/types'
@@ -78,6 +80,7 @@ export default function PartyEditScreen() {
   const updateMembers = usePartyStore((state) => state.updateMembers)
   const getPartyById = usePartyStore((state) => state.getPartyById)
   const refreshParties = usePartyStore((state) => state.refresh)
+  const advanceTutorial = useTutorialStore((state) => state.advanceTo)
   const goblins = useGoblinStore((state) => state.goblins)
   const goblinsLoading = useGoblinStore((state) => state.isLoading)
   const [retryCount, setRetryCount] = useState(0)
@@ -113,6 +116,16 @@ export default function PartyEditScreen() {
     }
   }, [party, memberIdsInitialized])
   const [selectedSlotIndex, setSelectedSlotIndex] = useState<number | null>(null)
+  const firstGoblinRef = useTutorialTarget<View>({
+    activeOn: ['select_party_member'],
+    messageKey: 'ui.tutorial.banner.selectPartyMember',
+    placement: 'above',
+  })
+  const saveButtonRef = useTutorialTarget<View>({
+    activeOn: ['save_party'],
+    messageKey: 'ui.tutorial.banner.saveParty',
+    placement: 'below',
+  })
 
   // 他のパーティに所属しているゴブリンIDを取得
   const assignedToOtherParty = useMemo(() => {
@@ -206,13 +219,17 @@ export default function PartyEditScreen() {
       }
       setSelectedMemberIds(prev => [...prev, goblin.id])
     }
-  }, [selectedMemberIds, selectedSlotIndex, assignedToOtherParty])
+    if (useTutorialStore.getState().step === 'select_party_member') {
+      void advanceTutorial('save_party')
+    }
+  }, [advanceTutorial, selectedMemberIds, selectedSlotIndex, assignedToOtherParty])
 
   const handleSave = useCallback(async () => {
     if (!partyId) return
     await updateMembers(parseInt(partyId, 10), selectedMemberIds)
+    await advanceTutorial('select_dungeon')
     router.back()
-  }, [partyId, selectedMemberIds, updateMembers])
+  }, [advanceTutorial, partyId, selectedMemberIds, updateMembers])
 
   // ローディング中またはパーティ取得のリトライ中、またはメンバーID初期化待ち
   if (partiesLoading || goblinsLoading || (!party && retryCount < 5) || (party && !memberIdsInitialized)) {
@@ -245,9 +262,11 @@ export default function PartyEditScreen() {
             </TouchableOpacity>
           ),
           headerRight: () => (
-            <TouchableOpacity onPress={handleSave}>
-              <Text style={[styles.headerButton, styles.headerButtonPrimary]}>{t('ui.formation.common.save')}</Text>
-            </TouchableOpacity>
+            <View ref={saveButtonRef} collapsable={false}>
+              <TouchableOpacity onPress={handleSave}>
+                <Text style={[styles.headerButton, styles.headerButtonPrimary]}>{t('ui.formation.common.save')}</Text>
+              </TouchableOpacity>
+            </View>
           ),
           title: t('ui.formation.edit.title'),
         }}
@@ -283,14 +302,15 @@ export default function PartyEditScreen() {
             </View>
           ) : (
             <View style={styles.goblinList}>
-              {availableGoblins.map(goblin => (
-                <GoblinCard
-                  key={goblin.id}
-                  goblin={goblin}
-                  onPress={() => handleGoblinSelect(goblin)}
-                  isAssigned={selectedMemberIds.includes(goblin.id)}
-                  isAssignedElsewhere={assignedToOtherParty.has(goblin.id)}
-                />
+              {availableGoblins.map((goblin, index) => (
+                <View key={goblin.id} ref={index === 0 ? firstGoblinRef : undefined} collapsable={false}>
+                  <GoblinCard
+                    goblin={goblin}
+                    onPress={() => handleGoblinSelect(goblin)}
+                    isAssigned={selectedMemberIds.includes(goblin.id)}
+                    isAssignedElsewhere={assignedToOtherParty.has(goblin.id)}
+                  />
+                </View>
               ))}
             </View>
           )}

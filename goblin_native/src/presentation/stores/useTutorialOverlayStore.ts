@@ -16,6 +16,8 @@ export interface SpotlightEntry {
   messageKey: string
   placement: SpotlightPlacement
   forStep: TutorialStep
+  /** true の場合のみスポット範囲へのタップを背面に通す */
+  allowThrough?: boolean
   /** push 時刻。複数候補があるときは最新を採用 */
   pushedAt: number
 }
@@ -24,6 +26,7 @@ interface TutorialOverlayState {
   entries: SpotlightEntry[]
   setEntry: (entry: Omit<SpotlightEntry, 'pushedAt'>) => void
   clearEntry: (id: string) => void
+  clearAll: () => void
 }
 
 export const useTutorialOverlayStore = create<TutorialOverlayState>((set, get) => ({
@@ -36,6 +39,9 @@ export const useTutorialOverlayStore = create<TutorialOverlayState>((set, get) =
   clearEntry: (id) => {
     set({ entries: get().entries.filter(e => e.id !== id) })
   },
+  clearAll: () => {
+    set({ entries: [] })
+  },
 }))
 
 /** 現在のステップに対応する最新のエントリを返す */
@@ -46,6 +52,26 @@ export const selectActiveEntry = (
   let latest: SpotlightEntry | null = null
   for (const entry of entries) {
     if (entry.forStep !== currentStep) continue
+    if (!latest || entry.pushedAt > latest.pushedAt) {
+      latest = entry
+    }
+  }
+  return latest
+}
+
+export const selectActiveEntries = (
+  entries: SpotlightEntry[],
+  currentStep: TutorialStep,
+): SpotlightEntry[] => entries.filter(entry => entry.forStep === currentStep)
+
+export const selectActionableEntry = (
+  entries: SpotlightEntry[],
+  currentStep: TutorialStep,
+): SpotlightEntry | null => {
+  let latest: SpotlightEntry | null = null
+  for (const entry of entries) {
+    if (entry.forStep !== currentStep) continue
+    if (entry.allowThrough === false) continue
     if (!latest || entry.pushedAt > latest.pushedAt) {
       latest = entry
     }

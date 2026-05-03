@@ -12,6 +12,8 @@ interface UseTutorialTargetParams {
   placement?: SpotlightPlacement
   /** ターゲット領域のパディング(px) */
   padding?: number
+  /** false の場合、枠は表示するがタップは通さない */
+  allowThrough?: boolean
 }
 
 /**
@@ -24,6 +26,7 @@ export const useTutorialTarget = <T extends View = View>({
   messageKey,
   placement = 'auto',
   padding = 6,
+  allowThrough = true,
 }: UseTutorialTargetParams) => {
   const ref = useRef<T | null>(null)
   const entryId = useId()
@@ -56,6 +59,7 @@ export const useTutorialTarget = <T extends View = View>({
             messageKey,
             placement,
             forStep: step,
+            allowThrough,
           })
         })
       }
@@ -81,7 +85,7 @@ export const useTutorialTarget = <T extends View = View>({
         unsubscribe()
         clearEntry(entryId)
       }
-    }, [activeOn, messageKey, placement, padding, entryId, setEntry, clearEntry]),
+    }, [activeOn, messageKey, placement, padding, allowThrough, entryId, setEntry, clearEntry]),
   )
 
   return ref

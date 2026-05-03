@@ -218,11 +218,12 @@ export default function ExpeditionPreparationScreen() {
   }, [estimateExplorationTime, selectedDungeon, selectedReturnPolicy])
 
   const handleEditParty = useCallback(() => {
+    void advanceTutorial('select_party_member')
     router.push({
       pathname: '/formation/edit',
       params: { partyId },
     })
-  }, [partyId])
+  }, [advanceTutorial, partyId])
 
   const handleOpenPartyInfo = useCallback(() => {
     router.push({

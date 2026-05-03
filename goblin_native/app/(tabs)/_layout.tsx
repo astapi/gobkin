@@ -34,12 +34,18 @@ const TabIcon = memo(function TabIcon({ Icon, color, size = 24 }: TabIconProps) 
 const TAB_INDEX_BY_STEP: Partial<Record<TutorialStep, number>> = {
   // story=0, index=1, formation=2, base=3, settings=4
   see_first_goblin: 1,
+  view_first_goblin: 2,
   open_formation: 2,
 }
 
 const TAB_MESSAGE_BY_STEP: Partial<Record<TutorialStep, string>> = {
   see_first_goblin: 'ui.tutorial.banner.afterPrologue',
+  view_first_goblin: 'ui.tutorial.banner.openFormationTab',
   open_formation: 'ui.tutorial.banner.openFormationTab',
+}
+
+const FULL_SCREEN_MESSAGE_BY_STEP: Partial<Record<TutorialStep, string>> = {
+  wait_clear: 'ui.tutorial.banner.waitClear',
 }
 
 const TAB_COUNT = 5
@@ -59,6 +65,21 @@ export default function TabLayout() {
   const tabEntryId = 'tutorial-tabs-spotlight'
 
   useEffect(() => {
+    const fullScreenMessageKey = FULL_SCREEN_MESSAGE_BY_STEP[tutorialStep]
+    if (fullScreenMessageKey) {
+      setEntry({
+        id: tabEntryId,
+        rect: null,
+        messageKey: fullScreenMessageKey,
+        placement: 'auto',
+        forStep: tutorialStep,
+        allowThrough: false,
+      })
+      return () => {
+        clearEntry(tabEntryId)
+      }
+    }
+
     const tabIndex = TAB_INDEX_BY_STEP[tutorialStep]
     const messageKey = TAB_MESSAGE_BY_STEP[tutorialStep]
     if (tabIndex === undefined || !messageKey) {
@@ -78,6 +99,7 @@ export default function TabLayout() {
       messageKey,
       placement: 'above',
       forStep: tutorialStep,
+      allowThrough: true,
     })
 
     return () => {
