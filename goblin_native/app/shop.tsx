@@ -97,7 +97,10 @@ export default function ShopScreen() {
   }
 
   // 補間パラメータを取得
-  const getDescriptionParams = (descriptionKey: string): Record<string, number | string> | undefined => {
+  const getDescriptionParams = (
+    descriptionKey: string,
+    productInfo?: PurchaseProduct,
+  ): Record<string, number | string> | undefined => {
     switch (descriptionKey) {
       case 'shop.goblinCapacityExpansion.description':
         return { count: GOBLIN_CAPACITY_EXPANSION }
@@ -114,6 +117,9 @@ export default function ShopScreen() {
           goldMultiplier: MONTHLY_PASS_GOLD_MULTIPLIER,
           speedPercent: Math.round((1 - MONTHLY_PASS_SPEED_MULTIPLIER) * 100),
         }
+      case 'shop.goldenAcorn.description':
+      case 'shop.goldenAcorn.descriptionDiscount':
+        return productInfo?.consumableQuantity ? { count: productInfo.consumableQuantity } : undefined
       default:
         return undefined
     }
@@ -124,7 +130,7 @@ export default function ShopScreen() {
     const packageId = pkg.identifier
     const productInfo = PURCHASE_PRODUCTS.find(p => p.packageId === packageId)
     const entitlementId = productInfo?.entitlementId || packageId
-    const descriptionParams = productInfo ? getDescriptionParams(productInfo.descriptionKey) : undefined
+    const descriptionParams = productInfo ? getDescriptionParams(productInfo.descriptionKey, productInfo) : undefined
 
     return {
       iconName: productInfo?.iconName || 'star',

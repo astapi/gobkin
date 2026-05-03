@@ -300,6 +300,10 @@ const en = {
         abortConfirmTitle: 'Confirm Return',
         abortConfirmBody: 'End the expedition early.\nGold and items will be lost.\nExperience and HP status will be kept.',
         abortConfirmOk: 'Return',
+        goldenAcornBulkPromptTitle: 'Use Golden Acorns?',
+        goldenAcornBulkPromptBody: 'Spend {{count}} acorns to halve travel time and double Gold, rare drops, and titles for each party.\n{{remaining}} remaining',
+        goldenAcornBulkUseAndStart: 'Use for All & Dispatch',
+        goldenAcornBulkStartWithout: 'Dispatch Without',
       },
       preparation: {
         title: 'Expedition Prep',
@@ -336,6 +340,10 @@ const en = {
         startFailedTitle: 'Expedition failed',
         startFailedBody: 'An error occurred when starting the expedition',
         pendingOverflowBody: 'Pending slots are full. If a goblin is added after a successful expedition, it may be discarded. Dispatch anyway?',
+        goldenAcornPromptTitle: 'Use a Golden Acorn?',
+        goldenAcornPromptBody: 'Halves travel time and doubles Gold, rare drops, and titles.\n{{count}} remaining',
+        goldenAcornUseAndStart: 'Use and Dispatch',
+        goldenAcornStartWithout: 'Dispatch Without',
       },
       edit: {
         title: 'Edit Members',
@@ -808,6 +816,14 @@ const en = {
     boostTicket: {
       name: 'Boost Ticket x5',
       description: '5 tickets that double drop rate and EXP',
+    },
+    goldenAcorn: {
+      name50: 'Golden Acorn x50',
+      name100: 'Golden Acorn x100 (Discount)',
+      name200: 'Golden Acorn x200 (Better Deal)',
+      name500: 'Golden Acorn x500 (Best Deal)',
+      description: '{{count}} pack. Consume one before an expedition: travel time 1/2, Gold/rare/title 2x.',
+      descriptionDiscount: '{{count}} pack at a better per-acorn price. Travel time 1/2, Gold/rare/title 2x.',
     },
   },
 } as const

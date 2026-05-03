@@ -7,6 +7,7 @@ import { usePartyStore } from '@/presentation/stores/usePartyStore'
 import { useGoblinStore } from '@/presentation/stores/useGoblinStore'
 import { useBaseStore, selectRank } from '@/presentation/stores/useBaseStore'
 import { useExpeditionFlow, type ExpeditionHistoryDisplay } from '@/presentation/hooks/useExpeditionFlow'
+import { getGoldenAcornCount } from '@/presentation/stores/usePurchaseStore'
 import { useCurrentTime } from '@/presentation/hooks/useCurrentTime'
 import { useDungeonStore } from '@/presentation/stores/useDungeonStore'
 import { getGoblinDisplayImage } from '@/shared/utils/goblinImages'
@@ -325,10 +326,11 @@ export default function FormationScreen() {
       })
     }
 
-    const doBulkLaunch = async () => {
+    const doBulkLaunch = async (useGoldenAcorn: boolean) => {
       setIsBulkLaunching(true)
       try {
-        const result = await startBulkExpedition(inputs)
+        const inputsWithFlag = inputs.map((input) => ({ ...input, useGoldenAcorn }))
+        const result = await startBulkExpedition(inputsWithFlag)
         const allSkipped = [...skippedReasons, ...result.skippedReasons]
 
         if (result.startedCount === 0) {
@@ -351,6 +353,31 @@ export default function FormationScreen() {
       return
     }
 
+    const promptGoldenAcornBulk = (onChoose: (useAcorn: boolean) => void) => {
+      const acornCount = getGoldenAcornCount()
+      // 全PT分のドングリを保有している場合のみ選択肢を出す
+      if (acornCount < inputs.length) {
+        onChoose(false)
+        return
+      }
+      Alert.alert(
+        t('ui.formation.index.goldenAcornBulkPromptTitle'),
+        t('ui.formation.index.goldenAcornBulkPromptBody', {
+          count: inputs.length,
+          remaining: acornCount,
+        }),
+        [
+          { text: t('ui.common.cancel'), style: 'cancel' },
+          { text: t('ui.formation.index.goldenAcornBulkStartWithout'), onPress: () => onChoose(false) },
+          { text: t('ui.formation.index.goldenAcornBulkUseAndStart'), onPress: () => onChoose(true) },
+        ],
+      )
+    }
+
+    const launchWithGoldenAcornPrompt = () => {
+      promptGoldenAcornBulk((useAcorn) => void doBulkLaunch(useAcorn))
+    }
+
     const maxPendingGoblins = rank * 5
     const remainingPendingSlots = Math.max(0, maxPendingGoblins - pendingGoblins.length)
     if (inputs.length > remainingPendingSlots) {
@@ -359,13 +386,13 @@ export default function FormationScreen() {
         t('ui.formation.index.pendingOverflowBody', { count: inputs.length }),
         [
           { text: t('ui.common.cancel'), style: 'cancel' },
-          { text: t('ui.formation.common.launch'), onPress: () => void doBulkLaunch() },
+          { text: t('ui.formation.common.launch'), onPress: launchWithGoldenAcornPrompt },
         ],
       )
       return
     }
 
-    void doBulkLaunch()
+    launchWithGoldenAcornPrompt()
   }, [dungeons, parties, pendingGoblins.length, rank, startBulkExpedition, t])
 
   const canBulkLaunch = useMemo(() => {

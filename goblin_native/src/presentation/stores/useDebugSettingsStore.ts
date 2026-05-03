@@ -6,16 +6,25 @@ const STORAGE_KEY = 'debug-settings'
 interface DebugSettingsState {
   isLoading: boolean
   instantDungeonExploration: boolean
+  instantGoldenAcorn: boolean
 }
 
 interface DebugSettingsActions {
   initialize: () => Promise<void>
   setInstantDungeonExploration: (enabled: boolean) => Promise<void>
+  setInstantGoldenAcorn: (enabled: boolean) => Promise<void>
 }
 
-export const useDebugSettingsStore = create<DebugSettingsState & DebugSettingsActions>()((set) => ({
+type PersistedSettings = Partial<Pick<DebugSettingsState, 'instantDungeonExploration' | 'instantGoldenAcorn'>>
+
+const persist = async (settings: PersistedSettings): Promise<void> => {
+  await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(settings))
+}
+
+export const useDebugSettingsStore = create<DebugSettingsState & DebugSettingsActions>()((set, get) => ({
   isLoading: true,
   instantDungeonExploration: false,
+  instantGoldenAcorn: false,
 
   initialize: async () => {
     try {
@@ -25,9 +34,10 @@ export const useDebugSettingsStore = create<DebugSettingsState & DebugSettingsAc
         return
       }
 
-      const parsed = JSON.parse(raw) as Partial<Pick<DebugSettingsState, 'instantDungeonExploration'>>
+      const parsed = JSON.parse(raw) as PersistedSettings
       set({
         instantDungeonExploration: parsed.instantDungeonExploration ?? false,
+        instantGoldenAcorn: parsed.instantGoldenAcorn ?? false,
         isLoading: false,
       })
     } catch {
@@ -36,10 +46,18 @@ export const useDebugSettingsStore = create<DebugSettingsState & DebugSettingsAc
   },
 
   setInstantDungeonExploration: async (enabled: boolean) => {
-    await AsyncStorage.setItem(
-      STORAGE_KEY,
-      JSON.stringify({ instantDungeonExploration: enabled }),
-    )
     set({ instantDungeonExploration: enabled })
+    await persist({
+      instantDungeonExploration: enabled,
+      instantGoldenAcorn: get().instantGoldenAcorn,
+    })
+  },
+
+  setInstantGoldenAcorn: async (enabled: boolean) => {
+    set({ instantGoldenAcorn: enabled })
+    await persist({
+      instantDungeonExploration: get().instantDungeonExploration,
+      instantGoldenAcorn: enabled,
+    })
   },
 }))

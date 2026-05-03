@@ -300,6 +300,10 @@ const ja = {
         abortConfirmTitle: '帰還確認',
         abortConfirmBody: '遠征を途中で終了します。\nGold・アイテムは持ち帰れません。\n経験値とHP状態は維持されます。',
         abortConfirmOk: '帰還する',
+        goldenAcornBulkPromptTitle: '金のドングリを使う？',
+        goldenAcornBulkPromptBody: '{{count}}PT分（{{count}}個）を消費し、各PTの探索時間 1/2、Gold・レア・称号 2倍 で出撃します。\n残り {{remaining}} 個',
+        goldenAcornBulkUseAndStart: '全PTで使用して出撃',
+        goldenAcornBulkStartWithout: '使わずに出撃',
       },
       preparation: {
         title: '冒険準備',
@@ -336,6 +340,10 @@ const ja = {
         startFailedTitle: '遠征に失敗しました',
         startFailedBody: '遠征開始時にエラーが発生しました',
         pendingOverflowBody: '待機枠がいっぱいです。遠征に成功してゴブリンが追加された場合、受け取れず破棄される可能性があります。出撃しますか？',
+        goldenAcornPromptTitle: '金のドングリを使う？',
+        goldenAcornPromptBody: '探索時間 1/2、Gold・レア・称号倍率がすべて 2倍 になります。\n残り {{count}} 個',
+        goldenAcornUseAndStart: '使用して出発',
+        goldenAcornStartWithout: '使わずに出発',
       },
       edit: {
         title: 'メンバー編集',
@@ -848,6 +856,14 @@ const ja = {
     boostTicket: {
       name: 'ブーストチケット×5',
       description: 'ドロップ率・経験値が2倍になるチケット5枚',
+    },
+    goldenAcorn: {
+      name50: '金のドングリ ×50',
+      name100: '金のドングリ ×100（お得）',
+      name200: '金のドングリ ×200（さらにお得）',
+      name500: '金のドングリ ×500（最もお得）',
+      description: '{{count}}個セット。出発時に1個消費すると、探索時間1/2・Gold/レア/称号倍率がすべて2倍に。',
+      descriptionDiscount: '{{count}}個セット。1個あたりの単価がお得！ 探索時間1/2、Gold/レア/称号倍率がすべて2倍。',
     },
   },
 } as const

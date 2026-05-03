@@ -3,6 +3,7 @@ import { Alert } from 'react-native'
 import type {
   Dungeon,
   DungeonTier,
+  ExpeditionBoost,
   ExpeditionReplay,
   ExpeditionRequest,
   ExpeditionRecord,
@@ -18,7 +19,14 @@ import { useBaseStore, getBaseStateRepository } from '../stores/useBaseStore'
 import { useDungeonStore } from '../stores/useDungeonStore'
 import { SQLiteEquipmentRepository } from '../../infrastructure/repositories/SQLiteEquipmentRepository'
 import { useDebugSettingsStore } from '../stores/useDebugSettingsStore'
-import { getSpeedMultiplier } from '../stores/usePurchaseStore'
+import { getSpeedMultiplier, usePurchaseStore } from '../stores/usePurchaseStore'
+import {
+  TICKET_TYPES,
+  GOLDEN_ACORN_SPEED_MULTIPLIER,
+  GOLDEN_ACORN_GOLD_MULTIPLIER,
+  GOLDEN_ACORN_RARE_MULTIPLIER,
+  GOLDEN_ACORN_TITLE_MULTIPLIER,
+} from '../../shared/constants/purchases'
 import { useStoryStore } from '../stores/useStoryStore'
 import { useExpeditionNotification } from '../hooks/useExpeditionNotification'
 import { getDungeonName } from '../../shared/i18n/entityLocalization'
@@ -38,10 +46,18 @@ interface StartExpeditionInput {
   dungeon: Dungeon
   returnPolicy: ExpeditionRequest['returnPolicy']
   tier?: DungeonTier
+  /** 出発時に金のドングリを消費するか */
+  useGoldenAcorn?: boolean
 }
 
 interface StartExpeditionResult {
   record: ExpeditionRecord
+}
+
+const GOLDEN_ACORN_BOOST: ExpeditionBoost = {
+  goldMultiplier: GOLDEN_ACORN_GOLD_MULTIPLIER,
+  rareDropMultiplier: GOLDEN_ACORN_RARE_MULTIPLIER,
+  titleMultiplier: GOLDEN_ACORN_TITLE_MULTIPLIER,
 }
 
 export interface ExpeditionHistoryDisplay {
@@ -166,6 +182,7 @@ export const useExpeditionFlow = ({
     dungeon: Dungeon,
     returnPolicy: ExpeditionRequest['returnPolicy'],
     partyExpeditionTimeMultiplier: number = 1,
+    goldenAcornUsed: boolean = false,
   ): number => {
     if (instantDungeonExploration) {
       return 1
@@ -184,7 +201,10 @@ export const useExpeditionFlow = ({
     }
     const multiplier = multiplierMap[returnPolicy] ?? 1.0
     const speedMultiplier = getSpeedMultiplier()
-    return Math.floor(baseTime * multiplier * speedMultiplier * partyExpeditionTimeMultiplier)
+    const goldenAcornSpeed = goldenAcornUsed ? GOLDEN_ACORN_SPEED_MULTIPLIER : 1
+    return Math.floor(
+      baseTime * multiplier * speedMultiplier * partyExpeditionTimeMultiplier * goldenAcornSpeed,
+    )
   }, [instantDungeonExploration])
 
   const formatTime = useCallback((date: Date) => {
@@ -224,11 +244,31 @@ export const useExpeditionFlow = ({
   }, [])
 
   const startExpedition = useCallback(
-    async ({ party, dungeon, returnPolicy, tier }: StartExpeditionInput): Promise<StartExpeditionResult> => {
+    async ({ party, dungeon, returnPolicy, tier, useGoldenAcorn = false }: StartExpeditionInput): Promise<StartExpeditionResult> => {
       setIsProcessing(true)
+      const debugInstantAcorn = useDebugSettingsStore.getState().instantGoldenAcorn
+      let acornConsumed = false
       try {
+        if (useGoldenAcorn) {
+          if (debugInstantAcorn) {
+            // デバッグ時は消費せずに効果のみ適用
+            acornConsumed = false
+          } else {
+            const success = await usePurchaseStore.getState().useTicket(TICKET_TYPES.GOLDEN_ACORN)
+            if (!success) {
+              throw new Error('金のドングリの残数が不足しています')
+            }
+            acornConsumed = true
+          }
+        }
+
         const partyExpeditionTimeMultiplier = await getPartyExpeditionTimeMultiplier(party)
-        const durationSec = estimateExplorationTime(dungeon, returnPolicy, partyExpeditionTimeMultiplier)
+        const durationSec = estimateExplorationTime(
+          dungeon,
+          returnPolicy,
+          partyExpeditionTimeMultiplier,
+          useGoldenAcorn,
+        )
         const request: ExpeditionRequest = {
           partyId: party.id.toString(),
           areaId: dungeon.id,
@@ -238,7 +278,8 @@ export const useExpeditionFlow = ({
           durationSec,
         }
 
-        const expeditionMeta = await startExpeditionUseCase.execute(request)
+        const boost = useGoldenAcorn ? GOLDEN_ACORN_BOOST : undefined
+        const expeditionMeta = await startExpeditionUseCase.execute(request, boost)
         const startTime = new Date()
         const returnTime = new Date(startTime.getTime() + durationSec * 1000)
         const expeditionId = `exp_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`
@@ -271,6 +312,16 @@ export const useExpeditionFlow = ({
         }
 
         return { record }
+      } catch (error) {
+        // UseCase 失敗時に消費したドングリを戻す
+        if (acornConsumed) {
+          try {
+            await usePurchaseStore.getState().addTickets(TICKET_TYPES.GOLDEN_ACORN, 1)
+          } catch (rollbackError) {
+            console.warn('[useExpeditionFlow] Failed to rollback golden acorn', rollbackError)
+          }
+        }
+        throw error
       } finally {
         setIsProcessing(false)
       }
@@ -288,11 +339,34 @@ export const useExpeditionFlow = ({
       setIsProcessing(true)
       const records: ExpeditionRecord[] = []
       const skippedReasons: string[] = []
+      const debugInstantAcorn = useDebugSettingsStore.getState().instantGoldenAcorn
+      let acornsConsumed = 0
 
       try {
-        for (const { party, dungeon, returnPolicy, tier } of inputs) {
+        for (const { party, dungeon, returnPolicy, tier, useGoldenAcorn = false } of inputs) {
+          let acornAppliedForThisInput = false
+          if (useGoldenAcorn) {
+            if (debugInstantAcorn) {
+              acornAppliedForThisInput = true
+            } else {
+              const success = await usePurchaseStore.getState().useTicket(TICKET_TYPES.GOLDEN_ACORN)
+              if (success) {
+                acornsConsumed++
+                acornAppliedForThisInput = true
+              } else {
+                skippedReasons.push(`${party.name}: 金のドングリの残数が不足`)
+                continue
+              }
+            }
+          }
+
           const partyExpeditionTimeMultiplier = await getPartyExpeditionTimeMultiplier(party)
-          const durationSec = estimateExplorationTime(dungeon, returnPolicy, partyExpeditionTimeMultiplier)
+          const durationSec = estimateExplorationTime(
+            dungeon,
+            returnPolicy,
+            partyExpeditionTimeMultiplier,
+            acornAppliedForThisInput,
+          )
           const request: ExpeditionRequest = {
             partyId: party.id.toString(),
             areaId: dungeon.id,
@@ -303,7 +377,8 @@ export const useExpeditionFlow = ({
           }
 
           try {
-            const expeditionMeta = await startExpeditionUseCase.execute(request)
+            const boost = acornAppliedForThisInput ? GOLDEN_ACORN_BOOST : undefined
+            const expeditionMeta = await startExpeditionUseCase.execute(request, boost)
             const startTime = new Date()
             const returnTime = new Date(startTime.getTime() + durationSec * 1000)
             const expeditionId = `exp_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`
@@ -324,6 +399,15 @@ export const useExpeditionFlow = ({
             })
           } catch (error) {
             skippedReasons.push(`${party.name}: ${(error as Error).message}`)
+            // UseCase 失敗時はそのパーティ分のドングリを戻す
+            if (acornAppliedForThisInput && !debugInstantAcorn) {
+              try {
+                await usePurchaseStore.getState().addTickets(TICKET_TYPES.GOLDEN_ACORN, 1)
+                acornsConsumed--
+              } catch (rollbackError) {
+                console.warn('[useExpeditionFlow] Failed to rollback golden acorn (bulk)', rollbackError)
+              }
+            }
           }
         }
 
@@ -344,6 +428,10 @@ export const useExpeditionFlow = ({
 
         return { startedCount: records.length, skippedReasons }
       } finally {
+        // 参考用カウンタは利用しないが、消費数を上位で見たい場合に備えてログのみ出す
+        if (acornsConsumed > 0) {
+          console.log(`[useExpeditionFlow] Golden acorn consumed (bulk): ${acornsConsumed}`)
+        }
         setIsProcessing(false)
       }
     },

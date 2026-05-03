@@ -3,6 +3,7 @@ import Purchases, { CustomerInfo, PurchasesPackage } from 'react-native-purchase
 import {
   REVENUECAT_API_KEY,
   ENTITLEMENT_IDS,
+  PURCHASE_PRODUCTS,
   TICKET_TYPES,
   SPEED_HALF_MULTIPLIER,
   SPEED_TWO_THIRDS_MULTIPLIER,
@@ -138,6 +139,20 @@ export const usePurchaseStore = create<PurchaseState & PurchaseActions>()((set, 
         customerInfo,
         entitlements: newEntitlements,
       })
+
+      // Consumable（チケット系）の場合は購入個数を tickets テーブルへ加算
+      const productInfo = PURCHASE_PRODUCTS.find(p => p.packageId === pkg.identifier)
+      if (productInfo?.section === 'ticket' && productInfo.consumableQuantity && productInfo.consumableQuantity > 0) {
+        try {
+          await get().addTickets(
+            productInfo.entitlementId as TicketType,
+            productInfo.consumableQuantity,
+          )
+          console.log(`[Purchase] Granted ${productInfo.consumableQuantity} ${productInfo.entitlementId}`)
+        } catch (grantError) {
+          console.error('[Purchase] Failed to grant consumable tickets:', grantError)
+        }
+      }
 
       console.log('[Purchase] Purchase successful! Active entitlements:', Array.from(newEntitlements))
 
@@ -291,4 +306,8 @@ export const getSpeedTicketCount = (): number => {
 
 export const getBoostTicketCount = (): number => {
   return usePurchaseStore.getState().getTicketCount(TICKET_TYPES.BOOST)
+}
+
+export const getGoldenAcornCount = (): number => {
+  return usePurchaseStore.getState().getTicketCount(TICKET_TYPES.GOLDEN_ACORN)
 }

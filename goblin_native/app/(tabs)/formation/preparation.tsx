@@ -7,6 +7,7 @@ import { useGoblinStore } from '@/presentation/stores/useGoblinStore'
 import { useBaseStore, selectRank } from '@/presentation/stores/useBaseStore'
 import { useDungeonStore } from '@/presentation/stores/useDungeonStore'
 import { useExpeditionFlow } from '@/presentation/hooks/useExpeditionFlow'
+import { getGoldenAcornCount } from '@/presentation/stores/usePurchaseStore'
 import { getGoblinDisplayImage } from '@/shared/utils/goblinImages'
 import { getPartyEffectiveStats } from '@/shared/utils/goblinStats'
 import { getGoldBonusPercentFromSkills } from '@/shared/data/characterSkills'
@@ -282,13 +283,14 @@ export default function ExpeditionPreparationScreen() {
       return
     }
 
-    const doStartExpedition = async () => {
+    const doStartExpedition = async (useGoldenAcorn: boolean) => {
       try {
         await startExpedition({
           party,
           dungeon: selectedDungeon,
           returnPolicy: selectedReturnPolicy,
           tier: selectedTier,
+          useGoldenAcorn,
         })
 
         router.dismissAll()
@@ -298,6 +300,27 @@ export default function ExpeditionPreparationScreen() {
       }
     }
 
+    const promptGoldenAcorn = (onChoose: (useAcorn: boolean) => void) => {
+      const acornCount = getGoldenAcornCount()
+      if (acornCount <= 0) {
+        onChoose(false)
+        return
+      }
+      Alert.alert(
+        t('ui.formation.preparation.goldenAcornPromptTitle'),
+        t('ui.formation.preparation.goldenAcornPromptBody', { count: acornCount }),
+        [
+          { text: t('ui.common.cancel'), style: 'cancel' },
+          { text: t('ui.formation.preparation.goldenAcornStartWithout'), onPress: () => onChoose(false) },
+          { text: t('ui.formation.preparation.goldenAcornUseAndStart'), onPress: () => onChoose(true) },
+        ],
+      )
+    }
+
+    const launchWithGoldenAcornPrompt = () => {
+      promptGoldenAcorn((useAcorn) => void doStartExpedition(useAcorn))
+    }
+
     const maxPendingGoblins = rank * 5
     if (pendingGoblins.length >= maxPendingGoblins) {
       Alert.alert(
@@ -305,13 +328,13 @@ export default function ExpeditionPreparationScreen() {
         t('ui.formation.preparation.pendingOverflowBody'),
         [
           { text: t('ui.common.cancel'), style: 'cancel' },
-          { text: t('ui.formation.common.launch'), onPress: () => void doStartExpedition() },
+          { text: t('ui.formation.common.launch'), onPress: launchWithGoldenAcornPrompt },
         ],
       )
       return
     }
 
-    void doStartExpedition()
+    launchWithGoldenAcornPrompt()
   }, [
     pendingGoblins.length,
     party,
