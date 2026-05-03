@@ -447,6 +447,26 @@ const ja = {
       expeditionTitle: '遠征完了',
       expeditionReturn: '{{partyName}}が帰還しました。',
     },
+    start: {
+      title: 'ゴブリンキングダム',
+      subtitle: 'GOBLIN KINGDOM',
+      beginButton: 'ゲームをはじめる',
+      tagline: '弱きゴブリンが、強さを継ぐ。',
+    },
+    tutorial: {
+      banner: {
+        readPrologue: 'まずは「ゴブリンの目覚め」を読んで、物語を始めよう。',
+        afterPrologue: '「一覧」タブを開いて、目覚めたゴブリンを確認しよう。',
+        seeFirstGoblin: '仲間のゴブリンが目覚めた。次は「編成」タブで遠征の準備をしよう。',
+        viewFirstGoblin: '目覚めたゴブリン「グラッシュ」だ。タップで様子を確かめよう。',
+        openFormationTab: '「編成」タブを開いて、遠征の準備を始めよう。',
+        openFormation: 'パーティのカードをタップして、遠征の準備を始めよう。',
+        editParty: '「メンバー編成」を押して、ゴブリンをパーティに加えよう。',
+        selectDungeon: '「遠征先」をタップし、最初の冒険として「スライムの洞窟」を選ぼう。',
+        startExpedition: '右上の「出撃」を押して、最初の冒険に出発しよう。',
+        readAfterStory: '新たな物語が解放された。「宿りし力」を読んで力の正体を確かめよう。',
+      },
+    },
   },
   entities: {
     race: {

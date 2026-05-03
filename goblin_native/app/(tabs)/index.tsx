@@ -1,4 +1,5 @@
 import { useCallback, useMemo, useRef, useState } from 'react'
+import { useFocusEffect } from 'expo-router'
 import { View, Text, TouchableOpacity, Pressable, StyleSheet, FlatList, ActivityIndicator, Image, Alert } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { router } from 'expo-router'
@@ -8,6 +9,8 @@ import { useGoblinStore } from '@/presentation/stores/useGoblinStore'
 import { useBaseStore, selectMaxGoblins, selectRank } from '@/presentation/stores/useBaseStore'
 import { usePartyStore } from '@/presentation/stores/usePartyStore'
 import { GoblinCard } from '@/presentation/components/GoblinCard'
+import { useTutorialStore } from '@/presentation/stores/useTutorialStore'
+import { useTutorialTarget } from '@/presentation/hooks/useTutorialTarget'
 import type { Goblin } from '@/shared/types'
 import { getGoblinDisplayImage } from '@/shared/utils/goblinImages'
 import { getEffectiveStats } from '@/shared/utils/goblinStats'
@@ -16,6 +19,22 @@ import { getStatLabel } from '@/shared/i18n/entityLocalization'
 
 export default function GoblinListScreen() {
   const { t } = useTranslation()
+  const advanceTutorial = useTutorialStore((state) => state.advanceTo)
+  // 一覧画面に来たら「ゴブリンを確認」ステップへ。
+  // 直前ステップ (see_first_goblin) のときだけ進める（飛ばし防止）。
+  useFocusEffect(
+    useCallback(() => {
+      const current = useTutorialStore.getState().step
+      if (current === 'see_first_goblin') {
+        void advanceTutorial('view_first_goblin')
+      }
+    }, [advanceTutorial]),
+  )
+  const firstGoblinRef = useTutorialTarget<View>({
+    activeOn: ['view_first_goblin'],
+    messageKey: 'ui.tutorial.banner.viewFirstGoblin',
+    placement: 'below',
+  })
   const goblins = useGoblinStore((state) => state.goblins)
   const isLoading = useGoblinStore((state) => state.isLoading)
   const saveGoblin = useGoblinStore((state) => state.saveGoblin)
@@ -79,8 +98,10 @@ export default function GoblinListScreen() {
       closeOpenSwipeable()
       return
     }
+    // チュートリアル: 確認できたので次は編成タブへ
+    void advanceTutorial('open_formation')
     router.push({ pathname: '/goblin/detail', params: { goblinId: String(goblin.id) } })
-  }, [closeOpenSwipeable, openSwipeableId])
+  }, [advanceTutorial, closeOpenSwipeable, openSwipeableId])
 
   const handleDeleteGoblin = useCallback((goblin: Goblin) => {
     const assignedPartyName = getAssignedPartyName(goblin.id)
@@ -185,8 +206,12 @@ export default function GoblinListScreen() {
     )
   }, [clearPendingGoblins, closeOpenSwipeable, isBulkDismissingPending, pendingGoblins.length])
 
-  const renderGoblinItem = useCallback(({ item: goblin }: { item: Goblin }) => (
-    <View style={styles.cardWrapper}>
+  const renderGoblinItem = useCallback(({ item: goblin, index }: { item: Goblin; index: number }) => (
+    <View
+      style={styles.cardWrapper}
+      ref={index === 0 ? firstGoblinRef : undefined}
+      collapsable={false}
+    >
       <Swipeable
         ref={(ref) => {
           swipeableRefs.current[goblin.id] = ref
@@ -206,7 +231,7 @@ export default function GoblinListScreen() {
         </Pressable>
       </Swipeable>
     </View>
-  ), [handleGoblinPress, handleSwipeableClose, handleSwipeableWillOpen, partyNameByGoblinId, renderRightActions])
+  ), [firstGoblinRef, handleGoblinPress, handleSwipeableClose, handleSwipeableWillOpen, partyNameByGoblinId, renderRightActions])
 
   const renderPendingFooter = useCallback(() => {
     if (pendingGoblins.length === 0) {

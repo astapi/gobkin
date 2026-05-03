@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
-import { View, Text, TouchableOpacity, StyleSheet, Alert, Switch } from 'react-native'
+import { View, Text, TouchableOpacity, StyleSheet, Alert, Switch, ScrollView } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import { router } from 'expo-router'
 import { useTranslation } from 'react-i18next'
 import { useReset } from '@/presentation/contexts/ResetContext'
 import { useDebugSettingsStore } from '@/presentation/stores/useDebugSettingsStore'
@@ -47,7 +48,11 @@ export default function SettingsScreen() {
           style: 'destructive',
           onPress: () => {
             setIsResetting(true)
-            void resetAndReinitialize()
+            void resetAndReinitialize().finally(() => {
+              setIsResetting(false)
+              // ナビゲーション履歴を物語タブへリセット（チュートリアル誤発火を防ぐ）
+              router.replace('/(tabs)/story')
+            })
           },
         },
       ],
@@ -115,7 +120,11 @@ export default function SettingsScreen() {
         <Text style={styles.headerTitle}>{t('ui.settings.title')}</Text>
       </View>
 
-      <View style={styles.content}>
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={styles.content}
+        showsVerticalScrollIndicator
+      >
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>{t('ui.settings.language')}</Text>
           <Text style={styles.sectionDescription}>{t('ui.settings.languageDescription')}</Text>
@@ -207,7 +216,7 @@ export default function SettingsScreen() {
           </TouchableOpacity>
           <Text style={styles.hint}>{t('ui.settings.resetHint')}</Text>
         </View>
-      </View>
+      </ScrollView>
     </SafeAreaView>
   )
 }
@@ -228,9 +237,13 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: '#1F2937',
   },
+  scrollView: {
+    flex: 1,
+  },
   content: {
     padding: 16,
     gap: 16,
+    paddingBottom: 32,
   },
   section: {
     backgroundColor: '#FFFFFF',

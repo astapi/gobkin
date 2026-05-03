@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Alert } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { router, useLocalSearchParams } from 'expo-router'
@@ -9,12 +9,21 @@ export default function StoryReaderScreen() {
   const { t } = useTranslation()
   const { storyId } = useLocalSearchParams<{ storyId: string }>()
   const stories = useStoryStore((state) => state.stories)
+  const isStoryLoading = useStoryStore((state) => state.isLoading)
   const markStoryRead = useStoryStore((state) => state.markStoryRead)
   const [hasMarkedRead, setHasMarkedRead] = useState(false)
 
   const story = useMemo(() => {
     return stories.find(s => s.id === storyId) ?? null
   }, [stories, storyId])
+
+  // データリセットなどで storyId が失われた / 該当ストーリーが消えた場合は物語タブへ戻す
+  useEffect(() => {
+    if (isStoryLoading) return
+    if (!story) {
+      router.replace('/(tabs)/story')
+    }
+  }, [isStoryLoading, story])
 
   const handleComplete = useCallback(async () => {
     if (!story || hasMarkedRead) return

@@ -5,6 +5,7 @@ import { TICKET_TYPES } from '../../shared/constants/purchases'
 import type { Story } from '../../shared/types/Story'
 import type { StoryProgressState } from '../../shared/types/StoryProgress'
 import { usePurchaseStore } from './usePurchaseStore'
+import { useTutorialStore } from './useTutorialStore'
 
 const repository = SQLiteStoryProgressRepository.getInstance()
 
@@ -107,6 +108,13 @@ export const useStoryStore = create<StoryStoreState & StoryStoreActions>()((set,
         }
       }
       await refresh()
+
+      // チュートリアル進行: 該当ストーリーの読了でステップを進める
+      if (storyId === 'prologue') {
+        await useTutorialStore.getState().advanceTo('see_first_goblin')
+      } else if (storyId === 'story_after_slime_cave') {
+        await useTutorialStore.getState().complete()
+      }
     },
   }
 })

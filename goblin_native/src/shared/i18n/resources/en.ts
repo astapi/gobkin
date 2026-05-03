@@ -447,6 +447,26 @@ const en = {
       expeditionTitle: 'Expedition Complete',
       expeditionReturn: '{{partyName}} has returned.',
     },
+    start: {
+      title: 'Goblin Kingdom',
+      subtitle: 'GOBLIN KINGDOM',
+      beginButton: 'Start Game',
+      tagline: 'The weak goblin inherits strength.',
+    },
+    tutorial: {
+      banner: {
+        readPrologue: 'Read "Awakening of the Goblin" to begin the story.',
+        afterPrologue: 'Open the "List" tab to check on your awakened goblin.',
+        seeFirstGoblin: 'A goblin has awakened. Open the "Formation" tab to prepare for an expedition.',
+        viewFirstGoblin: 'Your awakened goblin "Grash". Tap to check on them.',
+        openFormationTab: 'Open the "Formation" tab to start preparing your expedition.',
+        openFormation: 'Tap a party card to start preparing your expedition.',
+        editParty: 'Tap "Edit Members" and add a goblin to your party.',
+        selectDungeon: 'Tap "Destination" and choose "Slime Cave" for your first quest.',
+        startExpedition: 'Tap "Launch" at the top right to begin your first adventure.',
+        readAfterStory: 'A new story has been unlocked. Read "Inherited Power" to learn the truth.',
+      },
+    },
   },
   entities: {
     race: {

@@ -1,11 +1,13 @@
 import { useState, useCallback, useMemo, useEffect } from 'react'
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView, ActivityIndicator, Alert, Image, useWindowDimensions, Modal, Pressable, TextInput } from 'react-native'
-import { router, useLocalSearchParams, Stack } from 'expo-router'
+import { router, useLocalSearchParams, Stack, useFocusEffect } from 'expo-router'
 import { useTranslation } from 'react-i18next'
 import { usePartyStore } from '@/presentation/stores/usePartyStore'
 import { useGoblinStore } from '@/presentation/stores/useGoblinStore'
 import { useBaseStore, selectRank } from '@/presentation/stores/useBaseStore'
 import { useDungeonStore } from '@/presentation/stores/useDungeonStore'
+import { useTutorialStore } from '@/presentation/stores/useTutorialStore'
+import { useTutorialTarget } from '@/presentation/hooks/useTutorialTarget'
 import { useExpeditionFlow } from '@/presentation/hooks/useExpeditionFlow'
 import { getGoldenAcornCount } from '@/presentation/stores/usePurchaseStore'
 import { getGoblinDisplayImage } from '@/shared/utils/goblinImages'
@@ -131,6 +133,44 @@ export default function ExpeditionPreparationScreen() {
       setEditingPartyName(party.name)
     }
   }, [party])
+
+  const advanceTutorial = useTutorialStore((state) => state.advanceTo)
+
+  // 直前ステップ (open_formation) のときだけ進める（飛ばし防止）。
+  useFocusEffect(
+    useCallback(() => {
+      const current = useTutorialStore.getState().step
+      if (current === 'open_formation') {
+        void advanceTutorial('edit_party')
+      }
+    }, [advanceTutorial]),
+  )
+
+  const editPartyRef = useTutorialTarget<View>({
+    activeOn: ['edit_party'],
+    messageKey: 'ui.tutorial.banner.editParty',
+    placement: 'above',
+  })
+  const selectDungeonRef = useTutorialTarget<View>({
+    activeOn: ['select_dungeon'],
+    messageKey: 'ui.tutorial.banner.selectDungeon',
+    placement: 'below',
+  })
+  const launchButtonRef = useTutorialTarget<View>({
+    activeOn: ['start_expedition'],
+    messageKey: 'ui.tutorial.banner.startExpedition',
+    placement: 'below',
+  })
+
+  useEffect(() => {
+    if (!party) return
+    if (party.memberIds.length > 0) {
+      void advanceTutorial('select_dungeon')
+    }
+    if (party.memberIds.length > 0 && party.dungeonId === 'slime_cave') {
+      void advanceTutorial('start_expedition')
+    }
+  }, [party, advanceTutorial])
 
   const partyMembers = useMemo(() => {
     if (!party) return []
@@ -394,14 +434,16 @@ export default function ExpeditionPreparationScreen() {
             </TouchableOpacity>
           ),
           headerRight: () => (
-            <TouchableOpacity
-              onPress={handleStartExpedition}
-              disabled={!canStartExpedition}
-            >
-              <Text style={[styles.headerButton, styles.headerButtonPrimary, !canStartExpedition && styles.headerButtonDisabled]}>
-                {t('ui.formation.common.launch')}
-              </Text>
-            </TouchableOpacity>
+            <View ref={launchButtonRef} collapsable={false}>
+              <TouchableOpacity
+                onPress={handleStartExpedition}
+                disabled={!canStartExpedition}
+              >
+                <Text style={[styles.headerButton, styles.headerButtonPrimary, !canStartExpedition && styles.headerButtonDisabled]}>
+                  {t('ui.formation.common.launch')}
+                </Text>
+              </TouchableOpacity>
+            </View>
           ),
           title: t('ui.formation.preparation.title'),
         }}
@@ -422,9 +464,11 @@ export default function ExpeditionPreparationScreen() {
               </View>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.editButton} onPress={handleEditParty}>
-              <Text style={styles.editButtonText}>{t('ui.formation.preparation.editMembers')}</Text>
-            </TouchableOpacity>
+            <View ref={editPartyRef} collapsable={false}>
+              <TouchableOpacity style={styles.editButton} onPress={handleEditParty}>
+                <Text style={styles.editButtonText}>{t('ui.formation.preparation.editMembers')}</Text>
+              </TouchableOpacity>
+            </View>
 
             <TouchableOpacity style={styles.secondaryButton} onPress={handleOpenEquipmentList}>
               <Text style={styles.secondaryButtonText}>{t('ui.formation.preparation.equipmentList')}</Text>
@@ -441,7 +485,7 @@ export default function ExpeditionPreparationScreen() {
           <Text style={styles.sectionTitle}>{t('ui.formation.preparation.sectionExpedition')}</Text>
           <View style={styles.card}>
             {/* 遠征先 */}
-            <View style={styles.settingItem}>
+            <View style={styles.settingItem} ref={selectDungeonRef} collapsable={false}>
               <Text style={styles.settingLabel}>{t('ui.formation.preparation.dungeon')}</Text>
               <TouchableOpacity
                 style={styles.settingValue}

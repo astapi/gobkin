@@ -438,6 +438,26 @@ const ko = {
       expeditionTitle: '원정 완료',
       expeditionReturn: '{{partyName}}이(가) 귀환했습니다.',
     },
+    start: {
+      title: '고블린 킹덤',
+      subtitle: 'GOBLIN KINGDOM',
+      beginButton: '게임 시작',
+      tagline: '약한 고블린이 강함을 이어받는다.',
+    },
+    tutorial: {
+      banner: {
+        readPrologue: '먼저 "고블린의 각성"을 읽고 이야기를 시작해 보세요.',
+        afterPrologue: '"목록" 탭을 열어 깨어난 고블린을 확인하세요.',
+        seeFirstGoblin: '동료 고블린이 깨어났습니다. "편성" 탭에서 원정을 준비합시다.',
+        viewFirstGoblin: '깨어난 고블린 "그래쉬"입니다. 탭해서 상태를 확인해 보세요.',
+        openFormationTab: '"편성" 탭을 열어 원정 준비를 시작하세요.',
+        openFormation: '파티 카드를 탭해 원정 준비를 시작하세요.',
+        editParty: '"멤버 편성" 버튼을 눌러 파티에 고블린을 추가하세요.',
+        selectDungeon: '"원정지"를 탭하고 첫 모험으로 "슬라임 동굴"을 선택하세요.',
+        startExpedition: '오른쪽 위의 "출격" 버튼을 눌러 첫 모험을 시작하세요.',
+        readAfterStory: '새 이야기 "깃든 힘"이 해금되었습니다. 힘의 정체를 확인해 봅시다.',
+      },
+    },
   },
   entities: {
     race: {

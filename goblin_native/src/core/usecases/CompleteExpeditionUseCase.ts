@@ -137,6 +137,15 @@ export class CompleteExpeditionUseCase {
       (e): e is Extract<TimelineEvent, { type: 'boss' }> => e.type === 'boss'
     )
 
+    // 初回クリア判定（チュートリアル用の確定因子獲得などに使用）
+    let isFirstClearSuccess = false
+    if (!isAbort && replay.summary.success) {
+      const baseStateBefore = await this.baseStateRepository.getBaseState()
+      isFirstClearSuccess =
+        baseStateBefore !== null &&
+        !baseStateBefore.capturedDungeons.includes(replay.meta.areaId)
+    }
+
     if (!isAbort && bossEvent && bossEvent.combat.outcome === 'win') {
       const enemyDatabase = getEnemyDatabase(replay.meta.areaId)
 
@@ -148,7 +157,19 @@ export class CompleteExpeditionUseCase {
         )
 
         if (enemiesWithFactorDrops.length > 0) {
-          const allFactorDrops = enemiesWithFactorDrops.flatMap(e => e.factorDrops!)
+          const allFactorDrops = enemiesWithFactorDrops
+            .flatMap(e => e.factorDrops!)
+            .map(drop => {
+              // チュートリアル: スライム洞窟初回クリア時はスライム因子を確定獲得
+              if (
+                isFirstClearSuccess &&
+                replay.meta.areaId === 'slime_cave' &&
+                drop.factorId === 'slime'
+              ) {
+                return { ...drop, probability: 1 }
+              }
+              return drop
+            })
 
           for (const goblin of goblins) {
             if (replay.summary.casualties.includes(goblin.id.toString())) {

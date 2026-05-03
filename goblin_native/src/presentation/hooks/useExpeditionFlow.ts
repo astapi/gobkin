@@ -28,6 +28,7 @@ import {
   GOLDEN_ACORN_TITLE_MULTIPLIER,
 } from '../../shared/constants/purchases'
 import { useStoryStore } from '../stores/useStoryStore'
+import { useTutorialStore } from '../stores/useTutorialStore'
 import { useExpeditionNotification } from '../hooks/useExpeditionNotification'
 import { getDungeonName } from '../../shared/i18n/entityLocalization'
 import { getDungeonTierAreaLevel, getDungeonTierDisplayName } from '../../shared/types'
@@ -149,6 +150,11 @@ export const useExpeditionFlow = ({
     const tier = record.replay.meta.tier as DungeonTier | undefined
     await markDungeonCleared(dungeon, true, tier)
     await checkAndUnlockStories(dungeon.id)
+
+    // チュートリアル: スライム洞窟クリアでストーリー読了ステップへ
+    if (dungeon.id === 'slime_cave') {
+      await useTutorialStore.getState().advanceTo('read_after_story')
+    }
 
     const nextId = await getNextGoblinId()
     const areaLevel = record.replay.meta.effectiveAreaLevel ??
@@ -303,6 +309,11 @@ export const useExpeditionFlow = ({
         // UseCaseがDB上のparty.statusと出発時HPを直接更新するため、ストアを同期
         await usePartyStore.getState().refresh()
         await useGoblinStore.getState().refresh()
+
+        // チュートリアル: スライム洞窟への出撃でクリア待ちステップへ
+        if (dungeon.id === 'slime_cave') {
+          await useTutorialStore.getState().advanceTo('wait_clear')
+        }
 
         // ローカル通知をスケジュール
         try {
