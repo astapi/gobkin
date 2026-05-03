@@ -1,9 +1,10 @@
-import { useCallback } from 'react'
+import { forwardRef, useCallback } from 'react'
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { router } from 'expo-router'
 import { useTranslation } from 'react-i18next'
 import { useStoryStore } from '@/presentation/stores/useStoryStore'
+import { useTutorialTarget } from '@/presentation/hooks/useTutorialTarget'
 
 export default function StoryTabScreen() {
   const { t } = useTranslation()
@@ -11,6 +12,17 @@ export default function StoryTabScreen() {
 
   const mainStories = stories.filter(s => s.category === 'main' && s.unlocked)
   const sideStories = stories.filter(s => s.category === 'side' && s.unlocked)
+
+  const prologueRef = useTutorialTarget<View>({
+    activeOn: ['read_prologue'],
+    messageKey: 'ui.tutorial.banner.readPrologue',
+    placement: 'below',
+  })
+  const afterStoryRef = useTutorialTarget<View>({
+    activeOn: ['read_after_story'],
+    messageKey: 'ui.tutorial.banner.readAfterStory',
+    placement: 'below',
+  })
 
   const handleStoryPress = useCallback((storyId: string) => {
     router.push({ pathname: '/story/reader', params: { storyId } })
@@ -25,14 +37,23 @@ export default function StoryTabScreen() {
         {mainStories.length === 0 ? (
           <Text style={styles.emptyText}>{t('ui.story.noStories')}</Text>
         ) : (
-          mainStories.map(story => (
-            <StoryCard
-              key={story.id}
-              title={story.title}
-              read={story.read}
-              onPress={() => handleStoryPress(story.id)}
-            />
-          ))
+          mainStories.map(story => {
+            const ref =
+              story.id === 'prologue'
+                ? prologueRef
+                : story.id === 'story_after_slime_cave'
+                  ? afterStoryRef
+                  : undefined
+            return (
+              <StoryCard
+                key={story.id}
+                ref={ref}
+                title={story.title}
+                read={story.read}
+                onPress={() => handleStoryPress(story.id)}
+              />
+            )
+          })
         )}
 
         {sideStories.length > 0 && (
@@ -53,25 +74,25 @@ export default function StoryTabScreen() {
   )
 }
 
-function StoryCard({
-  title,
-  read,
-  onPress,
-}: {
+interface StoryCardProps {
   title: string
   read: boolean
   onPress: () => void
-}) {
-  return (
-    <TouchableOpacity style={styles.card} onPress={onPress}>
-      <View style={styles.cardContent}>
-        <Text style={styles.cardTitle}>{title}</Text>
-        {!read && <View style={styles.newBadge}><Text style={styles.newBadgeText}>NEW</Text></View>}
-      </View>
-      <Text style={styles.cardArrow}>→</Text>
-    </TouchableOpacity>
-  )
 }
+
+const StoryCard = forwardRef<View, StoryCardProps>(function StoryCard({ title, read, onPress }, ref) {
+  return (
+    <View ref={ref} collapsable={false}>
+      <TouchableOpacity style={styles.card} onPress={onPress}>
+        <View style={styles.cardContent}>
+          <Text style={styles.cardTitle}>{title}</Text>
+          {!read && <View style={styles.newBadge}><Text style={styles.newBadgeText}>NEW</Text></View>}
+        </View>
+        <Text style={styles.cardArrow}>→</Text>
+      </TouchableOpacity>
+    </View>
+  )
+})
 
 const styles = StyleSheet.create({
   container: {

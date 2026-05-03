@@ -1,4 +1,5 @@
 import { memo, useMemo, useCallback, useState } from 'react'
+import { useFocusEffect } from 'expo-router'
 import { View, Text, FlatList, TouchableOpacity, StyleSheet, ActivityIndicator, Image, useWindowDimensions, Alert } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { router, Stack } from 'expo-router'
@@ -10,6 +11,8 @@ import { useExpeditionFlow, type ExpeditionHistoryDisplay } from '@/presentation
 import { getGoldenAcornCount } from '@/presentation/stores/usePurchaseStore'
 import { useCurrentTime } from '@/presentation/hooks/useCurrentTime'
 import { useDungeonStore } from '@/presentation/stores/useDungeonStore'
+import { useTutorialStore } from '@/presentation/stores/useTutorialStore'
+import { useTutorialTarget } from '@/presentation/hooks/useTutorialTarget'
 import { getGoblinDisplayImage } from '@/shared/utils/goblinImages'
 import { getPartyEffectiveStats } from '@/shared/utils/goblinStats'
 import { getGoldBonusPercentFromSkills } from '@/shared/data/characterSkills'
@@ -175,6 +178,7 @@ const PartyCard = memo(function PartyCard({
 export default function FormationScreen() {
   const { t } = useTranslation()
   const { width } = useWindowDimensions()
+  const advanceTutorial = useTutorialStore((state) => state.advanceTo)
   const parties = usePartyStore((state) => state.parties)
   const partiesLoading = usePartyStore((state) => state.isLoading)
   const createParty = usePartyStore((state) => state.createParty)
@@ -208,6 +212,22 @@ export default function FormationScreen() {
     return { slotSize: clampedSlotSize, avatarSize: computedAvatarSize }
   }, [width])
 
+  // 直前ステップ (view_first_goblin) のときだけ進める（飛ばし防止）。
+  useFocusEffect(
+    useCallback(() => {
+      const current = useTutorialStore.getState().step
+      if (current === 'view_first_goblin') {
+        void advanceTutorial('open_formation')
+      }
+    }, [advanceTutorial]),
+  )
+
+  const pt1Ref = useTutorialTarget<View>({
+    activeOn: ['open_formation', 'edit_party'],
+    messageKey: 'ui.tutorial.banner.openFormation',
+    placement: 'auto',
+  })
+
   // 初期パーティ枠を確保（最低3つ）
   const maxPartyCount = Math.max(1, rank)
   const displayParties = useMemo(() => {
@@ -221,6 +241,7 @@ export default function FormationScreen() {
 
 
   const handlePartyPress = useCallback(async (party: Party | null, index: number) => {
+    void advanceTutorial('edit_party')
     if (!party) {
       // パーティがない場合は新規作成して遷移
       const newParty = await createParty({
@@ -415,39 +436,44 @@ export default function FormationScreen() {
   }
 
   const renderPartyItem = useCallback(({ item, index }: { item: Party | null; index: number }) => {
+    const wrapperRef = index === 0 ? pt1Ref : undefined
     if (item) {
       return (
-        <PartyCard
-          party={item}
-          goblins={goblins}
-          onPress={() => handlePartyPress(item, index)}
-          onAbort={() => handleAbort(item)}
-          historyDisplays={partyHistoryDisplays[item.id] ?? []}
-          onHistoryPress={handleHistoryPress}
-          onLogPress={handleLogPress}
-          slotSize={slotSize}
-          avatarSize={avatarSize}
-        />
+        <View ref={wrapperRef} collapsable={false}>
+          <PartyCard
+            party={item}
+            goblins={goblins}
+            onPress={() => handlePartyPress(item, index)}
+            onAbort={() => handleAbort(item)}
+            historyDisplays={partyHistoryDisplays[item.id] ?? []}
+            onHistoryPress={handleHistoryPress}
+            onLogPress={handleLogPress}
+            slotSize={slotSize}
+            avatarSize={avatarSize}
+          />
+        </View>
       )
     }
 
     return (
-      <TouchableOpacity
-        style={styles.partyCard}
-        onPress={() => handlePartyPress(null, index)}
-        activeOpacity={0.7}
-      >
-        <View style={styles.partyHeader}>
-          <Text style={styles.partyName}>{t('ui.formation.index.partyDefaultName', { index: index + 1 })}</Text>
-        </View>
-        <View style={styles.membersRow}>
-          {Array.from({ length: MAX_PARTY_SLOTS }).map((_, slotIndex) => (
-            <MemberSlot key={slotIndex} partyMembers={[]} isEmpty slotSize={slotSize} avatarSize={avatarSize} />
-          ))}
-        </View>
-      </TouchableOpacity>
+      <View ref={wrapperRef} collapsable={false}>
+        <TouchableOpacity
+          style={styles.partyCard}
+          onPress={() => handlePartyPress(null, index)}
+          activeOpacity={0.7}
+        >
+          <View style={styles.partyHeader}>
+            <Text style={styles.partyName}>{t('ui.formation.index.partyDefaultName', { index: index + 1 })}</Text>
+          </View>
+          <View style={styles.membersRow}>
+            {Array.from({ length: MAX_PARTY_SLOTS }).map((_, slotIndex) => (
+              <MemberSlot key={slotIndex} partyMembers={[]} isEmpty slotSize={slotSize} avatarSize={avatarSize} />
+            ))}
+          </View>
+        </TouchableOpacity>
+      </View>
     )
-  }, [avatarSize, goblins, handleAbort, handleHistoryPress, handleLogPress, handlePartyPress, partyHistoryDisplays, slotSize])
+  }, [avatarSize, goblins, handleAbort, handleHistoryPress, handleLogPress, handlePartyPress, partyHistoryDisplays, pt1Ref, slotSize, t])
 
   return (
     <SafeAreaView style={styles.container} edges={['left', 'right', 'bottom']}>

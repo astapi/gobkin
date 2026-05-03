@@ -1,6 +1,6 @@
-import { memo } from 'react'
+import { memo, useEffect } from 'react'
 import { Tabs } from 'expo-router'
-import { View, StyleSheet } from 'react-native'
+import { View, StyleSheet, useWindowDimensions } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useTranslation } from 'react-i18next'
 import ListIcon from '../../assets/tab/tab_list.svg'
@@ -12,6 +12,9 @@ import { CurrentTimeBadge } from '@/presentation/components/CurrentTimeBadge'
 import { GoldBadge } from '@/presentation/components/GoldBadge'
 import { GoldenAcornBadge } from '@/presentation/components/GoldenAcornBadge'
 import { useStoryStore } from '@/presentation/stores/useStoryStore'
+import { useTutorialStore } from '@/presentation/stores/useTutorialStore'
+import { useTutorialOverlayStore } from '@/presentation/stores/useTutorialOverlayStore'
+import type { TutorialStep } from '@/shared/types/Tutorial'
 
 interface TabIconProps {
   Icon: React.FC<{ width: number; height: number; fill?: string }>
@@ -27,6 +30,20 @@ const TabIcon = memo(function TabIcon({ Icon, color, size = 24 }: TabIconProps) 
   )
 })
 
+// (tabs)/_layout.tsx 内の Tabs.Screen 定義順と一致させる
+const TAB_INDEX_BY_STEP: Partial<Record<TutorialStep, number>> = {
+  // story=0, index=1, formation=2, base=3, settings=4
+  see_first_goblin: 1,
+  open_formation: 2,
+}
+
+const TAB_MESSAGE_BY_STEP: Partial<Record<TutorialStep, string>> = {
+  see_first_goblin: 'ui.tutorial.banner.afterPrologue',
+  open_formation: 'ui.tutorial.banner.openFormationTab',
+}
+
+const TAB_COUNT = 5
+
 export default function TabLayout() {
   const { t } = useTranslation()
   const unreadCount = useStoryStore((state) => state.unreadCount)
@@ -34,6 +51,39 @@ export default function TabLayout() {
   const basePadding = 8
   const baseHeight = 60
   const safeAreaPadding = Math.max(basePadding, insets.bottom)
+  const tabBarHeight = baseHeight + safeAreaPadding
+  const { width: screenWidth, height: screenHeight } = useWindowDimensions()
+  const tutorialStep = useTutorialStore((state) => state.step)
+  const setEntry = useTutorialOverlayStore((state) => state.setEntry)
+  const clearEntry = useTutorialOverlayStore((state) => state.clearEntry)
+  const tabEntryId = 'tutorial-tabs-spotlight'
+
+  useEffect(() => {
+    const tabIndex = TAB_INDEX_BY_STEP[tutorialStep]
+    const messageKey = TAB_MESSAGE_BY_STEP[tutorialStep]
+    if (tabIndex === undefined || !messageKey) {
+      clearEntry(tabEntryId)
+      return
+    }
+
+    const tabWidth = screenWidth / TAB_COUNT
+    setEntry({
+      id: tabEntryId,
+      rect: {
+        x: tabIndex * tabWidth,
+        y: screenHeight - tabBarHeight,
+        width: tabWidth,
+        height: tabBarHeight,
+      },
+      messageKey,
+      placement: 'above',
+      forStep: tutorialStep,
+    })
+
+    return () => {
+      clearEntry(tabEntryId)
+    }
+  }, [tutorialStep, screenWidth, screenHeight, tabBarHeight, setEntry, clearEntry])
   return (
     <View style={styles.rootContainer}>
     <Tabs

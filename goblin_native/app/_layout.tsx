@@ -17,15 +17,24 @@ import { useExpeditionStore } from '@/presentation/stores/useExpeditionStore'
 import { useDebugSettingsStore } from '@/presentation/stores/useDebugSettingsStore'
 import { usePurchaseStore } from '@/presentation/stores/usePurchaseStore'
 import { useStoryStore } from '@/presentation/stores/useStoryStore'
+import { useTutorialStore } from '@/presentation/stores/useTutorialStore'
+import { StartScreen } from '@/presentation/components/StartScreen'
+import { TutorialSpotlight } from '@/presentation/components/TutorialSpotlight'
 import { initializeI18n } from '@/shared/i18n'
 
 export default function RootLayout() {
   const { t } = useTranslation()
   const { ready, error, resetAndReinitialize, reloadAfterImport } = useDatabaseInit()
   const [storesReady, setStoresReady] = useState(false)
+  const tutorialStep = useTutorialStore(state => state.step)
+  const tutorialLoading = useTutorialStore(state => state.isLoading)
 
   useEffect(() => {
-    if (!ready) return
+    if (!ready) {
+      // リセットや再初期化中は読み込み中表示に戻す（古い値で描画されないように）
+      setStoresReady(false)
+      return
+    }
     const init = async () => {
       await Promise.all([
         initializeI18n(),
@@ -37,6 +46,7 @@ export default function RootLayout() {
         useDebugSettingsStore.getState().initialize(),
         usePurchaseStore.getState().initialize(),
         useStoryStore.getState().initialize(),
+        useTutorialStore.getState().initialize(),
       ])
       // 通知パーミッション要求（ネイティブのみ）
       if (Platform.OS !== 'web') {
@@ -84,7 +94,7 @@ export default function RootLayout() {
     )
   }
 
-  if (!ready || !storesReady) {
+  if (!ready || !storesReady || tutorialLoading) {
     return (
       <SafeAreaProvider>
         <View style={styles.loadingContainer}>
@@ -92,6 +102,17 @@ export default function RootLayout() {
           <Text style={styles.loadingText}>{t('ui.common.loading')}</Text>
         </View>
       </SafeAreaProvider>
+    )
+  }
+
+  if (tutorialStep === 'not_started') {
+    return (
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <SafeAreaProvider>
+          <StartScreen />
+          <StatusBar style="light" />
+        </SafeAreaProvider>
+      </GestureHandlerRootView>
     )
   }
 
@@ -171,16 +192,11 @@ export default function RootLayout() {
                     title: t('ui.root.goblinDetail'),
                   }}
                 />
-                <Stack.Screen
-                  name="story"
-                  options={{
-                    headerShown: false,
-                  }}
-                />
               </Stack>
               <StatusBar style="auto" />
             </ResetProvider>
         </AuthProvider>
+        <TutorialSpotlight />
       </SafeAreaProvider>
     </GestureHandlerRootView>
   )
