@@ -87,7 +87,12 @@
         "type": "dungeon_cleared",
         "dungeonId": "goblin_village_3"
       },
-      "rewards": [],
+      "rewards": [
+        {
+          "type": "golden_acorn",
+          "value": 5
+        }
+      ],
       "chapters": [
         {
           "id": "story_after_goblin_village_1",
@@ -138,7 +143,12 @@
         "type": "dungeon_cleared",
         "dungeonId": "road_1"
       },
-      "rewards": [],
+      "rewards": [
+        {
+          "type": "golden_acorn",
+          "value": 5
+        }
+      ],
       "chapters": [
         {
           "id": "story_after_road_1",
