@@ -10,11 +10,15 @@
       "chapters": [
         {
           "id": "prologue_1",
-          "text": "薄暗い洞窟の奥で、一匹のゴブリンが目を覚ました。\n\n周囲には仲間の気配がある。いや、仲間と呼ぶにはまだ早いかもしれない。\n\n彼らはただ、同じ洞窟に住んでいるだけの存在だ。"
+          "text": "森の端にある小さな洞窟で、一匹のゴブリンが目を覚ました。\n\n名はマルク。最弱と呼ばれる群れに生まれた、ほんの少しだけ大きな個体だった。\n\n他のゴブリンたちは、殴られれば縮こまり、餌を投げられれば飛びつき、命じられれば歩いた。マルクだけは、その前に一瞬だけ考えた。なぜ自分にだけそんな間が空くのか、本人にも分からなかった。"
         },
         {
           "id": "prologue_2",
-          "text": "しかし、何かが違う。\n\nこの洞窟の外には、もっと広い世界があるはずだ。\n\nまずは近くの洞窟を探索して、力を蓄えよう。"
+          "text": "森の奥には、マルクたちより強いゴブリンの集落があった。\n\nそこのゴブリンたちは、マルクの群れに荷を運ばせ、食い残しを拾わせ、危ない場所を先に歩かせた。先に歩いた仲間は、戻らないことがあった。戻っても餌は増えなかった。次の日には、また別の仲間が前に出された。\n\nマルクは覚えた。言われた通りに歩くだけでは、いつか自分の番が来る。仲間も、自分も、一匹ずつ消えていく。"
+        },
+        {
+          "id": "prologue_3",
+          "text": "逆らえば群れごと潰される。逃げても森の奥では生きられない。\n\nならば、支配するゴブリンたちを倒せるだけの力をつけるしかない。\n\nマルクは何も変わらないふりをして、近くの洞窟へ狩りに出た。集落のゴブリンたちに気づかれないよう、少しずつ強くなるために。"
         }
       ]
     },
@@ -23,20 +27,28 @@
       "title": "宿りし力",
       "category": "main",
       "order": 1,
-      "unlockCondition": { "type": "dungeon_cleared", "dungeonId": "slime_cave" },
-      "rewards": [{ "type": "golden_acorn", "value": 5 }],
+      "unlockCondition": {
+        "type": "dungeon_cleared",
+        "dungeonId": "slime_cave"
+      },
+      "rewards": [
+        {
+          "type": "golden_acorn",
+          "value": 5
+        }
+      ],
       "chapters": [
         {
           "id": "story_after_slime_cave_1",
-          "text": "スライムの洞窟を制覇した。\n\n初めての勝利。だが、それ以上に奇妙な感覚があった。\n\n体の奥が、ぐにゃりと脈打っている。倒したスライムの何かが、自分の中に滲み込んだのだ。"
+          "text": "スライムの洞窟を制覇した。\n\n弱い獲物だった。集落のゴブリンなら見向きもしない、価値のない洞窟だった。\n\nそれでもマルクの体の奥で、ぐにゃりと何かが脈打った。倒したスライムの何かが、自分の中に滲み込んだ。"
         },
         {
           "id": "story_after_slime_cave_2",
-          "text": "「因子」――敵の特性を宿した力の核。\n\nゴブリンは弱い。腕力でも魔力でも、生まれ持った力では他の種族に遠く及ばない。\n\nだが、こうして敵を倒し、その力を取り込んでいけば話は別だ。スライムの粘り、オークの剛力、ドラゴンの炎すらも――いずれは、我が身に。"
+          "text": "数日後、洞窟に新しいゴブリンが生まれた。\n\n小さく、弱く、けれど潰しても立ち上がるようなしぶとさを持っていた。\n\n仲間たちは不思議がらない。ただ、死ににくい仲間が増えたことだけを覚えた。マルクだけが、あのスライムの感触を思い出していた。"
         },
         {
           "id": "story_after_slime_cave_3",
-          "text": "弱きゴブリンが、強さを継ぐ。\n\nそれこそが、我らがこの世界で生き残り、国を築く唯一の道だ。\n\n洞窟の出口から差し込む光の先に、森が広がっている。次の力は、あの森のどこかに眠っているはずだ。"
+          "text": "敵を倒せば、何かが残る。\n\nそれはマルクの中に宿り、やがて群れの中に生まれてくる。\n\nまだ誰にも知られてはならない。集落のゴブリンたちに気づかれる前に、森の奥で次の力を探す。"
         }
       ]
     },
@@ -45,12 +57,24 @@
       "title": "同族との対峙",
       "category": "main",
       "order": 2,
-      "unlockCondition": { "type": "dungeon_cleared", "dungeonId": "forest_outskirts" },
-      "rewards": [{ "type": "golden_acorn", "value": 5 }],
+      "unlockCondition": {
+        "type": "dungeon_cleared",
+        "dungeonId": "forest_outskirts"
+      },
+      "rewards": [
+        {
+          "type": "golden_acorn",
+          "value": 5
+        }
+      ],
       "chapters": [
         {
           "id": "story_after_forest_1",
-          "text": "森を抜けた先に、ゴブリンの集落が見えた。\n\n同族だ。しかし、彼らは我々を歓迎するつもりはないようだ。\n\n独立のためには、同族の支配からも脱しなければならない。"
+          "text": "森で獣を狩り、小さな魔物を倒し、マルクたちの群れは少しずつ変わっていった。\n\n足の速いゴブリン。鼻の利くゴブリン。獲物に食らいついたまま離れないゴブリン。\n\n集落のゴブリンたちは、まだ気づいていない。マルクたちは相変わらず、荷を運ぶ弱い群れのふりを続けた。"
+        },
+        {
+          "id": "story_after_forest_2",
+          "text": "森を抜けた先に、支配者たちの集落が見えた。\n\nそこには、マルクたちを押しのけ、奪い、命令してきた同族がいる。\n\nもう、ただ従うだけの群れではない。力はついてきた。仲間たちと共に、反逆の狼煙を上げる時だ。"
         }
       ]
     },
@@ -59,12 +83,23 @@
       "title": "独立の狼煙",
       "category": "main",
       "order": 3,
-      "unlockCondition": { "type": "dungeon_cleared", "dungeonId": "goblin_village_3" },
-      "rewards": [{ "type": "golden_acorn", "value": 5 }],
+      "unlockCondition": {
+        "type": "dungeon_cleared",
+        "dungeonId": "goblin_village_3"
+      },
+      "rewards": [],
       "chapters": [
         {
           "id": "story_after_goblin_village_1",
-          "text": "ホブゴブリンを打ち倒し、集落を手に入れた。\n\nこれが我らの最初の拠点だ。ゴブリンキングダムの礎となる場所。\n\n集落の外には、忘れ去られた廃墟が広がっているという噂がある。"
+          "text": "外縁を崩し、内部へ入り、中枢にいたホブゴブリンを打ち倒した。\n\n荷を運ばされていた弱い群れは、ついに命令する声を黙らせた。\n\n集落の広場で、仲間たちは勝利の意味も知らずに騒いでいる。ただ、もう奪われない場所を得たことだけは分かっていた。"
+        },
+        {
+          "id": "story_after_goblin_village_2",
+          "text": "マルクは倒れた支配者を見下ろした。\n\nマルクの後ろには生き残った仲間が集まっていた。マルクは実質的にゴブリンたちのリーダーとなっていた。"
+        },
+        {
+          "id": "story_after_goblin_village_3",
+          "text": "マルクたちは集落を奪い取り拠点とした。\n\n洞窟に比べれば大きくなったが、仲間たちは増え続ける。\n\nより大きな拠点が必要だ。マルクは仲間を率いて更なる力をつけにいく"
         }
       ]
     },
@@ -73,12 +108,24 @@
       "title": "街道への進出",
       "category": "main",
       "order": 4,
-      "unlockCondition": { "type": "dungeon_cleared", "dungeonId": "undead_ruins_3" },
-      "rewards": [{ "type": "golden_acorn", "value": 5 }],
+      "unlockCondition": {
+        "type": "dungeon_cleared",
+        "dungeonId": "undead_ruins_3"
+      },
+      "rewards": [
+        {
+          "type": "golden_acorn",
+          "value": 5
+        }
+      ],
       "chapters": [
         {
           "id": "story_after_ruins_1",
-          "text": "アンデッドの脅威を退け、廃墟を越えた。\n\n目の前に街道が現れた。人間たちの世界への入口だ。\n\n商人や護衛が行き交う街道を支配できれば、国の力はさらに増すだろう。"
+          "text": "忘れられた廃墟の奥で、動く死体たちは最後まで倒れなかった。\n\n腕が落ちても、腹を裂かれても、骨だけになっても前へ出てくる。そのしぶとさは、マルクの群れにも残った。\n\n弱いゴブリンたちは、死に近い場所を越えて、さらに死ににくい群れになった。"
+        },
+        {
+          "id": "story_after_ruins_2",
+          "text": "廃墟を抜けると、森の匂いが薄れた。\n\n土を踏み固めた広い道。車輪の跡。捨てられた布。折れた矢。そこには、ゴブリンの集落にはなかったものがいくつも落ちていた。\n\nマルクはそれを拾わせた。人間たちが通る道には、食料も武器も情報もある。次に奪う場所は、この街道だ。"
         }
       ]
     },
@@ -87,12 +134,19 @@
       "title": "オークとの邂逅",
       "category": "main",
       "order": 5,
-      "unlockCondition": { "type": "dungeon_cleared", "dungeonId": "road_1" },
-      "rewards": [{ "type": "golden_acorn", "value": 5 }],
+      "unlockCondition": {
+        "type": "dungeon_cleared",
+        "dungeonId": "road_1"
+      },
+      "rewards": [],
       "chapters": [
         {
           "id": "story_after_road_1",
-          "text": "街道を制圧した先に、オークの野営地が見えてきた。\n\nオークたちは我々を同盟者とは見なしていない。\n\n彼らの力を取り込むか、排除するか。いずれにせよ、避けては通れない。"
+          "text": "街道を押さえると、群れは初めて人間の荷を奪った。\n\n袋に詰められた穀物。手入れされた刃物。火を起こす道具。人間たちは、ゴブリンが奪えばすぐ役に立つものを運んでいた。\n\n仲間たちは荷を分け、刃物を選び、使える道具を集め始めた。マルクたちは、道を押さえれば物も情報も流れ込むことを理解し始めていた。"
+        },
+        {
+          "id": "story_after_road_2",
+          "text": "だが、街道は人間だけのものではなかった。\n\n先へ進むほど、折れた木と踏み潰された足跡が増えていく。人間の護衛とは違う、太く重い臭いが残っていた。\n\nオークだ。力で奪い、力で守る連中が、この先に陣を張っている。マルクの群れが大きくなるには、あの力も必要だった。"
         }
       ]
     },
@@ -101,12 +155,24 @@
       "title": "辺境の脅威",
       "category": "main",
       "order": 6,
-      "unlockCondition": { "type": "dungeon_cleared", "dungeonId": "orc_camp_3" },
-      "rewards": [{ "type": "golden_acorn", "value": 5 }],
+      "unlockCondition": {
+        "type": "dungeon_cleared",
+        "dungeonId": "orc_camp_3"
+      },
+      "rewards": [
+        {
+          "type": "golden_acorn",
+          "value": 5
+        }
+      ],
       "chapters": [
         {
           "id": "story_after_orc_camp_1",
-          "text": "オークの野営地を制圧し、新たな拠点を手に入れた。\n\n勢力を広げた我らの存在は、ついに人間たちの耳にも届いたようだ。\n\n辺境の村から偵察の兵が来ている。人間との接触は避けられない。"
+          "text": "オークの野営地を制圧した。\n\nゴブリンたちは、オークの大きな武器を引きずり、肉を奪い、壊れた柵の中で眠った。洞窟でも集落でもない、外に作られた拠点だった。\n\nマルクはそこで、群れがもう隠れて生きる大きさではなくなったことを知った。"
+        },
+        {
+          "id": "story_after_orc_camp_2",
+          "text": "野営地の外で、人間の斥候を捕らえた。\n\n斥候はゴブリンの数を見て、オークの死体を見て、顔色を変えた。マルクには人間の言葉は分からない。それでも、相手が恐れていることは分かった。\n\n逃げた斥候は、きっと村へ戻る。ならば報告される前に、こちらから村を襲う。"
         }
       ]
     },
@@ -115,12 +181,28 @@
       "title": "辺境城の静観",
       "category": "main",
       "order": 7,
-      "unlockCondition": { "type": "dungeon_cleared", "dungeonId": "human_village" },
-      "rewards": [{ "type": "golden_acorn", "value": 5 }],
+      "unlockCondition": {
+        "type": "dungeon_cleared",
+        "dungeonId": "human_village"
+      },
+      "rewards": [
+        {
+          "type": "golden_acorn",
+          "value": 5
+        }
+      ],
       "chapters": [
         {
           "id": "story_after_village_1",
-          "text": "辺境の村を落とした報せは、辺境の城にも届いた。\n\nだが人間たちは、まだ一つの魔物集団の暴走と見ているらしい。\n\n本格的な討伐軍が動く前に、周辺種族の力を奪って軍を作り替えねばならない。"
+          "text": "辺境の村を落とした。\n\n家は低く、柵は弱く、倉には食料が詰まっていた。だが人間たちは、ただ逃げるだけではなかった。鐘を鳴らし、弓を取り、子どもを奥へ隠して、最後まで抵抗した。\n\nマルクはそこで初めて、人間の土地を奪った。森の獲物とは違う。これは、誰かの暮らす場所だった。"
+        },
+        {
+          "id": "story_after_village_2",
+          "text": "村から逃げた人間は、辺境の城へ向かった。\n\nすぐに大軍は来ない。人間たちはまだ、マルクたちを大きくなりすぎた魔物の群れだと思っている。\n\nだが次は違う。村を落としたゴブリンの名は、必ず城へ届く。討伐隊が来る前に、群れを軍に変えなければならない。"
+        },
+        {
+          "id": "story_after_village_3",
+          "text": "村の西には草原が広がっていた。\n\nそこには大きな狼の群れがいる。速く走り、遠くを嗅ぎ、敵より先に襲いかかる獣たちだ。\n\nマルクは草原へ向かう。人間が来る前に、走る力を手に入れるために。"
         }
       ]
     },
@@ -129,12 +211,24 @@
       "title": "狼を駆る者",
       "category": "main",
       "order": 8,
-      "unlockCondition": { "type": "dungeon_cleared", "dungeonId": "wolf_grassland_1" },
-      "rewards": [{ "type": "golden_acorn", "value": 5 }],
+      "unlockCondition": {
+        "type": "dungeon_cleared",
+        "dungeonId": "wolf_grassland_1"
+      },
+      "rewards": [
+        {
+          "type": "golden_acorn",
+          "value": 5
+        }
+      ],
       "chapters": [
         {
           "id": "story_after_wolf_grassland_1",
-          "text": "草原の狼群れを屈服させた。\n\n大狼は騎獣となり、一部のゴブリンはその背に乗って戦場を駆け始める。\n\n機動力を得た今、次は湿地に潜むリザードマンから毒と夜襲の術を奪う番だ。"
+          "text": "草原の狼群れを屈服させた。\n\n最初に乗ったゴブリンは振り落とされ、骨を折った。次のゴブリンは噛まれた。それでも何匹かは、狼の背にしがみついたまま走れるようになった。\n\nマルクの群れは、初めて敵より速く動く力を得た。"
+        },
+        {
+          "id": "story_after_wolf_grassland_2",
+          "text": "狼を得ても、人間の城を落とすには足りない。\n\n人間は柵を作り、門を閉ざし、弓を並べる。正面から走り込めば、強くなったゴブリンでも倒される。\n\n草原の先には湿地がある。そこにいるリザードマンは、毒と夜襲を使うという。マルクは次の戦い方を奪いに行く。"
         }
       ]
     },
@@ -143,12 +237,24 @@
       "title": "脅威の拡大",
       "category": "main",
       "order": 9,
-      "unlockCondition": { "type": "dungeon_cleared", "dungeonId": "lizardman_swamp_3" },
-      "rewards": [{ "type": "golden_acorn", "value": 5 }],
+      "unlockCondition": {
+        "type": "dungeon_cleared",
+        "dungeonId": "lizardman_swamp_3"
+      },
+      "rewards": [
+        {
+          "type": "golden_acorn",
+          "value": 5
+        }
+      ],
       "chapters": [
         {
           "id": "story_after_lizardman_swamp_1",
-          "text": "沼王を倒し、毒と夜襲の術を取り込んだ。\n\n狼騎兵と湿地戦術を備えた我らの軍は、確かに研ぎ澄まされた。\n\nだが人間に本格討伐を決断させるには、なお象徴的な戦果が足りない。次はオークの砦だ。"
+          "text": "リザードマンの沼砦を制圧した。\n\n毒を塗った刃。泥に身を沈めて待つ伏兵。夜の水音に紛れて近づく足取り。ゴブリンたちは、正面から殴る以外の戦い方を覚えた。\n\nマルクの群れは、もうただの群れではない。狼で走り、毒で削り、夜に襲う軍になり始めていた。"
+        },
+        {
+          "id": "story_after_lizardman_swamp_2",
+          "text": "それでも、辺境の城はまだ遠い。\n\n人間に本気で動かれる前に、こちらから大きな戦果を見せる必要がある。村を落としただけでは、城はまだ様子を見る。だが、オークの砦まで奪えば話は変わる。\n\nマルクは進路を変えた。次はオークの本拠地を落とす。人間たちに、ゴブリンがただの魔物ではないと知らせるために。"
         }
       ]
     },
@@ -157,8 +263,16 @@
       "title": "落とせぬ城",
       "category": "main",
       "order": 10,
-      "unlockCondition": { "type": "dungeon_cleared", "dungeonId": "subjugation_force_3" },
-      "rewards": [{ "type": "golden_acorn", "value": 5 }],
+      "unlockCondition": {
+        "type": "dungeon_cleared",
+        "dungeonId": "subjugation_force_3"
+      },
+      "rewards": [
+        {
+          "type": "golden_acorn",
+          "value": 5
+        }
+      ],
       "chapters": [
         {
           "id": "story_after_subjugation_1",
@@ -171,8 +285,16 @@
       "title": "巣森の盟約",
       "category": "main",
       "order": 11,
-      "unlockCondition": { "type": "dungeon_cleared", "dungeonId": "spider_forest_1" },
-      "rewards": [{ "type": "golden_acorn", "value": 5 }],
+      "unlockCondition": {
+        "type": "dungeon_cleared",
+        "dungeonId": "spider_forest_1"
+      },
+      "rewards": [
+        {
+          "type": "golden_acorn",
+          "value": 5
+        }
+      ],
       "chapters": [
         {
           "id": "story_after_spider_forest_1",
@@ -185,8 +307,16 @@
       "title": "墓原の先",
       "category": "main",
       "order": 12,
-      "unlockCondition": { "type": "dungeon_cleared", "dungeonId": "dead_grave_3" },
-      "rewards": [{ "type": "golden_acorn", "value": 5 }],
+      "unlockCondition": {
+        "type": "dungeon_cleared",
+        "dungeonId": "dead_grave_3"
+      },
+      "rewards": [
+        {
+          "type": "golden_acorn",
+          "value": 5
+        }
+      ],
       "chapters": [
         {
           "id": "story_after_dead_grave_1",
@@ -199,8 +329,16 @@
       "title": "空を得る",
       "category": "main",
       "order": 13,
-      "unlockCondition": { "type": "dungeon_cleared", "dungeonId": "harpy_cliff_1" },
-      "rewards": [{ "type": "golden_acorn", "value": 5 }],
+      "unlockCondition": {
+        "type": "dungeon_cleared",
+        "dungeonId": "harpy_cliff_1"
+      },
+      "rewards": [
+        {
+          "type": "golden_acorn",
+          "value": 5
+        }
+      ],
       "chapters": [
         {
           "id": "story_after_harpy_cliff_1",
@@ -213,8 +351,16 @@
       "title": "西方防衛線の崩壊",
       "category": "main",
       "order": 14,
-      "unlockCondition": { "type": "dungeon_cleared", "dungeonId": "human_fortress_3" },
-      "rewards": [{ "type": "golden_acorn", "value": 5 }],
+      "unlockCondition": {
+        "type": "dungeon_cleared",
+        "dungeonId": "human_fortress_3"
+      },
+      "rewards": [
+        {
+          "type": "golden_acorn",
+          "value": 5
+        }
+      ],
       "chapters": [
         {
           "id": "story_after_fortress_1",
@@ -227,8 +373,16 @@
       "title": "王都への道",
       "category": "main",
       "order": 15,
-      "unlockCondition": { "type": "dungeon_cleared", "dungeonId": "vampire_castle_1" },
-      "rewards": [{ "type": "golden_acorn", "value": 5 }],
+      "unlockCondition": {
+        "type": "dungeon_cleared",
+        "dungeonId": "vampire_castle_1"
+      },
+      "rewards": [
+        {
+          "type": "golden_acorn",
+          "value": 5
+        }
+      ],
       "chapters": [
         {
           "id": "story_after_vampire_1",
@@ -241,8 +395,16 @@
       "title": "最後の試練",
       "category": "main",
       "order": 16,
-      "unlockCondition": { "type": "dungeon_cleared", "dungeonId": "royal_capital_2" },
-      "rewards": [{ "type": "golden_acorn", "value": 5 }],
+      "unlockCondition": {
+        "type": "dungeon_cleared",
+        "dungeonId": "royal_capital_2"
+      },
+      "rewards": [
+        {
+          "type": "golden_acorn",
+          "value": 5
+        }
+      ],
       "chapters": [
         {
           "id": "story_after_royal_capital_2_1",
@@ -255,8 +417,16 @@
       "title": "ゴブリンキングダム",
       "category": "main",
       "order": 17,
-      "unlockCondition": { "type": "dungeon_cleared", "dungeonId": "royal_capital_3" },
-      "rewards": [{ "type": "golden_acorn", "value": 5 }],
+      "unlockCondition": {
+        "type": "dungeon_cleared",
+        "dungeonId": "royal_capital_3"
+      },
+      "rewards": [
+        {
+          "type": "golden_acorn",
+          "value": 5
+        }
+      ],
       "chapters": [
         {
           "id": "story_ending_1",
@@ -273,12 +443,24 @@
       "title": "オークの本拠地",
       "category": "side",
       "order": 100,
-      "unlockCondition": { "type": "dungeon_cleared", "dungeonId": "orc_fortress_1" },
-      "rewards": [{ "type": "golden_acorn", "value": 5 }],
+      "unlockCondition": {
+        "type": "dungeon_cleared",
+        "dungeonId": "orc_fortress_1"
+      },
+      "rewards": [
+        {
+          "type": "golden_acorn",
+          "value": 5
+        }
+      ],
       "chapters": [
         {
           "id": "side_orc_fortress_1",
-          "text": "オークの砦を攻略した。\n\n狼騎兵の機動力と、湿地で奪った毒や夜襲の術がなければ落とせなかった拠点だ。\n\nオークの重装戦力までも手中に収め、軍勢はさらに危険な姿へ変わっていく。"
+          "text": "オークの砦を攻略した。\n\n厚い門を破り、見張り台を焼き、奥にいたオークの長を引きずり下ろした。狼の速さと、湿地で覚えた夜襲がなければ落とせなかった拠点だ。\n\nマルクの群れは、オークの武器と重い鎧を奪った。ゴブリンたちはそれをうまく扱えない。それでも、奪ったものを身につけた姿は、もう森の弱い群れには見えなかった。"
+        },
+        {
+          "id": "side_orc_fortress_2",
+          "text": "砦の煙は遠くからも見えた。\n\n辺境の村を落としたゴブリンが、今度はオークの砦まで奪った。その知らせは、逃げた人間と煙の両方で辺境の城へ届く。\n\nマルクは分かっていた。次は人間が来る。こちらから探しに行かなくても、武器を持った人間たちが、ゴブリンを殺すためにやって来る。"
         }
       ]
     },
@@ -287,8 +469,16 @@
       "title": "丘陵の民",
       "category": "side",
       "order": 101,
-      "unlockCondition": { "type": "dungeon_cleared", "dungeonId": "hobbit_hills_1" },
-      "rewards": [{ "type": "golden_acorn", "value": 5 }],
+      "unlockCondition": {
+        "type": "dungeon_cleared",
+        "dungeonId": "hobbit_hills_1"
+      },
+      "rewards": [
+        {
+          "type": "golden_acorn",
+          "value": 5
+        }
+      ],
       "chapters": [
         {
           "id": "side_hobbit_hills_1",
@@ -301,8 +491,16 @@
       "title": "鍛冶王の遺産",
       "category": "side",
       "order": 102,
-      "unlockCondition": { "type": "dungeon_cleared", "dungeonId": "dwarf_mine_3" },
-      "rewards": [{ "type": "golden_acorn", "value": 5 }],
+      "unlockCondition": {
+        "type": "dungeon_cleared",
+        "dungeonId": "dwarf_mine_3"
+      },
+      "rewards": [
+        {
+          "type": "golden_acorn",
+          "value": 5
+        }
+      ],
       "chapters": [
         {
           "id": "side_dwarf_mine_1",
@@ -315,8 +513,16 @@
       "title": "森の民との決着",
       "category": "side",
       "order": 103,
-      "unlockCondition": { "type": "dungeon_cleared", "dungeonId": "elf_forest_3" },
-      "rewards": [{ "type": "golden_acorn", "value": 5 }],
+      "unlockCondition": {
+        "type": "dungeon_cleared",
+        "dungeonId": "elf_forest_3"
+      },
+      "rewards": [
+        {
+          "type": "golden_acorn",
+          "value": 5
+        }
+      ],
       "chapters": [
         {
           "id": "side_elf_forest_1",
@@ -329,8 +535,16 @@
       "title": "沼王の降伏",
       "category": "side",
       "order": 104,
-      "unlockCondition": { "type": "dungeon_cleared", "dungeonId": "lizardman_swamp_3" },
-      "rewards": [{ "type": "golden_acorn", "value": 5 }],
+      "unlockCondition": {
+        "type": "dungeon_cleared",
+        "dungeonId": "lizardman_swamp_3"
+      },
+      "rewards": [
+        {
+          "type": "golden_acorn",
+          "value": 5
+        }
+      ],
       "chapters": [
         {
           "id": "side_lizardman_swamp_1",
@@ -343,8 +557,16 @@
       "title": "峡谷の暴君",
       "category": "side",
       "order": 105,
-      "unlockCondition": { "type": "dungeon_cleared", "dungeonId": "troll_canyon_3" },
-      "rewards": [{ "type": "golden_acorn", "value": 5 }],
+      "unlockCondition": {
+        "type": "dungeon_cleared",
+        "dungeonId": "troll_canyon_3"
+      },
+      "rewards": [
+        {
+          "type": "golden_acorn",
+          "value": 5
+        }
+      ],
       "chapters": [
         {
           "id": "side_troll_canyon_1",
@@ -357,8 +579,16 @@
       "title": "迷宮の主",
       "category": "side",
       "order": 106,
-      "unlockCondition": { "type": "dungeon_cleared", "dungeonId": "minotaur_labyrinth_1" },
-      "rewards": [{ "type": "golden_acorn", "value": 5 }],
+      "unlockCondition": {
+        "type": "dungeon_cleared",
+        "dungeonId": "minotaur_labyrinth_1"
+      },
+      "rewards": [
+        {
+          "type": "golden_acorn",
+          "value": 5
+        }
+      ],
       "chapters": [
         {
           "id": "side_minotaur_1",
@@ -371,8 +601,16 @@
       "title": "空の支配者",
       "category": "side",
       "order": 107,
-      "unlockCondition": { "type": "dungeon_cleared", "dungeonId": "harpy_cliff_1" },
-      "rewards": [{ "type": "golden_acorn", "value": 5 }],
+      "unlockCondition": {
+        "type": "dungeon_cleared",
+        "dungeonId": "harpy_cliff_1"
+      },
+      "rewards": [
+        {
+          "type": "golden_acorn",
+          "value": 5
+        }
+      ],
       "chapters": [
         {
           "id": "side_harpy_cliff_1",
