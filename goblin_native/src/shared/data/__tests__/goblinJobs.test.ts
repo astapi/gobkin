@@ -36,9 +36,12 @@ function createGoblin(overrides: Partial<Goblin> = {}): Goblin {
 describe('goblinJobs', () => {
   it('純ゴブリンのみ訓練対象になる', () => {
     expect(canTrainGoblin(createGoblin({ race: 'ゴブリン' }))).toBe(true)
-    expect(canTrainGoblin(createGoblin({ race: '始祖ゴブリン', raceId: 'founder' }))).toBe(true)
     expect(canTrainGoblin(createGoblin({ race: 'スライムゴブリン' }))).toBe(false)
     expect(canTrainGoblin(createGoblin({ race: 'ウルフゴブリン' }))).toBe(false)
+  })
+
+  it('始祖ゴブリンは訓練対象にならない', () => {
+    expect(canTrainGoblin(createGoblin({ id: 0, race: '始祖ゴブリン', raceId: 'founder' }))).toBe(false)
   })
 
   it('ジョブ変更時に種族スキルとジョブスキルを再構成し、その他のスキルは保持する', () => {
