@@ -5,6 +5,7 @@ import { syncGoblinDerivedStats } from '../utils/goblinStats'
 import { getGoblinBaseAttributes } from '../utils/goblinHp'
 import { getCharacterSkill, type CharacterSkillId } from './skillCatalog'
 import { isBaseGoblinRaceId, normalizeGoblinRaceId } from '../types/Race'
+import { isProtectedGoblin } from '../utils/goblinProtection'
 import {
   getGoblinJobDescription,
   getGoblinJobLabel,
@@ -223,7 +224,7 @@ export function isPureGoblin(goblin: Goblin): boolean {
 }
 
 export function canTrainGoblin(goblin: Goblin): boolean {
-  return isPureGoblin(goblin)
+  return isPureGoblin(goblin) && !isProtectedGoblin(goblin)
 }
 
 export function getGoblinJobSkills(job: GoblinJob, level: number): CharacterSkill[] {
