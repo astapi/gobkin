@@ -16,7 +16,7 @@ import {
 
 const buildDoc = (override?: Partial<BackupDocument>): BackupDocument => {
   const baseTables = {
-    goblins: [{ id: 1, name: 'Grash' }],
+    goblins: [{ id: 1, name: 'Marku' }],
     pending_goblins: [],
     parties: [{ id: 1, name: 'PT1' }],
     expeditions: [],
@@ -24,13 +24,13 @@ const buildDoc = (override?: Partial<BackupDocument>): BackupDocument => {
     dungeon_progress: [],
     equipment: [],
     story_progress: [],
-    app_metadata: [{ key: 'schema_version', value: '13' }],
+    app_metadata: [{ key: 'schema_version', value: '14' }],
   }
   const metaWithoutSig = {
     app: BACKUP_APP_ID,
     formatVersion: BACKUP_FORMAT_VERSION,
     appVersion: '1.0.0',
-    schemaVersion: 13,
+    schemaVersion: 14,
     exportedAt: '2026-04-21T00:00:00.000Z',
     platform: 'ios' as const,
     signatureAlgorithm: BACKUP_SIGNATURE_ALGORITHM,
@@ -101,7 +101,7 @@ describe('BackupSignature', () => {
       app: BACKUP_APP_ID,
       formatVersion: BACKUP_FORMAT_VERSION,
       appVersion: '1.0.0',
-      schemaVersion: 13,
+      schemaVersion: 14,
       exportedAt: '2026-04-21T00:00:00.000Z',
       platform: 'ios' as const,
       signatureAlgorithm: BACKUP_SIGNATURE_ALGORITHM,
@@ -110,7 +110,7 @@ describe('BackupSignature', () => {
       signatureAlgorithm: BACKUP_SIGNATURE_ALGORITHM,
       platform: 'ios' as const,
       exportedAt: '2026-04-21T00:00:00.000Z',
-      schemaVersion: 13,
+      schemaVersion: 14,
       appVersion: '1.0.0',
       formatVersion: BACKUP_FORMAT_VERSION,
       app: BACKUP_APP_ID,

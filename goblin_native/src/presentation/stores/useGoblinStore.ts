@@ -6,6 +6,7 @@ import type { IGoblinRepository, IEquipmentRepository } from '../../core/reposit
 import { DeleteGoblinUseCase, GetGoblinListUseCase } from '../../core/usecases'
 import { usePartyStore } from './usePartyStore'
 import { calculateGoblinEffectiveStats } from '../../shared/utils/goblinStats'
+import { isProtectedGoblin } from '../../shared/utils/goblinProtection'
 
 interface GoblinState {
   goblins: Goblin[]
@@ -81,6 +82,10 @@ export const useGoblinStore = create<GoblinState & GoblinActions>()((set) => ({
   },
 
   deleteGoblin: async (goblinId: number) => {
+    const goblin = await repository.getGoblin(goblinId)
+    if (goblin && isProtectedGoblin(goblin)) {
+      throw new Error(`${goblin.name}は追放できません`)
+    }
     const parties = usePartyStore.getState().parties
     const assignedParty = parties.find((party) => party.memberIds.includes(goblinId))
     if (assignedParty) {

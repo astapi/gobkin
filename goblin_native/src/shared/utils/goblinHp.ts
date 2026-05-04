@@ -5,7 +5,7 @@ import {
 } from '../data/goblinVariants'
 import { getSkillBaseStatMultipliers } from '../data/characterSkills'
 import type { Goblin, GoblinBaseAttributes, GoblinStats } from '../types'
-import { normalizeGoblinRaceId } from '../types/Race'
+import { isBaseGoblinRaceId, normalizeGoblinRaceId } from '../types/Race'
 
 const DEFAULT_BASE_ATTRIBUTES: GoblinBaseAttributes = BASE_GOBLIN_BASE_ATTRIBUTES
 
@@ -59,11 +59,11 @@ export function getGoblinBaseAttributesAtLevel(goblin: GoblinRaceContext, level:
 
 export function getGoblinHpCoefficient(goblin: Pick<Goblin, 'race' | 'job'> & { raceId?: Goblin['raceId'] }): number {
   const raceId = resolveRaceId(goblin)
-  if (raceId === 'goblin' && goblin.job) {
+  if (isBaseGoblinRaceId(raceId) && goblin.job) {
     return GOBLIN_JOB_HP_COEFFICIENTS[goblin.job]
   }
 
-  if (raceId === 'goblin') {
+  if (isBaseGoblinRaceId(raceId)) {
     return BASE_GOBLIN_HP_COEFFICIENT
   }
 
@@ -76,7 +76,7 @@ export function getGoblinStatCoefficient(goblin: Pick<Goblin, 'race' | 'job'> & 
 
 export function getGoblinHpLevelScale(level: number, race: string): number {
   const normalizedLevel = Math.max(1, Math.min(200, Math.floor(level)))
-  const isPureGoblin = normalizeGoblinRaceId(race) === 'goblin'
+  const isPureGoblin = isBaseGoblinRaceId(race)
 
   if (normalizedLevel <= 30) return normalizedLevel * 0.1
   if (normalizedLevel <= 60) return normalizedLevel * 0.15 - 1.5

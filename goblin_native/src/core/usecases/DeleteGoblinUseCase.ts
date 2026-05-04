@@ -1,6 +1,7 @@
 import type { IGoblinRepository } from '../repositories/IGoblinRepository'
 import type { IEquipmentRepository } from '../repositories/IEquipmentRepository'
 import { EquipmentService } from '../services/EquipmentService'
+import { isProtectedGoblin } from '../../shared/utils/goblinProtection'
 
 export class DeleteGoblinUseCase {
   constructor(
@@ -12,6 +13,9 @@ export class DeleteGoblinUseCase {
     const goblin = await this.goblinRepository.getGoblin(goblinId)
     if (!goblin) {
       throw new Error(`ID ${goblinId} のゴブリンが見つかりません`)
+    }
+    if (isProtectedGoblin(goblin)) {
+      throw new Error(`${goblin.name}は追放できません`)
     }
 
     const equippedItems = await this.equipmentRepository.getByGoblinId(goblinId)

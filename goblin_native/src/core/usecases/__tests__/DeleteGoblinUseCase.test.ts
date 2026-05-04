@@ -110,4 +110,15 @@ describe('DeleteGoblinUseCase', () => {
     await expect(useCase.execute(999)).rejects.toThrow('ID 999 のゴブリンが見つかりません')
     expect(goblinRepository.deleteGoblin).not.toHaveBeenCalled()
   })
+
+  it('始祖ゴブリンは追放できない', async () => {
+    const founder = createTestGoblin({ id: 0, name: 'マルク', race: '始祖ゴブリン', raceId: 'founder' })
+    const goblinRepository = createMockGoblinRepository([founder])
+    const equipmentRepository = createMockEquipmentRepository([])
+    const useCase = new DeleteGoblinUseCase(goblinRepository, equipmentRepository)
+
+    await expect(useCase.execute(0)).rejects.toThrow('マルクは追放できません')
+    expect(equipmentRepository.getByGoblinId).not.toHaveBeenCalled()
+    expect(goblinRepository.deleteGoblin).not.toHaveBeenCalled()
+  })
 })

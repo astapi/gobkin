@@ -1,5 +1,6 @@
 export const GOBLIN_RACE_IDS = [
   'goblin',
+  'founder',
   'slime',
   'wolf',
   'orc',
@@ -21,6 +22,7 @@ export type GoblinRaceId = (typeof GOBLIN_RACE_IDS)[number]
 
 const LEGACY_RACE_NAME_MAP: Record<string, GoblinRaceId> = {
   ゴブリン: 'goblin',
+  始祖ゴブリン: 'founder',
   スライムゴブリン: 'slime',
   ウルフゴブリン: 'wolf',
   オークゴブリン: 'orc',
@@ -42,6 +44,7 @@ const LEGACY_RACE_NAME_MAP: Record<string, GoblinRaceId> = {
 
 const RACE_ID_TO_LEGACY_NAME: Record<GoblinRaceId, string> = {
   goblin: 'ゴブリン',
+  founder: '始祖ゴブリン',
   slime: 'スライムゴブリン',
   wolf: 'ウルフゴブリン',
   orc: 'オークゴブリン',
@@ -67,6 +70,11 @@ export function normalizeGoblinRaceId(value?: string | null): GoblinRaceId {
   if (!value) return 'goblin'
   if (isGoblinRaceId(value)) return value
   return LEGACY_RACE_NAME_MAP[value] ?? 'goblin'
+}
+
+export function isBaseGoblinRaceId(value: string): boolean {
+  const raceId = normalizeGoblinRaceId(value)
+  return raceId === 'goblin' || raceId === 'founder'
 }
 
 export function getLegacyRaceName(raceId: GoblinRaceId): string {
