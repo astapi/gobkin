@@ -58,6 +58,7 @@ export default function TabLayout() {
   const baseHeight = 60
   const safeAreaPadding = Math.max(basePadding, insets.bottom)
   const tabBarHeight = baseHeight + safeAreaPadding
+  const badgeBottom = baseHeight + safeAreaPadding + 8
   const { width: screenWidth, height: screenHeight } = useWindowDimensions()
   const tutorialStep = useTutorialStore((state) => state.step)
   const setEntry = useTutorialOverlayStore((state) => state.setEntry)
@@ -179,9 +180,9 @@ export default function TabLayout() {
         }}
       />
     </Tabs>
-    <CurrentTimeBadge bottom={baseHeight + safeAreaPadding + 8} />
-    <GoldenAcornBadge bottom={baseHeight + safeAreaPadding + 8} />
-    <GoldBadge bottom={baseHeight + safeAreaPadding + 8} />
+    <CurrentTimeBadge bottom={badgeBottom} />
+    <GoldenAcornBadge bottom={badgeBottom + 32} />
+    <GoldBadge bottom={badgeBottom} />
     </View>
   )
 }
