@@ -1,11 +1,12 @@
 import { ImageSourcePropType } from 'react-native'
 import type { Goblin } from '@/shared/types'
 import { getGoblinVariantByRace } from '@/shared/data/goblinVariants'
-import { normalizeGoblinRaceId } from '@/shared/types/Race'
+import { isBaseGoblinRaceId, normalizeGoblinRaceId } from '@/shared/types/Race'
 
 // ゴブリン画像のマッピング
 const goblinImages: Record<string, ImageSourcePropType> = {
   goblin: require('../../../assets/goblin/goblin.png'),
+  marku: require('../../../assets/goblin/marku.png'),
   hobgoblin: require('../../../assets/goblin/hobgoblin.png'),
   wolf_goblin: require('../../../assets/goblin/wolf_goblin.png'),
   slime_goblin: require('../../../assets/goblin/slime_goblin.png'),
@@ -56,6 +57,10 @@ export function getGoblinImage(avatarPath: string | undefined): ImageSourcePropT
  * @returns ImageSourcePropType
  */
 export function getGoblinImageByRace(race: string): ImageSourcePropType {
+  if (normalizeGoblinRaceId(race) === 'founder') {
+    return goblinImages.marku
+  }
+
   const variant = getGoblinVariantByRace(normalizeGoblinRaceId(race))
   if (variant && variant.imageKey in goblinImages) {
     return goblinImages[variant.imageKey]
@@ -69,7 +74,11 @@ export function getGoblinImageByRace(race: string): ImageSourcePropType {
  * 純ゴブリンはジョブに応じた画像を優先して表示する
  */
 export function getGoblinDisplayImage(goblin: Pick<Goblin, 'avatar' | 'race' | 'job' | 'raceId'>): ImageSourcePropType {
-  if (normalizeGoblinRaceId(goblin.raceId ?? goblin.race) === 'goblin' && goblin.job) {
+  if (normalizeGoblinRaceId(goblin.raceId ?? goblin.race) === 'founder') {
+    return goblinImages.marku
+  }
+
+  if (isBaseGoblinRaceId(goblin.raceId ?? goblin.race) && goblin.job) {
     switch (goblin.job) {
       case 'guard':
         return goblinImages.goblin_guard
@@ -98,7 +107,7 @@ export function getGoblinBattleImage(goblin: Pick<Goblin, 'avatar' | 'race' | 'j
     return goblinImages.scale_goblin_battle
   }
 
-  if (normalizeGoblinRaceId(goblin.raceId ?? goblin.race) === 'goblin' && goblin.job === 'rider') {
+  if (isBaseGoblinRaceId(goblin.raceId ?? goblin.race) && goblin.job === 'rider') {
     return goblinImages.goblin_rider_battle
   }
 

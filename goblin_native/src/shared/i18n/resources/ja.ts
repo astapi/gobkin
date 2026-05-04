@@ -458,7 +458,7 @@ const ja = {
         readPrologue: 'まずは「目覚め」を読んで、物語を始めよう。',
         afterPrologue: '「一覧」タブを開いて、目覚めたゴブリンを確認しよう。',
         seeFirstGoblin: '仲間のゴブリンが目覚めた。次は「編成」タブで遠征の準備をしよう。',
-        viewFirstGoblin: '目覚めたゴブリン「グラッシュ」だ。まずは編成に進もう。',
+        viewFirstGoblin: '目覚めたゴブリン「マルク」だ。まずは編成に進もう。',
         openFormationTab: '「編成」タブを開いて、遠征の準備を始めよう。',
         openFormation: 'パーティのカードをタップして、遠征の準備を始めよう。',
         editParty: '「メンバー編成」を押して、ゴブリンをパーティに加えよう。',
@@ -473,6 +473,7 @@ const ja = {
   entities: {
     race: {
       goblin: 'ゴブリン',
+      founder: '始祖ゴブリン',
       slime: 'スライムゴブリン',
       wolf: 'ウルフゴブリン',
       orc: 'オークゴブリン',

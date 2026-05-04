@@ -4,7 +4,7 @@ import { applyGoblinJob, canTrainGoblin, getGoblinTrainingJobDefinitions } from 
 function createGoblin(overrides: Partial<Goblin> = {}): Goblin {
   return {
     id: overrides.id ?? 1,
-    name: overrides.name ?? 'グラッシュ',
+    name: overrides.name ?? 'マルク',
     race: overrides.race ?? 'ゴブリン',
     job: overrides.job,
     level: overrides.level ?? 1,
@@ -36,6 +36,7 @@ function createGoblin(overrides: Partial<Goblin> = {}): Goblin {
 describe('goblinJobs', () => {
   it('純ゴブリンのみ訓練対象になる', () => {
     expect(canTrainGoblin(createGoblin({ race: 'ゴブリン' }))).toBe(true)
+    expect(canTrainGoblin(createGoblin({ race: '始祖ゴブリン', raceId: 'founder' }))).toBe(true)
     expect(canTrainGoblin(createGoblin({ race: 'スライムゴブリン' }))).toBe(false)
     expect(canTrainGoblin(createGoblin({ race: 'ウルフゴブリン' }))).toBe(false)
   })

@@ -20,6 +20,7 @@ import { MAGE_MAGIC_SPELL_TABLE } from '@/shared/data/mageMagic'
 import { SPELL_DEFS } from '@/shared/data/spells'
 import { getGoblinBaseAttributesAtLevel } from '@/shared/utils/goblinHp'
 import { getEffectiveStats } from '@/shared/utils/goblinStats'
+import { isProtectedGoblin } from '@/shared/utils/goblinProtection'
 import { getFactorName, getRaceLabel, getSkillLabel, getSpellLabel, getStatLabel } from '@/shared/i18n/entityLocalization'
 import { normalizeBattleActionPolicy } from '@/shared/utils/battleActionPolicy'
 import type { CharacterSkill } from '@/shared/types'
@@ -196,6 +197,10 @@ export default function GoblinDetailScreen() {
 
   const handleBanish = useCallback(() => {
     if (!goblin) return
+    if (isProtectedGoblin(goblin)) {
+      Alert.alert(t('ui.goblin.banishBlocked'), `${goblin.name}は追放できません。`)
+      return
+    }
     if (assignedParty) {
       Alert.alert(t('ui.goblin.banishBlocked'), `${goblin.name}は${assignedParty.name}に編成中です。`)
       return
@@ -464,9 +469,11 @@ export default function GoblinDetailScreen() {
               <Text style={styles.equipmentButtonText}>{t('ui.goblin.equipmentChange')}</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.banishButton} onPress={handleBanish}>
-              <Text style={styles.banishButtonText}>{t('ui.goblin.banishButton')}</Text>
-            </TouchableOpacity>
+            {!isProtectedGoblin(goblin) && (
+              <TouchableOpacity style={styles.banishButton} onPress={handleBanish}>
+                <Text style={styles.banishButtonText}>{t('ui.goblin.banishButton')}</Text>
+              </TouchableOpacity>
+            )}
           </>
         )}
       </ScrollView>

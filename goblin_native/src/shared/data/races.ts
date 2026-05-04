@@ -77,6 +77,15 @@ export const races: RaceDict = {
       "goblin_pack_tactics"
     ]
   },
+  founder: {
+    label: "始祖ゴブリン",
+    implies: [
+      "goblin"
+    ],
+    skillIds: [
+      "exp_bonus_70"
+    ]
+  },
   human: {
     label: "人間",
     physicalResistancePercent: 0,

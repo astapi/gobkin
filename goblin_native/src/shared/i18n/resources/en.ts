@@ -458,7 +458,7 @@ const en = {
         readPrologue: 'Read "Awakening" to begin the story.',
         afterPrologue: 'Open the "List" tab to check on your awakened goblin.',
         seeFirstGoblin: 'A goblin has awakened. Open the "Formation" tab to prepare for an expedition.',
-        viewFirstGoblin: 'Your awakened goblin "Grash". Continue to formation first.',
+        viewFirstGoblin: 'Your awakened goblin "Marku". Continue to formation first.',
         openFormationTab: 'Open the "Formation" tab to start preparing your expedition.',
         openFormation: 'Tap a party card to start preparing your expedition.',
         editParty: 'Tap "Edit Members" and add a goblin to your party.',
@@ -473,6 +473,7 @@ const en = {
   entities: {
     race: {
       goblin: 'Goblin',
+      founder: 'Founder Goblin',
       slime: 'Slime Goblin',
       wolf: 'Wolf Goblin',
       orc: 'Orc Goblin',

@@ -2,7 +2,7 @@ import type { Goblin, GoblinStats, EquipmentInstance } from '../types'
 import { ModStatCalculator } from '@/core/services/ModStatCalculator'
 import { EquipmentService } from '@/core/services/EquipmentService'
 import { calculateGoblinDerivedStats, getGoblinBaseAttributes } from './goblinHp'
-import { getLegacyRaceName, normalizeGoblinRaceId } from '../types/Race'
+import { getLegacyRaceName, isBaseGoblinRaceId, normalizeGoblinRaceId } from '../types/Race'
 import { getPureGoblinPartyStatBonusPercentFromSkills } from '../data/characterSkills'
 
 export function calculateGoblinEffectiveStats(
@@ -44,7 +44,7 @@ export function getEffectiveStats(goblin: Goblin): GoblinStats {
 }
 
 export function isPureGoblin(goblin: Goblin): boolean {
-  return normalizeGoblinRaceId(goblin.raceId ?? goblin.race) === 'goblin' && !goblin.variantFactorId
+  return isBaseGoblinRaceId(goblin.raceId ?? goblin.race) && !goblin.variantFactorId
 }
 
 export function getPartyPackBonusPercent(goblin: Goblin, partyMembers: readonly Goblin[]): number {

@@ -14,6 +14,7 @@ import { useTutorialTarget } from '@/presentation/hooks/useTutorialTarget'
 import type { Goblin } from '@/shared/types'
 import { getGoblinDisplayImage } from '@/shared/utils/goblinImages'
 import { getEffectiveStats } from '@/shared/utils/goblinStats'
+import { isProtectedGoblin } from '@/shared/utils/goblinProtection'
 import { getModTemplate } from '@/shared/data/modPoolLoader'
 import { getStatLabel } from '@/shared/i18n/entityLocalization'
 
@@ -108,6 +109,12 @@ export default function GoblinListScreen() {
   }, [advanceTutorial, closeOpenSwipeable, openSwipeableId])
 
   const handleDeleteGoblin = useCallback((goblin: Goblin) => {
+    if (isProtectedGoblin(goblin)) {
+      Alert.alert('追放できません', `${goblin.name}は追放できません。`)
+      swipeableRefs.current[goblin.id]?.close()
+      return
+    }
+
     const assignedPartyName = getAssignedPartyName(goblin.id)
     if (assignedPartyName) {
       Alert.alert('追放できません', `${goblin.name}は${assignedPartyName}に編成中です。`)
@@ -210,32 +217,40 @@ export default function GoblinListScreen() {
     )
   }, [clearPendingGoblins, closeOpenSwipeable, isBulkDismissingPending, pendingGoblins.length])
 
-  const renderGoblinItem = useCallback(({ item: goblin, index }: { item: Goblin; index: number }) => (
-    <View
-      style={styles.cardWrapper}
-      ref={index === 0 ? firstGoblinRef : undefined}
-      collapsable={false}
-    >
-      <Swipeable
-        ref={(ref) => {
-          swipeableRefs.current[goblin.id] = ref
-        }}
-        friction={2}
-        overshootRight={false}
-        rightThreshold={40}
-        renderRightActions={() => renderRightActions(goblin)}
-        onSwipeableWillOpen={() => handleSwipeableWillOpen(goblin.id)}
-        onSwipeableClose={() => handleSwipeableClose(goblin.id)}
+  const renderGoblinItem = useCallback(({ item: goblin, index }: { item: Goblin; index: number }) => {
+    const card = (
+      <Pressable onPress={() => handleGoblinPress(goblin)}>
+        <GoblinCard
+          goblin={goblin}
+          assignedPartyName={partyNameByGoblinId.get(goblin.id)}
+        />
+      </Pressable>
+    )
+
+    return (
+      <View
+        style={styles.cardWrapper}
+        ref={index === 0 ? firstGoblinRef : undefined}
+        collapsable={false}
       >
-        <Pressable onPress={() => handleGoblinPress(goblin)}>
-          <GoblinCard
-            goblin={goblin}
-            assignedPartyName={partyNameByGoblinId.get(goblin.id)}
-          />
-        </Pressable>
-      </Swipeable>
-    </View>
-  ), [firstGoblinRef, handleGoblinPress, handleSwipeableClose, handleSwipeableWillOpen, partyNameByGoblinId, renderRightActions])
+        {isProtectedGoblin(goblin) ? card : (
+          <Swipeable
+            ref={(ref) => {
+              swipeableRefs.current[goblin.id] = ref
+            }}
+            friction={2}
+            overshootRight={false}
+            rightThreshold={40}
+            renderRightActions={() => renderRightActions(goblin)}
+            onSwipeableWillOpen={() => handleSwipeableWillOpen(goblin.id)}
+            onSwipeableClose={() => handleSwipeableClose(goblin.id)}
+          >
+            {card}
+          </Swipeable>
+        )}
+      </View>
+    )
+  }, [firstGoblinRef, handleGoblinPress, handleSwipeableClose, handleSwipeableWillOpen, partyNameByGoblinId, renderRightActions])
 
   const renderPendingFooter = useCallback(() => {
     if (pendingGoblins.length === 0) {
