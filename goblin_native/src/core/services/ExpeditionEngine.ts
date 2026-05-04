@@ -24,7 +24,11 @@ import { EquipmentTitleService } from './EquipmentTitleService'
 import { rollDropRank } from './DropRankRoller'
 import { rollLuckValue } from './LuckRoller'
 import { normalizePartyRewardMultipliers, DUNGEON_TIER_SCALING, getDungeonTierAreaLevel } from '../../shared/types'
-import { getGoldBonusPercentFromSkills } from '../../shared/data/characterSkills'
+import {
+  getGoldBonusPercentFromSkills,
+  getPartyRareMultiplierFromSkills,
+  getPartyTitleMultiplierFromSkills,
+} from '../../shared/data/characterSkills'
 import { getGoblinBaseAttributesAtLevel } from '../../shared/utils/goblinHp'
 import { getEffectiveStats } from '../../shared/utils/goblinStats'
 import { calculateEnemyExp } from '../../shared/utils/enemyExp'
@@ -61,6 +65,12 @@ export class ExpeditionEngine {
   ): Promise<ExpeditionReplay> {
     console.log('ExpeditionEngine: Starting generateExpedition', { request, partySize: party.length })
     const normalizedRewardMultipliers = normalizePartyRewardMultipliers(rewardMultipliers)
+    const partySkillRewardMultipliers = this.getPartySkillRewardMultipliers(party)
+    const effectiveRewardMultipliers = normalizePartyRewardMultipliers({
+      ...normalizedRewardMultipliers,
+      rare: normalizedRewardMultipliers.rare * partySkillRewardMultipliers.rare,
+      title: normalizedRewardMultipliers.title * partySkillRewardMultipliers.title,
+    })
     const rareDropMultiplierBoost = expeditionBoost?.rareDropMultiplier && expeditionBoost.rareDropMultiplier > 0
       ? expeditionBoost.rareDropMultiplier
       : 1
@@ -172,7 +182,7 @@ export class ExpeditionEngine {
               enemies.flat(),
               droppedTemplateIds,
               partyLuckAverage,
-              normalizedRewardMultipliers,
+              effectiveRewardMultipliers,
               rareDropMultiplierBoost,
               titleMultiplierBoost
             )
@@ -235,7 +245,7 @@ export class ExpeditionEngine {
               enemies.flat(),
               droppedTemplateIds,
               partyLuckAverage,
-              normalizedRewardMultipliers,
+              effectiveRewardMultipliers,
               rareDropMultiplierBoost,
               titleMultiplierBoost
             )
@@ -306,7 +316,7 @@ export class ExpeditionEngine {
             bossEnemies.flat(),
             droppedTemplateIds,
             partyLuckAverage,
-            normalizedRewardMultipliers,
+            effectiveRewardMultipliers,
             rareDropMultiplierBoost,
             titleMultiplierBoost
           )
@@ -343,7 +353,7 @@ export class ExpeditionEngine {
       (max, member) => Math.max(max, getGoldBonusPercentFromSkills(member.skills)),
       0,
     )
-    const summary = this.calculateRewardSummary(events, partyState, normalizedRewardMultipliers, partyGoldBonusPercent, goldMultiplierBoost)
+    const summary = this.calculateRewardSummary(events, partyState, effectiveRewardMultipliers, partyGoldBonusPercent, goldMultiplierBoost)
     console.log('ExpeditionEngine: Expedition complete', summary)
 
     return {
@@ -357,7 +367,7 @@ export class ExpeditionEngine {
         baseDurationSec: adjustedDuration,
         party: party.map(g => g.id.toString()),
         partySnapshot: party.map(g => ({ ...g })),
-        partyRewardMultipliers: normalizedRewardMultipliers,
+        partyRewardMultipliers: effectiveRewardMultipliers,
         returnPolicy: request.returnPolicy,
         tier: tier || undefined,
         seed: this.seed
@@ -405,6 +415,16 @@ export class ExpeditionEngine {
         avatar: goblin.avatar,
       }
     })
+  }
+
+  private getPartySkillRewardMultipliers(party: Goblin[]): Pick<PartyRewardMultipliers, 'rare' | 'title'> {
+    return party.reduce(
+      (multipliers, goblin) => ({
+        rare: multipliers.rare * getPartyRareMultiplierFromSkills(goblin.skills),
+        title: multipliers.title * getPartyTitleMultiplierFromSkills(goblin.skills),
+      }),
+      { rare: 1, title: 1 },
+    )
   }
 
   private generateFloorEvents(area: AreaConfig, floor: number, totalDuration: number): number[] {

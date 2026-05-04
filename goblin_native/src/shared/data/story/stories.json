@@ -91,6 +91,10 @@
         {
           "type": "golden_acorn",
           "value": 5
+        },
+        {
+          "type": "skill",
+          "value": "abnormal_marku"
         }
       ],
       "chapters": [

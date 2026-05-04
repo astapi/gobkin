@@ -12,9 +12,12 @@ import { getFactor } from '@/shared/data/factors'
 import { getGoblinDisplayImage } from '@/shared/utils/goblinImages'
 import { getFactorImage } from '@/shared/utils/factorImages'
 import { ModStatCalculator } from '@/core/services/ModStatCalculator'
+import { EquipmentService } from '@/core/services/EquipmentService'
 import { getExpForNextLevel, getExpProgress } from '@/core/services/ExperienceSystem'
 import { getModTemplate } from '@/shared/data/modPoolLoader'
-import { describeCharacterSkill, getUniqueSkillsById } from '@/shared/data/characterSkills'
+import { getCharacterSkillEffectDescriptions, getUniqueSkillsById } from '@/shared/data/characterSkills'
+import { SQLiteEquipmentRepository } from '@/infrastructure/repositories/SQLiteEquipmentRepository'
+import { getDefaultSkillsForRace } from '@/shared/data/raceSkills'
 import { getGoblinJobDefinition } from '@/shared/data/goblinJobs'
 import { MAGE_MAGIC_SPELL_TABLE } from '@/shared/data/mageMagic'
 import { SPELL_DEFS } from '@/shared/data/spells'
@@ -23,7 +26,7 @@ import { getEffectiveStats } from '@/shared/utils/goblinStats'
 import { isProtectedGoblin } from '@/shared/utils/goblinProtection'
 import { getFactorName, getRaceLabel, getSkillLabel, getSpellLabel, getStatLabel } from '@/shared/i18n/entityLocalization'
 import { normalizeBattleActionPolicy } from '@/shared/utils/battleActionPolicy'
-import type { CharacterSkill } from '@/shared/types'
+import type { CharacterSkill, EquipmentInstance } from '@/shared/types'
 
 const ACTION_POLICY_FIELDS: Array<{ key: keyof BattleActionPolicy; labelKey: string }> = [
   { key: 'attackRate', labelKey: 'ui.goblin.battleActionAttackRate' },
@@ -58,6 +61,52 @@ function formatMageMagicDetail(skill: CharacterSkill, characterLevel: number): s
       return `Lv${entry.requiredCharacterLevel} ${getSpellName(entry.spellId)}（${learned}）`
     })
     .join('\n')
+}
+
+function includesSkillId(skills: readonly CharacterSkill[], skillId: string): boolean {
+  return skills.some(skill => skill.id === skillId)
+}
+
+function SkillGroup({
+  title,
+  skills,
+  goblinLevel,
+  onPressSkill,
+}: {
+  title: string
+  skills: CharacterSkill[]
+  goblinLevel: number
+  onPressSkill: (skill: CharacterSkill) => void
+}) {
+  if (skills.length === 0) return null
+
+  return (
+    <View style={styles.skillGroup}>
+      <Text style={styles.skillGroupTitle}>{title}</Text>
+      <View style={styles.abilityList}>
+        {skills.map((skill, idx) => {
+          const learnedMageMagicNames = getLearnedMageMagicNames(skill, goblinLevel)
+
+          return (
+            <TouchableOpacity
+              key={`${skill.id}-${idx}`}
+              style={styles.abilityItem}
+              activeOpacity={0.75}
+              onPress={() => onPressSkill(skill)}
+            >
+              <Text style={styles.abilityName}>{getSkillLabel(skill)}</Text>
+              <Text style={styles.abilityDesc}>{getCharacterSkillEffectDescriptions(skill).join('\n')}</Text>
+              {learnedMageMagicNames.length > 0 && (
+                <Text style={styles.abilitySpellList}>
+                  習得済魔法: {learnedMageMagicNames.join(' / ')}
+                </Text>
+              )}
+            </TouchableOpacity>
+          )
+        })}
+      </View>
+    </View>
+  )
 }
 
 function BattleActionRateSlider({
@@ -133,7 +182,9 @@ export default function GoblinDetailScreen() {
   const deleteGoblin = useGoblinStore((state) => state.deleteGoblin)
   const pendingGoblins = useBaseStore((state) => state.pendingGoblins)
   const parties = usePartyStore((state) => state.parties)
+  const equipmentRepository = useMemo(() => SQLiteEquipmentRepository.getInstance(), [])
   const [goblin, setGoblin] = useState<Goblin | null>(null)
+  const [equippedItems, setEquippedItems] = useState<EquipmentInstance[]>([])
   const [battleActionPolicyDraft, setBattleActionPolicyDraft] = useState<BattleActionPolicy>(
     normalizeBattleActionPolicy(),
   )
@@ -171,6 +222,26 @@ export default function GoblinDetailScreen() {
   }, [parsedGoblinId, getGoblinById, goblins, isPendingGoblin, pendingGoblins])
 
   useEffect(() => {
+    if (parsedGoblinId == null || isPendingGoblin) {
+      setEquippedItems([])
+      return
+    }
+
+    let active = true
+    void equipmentRepository.getByGoblinId(parsedGoblinId)
+      .then(items => {
+        if (active) setEquippedItems(items)
+      })
+      .catch(() => {
+        if (active) setEquippedItems([])
+      })
+
+    return () => {
+      active = false
+    }
+  }, [equipmentRepository, isPendingGoblin, parsedGoblinId])
+
+  useEffect(() => {
     if (goblin) {
       const nextPolicy = normalizeBattleActionPolicy(goblin.battleActionPolicy)
       savedBattleActionPolicyRef.current = JSON.stringify(nextPolicy)
@@ -186,6 +257,24 @@ export default function GoblinDetailScreen() {
   const expForNext = goblin ? getExpForNextLevel(goblin.level) : 0
   const expProgress = goblin ? getExpProgress(goblin.level, goblin.experience) : 0
   const characterSkills = useMemo(() => getUniqueSkillsById(goblin?.skills ?? []), [goblin])
+  const equipmentSkills = useMemo(
+    () => getUniqueSkillsById(EquipmentService.collectGrantedSkills(equippedItems)),
+    [equippedItems],
+  )
+  const raceSkills = useMemo(() => {
+    if (!goblin) return []
+    const raceDefaultSkills = getUniqueSkillsById(getDefaultSkillsForRace(goblin.raceId ?? goblin.race))
+    return raceDefaultSkills.filter(skill => includesSkillId(characterSkills, skill.id))
+  }, [characterSkills, goblin])
+  const uniqueSkills = useMemo(() => {
+    const raceSkillIds = new Set(raceSkills.map(skill => skill.id))
+    const equipmentSkillIds = new Set(equipmentSkills.map(skill => skill.id))
+    return characterSkills.filter(skill => (
+      !raceSkillIds.has(skill.id) &&
+      !equipmentSkillIds.has(skill.id)
+    ))
+  }, [characterSkills, equipmentSkills, raceSkills])
+  const hasVisibleSkills = uniqueSkills.length > 0 || raceSkills.length > 0 || equipmentSkills.length > 0
   const baseAttributes = useMemo(
     () => goblin ? getGoblinBaseAttributesAtLevel(goblin, goblin.level) : null,
     [goblin]
@@ -237,7 +326,7 @@ export default function GoblinDetailScreen() {
     if (!goblin) return
     const title = getSkillLabel(skill)
     const mageMagicDetail = formatMageMagicDetail(skill, goblin.level)
-    Alert.alert(title, mageMagicDetail ?? describeCharacterSkill(skill))
+    Alert.alert(title, mageMagicDetail ?? getCharacterSkillEffectDescriptions(skill).join('\n'))
   }, [goblin])
 
   const handleChangeBattleActionPolicy = useCallback((key: keyof BattleActionPolicy, value: number) => {
@@ -337,31 +426,27 @@ export default function GoblinDetailScreen() {
           </View>
         )}
 
-        {characterSkills.length > 0 && (
+        {hasVisibleSkills && (
           <View style={styles.detailSection}>
             <Text style={styles.sectionTitle}>{t('ui.goblin.skills')}</Text>
-            <View style={styles.abilityList}>
-              {characterSkills.map((skill, idx) => {
-                const learnedMageMagicNames = getLearnedMageMagicNames(skill, goblin.level)
-
-                return (
-                  <TouchableOpacity
-                    key={`${skill.id}-${idx}`}
-                    style={styles.abilityItem}
-                    activeOpacity={0.75}
-                    onPress={() => handlePressSkill(skill)}
-                  >
-                    <Text style={styles.abilityName}>{getSkillLabel(skill)}</Text>
-                    <Text style={styles.abilityDesc}>{describeCharacterSkill(skill)}</Text>
-                    {learnedMageMagicNames.length > 0 && (
-                      <Text style={styles.abilitySpellList}>
-                        習得済魔法: {learnedMageMagicNames.join(' / ')}
-                      </Text>
-                    )}
-                  </TouchableOpacity>
-                )
-              })}
-            </View>
+            <SkillGroup
+              title={t('ui.goblin.uniqueSkills')}
+              skills={uniqueSkills}
+              goblinLevel={goblin.level}
+              onPressSkill={handlePressSkill}
+            />
+            <SkillGroup
+              title={t('ui.goblin.raceSkills')}
+              skills={raceSkills}
+              goblinLevel={goblin.level}
+              onPressSkill={handlePressSkill}
+            />
+            <SkillGroup
+              title={t('ui.goblin.equipmentSkills')}
+              skills={equipmentSkills}
+              goblinLevel={goblin.level}
+              onPressSkill={handlePressSkill}
+            />
           </View>
         )}
 
@@ -615,6 +700,15 @@ const styles = StyleSheet.create({
   },
   abilityList: {
     gap: 6,
+  },
+  skillGroup: {
+    gap: 6,
+    marginBottom: 10,
+  },
+  skillGroupTitle: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#4B5563',
   },
   abilityItem: {
     padding: 8,
