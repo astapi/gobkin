@@ -12,7 +12,11 @@ import { useExpeditionFlow } from '@/presentation/hooks/useExpeditionFlow'
 import { getGoldenAcornCount } from '@/presentation/stores/usePurchaseStore'
 import { getGoblinDisplayImage } from '@/shared/utils/goblinImages'
 import { getPartyEffectiveStats } from '@/shared/utils/goblinStats'
-import { getGoldBonusPercentFromSkills } from '@/shared/data/characterSkills'
+import {
+  getGoldBonusPercentFromSkills,
+  getPartyRareMultiplierFromSkills,
+  getPartyTitleMultiplierFromSkills,
+} from '@/shared/data/characterSkills'
 import { normalizePartyRewardMultipliers, DUNGEON_TIER_META, getDungeonTierAreaLevel, getDungeonTierDisplayName } from '@/shared/types'
 import type { ExpeditionRequest, Goblin, Dungeon, Party, DungeonTier } from '@/shared/types'
 import { getDungeonDescription, getDungeonName, getReturnPolicyLabel } from '@/shared/i18n/entityLocalization'
@@ -187,11 +191,19 @@ export default function ExpeditionPreparationScreen() {
       (max, member) => Math.max(max, getGoldBonusPercentFromSkills(member.skills)),
       0,
     )
+    const skillRareMultiplier = partyMembers.reduce(
+      (product, member) => product * getPartyRareMultiplierFromSkills(member.skills),
+      1,
+    )
+    const skillTitleMultiplier = partyMembers.reduce(
+      (product, member) => product * getPartyTitleMultiplierFromSkills(member.skills),
+      1,
+    )
     const goldMultiplier = multipliers.gold * (1 + maxGoldBonusPercent / 100)
     return t('ui.formation.preparation.rewardText', {
       gold: formatMultiplier(goldMultiplier),
-      rare: formatMultiplier(multipliers.rare),
-      title: formatMultiplier(multipliers.title),
+      rare: formatMultiplier(multipliers.rare * skillRareMultiplier),
+      title: formatMultiplier(multipliers.title * skillTitleMultiplier),
     })
   }, [party, partyMembers, t])
 

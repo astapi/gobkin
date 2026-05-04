@@ -15,7 +15,11 @@ import { useTutorialStore } from '@/presentation/stores/useTutorialStore'
 import { useTutorialTarget } from '@/presentation/hooks/useTutorialTarget'
 import { getGoblinDisplayImage } from '@/shared/utils/goblinImages'
 import { getPartyEffectiveStats } from '@/shared/utils/goblinStats'
-import { getGoldBonusPercentFromSkills } from '@/shared/data/characterSkills'
+import {
+  getGoldBonusPercentFromSkills,
+  getPartyRareMultiplierFromSkills,
+  getPartyTitleMultiplierFromSkills,
+} from '@/shared/data/characterSkills'
 import { normalizePartyRewardMultipliers } from '@/shared/types'
 import type { Party, Goblin, Dungeon, DungeonTier, ExpeditionRequest, ExpeditionRecord } from '@/shared/types'
 
@@ -101,11 +105,19 @@ const PartyCard = memo(function PartyCard({
       (max, member) => Math.max(max, getGoldBonusPercentFromSkills(member.skills)),
       0,
     )
+    const skillRareMultiplier = members.reduce(
+      (product, member) => product * getPartyRareMultiplierFromSkills(member.skills),
+      1,
+    )
+    const skillTitleMultiplier = members.reduce(
+      (product, member) => product * getPartyTitleMultiplierFromSkills(member.skills),
+      1,
+    )
     const goldMultiplier = multipliers.gold * (1 + maxGoldBonusPercent / 100)
     return t('ui.formation.index.rewardText', {
       gold: formatMultiplier(goldMultiplier),
-      rare: formatMultiplier(multipliers.rare),
-      title: formatMultiplier(multipliers.title),
+      rare: formatMultiplier(multipliers.rare * skillRareMultiplier),
+      title: formatMultiplier(multipliers.title * skillTitleMultiplier),
     })
   }, [party.rewardMultipliers, members, t])
 
