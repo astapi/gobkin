@@ -27,6 +27,7 @@ function cloneSkill(skill: CharacterSkill): CharacterSkill {
     physicalCounterAttack: skill.physicalCounterAttack
       ? { ...skill.physicalCounterAttack }
       : undefined,
+    baseAttributeBonuses: skill.baseAttributeBonuses ? { ...skill.baseAttributeBonuses } : undefined,
     statBonuses: skill.statBonuses ? { ...skill.statBonuses } : undefined,
     statMultipliers: skill.statMultipliers ? { ...skill.statMultipliers } : undefined,
     baseStatMultipliers: skill.baseStatMultipliers ? { ...skill.baseStatMultipliers } : undefined,
@@ -49,6 +50,34 @@ function createAttackCountUpSkill(value: number): CharacterSkill {
     statBonuses: {
       attackCount: value,
     },
+  }
+}
+
+function createBaseAttributeUpSkill(
+  stat: keyof NonNullable<CharacterSkill['baseAttributeBonuses']>,
+  value: number,
+): CharacterSkill {
+  return {
+    id: `base_${stat}_up_${value}`,
+    baseAttributeBonuses: {
+      [stat]: value,
+    },
+  }
+}
+
+function createPartyRareMultiplierSkill(value: number): CharacterSkill {
+  const suffix = value.toString().replace('.', '_')
+  return {
+    id: `party_rare_mult_${suffix}`,
+    partyRareMultiplier: value,
+  }
+}
+
+function createPartyTitleMultiplierSkill(value: number): CharacterSkill {
+  const suffix = value.toString().replace('.', '_')
+  return {
+    id: `party_title_mult_${suffix}`,
+    partyTitleMultiplier: value,
   }
 }
 
@@ -196,6 +225,18 @@ function createSpellTakenSkill(spellId: string, multiplier: number): CharacterSk
 }
 
 export const CHARACTER_SKILL_CATALOG = {
+  abnormal_marku: {
+    id: 'abnormal_marku',
+    descriptionKey: 'entities.skill.abnormal_marku.description',
+    baseAttributeBonuses: {
+      power: 3,
+      wisdom: 3,
+      luck: 3,
+    },
+    partyRareMultiplier: 1.1,
+    partyTitleMultiplier: 1.1,
+  },
+
   additional_damage_13: {
     id: 'additional_damage_13',
     additionalDamage: 13,
@@ -277,6 +318,67 @@ export const CHARACTER_SKILL_CATALOG = {
   attack_count_up_9: createAttackCountUpSkill(9),
   attack_count_up_10: createAttackCountUpSkill(10),
   attack_count_up_11: createAttackCountUpSkill(11),
+
+  base_power_up_1: createBaseAttributeUpSkill('power', 1),
+  base_power_up_2: createBaseAttributeUpSkill('power', 2),
+  base_power_up_3: createBaseAttributeUpSkill('power', 3),
+  base_power_up_4: createBaseAttributeUpSkill('power', 4),
+  base_power_up_5: createBaseAttributeUpSkill('power', 5),
+  base_power_up_6: createBaseAttributeUpSkill('power', 6),
+  base_power_up_7: createBaseAttributeUpSkill('power', 7),
+  base_power_up_8: createBaseAttributeUpSkill('power', 8),
+  base_power_up_9: createBaseAttributeUpSkill('power', 9),
+  base_power_up_10: createBaseAttributeUpSkill('power', 10),
+  base_wisdom_up_1: createBaseAttributeUpSkill('wisdom', 1),
+  base_wisdom_up_2: createBaseAttributeUpSkill('wisdom', 2),
+  base_wisdom_up_3: createBaseAttributeUpSkill('wisdom', 3),
+  base_wisdom_up_4: createBaseAttributeUpSkill('wisdom', 4),
+  base_wisdom_up_5: createBaseAttributeUpSkill('wisdom', 5),
+  base_wisdom_up_6: createBaseAttributeUpSkill('wisdom', 6),
+  base_wisdom_up_7: createBaseAttributeUpSkill('wisdom', 7),
+  base_wisdom_up_8: createBaseAttributeUpSkill('wisdom', 8),
+  base_wisdom_up_9: createBaseAttributeUpSkill('wisdom', 9),
+  base_wisdom_up_10: createBaseAttributeUpSkill('wisdom', 10),
+  base_spirit_up_1: createBaseAttributeUpSkill('spirit', 1),
+  base_spirit_up_2: createBaseAttributeUpSkill('spirit', 2),
+  base_spirit_up_3: createBaseAttributeUpSkill('spirit', 3),
+  base_spirit_up_4: createBaseAttributeUpSkill('spirit', 4),
+  base_spirit_up_5: createBaseAttributeUpSkill('spirit', 5),
+  base_spirit_up_6: createBaseAttributeUpSkill('spirit', 6),
+  base_spirit_up_7: createBaseAttributeUpSkill('spirit', 7),
+  base_spirit_up_8: createBaseAttributeUpSkill('spirit', 8),
+  base_spirit_up_9: createBaseAttributeUpSkill('spirit', 9),
+  base_spirit_up_10: createBaseAttributeUpSkill('spirit', 10),
+  base_vitality_up_1: createBaseAttributeUpSkill('vitality', 1),
+  base_vitality_up_2: createBaseAttributeUpSkill('vitality', 2),
+  base_vitality_up_3: createBaseAttributeUpSkill('vitality', 3),
+  base_vitality_up_4: createBaseAttributeUpSkill('vitality', 4),
+  base_vitality_up_5: createBaseAttributeUpSkill('vitality', 5),
+  base_vitality_up_6: createBaseAttributeUpSkill('vitality', 6),
+  base_vitality_up_7: createBaseAttributeUpSkill('vitality', 7),
+  base_vitality_up_8: createBaseAttributeUpSkill('vitality', 8),
+  base_vitality_up_9: createBaseAttributeUpSkill('vitality', 9),
+  base_vitality_up_10: createBaseAttributeUpSkill('vitality', 10),
+  base_agility_up_1: createBaseAttributeUpSkill('agility', 1),
+  base_agility_up_2: createBaseAttributeUpSkill('agility', 2),
+  base_agility_up_3: createBaseAttributeUpSkill('agility', 3),
+  base_agility_up_4: createBaseAttributeUpSkill('agility', 4),
+  base_agility_up_5: createBaseAttributeUpSkill('agility', 5),
+  base_agility_up_6: createBaseAttributeUpSkill('agility', 6),
+  base_agility_up_7: createBaseAttributeUpSkill('agility', 7),
+  base_agility_up_8: createBaseAttributeUpSkill('agility', 8),
+  base_agility_up_9: createBaseAttributeUpSkill('agility', 9),
+  base_agility_up_10: createBaseAttributeUpSkill('agility', 10),
+  base_luck_up_1: createBaseAttributeUpSkill('luck', 1),
+  base_luck_up_2: createBaseAttributeUpSkill('luck', 2),
+  base_luck_up_3: createBaseAttributeUpSkill('luck', 3),
+  base_luck_up_4: createBaseAttributeUpSkill('luck', 4),
+  base_luck_up_5: createBaseAttributeUpSkill('luck', 5),
+  base_luck_up_6: createBaseAttributeUpSkill('luck', 6),
+  base_luck_up_7: createBaseAttributeUpSkill('luck', 7),
+  base_luck_up_8: createBaseAttributeUpSkill('luck', 8),
+  base_luck_up_9: createBaseAttributeUpSkill('luck', 9),
+  base_luck_up_10: createBaseAttributeUpSkill('luck', 10),
 
   cover_low_hp_ally: {
     id: 'cover_low_hp_ally',
@@ -574,6 +676,17 @@ export const CHARACTER_SKILL_CATALOG = {
     id: 'gold_bonus_50',
     goldBonusPercent: 50,
   },
+
+  party_rare_mult_1_05: createPartyRareMultiplierSkill(1.05),
+  party_rare_mult_1_1: createPartyRareMultiplierSkill(1.1),
+  party_rare_mult_1_25: createPartyRareMultiplierSkill(1.25),
+  party_rare_mult_1_3: createPartyRareMultiplierSkill(1.3),
+  party_rare_mult_1_5: createPartyRareMultiplierSkill(1.5),
+  party_title_mult_1_05: createPartyTitleMultiplierSkill(1.05),
+  party_title_mult_1_1: createPartyTitleMultiplierSkill(1.1),
+  party_title_mult_1_25: createPartyTitleMultiplierSkill(1.25),
+  party_title_mult_1_3: createPartyTitleMultiplierSkill(1.3),
+  party_title_mult_1_5: createPartyTitleMultiplierSkill(1.5),
 
   light_footed_4_5: {
     id: 'light_footed_4_5',

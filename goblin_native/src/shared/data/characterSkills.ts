@@ -3,6 +3,7 @@ import type {
   EquipmentCategory,
   EquipmentStat,
   EquipmentStatBonus,
+  GoblinBaseAttributes,
   GoblinStats,
   LearnedSpell,
 } from '../types'
@@ -20,6 +21,15 @@ const FRACTION_LABELS: ReadonlyArray<readonly [number, string]> = [
   [3 / 4, '3/4'],
   [2 / 3, '2/3'],
   [4 / 5, '4/5'],
+]
+
+const BASE_ATTRIBUTE_ORDER: ReadonlyArray<keyof GoblinBaseAttributes> = [
+  'power',
+  'wisdom',
+  'spirit',
+  'vitality',
+  'agility',
+  'luck',
 ]
 
 function formatMultiplierFraction(value: number): string {
@@ -54,6 +64,7 @@ export function cloneCharacterSkill(skill: CharacterSkill): CharacterSkill {
     physicalCounterAttack: skill.physicalCounterAttack
       ? { ...skill.physicalCounterAttack }
       : undefined,
+    baseAttributeBonuses: skill.baseAttributeBonuses ? { ...skill.baseAttributeBonuses } : undefined,
     statBonuses: skill.statBonuses ? { ...skill.statBonuses } : undefined,
     statMultipliers: skill.statMultipliers ? { ...skill.statMultipliers } : undefined,
     baseStatMultipliers: skill.baseStatMultipliers ? { ...skill.baseStatMultipliers } : undefined,
@@ -226,6 +237,14 @@ export function describeCharacterSkill(skill: CharacterSkill): string {
     return i18n.t('battle.goldBonus', { value: skill.goldBonusPercent })
   }
 
+  if (skill.partyRareMultiplier !== undefined) {
+    return i18n.t('battle.partyRareMultiplier', { value: skill.partyRareMultiplier.toFixed(2) })
+  }
+
+  if (skill.partyTitleMultiplier !== undefined) {
+    return i18n.t('battle.partyTitleMultiplier', { value: skill.partyTitleMultiplier.toFixed(2) })
+  }
+
   if (skill.undead) {
     return i18n.t('battle.undead')
   }
@@ -276,6 +295,15 @@ export function describeCharacterSkill(skill: CharacterSkill): string {
     }
   }
 
+  for (const [key, value] of Object.entries(skill.baseAttributeBonuses ?? {})) {
+    if (value !== undefined) {
+      return i18n.t('battle.baseAttributeBonus', {
+        stat: i18n.t(`entities.stat.${key}`, { defaultValue: key }),
+        value,
+      })
+    }
+  }
+
   if (skill.statMultipliers?.evasion !== undefined) {
     return i18n.t('battle.evasionMultiplier', { value: skill.statMultipliers.evasion.toFixed(1) })
   }
@@ -299,8 +327,38 @@ export function describeCharacterSkill(skill: CharacterSkill): string {
   return getSkillLabel(skill)
 }
 
+function getListedSkillEffectDescriptions(skill: CharacterSkill): string[] {
+  const descriptions: string[] = []
+
+  for (const key of BASE_ATTRIBUTE_ORDER) {
+    const value = skill.baseAttributeBonuses?.[key]
+    if (value === undefined) continue
+    descriptions.push(i18n.t('battle.baseAttributeBonus', {
+      stat: i18n.t(`entities.stat.${key}`, { defaultValue: key }),
+      value,
+    }))
+  }
+
+  if (skill.partyRareMultiplier !== undefined) {
+    descriptions.push(i18n.t('battle.partyRareMultiplier', { value: skill.partyRareMultiplier.toFixed(2) }))
+  }
+
+  if (skill.partyTitleMultiplier !== undefined) {
+    descriptions.push(i18n.t('battle.partyTitleMultiplier', { value: skill.partyTitleMultiplier.toFixed(2) }))
+  }
+
+  return descriptions
+}
+
 export function getCharacterSkillDescription(skill: CharacterSkill): string {
-  return getSkillDescription(skill) ?? describeCharacterSkill(skill)
+  const listedDescriptions = getListedSkillEffectDescriptions(skill)
+  if (listedDescriptions.length > 1) return listedDescriptions.join('\n')
+  return getSkillDescription(skill) ?? listedDescriptions[0] ?? describeCharacterSkill(skill)
+}
+
+export function getCharacterSkillEffectDescriptions(skill: CharacterSkill): string[] {
+  const listedDescriptions = getListedSkillEffectDescriptions(skill)
+  return listedDescriptions.length > 0 ? listedDescriptions : [getCharacterSkillDescription(skill)]
 }
 
 export function getSkillStatBonuses(skills: CharacterSkill[]): Partial<Record<keyof GoblinStats, number>> {
@@ -309,6 +367,21 @@ export function getSkillStatBonuses(skills: CharacterSkill[]): Partial<Record<ke
   for (const skill of getUniqueSkillsById(skills)) {
     for (const [key, value] of Object.entries(skill.statBonuses ?? {})) {
       const statKey = key as keyof GoblinStats
+      bonuses[statKey] = (bonuses[statKey] ?? 0) + (value ?? 0)
+    }
+  }
+
+  return bonuses
+}
+
+export function getSkillBaseAttributeBonuses(
+  skills: CharacterSkill[],
+): Partial<Record<keyof GoblinBaseAttributes, number>> {
+  const bonuses: Partial<Record<keyof GoblinBaseAttributes, number>> = {}
+
+  for (const skill of getUniqueSkillsById(skills)) {
+    for (const [key, value] of Object.entries(skill.baseAttributeBonuses ?? {})) {
+      const statKey = key as keyof GoblinBaseAttributes
       bonuses[statKey] = (bonuses[statKey] ?? 0) + (value ?? 0)
     }
   }
@@ -565,6 +638,20 @@ export function getGoldBonusPercentFromSkills(skills: CharacterSkill[]): number 
   return getUniqueSkillsById(skills).reduce(
     (max, skill) => Math.max(max, skill.goldBonusPercent ?? 0),
     0,
+  )
+}
+
+export function getPartyRareMultiplierFromSkills(skills: CharacterSkill[]): number {
+  return getUniqueSkillsById(skills).reduce(
+    (product, skill) => product * (skill.partyRareMultiplier ?? 1),
+    1,
+  )
+}
+
+export function getPartyTitleMultiplierFromSkills(skills: CharacterSkill[]): number {
+  return getUniqueSkillsById(skills).reduce(
+    (product, skill) => product * (skill.partyTitleMultiplier ?? 1),
+    1,
   )
 }
 

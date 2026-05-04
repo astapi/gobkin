@@ -3,7 +3,7 @@ import {
   BASE_GOBLIN_HP_COEFFICIENT,
   getGoblinVariantByRace,
 } from '../data/goblinVariants'
-import { getSkillBaseStatMultipliers } from '../data/characterSkills'
+import { getSkillBaseAttributeBonuses, getSkillBaseStatMultipliers } from '../data/characterSkills'
 import type { Goblin, GoblinBaseAttributes, GoblinStats } from '../types'
 import { isBaseGoblinRaceId, normalizeGoblinRaceId } from '../types/Race'
 
@@ -18,7 +18,11 @@ const GOBLIN_JOB_HP_COEFFICIENTS: Record<NonNullable<Goblin['job']>, number> = {
   rider: 0.95,
 }
 
-type GoblinRaceContext = Pick<Goblin, 'race' | 'baseAttributes'> & { raceId?: Goblin['raceId']; job?: Goblin['job'] }
+type GoblinRaceContext = Pick<Goblin, 'race' | 'baseAttributes'> & {
+  raceId?: Goblin['raceId']
+  job?: Goblin['job']
+  skills?: Goblin['skills']
+}
 
 function resolveRaceId(goblin: { race: string; raceId?: Goblin['raceId'] }): string {
   return normalizeGoblinRaceId(goblin.raceId ?? goblin.race)
@@ -47,13 +51,14 @@ export function getBaseAttributeLevelBonus(level: number): number {
 export function getGoblinBaseAttributesAtLevel(goblin: GoblinRaceContext, level: number): GoblinBaseAttributes {
   const base = getGoblinBaseAttributes(goblin)
   const bonus = getBaseAttributeLevelBonus(level)
+  const skillBonuses = goblin.skills?.length ? getSkillBaseAttributeBonuses(goblin.skills) : {}
   return {
-    power: base.power + bonus,
-    wisdom: base.wisdom + bonus,
-    spirit: base.spirit + bonus,
-    vitality: base.vitality + bonus,
-    agility: base.agility + bonus,
-    luck: base.luck + bonus,
+    power: base.power + bonus + (skillBonuses.power ?? 0),
+    wisdom: base.wisdom + bonus + (skillBonuses.wisdom ?? 0),
+    spirit: base.spirit + bonus + (skillBonuses.spirit ?? 0),
+    vitality: base.vitality + bonus + (skillBonuses.vitality ?? 0),
+    agility: base.agility + bonus + (skillBonuses.agility ?? 0),
+    luck: base.luck + bonus + (skillBonuses.luck ?? 0),
   }
 }
 

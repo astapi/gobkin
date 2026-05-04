@@ -4,6 +4,9 @@ import {
   describeCharacterSkill,
   getAdditionalDamageFromSkills,
   getExpeditionTimeMultiplierFromSkills,
+  getPartyRareMultiplierFromSkills,
+  getPartyTitleMultiplierFromSkills,
+  getCharacterSkillEffectDescriptions,
   getLearnedSpellsFromSkills,
   getMagicDamageFollowUpFromSkills,
   getMagicDamageReductionFromSkills,
@@ -16,6 +19,7 @@ import {
   getRowDamageMultiplierFromSkills,
   getSpellTakenMultiplierFromSkills,
   getSkillStatBonuses,
+  getSkillBaseAttributeBonuses,
   getSkillStatMultipliers,
   hasCoverLowHpAllySkill,
   hasTwoColumnAttackSkill,
@@ -267,6 +271,60 @@ describe('characterSkills - 物理ダメージ軽減', () => {
 
     expect(getSkillStatMultipliers(skills).evasion).toBeCloseTo(1.5)
     expect(getActionOrderMultiplierFromSkills(skills)).toBeCloseTo(1.5)
+  })
+
+  it('基本能力値加算スキルを集計できる', () => {
+    const skills: CharacterSkill[] = [
+      { id: 'power', baseAttributeBonuses: { power: 3 } },
+      { id: 'wisdom_luck', baseAttributeBonuses: { wisdom: 2, luck: 1 } },
+      { id: 'power', baseAttributeBonuses: { power: 3 } },
+    ]
+
+    expect(getSkillBaseAttributeBonuses(skills)).toEqual({
+      power: 3,
+      wisdom: 2,
+      luck: 1,
+    })
+  })
+
+  it('PT報酬倍率スキルを乗算できる', () => {
+    const skills: CharacterSkill[] = [
+      { id: 'rare', partyRareMultiplier: 1.1 },
+      { id: 'title', partyTitleMultiplier: 1.25 },
+      { id: 'rare_2', partyRareMultiplier: 1.5 },
+    ]
+
+    expect(getPartyRareMultiplierFromSkills(skills)).toBeCloseTo(1.65)
+    expect(getPartyTitleMultiplierFromSkills(skills)).toBeCloseTo(1.25)
+  })
+
+  it('基本能力値加算とPT報酬倍率のカタログを取得できる', () => {
+    expect(getCharacterSkill('abnormal_marku')).toMatchObject({
+      baseAttributeBonuses: { power: 3, wisdom: 3, luck: 3 },
+      partyRareMultiplier: 1.1,
+      partyTitleMultiplier: 1.1,
+    })
+    expect(getCharacterSkillEffectDescriptions(getCharacterSkill('abnormal_marku'))).toEqual([
+      '[+3]力',
+      '[+3]知恵',
+      '[+3]運',
+      '[1.10倍]アイテム獲得率',
+      '[1.10倍]称号付与率',
+    ])
+    expect(getCharacterSkillDescription(getCharacterSkill('abnormal_marku'))).toBe(
+      '[+3]力\n[+3]知恵\n[+3]運\n[1.10倍]アイテム獲得率\n[1.10倍]称号付与率',
+    )
+
+    for (const stat of ['power', 'wisdom', 'spirit', 'vitality', 'agility', 'luck']) {
+      for (let value = 1; value <= 10; value++) {
+        expect(getCharacterSkill(`base_${stat}_up_${value}`).baseAttributeBonuses).toEqual({ [stat]: value })
+      }
+    }
+
+    for (const suffix of ['1_05', '1_1', '1_25', '1_3', '1_5']) {
+      expect(getCharacterSkill(`party_rare_mult_${suffix}`).partyRareMultiplier).toBeGreaterThan(1)
+      expect(getCharacterSkill(`party_title_mult_${suffix}`).partyTitleMultiplier).toBeGreaterThan(1)
+    }
   })
 
   it('装備倍率スキルはステータス補正の小数点以下を切り捨てる', () => {

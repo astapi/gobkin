@@ -1,5 +1,5 @@
 import type { EquipmentCategory, EquipmentStat, WeaponSubCategory } from './Equipment'
-import type { GoblinStats } from './Goblin'
+import type { GoblinBaseAttributes, GoblinStats } from './Goblin'
 
 export type RaceBuckets = {
   add?: Partial<Record<string, number>>
@@ -19,6 +19,7 @@ export type PhysicalCounterAttack = {
 export interface CharacterSkill {
   id: string
   descriptionKey?: string
+  baseAttributeBonuses?: Partial<Record<keyof GoblinBaseAttributes, number>>
   statBonuses?: Partial<Record<keyof GoblinStats, number>>
   statMultipliers?: Partial<Record<keyof GoblinStats, number>>
   baseStatMultipliers?: Partial<Record<keyof GoblinStats, number>>
@@ -55,6 +56,8 @@ export interface CharacterSkill {
   expBonusPercent?: number
   expMultiplier?: number
   goldBonusPercent?: number
+  partyRareMultiplier?: number
+  partyTitleMultiplier?: number
   expeditionTimeMultiplier?: number
   raceBonus?: RaceBuckets
   raceTakenBonus?: RaceBuckets

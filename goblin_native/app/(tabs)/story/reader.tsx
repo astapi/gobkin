@@ -27,9 +27,20 @@ export default function StoryReaderScreen() {
 
   const handleComplete = useCallback(async () => {
     if (!story || hasMarkedRead) return
-    await markStoryRead(story.id)
+    const grants = await markStoryRead(story.id)
     setHasMarkedRead(true)
-  }, [story, hasMarkedRead, markStoryRead])
+    if (grants.length > 0) {
+      Alert.alert(
+        t('ui.story.rewardTitle'),
+        grants.map(grant => {
+          if (grant.type === 'golden_acorn') {
+            return t('ui.story.rewardGoldenAcorn', { value: grant.value })
+          }
+          return t('ui.story.rewardSkill', { name: grant.label })
+        }).join('\n')
+      )
+    }
+  }, [story, hasMarkedRead, markStoryRead, t])
 
   const handleSkip = useCallback(() => {
     Alert.alert(
