@@ -529,6 +529,49 @@ describe('ModStatCalculator — 戦闘ステータス計算', () => {
     ]))
   })
 
+  it('EquipmentServiceは同一装備数に応じたペナルティ倍率を返す', () => {
+    expect(EquipmentService.getDuplicatePenaltyPercent(1)).toBe(100)
+    expect(EquipmentService.getDuplicatePenaltyPercent(2)).toBe(100)
+    expect(EquipmentService.getDuplicatePenaltyPercent(3)).toBe(90)
+    expect(EquipmentService.getDuplicatePenaltyPercent(4)).toBe(80)
+    expect(EquipmentService.getDuplicatePenaltyPercent(5)).toBe(70)
+    expect(EquipmentService.getDuplicatePenaltyPercent(7)).toBe(70)
+    expect(EquipmentService.getDuplicatePenaltyPercent(8)).toBe(60)
+    expect(EquipmentService.getDuplicatePenaltyPercent(9)).toBe(50)
+    expect(EquipmentService.getDuplicatePenaltyPercent(10)).toBe(40)
+    expect(EquipmentService.getDuplicatePenaltyPercent(11)).toBe(30)
+    expect(EquipmentService.getDuplicatePenaltyPercent(12)).toBe(40)
+    expect(EquipmentService.getDuplicatePenaltyPercent(13)).toBe(10)
+    expect(EquipmentService.getDuplicatePenaltyPercent(14)).toBe(1)
+    expect(EquipmentService.getDuplicatePenaltyPercent(20)).toBe(1)
+  })
+
+  it('EquipmentServiceは同一装備3個の能力値を90%にする', () => {
+    const bonuses = EquipmentService.calculateEquipmentBonuses([
+      { id: 'eq1', templateId: 'sword_broad', slotIndex: 0, goblinId: 1 },
+      { id: 'eq2', templateId: 'sword_broad', slotIndex: 1, goblinId: 1 },
+      { id: 'eq3', templateId: 'sword_broad', slotIndex: 2, goblinId: 1 },
+    ])
+
+    expect(bonuses.filter((bonus) => bonus.stat === 'atk_flat')).toEqual([
+      expect.objectContaining({ value: 10.8 }),
+      expect.objectContaining({ value: 10.8 }),
+      expect.objectContaining({ value: 10.8 }),
+    ])
+  })
+
+  it('EquipmentServiceは称号補正後の能力値に同一装備ペナルティを適用する', () => {
+    const bonuses = EquipmentService.calculateEquipmentBonuses([
+      { id: 'eq1', templateId: 'sword_broad', slotIndex: 0, goblinId: 1, titleId: 'masterwork' },
+      { id: 'eq2', templateId: 'sword_broad', slotIndex: 1, goblinId: 1 },
+      { id: 'eq3', templateId: 'sword_broad', slotIndex: 2, goblinId: 1 },
+    ])
+
+    expect(bonuses).toEqual(expect.arrayContaining([
+      expect.objectContaining({ stat: 'atk_flat', value: 13.5, sourceCategory: 'weapon' }),
+    ]))
+  })
+
   it('EquipmentServiceは称号付き装備のパッシブスキルにも倍率適用する', () => {
     const skills = EquipmentService.collectGrantedSkills([
       { id: 'eq1', templateId: 'sword_broad', slotIndex: 0, goblinId: 1, titleId: 'masterwork' },

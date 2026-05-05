@@ -170,7 +170,7 @@ export function getFactorDescription(factor: Pick<Factor, 'id' | 'description'>)
 }
 
 export function getEquipmentLabel(template: Pick<EquipmentTemplate, 'id' | 'name'>): string {
-  return i18n.t(`entities.equipment.${template.id}.name`)
+  return translateWithFallback(`entities.equipment.${template.id}.name`, template.name)
 }
 
 export function getEquipmentTitleLabel(titleId: EquipmentTitleId): string {
