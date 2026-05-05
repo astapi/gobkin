@@ -21,6 +21,17 @@ export default function GoblinLayout() {
           headerTintColor: '#6B7280',
         }}
       />
+      <Stack.Screen
+        name="avatar"
+        options={{
+          headerShown: true,
+          title: '画像変更',
+          presentation: 'formSheet',
+          headerStyle: { backgroundColor: '#FFFFFF' },
+          headerTitleStyle: { color: '#1F2937', fontWeight: 'bold' },
+          headerTintColor: '#6B7280',
+        }}
+      />
     </Stack>
   )
 }

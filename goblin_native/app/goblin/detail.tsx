@@ -9,7 +9,7 @@ import { usePartyStore } from '@/presentation/stores/usePartyStore'
 import type { Goblin } from '@/shared/types'
 import type { BattleActionPolicy } from '@/shared/types'
 import { getFactor } from '@/shared/data/factors'
-import { getGoblinDisplayImage } from '@/shared/utils/goblinImages'
+import { getGoblinDisplayImage, hasGoblinImageOptionsForJob } from '@/shared/utils/goblinImages'
 import { getFactorImage } from '@/shared/utils/factorImages'
 import { ModStatCalculator } from '@/core/services/ModStatCalculator'
 import { EquipmentService } from '@/core/services/EquipmentService'
@@ -283,6 +283,7 @@ export default function GoblinDetailScreen() {
     goblin ? parties.find((party) => party.memberIds.includes(goblin.id)) ?? null : null
   ), [goblin, parties])
   const jobLabel = goblin?.job ? getGoblinJobDefinition(goblin.job).name : null
+  const canChangeAvatar = hasGoblinImageOptionsForJob(goblin?.job)
 
   const handleBanish = useCallback(() => {
     if (!goblin) return
@@ -320,6 +321,11 @@ export default function GoblinDetailScreen() {
   const handleOpenEquipment = useCallback(() => {
     if (!goblin) return
     router.push({ pathname: '/goblin/equipment', params: { goblinId: String(goblin.id) } })
+  }, [goblin])
+
+  const handleOpenAvatar = useCallback(() => {
+    if (!goblin) return
+    router.push({ pathname: '/goblin/avatar', params: { goblinId: String(goblin.id) } })
   }, [goblin])
 
   const handlePressSkill = useCallback((skill: CharacterSkill) => {
@@ -550,6 +556,12 @@ export default function GoblinDetailScreen() {
 
         {!isPendingGoblin && (
           <>
+            {canChangeAvatar && (
+              <TouchableOpacity style={styles.equipmentButton} onPress={handleOpenAvatar}>
+                <Text style={styles.equipmentButtonText}>画像変更</Text>
+              </TouchableOpacity>
+            )}
+
             <TouchableOpacity style={styles.equipmentButton} onPress={handleOpenEquipment}>
               <Text style={styles.equipmentButtonText}>{t('ui.goblin.equipmentChange')}</Text>
             </TouchableOpacity>
