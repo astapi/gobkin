@@ -72,9 +72,17 @@ function getDetailBonusLabel(bonus: DisplayBonus): string {
   return `${label} ${formatBonus(stat, value)}${originalSuffix}`
 }
 
-function getDisplayBonuses(eq: EquipmentInstance, skills: CharacterSkill[] = []): DisplayBonus[] {
+function getDisplayBonuses(
+  eq: EquipmentInstance,
+  skills: CharacterSkill[] = [],
+  penaltyMultiplier = 1,
+): DisplayBonus[] {
   const originalBonuses = EquipmentService.calculateEquipmentBonuses([eq])
-  const adjustedBonuses = applySkillBonusesToEquipmentBonuses(skills, originalBonuses)
+  const penalizedBonuses = originalBonuses.map((bonus) => ({
+    ...bonus,
+    value: Number((bonus.value * penaltyMultiplier).toFixed(4)),
+  }))
+  const adjustedBonuses = applySkillBonusesToEquipmentBonuses(skills, penalizedBonuses)
 
   return adjustedBonuses
     .map((bonus, index) => ({
@@ -87,6 +95,10 @@ function getDisplayBonuses(eq: EquipmentInstance, skills: CharacterSkill[] = [])
 
 function getDisplaySkills(eq: EquipmentInstance) {
   return EquipmentService.collectGrantedSkills([eq])
+}
+
+function formatPenaltyName(penaltyPercent: number, name: string): string {
+  return `${penaltyPercent}％ ${name}`
 }
 
 /** カテゴリ→ノーマル→レア→定義順→称号レア度（低→高）でソート */
@@ -144,6 +156,7 @@ function ItemDetail({
   onClose,
   onUnequip,
   characterSkills,
+  penaltyPercent,
 }: {
   equipment: EquipmentInstance
   template: EquipmentTemplate
@@ -151,8 +164,10 @@ function ItemDetail({
   onClose: () => void
   onUnequip?: () => void
   characterSkills: CharacterSkill[]
+  penaltyPercent?: number
 }) {
-  const displayBonuses = getDisplayBonuses(equipment, characterSkills)
+  const penaltyMultiplier = penaltyPercent === undefined ? 1 : penaltyPercent / 100
+  const displayBonuses = getDisplayBonuses(equipment, characterSkills, penaltyMultiplier)
   const displaySkills = getDisplaySkills(equipment)
 
   return (
@@ -165,7 +180,9 @@ function ItemDetail({
             showsVerticalScrollIndicator={true}
           >
             <Text style={styles.detailName}>
-              {getDisplayName(equipment, template)}
+              {penaltyPercent === undefined
+                ? getDisplayName(equipment, template)
+                : formatPenaltyName(penaltyPercent, getDisplayName(equipment, template))}
             </Text>
 
             <View style={styles.detailList}>
@@ -220,6 +237,7 @@ function EquipmentRow({
   highlighted,
   count,
   characterSkills,
+  penaltyPercent,
 }: {
   eq: EquipmentInstance
   template: EquipmentTemplate
@@ -228,13 +246,23 @@ function EquipmentRow({
   highlighted?: boolean
   count?: number
   characterSkills: CharacterSkill[]
+  penaltyPercent?: number
 }) {
-  const displayBonuses = getDisplayBonuses(eq, characterSkills)
+  const penaltyMultiplier = penaltyPercent === undefined ? 1 : penaltyPercent / 100
+  const displayBonuses = getDisplayBonuses(eq, characterSkills, penaltyMultiplier)
   const inlineStats = displayBonuses.map((bonus) => getInlineBonusLabel(bonus)).join('  ')
+  const displayName = getDisplayName(eq, template)
+  const itemName = penaltyPercent !== undefined
+    ? formatPenaltyName(penaltyPercent, displayName)
+    : count && count > 1 ? `x${count} ${displayName}` : displayName
 
   return (
     <TouchableOpacity
-      style={[styles.itemRow, highlighted && styles.itemRowHighlighted]}
+      style={[
+        styles.itemRow,
+        highlighted && styles.itemRowHighlighted,
+        penaltyPercent !== undefined && styles.itemRowPenalty,
+      ]}
       onPress={onPress}
     >
       <View style={styles.itemInfo}>
@@ -242,7 +270,7 @@ function EquipmentRow({
           {inlineStats}
         </Text>
         <Text style={styles.itemName} numberOfLines={1}>
-          {count && count > 1 ? `x${count} ${getDisplayName(eq, template)}` : getDisplayName(eq, template)}
+          {itemName}
         </Text>
       </View>
       <TouchableOpacity
@@ -291,6 +319,15 @@ export default function EquipmentScreenPage() {
 
   const sortedEquipped = useMemo(() => sortEquipment(equippedItems), [equippedItems])
   const groupedInventory = useMemo(() => groupInventory(inventoryItems), [inventoryItems])
+  const penaltyPercents = useMemo(() => {
+    const multipliers = EquipmentService.getEquipmentPenaltyMultipliers(equippedItems)
+    return new Map(
+      Array.from(multipliers.entries()).map(([templateId, multiplier]) => [
+        templateId,
+        Math.round(multiplier * 100),
+      ]),
+    )
+  }, [equippedItems])
   const characterSkills = useMemo(
     () => goblin ? [...goblin.skills, ...EquipmentService.collectGrantedSkills(equippedItems)] : [],
     [goblin, equippedItems],
@@ -396,9 +433,10 @@ export default function EquipmentScreenPage() {
                       key={eq.id}
                       eq={eq}
                       template={template}
-                      onPress={() => setSelectedDetail(eq)}
+                      onPress={() => handleUnequip(eq)}
                       onShowDetail={() => setSelectedDetail(eq)}
                       characterSkills={characterSkills}
+                      penaltyPercent={penaltyPercents.get(eq.templateId)}
                     />
                   )
                 })}
@@ -434,6 +472,11 @@ export default function EquipmentScreenPage() {
           onClose={() => setSelectedDetail(null)}
           onUnequip={selectedDetail.goblinId != null && selectedDetail.slotIndex >= 0 ? () => handleUnequip(selectedDetail) : undefined}
           characterSkills={characterSkills}
+          penaltyPercent={
+            selectedDetail.goblinId != null && selectedDetail.slotIndex >= 0
+              ? penaltyPercents.get(selectedDetail.templateId)
+              : undefined
+          }
         />
       )}
     </SafeAreaView>
@@ -488,6 +531,10 @@ const styles = StyleSheet.create({
   itemRowHighlighted: {
     borderColor: '#93C5FD',
     backgroundColor: '#F0F9FF',
+  },
+  itemRowPenalty: {
+    borderColor: '#F59E0B',
+    backgroundColor: '#FFFBEB',
   },
   itemInfo: {
     flex: 1,

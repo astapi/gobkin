@@ -10,6 +10,44 @@ import { EquipmentTitleService } from './EquipmentTitleService'
  * 装備の着脱・バリデーション・ステータスボーナス計算を担当するサービス
  */
 export class EquipmentService {
+  static getDuplicatePenaltyPercent(count: number): number {
+    if (count >= 14) return 1
+    if (count === 13) return 10
+    if (count === 12) return 40
+    if (count === 11) return 30
+    if (count === 10) return 40
+    if (count === 9) return 50
+    if (count === 8) return 60
+    if (count >= 5) return 70
+    if (count === 4) return 80
+    if (count === 3) return 90
+    return 100
+  }
+
+  static getDuplicatePenaltyMultiplier(count: number): number {
+    return this.getDuplicatePenaltyPercent(count) / 100
+  }
+
+  static getEquipmentPenaltyMultipliers(
+    equipped: EquipmentInstance[]
+  ): Map<string, number> {
+    const counts = new Map<string, number>()
+    const multipliers = new Map<string, number>()
+
+    for (const eq of equipped) {
+      counts.set(eq.templateId, (counts.get(eq.templateId) ?? 0) + 1)
+    }
+
+    for (const [templateId, count] of counts) {
+      const multiplier = this.getDuplicatePenaltyMultiplier(count)
+      if (multiplier < 1) {
+        multipliers.set(templateId, multiplier)
+      }
+    }
+
+    return multipliers
+  }
+
   private static scaleValueByTitle(value: number, equipment: EquipmentInstance): number {
     if (value === 0 || !equipment.titleId) {
       return value
@@ -131,15 +169,17 @@ export class EquipmentService {
     equipped: EquipmentInstance[]
   ): EquipmentStatBonus[] {
     const bonuses: EquipmentStatBonus[] = []
+    const penaltyMultipliers = this.getEquipmentPenaltyMultipliers(equipped)
 
     for (const eq of equipped) {
       const template = getEquipmentTemplate(eq.templateId)
       if (!template) continue
+      const penaltyMultiplier = penaltyMultipliers.get(eq.templateId) ?? 1
 
       for (const bonus of template.statBonuses) {
         bonuses.push({
           ...bonus,
-          value: this.scaleValueByTitle(bonus.value, eq),
+          value: Number((this.scaleValueByTitle(bonus.value, eq) * penaltyMultiplier).toFixed(4)),
           sourceCategory: template.category,
           sourceSubCategory: template.subCategory,
         })
