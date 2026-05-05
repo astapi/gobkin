@@ -4,9 +4,9 @@ import { router, useLocalSearchParams } from 'expo-router'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useGoblinStore } from '@/presentation/stores/useGoblinStore'
 import {
-  GOBLIN_THIEF_IMAGE_OPTIONS,
   getGoblinDisplayImage,
   getGoblinImageKey,
+  getGoblinImageOptionsForJob,
 } from '@/shared/utils/goblinImages'
 import type { Goblin } from '@/shared/types'
 
@@ -31,12 +31,13 @@ export default function GoblinAvatarScreen() {
   ), [goblins, parsedGoblinId])
 
   const goblin = storeGoblin ?? loadedGoblin
+  const imageOptions = useMemo(() => getGoblinImageOptionsForJob(goblin?.job), [goblin?.job])
   const selectedImageKey = useMemo(() => {
     const imageKey = getGoblinImageKey(goblin?.avatar)
-    return GOBLIN_THIEF_IMAGE_OPTIONS.some(option => option.key === imageKey)
+    return imageOptions.some(option => option.key === imageKey)
       ? imageKey
-      : GOBLIN_THIEF_IMAGE_OPTIONS[0].key
-  }, [goblin])
+      : imageOptions[0]?.key
+  }, [goblin, imageOptions])
 
   useEffect(() => {
     if (parsedGoblinId == null || storeGoblin || loadedGoblin) return
@@ -77,6 +78,16 @@ export default function GoblinAvatarScreen() {
     )
   }
 
+  if (imageOptions.length === 0) {
+    return (
+      <SafeAreaView style={styles.container} edges={['left', 'right', 'bottom']}>
+        <View style={styles.emptyState}>
+          <Text style={styles.emptyText}>この職業は画像変更に対応していません。</Text>
+        </View>
+      </SafeAreaView>
+    )
+  }
+
   return (
     <SafeAreaView style={styles.container} edges={['left', 'right', 'bottom']}>
       <ScrollView
@@ -88,7 +99,7 @@ export default function GoblinAvatarScreen() {
         </View>
 
         <View style={styles.optionGrid}>
-          {GOBLIN_THIEF_IMAGE_OPTIONS.map(option => {
+          {imageOptions.map(option => {
             const selected = option.key === selectedImageKey
             return (
               <TouchableOpacity

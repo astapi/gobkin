@@ -1,7 +1,7 @@
 import { memo } from 'react'
 import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native'
 import { useTranslation } from 'react-i18next'
-import { getGoblinDisplayImage } from '@/shared/utils/goblinImages'
+import { getGoblinDisplayImage, getGoblinDisplayImageScale } from '@/shared/utils/goblinImages'
 import { getFactorImage } from '@/shared/utils/factorImages'
 import { getEffectiveStats } from '@/shared/utils/goblinStats'
 import { getModTemplate } from '@/shared/data/modPoolLoader'
@@ -35,7 +35,13 @@ export const GoblinCard = memo(function GoblinCard({
       isAssigned && styles.containerAssigned,
       isAssignedElsewhere && styles.containerDisabled,
     ]}>
-      <Image source={getGoblinDisplayImage(goblin)} style={styles.avatar} />
+      <Image
+        source={getGoblinDisplayImage(goblin)}
+        style={[
+          styles.avatar,
+          { transform: [{ scale: getGoblinDisplayImageScale(goblin) }] },
+        ]}
+      />
       <View style={styles.info}>
         <Text style={[styles.name, isAssignedElsewhere && styles.nameDisabled]}>
           {goblin.name}
