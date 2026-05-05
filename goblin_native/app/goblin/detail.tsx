@@ -322,6 +322,11 @@ export default function GoblinDetailScreen() {
     router.push({ pathname: '/goblin/equipment', params: { goblinId: String(goblin.id) } })
   }, [goblin])
 
+  const handleOpenAvatar = useCallback(() => {
+    if (!goblin) return
+    router.push({ pathname: '/goblin/avatar', params: { goblinId: String(goblin.id) } })
+  }, [goblin])
+
   const handlePressSkill = useCallback((skill: CharacterSkill) => {
     if (!goblin) return
     const title = getSkillLabel(skill)
@@ -550,6 +555,12 @@ export default function GoblinDetailScreen() {
 
         {!isPendingGoblin && (
           <>
+            {goblin.job === 'thief' && (
+              <TouchableOpacity style={styles.equipmentButton} onPress={handleOpenAvatar}>
+                <Text style={styles.equipmentButtonText}>画像変更</Text>
+              </TouchableOpacity>
+            )}
+
             <TouchableOpacity style={styles.equipmentButton} onPress={handleOpenEquipment}>
               <Text style={styles.equipmentButtonText}>{t('ui.goblin.equipmentChange')}</Text>
             </TouchableOpacity>

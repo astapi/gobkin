@@ -18,7 +18,12 @@ const goblinImages: Record<string, ImageSourcePropType> = {
   elf_goblin: require('../../../assets/goblin/goblin.png'),
   dwarf_goblin: require('../../../assets/goblin/goblin.png'),
   goblin_guard: require('../../../assets/goblin/goblin_guard.png'),
-  goblin_thief: require('../../../assets/goblin/goblin_thief.png'),
+  goblin_thief: require('../../../assets/goblin/goblin_thief_variant_b_treasure.png'),
+  goblin_thief_original: require('../../../assets/goblin/goblin_thief_original.png'),
+  goblin_thief_variant_a_speed: require('../../../assets/goblin/goblin_thief_variant_a_speed.png'),
+  goblin_thief_variant_b_treasure: require('../../../assets/goblin/goblin_thief_variant_b_treasure.png'),
+  goblin_thief_variant_c_assassin: require('../../../assets/goblin/goblin_thief_variant_c_assassin.png'),
+  goblin_thief_variant_d_gold_snatcher: require('../../../assets/goblin/goblin_thief_variant_d_gold_snatcher.png'),
   goblin_mage: require('../../../assets/goblin/goblin_mage.png'),
   goblin_warrior: require('../../../assets/goblin/goblin_warrior.png'),
   goblin_cleric: require('../../../assets/goblin/goblin_cleric.png'),
@@ -26,8 +31,44 @@ const goblinImages: Record<string, ImageSourcePropType> = {
   goblin_rider_battle: require('../../../assets/goblin/goblin_rider_battle.png'),
 }
 
+export const GOBLIN_THIEF_IMAGE_OPTIONS = [
+  {
+    key: 'goblin_thief_variant_b_treasure',
+    avatar: '/src/assets/goblin/goblin_thief_variant_b_treasure.png',
+    source: goblinImages.goblin_thief_variant_b_treasure,
+  },
+  {
+    key: 'goblin_thief_variant_a_speed',
+    avatar: '/src/assets/goblin/goblin_thief_variant_a_speed.png',
+    source: goblinImages.goblin_thief_variant_a_speed,
+  },
+  {
+    key: 'goblin_thief_variant_c_assassin',
+    avatar: '/src/assets/goblin/goblin_thief_variant_c_assassin.png',
+    source: goblinImages.goblin_thief_variant_c_assassin,
+  },
+  {
+    key: 'goblin_thief_variant_d_gold_snatcher',
+    avatar: '/src/assets/goblin/goblin_thief_variant_d_gold_snatcher.png',
+    source: goblinImages.goblin_thief_variant_d_gold_snatcher,
+  },
+  {
+    key: 'goblin_thief_original',
+    avatar: '/src/assets/goblin/goblin_thief_original.png',
+    source: goblinImages.goblin_thief_original,
+  },
+] as const
+
+const goblinThiefImageKeys: Set<string> = new Set(GOBLIN_THIEF_IMAGE_OPTIONS.map(option => option.key))
+
 // デフォルト画像
 const defaultGoblinImage = require('../../../assets/goblin/goblin.png')
+
+export function getGoblinImageKey(avatarPath: string | undefined): string | null {
+  if (!avatarPath) return null
+  const match = avatarPath.match(/\/([^/]+)\.png$/)
+  return match ? match[1] : null
+}
 
 /**
  * アバターパスからゴブリン画像を取得
@@ -39,13 +80,9 @@ export function getGoblinImage(avatarPath: string | undefined): ImageSourcePropT
     return defaultGoblinImage
   }
 
-  // パスからファイル名を抽出 (例: "goblin.png" -> "goblin")
-  const match = avatarPath.match(/\/([^/]+)\.png$/)
-  if (match) {
-    const imageName = match[1]
-    if (imageName in goblinImages) {
-      return goblinImages[imageName]
-    }
+  const imageName = getGoblinImageKey(avatarPath)
+  if (imageName && imageName in goblinImages) {
+    return goblinImages[imageName]
   }
 
   return defaultGoblinImage
@@ -83,6 +120,12 @@ export function getGoblinDisplayImage(goblin: Pick<Goblin, 'avatar' | 'race' | '
       case 'guard':
         return goblinImages.goblin_guard
       case 'thief':
+        {
+          const imageName = getGoblinImageKey(goblin.avatar)
+          if (imageName && goblinThiefImageKeys.has(imageName)) {
+            return goblinImages[imageName]
+          }
+        }
         return goblinImages.goblin_thief
       case 'mage':
         return goblinImages.goblin_mage
