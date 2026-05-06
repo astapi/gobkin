@@ -451,8 +451,8 @@ const ko = {
       expeditionReturn: '{{partyName}}이(가) 귀환했습니다.',
     },
     start: {
-      title: '고블린 킹덤',
-      subtitle: 'GOBLIN KINGDOM',
+      title: '고블린 레거시',
+      subtitle: 'GOBLIN LEGACY',
       beginButton: '게임 시작',
       tagline: '약한 고블린이 강함을 이어받는다.',
     },

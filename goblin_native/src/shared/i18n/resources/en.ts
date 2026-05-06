@@ -460,10 +460,10 @@ const en = {
       expeditionReturn: '{{partyName}} has returned.',
     },
     start: {
-      title: 'Goblin Kingdom',
-      subtitle: 'GOBLIN KINGDOM',
+      title: 'Goblin Legacy',
+      subtitle: 'GOBLIN LEGACY',
       beginButton: 'Start Game',
-      tagline: 'The weak goblin inherits strength.',
+      tagline: 'Weak goblins inherit strength.',
     },
     tutorial: {
       banner: {

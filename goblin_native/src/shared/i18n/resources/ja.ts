@@ -460,8 +460,8 @@ const ja = {
       expeditionReturn: '{{partyName}}が帰還しました。',
     },
     start: {
-      title: 'ゴブリンキングダム',
-      subtitle: 'GOBLIN KINGDOM',
+      title: 'ゴブリンレガシー',
+      subtitle: 'GOBLIN LEGACY',
       beginButton: 'ゲームをはじめる',
       tagline: '弱きゴブリンが、強さを継ぐ。',
     },
