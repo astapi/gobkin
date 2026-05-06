@@ -89,6 +89,12 @@ describe('goblinJobs', () => {
     expect(getGoblinTrainingJobDefinitions(new Set(['road_1'])).some((job) => job.id === 'cleric')).toBe(true)
   })
 
+  it('ゴブリンクレリックは魔法保護を固有スキルとして持つ', () => {
+    const trained = applyGoblinJob(createGoblin({ level: 1 }), 'cleric')
+    expect(trained.skills.some((skill) => skill.id === 'magic_rear_guard')).toBe(true)
+    expect(trained.skills.some((skill) => skill.protectRearAllyMagicDamageMultiplier === 2 / 3)).toBe(true)
+  })
+
   it('ウルフ草原後のストーリー読了でライダー訓練が解放される', () => {
     expect(getGoblinTrainingJobDefinitions(new Set(['human_village'])).some((job) => job.id === 'rider')).toBe(false)
     expect(

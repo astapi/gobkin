@@ -43,6 +43,7 @@ export interface CharacterSkill {
   spellDamagePercent?: number
   additionalDamage?: number
   protectRearAllyNormalAttackMultiplier?: number
+  protectRearAllyMagicDamageMultiplier?: number
   rearAllyDamageMultiplier?: number
   coverLowHpAlly?: boolean
   twoColumnAttack?: boolean
@@ -71,6 +72,7 @@ export interface CharacterSkill {
   magicDamageFollowUp?: MagicDamageFollowUp
   criticalAttackFollowUp?: MagicDamageFollowUp
   physicalCounterAttack?: PhysicalCounterAttack
+  counterAttackAvoidanceRate?: number
   pureGoblinPartyStatBonusPercent?: number
   pureGoblinPartyStatBonusMinLevel?: number
 }

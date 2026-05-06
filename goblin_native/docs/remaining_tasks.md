@@ -11,6 +11,7 @@ Web版(goblin_web)とReact Native版(goblin_native)の差異を解消するた�
 | [project_structure.md](./project_structure.md) | ディレクトリ構成・責務一覧 |
 | [screen_reference.md](./screen_reference.md) | 画面リファレンス |
 | [migration_tasks.md](./migration_tasks.md) | 移行タスク一覧・UI実装詳細 |
+| [chapter1_release_tasks.md](./chapter1_release_tasks.md) | 第1章リリースに必要なゲーム機能・バランス・ストア準備タスク |
 
 ---
 

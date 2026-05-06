@@ -154,6 +154,12 @@ export function describeCharacterSkill(skill: CharacterSkill): string {
     })
   }
 
+  if (skill.counterAttackAvoidanceRate !== undefined) {
+    return i18n.t('battle.counterAttackAvoidance', {
+      value: formatMultiplierFraction(skill.counterAttackAvoidanceRate),
+    })
+  }
+
   if (skill.pureGoblinPartyStatBonusPercent !== undefined) {
     return i18n.t('battle.pureGoblinPartyStatBonus', {
       value: skill.pureGoblinPartyStatBonusPercent,
@@ -266,8 +272,21 @@ export function describeCharacterSkill(skill: CharacterSkill): string {
     return i18n.t('battle.rearProtection', { value: reducedRate })
   }
 
+  if (skill.protectRearAllyMagicDamageMultiplier !== undefined) {
+    const reducedRate = Math.round((1 - skill.protectRearAllyMagicDamageMultiplier) * 100)
+    return i18n.t('battle.magicRearProtection', { value: reducedRate })
+  }
+
   if (skill.equipmentCategoryMultiplier?.armor !== undefined) {
     return i18n.t('battle.armorMultiplier', { value: skill.equipmentCategoryMultiplier.armor.toFixed(1) })
+  }
+
+  if (skill.equipmentCategoryMultiplier?.shield !== undefined) {
+    return i18n.t('battle.shieldMultiplier', { value: skill.equipmentCategoryMultiplier.shield.toFixed(1) })
+  }
+
+  if (skill.equipmentCategoryMultiplier?.robe !== undefined) {
+    return i18n.t('battle.robeMultiplier', { value: skill.equipmentCategoryMultiplier.robe.toFixed(1) })
   }
 
   if (skill.equipmentCategoryMultiplier?.wand !== undefined) {
@@ -465,6 +484,13 @@ export function getRearProtectionMultiplierFromSkills(skills: CharacterSkill[]):
   )
 }
 
+export function getRearMagicProtectionMultiplierFromSkills(skills: CharacterSkill[]): number {
+  return getUniqueSkillsById(skills).reduce(
+    (product, skill) => product * (skill.protectRearAllyMagicDamageMultiplier ?? 1),
+    1,
+  )
+}
+
 export function getRearAllyDamageMultiplierFromSkills(skills: CharacterSkill[]): number {
   return getUniqueSkillsById(skills).reduce(
     (product, skill) => product * (skill.rearAllyDamageMultiplier ?? 1),
@@ -508,6 +534,13 @@ export function getPhysicalCounterAttackFromSkills(skills: CharacterSkill[]): Ch
   return getUniqueSkillsById(skills)
     .map((skill) => skill.physicalCounterAttack)
     .find((counterAttack) => counterAttack !== undefined)
+}
+
+export function getCounterAttackAvoidanceRateFromSkills(skills: CharacterSkill[]): number {
+  return getUniqueSkillsById(skills).reduce(
+    (max, skill) => Math.max(max, skill.counterAttackAvoidanceRate ?? 0),
+    0,
+  )
 }
 
 export function getPureGoblinPartyStatBonusPercentFromSkills(

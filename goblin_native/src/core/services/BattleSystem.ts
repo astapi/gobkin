@@ -7,12 +7,14 @@ import {
   getMagicDamageFollowUpFromSkills,
   getCriticalAttackFollowUpFromSkills,
   getPhysicalCounterAttackFromSkills,
+  getCounterAttackAvoidanceRateFromSkills,
   getPhysicalDamagePercentFromSkills,
   getPureGoblinPartyStatBonusPercentFromSkills,
   getRearAllyDamageMultiplierFromSkills,
   getLearnedSpellsFromSkills,
   getMagicDamageReductionFromSkills,
   getPhysicalDamageReductionFromSkills,
+  getRearMagicProtectionMultiplierFromSkills,
   getRearProtectionMultiplierFromSkills,
   getRowDamageMultiplierFromSkills,
   getSpellTakenMultiplierFromSkills,
@@ -718,6 +720,9 @@ export class BattleSystem {
       const triggerRate = Math.max(0, Math.min(100, defender.power ?? 0))
       if (rng() * 100 >= triggerRate) continue
 
+      const counterAvoidanceRate = Math.max(0, Math.min(1, getCounterAttackAvoidanceRateFromSkills(attacker.skills)))
+      if (counterAvoidanceRate > 0 && rng() < counterAvoidanceRate) continue
+
       const sourceGroup = defender.isAlly ? allyUnits : enemyUnits
       const followUpAttackCount = Math.max(1, Math.floor(defender.attackCount * counterAttack.attackCountMultiplier))
       const { targetDetails, totalHitCount, isCritical, damagedTargets: counterDamagedTargets } = this.executeBasicAttack(
@@ -1193,8 +1198,9 @@ export class BattleSystem {
         const reductionFactor = 1 - target.damageReduction / 100
         const magicReductionFactor = 1 - target.magicDamageReduction / 100
         const magicBarrierFactor = 1 - target.magicBarrierDamageReduction / 100
+        const magicProtectionFactor = this.getRearMagicGuardReductionFactor(target, targetGroup)
         const defendingFactor = this.getDefendingDamageFactor(target)
-        const damage = Math.max(1, Math.floor(baseDamage * rearDamageMultiplier * spellDamageFactor * spellTakenMultiplier * reductionFactor * magicReductionFactor * magicBarrierFactor * defendingFactor))
+        const damage = Math.max(1, Math.floor(baseDamage * rearDamageMultiplier * spellDamageFactor * spellTakenMultiplier * reductionFactor * magicReductionFactor * magicBarrierFactor * magicProtectionFactor * defendingFactor))
 
         this.applyDamage(target, damage)
         this.tryImmediateReviveForFallenAlly(
@@ -1233,8 +1239,9 @@ export class BattleSystem {
         const reductionFactor = 1 - target.damageReduction / 100
         const magicReductionFactor = 1 - target.magicDamageReduction / 100
         const magicBarrierFactor = 1 - target.magicBarrierDamageReduction / 100
+        const magicProtectionFactor = this.getRearMagicGuardReductionFactor(target, targetGroup)
         const defendingFactor = this.getDefendingDamageFactor(target)
-        const damage = Math.max(1, Math.floor(baseDamage * rearDamageMultiplier * spellDamageFactor * spellTakenMultiplier * reductionFactor * magicReductionFactor * magicBarrierFactor * defendingFactor))
+        const damage = Math.max(1, Math.floor(baseDamage * rearDamageMultiplier * spellDamageFactor * spellTakenMultiplier * reductionFactor * magicReductionFactor * magicBarrierFactor * magicProtectionFactor * defendingFactor))
 
         this.applyDamage(target, damage)
         this.tryImmediateReviveForFallenAlly(
@@ -1560,6 +1567,27 @@ export class BattleSystem {
     }
 
     return getRearProtectionMultiplierFromSkills(frontmostRearGuardUnit.skills)
+  }
+
+  private getRearMagicGuardReductionFactor(target: BattleUnit, allyUnits: BattleUnit[]): number {
+    if (!target.isAlly || target.currentHP <= 0) return 1
+
+    const frontmostRearGuardUnit = allyUnits
+      .filter((ally) => (
+        ally.currentHP > 0 &&
+        ally.row < target.row &&
+        getRearMagicProtectionMultiplierFromSkills(ally.skills) !== 1
+      ))
+      .sort((a, b) => {
+        if (a.row !== b.row) return a.row - b.row
+        return a.rowSlot - b.rowSlot
+      })[0]
+
+    if (!frontmostRearGuardUnit) {
+      return 1
+    }
+
+    return getRearMagicProtectionMultiplierFromSkills(frontmostRearGuardUnit.skills)
   }
 
   private getRearDamageMultiplier(unit: BattleUnit, groupUnits: BattleUnit[]): number {
