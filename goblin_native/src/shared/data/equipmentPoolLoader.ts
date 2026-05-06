@@ -15,6 +15,11 @@ const WEAPON_RANGE_SKILLS: Record<WeaponRange, 'weapon_melee_attack' | 'weapon_r
   ranged: 'weapon_ranged_attack',
 }
 
+export const EQUIPMENT_GRANTED_SKILL_IDS = new Set<string>([
+  ...data.templates.flatMap((template) => template.grantedSkillIds ?? []),
+  ...Object.values(WEAPON_RANGE_SKILLS),
+])
+
 function cloneSkill(skill: CharacterSkill): CharacterSkill {
   return {
     ...skill,

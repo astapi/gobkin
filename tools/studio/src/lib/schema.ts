@@ -318,11 +318,28 @@ export const GoblinFactorSeedSchema = z.object({
   source: z.enum(['variant', 'standalone']).optional(),
 })
 
+export const BirthSkillLotteryEntrySchema = z.object({
+  skillId: z.string(),
+  probability: z.number(),
+})
+
+export const FactorSkillInheritanceRuleSchema = z.object({
+  factorId: z.string(),
+  skills: z.array(BirthSkillLotteryEntrySchema),
+})
+
+export const PureGoblinSkillManifestationRuleSchema = z.object({
+  baseRank: z.number().int(),
+  skills: z.array(BirthSkillLotteryEntrySchema),
+})
+
 export const GoblinStudioDataSchema = z.object({
   races: z.array(GoblinRaceEntrySchema),
   factors: z.array(GoblinFactorSeedSchema),
   jobs: z.array(GoblinJobSeedSchema),
   variants: z.array(GoblinVariantSeedSchema),
+  factorSkillInheritanceRules: z.array(FactorSkillInheritanceRuleSchema),
+  pureGoblinSkillManifestationRules: z.array(PureGoblinSkillManifestationRuleSchema),
 })
 
 export type GoblinBaseAttributes = z.infer<typeof GoblinBaseAttributesSchema>
@@ -332,4 +349,7 @@ export type GoblinJobSkillSeed = z.infer<typeof GoblinJobSkillSeedSchema>
 export type GoblinJobSeed = z.infer<typeof GoblinJobSeedSchema>
 export type GoblinVariantSeed = z.infer<typeof GoblinVariantSeedSchema>
 export type GoblinFactorSeed = z.infer<typeof GoblinFactorSeedSchema>
+export type BirthSkillLotteryEntry = z.infer<typeof BirthSkillLotteryEntrySchema>
+export type FactorSkillInheritanceRule = z.infer<typeof FactorSkillInheritanceRuleSchema>
+export type PureGoblinSkillManifestationRule = z.infer<typeof PureGoblinSkillManifestationRuleSchema>
 export type GoblinStudioData = z.infer<typeof GoblinStudioDataSchema>

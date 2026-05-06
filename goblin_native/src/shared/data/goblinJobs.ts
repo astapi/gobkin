@@ -199,7 +199,7 @@ function buildGoblinJobDefinition(seed: GoblinJobDefinitionSeed): GoblinJobDefin
   }
 }
 
-const GOBLIN_JOB_SKILL_IDS = new Set<string>(
+export const GOBLIN_JOB_SKILL_IDS = new Set<string>(
   [
     ...Object.values(GOBLIN_JOB_DEFINITION_SEEDS)
       .flatMap((job) => job.skills.map((entry) => entry.skillId)),

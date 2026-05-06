@@ -15,6 +15,27 @@ import type { Goblin } from '@/shared/types'
 import { getGoblinDisplayImage } from '@/shared/utils/goblinImages'
 import { getEffectiveStats } from '@/shared/utils/goblinStats'
 import { isProtectedGoblin } from '@/shared/utils/goblinProtection'
+import { getFactorImage } from '@/shared/utils/factorImages'
+import { getFactor } from '@/shared/data/factors'
+import { getDefaultSkillsForRace } from '@/shared/data/raceSkills'
+import { getUniqueSkillsById } from '@/shared/data/characterSkills'
+import { GOBLIN_JOB_SKILL_IDS } from '@/shared/data/goblinJobs'
+import { EQUIPMENT_GRANTED_SKILL_IDS } from '@/shared/data/equipmentPoolLoader'
+import { getFactorName, getSkillLabel } from '@/shared/i18n/entityLocalization'
+
+function getCardUniqueSkills(goblin: Goblin) {
+  const raceSkillIds = new Set(
+    getDefaultSkillsForRace(goblin.raceId ?? goblin.race).map((skill) => skill.id),
+  )
+
+  return getUniqueSkillsById(goblin.skills).filter(
+    (skill) => (
+      !raceSkillIds.has(skill.id) &&
+      !GOBLIN_JOB_SKILL_IDS.has(skill.id) &&
+      !EQUIPMENT_GRANTED_SKILL_IDS.has(skill.id)
+    ),
+  )
+}
 
 export default function GoblinListScreen() {
   const { t } = useTranslation()
@@ -276,6 +297,12 @@ export default function GoblinListScreen() {
         </View>
         {pendingGoblins.map((goblin) => {
           const effectiveStats = getEffectiveStats(goblin)
+          const factorIds = goblin.factors ?? []
+          const visibleFactorIds = factorIds.slice(0, 2)
+          const extraFactorCount = Math.max(0, factorIds.length - visibleFactorIds.length)
+          const uniqueSkills = getCardUniqueSkills(goblin)
+          const visibleSkills = uniqueSkills.slice(0, 3)
+          const extraSkillCount = Math.max(0, uniqueSkills.length - visibleSkills.length)
           return (
             <View key={goblin.id} style={styles.pendingCard}>
               <View style={styles.pendingRow}>
@@ -290,6 +317,40 @@ export default function GoblinListScreen() {
                     <Text style={styles.pendingStats}>
                       HP{effectiveStats.hp} / A{effectiveStats.atk} / D{effectiveStats.def} / 命{effectiveStats.accuracy}
                     </Text>
+                    {(factorIds.length > 0 || uniqueSkills.length > 0) && (
+                      <View style={styles.pendingTraitRows}>
+                        {factorIds.length > 0 && (
+                          <View style={styles.pendingTraitRow}>
+                            {visibleFactorIds.map((factorId, index) => {
+                              const FactorIcon = getFactorImage(factorId)
+                              return (
+                                <View key={`${factorId}-${index}`} style={styles.pendingFactorChip}>
+                                  <FactorIcon width={13} height={13} />
+                                  <Text style={styles.pendingFactorChipText} numberOfLines={1}>
+                                    {getFactorName(getFactor(factorId) ?? { id: factorId, name: factorId })}
+                                  </Text>
+                                </View>
+                              )
+                            })}
+                            {extraFactorCount > 0 && (
+                              <Text style={styles.pendingMoreChip}>+{extraFactorCount}</Text>
+                            )}
+                          </View>
+                        )}
+                        {uniqueSkills.length > 0 && (
+                          <View style={styles.pendingTraitRow}>
+                            {visibleSkills.map((skill) => (
+                              <Text key={skill.id} style={styles.pendingSkillChip} numberOfLines={1}>
+                                {getSkillLabel(skill)}
+                              </Text>
+                            ))}
+                            {extraSkillCount > 0 && (
+                              <Text style={styles.pendingMoreChip}>+{extraSkillCount}</Text>
+                            )}
+                          </View>
+                        )}
+                      </View>
+                    )}
                   </View>
                 </TouchableOpacity>
                 {hasCapacity && (
@@ -548,6 +609,7 @@ const styles = StyleSheet.create({
   },
   pendingInfo: {
     flex: 1,
+    minWidth: 0,
   },
   pendingName: {
     fontSize: 14,
@@ -558,6 +620,50 @@ const styles = StyleSheet.create({
     fontSize: 10,
     color: '#6B7280',
     marginTop: 1,
+  },
+  pendingTraitRows: {
+    marginTop: 4,
+    gap: 3,
+  },
+  pendingTraitRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 3,
+  },
+  pendingFactorChip: {
+    maxWidth: 104,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 3,
+    backgroundColor: '#EEF2FF',
+    borderRadius: 4,
+    paddingHorizontal: 5,
+    paddingVertical: 2,
+  },
+  pendingFactorChipText: {
+    flexShrink: 1,
+    fontSize: 9,
+    fontWeight: '700',
+    color: '#4338CA',
+  },
+  pendingSkillChip: {
+    maxWidth: 128,
+    fontSize: 9,
+    fontWeight: '700',
+    color: '#065F46',
+    backgroundColor: '#ECFDF5',
+    borderRadius: 4,
+    paddingHorizontal: 5,
+    paddingVertical: 2,
+  },
+  pendingMoreChip: {
+    fontSize: 9,
+    fontWeight: '700',
+    color: '#6B7280',
+    backgroundColor: '#F3F4F6',
+    borderRadius: 4,
+    paddingHorizontal: 5,
+    paddingVertical: 2,
   },
   addButton: {
     backgroundColor: '#374151',

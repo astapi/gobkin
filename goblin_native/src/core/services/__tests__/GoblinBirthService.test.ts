@@ -23,6 +23,11 @@ function createSeededRng(seed: number): () => number {
   }
 }
 
+function sequenceRng(values: number[]): () => number {
+  let index = 0
+  return () => values[index++] ?? 0
+}
+
 describe('GoblinBirthService', () => {
   describe('createNewGoblin の引数パターン', () => {
     it('individualValue を直接指定した場合、その値が使われる', () => {
@@ -229,6 +234,47 @@ describe('GoblinBirthService', () => {
       expect(goblin1.name).toBe(goblin2.name)
       expect(goblin1.stats).toEqual(goblin2.stats)
       expect(goblin1.individualValue).toBe(goblin2.individualValue)
+    })
+
+    it('因子を継承した純ゴブリンは抽選枠内で亜種固有スキルを継承する', () => {
+      const parent = {
+        id: 1,
+        name: '親ゴブリン',
+        race: 'ゴブリン',
+        raceId: 'goblin' as const,
+        level: 1,
+        experience: 0,
+        avatar: '/src/assets/goblin/goblin.png',
+        stats: {
+          hp: 19,
+          atk: 11,
+          magicAtk: 10,
+          def: 11,
+          magicDef: 10,
+          attackCount: 2,
+          accuracy: 62,
+          evasion: 11,
+          magicHeal: 10,
+          criticalRate: 0,
+        },
+        skills: [],
+        factors: ['wolf'],
+      }
+      const rng = sequenceRng([0, 0.99, 0, 0, 0, 0])
+      const service = new GoblinBirthService(rng)
+
+      const goblin = service.createNewGoblin(2, 10, [parent], undefined, 1)
+
+      expect(goblin.raceId).toBe('goblin')
+      expect(goblin.factors).toEqual(['wolf'])
+      expect(goblin.skills.map((skill) => skill.id)).toEqual([
+        'goblin_pack_tactics',
+        'exp_bonus_70',
+        'talent_accuracy_150',
+        'attack_count_up_2',
+        'equipment_accuracy_200',
+        'additional_damage_13',
+      ])
     })
   })
 })

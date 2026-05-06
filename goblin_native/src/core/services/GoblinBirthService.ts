@@ -1,6 +1,7 @@
 import type { Goblin, GoblinStats } from '../../shared/types'
 import { GoblinStatCalculator } from './GoblinStatCalculator'
 import { FactorInheritanceService, type InheritanceResult } from './FactorInheritanceService'
+import { BirthSkillService } from './BirthSkillService'
 import { calculateIndividualValue } from './BaseRankSystem'
 import { getDefaultSkillsForRace } from '../../shared/data/raceSkills'
 import {
@@ -15,7 +16,7 @@ import {
   calculateGoblinBaseMagicHeal,
   getGoblinBaseAttributes,
 } from '../../shared/utils/goblinHp'
-import { getLegacyRaceName, normalizeGoblinRaceId } from '../../shared/types/Race'
+import { getLegacyRaceName, isBaseGoblinRaceId, normalizeGoblinRaceId } from '../../shared/types/Race'
 
 const GOBLIN_NAMES = [
   'グリム', 'ゴブタ', 'ボブ', 'ゴロー', 'クロ', 'シロ', 'アカ', 'アオ',
@@ -75,7 +76,7 @@ export class GoblinBirthService {
     }
 
     const inheritance = baseGoblins ? this.evaluateFactorInheritance(baseGoblins) : undefined
-    return this.createGoblin(nextGoblinId, finalIV, inheritance)
+    return this.createGoblin(nextGoblinId, finalIV, inheritance, baseRank)
   }
 
   /**
@@ -115,7 +116,8 @@ export class GoblinBirthService {
   private createGoblin(
     id: number,
     individualValue = 1,
-    inheritance?: InheritanceResult
+    inheritance?: InheritanceResult,
+    baseRank?: number
   ): Goblin {
     const name = this.selectRandomName()
     // 個体値を1〜64の範囲にクランプ
@@ -133,6 +135,16 @@ export class GoblinBirthService {
       ? inheritance.variantAvatar!
       : '/src/assets/goblin/goblin.png'
 
+    const defaultSkills = getDefaultSkillsForRace(raceId)
+    const birthSkills = isBaseGoblinRaceId(raceId) && !inheritance?.isVariant
+      ? BirthSkillService.rollPureGoblinBirthSkills({
+          inheritedFactorIds: inheritance?.inheritedFactors ?? [],
+          baseRank,
+          existingSkillIds: defaultSkills.map((skill) => skill.id),
+          rng: this.random,
+        })
+      : []
+
     const goblin: Goblin = {
       id,
       name,
@@ -145,7 +157,7 @@ export class GoblinBirthService {
       baseAttributes: getGoblinBaseAttributes({ race, raceId }),
       effectiveStats: stats,  // 仮設定、後で計算
       individualValue: clampedIV,
-      skills: getDefaultSkillsForRace(raceId),
+      skills: [...defaultSkills, ...birthSkills],
       factors: inheritance?.inheritedFactors ?? [],
     }
 
