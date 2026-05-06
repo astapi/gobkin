@@ -562,6 +562,11 @@ export const CHARACTER_SKILL_CATALOG = {
   spell_damage_14: createSpellDamageSkill(14),
   spell_damage_15: createSpellDamageSkill(15),
   spell_damage_16: createSpellDamageSkill(16),
+  spell_damage_58: createSpellDamageSkill(58),
+  spell_damage_110: createSpellDamageSkill(110),
+  spell_damage_175: createSpellDamageSkill(175),
+  spell_damage_250: createSpellDamageSkill(250),
+  spell_damage_400: createSpellDamageSkill(400),
 
   grant_blizzard: {
     id: 'grant_blizzard',
@@ -608,6 +613,11 @@ export const CHARACTER_SKILL_CATALOG = {
   physical_reduction_10: createPhysicalReductionSkill(10),
   physical_reduction_11: createPhysicalReductionSkill(11),
   physical_reduction_12: createPhysicalReductionSkill(12),
+  physical_reduction_14: createPhysicalReductionSkill(14),
+  physical_reduction_18: createPhysicalReductionSkill(18),
+  physical_reduction_22: createPhysicalReductionSkill(22),
+  physical_reduction_26: createPhysicalReductionSkill(26),
+  physical_reduction_30: createPhysicalReductionSkill(30),
 
   attack_resistant_1_4: createAttackResistantSkill(1, 4),
   attack_resistant_1_3: createAttackResistantSkill(1, 3),
@@ -629,6 +639,11 @@ export const CHARACTER_SKILL_CATALOG = {
   magic_reduction_10: createMagicReductionSkill(10),
   magic_reduction_11: createMagicReductionSkill(11),
   magic_reduction_12: createMagicReductionSkill(12),
+  magic_reduction_14: createMagicReductionSkill(14),
+  magic_reduction_18: createMagicReductionSkill(18),
+  magic_reduction_22: createMagicReductionSkill(22),
+  magic_reduction_26: createMagicReductionSkill(26),
+  magic_reduction_30: createMagicReductionSkill(30),
 
   magic_resistant_1_4: createMagicResistantSkill(1, 4),
   magic_resistant_1_3: createMagicResistantSkill(1, 3),
@@ -644,6 +659,11 @@ export const CHARACTER_SKILL_CATALOG = {
   physical_damage_30: createPhysicalDamageSkill(30),
   physical_damage_40: createPhysicalDamageSkill(40),
   physical_damage_50: createPhysicalDamageSkill(50),
+  physical_damage_58: createPhysicalDamageSkill(58),
+  physical_damage_110: createPhysicalDamageSkill(110),
+  physical_damage_175: createPhysicalDamageSkill(175),
+  physical_damage_250: createPhysicalDamageSkill(250),
+  physical_damage_400: createPhysicalDamageSkill(400),
 
   rear_guard: {
     id: 'rear_guard',

@@ -8,6 +8,7 @@ import type {
   RewardSummary,
   Goblin,
   Enemy,
+  CharacterSkill,
   EnemyPattern,
   PartyState,
   ExpeditionEndReason,
@@ -29,6 +30,7 @@ import {
   getPartyRareMultiplierFromSkills,
   getPartyTitleMultiplierFromSkills,
 } from '../../shared/data/characterSkills'
+import { getCharacterSkills } from '../../shared/data/skillCatalog'
 import { getGoblinBaseAttributesAtLevel } from '../../shared/utils/goblinHp'
 import { getEffectiveStats } from '../../shared/utils/goblinStats'
 import { calculateEnemyExp } from '../../shared/utils/enemyExp'
@@ -477,6 +479,7 @@ export class ExpeditionEngine {
     scaling: (typeof DUNGEON_TIER_SCALING)[number]
   ): Enemy[][] {
     const statScale = scaling.statScale
+    const tierSkills = this.getTierSkills(scaling)
     const countScale = Math.sqrt(statScale)
     const goldScale = Math.pow(statScale, 1.5)
     return enemies2D.map(row =>
@@ -501,8 +504,53 @@ export class ExpeditionEngine {
         accuracy: Math.round(enemy.accuracy * statScale),
         evasion: this.scaleDefensiveStat(enemy.evasion, scaling.evasionScale),
         gold: Math.floor(enemy.gold * goldScale),
+        skills: tierSkills.length > 0
+          ? [...(enemy.skills ?? []), ...tierSkills]
+          : enemy.skills,
       }))
     )
+  }
+
+  private getTierSkills(
+    scaling: (typeof DUNGEON_TIER_SCALING)[number]
+  ): CharacterSkill[] {
+    const damagePercent = Math.round((scaling.statScale - 1) * 100)
+    const reductionPercent = this.getTierReductionPercent(scaling)
+    if (damagePercent <= 0) {
+      return []
+    }
+
+    return getCharacterSkills([
+      `physical_damage_${damagePercent}`,
+      `spell_damage_${damagePercent}`,
+      `physical_reduction_${reductionPercent}`,
+      `magic_reduction_${reductionPercent}`,
+    ])
+  }
+
+  private getTierReductionPercent(
+    scaling: (typeof DUNGEON_TIER_SCALING)[number]
+  ): number {
+    return Math.max(0, Math.round((1 - this.getTierDamageTakenMultiplier(scaling)) * 100))
+  }
+
+  private getTierDamageTakenMultiplier(
+    scaling: (typeof DUNGEON_TIER_SCALING)[number]
+  ): number {
+    switch (scaling.statScale) {
+      case 1.58:
+        return 0.86
+      case 2.10:
+        return 0.82
+      case 2.75:
+        return 0.78
+      case 3.50:
+        return 0.74
+      case 5.00:
+        return 0.70
+      default:
+        return 1
+    }
   }
 
   private scaleEnemyHp(

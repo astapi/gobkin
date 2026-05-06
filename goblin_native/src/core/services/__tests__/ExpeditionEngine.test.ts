@@ -1,6 +1,10 @@
 import { ExpeditionEngine } from '../ExpeditionEngine'
 import { DEFAULT_PARTY_REWARD_MULTIPLIERS, DUNGEON_TIER_SCALING, getDungeonTierAreaLevel } from '../../../shared/types'
-import type { DungeonTier, Enemy, TimelineEvent, PartyState } from '../../../shared/types'
+import type { CharacterSkill, DungeonTier, Enemy, TimelineEvent, PartyState } from '../../../shared/types'
+import {
+  getMagicDamageReductionFromSkills,
+  getPhysicalDamageReductionFromSkills,
+} from '../../../shared/data/characterSkills'
 
 describe('ExpeditionEngine reward multipliers', () => {
   it('goldMultiplier を報酬 gold に適用する', () => {
@@ -257,6 +261,48 @@ describe('ExpeditionEngine dungeon tier scaling', () => {
       expect(scaledByTier.map(enemy => enemy.evasion)).toEqual(expected.evasion)
       expect(scaledByTier.map(enemy => enemy.magicDef)).toEqual(expected.magicDef)
     })
+  })
+
+  it('Tierに応じた攻撃威力・魔法威力・軽減スキルを全敵へ付与する', () => {
+    const engine = new ExpeditionEngine(1)
+    const expectedSkillIds = [
+      [],
+      ['physical_damage_58', 'spell_damage_58', 'physical_reduction_14', 'magic_reduction_14'],
+      ['physical_damage_110', 'spell_damage_110', 'physical_reduction_18', 'magic_reduction_18'],
+      ['physical_damage_175', 'spell_damage_175', 'physical_reduction_22', 'magic_reduction_22'],
+      ['physical_damage_250', 'spell_damage_250', 'physical_reduction_26', 'magic_reduction_26'],
+      ['physical_damage_400', 'spell_damage_400', 'physical_reduction_30', 'magic_reduction_30'],
+    ]
+
+    DUNGEON_TIER_SCALING.forEach((scaling, index) => {
+      const [[scaled]] = (engine as any).applyTierScaling([[baseEnemy]], scaling)
+      expect((scaled.skills ?? []).map((skill: CharacterSkill) => skill.id)).toEqual(expectedSkillIds[index])
+    })
+  })
+
+  it('既存の敵スキルを保持したままTierスキルを追加し、軽減を合算する', () => {
+    const engine = new ExpeditionEngine(1)
+    const enemy: Enemy = {
+      ...baseEnemy,
+      skills: [
+        { id: 'physical_reduction_10', physicalDamageReductionPercent: 10 },
+        { id: 'magic_reduction_10', magicDamageReductionPercent: 10 },
+      ],
+    }
+
+    const [[scaled]] = (engine as any).applyTierScaling([[enemy]], DUNGEON_TIER_SCALING[1])
+    const skills = scaled.skills ?? []
+
+    expect(skills.map((skill: CharacterSkill) => skill.id)).toEqual([
+      'physical_reduction_10',
+      'magic_reduction_10',
+      'physical_damage_58',
+      'spell_damage_58',
+      'physical_reduction_14',
+      'magic_reduction_14',
+    ])
+    expect(getPhysicalDamageReductionFromSkills(skills)).toBe(24)
+    expect(getMagicDamageReductionFromSkills(skills)).toBe(24)
   })
 })
 
