@@ -187,9 +187,9 @@ finalDamage =
 
 ### 3. 通常攻撃限定
 
-名称が似ていても、Mod 系の被ダメ軽減とは意味が異なる。
+名称が似ていても、装備の `damage_reduction` とは意味が異なる。
 
-- Mod の `damage_reduction`
+- 装備の `damage_reduction`
   - 汎用の被ダメ軽減
 - `physicalDamageReductionPercent`
   - 通常攻撃専用の軽減

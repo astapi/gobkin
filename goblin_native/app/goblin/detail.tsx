@@ -11,10 +11,9 @@ import type { BattleActionPolicy } from '@/shared/types'
 import { getFactor } from '@/shared/data/factors'
 import { getGoblinDisplayImage, hasGoblinImageOptionsForJob } from '@/shared/utils/goblinImages'
 import { getFactorImage } from '@/shared/utils/factorImages'
-import { ModStatCalculator } from '@/core/services/ModStatCalculator'
+import { GoblinStatCalculator } from '@/core/services/GoblinStatCalculator'
 import { EquipmentService } from '@/core/services/EquipmentService'
 import { getExpForNextLevel, getExpProgress } from '@/core/services/ExperienceSystem'
-import { getModTemplate } from '@/shared/data/modPoolLoader'
 import { getCharacterSkillEffectDescriptions, getUniqueSkillsById } from '@/shared/data/characterSkills'
 import { SQLiteEquipmentRepository } from '@/infrastructure/repositories/SQLiteEquipmentRepository'
 import { getDefaultSkillsForRace } from '@/shared/data/raceSkills'
@@ -533,27 +532,6 @@ export default function GoblinDetailScreen() {
           </View>
         )}
 
-        {goblin.mods && goblin.mods.length > 0 && (
-          <View style={styles.detailSection}>
-            <Text style={styles.sectionTitle}>{t('ui.goblin.mods')}</Text>
-            <View style={styles.modList}>
-              {goblin.mods.map((mod, idx) => {
-                const template = getModTemplate(mod.templateId)
-                if (!template) return null
-                const isPercent = template.stat.includes('percent') || template.stat === 'damage_reduction'
-                const label = getStatLabel(template.stat)
-                const valueText = `${mod.value > 0 ? '+' : ''}${mod.value}${isPercent ? '%' : ''}`
-                return (
-                  <View key={idx} style={styles.modItem}>
-                    <Text style={styles.modName}>{label}</Text>
-                    <Text style={styles.modEffect}>{valueText}</Text>
-                  </View>
-                )
-              })}
-            </View>
-          </View>
-        )}
-
         {!isPendingGoblin && (
           <>
             {canChangeAvatar && (
@@ -906,29 +884,6 @@ const styles = StyleSheet.create({
     fontSize: 9,
     color: '#166534',
     fontWeight: '600',
-  },
-  modList: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 6,
-  },
-  modItem: {
-    width: '48%',
-    padding: 8,
-    backgroundColor: '#FFFFFF',
-    borderRadius: 6,
-    borderWidth: 1,
-    borderColor: '#F3F4F6',
-  },
-  modName: {
-    fontSize: 10,
-    color: '#1F2937',
-    marginBottom: 2,
-  },
-  modEffect: {
-    fontSize: 11,
-    fontWeight: '600',
-    color: '#1F2937',
   },
   equipmentButton: {
     marginTop: 2,

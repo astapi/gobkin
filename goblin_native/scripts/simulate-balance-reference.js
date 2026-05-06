@@ -213,7 +213,6 @@ function createBaseGoblin(id, name, level, job, variantFactorId) {
     level,
     experience: 0,
     effectiveStats: undefined,
-    mods: [],
     factors: [],
     skills: born.skills ?? [],
   }
@@ -221,7 +220,7 @@ function createBaseGoblin(id, name, level, job, variantFactorId) {
   // applyGoblinJob は job=undefined でも syncGoblinDerivedStats を走らせ、
   // レベルに応じた baseAttributes / 派生ステータスを正規化するので必ず呼ぶ。
   goblin = applyGoblinJob(goblin, job || undefined)
-  return { ...goblin, effectiveStats: undefined, mods: [] }
+  return { ...goblin, effectiveStats: undefined }
 }
 
 function applyEquipmentFlatBonuses(stats, equipmentBonuses) {

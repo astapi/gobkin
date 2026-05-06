@@ -1,7 +1,6 @@
 import type { ExpeditionRequest } from "./Expedition"
 import type { DungeonTier } from "./DungeonTier"
 import type { CharacterSkill } from "./CharacterSkill"
-import type { ModInstance } from "./Mod"
 import type { LearnedSpell } from "./Spell"
 import type { BattleActionPolicy } from "./Battle"
 
@@ -53,9 +52,9 @@ export interface PartyState {
   name: string
   race: string
   // HP管理
-  currentHP: number   // 現在HP（Mod適用後、戦闘でダメージを受けると減少）
-  maxHP: number       // 最大HP（Mod適用後、参照用）
-  // 基礎ステータス（ModStatCalculatorが因子・Modを適用する）
+  currentHP: number   // 現在HP（戦闘でダメージを受けると減少）
+  maxHP: number       // 最大HP
+  // 基礎ステータス（GoblinStatCalculatorが因子を適用する）
   baseHP: number
   atk: number
   magicAtk: number
@@ -69,9 +68,8 @@ export interface PartyState {
   magicHeal: number
   isKO: boolean
   isDead: boolean
-  mods: ModInstance[]
   skills: CharacterSkill[]
-  factors: string[]   // 因子ID配列（ModStatCalculatorでボーナス計算に使用）
+  factors: string[]   // 因子ID配列（GoblinStatCalculatorでボーナス計算に使用）
   variantFactorId?: string  // 亜種の元となった因子ID
   spells?: LearnedSpell[]
   battleActionPolicy?: BattleActionPolicy

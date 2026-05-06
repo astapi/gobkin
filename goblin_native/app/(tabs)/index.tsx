@@ -15,8 +15,6 @@ import type { Goblin } from '@/shared/types'
 import { getGoblinDisplayImage } from '@/shared/utils/goblinImages'
 import { getEffectiveStats } from '@/shared/utils/goblinStats'
 import { isProtectedGoblin } from '@/shared/utils/goblinProtection'
-import { getModTemplate } from '@/shared/data/modPoolLoader'
-import { getStatLabel } from '@/shared/i18n/entityLocalization'
 
 export default function GoblinListScreen() {
   const { t } = useTranslation()
@@ -292,24 +290,6 @@ export default function GoblinListScreen() {
                     <Text style={styles.pendingStats}>
                       HP{effectiveStats.hp} / A{effectiveStats.atk} / D{effectiveStats.def} / 命{effectiveStats.accuracy}
                     </Text>
-                    {goblin.mods && goblin.mods.length > 0 && (
-                      <View style={styles.modRow}>
-                        {goblin.mods.map((mod, index) => {
-                          const template = getModTemplate(mod.templateId)
-                          if (!template) return null
-                          const isPercent = template.stat.includes('percent') || template.stat === 'damage_reduction'
-                          const label = `${getStatLabel(template.stat)}+${mod.value}${isPercent ? '%' : ''}`
-                          const isPrefix = template.type === 'prefix'
-                          return (
-                            <View key={index} style={[styles.modBadge, isPrefix ? styles.modBadgeBlue : styles.modBadgePurple]}>
-                              <Text style={[styles.modBadgeText, isPrefix ? styles.modBadgeTextBlue : styles.modBadgeTextPurple]}>
-                                {label}
-                              </Text>
-                            </View>
-                          )
-                        })}
-                      </View>
-                    )}
                   </View>
                 </TouchableOpacity>
                 {hasCapacity && (
@@ -600,35 +580,5 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontWeight: '600',
     color: '#FFFFFF',
-  },
-  modRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 4,
-    marginTop: 3,
-  },
-  modBadge: {
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: 4,
-    borderWidth: 1,
-  },
-  modBadgeBlue: {
-    backgroundColor: '#EFF6FF',
-    borderColor: '#BFDBFE',
-  },
-  modBadgePurple: {
-    backgroundColor: '#F5F3FF',
-    borderColor: '#E9D5FF',
-  },
-  modBadgeText: {
-    fontSize: 9,
-    fontWeight: '600',
-  },
-  modBadgeTextBlue: {
-    color: '#1D4ED8',
-  },
-  modBadgeTextPurple: {
-    color: '#6D28D9',
   },
 })

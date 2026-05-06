@@ -19,7 +19,7 @@ import { getAreaConfig } from '../../shared/data/expeditionArea'
 import { getEnemyDatabase } from '../../shared/data/enemy'
 import { getEquipmentTemplate, getEquipmentByRank } from '../../shared/data/equipmentPoolLoader'
 import { BattleSystem } from './BattleSystem'
-import { ModStatCalculator } from './ModStatCalculator'
+import { GoblinStatCalculator } from './GoblinStatCalculator'
 import { EquipmentTitleService } from './EquipmentTitleService'
 import { rollDropRank } from './DropRankRoller'
 import { rollLuckValue } from './LuckRoller'
@@ -380,7 +380,7 @@ export class ExpeditionEngine {
 
   private initializePartyState(party: Goblin[]): PartyState[] {
     return party.map(goblin => {
-      // 基礎ステータスを保存（因子・Mod適用はModStatCalculatorで行う）
+      // 基礎ステータスを保存（因子適用はGoblinStatCalculatorで行う）
       // HP0の負傷者は治療されるまで0のまま、それ以外は出発時に最大HPで開始する
       const effectiveStats = getEffectiveStats(goblin)
       const currentHP = goblin.currentHp === 0 ? 0 : effectiveStats.hp
@@ -406,7 +406,6 @@ export class ExpeditionEngine {
         magicHeal: goblin.stats.magicHeal,
         isKO: currentHP <= 0,
         isDead: currentHP <= 0,
-        mods: goblin.mods || [],
         factors: goblin.factors || [],
         variantFactorId: goblin.variantFactorId,
         spells: goblin.spells,
@@ -577,8 +576,8 @@ export class ExpeditionEngine {
   }
 
   private resolveCombat(partyState: PartyState[], enemies: Enemy[][], _area: AreaConfig, _isBoss = false): CombatReplay {
-    // partyStateから全ゴブリンを再構築（死亡メンバーも含む、modsも保持）
-    // 基礎ステータスを使用（ModStatCalculatorが因子・Modを適用する）
+    // partyStateから全ゴブリンを再構築（死亡メンバーも含む）
+    // 基礎ステータスを使用（GoblinStatCalculatorが因子を適用する）
     const allGoblins: Goblin[] = partyState.map(member => ({
       id: parseInt(member.id),
       name: member.name,
@@ -587,7 +586,7 @@ export class ExpeditionEngine {
       experience: 0,
       avatar: member.avatar,
       stats: {
-        hp: member.baseHP,  // 基礎HPを使用（ModStatCalculatorが因子・Modを適用）
+        hp: member.baseHP,  // 基礎HPを使用（GoblinStatCalculatorが因子を適用）
         atk: member.atk,
         magicAtk: member.magicAtk,
         def: member.def,
@@ -599,7 +598,6 @@ export class ExpeditionEngine {
         criticalRate: 0,
       },
       agility: member.agility,
-      mods: member.mods,
       skills: member.skills,
       factors: member.factors,
       variantFactorId: member.variantFactorId,

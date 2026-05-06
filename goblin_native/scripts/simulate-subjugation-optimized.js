@@ -264,13 +264,11 @@ function createBaseGoblin(id, name, job) {
     level: START_LEVEL,
     experience: 0,
     effectiveStats: undefined,
-    mods: [],
     factors: [],
   }
   return {
     ...applyGoblinJob(leveled, job),
     effectiveStats: undefined,
-    mods: [],
     factors: [],
   }
 }

@@ -26,5 +26,5 @@ export interface SpellDef {
 /** キャラクターが習得した呪文 */
 export interface LearnedSpell {
   spellId: string
-  extraCharges?: number      // Modによる追加チャージ数
+  extraCharges?: number      // 追加チャージ数
 }

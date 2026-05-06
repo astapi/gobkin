@@ -1,6 +1,6 @@
 import type { Goblin } from '../../shared/types/Goblin'
 import type { FactorDropConfig } from '../../shared/types/Factor'
-import { ModStatCalculator } from './ModStatCalculator'
+import { GoblinStatCalculator } from './GoblinStatCalculator'
 
 /**
  * シード付き乱数生成器を作成
@@ -70,7 +70,7 @@ export class FactorService {
     }
 
     // 実効ステータスを再計算
-    updatedGoblin.effectiveStats = ModStatCalculator.calculate(updatedGoblin)
+    updatedGoblin.effectiveStats = GoblinStatCalculator.calculate(updatedGoblin)
 
     return updatedGoblin
   }

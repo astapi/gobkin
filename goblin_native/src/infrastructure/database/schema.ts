@@ -20,7 +20,6 @@ export const SCHEMA = {
       factors_json TEXT,
       variant_factor_id TEXT,
       individual_value INTEGER DEFAULT 1,
-      mods_json TEXT,
       skills_json TEXT NOT NULL DEFAULT '[]',
       battle_action_policy_json TEXT,
       created_at TEXT NOT NULL DEFAULT (datetime('now')),
@@ -49,7 +48,6 @@ export const SCHEMA = {
       factors_json TEXT,
       variant_factor_id TEXT,
       individual_value INTEGER DEFAULT 1,
-      mods_json TEXT,
       skills_json TEXT NOT NULL DEFAULT '[]',
       battle_action_policy_json TEXT,
       created_at TEXT NOT NULL DEFAULT (datetime('now'))

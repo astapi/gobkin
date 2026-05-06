@@ -31,7 +31,7 @@ src/                       アプリ本体（ドメイン/ユースケース/イ
     components/            共有UIコンポーネント（現時点は空）
   shared/                  共通定義/データ/ユーティリティ
     constants/             定数
-    data/                  マスターデータ（敵/遠征エリア/因子/Mod など）
+    data/                  マスターデータ（敵/遠征エリア/因子など）
     types/                 型定義
     utils/                 画像マッピング/スケーリングなど
   types/                   型拡張（例: svg.d.ts）
@@ -81,7 +81,7 @@ src/                       アプリ本体（ドメイン/ユースケース/イ
 - `repositories/`
   - `IGoblinRepository.ts` / `IPartyRepository.ts` などのIF。
 - `services/`
-  - 戦闘/成長/因子/Mod 計算など（例: `BattleSystem.ts`, `ExperienceSystem.ts`, `ModStatCalculator.ts`）。
+  - 戦闘/成長/因子/実効ステータス計算など（例: `BattleSystem.ts`, `ExperienceSystem.ts`, `GoblinStatCalculator.ts`）。
 - `usecases/`
   - 遠征開始/完了/戦闘実行/パーティ管理などのユースケース。
 
@@ -106,7 +106,6 @@ src/                       アプリ本体（ドメイン/ユースケース/イ
 ## 共有データ/型（`src/shared/`）
 - `data/`
   - `enemy/` / `expeditionArea/` のJSON
-  - `modPool.json` / `modPoolLoader.ts`
   - `skills.ts` / `races.ts` / `factors.ts`
 - `types/`
   - `Goblin.ts` / `Party.ts` / `Expedition.ts` / `Battle.ts` などの型定義。

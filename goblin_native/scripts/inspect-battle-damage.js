@@ -57,10 +57,10 @@ function applyVariant(g, vid) {
 
 function createGoblin(id, name, level, job, vid) {
   const b = new GoblinBirthService(()=>0); const born = b.createNewGoblin(id, 1)
-  let g = { ...born, id, name, level, experience: 0, mods: [], factors: [], skills: born.skills??[] }
+  let g = { ...born, id, name, level, experience: 0, factors: [], skills: born.skills??[] }
   g = applyVariant(g, vid)
   g = applyGoblinJob(g, job || undefined)
-  return { ...g, effectiveStats: undefined, mods: [] }
+  return { ...g, effectiveStats: undefined }
 }
 
 function applyEquipBonuses(stats, bonuses) {

@@ -83,7 +83,6 @@ const en = {
       equipmentSkills: 'Skills',
       experience: 'Experience',
       factors: 'Factors',
-      mods: 'Mods',
       exp: 'EXP',
       nextLevel: 'Next level in: {{value}}',
       banishBlocked: 'Cannot banish',

@@ -4,9 +4,8 @@ import { useTranslation } from 'react-i18next'
 import { getGoblinDisplayImage, getGoblinDisplayImageScale } from '@/shared/utils/goblinImages'
 import { getFactorImage } from '@/shared/utils/factorImages'
 import { getEffectiveStats } from '@/shared/utils/goblinStats'
-import { getModTemplate } from '@/shared/data/modPoolLoader'
 import type { Goblin } from '@/shared/types'
-import { getRaceLabel, getStatLabel } from '@/shared/i18n/entityLocalization'
+import { getRaceLabel } from '@/shared/i18n/entityLocalization'
 
 interface GoblinCardProps {
   goblin: Goblin
@@ -62,24 +61,6 @@ export const GoblinCard = memo(function GoblinCard({
             </View>
           )}
         </View>
-        {goblin.mods && goblin.mods.length > 0 && (
-          <View style={styles.modRow}>
-            {goblin.mods.map((mod, index) => {
-              const template = getModTemplate(mod.templateId)
-              if (!template) return null
-              const isPercent = template.stat.includes('percent') || template.stat === 'damage_reduction'
-              const label = `${getStatLabel(template.stat)}+${mod.value}${isPercent ? '%' : ''}`
-              const isPrefix = template.type === 'prefix'
-              return (
-                <View key={index} style={[styles.modBadge, isPrefix ? styles.modBadgeBlue : styles.modBadgePurple]}>
-                  <Text style={[styles.modBadgeText, isPrefix ? styles.modBadgeTextBlue : styles.modBadgeTextPurple]}>
-                    {label}
-                  </Text>
-                </View>
-              )
-            })}
-          </View>
-        )}
       </View>
       <View style={styles.statsContainer}>
         {assignedPartyName && (
@@ -220,35 +201,5 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: 'bold',
     color: '#FFFFFF',
-  },
-  modRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 4,
-    marginTop: 2,
-  },
-  modBadge: {
-    paddingHorizontal: 5,
-    paddingVertical: 1,
-    borderRadius: 3,
-    borderWidth: 1,
-  },
-  modBadgeBlue: {
-    backgroundColor: '#EFF6FF',
-    borderColor: '#BFDBFE',
-  },
-  modBadgePurple: {
-    backgroundColor: '#F5F3FF',
-    borderColor: '#E9D5FF',
-  },
-  modBadgeText: {
-    fontSize: 9,
-    fontWeight: '600',
-  },
-  modBadgeTextBlue: {
-    color: '#1D4ED8',
-  },
-  modBadgeTextPurple: {
-    color: '#6D28D9',
   },
 })

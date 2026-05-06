@@ -36,7 +36,7 @@ export type EquipmentStat =
   | 'damage_reduction'
 
 /**
- * ステータスボーナス1件（ModStatCalculator連携用）
+ * ステータスボーナス1件（GoblinStatCalculator連携用）
  */
 export interface EquipmentStatBonus {
   stat: EquipmentStat

@@ -72,11 +72,11 @@
 - 役割: ゴブリン一覧表示と詳細モーダル。
 - 主な依存:
   - `useGoblinService`（取得/削除）
-  - `ModStatCalculator`、`ExperienceSystem`（詳細表示）
-  - `factorImages` / `goblinImages` / `modPoolLoader`
+  - `GoblinStatCalculator`、`ExperienceSystem`（詳細表示）
+  - `factorImages` / `goblinImages`
 - UI概要:
   - `FlatList` で一覧。
-  - タップで詳細モーダル（ステータス・因子・Mod・経験値）。
+  - タップで詳細モーダル（ステータス・因子・経験値）。
   - 追放ボタンで削除。
 - 補足: 空状態表示あり。
 
@@ -88,7 +88,7 @@
   - `useBaseState`（拠点ランク/収容数）
   - `usePendingGoblins`（保留ゴブリン）
   - `useGoblinService`（受け入れ保存）
-  - `ModStatCalculator`（Mod反映ステータス）
+  - `GoblinStatCalculator`（実効ステータス）
 - UI概要:
   - 拠点ステータスカード。
   - 保留ゴブリンの選択、追加・追放アクション。

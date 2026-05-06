@@ -230,5 +230,5 @@
 | `src/shared/data/raceAbilities.ts` | 種族スキル定義 |
 | `src/core/services/GoblinBirthService.ts` | ゴブリン誕生ロジック |
 | `src/core/services/FactorInheritanceService.ts` | 因子引き継ぎ・亜種化判定 |
-| `src/core/services/ModStatCalculator.ts` | 因子ボーナス含む実効ステータス計算 |
+| `src/core/services/GoblinStatCalculator.ts` | 因子ボーナス含む実効ステータス計算 |
 | `src/core/services/BattleSystem.ts` | 通常攻撃・後列防護・追加ダメージの戦闘処理 |

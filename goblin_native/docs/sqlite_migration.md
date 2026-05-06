@@ -51,7 +51,6 @@ type Goblin = {
   factors?: string[]
   variantFactorId?: string
   individualValue?: number
-  mods?: ModInstance[]
 }
 ```
 
@@ -126,7 +125,6 @@ CREATE TABLE goblins (
   factors_json TEXT,           -- string[] をJSON格納
   variant_factor_id TEXT,
   individual_value INTEGER DEFAULT 1,
-  mods_json TEXT,              -- ModInstance[] をJSON格納
   -- メタデータ
   created_at TEXT NOT NULL DEFAULT (datetime('now')),
   updated_at TEXT NOT NULL DEFAULT (datetime('now'))
@@ -150,7 +148,6 @@ CREATE TABLE pending_goblins (
   factors_json TEXT,
   variant_factor_id TEXT,
   individual_value INTEGER DEFAULT 1,
-  mods_json TEXT,
   created_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
 ```
@@ -445,8 +442,8 @@ export class SQLiteGoblinRepository implements IGoblinRepository {
       `INSERT OR REPLACE INTO goblins
        (id, name, race, level, experience, avatar, stats_json,
         effective_stats_json, factors_json, variant_factor_id,
-        individual_value, mods_json, updated_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))`,
+        individual_value, updated_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))`,
       [
         goblin.id,
         goblin.name,
@@ -459,7 +456,6 @@ export class SQLiteGoblinRepository implements IGoblinRepository {
         goblin.factors ? JSON.stringify(goblin.factors) : null,
         goblin.variantFactorId ?? null,
         goblin.individualValue ?? 1,
-        goblin.mods ? JSON.stringify(goblin.mods) : null,
       ]
     )
   }
@@ -484,7 +480,6 @@ export class SQLiteGoblinRepository implements IGoblinRepository {
       factors: row.factors_json ? JSON.parse(row.factors_json) : undefined,
       variantFactorId: row.variant_factor_id ?? undefined,
       individualValue: row.individual_value ?? undefined,
-      mods: row.mods_json ? JSON.parse(row.mods_json) : undefined,
     }
   }
 
@@ -507,7 +502,6 @@ interface GoblinRow {
   factors_json: string | null
   variant_factor_id: string | null
   individual_value: number | null
-  mods_json: string | null
   created_at: string
   updated_at: string
 }
@@ -541,7 +535,7 @@ export const importFromFirestore = async (userId: string) => {
 
 ### JSON格納を選択した理由
 
-1. **stats, factors, mods**: ネストしたオブジェクトや配列であり、正規化するとJOINが複雑化
+1. **stats, factors**: ネストしたオブジェクトや配列であり、正規化するとJOINが複雑化
 2. **replay_json**: 大きなイベントログであり、そのまま格納が効率的
 3. **SQLiteのJSON関数**: SQLite 3.38.0以降でJSON関数がサポートされており、必要に応じてクエリ可能
 

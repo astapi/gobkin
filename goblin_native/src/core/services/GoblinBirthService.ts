@@ -1,6 +1,5 @@
 import type { Goblin, GoblinStats } from '../../shared/types'
-import { ModGeneratorService } from './ModGeneratorService'
-import { ModStatCalculator } from './ModStatCalculator'
+import { GoblinStatCalculator } from './GoblinStatCalculator'
 import { FactorInheritanceService, type InheritanceResult } from './FactorInheritanceService'
 import { calculateIndividualValue } from './BaseRankSystem'
 import { getDefaultSkillsForRace } from '../../shared/data/raceSkills'
@@ -128,16 +127,11 @@ export class GoblinBirthService {
       : 'goblin'
     const race = getLegacyRaceName(raceId)
 
-    // 基本ステータスを生成（因子ボーナスはModStatCalculatorで計算時に適用）
+    // 基本ステータスを生成（因子ボーナスはGoblinStatCalculatorで計算時に適用）
     const stats = this.generateStats(race)
     const avatar = inheritance?.isVariant
       ? inheritance.variantAvatar!
       : '/src/assets/goblin/goblin.png'
-
-    // Modを生成（シードはIDとタイムスタンプから生成）
-    const modSeed = id * 1000 + Date.now() % 1000
-    const modGenerator = new ModGeneratorService(modSeed)
-    const mods = modGenerator.generateMods(clampedIV)
 
     const goblin: Goblin = {
       id,
@@ -151,7 +145,6 @@ export class GoblinBirthService {
       baseAttributes: getGoblinBaseAttributes({ race, raceId }),
       effectiveStats: stats,  // 仮設定、後で計算
       individualValue: clampedIV,
-      mods,  // 空配列もそのまま保存（Firestoreはundefinedを許容しない）
       skills: getDefaultSkillsForRace(raceId),
       factors: inheritance?.inheritedFactors ?? [],
     }
@@ -161,8 +154,8 @@ export class GoblinBirthService {
       goblin.variantFactorId = inheritance.variantFactorId
     }
 
-    // 実効ステータスを計算（因子・Mod適用後）
-    goblin.effectiveStats = ModStatCalculator.calculate(goblin)
+    // 実効ステータスを計算（因子適用後）
+    goblin.effectiveStats = GoblinStatCalculator.calculate(goblin)
 
     return goblin
   }

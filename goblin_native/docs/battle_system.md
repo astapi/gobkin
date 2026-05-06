@@ -10,7 +10,7 @@
 |---------|------|
 | `src/core/services/BattleSystem.ts` | 戦闘メインループ・命中判定 |
 | `src/core/services/DamageCalculator.ts` | ダメージ計算 |
-| `src/core/services/ModStatCalculator.ts` | 実効ステータス計算（因子・Mod・装備） |
+| `src/core/services/GoblinStatCalculator.ts` | 実効ステータス計算（因子・装備・スキル） |
 | `src/core/services/CombatantManager.ts` | 戦闘参加者管理 |
 | `src/core/services/ExpeditionEngine.ts` | 遠征エンジン（戦闘を呼び出す） |
 | `src/shared/types/Battle.ts` | 戦闘関連の型定義 |
@@ -60,18 +60,18 @@ while (currentTurn < maxTurns) {
 
 ### 実効ステータスの計算
 
-`ModStatCalculator.calculate()` で基本値から実効値を算出します。
+`GoblinStatCalculator.calculate()` で基本値から実効値を算出します。
 
 ```
-最終ステータス = (基本値 + 因子ボーナス + Modフラット + 装備フラット) × (1 + (Mod% + 装備%) / 100)
+最終ステータス = (基本値 + 因子ボーナス + 装備フラット + スキルフラット) × (1 + 装備% / 100)
 ```
 
 適用順序:
 1. **基本ステータス**: ゴブリン生成時に決定
 2. **因子ボーナス**: 継承した因子による加算
-3. **Modフラット加算**: `ModInstance[]` のフラット値
-4. **装備フラット加算**: `EquipmentStatBonus` のフラット値
-5. **乗算処理**: `(1 + (Mod% + 装備%) / 100)`
+3. **装備フラット加算**: `EquipmentStatBonus` のフラット値
+4. **スキル補正**: フラット加算・倍率補正
+5. **乗算処理**: `(1 + 装備% / 100)`
 
 ---
 
@@ -206,7 +206,7 @@ function getDamageModifier(attackNumber: number): number {
 
 ### 被ダメージ軽減（damage_reduction）
 
-Modや装備から`damage_reduction`ステータスを集計し、上限付きで適用:
+装備から`damage_reduction`ステータスを集計して適用:
 
 ```
 reductionFactor = 1 − damageReduction / 100

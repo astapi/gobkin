@@ -57,7 +57,7 @@ console.info = () => undefined
 
 const { GoblinBirthService } = require('../src/core/services/GoblinBirthService')
 const { EquipmentService } = require('../src/core/services/EquipmentService')
-const { ModStatCalculator } = require('../src/core/services/ModStatCalculator')
+const { GoblinStatCalculator } = require('../src/core/services/GoblinStatCalculator')
 const { applyGoblinJob } = require('../src/shared/data/goblinJobs')
 const { applySkillBonusesToEquipmentBonuses } = require('../src/shared/data/characterSkills')
 const { getGoblinVariantByFactorId } = require('../src/shared/data/goblinVariants')
@@ -88,10 +88,10 @@ function applyVariant(goblin, variantFactorId) {
 function createGoblin(id, name, level, job, variantFactorId) {
   const birth = new GoblinBirthService(() => 0)
   const born = birth.createNewGoblin(id, 1)
-  let g = { ...born, id, name, level, experience: 0, effectiveStats: undefined, mods: [], factors: [], skills: born.skills ?? [] }
+  let g = { ...born, id, name, level, experience: 0, effectiveStats: undefined, factors: [], skills: born.skills ?? [] }
   g = applyVariant(g, variantFactorId)
   g = applyGoblinJob(g, job || undefined)
-  return { ...g, effectiveStats: undefined, mods: [] }
+  return { ...g, effectiveStats: undefined }
 }
 
 function applyEquipmentFlatBonuses(stats, bonuses) {
@@ -150,7 +150,7 @@ function main() {
     g = applyEquipment(g, m.equipmentTemplateIds || [])
     const slots = EquipmentService.getAvailableSlots(g)
     const equipped = (m.equipmentTemplateIds || []).slice(0, Math.min(slots, m.equipmentTemplateIds.length))
-    const effective = ModStatCalculator.calculate(g)
+    const effective = GoblinStatCalculator.calculate(g)
     const skillIds = g.skills.map(s => s.id).filter(id => id)
     console.log(`列${i + 1} ${m.name} variant=${m.variantFactorId ?? '通常'} 装備枠=${slots} 装備=[${equipped.join(', ')}]`)
     console.log(`  effective: hp=${effective.hp} atk=${effective.atk} def=${effective.def} accuracy=${effective.accuracy} attackCount=${effective.attackCount} evasion=${effective.evasion}`)

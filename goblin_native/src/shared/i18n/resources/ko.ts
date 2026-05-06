@@ -82,7 +82,6 @@ const ko = {
       equipmentSkills: '스킬',
       experience: '경험치',
       factors: '인자',
-      mods: 'Mod',
       exp: 'EXP',
       nextLevel: '다음 레벨까지: {{value}}',
       banishBlocked: '추방할 수 없습니다',

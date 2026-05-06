@@ -394,5 +394,4 @@ interface RewardSummary {
 - [遠征システム](expedition_system.md) — 遠征の全体フロー、報酬分配
 - [戦闘システム](battle_system.md) — 戦闘勝利条件（ドロップのトリガー）
 - [因子システム](factor_system.md) — 因子の効果と継承
-- [MODシステム](mod_system.md) — 装備のMod効果
 - [拠点ランクシステム](base_rank_system.md) — 装備ショップ解放条件
