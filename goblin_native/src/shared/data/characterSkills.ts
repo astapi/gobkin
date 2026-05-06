@@ -207,6 +207,10 @@ export function describeCharacterSkill(skill: CharacterSkill): string {
     return i18n.t('battle.spellDamagePercent', { value: skill.spellDamagePercent })
   }
 
+  if (skill.partyMagicDamageMultiplier !== undefined) {
+    return i18n.t('battle.partyMagicDamageMultiplier', { value: skill.partyMagicDamageMultiplier.toFixed(1) })
+  }
+
   if (skill.rearAllyDamageMultiplier !== undefined) {
     return i18n.t('battle.rearAllyDamage', { value: skill.rearAllyDamageMultiplier.toFixed(1) })
   }
@@ -602,6 +606,13 @@ export function getSpellDamagePercentFromSkills(skills: CharacterSkill[]): numbe
   return getUniqueSkillsById(skills).reduce(
     (sum, skill) => sum + (skill.spellDamagePercent ?? 0),
     0,
+  )
+}
+
+export function getPartyMagicDamageMultiplierFromSkills(skills: CharacterSkill[]): number {
+  return getUniqueSkillsById(skills).reduce(
+    (max, skill) => Math.max(max, skill.partyMagicDamageMultiplier ?? 1),
+    1,
   )
 }
 

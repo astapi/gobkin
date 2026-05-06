@@ -150,6 +150,13 @@ const GOBLIN_JOB_DEFINITION_SEEDS: Record<GoblinJob, GoblinJobDefinitionSeed> = 
       },
       {
         skillId: "magic_rear_guard"
+      },
+      {
+        skillId: "magic_field"
+      },
+      {
+        skillId: "instant_revive",
+        unlockLevel: 70
       }
     ],
     unlockRequiresClearedArea: "road_1",

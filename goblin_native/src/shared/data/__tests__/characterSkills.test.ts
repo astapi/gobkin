@@ -10,6 +10,7 @@ import {
   getLearnedSpellsFromSkills,
   getMagicDamageFollowUpFromSkills,
   getMagicDamageReductionFromSkills,
+  getPartyMagicDamageMultiplierFromSkills,
   getCounterAttackAvoidanceRateFromSkills,
   getPhysicalCounterAttackFromSkills,
   getPhysicalDamagePercentFromSkills,
@@ -472,6 +473,16 @@ describe('characterSkills - 物理ダメージ軽減', () => {
 
     expect(getMagicDamageFollowUpFromSkills(skills)).toEqual({ attackCountMultiplier: 0.7, criticalRateMultiplier: 0.5 })
     expect(getMagicDamageFollowUpFromSkills([{ id: 'plain' }])).toBeUndefined()
+  })
+
+  it('PT魔法ダメージ倍率は最大値を取得する', () => {
+    const skills: CharacterSkill[] = [
+      { id: 'magic_field', partyMagicDamageMultiplier: 1.5 },
+      { id: 'magic_field_weak', partyMagicDamageMultiplier: 1.2 },
+    ]
+
+    expect(getPartyMagicDamageMultiplierFromSkills(skills)).toBe(1.5)
+    expect(getPartyMagicDamageMultiplierFromSkills([{ id: 'plain' }])).toBe(1)
   })
 
   it('打ち合いスキルの反撃設定を取得できる', () => {

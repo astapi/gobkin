@@ -59,6 +59,7 @@ export interface CharacterSkill {
   goldBonusPercent?: number
   partyRareMultiplier?: number
   partyTitleMultiplier?: number
+  partyMagicDamageMultiplier?: number
   expeditionTimeMultiplier?: number
   raceBonus?: RaceBuckets
   raceTakenBonus?: RaceBuckets

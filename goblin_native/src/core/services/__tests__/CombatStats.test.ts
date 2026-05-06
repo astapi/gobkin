@@ -1555,6 +1555,7 @@ describe('selectTarget — 隊列ターゲット選択', () => {
       magicHeal: 0,
       criticalRate: 0,
       spellDamagePercent: 0,
+      magicFieldDamageMultiplier: 1,
       row,
       rowSlot,
       level: 1,
@@ -2434,6 +2435,63 @@ describe('spell charges', () => {
     expect(shieldedDamage).toBeLessThanOrEqual(Math.ceil(plainDamage * 0.55))
   })
 
+  it('マジックフィールドは戦闘開始時に自動発動し味方の魔法ダメージを1.5倍にする', () => {
+    const boostedCaster = createTestGoblin({
+      id: 1,
+      name: '支援クレリック',
+      level: 13,
+      spells: [{ spellId: 'magic_arrow' }],
+      skills: [{ id: 'magic_field', partyMagicDamageMultiplier: 1.5 }],
+      stats: { hp: 300, atk: 1, magicAtk: 100, agility: 100, def: 10, attackCount: 0, accuracy: 999, evasion: 0 },
+    })
+    const plainCaster = createTestGoblin({
+      id: 1,
+      name: '支援クレリック',
+      level: 13,
+      spells: [{ spellId: 'magic_arrow' }],
+      skills: [],
+      stats: { hp: 300, atk: 1, magicAtk: 100, agility: 100, def: 10, attackCount: 0, accuracy: 999, evasion: 0 },
+    })
+    const target = createTestEnemy({
+      id: 'TARGET',
+      name: '標的',
+      hp: 999,
+      atk: 1,
+      def: 1,
+      magicDef: 1,
+      agility: 1,
+      attackCount: 0,
+      evasion: 0,
+    })
+
+    const boostedResult = new BattleSystem().executeBattle(
+      [boostedCaster],
+      [boostedCaster.stats.hp],
+      [[target]],
+      () => 0.5,
+      1,
+    )
+    const plainResult = new BattleSystem().executeBattle(
+      [plainCaster],
+      [plainCaster.stats.hp],
+      [[createTestEnemy({ ...target })]],
+      () => 0.5,
+      1,
+    )
+
+    const magicFieldLog = boostedResult.detailedLog.find(log => log.actionEffect === 'magic_field')
+    const boostedDamage = boostedResult.detailedLog.find(log => log.actorId === '1' && log.action === 'マジックアロー')!.targets[0].totalDamage
+    const plainDamage = plainResult.detailedLog.find(log => log.actorId === '1' && log.action === 'マジックアロー')!.targets[0].totalDamage
+    const firstTurnStart = boostedResult.detailedLog.find(log => log.action === 'turn_start' && log.turn === 1)
+
+    expect(magicFieldLog?.turn).toBe(0)
+    expect(magicFieldLog?.action).toBe('マジックフィールド')
+    expect(boostedResult.detailedLog.some(log => log.turn === 1 && log.actorId === '1' && log.action === 'マジックアロー')).toBe(true)
+    expect(firstTurnStart?.turnState?.allyPartyEffects).toContain('magic_field')
+    expect(boostedDamage).toBeGreaterThanOrEqual(Math.floor(plainDamage * 1.45))
+    expect(boostedDamage).toBeLessThanOrEqual(Math.ceil(plainDamage * 1.55))
+  })
+
   it('アタックアップ後は味方の通常攻撃ダメージが1.6倍になる', () => {
     const buffer = createTestGoblin({
       id: 1,
@@ -3053,6 +3111,97 @@ describe('BattleSystem — ジョブ系スキル', () => {
     expect(victimTurnState?.targets[0].targetId).toBe('1')
     expect(victimTurnState?.targets[0].defeated).toBe(true)
     expect(victimTurnState?.targets[0].targetHP).toBe(0)
+  })
+
+  it('即時蘇生のパーティヒールは死亡者を含むPTメンバーをまとめて回復する', () => {
+    const deadFront = createTestGoblin({
+      id: 1,
+      name: '倒れている前衛',
+      stats: { hp: 40, atk: 5, agility: 1, def: 5, attackCount: 1, accuracy: 1, evasion: 0 },
+      skills: [],
+    })
+    const victim = createTestGoblin({
+      id: 2,
+      name: '倒される中衛',
+      stats: { hp: 40, atk: 5, agility: 1, def: 5, attackCount: 1, accuracy: 1, evasion: 0 },
+      skills: [],
+    })
+    const reviver = createTestGoblin({
+      id: 3,
+      name: '僧侶',
+      spells: [{ spellId: 'party_heal' }],
+      stats: { hp: 80, atk: 20, magicHeal: 30, agility: 10, def: 10, attackCount: 1, accuracy: 999, evasion: 0 },
+      skills: [{ id: 'instant_revive', immediateReviveOnAllyDeath: true }],
+    })
+    const enemy = createTestEnemy({
+      id: 'EXECUTIONER',
+      name: '処刑人',
+      hp: 999,
+      atk: 999,
+      def: 1,
+      agility: 100,
+      attackCount: 1,
+      accuracy: 999,
+      evasion: 0,
+    })
+
+    const result = new BattleSystem().executeBattle(
+      [deadFront, victim, reviver],
+      [0, victim.stats.hp, reviver.stats.hp],
+      [[enemy]],
+      () => 0,
+      1,
+    )
+    const reviveLog = result.detailedLog.find(log => log.actorId === '3' && log.action === 'パーティヒール')
+
+    expect(reviveLog?.targets.map(target => target.targetId)).toEqual(['1', '2'])
+    expect(reviveLog?.targets.map(target => target.targetHP)).toEqual([40, 40])
+  })
+
+  it('即時蘇生の単体回復は複数死亡時に前列のメンバーを蘇生する', () => {
+    const deadFront = createTestGoblin({
+      id: 1,
+      name: '倒れている前衛',
+      stats: { hp: 40, atk: 5, agility: 1, def: 5, attackCount: 1, accuracy: 1, evasion: 0 },
+      skills: [],
+    })
+    const victim = createTestGoblin({
+      id: 2,
+      name: '倒される中衛',
+      stats: { hp: 40, atk: 5, agility: 1, def: 5, attackCount: 1, accuracy: 1, evasion: 0 },
+      skills: [],
+    })
+    const reviver = createTestGoblin({
+      id: 3,
+      name: '僧侶',
+      spells: [{ spellId: 'heal' }],
+      stats: { hp: 80, atk: 20, magicHeal: 30, agility: 10, def: 10, attackCount: 1, accuracy: 999, evasion: 0 },
+      skills: [{ id: 'instant_revive', immediateReviveOnAllyDeath: true }],
+    })
+    const enemy = createTestEnemy({
+      id: 'EXECUTIONER',
+      name: '処刑人',
+      hp: 999,
+      atk: 999,
+      def: 1,
+      agility: 100,
+      attackCount: 1,
+      accuracy: 999,
+      evasion: 0,
+    })
+
+    const result = new BattleSystem().executeBattle(
+      [deadFront, victim, reviver],
+      [0, victim.stats.hp, reviver.stats.hp],
+      [[enemy]],
+      () => 0,
+      1,
+    )
+    const reviveLog = result.detailedLog.find(log => log.actorId === '3' && log.action === 'ヒール')
+
+    expect(reviveLog?.targets).toHaveLength(1)
+    expect(reviveLog?.targets[0].targetId).toBe('1')
+    expect(reviveLog?.targets[0].targetHP).toBe(30)
   })
 
   it('気合い持ちでもHP1の状態で致死ダメージを受けたら倒れる', () => {
