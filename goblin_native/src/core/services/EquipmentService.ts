@@ -163,7 +163,7 @@ export class EquipmentService {
 
   /**
    * ゴブリンの装備からステータスボーナスを合算
-   * ModStatCalculator に渡すためのデータを生成
+   * GoblinStatCalculator に渡すためのデータを生成
    */
   static calculateEquipmentBonuses(
     equipped: EquipmentInstance[]

@@ -7,7 +7,7 @@ import type { IGoblinRepository } from '../../core/repositories/IGoblinRepositor
 import { getDatabase } from '../database'
 import { normalizeGoblinJobSkills } from '../../shared/data/goblinJobs'
 import { syncGoblinDerivedStats } from '../../shared/utils/goblinStats'
-import { ModStatCalculator } from '../../core/services/ModStatCalculator'
+import { GoblinStatCalculator } from '../../core/services/GoblinStatCalculator'
 import { normalizeGoblinRaceId } from '../../shared/types/Race'
 import { normalizeBattleActionPolicy } from '../../shared/utils/battleActionPolicy'
 
@@ -26,7 +26,6 @@ interface GoblinRow {
   factors_json: string | null
   variant_factor_id: string | null
   individual_value: number | null
-  mods_json: string | null
   skills_json: string
   battle_action_policy_json: string | null
   created_at: string
@@ -59,15 +58,15 @@ export class SQLiteGoblinRepository implements IGoblinRepository {
     const normalizedGoblin = syncGoblinDerivedStats(normalizeGoblinJobSkills(goblin))
     const persistedGoblin: Goblin = {
       ...normalizedGoblin,
-      effectiveStats: normalizedGoblin.effectiveStats ?? ModStatCalculator.calculate(normalizedGoblin),
+      effectiveStats: normalizedGoblin.effectiveStats ?? GoblinStatCalculator.calculate(normalizedGoblin),
     }
     const db = await getDatabase()
     await db.runAsync(
       `INSERT OR REPLACE INTO goblins
        (id, name, race, race_id, level, experience, avatar, stats_json,
         current_hp, effective_stats_json, factors_json, variant_factor_id, job_id,
-        individual_value, mods_json, skills_json, battle_action_policy_json, updated_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))`,
+        individual_value, skills_json, battle_action_policy_json, updated_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))`,
       [
         persistedGoblin.id,
         persistedGoblin.name,
@@ -83,7 +82,6 @@ export class SQLiteGoblinRepository implements IGoblinRepository {
         persistedGoblin.variantFactorId ?? null,
         persistedGoblin.job ?? null,
         persistedGoblin.individualValue ?? 1,
-        persistedGoblin.mods ? JSON.stringify(persistedGoblin.mods) : null,
         JSON.stringify(persistedGoblin.skills),
         persistedGoblin.battleActionPolicy
           ? JSON.stringify(normalizeBattleActionPolicy(persistedGoblin.battleActionPolicy))
@@ -147,9 +145,6 @@ export class SQLiteGoblinRepository implements IGoblinRepository {
         : undefined,
       variantFactorId: row.variant_factor_id ?? undefined,
       individualValue: row.individual_value ?? undefined,
-      mods: row.mods_json
-        ? JSON.parse(row.mods_json)
-        : undefined,
       skills: JSON.parse(row.skills_json),
       battleActionPolicy: row.battle_action_policy_json
         ? normalizeBattleActionPolicy(JSON.parse(row.battle_action_policy_json))
@@ -159,7 +154,7 @@ export class SQLiteGoblinRepository implements IGoblinRepository {
     const normalizedGoblin = syncGoblinDerivedStats(goblin)
     return {
       ...normalizedGoblin,
-      effectiveStats: normalizedGoblin.effectiveStats ?? ModStatCalculator.calculate(normalizedGoblin),
+      effectiveStats: normalizedGoblin.effectiveStats ?? GoblinStatCalculator.calculate(normalizedGoblin),
     }
   }
 }

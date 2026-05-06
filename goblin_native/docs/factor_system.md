@@ -42,7 +42,7 @@
 3. 各生存ゴブリンに対して `FactorService.rollFactorDrops()` で確率判定
 4. 判定にはシード値（`seed + goblinId`）を使用し、決定論的に結果が決まる
 5. 獲得した因子は `FactorService.addFactors()` で既存因子に追加（重複排除）
-6. 実効ステータスが `ModStatCalculator` で再計算される
+6. 実効ステータスが `GoblinStatCalculator` で再計算される
 7. SQLiteに因子配列と実効ステータスを保存
 
 ## 因子のステータス効果
@@ -73,10 +73,10 @@
 
 ### ステータス計算式
 
-`ModStatCalculator.calculate()` での計算順序:
+`GoblinStatCalculator.calculate()` での計算順序:
 
 ```
-実効値 = floor( (基礎ステ + 因子ボーナス + Modフラット + 装備フラット) × (1 + (Mod% + 装備%) / 100) )
+実効値 = floor( (基礎ステ + 因子ボーナス + 装備フラット + スキルフラット) × (1 + 装備% / 100) )
 ```
 
 因子ボーナスの計算 (`FactorInheritanceService.calculateFactorBonuses()`):
@@ -210,7 +210,7 @@
 | `src/core/services/FactorService.ts` | 因子獲得判定（rollFactorDrops）、因子追加（addFactors） |
 | `src/core/services/FactorInheritanceService.ts` | 引き継ぎ判定、亜種化判定、因子ボーナス計算 |
 | `src/core/services/GoblinBirthService.ts` | ゴブリン誕生時の因子引き継ぎ統合 |
-| `src/core/services/ModStatCalculator.ts` | 因子ボーナスを含む実効ステータス計算 |
+| `src/core/services/GoblinStatCalculator.ts` | 因子ボーナスを含む実効ステータス計算 |
 | `src/core/usecases/CompleteExpeditionUseCase.ts` | 遠征完了時の因子獲得処理 |
 | `src/infrastructure/repositories/SQLiteGoblinRepository.ts` | 因子のDB永続化 |
 | `src/shared/utils/factorImages.ts` | 因子アイコン画像マッピング |

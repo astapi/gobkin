@@ -1,4 +1,3 @@
-import type { ModInstance } from './Mod'
 import type { CharacterSkill } from './CharacterSkill'
 import type { LearnedSpell } from './Spell'
 import type { GoblinRaceId } from './Race'
@@ -40,11 +39,10 @@ export type Goblin = {
   stats: GoblinStats  // 基本ステータス（レベルアップで増加）
   currentHp?: number  // 現在HP。未設定または1以上なら遠征開始時に最大HPまで回復、0なら負傷扱い
   baseAttributes?: GoblinBaseAttributes  // 基本能力値（力、知恵、精神、体力、敏捷、運）
-  effectiveStats?: GoblinStats  // 実効ステータス（stats + 因子 + Mod適用後）、未設定時はModStatCalculatorで計算
+  effectiveStats?: GoblinStats  // 実効ステータス（stats + 因子適用後）、未設定時はGoblinStatCalculatorで計算
   factors?: string[]  // 獲得した因子IDの配列
   variantFactorId?: string  // 亜種として生まれた因子ID
   individualValue?: number  // 個体値 (1〜64)、未定義の場合は1として扱う
-  mods?: ModInstance[]  // 付与されたMod配列（0〜4個）
   skills: CharacterSkill[]  // パッシブスキル一覧
   spells?: LearnedSpell[]  // 習得した呪文リスト
   battleActionPolicy?: BattleActionPolicy // 戦闘時の行動率設定

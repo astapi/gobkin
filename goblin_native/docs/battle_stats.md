@@ -158,28 +158,18 @@ HP以外の基礎ステータスは、以下の式で決定される。
 ### 最終ステータスの算出
 
 ```
-最終値 = (基礎 + 因子フラット + Modフラット + 装備フラット) × (1 + (Mod% + 装備%) / 100)
+最終値 = (基礎 + 因子フラット + 装備フラット + スキルフラット) × (1 + 装備% / 100)
 ```
 
 - `goblin.stats` は基礎ステータスを保持する
-- 因子・Mod・装備・スキル補正は `ModStatCalculator` で合成する
+- 因子・装備・スキル補正は `GoblinStatCalculator` で合成する
 - 行動順に使う敏捷は最終ステータスとは別管理
 
-計算はModStatCalculatorで行われ、以下の4つのソースから合算される:
+計算はGoblinStatCalculatorで行われ、以下の3つのソースから合算される:
 
 1. **基礎ステータス** - レベルアップで成長する値（`goblin.stats`）
 2. **因子ボーナス** - 獲得した因子（Factor）からのフラット加算
-3. **Modボーナス** - Modインスタンスからのフラット加算・%増加
-4. **装備ボーナス** - 装備品からのフラット加算・%増加
-
-### Modで修正可能なステータス
-
-| ModStat | 対象 |
-|---|---|
-| hp_flat / hp_percent | HP |
-| atk_flat / atk_percent | 攻撃力 |
-| def_flat / def_percent | 防御力 |
-| attackCount_flat | 攻撃回数 |
+3. **装備・スキルボーナス** - フラット加算・%増加・倍率補正
 | accuracy_flat | 命中精度 |
 | evasion_flat | 回避能力 |
 | damage_reduction | 被ダメージ軽減率 |
@@ -261,7 +251,7 @@ hitRate = accuracy × 命中補正(n) × 乱数A − evasion × HP補正 × 乱�
 
 ## 戦闘フロー
 
-1. **初期化**: Goblin/Enemy → BattleUnit に変換（Mod・装備の実効ステータスを適用）
+1. **初期化**: Goblin/Enemy → BattleUnit に変換（実効ステータスを適用）
 2. **ターンループ**（最大20ターン）:
    1. 生存ユニットごとに `行動順値 = 敏捷² × スキル補正 × 乱数B` を計算
    2. 行動順値の高い順にソート
@@ -280,12 +270,11 @@ hitRate = accuracy × 命中補正(n) × 乱数A − evasion × HP補正 × 乱�
 | `src/shared/types/Goblin.ts` | GoblinStats 型定義 |
 | `src/shared/types/Enemy.ts` | Enemy 型定義 |
 | `src/shared/types/Battle.ts` | BattleLogEntry 型定義 |
-| `src/shared/types/Mod.ts` | ModStat 型定義 |
 | `src/shared/types/Equipment.ts` | EquipmentStat 型定義 |
 | `src/shared/types/Factor.ts` | FactorEffect 型定義 |
 | `src/core/services/BattleSystem.ts` | 戦闘ロジック本体 |
 | `src/core/services/DamageCalculator.ts` | ダメージ計算 |
-| `src/core/services/ModStatCalculator.ts` | 最終ステータス計算 |
+| `src/core/services/GoblinStatCalculator.ts` | 最終ステータス計算 |
 | `src/core/services/CombatantManager.ts` | ユニット変換 |
 | `src/shared/data/equipmentConfig.ts` | 血統別攻撃回数補正 |
 | `src/shared/data/factors.ts` | 因子マスターデータ |

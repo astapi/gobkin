@@ -12,7 +12,7 @@ export interface ParentSelection {
 
 /**
  * 因子引き継ぎの結果
- * ※ステータス補正はModStatCalculatorで計算時に適用されるため、ここには含めない
+ * ※ステータス補正はGoblinStatCalculatorで計算時に適用されるため、ここには含めない
  */
 export interface InheritanceResult {
   inheritedFactors: string[]   // 引き継いだ因子ID

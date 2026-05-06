@@ -231,7 +231,6 @@ function createInitialGrash() {
       luck: 10,
     },
     individualValue: 1,
-    mods: [],
     skills: [],
     factors: [],
   }
@@ -309,7 +308,7 @@ function addGoblin(goblins, rng, areaLevel, maxPartySize) {
   const service = new GoblinBirthService(rng)
   const nextId = Math.max(...goblins.map(goblin => goblin.id)) + 1
   const goblin = service.createNewGoblin(nextId, 1, undefined, areaLevel, 1)
-  return [...goblins, { ...goblin, effectiveStats: undefined, mods: [], skills: goblin.skills ?? [], factors: goblin.factors ?? [] }]
+  return [...goblins, { ...goblin, effectiveStats: undefined, skills: goblin.skills ?? [], factors: goblin.factors ?? [] }]
 }
 
 async function runExpedition(areaId, goblins, seed, maxPartySize) {

@@ -80,7 +80,7 @@
 
 ### マスターデータの完全辞書化
 
-- 現状は `enemy/*.json`, `expeditionArea/*.json`, `modPool.json` の `name` / `description` と、`equipmentPool.json` の `name` をフォールバックとして利用している。
+- 現状は `enemy/*.json`, `expeditionArea/*.json` の `name` / `description` と、`equipmentPool.json` の `name` をフォールバックとして利用している。
 - 将来的にはこれらも翻訳キー参照に寄せ、ロケールごとの辞書管理へ統一する。
 
 ### 保存形式の完全正規化

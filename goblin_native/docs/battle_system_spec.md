@@ -369,7 +369,7 @@ hitCount = baseTargets + floor(level / scaleLevelInterval) × scalePerLevel
 | `src/core/services/BattleSystem.ts` | 戦闘メインループ、命中判定、隊列選択、魔法実行（585行） |
 | `src/core/services/DamageCalculator.ts` | ダメージ計算式、種族ボーナス（162行） |
 | `src/core/services/CombatantManager.ts` | Goblin/Enemy → Combatant 変換（37行） |
-| `src/core/services/ModStatCalculator.ts` | 実効ステータス計算、被ダメ軽減算出 |
+| `src/core/services/GoblinStatCalculator.ts` | 実効ステータス計算、被ダメ軽減算出 |
 | `src/core/services/ExpeditionEngine.ts` | 遠征エンジンからの戦闘呼び出し |
 | `src/shared/types/Battle.ts` | BattleLogEntry, AttackTargetDetail 型定義 |
 | `src/shared/types/Spell.ts` | SpellDef, SpellTargeting, LearnedSpell 型定義 |

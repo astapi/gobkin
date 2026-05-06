@@ -56,7 +56,6 @@ export function backupGoblinToGoblin(g: BackupGoblin): Goblin {
     factors: g.factors,
     variantFactorId: g.variantFactorId,
     individualValue: g.individualValue,
-    mods: (g.mods as Goblin['mods']) ?? undefined,
     skills: (g.skills as Goblin['skills']) ?? [],
     spells: (g.spells as Goblin['spells']) ?? undefined,
     battleActionPolicy: g.battleActionPolicy as Goblin['battleActionPolicy'],

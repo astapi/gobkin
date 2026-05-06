@@ -32,7 +32,7 @@ import {
 import type { SpellDef } from '../../shared/types/Spell'
 import { CombatantManager } from './CombatantManager'
 import { DamageCalculator } from './DamageCalculator'
-import { ModStatCalculator } from './ModStatCalculator'
+import { GoblinStatCalculator } from './GoblinStatCalculator'
 import { getGoblinBaseAttributesAtLevel } from '../../shared/utils/goblinHp'
 import { getEffectiveStats, isPureGoblin } from '../../shared/utils/goblinStats'
 import i18n from '../../shared/i18n'
@@ -1548,7 +1548,7 @@ export class BattleSystem {
     combatant.buffs = toCombatBuffsFromSkills(skills)
     const actionOrderAgility = (goblin as Goblin & { agility?: number }).agility
     const baseAttributes = getGoblinBaseAttributesAtLevel(goblin, goblin.level)
-    // Mod適用後のステータスを使用
+    // 実効ステータスを使用
     const effectiveStats = getEffectiveStats(goblin)
     const packBonusPercent =
       getPureGoblinPartyStatBonusPercentFromSkills(skills, goblin.level) * pureGoblinCount
@@ -1559,7 +1559,7 @@ export class BattleSystem {
     const hp = initialHP === undefined || initialHP >= effectiveStats.hp
       ? maxHP
       : Math.min(initialHP, maxHP)
-    const damageReduction = ModStatCalculator.getDamageReduction(goblin)
+    const damageReduction = GoblinStatCalculator.getDamageReduction(goblin)
     const physicalDamageReduction = getPhysicalDamageReductionFromSkills(goblin.skills)
     const magicDamageReduction = getMagicDamageReductionFromSkills(goblin.skills)
     const learnedSpells = this.mergeLearnedSpells(goblin.spells, goblin.skills, goblin.level)

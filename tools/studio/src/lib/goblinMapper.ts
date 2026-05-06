@@ -28,7 +28,6 @@ export interface BackupGoblin {
   factors?: string[]
   variantFactorId?: string
   individualValue?: number
-  mods?: unknown[]
   skills: unknown[]
   spells?: unknown[]
   battleActionPolicy?: unknown
@@ -178,7 +177,6 @@ function rowToBackupGoblin(row: Record<string, unknown>): BackupGoblin | null {
     factors: parseJsonAs<string[]>(row.factors_json) ?? undefined,
     variantFactorId: toStringOrUndef(row.variant_factor_id),
     individualValue: toNumber(row.individual_value) ?? undefined,
-    mods: parseJsonAs<unknown[]>(row.mods_json) ?? undefined,
     skills: parseJsonAs<unknown[]>(row.skills_json) ?? [],
     battleActionPolicy:
       parseJsonAs<unknown>(row.battle_action_policy_json) ?? undefined,

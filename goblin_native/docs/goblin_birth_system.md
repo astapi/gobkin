@@ -3,7 +3,7 @@
 ## 概要
 
 ゴブリンはダンジョンを完全制圧した際に1体誕生する。
-誕生時に個体値・ステータス・Mod・因子引き継ぎ・亜種化がすべて決定される。
+誕生時に個体値・ステータス・因子引き継ぎ・亜種化がすべて決定される。
 
 ## 誕生のトリガー
 
@@ -55,8 +55,7 @@
         ├─ 名前のランダム選択
         ├─ 種族・アバターの決定（亜種 or 通常）
         ├─ 基本能力値に基づく基礎ステータス生成
-        ├─ Mod生成（0〜4個）
-        ├─ 実効ステータス計算（因子+Mod適用）
+        ├─ 実効ステータス計算（因子適用）
         └─ Goblin オブジェクト返却
 ```
 
@@ -65,7 +64,6 @@
 ### 概要
 
 個体値（IV: Individual Value）は1〜64の整数値で、ゴブリンの潜在能力を表す。
-個体値が高いほど強力なModが出現可能になる。
 
 ### 計算式
 
@@ -132,68 +130,6 @@ bonus  = BASE_RANK_BONUS[拠点ランク]
 | ホブゴブリン | 2 |
 | その他（未定義） | 2（デフォルト） |
 
-## Mod生成
-
-### 概要
-
-Mod はゴブリン誕生時に付与されるパッシブ効果。0〜4個がランダムに付与される。
-個体値が高いほど強力な（高Tier）Modが出現候補に含まれる。
-
-### Mod生成の仕組み
-
-1. **生成数の決定**: 0〜4個の範囲でランダム
-2. **各Modの抽選**: 個体値要件を満たし、かつ同グループ未使用のテンプレートから加重抽選
-3. **値のロール**: テンプレートの `valueRange` 内でランダム決定
-4. **グループ排他**: 同じグループのModは最大1個（例: `hp_percent` グループから2個は出ない）
-
-### シード値
-
-```
-modSeed = goblinId × 1000 + Date.now() % 1000
-```
-
-### Modグループ一覧
-
-| グループ | 効果 | タイプ |
-|---------|------|--------|
-| hp_percent | HP %増加 | prefix |
-| hp_flat | HP フラット増加 | prefix |
-| atk_percent | ATK %増加 | prefix |
-| atk_flat | ATK フラット増加 | prefix |
-| def_percent | DEF %増加 | prefix |
-| def_flat | DEF フラット増加 | prefix |
-| damage_reduction | ダメージ軽減 | suffix |
-
-### Tier と個体値要件
-
-各グループにTier 1〜6（または5）のテンプレートがあり、Tierが低いほど強力:
-
-| Tier | 個体値要件(目安) | Weight(目安) | 強さ |
-|------|----------------|-------------|------|
-| 6 | 1 | 1000〜1200 | 最弱（誰でも出る） |
-| 5 | 8〜20 | 300〜800 | 弱 |
-| 4 | 16〜30 | 200〜600 | 中 |
-| 3 | 28〜42 | 120〜400 | 強 |
-| 2 | 44〜54 | 60〜200 | 非常に強い |
-| 1 | 58〜62 | 25〜80 | 最強（高個体値限定） |
-
-※ 実際の値はグループごとに異なる。Weight が大きいほど出現しやすい。
-
-### Modの例（hp_percent グループ）
-
-| Tier | 名前 | 値の範囲 | Weight | 必要個体値 |
-|------|------|---------|--------|----------|
-| 6 | 頑丈な | 5〜8% | 1000 | 1 |
-| 5 | 堅固な | 9〜12% | 800 | 8 |
-| 4 | 強靭な | 13〜16% | 600 | 16 |
-| 3 | 不屈の | 17〜20% | 400 | 28 |
-| 2 | 鋼鉄の | 21〜25% | 200 | 44 |
-| 1 | 不滅の | 26〜30% | 80 | 60 |
-
-### ダメージ軽減（damage_reduction）の上限
-
-`damageReductionCap: 75`（最大75%まで）
-
 ## 名前の決定
 
 ### 名前プール
@@ -238,16 +174,16 @@ UPDATE base_state SET next_goblin_id = next_goblin_id + 1 WHERE id = 1
 
 ## 実効ステータス計算
 
-誕生時に `ModStatCalculator.calculate()` で因子・Modを加味した実効ステータスが計算される:
+誕生時に `GoblinStatCalculator.calculate()` で因子を加味した実効ステータスが計算される:
 
 ```
-実効値 = floor( (基礎ステ + 因子ボーナス + Modフラット + 装備フラット) × (1 + (Mod% + 装備%) / 100) )
+実効値 = floor( (基礎ステ + 因子ボーナス + 装備フラット + スキルフラット) × (1 + 装備% / 100) )
 ```
 
 誕生時は装備なしのため:
 
 ```
-実効値 = floor( (基礎ステ + 因子ボーナス + Modフラット) × (1 + Mod% / 100) )
+実効値 = 基礎ステ + 因子ボーナス + スキルフラット
 ```
 
 ## 初期状態
@@ -260,7 +196,6 @@ UPDATE base_state SET next_goblin_id = next_goblin_id + 1 WHERE id = 1
 | experience | 0 |
 | factors | 引き継ぎ結果（なければ空配列） |
 | variantFactorId | 亜種の場合のみ設定 |
-| mods | 0〜4個（個体値に応じて生成） |
 | spells | なし |
 
 ## 関連ソースコード
@@ -269,10 +204,8 @@ UPDATE base_state SET next_goblin_id = next_goblin_id + 1 WHERE id = 1
 |---------|------|
 | `src/core/services/GoblinBirthService.ts` | 誕生ロジック本体（ステータス生成、名前選択） |
 | `src/core/services/BaseRankSystem.ts` | 個体値計算、拠点ランク設定 |
-| `src/core/services/ModGeneratorService.ts` | Mod生成（シード値ベース加重抽選） |
 | `src/core/services/FactorInheritanceService.ts` | 因子引き継ぎ・亜種化判定 |
-| `src/core/services/ModStatCalculator.ts` | 実効ステータス計算 |
-| `src/shared/data/modPool.json` | Modテンプレート定義（全Tier・全グループ） |
+| `src/core/services/GoblinStatCalculator.ts` | 実効ステータス計算 |
 | `src/shared/data/equipmentConfig.ts` | 血統別攻撃回数設定 |
 | `src/presentation/hooks/useExpeditionFlow.ts` | 誕生トリガー・保存先振り分け |
 | `src/infrastructure/repositories/SQLiteGoblinRepository.ts` | ゴブリンDB保存 |

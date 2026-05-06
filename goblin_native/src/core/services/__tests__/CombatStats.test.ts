@@ -1,5 +1,5 @@
 import { GoblinBirthService } from '../GoblinBirthService'
-import { ModStatCalculator } from '../ModStatCalculator'
+import { GoblinStatCalculator } from '../GoblinStatCalculator'
 import { BattleSystem, getDamageModifier, getAccuracyModifier, getHitRateRandomModifier, getRowWeight, selectTarget } from '../BattleSystem'
 import { ExpeditionEngine } from '../ExpeditionEngine'
 import { getDefaultSkillsForRace } from '../../../shared/data/raceSkills'
@@ -37,7 +37,6 @@ function createTestGoblin(
     experience: 0,
     avatar: '/test.png',
     stats: { hp: 60, atk: 12, magicAtk: 0, def: 10, attackCount: 2, accuracy: 20, evasion: 15, magicHeal: 10, criticalRate: 0, ...statsOverrides },
-    mods: [],
     skills: overrides.skills ?? getDefaultSkillsForRace(race),
     factors: [],
     ...overrides,
@@ -195,12 +194,12 @@ describe('GoblinBirthService — 戦闘ステータス生成', () => {
 })
 
 // =========================================================================
-// ModStatCalculator — 新ステータスの計算
+// GoblinStatCalculator — 新ステータスの計算
 // =========================================================================
-describe('ModStatCalculator — 戦闘ステータス計算', () => {
-  it('基本ステータスがそのまま反映される（Mod/因子/装備なし）', () => {
+describe('GoblinStatCalculator — 戦闘ステータス計算', () => {
+  it('基本ステータスがそのまま反映される（因子/装備なし）', () => {
     const goblin = createTestGoblin()
-    const result = ModStatCalculator.calculate(goblin)
+    const result = GoblinStatCalculator.calculate(goblin)
 
     expect(result.attackCount).toBe(2)
     expect(result.accuracy).toBe(20)
@@ -210,7 +209,7 @@ describe('ModStatCalculator — 戦闘ステータス計算', () => {
   it('装備のaccuracy_flatが加算される', () => {
     const goblin = createTestGoblin()
     const bonuses = [{ stat: 'accuracy_flat' as const, value: 10 }]
-    const result = ModStatCalculator.calculate(goblin, bonuses)
+    const result = GoblinStatCalculator.calculate(goblin, bonuses)
 
     expect(result.accuracy).toBe(30)
   })
@@ -218,7 +217,7 @@ describe('ModStatCalculator — 戦闘ステータス計算', () => {
   it('装備のevasion_flatが加算される', () => {
     const goblin = createTestGoblin()
     const bonuses = [{ stat: 'evasion_flat' as const, value: 5 }]
-    const result = ModStatCalculator.calculate(goblin, bonuses)
+    const result = GoblinStatCalculator.calculate(goblin, bonuses)
 
     expect(result.evasion).toBe(20)
   })
@@ -226,7 +225,7 @@ describe('ModStatCalculator — 戦闘ステータス計算', () => {
   it('装備のattackCount_flatが加算される', () => {
     const goblin = createTestGoblin()
     const bonuses = [{ stat: 'attackCount_flat' as const, value: 1 }]
-    const result = ModStatCalculator.calculate(goblin, bonuses)
+    const result = GoblinStatCalculator.calculate(goblin, bonuses)
 
     expect(result.attackCount).toBe(3)
   })
@@ -236,7 +235,7 @@ describe('ModStatCalculator — 戦闘ステータス計算', () => {
       level: 3,
       baseAttributes: { power: 10, wisdom: 10, spirit: 10, vitality: 10, agility: 10, luck: 10 },
     })
-    const result = ModStatCalculator.calculate(goblin)
+    const result = GoblinStatCalculator.calculate(goblin)
 
     expect(result.magicHeal).toBe(15)
   })
@@ -260,7 +259,7 @@ describe('ModStatCalculator — 戦闘ステータス計算', () => {
         skills: [getCharacterSkill(skillId)],
         baseAttributes,
       })
-      const result = ModStatCalculator.calculate(goblin)
+      const result = GoblinStatCalculator.calculate(goblin)
 
       expect(result[stat]).toBe(expected)
     }
@@ -271,10 +270,10 @@ describe('ModStatCalculator — 戦闘ステータス計算', () => {
       baseAttributes: { power: 10, wisdom: 10, spirit: 10, vitality: 10, agility: 30, luck: 15 },
     })
 
-    expect(ModStatCalculator.calculate(criticalGoblin).criticalRate).toBe(23)
+    expect(GoblinStatCalculator.calculate(criticalGoblin).criticalRate).toBe(23)
   })
 
-  it('magicHealに因子・MOD・装備補正が適用される', () => {
+  it('magicHealに因子・装備補正が適用される', () => {
     factorDatabase.test_magic_heal = {
       id: 'test_magic_heal',
       name: 'テスト回復因子',
@@ -286,14 +285,11 @@ describe('ModStatCalculator — 戦闘ステータス計算', () => {
       level: 3,
       baseAttributes: { power: 10, wisdom: 10, spirit: 10, vitality: 10, agility: 10, luck: 10 },
       factors: ['test_magic_heal'],
-      mods: [
-        { templateId: 'magicHeal_flat_t6', value: 2 },
-      ],
     })
     const bonuses = [{ stat: 'magicHeal_flat' as const, value: 3 }]
-    const result = ModStatCalculator.calculate(goblin, bonuses)
+    const result = GoblinStatCalculator.calculate(goblin, bonuses)
 
-    expect(result.magicHeal).toBe(30)
+    expect(result.magicHeal).toBe(28)
     delete factorDatabase.test_magic_heal
   })
 
@@ -309,8 +305,8 @@ describe('ModStatCalculator — 戦闘ステータス計算', () => {
       baseAttributes: { power: 10, wisdom: 10, spirit: 10, vitality: 10, agility: 10, luck: 10 },
     })
     const bonuses = [{ stat: 'magicHeal_flat' as const, value: 20 }]
-    const baseResult = ModStatCalculator.calculate(baseGoblin, bonuses)
-    const skilledResult = ModStatCalculator.calculate(skilledGoblin, bonuses)
+    const baseResult = GoblinStatCalculator.calculate(baseGoblin, bonuses)
+    const skilledResult = GoblinStatCalculator.calculate(skilledGoblin, bonuses)
 
     expect(skilledResult.magicHeal).toBe(baseResult.magicHeal)
     expect(skilledResult.hp).toBe(baseResult.hp + Math.floor(skilledResult.magicHeal * 0.1))
@@ -322,7 +318,7 @@ describe('ModStatCalculator — 戦闘ステータス計算', () => {
       { stat: 'attackCount_flat' as const, value: -0.6 },
       { stat: 'attackCount_flat' as const, value: -0.6 },
     ]
-    const result = ModStatCalculator.calculate(goblin, bonuses)
+    const result = GoblinStatCalculator.calculate(goblin, bonuses)
 
     expect(result.attackCount).toBe(1)
   })
@@ -335,7 +331,7 @@ describe('ModStatCalculator — 戦闘ステータス計算', () => {
       { stat: 'atk_percent' as const, value: 50 },
       { stat: 'def_percent' as const, value: 30 },
     ]
-    const result = ModStatCalculator.calculate(goblin, bonuses)
+    const result = GoblinStatCalculator.calculate(goblin, bonuses)
 
     expect(result.atk).toBe(18)  // 12 * 1.5
     expect(result.def).toBe(13)  // 10 * 1.3
@@ -346,14 +342,14 @@ describe('ModStatCalculator — 戦闘ステータス計算', () => {
       race: 'ウルフゴブリン',
       stats: { hp: 60, atk: 12, agility: 10, def: 10, attackCount: 3, accuracy: 20, evasion: 15 },
     })
-    const result = ModStatCalculator.calculate(goblin)
+    const result = GoblinStatCalculator.calculate(goblin)
 
     expect(result.attackCount).toBe(5)
   })
 
   it('スライムゴブリンは鎧の能力値が1.3倍になる', () => {
     const goblin = createTestGoblin({ race: 'スライムゴブリン' })
-    const result = ModStatCalculator.calculate(goblin, [
+    const result = GoblinStatCalculator.calculate(goblin, [
       { stat: 'def_flat', value: 10, sourceCategory: 'armor' },
     ])
 
@@ -362,7 +358,7 @@ describe('ModStatCalculator — 戦闘ステータス計算', () => {
 
   it('ウルフゴブリンは装備の命中精度補正が2倍になる', () => {
     const goblin = createTestGoblin({ race: 'ウルフゴブリン' })
-    const result = ModStatCalculator.calculate(goblin, [
+    const result = GoblinStatCalculator.calculate(goblin, [
       { stat: 'accuracy_flat', value: 10, sourceCategory: 'weapon' },
     ])
 
@@ -373,7 +369,7 @@ describe('ModStatCalculator — 戦闘ステータス計算', () => {
     const goblin = createTestGoblin({
       skills: [{ id: 'equipment_magic_atk_200', equipmentStatMultipliers: { magic_atk_flat: 2 } }],
     })
-    const result = ModStatCalculator.calculate(goblin, [
+    const result = GoblinStatCalculator.calculate(goblin, [
       { stat: 'magic_atk_flat', value: 10, sourceCategory: 'wand' },
     ])
 
@@ -384,7 +380,7 @@ describe('ModStatCalculator — 戦闘ステータス計算', () => {
     const goblin = createTestGoblin({
       skills: [{ id: 'equipment_magic_atk_200', equipmentStatMultipliers: { magic_atk_flat: 2 } }],
     })
-    const result = ModStatCalculator.calculate(goblin, [
+    const result = GoblinStatCalculator.calculate(goblin, [
       { stat: 'accuracy_flat', value: 10, sourceCategory: 'wand' },
     ])
 
@@ -395,7 +391,7 @@ describe('ModStatCalculator — 戦闘ステータス計算', () => {
     const goblin = createTestGoblin({
       skills: [{ id: 'sword_mastery_150', weaponSubCategoryMultiplier: { sword: 1.5 } }],
     })
-    const result = ModStatCalculator.calculate(goblin, [
+    const result = GoblinStatCalculator.calculate(goblin, [
       { stat: 'atk_flat', value: 10, sourceCategory: 'weapon', sourceSubCategory: 'sword' },
     ])
 
@@ -406,7 +402,7 @@ describe('ModStatCalculator — 戦闘ステータス計算', () => {
     const goblin = createTestGoblin({
       skills: [{ id: 'sword_mastery_150', weaponSubCategoryMultiplier: { sword: 1.5 } }],
     })
-    const result = ModStatCalculator.calculate(goblin, [
+    const result = GoblinStatCalculator.calculate(goblin, [
       { stat: 'atk_flat', value: 10, sourceCategory: 'weapon', sourceSubCategory: 'bow' },
     ])
 
@@ -417,7 +413,7 @@ describe('ModStatCalculator — 戦闘ステータス計算', () => {
     const goblin = createTestGoblin({
       skills: [{ id: 'claw_mastery_150', weaponSubCategoryMultiplier: { claw: 1.5 } }],
     })
-    const result = ModStatCalculator.calculate(goblin, [
+    const result = GoblinStatCalculator.calculate(goblin, [
       { stat: 'atk_flat', value: 10, sourceCategory: 'weapon', sourceSubCategory: 'claw' },
     ])
 
@@ -428,7 +424,7 @@ describe('ModStatCalculator — 戦闘ステータス計算', () => {
     const goblin = createTestGoblin({
       skills: [{ id: 'claw_mastery_150', weaponSubCategoryMultiplier: { claw: 1.5 } }],
     })
-    const result = ModStatCalculator.calculate(goblin, [
+    const result = GoblinStatCalculator.calculate(goblin, [
       { stat: 'atk_flat', value: 10, sourceCategory: 'weapon', sourceSubCategory: 'sword' },
     ])
 
@@ -439,7 +435,7 @@ describe('ModStatCalculator — 戦闘ステータス計算', () => {
     const goblin = createTestGoblin({
       skills: [{ id: 'wand_mastery_150', equipmentCategoryMultiplier: { wand: 1.5 } }],
     })
-    const result = ModStatCalculator.calculate(goblin, [
+    const result = GoblinStatCalculator.calculate(goblin, [
       { stat: 'magic_atk_flat', value: 10, sourceCategory: 'wand' },
     ])
 
@@ -450,7 +446,7 @@ describe('ModStatCalculator — 戦闘ステータス計算', () => {
     const goblin = createTestGoblin({
       skills: [{ id: 'wand_mastery_150', equipmentCategoryMultiplier: { wand: 1.5 } }],
     })
-    const result = ModStatCalculator.calculate(goblin, [
+    const result = GoblinStatCalculator.calculate(goblin, [
       { stat: 'magic_atk_flat', value: 10, sourceCategory: 'rod' },
     ])
 
@@ -461,7 +457,7 @@ describe('ModStatCalculator — 戦闘ステータス計算', () => {
     const goblin = createTestGoblin({
       skills: [{ id: 'rod_mastery_150', equipmentCategoryMultiplier: { rod: 1.5 } }],
     })
-    const result = ModStatCalculator.calculate(goblin, [
+    const result = GoblinStatCalculator.calculate(goblin, [
       { stat: 'magic_atk_flat', value: 10, sourceCategory: 'rod' },
     ])
 
@@ -472,7 +468,7 @@ describe('ModStatCalculator — 戦闘ステータス計算', () => {
     const goblin = createTestGoblin({
       skills: [{ id: 'rod_mastery_150', equipmentCategoryMultiplier: { rod: 1.5 } }],
     })
-    const result = ModStatCalculator.calculate(goblin, [
+    const result = GoblinStatCalculator.calculate(goblin, [
       { stat: 'magic_atk_flat', value: 10, sourceCategory: 'wand' },
     ])
 
@@ -483,7 +479,7 @@ describe('ModStatCalculator — 戦闘ステータス計算', () => {
     const goblin = createTestGoblin({
       skills: [{ id: 'shield_mastery_200', equipmentCategoryMultiplier: { shield: 2.0 } }],
     })
-    const result = ModStatCalculator.calculate(goblin, [
+    const result = GoblinStatCalculator.calculate(goblin, [
       { stat: 'def_flat', value: 10, sourceCategory: 'shield' },
       { stat: 'magic_def_flat', value: 10, sourceCategory: 'shield' },
     ])
@@ -496,7 +492,7 @@ describe('ModStatCalculator — 戦闘ステータス計算', () => {
     const goblin = createTestGoblin({
       skills: [{ id: 'robe_mastery_200', equipmentCategoryMultiplier: { robe: 2.0 } }],
     })
-    const result = ModStatCalculator.calculate(goblin, [
+    const result = GoblinStatCalculator.calculate(goblin, [
       { stat: 'magic_def_flat', value: 10, sourceCategory: 'robe' },
       { stat: 'hp_percent', value: 10, sourceCategory: 'robe' },
     ])
@@ -1217,7 +1213,6 @@ describe('BattleSystem — 命中判定と複数回攻撃', () => {
         evasion: 0,
         isKO: false,
         isDead: false,
-        mods: [],
         skills: getDefaultSkillsForRace('スライムゴブリン'),
         factors: [],
         level: 1,
@@ -1238,7 +1233,6 @@ describe('BattleSystem — 命中判定と複数回攻撃', () => {
         evasion: 0,
         isKO: false,
         isDead: false,
-        mods: [],
         skills: getDefaultSkillsForRace('ゴブリン'),
         factors: [],
         level: 1,
@@ -2704,7 +2698,6 @@ describe('spell charges', () => {
       magicHeal: 0,
       isKO: false,
       isDead: false,
-      mods: [],
       skills: [],
       factors: [],
       spells: [],

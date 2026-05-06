@@ -83,7 +83,6 @@ const ja = {
       equipmentSkills: 'スキル',
       experience: '経験値',
       factors: '因子',
-      mods: 'Mod',
       exp: 'EXP',
       nextLevel: '次のレベルまで: {{value}}',
       banishBlocked: '追放できません',

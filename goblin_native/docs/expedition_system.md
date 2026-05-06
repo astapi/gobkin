@@ -206,12 +206,12 @@ BattleSystem の隊列重み付け（前列50% → 25% → ...）がそのまま
   id: string,         // ゴブリンID
   name: string,
   currentHP: number,  // 戦闘ごとに減少・引き継ぎ
-  maxHP: number,      // 因子・Mod適用後の最大HP
+  maxHP: number,      // 実効最大HP
   baseHP: number,     // 基礎HP（戦闘時のGoblin再構築用）
   atk, def, agility, attackCount, accuracy, evasion,
   isKO: boolean,      // 戦闘不能
   isDead: boolean,    // 死亡
-  mods, factors, variantFactorId,
+  factors, variantFactorId,
   level: number,
   avatar: string
 }
@@ -219,7 +219,7 @@ BattleSystem の隊列重み付け（前列50% → 25% → ...）がそのまま
 
 ### HPの引き継ぎ
 
-- 初期化時: `effectiveStats.hp`（因子・Mod適用後）
+- 初期化時: `effectiveStats.hp`
 - 各戦闘後: `currentHP += allyHPDelta[index]`（通常は負数）
 - HP 0以下: `isKO = true, isDead = true`
 - **戦闘不能者はHP回復しない**（次の戦闘にも0のまま参加→即死）
@@ -227,9 +227,9 @@ BattleSystem の隊列重み付け（前列50% → 25% → ...）がそのまま
 ### 戦闘時のGoblin再構築
 
 ```
-PartyState → Goblin再構築（基礎ステータス + mods + factors）
+PartyState → Goblin再構築（基礎ステータス + factors）
 → BattleSystem.executeBattle(goblins, currentHP, enemies, rng)
-→ 戦闘中はModStatCalculatorが因子・Modを適用した実効ステータスで計算
+→ 戦闘中はGoblinStatCalculatorが因子を適用した実効ステータスで計算
 ```
 
 ## 報酬システム

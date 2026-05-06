@@ -1,5 +1,5 @@
 import type { Goblin, GoblinStats, EquipmentInstance } from '../types'
-import { ModStatCalculator } from '@/core/services/ModStatCalculator'
+import { GoblinStatCalculator } from '@/core/services/GoblinStatCalculator'
 import { EquipmentService } from '@/core/services/EquipmentService'
 import { calculateGoblinDerivedStats, getGoblinBaseAttributes } from './goblinHp'
 import { getLegacyRaceName, isBaseGoblinRaceId, normalizeGoblinRaceId } from '../types/Race'
@@ -11,14 +11,14 @@ export function calculateGoblinEffectiveStats(
 ): GoblinStats {
   const equipmentBonuses = EquipmentService.calculateEquipmentBonuses(equippedItems)
   const equipmentSkills = EquipmentService.collectGrantedSkills(equippedItems)
-  return ModStatCalculator.calculate({
+  return GoblinStatCalculator.calculate({
     ...goblin,
     skills: [...goblin.skills, ...equipmentSkills],
   }, equipmentBonuses)
 }
 
 /**
- * ゴブリンの実効ステータス（因子+MOD適用後）を取得
+ * ゴブリンの実効ステータス（因子・装備・スキル適用後）を取得
  * effectiveStatsが設定されていればそれを返し、なければ計算する
  */
 export function getEffectiveStats(goblin: Goblin): GoblinStats {

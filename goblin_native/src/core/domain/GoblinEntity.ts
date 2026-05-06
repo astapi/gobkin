@@ -1,6 +1,6 @@
 import type { Goblin, GoblinStats } from '../../shared/types'
 import { addExperience, type LevelUpResult } from '../services/ExperienceSystem'
-import { ModStatCalculator } from '../services/ModStatCalculator'
+import { GoblinStatCalculator } from '../services/GoblinStatCalculator'
 import {
   calculateGoblinBaseAccuracy,
   calculateGoblinBaseAtk,
@@ -47,23 +47,23 @@ export class GoblinEntity {
   }
 
   /**
-   * Mod適用後の実効ステータスを取得
+   * 因子・スキル適用後の実効ステータスを取得
    */
   public get effectiveStats(): GoblinStats {
-    // 現在のステータス（レベルアップ込み）をベースにMod効果を適用
+    // 現在のステータス（レベルアップ込み）をベースに実効値を計算
     const currentSnapshot = this.toSnapshot()
-    return ModStatCalculator.calculate(currentSnapshot)
+    return GoblinStatCalculator.calculate(currentSnapshot)
   }
 
   /**
    * 被ダメージ軽減率を取得（戦闘時に使用）
    */
   public get damageReduction(): number {
-    return ModStatCalculator.getDamageReduction(this.toSnapshot())
+    return GoblinStatCalculator.getDamageReduction(this.toSnapshot())
   }
 
   /**
-   * 戦力計算（Mod適用後のステータスで計算）
+   * 戦力計算（実効ステータスで計算）
    */
   public calculateCombatPower(): number {
     const stats = this.effectiveStats
@@ -102,8 +102,8 @@ export class GoblinEntity {
       stats: { ...this.stats },
       effectiveStats: { ...this.stats }, // 仮設定
     }
-    // 実効ステータスを計算（因子・Mod適用後）
-    snapshot.effectiveStats = ModStatCalculator.calculate(snapshot)
+    // 実効ステータスを計算（因子・スキル適用後）
+    snapshot.effectiveStats = GoblinStatCalculator.calculate(snapshot)
     return snapshot
   }
 

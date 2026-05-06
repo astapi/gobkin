@@ -1,8 +1,6 @@
 import type { Goblin, GoblinStats } from '../../shared/types/Goblin'
-import type { ModInstance } from '../../shared/types/Mod'
 import type { CharacterSkill } from '../../shared/types/CharacterSkill'
 import type { EquipmentStatBonus } from '../../shared/types/Equipment'
-import { getModTemplate, getDamageReductionCap } from '../../shared/data/modPoolLoader'
 import {
   applySkillBonusesToEquipmentBonuses,
   getCriticalRateBonusFromSkills,
@@ -25,14 +23,14 @@ import {
 } from '../../shared/utils/goblinHp'
 
 /**
- * 因子・Modを適用した最終ステータスを計算するサービス
+ * 因子・装備・スキルを適用した最終ステータスを計算するサービス
  */
-export class ModStatCalculator {
+export class GoblinStatCalculator {
   /**
-   * 基礎ステータス + 因子ボーナス + Mod効果 + 装備効果 = 最終ステータス
+   * 基礎ステータス + 因子ボーナス + 装備効果 + スキル効果 = 最終ステータス
    * 計算順序:
-   *   1. (基礎 + 因子 + Modフラット + 装備フラット) * (1 + (Mod% + 装備%)/100)
-   *   2. 装備特殊効果を適用（def→HP変換など）
+   *   1. (基礎 + 因子 + 装備フラット + スキルフラット) * (1 + 装備%/100)
+   *   2. スキル倍率・パッシブ効果を適用
    */
   static calculate(
     goblin: Goblin,
@@ -51,36 +49,28 @@ export class ModStatCalculator {
       magicHeal: calculateGoblinBaseMagicHeal(goblin.level, goblin),
       criticalRate: calculateGoblinBaseCriticalRate(goblin.level, goblin),
     }
-    const mods = goblin.mods ?? []
-
     // 1. 因子ボーナスを計算
     const factorBonuses = FactorInheritanceService.calculateFactorBonuses(goblin.factors ?? [])
 
-    // 2. Modフラット加算を集計
-    const flatBonuses = this.aggregateFlatBonuses(mods)
-
-    // 3. Mod%増加を集計
-    const percentBonuses = this.aggregatePercentBonuses(mods)
-
-    // 4. 装備ボーナスを集計
+    // 2. 装備・スキルボーナスを集計
     const skillBonuses = getSkillStatBonuses(goblin.skills)
     const skillMultipliers = getSkillStatMultipliers(goblin.skills)
     const adjustedEquipmentBonuses = applySkillBonusesToEquipmentBonuses(goblin.skills, equipmentBonuses ?? [])
     const equipFlat = this.aggregateEquipmentFlat(adjustedEquipmentBonuses)
     const equipPercent = this.aggregateEquipmentPercent(adjustedEquipmentBonuses)
 
-    // 5. 計算: 通常は (基礎 + 因子 + Modフラット + 装備フラット) * %
+    // 3. 計算: 通常は (基礎 + 因子 + 装備フラット + スキルフラット) * %
     // HPのみ、因子を最後に加算する
     const calc = (key: keyof GoblinStats) =>
       Math.floor(
-        (base[key] + factorBonuses[key] + flatBonuses[key] + equipFlat[key] + (skillBonuses[key] ?? 0)) *
-        (1 + (percentBonuses[key] + equipPercent[key]) / 100)
+        (base[key] + factorBonuses[key] + equipFlat[key] + (skillBonuses[key] ?? 0)) *
+        (1 + equipPercent[key] / 100)
       )
 
     const calcHp = () =>
       Math.floor(
-        (base.hp + flatBonuses.hp + equipFlat.hp + (skillBonuses.hp ?? 0)) *
-        (1 + (percentBonuses.hp + equipPercent.hp) / 100)
+        (base.hp + equipFlat.hp + (skillBonuses.hp ?? 0)) *
+        (1 + equipPercent.hp / 100)
       ) + factorBonuses.hp
 
     const withMultiplier = (key: keyof GoblinStats) => Math.floor(calc(key) * (skillMultipliers[key] ?? 1))
@@ -101,7 +91,7 @@ export class ModStatCalculator {
       criticalRate: Math.min(50, withMultiplier('criticalRate') + equipCriticalRateFlat + getCriticalRateBonusFromSkills(goblin.skills)),
     }
 
-    // 6. パッシブスキル由来の最終効果を適用（ステータス確定後）
+    // 4. パッシブスキル由来の最終効果を適用（ステータス確定後）
     this.applyPassiveSkillEffects(result, goblin.skills)
 
     return result
@@ -109,19 +99,11 @@ export class ModStatCalculator {
 
   /**
    * 被ダメージ軽減率を取得（戦闘時に使用）
-   * Mod + 装備の合算値。上限はmodPool.jsonのdamageReductionCapで設定
+   * 装備由来の軽減値を合算する
    */
   static getDamageReduction(goblin: Goblin, equipmentBonuses?: EquipmentStatBonus[]): number {
-    const mods = goblin.mods ?? []
     let total = 0
     const adjustedEquipmentBonuses = applySkillBonusesToEquipmentBonuses(goblin.skills, equipmentBonuses ?? [])
-
-    for (const mod of mods) {
-      const template = getModTemplate(mod.templateId)
-      if (template?.stat === 'damage_reduction') {
-        total += mod.value
-      }
-    }
 
     // 装備の被ダメージ軽減を加算
     for (const bonus of adjustedEquipmentBonuses) {
@@ -130,8 +112,7 @@ export class ModStatCalculator {
       }
     }
 
-    // 上限適用
-    return Math.min(total, getDamageReductionCap())
+    return total
   }
 
   /**
@@ -164,58 +145,6 @@ export class ModStatCalculator {
     if (key in this.ZERO_STATS) return key as keyof GoblinStats
     if (key in this.EQUIPMENT_STAT_ALIAS) return this.EQUIPMENT_STAT_ALIAS[key]
     return undefined
-  }
-
-  /**
-   * フラット加算ボーナスを集計
-   */
-  private static aggregateFlatBonuses(
-    mods: ModInstance[]
-  ): Record<keyof GoblinStats, number> {
-    const bonuses = { ...this.ZERO_STATS }
-
-    for (const mod of mods) {
-      const template = getModTemplate(mod.templateId)
-      if (!template) continue
-      const key = this.statKeyFromSuffix(template.stat, '_flat')
-      if (key) bonuses[key] += mod.value
-    }
-
-    return bonuses
-  }
-
-  /**
-   * %増加ボーナスを集計
-   */
-  private static aggregatePercentBonuses(
-    mods: ModInstance[]
-  ): Record<keyof GoblinStats, number> {
-    const bonuses = { ...this.ZERO_STATS }
-
-    for (const mod of mods) {
-      const template = getModTemplate(mod.templateId)
-      if (!template) continue
-      const key = this.statKeyFromSuffix(template.stat, '_percent')
-      if (key) bonuses[key] += mod.value
-    }
-
-    return bonuses
-  }
-
-  /**
-   * Mod効果のサマリーを取得（UI表示用）
-   */
-  static getModSummary(goblin: Goblin): {
-    flatBonuses: Record<keyof GoblinStats, number>
-    percentBonuses: Record<keyof GoblinStats, number>
-    damageReduction: number
-  } {
-    const mods = goblin.mods ?? []
-    return {
-      flatBonuses: this.aggregateFlatBonuses(mods),
-      percentBonuses: this.aggregatePercentBonuses(mods),
-      damageReduction: this.getDamageReduction(goblin),
-    }
   }
 
   /**
