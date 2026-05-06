@@ -67,19 +67,35 @@ export default function BattleLogScreen() {
         <ScrollView style={styles.body} contentContainerStyle={styles.bodyContent}>
           {battleLog.map((entry, index) => {
             if (entry.action === 'turn_start' && entry.turnState) {
+              const allyPartyEffects = entry.turnState.allyPartyEffects ?? []
+              const enemyPartyEffects = entry.turnState.enemyPartyEffects ?? []
               return (
                 <View key={`turn-${entry.turn}-${index}`} style={styles.sectionCard}>
                   <Text style={styles.sectionTitle}>{t('ui.formation.battleLog.turnStart', { turn: entry.turn })}</Text>
                   <Text style={styles.sectionLabel}>{t('ui.formation.battleLog.allies')}</Text>
+                  {allyPartyEffects.length > 0 && (
+                    <Text style={styles.sectionText}>
+                      {t('ui.formation.battleLog.partyEffects', {
+                        effects: allyPartyEffects.map(effect => t(`ui.formation.battleLog.partyEffect.${effect}`)).join(' / '),
+                      })}
+                    </Text>
+                  )}
                   {entry.turnState.allies.map(ally => (
                     <Text key={ally.id} style={styles.sectionText}>
-                      {ally.name} {ally.currentHP}/{ally.maxHP} HP{ally.shieldBarrierActive ? ` (${t('ui.formation.battleLog.shieldBarrierStatus')})` : ''}
+                      {ally.name} {ally.currentHP}/{ally.maxHP} HP
                     </Text>
                   ))}
                   <Text style={styles.sectionLabel}>{t('ui.formation.battleLog.enemies')}</Text>
+                  {enemyPartyEffects.length > 0 && (
+                    <Text style={styles.sectionText}>
+                      {t('ui.formation.battleLog.partyEffects', {
+                        effects: enemyPartyEffects.map(effect => t(`ui.formation.battleLog.partyEffect.${effect}`)).join(' / '),
+                      })}
+                    </Text>
+                  )}
                   {entry.turnState.enemies.map((enemy, enemyIndex) => (
                     <Text key={`${enemy.id}-${enemyIndex}`} style={styles.sectionText}>
-                      {enemy.name} {enemy.currentHP}/{enemy.maxHP} HP{enemy.shieldBarrierActive ? ` (${t('ui.formation.battleLog.shieldBarrierStatus')})` : ''}
+                      {enemy.name} {enemy.currentHP}/{enemy.maxHP} HP
                     </Text>
                   ))}
                 </View>
@@ -94,6 +110,7 @@ export default function BattleLogScreen() {
             const isHealingAction = entry.targets?.some(target => target.totalDamage < 0) ?? false
             const isBarrierAction = entry.actionEffect === 'barrier' || entry.action === t('entities.spell.shield_barrier')
             const isAttackUpAction = entry.actionEffect === 'attack_up' || entry.action === t('entities.spell.attack_up')
+            const isMagicFieldAction = entry.actionEffect === 'magic_field'
 
             const allyGoblin = entry.isAlly ? goblinMap.get(entry.actorId) : undefined
             const actorImage = allyGoblin
@@ -158,6 +175,21 @@ export default function BattleLogScreen() {
                       </Text>
                       <Text style={styles.logText}>
                         {t('ui.formation.battleLog.attackUpSummary')}
+                      </Text>
+                    </View>
+                  </View>
+                </View>
+              )
+            }
+
+            if (isMagicFieldAction) {
+              return (
+                <View key={`log-${index}`} style={styles.logCard}>
+                  <View style={styles.logHeader}>
+                    {actorImage && <Image source={actorImage} style={styles.actorImage} />}
+                    <View style={styles.logHeaderText}>
+                      <Text style={styles.logTitle}>
+                        {t('ui.formation.battleLog.magicFieldTitle', { actor: entry.actorName, action: entry.action })}
                       </Text>
                     </View>
                   </View>

@@ -93,6 +93,15 @@ describe('goblinJobs', () => {
     const trained = applyGoblinJob(createGoblin({ level: 1 }), 'cleric')
     expect(trained.skills.some((skill) => skill.id === 'magic_rear_guard')).toBe(true)
     expect(trained.skills.some((skill) => skill.protectRearAllyMagicDamageMultiplier === 2 / 3)).toBe(true)
+    expect(trained.skills.some((skill) => skill.id === 'magic_field')).toBe(true)
+    expect(trained.skills.some((skill) => skill.partyMagicDamageMultiplier === 1.5)).toBe(true)
+    expect(trained.skills.some((skill) => skill.id === 'instant_revive')).toBe(false)
+  })
+
+  it('ゴブリンクレリックはLv70で即時蘇生を習得する', () => {
+    const trained = applyGoblinJob(createGoblin({ level: 70 }), 'cleric')
+    expect(trained.skills.some((skill) => skill.id === 'instant_revive')).toBe(true)
+    expect(trained.skills.some((skill) => skill.immediateReviveOnAllyDeath)).toBe(true)
   })
 
   it('ウルフ草原後のストーリー読了でライダー訓練が解放される', () => {

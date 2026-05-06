@@ -587,6 +587,10 @@ export const CHARACTER_SKILL_CATALOG = {
     id: 'grant_shield_barrier',
     grantsSpellId: 'shield_barrier',
   },
+  magic_field: {
+    id: 'magic_field',
+    partyMagicDamageMultiplier: 1.5,
+  },
 
   inspire_150: {
     id: 'inspire_150',

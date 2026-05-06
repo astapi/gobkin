@@ -19,6 +19,7 @@ import {
   getRowDamageMultiplierFromSkills,
   getSpellTakenMultiplierFromSkills,
   getSpellDamagePercentFromSkills,
+  getPartyMagicDamageMultiplierFromSkills,
   hasCoverLowHpAllySkill,
   hasTwoColumnAttackSkill,
   hasActTwicePerTurnSkill,
@@ -35,7 +36,7 @@ import { ModStatCalculator } from './ModStatCalculator'
 import { getGoblinBaseAttributesAtLevel } from '../../shared/utils/goblinHp'
 import { getEffectiveStats, isPureGoblin } from '../../shared/utils/goblinStats'
 import i18n from '../../shared/i18n'
-import { getSpellLabel } from '../../shared/i18n/entityLocalization'
+import { getSkillLabel, getSpellLabel } from '../../shared/i18n/entityLocalization'
 import { normalizeBattleActionPolicy, shouldRunRate } from '../../shared/utils/battleActionPolicy'
 import { races as RACE_DICT } from '../../shared/data/races'
 import { getRaceResistanceTotals, getRaceSkills } from '../../shared/data/races'
@@ -84,6 +85,7 @@ interface BattleUnit {
   magicHeal: number             // 魔法回復量
   criticalRate: number          // 必殺率（%）
   spellDamagePercent: number    // 魔法威力の増減（%）
+  magicFieldDamageMultiplier: number // PT効果による魔法与ダメージ倍率
   shieldBarrierActive?: boolean  // シールドバリア状態
   magicBarrierActive?: boolean   // マジックバリア状態
   row: number              // 隊列の列番号（0-based）
@@ -138,6 +140,7 @@ const HEALTHY_HP_RATIO_THRESHOLD = 0.8
 const LOW_HP_RATIO_THRESHOLD = 0.79
 const CLERIC_BARRIER_SPELL_PRIORITY = ['shield_barrier', 'magic_barrier'] as const
 const CLERIC_SINGLE_HEAL_SPELL_PRIORITY = ['full_heal', 'heal_plus', 'heal'] as const
+const PARTY_HEAL_SPELL_ID = 'party_heal'
 
 interface UsableSpellCharge {
   charge: SpellCharge
@@ -306,6 +309,43 @@ export class BattleSystem {
     return merged.size > 0 ? [...merged.values()] : undefined
   }
 
+  private applyBattleStartPartyEffects(
+    units: BattleUnit[],
+    detailedLog: BattleLogEntry[],
+  ): void {
+    const livingUnits = units.filter(unit => unit.currentHP > 0)
+    if (livingUnits.length === 0) return
+
+    const strongestMagicField = livingUnits
+      .map(unit => ({
+        unit,
+        multiplier: getPartyMagicDamageMultiplierFromSkills(unit.skills),
+      }))
+      .filter(entry => entry.multiplier > 1)
+      .sort((a, b) => b.multiplier - a.multiplier)[0]
+
+    if (!strongestMagicField) return
+
+    for (const unit of livingUnits) {
+      unit.magicFieldDamageMultiplier = Math.max(unit.magicFieldDamageMultiplier, strongestMagicField.multiplier)
+    }
+
+    detailedLog.push({
+      turn: 0,
+      actorId: strongestMagicField.unit.combatant.id,
+      actorName: this.getLogName(strongestMagicField.unit),
+      actorRow: strongestMagicField.unit.row + 1,
+      action: getSkillLabel({ id: 'magic_field', partyMagicDamageMultiplier: strongestMagicField.multiplier }),
+      attackCount: 0,
+      hitCount: 0,
+      actorHP: strongestMagicField.unit.currentHP,
+      actorMaxHP: strongestMagicField.unit.maxHP,
+      isAlly: strongestMagicField.unit.isAlly,
+      actionEffect: 'magic_field',
+      targets: [],
+    })
+  }
+
   public executeBattle(
     allies: Goblin[],
     initialAllyHP: number[],
@@ -329,6 +369,8 @@ export class BattleSystem {
     this.assignEnemyLogNames(enemyUnits)
 
     const detailedLog: BattleLogEntry[] = []
+    this.applyBattleStartPartyEffects(allyUnits, detailedLog)
+    this.applyBattleStartPartyEffects(enemyUnits, detailedLog)
     let currentTurn = 0
 
     while (currentTurn < maxTurns) {
@@ -1193,7 +1235,7 @@ export class BattleSystem {
           spellSkill, SPELL_DAMAGE_OPTIONS, rng,
         ) + spellBonusDamage
         const rearDamageMultiplier = this.getRearDamageMultiplier(unit, sourceGroup)
-        const spellDamageFactor = 1 + unit.spellDamagePercent / 100
+        const spellDamageFactor = (1 + unit.spellDamagePercent / 100) * unit.magicFieldDamageMultiplier
         const spellTakenMultiplier = getSpellTakenMultiplierFromSkills(target.skills, spellDef.id)
         const reductionFactor = 1 - target.damageReduction / 100
         const magicReductionFactor = 1 - target.magicDamageReduction / 100
@@ -1203,18 +1245,17 @@ export class BattleSystem {
         const damage = Math.max(1, Math.floor(baseDamage * rearDamageMultiplier * spellDamageFactor * spellTakenMultiplier * reductionFactor * magicReductionFactor * magicBarrierFactor * magicProtectionFactor * defendingFactor))
 
         this.applyDamage(target, damage)
-        this.tryImmediateReviveForFallenAlly(
-          target,
-          targetGroup,
-          currentTurn,
-          detailedLog,
-          turnActedUnitKeys,
-          turnConsumedUnitKeys,
-        )
         totalHitCount++
 
         this.accumulateTargetDetail(targetDetails, target, damage)
       }
+      this.tryImmediateReviveForFallenAllies(
+        targetGroup,
+        currentTurn,
+        detailedLog,
+        turnActedUnitKeys,
+        turnConsumedUnitKeys,
+      )
     } else if (spellDef.targeting.type === 'multi_target') {
       // ファイヤーボール: 最大hitCount体にそれぞれ1回ダメージ（重複なし）
       const aliveTargets = targetGroup.filter(t => t.currentHP > 0)
@@ -1234,7 +1275,7 @@ export class BattleSystem {
           spellSkill, SPELL_DAMAGE_OPTIONS, rng,
         ) + spellBonusDamage
         const rearDamageMultiplier = this.getRearDamageMultiplier(unit, sourceGroup)
-        const spellDamageFactor = 1 + unit.spellDamagePercent / 100
+        const spellDamageFactor = (1 + unit.spellDamagePercent / 100) * unit.magicFieldDamageMultiplier
         const spellTakenMultiplier = getSpellTakenMultiplierFromSkills(target.skills, spellDef.id)
         const reductionFactor = 1 - target.damageReduction / 100
         const magicReductionFactor = 1 - target.magicDamageReduction / 100
@@ -1244,18 +1285,17 @@ export class BattleSystem {
         const damage = Math.max(1, Math.floor(baseDamage * rearDamageMultiplier * spellDamageFactor * spellTakenMultiplier * reductionFactor * magicReductionFactor * magicBarrierFactor * magicProtectionFactor * defendingFactor))
 
         this.applyDamage(target, damage)
-        this.tryImmediateReviveForFallenAlly(
-          target,
-          targetGroup,
-          currentTurn,
-          detailedLog,
-          turnActedUnitKeys,
-          turnConsumedUnitKeys,
-        )
         totalHitCount++
 
         this.accumulateTargetDetail(targetDetails, target, damage)
       }
+      this.tryImmediateReviveForFallenAllies(
+        targetGroup,
+        currentTurn,
+        detailedLog,
+        turnActedUnitKeys,
+        turnConsumedUnitKeys,
+      )
     }
 
     return { targetDetails, totalHitCount }
@@ -1338,12 +1378,31 @@ export class BattleSystem {
       return
     }
 
+    this.tryImmediateReviveForFallenAllies(
+      alliedUnits,
+      currentTurn,
+      detailedLog,
+      turnActedUnitKeys,
+      turnConsumedUnitKeys,
+    )
+  }
+
+  private tryImmediateReviveForFallenAllies(
+    alliedUnits: BattleUnit[],
+    currentTurn: number,
+    detailedLog: BattleLogEntry[],
+    turnActedUnitKeys: Set<string>,
+    turnConsumedUnitKeys: Set<string>,
+  ): void {
+    if (!alliedUnits.some(unit => unit.currentHP <= 0)) {
+      return
+    }
+
     const reviver = [...alliedUnits]
       .filter((unit) => {
         if (unit.currentHP <= 0) return false
-        if (this.getUnitKey(unit) === this.getUnitKey(target)) return false
         if (turnActedUnitKeys.has(this.getUnitKey(unit))) return false
-        return hasImmediateReviveSkill(unit.skills) && this.getImmediateReviveSpell(unit, target) !== null
+        return hasImmediateReviveSkill(unit.skills) && this.getImmediateReviveSpell(unit, alliedUnits) !== null
       })
       .sort((a, b) => {
         if (a.row !== b.row) return a.row - b.row
@@ -1355,13 +1414,21 @@ export class BattleSystem {
       return
     }
 
-    const revival = this.getImmediateReviveSpell(reviver, target)
+    const revival = this.getImmediateReviveSpell(reviver, alliedUnits)
     if (!revival) {
       return
     }
 
-    const healed = this.applyHealing(target, revival.healAmount)
-    if (healed <= 0) {
+    const targetDetails: Map<string, AttackTargetDetail> = new Map()
+    const targets = this.getImmediateReviveTargets(reviver, alliedUnits, revival.spellDef)
+    for (const healTarget of targets) {
+      const healAmount = this.getImmediateReviveHealAmount(reviver, healTarget, revival.spellDef)
+      const healed = this.applyHealing(healTarget, healAmount)
+      if (healed <= 0) continue
+      this.accumulateTargetDetail(targetDetails, healTarget, -healed)
+    }
+
+    if (targetDetails.size === 0) {
       return
     }
 
@@ -1376,42 +1443,80 @@ export class BattleSystem {
       actorName: this.getLogName(reviver),
       actorRow: reviver.row + 1,
       action: revival.spellDef.name,
-      attackCount: 1,
-      hitCount: 1,
       actorHP: reviver.currentHP,
       actorMaxHP: reviver.maxHP,
       isAlly: reviver.isAlly,
       actionEffect: 'heal',
-      targets: [{
-        targetId: target.combatant.id,
-        targetName: this.getLogName(target),
-        targetRow: target.row + 1,
-        totalDamage: -healed,
-        hitCount: 1,
-        defeated: false,
-        targetHP: target.currentHP,
-      }],
+      attackCount: targetDetails.size,
+      hitCount: targetDetails.size,
+      targets: [...targetDetails.values()],
     })
   }
 
   private getImmediateReviveSpell(
     unit: BattleUnit,
-    target: BattleUnit,
-  ): { charge: SpellCharge; spellDef: SpellDef; healAmount: number } | null {
+    alliedUnits: BattleUnit[],
+  ): { charge: SpellCharge; spellDef: SpellDef } | null {
+    const fallenAllies = alliedUnits.filter(ally => ally.currentHP <= 0)
+    if (fallenAllies.length === 0) return null
+
+    const healCharges = unit.spellCharges
+      .filter(charge => charge.remaining > 0 && charge.category === 'cleric')
+      .map(charge => ({ charge, spellDef: SPELL_DEFS[charge.spellId] }))
+      .filter((entry): entry is { charge: SpellCharge; spellDef: SpellDef } => (
+        Boolean(entry.spellDef) && (entry.spellDef.effect ?? 'damage') === 'heal'
+      ))
+
+    const partyHeal = healCharges.find(({ spellDef }) => spellDef.id === PARTY_HEAL_SPELL_ID)
+    if (partyHeal && fallenAllies.length >= 2) {
+      return partyHeal
+    }
+
+    const reviveTarget = this.selectImmediateReviveTarget(alliedUnits)
+    if (!reviveTarget) return null
+
     let best: { charge: SpellCharge; spellDef: SpellDef; healAmount: number } | null = null
 
-    for (const charge of unit.spellCharges) {
-      if (charge.remaining <= 0 || charge.category !== 'cleric') continue
-      const spellDef = SPELL_DEFS[charge.spellId]
-      if (!spellDef || (spellDef.effect ?? 'damage') !== 'heal') continue
-      const healAmount = this.getImmediateReviveHealAmount(unit, target, spellDef)
+    for (const { charge, spellDef } of healCharges) {
+      if (spellDef.id === PARTY_HEAL_SPELL_ID) continue
+      const healAmount = this.getImmediateReviveHealAmount(unit, reviveTarget, spellDef)
       if (healAmount <= 0) continue
       if (!best || healAmount > best.healAmount) {
         best = { charge, spellDef, healAmount }
       }
     }
 
-    return best
+    if (best) {
+      return { charge: best.charge, spellDef: best.spellDef }
+    }
+
+    return partyHeal ?? null
+  }
+
+  private getImmediateReviveTargets(
+    unit: BattleUnit,
+    alliedUnits: BattleUnit[],
+    spellDef: SpellDef,
+  ): BattleUnit[] {
+    if (spellDef.id === PARTY_HEAL_SPELL_ID) {
+      return alliedUnits.filter(ally => ally.currentHP < ally.maxHP)
+    }
+
+    const reviveTarget = this.selectImmediateReviveTarget(alliedUnits)
+    if (!reviveTarget || this.getUnitKey(reviveTarget) === this.getUnitKey(unit)) {
+      return []
+    }
+    return [reviveTarget]
+  }
+
+  private selectImmediateReviveTarget(alliedUnits: BattleUnit[]): BattleUnit | null {
+    return alliedUnits
+      .filter(unit => unit.currentHP <= 0)
+      .sort((a, b) => {
+        if (a.row !== b.row) return a.row - b.row
+        if (a.rowSlot !== b.rowSlot) return a.rowSlot - b.rowSlot
+        return a.originalIndex - b.originalIndex
+      })[0] ?? null
   }
 
   private getImmediateReviveHealAmount(unit: BattleUnit, target: BattleUnit, spellDef: SpellDef): number {
@@ -1485,6 +1590,7 @@ export class BattleSystem {
       magicHeal: effectiveStats.magicHeal,
       criticalRate: effectiveStats.criticalRate,
       spellDamagePercent: getSpellDamagePercentFromSkills(goblin.skills),
+      magicFieldDamageMultiplier: 1,
       shieldBarrierActive: false,
       magicBarrierActive: false,
       row: originalIndex,  // 味方は1列1体（配列順 = 列番号）
@@ -1536,6 +1642,7 @@ export class BattleSystem {
       magicHeal: enemy.magicHeal ?? 0,
       criticalRate: enemy.criticalRate ?? 0,
       spellDamagePercent: getSpellDamagePercentFromSkills(skills),
+      magicFieldDamageMultiplier: 1,
       shieldBarrierActive: false,
       magicBarrierActive: false,
       row,
@@ -1662,8 +1769,24 @@ export class BattleSystem {
           magicBarrierActive: unit.magicBarrierActive,
           isDefending: unit.isDefending,
         })),
+        allyPartyEffects: this.getPartyEffectIds(allyUnits),
+        enemyPartyEffects: this.getPartyEffectIds(enemyUnits),
       },
     }
+  }
+
+  private getPartyEffectIds(units: BattleUnit[]): string[] {
+    const effects: string[] = []
+    if (units.some(unit => unit.currentHP > 0 && unit.shieldBarrierActive)) {
+      effects.push('shield_barrier')
+    }
+    if (units.some(unit => unit.currentHP > 0 && unit.magicBarrierActive)) {
+      effects.push('magic_barrier')
+    }
+    if (units.some(unit => unit.currentHP > 0 && unit.magicFieldDamageMultiplier > 1)) {
+      effects.push('magic_field')
+    }
+    return effects
   }
 
   private createBattleResult(
