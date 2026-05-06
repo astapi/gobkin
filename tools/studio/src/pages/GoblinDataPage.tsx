@@ -9,9 +9,12 @@ import type {
   GoblinRaceEntry,
   GoblinStudioData,
   GoblinVariantSeed,
+  BirthSkillLotteryEntry,
+  FactorSkillInheritanceRule,
+  PureGoblinSkillManifestationRule,
 } from '../lib/schema'
 import { GoblinStudioDataSchema } from '../lib/schema'
-import { JobSkillListEditor, SkillIdListEditor } from '../components/SkillEditors'
+import { JobSkillListEditor, SkillIdListEditor, SkillMeta, SkillSelectField } from '../components/SkillEditors'
 import {
   FieldRow,
   NumberField,
@@ -32,7 +35,7 @@ type SaveState =
   | { kind: 'error'; message: string }
   | { kind: 'success' }
 
-type Tab = 'races' | 'factors' | 'variants' | 'jobs'
+type Tab = 'races' | 'factors' | 'variants' | 'jobs' | 'birthSkills'
 
 const EMPTY_ATTRIBUTES: GoblinBaseAttributes = {
   power: 10,
@@ -230,6 +233,12 @@ export function GoblinDataPage() {
         </button>
         <button className={tab === 'jobs' ? 'tab active' : 'tab'} onClick={() => setTab('jobs')}>
           Job
+        </button>
+        <button
+          className={tab === 'birthSkills' ? 'tab active' : 'tab'}
+          onClick={() => setTab('birthSkills')}
+        >
+          誕生スキル
         </button>
       </div>
 
@@ -527,6 +536,20 @@ export function GoblinDataPage() {
             )}
           </DataEditorLayout>
         )}
+
+        {tab === 'birthSkills' && (
+          <BirthSkillRulesEditor
+            inheritanceRules={draft.factorSkillInheritanceRules}
+            manifestationRules={draft.pureGoblinSkillManifestationRules}
+            factors={draft.factors}
+            onInheritanceChange={(factorSkillInheritanceRules) =>
+              updateDraft((prev) => ({ ...prev, factorSkillInheritanceRules }))
+            }
+            onManifestationChange={(pureGoblinSkillManifestationRules) =>
+              updateDraft((prev) => ({ ...prev, pureGoblinSkillManifestationRules }))
+            }
+          />
+        )}
       </div>
     </div>
   )
@@ -584,6 +607,234 @@ function DataEditorLayout<T>({
         </div>
       </aside>
       <div className="panel-stack">{children}</div>
+    </div>
+  )
+}
+
+function BirthSkillRulesEditor({
+  inheritanceRules,
+  manifestationRules,
+  factors,
+  onInheritanceChange,
+  onManifestationChange,
+}: {
+  inheritanceRules: FactorSkillInheritanceRule[]
+  manifestationRules: PureGoblinSkillManifestationRule[]
+  factors: GoblinFactorSeed[]
+  onInheritanceChange: (rules: FactorSkillInheritanceRule[]) => void
+  onManifestationChange: (rules: PureGoblinSkillManifestationRule[]) => void
+}) {
+  const factorOptions = factors.map((factor) => ({
+    id: factor.id,
+    label: `${factor.name || factor.id} / ${factor.id}`,
+  }))
+
+  return (
+    <div className="panel-stack">
+      <section className="card">
+        <div className="section-head">
+          <h3>因子スキル継承</h3>
+          <button
+            className="btn ghost small"
+            onClick={() => {
+              const used = new Set(inheritanceRules.map((rule) => rule.factorId))
+              const factorId = factorOptions.find((factor) => !used.has(factor.id))?.id ?? ''
+              onInheritanceChange([...inheritanceRules, { factorId, skills: [] }])
+            }}
+          >
+            + 追加
+          </button>
+        </div>
+        <div className="story-block-list">
+          {inheritanceRules.map((rule, index) => (
+            <div key={`${rule.factorId}-${index}`} className="story-block">
+              <div className="story-block-head">
+                <strong>{rule.factorId || '(factor 未設定)'}</strong>
+                <div className="pattern-actions">
+                  <button className="icon-btn" onClick={() => onInheritanceChange(moveItem(inheritanceRules, index, -1))}>
+                    ↑
+                  </button>
+                  <button className="icon-btn" onClick={() => onInheritanceChange(moveItem(inheritanceRules, index, 1))}>
+                    ↓
+                  </button>
+                  <button
+                    className="icon-btn danger"
+                    onClick={() => onInheritanceChange(inheritanceRules.filter((_, entryIndex) => entryIndex !== index))}
+                  >
+                    ×
+                  </button>
+                </div>
+              </div>
+              <FieldRow>
+                <label className="field field-size-lg">
+                  <span className="field-label">factorId</span>
+                  <span className="field-input">
+                    <select
+                      value={rule.factorId}
+                      onChange={(e) =>
+                        onInheritanceChange(
+                          inheritanceRules.map((entry, entryIndex) =>
+                            entryIndex === index ? { ...entry, factorId: e.target.value } : entry,
+                          ),
+                        )
+                      }
+                    >
+                      <option value="">(未設定)</option>
+                      {factorOptions.map((factor) => (
+                        <option key={factor.id} value={factor.id}>
+                          {factor.label}
+                        </option>
+                      ))}
+                    </select>
+                  </span>
+                </label>
+              </FieldRow>
+              <SkillLotteryListEditor
+                skills={rule.skills}
+                onChange={(skills) =>
+                  onInheritanceChange(
+                    inheritanceRules.map((entry, entryIndex) =>
+                      entryIndex === index ? { ...entry, skills } : entry,
+                    ),
+                  )
+                }
+              />
+            </div>
+          ))}
+          {inheritanceRules.length === 0 && <p className="subtle">未設定</p>}
+        </div>
+      </section>
+
+      <section className="card">
+        <div className="section-head">
+          <h3>純ゴブリン スキル発現</h3>
+          <button
+            className="btn ghost small"
+            onClick={() => {
+              const nextRank = Math.max(0, ...manifestationRules.map((rule) => rule.baseRank)) + 1
+              onManifestationChange([...manifestationRules, { baseRank: nextRank, skills: [] }])
+            }}
+          >
+            + 追加
+          </button>
+        </div>
+        <p className="subtle">誕生時の追加スキルは最大4枠です。継承スキルの後に発現スキルを判定します。</p>
+        <div className="story-block-list">
+          {manifestationRules.map((rule, index) => (
+            <div key={`${rule.baseRank}-${index}`} className="story-block">
+              <div className="story-block-head">
+                <strong>Rank {rule.baseRank}</strong>
+                <div className="pattern-actions">
+                  <button className="icon-btn" onClick={() => onManifestationChange(moveItem(manifestationRules, index, -1))}>
+                    ↑
+                  </button>
+                  <button className="icon-btn" onClick={() => onManifestationChange(moveItem(manifestationRules, index, 1))}>
+                    ↓
+                  </button>
+                  <button
+                    className="icon-btn danger"
+                    onClick={() => onManifestationChange(manifestationRules.filter((_, entryIndex) => entryIndex !== index))}
+                  >
+                    ×
+                  </button>
+                </div>
+              </div>
+              <FieldRow>
+                <NumberField
+                  size="sm"
+                  label="baseRank"
+                  value={rule.baseRank}
+                  min={1}
+                  onChange={(baseRank) =>
+                    onManifestationChange(
+                      manifestationRules.map((entry, entryIndex) =>
+                        entryIndex === index ? { ...entry, baseRank } : entry,
+                      ),
+                    )
+                  }
+                />
+              </FieldRow>
+              <SkillLotteryListEditor
+                skills={rule.skills}
+                onChange={(skills) =>
+                  onManifestationChange(
+                    manifestationRules.map((entry, entryIndex) =>
+                      entryIndex === index ? { ...entry, skills } : entry,
+                    ),
+                  )
+                }
+              />
+            </div>
+          ))}
+          {manifestationRules.length === 0 && <p className="subtle">未設定</p>}
+        </div>
+      </section>
+    </div>
+  )
+}
+
+function SkillLotteryListEditor({
+  skills,
+  onChange,
+}: {
+  skills: BirthSkillLotteryEntry[]
+  onChange: (skills: BirthSkillLotteryEntry[]) => void
+}) {
+  return (
+    <div className="story-block-list">
+      {skills.map((skill, index) => (
+        <div key={`${skill.skillId}-${index}`} className="story-block">
+          <div className="story-block-head">
+            <strong>{skill.skillId || '(skill 未設定)'}</strong>
+            <div className="pattern-actions">
+              <button className="icon-btn" onClick={() => onChange(moveItem(skills, index, -1))}>
+                ↑
+              </button>
+              <button className="icon-btn" onClick={() => onChange(moveItem(skills, index, 1))}>
+                ↓
+              </button>
+              <button
+                className="icon-btn danger"
+                onClick={() => onChange(skills.filter((_, entryIndex) => entryIndex !== index))}
+              >
+                ×
+              </button>
+            </div>
+          </div>
+          <FieldRow>
+            <SkillSelectField
+              size="lg"
+              label="skillId"
+              value={skill.skillId}
+              onChange={(skillId) =>
+                onChange(
+                  skills.map((entry, entryIndex) =>
+                    entryIndex === index ? { ...entry, skillId } : entry,
+                  ),
+                )
+              }
+            />
+            <NumberField
+              size="sm"
+              label="probability"
+              value={skill.probability}
+              min={0}
+              step={0.01}
+              onChange={(probability) =>
+                onChange(
+                  skills.map((entry, entryIndex) =>
+                    entryIndex === index ? { ...entry, probability } : entry,
+                  ),
+                )
+              }
+            />
+          </FieldRow>
+          <SkillMeta skillId={skill.skillId} />
+        </div>
+      ))}
+      <button className="btn ghost small" onClick={() => onChange([...skills, { skillId: '', probability: 0 }])}>
+        + スキル
+      </button>
     </div>
   )
 }

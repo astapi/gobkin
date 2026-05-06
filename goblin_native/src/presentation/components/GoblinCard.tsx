@@ -1,11 +1,16 @@
-import { memo } from 'react'
+import { memo, useMemo } from 'react'
 import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native'
 import { useTranslation } from 'react-i18next'
 import { getGoblinDisplayImage, getGoblinDisplayImageScale } from '@/shared/utils/goblinImages'
 import { getFactorImage } from '@/shared/utils/factorImages'
 import { getEffectiveStats } from '@/shared/utils/goblinStats'
 import type { Goblin } from '@/shared/types'
-import { getRaceLabel } from '@/shared/i18n/entityLocalization'
+import { getFactorName, getRaceLabel, getSkillLabel } from '@/shared/i18n/entityLocalization'
+import { getDefaultSkillsForRace } from '@/shared/data/raceSkills'
+import { getUniqueSkillsById } from '@/shared/data/characterSkills'
+import { getFactor } from '@/shared/data/factors'
+import { GOBLIN_JOB_SKILL_IDS } from '@/shared/data/goblinJobs'
+import { EQUIPMENT_GRANTED_SKILL_IDS } from '@/shared/data/equipmentPoolLoader'
 
 interface GoblinCardProps {
   goblin: Goblin
@@ -27,6 +32,22 @@ export const GoblinCard = memo(function GoblinCard({
   const { t } = useTranslation()
   const stats = getEffectiveStats(goblin)
   const factorIds = goblin.factors ?? []
+  const visibleFactorIds = factorIds.slice(0, 2)
+  const extraFactorCount = Math.max(0, factorIds.length - visibleFactorIds.length)
+  const inheritedOrManifestedSkills = useMemo(() => {
+    const raceSkillIds = new Set(
+      getDefaultSkillsForRace(goblin.raceId ?? goblin.race).map((skill) => skill.id),
+    )
+    return getUniqueSkillsById(goblin.skills).filter(
+      (skill) => (
+        !raceSkillIds.has(skill.id) &&
+        !GOBLIN_JOB_SKILL_IDS.has(skill.id) &&
+        !EQUIPMENT_GRANTED_SKILL_IDS.has(skill.id)
+      ),
+    )
+  }, [goblin])
+  const visibleSkills = inheritedOrManifestedSkills.slice(0, 3)
+  const extraSkillCount = Math.max(0, inheritedOrManifestedSkills.length - visibleSkills.length)
 
   const content = (
     <View style={[
@@ -52,15 +73,41 @@ export const GoblinCard = memo(function GoblinCard({
           <Text style={[styles.level, isAssignedElsewhere && styles.levelDisabled]}>
             {t('ui.common.levelShort')}{goblin.level}
           </Text>
-          {factorIds.length > 0 && (
-            <View style={styles.factorIcons}>
-              {factorIds.map((factorId, index) => {
-                const FactorIcon = getFactorImage(factorId)
-                return <FactorIcon key={`${factorId}-${index}`} width={16} height={16} />
-              })}
-            </View>
-          )}
         </View>
+        {(factorIds.length > 0 || inheritedOrManifestedSkills.length > 0) && (
+          <View style={styles.traitRows}>
+            {factorIds.length > 0 && (
+              <View style={styles.traitRow}>
+                {visibleFactorIds.map((factorId, index) => {
+                  const FactorIcon = getFactorImage(factorId)
+                  return (
+                    <View key={`${factorId}-${index}`} style={styles.factorChip}>
+                      <FactorIcon width={13} height={13} />
+                      <Text style={styles.factorChipText} numberOfLines={1}>
+                        {getFactorName(getFactor(factorId) ?? { id: factorId, name: factorId })}
+                      </Text>
+                    </View>
+                  )
+                })}
+                {extraFactorCount > 0 && (
+                  <Text style={styles.moreChip}>+{extraFactorCount}</Text>
+                )}
+              </View>
+            )}
+            {inheritedOrManifestedSkills.length > 0 && (
+              <View style={styles.traitRow}>
+                {visibleSkills.map((skill) => (
+                  <Text key={skill.id} style={styles.skillChip} numberOfLines={1}>
+                    {getSkillLabel(skill)}
+                  </Text>
+                ))}
+                {extraSkillCount > 0 && (
+                  <Text style={styles.moreChip}>+{extraSkillCount}</Text>
+                )}
+              </View>
+            )}
+          </View>
+        )}
       </View>
       <View style={styles.statsContainer}>
         {assignedPartyName && (
@@ -125,6 +172,7 @@ const styles = StyleSheet.create({
   },
   info: {
     flex: 1,
+    minWidth: 0,
   },
   name: {
     fontSize: 14,
@@ -162,10 +210,49 @@ const styles = StyleSheet.create({
   levelDisabled: {
     color: '#9CA3AF',
   },
-  factorIcons: {
+  traitRows: {
+    marginTop: 4,
+    gap: 3,
+  },
+  traitRow: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: 3,
+  },
+  factorChip: {
+    maxWidth: 104,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 3,
+    backgroundColor: '#EEF2FF',
+    borderRadius: 4,
+    paddingHorizontal: 5,
+    paddingVertical: 2,
+  },
+  factorChipText: {
+    flexShrink: 1,
+    fontSize: 9,
+    fontWeight: '700',
+    color: '#4338CA',
+  },
+  skillChip: {
+    maxWidth: 128,
+    fontSize: 9,
+    fontWeight: '700',
+    color: '#065F46',
+    backgroundColor: '#ECFDF5',
+    borderRadius: 4,
+    paddingHorizontal: 5,
+    paddingVertical: 2,
+  },
+  moreChip: {
+    fontSize: 9,
+    fontWeight: '700',
+    color: '#6B7280',
+    backgroundColor: '#F3F4F6',
+    borderRadius: 4,
+    paddingHorizontal: 5,
+    paddingVertical: 2,
   },
   statsContainer: {
     alignItems: 'flex-end',

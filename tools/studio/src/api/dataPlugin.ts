@@ -118,11 +118,28 @@ interface GoblinFactorSeed {
   source?: 'variant' | 'standalone'
 }
 
+interface BirthSkillLotteryEntry {
+  skillId: string
+  probability: number
+}
+
+interface FactorSkillInheritanceRule {
+  factorId: string
+  skills: BirthSkillLotteryEntry[]
+}
+
+interface PureGoblinSkillManifestationRule {
+  baseRank: number
+  skills: BirthSkillLotteryEntry[]
+}
+
 interface GoblinStudioData {
   races: GoblinRaceEntry[]
   factors: GoblinFactorSeed[]
   jobs: GoblinJobSeed[]
   variants: GoblinVariantSeed[]
+  factorSkillInheritanceRules: FactorSkillInheritanceRule[]
+  pureGoblinSkillManifestationRules: PureGoblinSkillManifestationRule[]
 }
 
 export function dataApiPlugin(options: Options): Plugin {
@@ -133,6 +150,7 @@ export function dataApiPlugin(options: Options): Plugin {
   const factorsFile = path.join(options.appSrc, 'shared', 'data', 'factors.ts')
   const jobsFile = path.join(options.appSrc, 'shared', 'data', 'goblinJobs.ts')
   const variantsFile = path.join(options.appSrc, 'shared', 'data', 'goblinVariants.ts')
+  const skillBirthRulesFile = path.join(options.appSrc, 'shared', 'data', 'skillBirthRules.ts')
   const equipmentPoolFile = path.join(options.appSrc, 'shared', 'data', 'equipmentPool.json')
   const presetsFile = path.join(options.dataDir, 'party-presets.json')
   const libraryFile = path.join(options.dataDir, 'character-library.json')
@@ -315,7 +333,13 @@ export function dataApiPlugin(options: Options): Plugin {
             return json(
               res,
               200,
-              await readGoblinStudioData({ racesFile, factorsFile, jobsFile, variantsFile }),
+              await readGoblinStudioData({
+                racesFile,
+                factorsFile,
+                jobsFile,
+                variantsFile,
+                skillBirthRulesFile,
+              }),
             )
           }
           if (req.method === 'PUT') {
@@ -324,7 +348,7 @@ export function dataApiPlugin(options: Options): Plugin {
               res,
               200,
               await writeGoblinStudioData(
-                { racesFile, factorsFile, jobsFile, variantsFile },
+                { racesFile, factorsFile, jobsFile, variantsFile, skillBirthRulesFile },
                 body,
               ),
             )
@@ -748,12 +772,14 @@ async function readGoblinStudioData(paths: {
   factorsFile: string
   jobsFile: string
   variantsFile: string
+  skillBirthRulesFile: string
 }): Promise<GoblinStudioData> {
-  const [racesSource, factorsSource, jobsSource, variantsSource] = await Promise.all([
+  const [racesSource, factorsSource, jobsSource, variantsSource, skillBirthRulesSource] = await Promise.all([
     fs.readFile(paths.racesFile, 'utf8'),
     fs.readFile(paths.factorsFile, 'utf8'),
     fs.readFile(paths.jobsFile, 'utf8'),
     fs.readFile(paths.variantsFile, 'utf8'),
+    fs.readFile(paths.skillBirthRulesFile, 'utf8'),
   ])
 
   const racesObject = evaluateObjectLiteral<
@@ -780,6 +806,12 @@ async function readGoblinStudioData(paths: {
   )
   const standaloneFactorsObject = evaluateObjectLiteral<Record<string, GoblinFactorSeed>>(
     extractConstObjectLiteral(factorsSource, 'standaloneFactorDatabase'),
+  )
+  const factorSkillInheritanceRulesObject = evaluateObjectLiteral<Record<string, FactorSkillInheritanceRule>>(
+    extractConstObjectLiteral(skillBirthRulesSource, 'factorSkillInheritanceRules'),
+  )
+  const pureGoblinSkillManifestationRules = evaluateObjectLiteral<PureGoblinSkillManifestationRule[]>(
+    extractConstArrayLiteral(skillBirthRulesSource, 'pureGoblinSkillManifestationRules'),
   )
   const variantFactors: GoblinFactorSeed[] = Object.values(variantsObject).map((variant) => ({
     id: variant.factorId,
@@ -812,6 +844,8 @@ async function readGoblinStudioData(paths: {
     factors: [...variantFactors, ...standaloneFactors],
     jobs: Object.values(jobsObject),
     variants: Object.values(variantsObject),
+    factorSkillInheritanceRules: Object.values(factorSkillInheritanceRulesObject),
+    pureGoblinSkillManifestationRules,
   }
 }
 
@@ -821,6 +855,7 @@ async function writeGoblinStudioData(
     factorsFile: string
     jobsFile: string
     variantsFile: string
+    skillBirthRulesFile: string
   },
   body: unknown,
 ) {
@@ -828,11 +863,12 @@ async function writeGoblinStudioData(
     throw new Error('Invalid goblin data payload')
   }
 
-  const [racesSource, factorsSource, jobsSource, variantsSource] = await Promise.all([
+  const [racesSource, factorsSource, jobsSource, variantsSource, skillBirthRulesSource] = await Promise.all([
     fs.readFile(paths.racesFile, 'utf8'),
     fs.readFile(paths.factorsFile, 'utf8'),
     fs.readFile(paths.jobsFile, 'utf8'),
     fs.readFile(paths.variantsFile, 'utf8'),
+    fs.readFile(paths.skillBirthRulesFile, 'utf8'),
   ])
 
   const racesObject = Object.fromEntries(
@@ -883,6 +919,9 @@ async function writeGoblinStudioData(
         },
       ]),
   )
+  const factorSkillInheritanceRulesObject = Object.fromEntries(
+    body.factorSkillInheritanceRules.map((rule) => [rule.factorId, rule]),
+  )
 
   const nextRaces = replaceConstObjectLiteral(
     racesSource,
@@ -904,18 +943,36 @@ async function writeGoblinStudioData(
     'goblinVariantDefinitions',
     formatJsValue(variantsObject, 0),
   )
+  const nextSkillBirthRules = replaceConstArrayLiteral(
+    replaceConstObjectLiteral(
+      skillBirthRulesSource,
+      'factorSkillInheritanceRules',
+      formatJsValue(factorSkillInheritanceRulesObject, 0),
+    ),
+    'pureGoblinSkillManifestationRules',
+    formatJsValue(body.pureGoblinSkillManifestationRules, 0),
+  )
 
   await Promise.all([
     fs.writeFile(paths.racesFile, nextRaces, 'utf8'),
     fs.writeFile(paths.factorsFile, nextFactors, 'utf8'),
     fs.writeFile(paths.jobsFile, nextJobs, 'utf8'),
     fs.writeFile(paths.variantsFile, nextVariants, 'utf8'),
+    fs.writeFile(paths.skillBirthRulesFile, nextSkillBirthRules, 'utf8'),
   ])
 
   return { ok: true }
 }
 
 function extractConstObjectLiteral(source: string, constName: string): string {
+  return extractConstLiteral(source, constName, '{', '}')
+}
+
+function extractConstArrayLiteral(source: string, constName: string): string {
+  return extractConstLiteral(source, constName, '[', ']')
+}
+
+function extractConstLiteral(source: string, constName: string, open: '{' | '[', close: '}' | ']'): string {
   const marker = `const ${constName}`
   const markerIndex = source.indexOf(marker)
   if (markerIndex < 0) {
@@ -925,15 +982,29 @@ function extractConstObjectLiteral(source: string, constName: string): string {
   if (eqIndex < 0) {
     throw new Error(`Assignment not found: ${constName}`)
   }
-  const start = source.indexOf('{', eqIndex)
+  const start = source.indexOf(open, eqIndex)
   if (start < 0) {
-    throw new Error(`Object literal not found: ${constName}`)
+    throw new Error(`Literal not found: ${constName}`)
   }
-  const end = findMatchingBrace(source, start)
+  const end = findMatchingDelimiter(source, start, open, close)
   return source.slice(start, end + 1)
 }
 
 function replaceConstObjectLiteral(source: string, constName: string, nextObjectLiteral: string): string {
+  return replaceConstLiteral(source, constName, nextObjectLiteral, '{', '}')
+}
+
+function replaceConstArrayLiteral(source: string, constName: string, nextArrayLiteral: string): string {
+  return replaceConstLiteral(source, constName, nextArrayLiteral, '[', ']')
+}
+
+function replaceConstLiteral(
+  source: string,
+  constName: string,
+  nextLiteral: string,
+  open: '{' | '[',
+  close: '}' | ']',
+): string {
   const marker = `const ${constName}`
   const markerIndex = source.indexOf(marker)
   if (markerIndex < 0) {
@@ -943,15 +1014,20 @@ function replaceConstObjectLiteral(source: string, constName: string, nextObject
   if (eqIndex < 0) {
     throw new Error(`Assignment not found: ${constName}`)
   }
-  const start = source.indexOf('{', eqIndex)
+  const start = source.indexOf(open, eqIndex)
   if (start < 0) {
-    throw new Error(`Object literal not found: ${constName}`)
+    throw new Error(`Literal not found: ${constName}`)
   }
-  const end = findMatchingBrace(source, start)
-  return `${source.slice(0, start)}${nextObjectLiteral}${source.slice(end + 1)}`
+  const end = findMatchingDelimiter(source, start, open, close)
+  return `${source.slice(0, start)}${nextLiteral}${source.slice(end + 1)}`
 }
 
-function findMatchingBrace(source: string, start: number): number {
+function findMatchingDelimiter(
+  source: string,
+  start: number,
+  open: '{' | '[' = '{',
+  close: '}' | ']' = '}',
+): number {
   let depth = 0
   let quote: '"' | "'" | '`' | null = null
   let escape = false
@@ -1001,11 +1077,11 @@ function findMatchingBrace(source: string, start: number): number {
       quote = ch
       continue
     }
-    if (ch === '{') {
+    if (ch === open) {
       depth++
       continue
     }
-    if (ch === '}') {
+    if (ch === close) {
       depth--
       if (depth === 0) return i
     }
@@ -1054,6 +1130,8 @@ function isGoblinStudioDataShape(value: unknown): value is GoblinStudioData {
     Array.isArray(record.races) &&
     Array.isArray(record.factors) &&
     Array.isArray(record.jobs) &&
-    Array.isArray(record.variants)
+    Array.isArray(record.variants) &&
+    Array.isArray(record.factorSkillInheritanceRules) &&
+    Array.isArray(record.pureGoblinSkillManifestationRules)
   )
 }
