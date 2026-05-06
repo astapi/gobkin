@@ -29,6 +29,10 @@ const goblinImages: Record<string, ImageSourcePropType> = {
   goblin_thief_variant_c_assassin: require('../../../assets/goblin/goblin_thief_variant_c_assassin.png'),
   goblin_thief_variant_d_gold_snatcher: require('../../../assets/goblin/goblin_thief_variant_d_gold_snatcher.png'),
   goblin_mage: require('../../../assets/goblin/goblin_mage.png'),
+  goblin_mage_variant_a_upright_staff: require('../../../assets/goblin/goblin_mage_variant_a_upright_staff.png'),
+  goblin_mage_variant_b_ready_stance: require('../../../assets/goblin/goblin_mage_variant_b_ready_stance.png'),
+  goblin_mage_variant_c_diagonal_cast: require('../../../assets/goblin/goblin_mage_variant_c_diagonal_cast.png'),
+  goblin_mage_variant_d_staff_thrust: require('../../../assets/goblin/goblin_mage_variant_d_staff_thrust.png'),
   goblin_warrior: require('../../../assets/goblin/goblin_warrior.png'),
   goblin_warrior_variant_a_balanced: require('../../../assets/goblin/goblin_warrior_variant_a_balanced.png'),
   goblin_warrior_variant_b_heavy: require('../../../assets/goblin/goblin_warrior_variant_b_heavy.png'),
@@ -101,6 +105,34 @@ export const GOBLIN_THIEF_IMAGE_OPTIONS: GoblinImageOption[] = [
   },
 ]
 
+export const GOBLIN_MAGE_IMAGE_OPTIONS: GoblinImageOption[] = [
+  {
+    key: 'goblin_mage',
+    avatar: '/src/assets/goblin/goblin_mage.png',
+    source: goblinImages.goblin_mage,
+  },
+  {
+    key: 'goblin_mage_variant_a_upright_staff',
+    avatar: '/src/assets/goblin/goblin_mage_variant_a_upright_staff.png',
+    source: goblinImages.goblin_mage_variant_a_upright_staff,
+  },
+  {
+    key: 'goblin_mage_variant_b_ready_stance',
+    avatar: '/src/assets/goblin/goblin_mage_variant_b_ready_stance.png',
+    source: goblinImages.goblin_mage_variant_b_ready_stance,
+  },
+  {
+    key: 'goblin_mage_variant_c_diagonal_cast',
+    avatar: '/src/assets/goblin/goblin_mage_variant_c_diagonal_cast.png',
+    source: goblinImages.goblin_mage_variant_c_diagonal_cast,
+  },
+  {
+    key: 'goblin_mage_variant_d_staff_thrust',
+    avatar: '/src/assets/goblin/goblin_mage_variant_d_staff_thrust.png',
+    source: goblinImages.goblin_mage_variant_d_staff_thrust,
+  },
+]
+
 export const GOBLIN_WARRIOR_IMAGE_OPTIONS: GoblinImageOption[] = [
   {
     key: 'goblin_warrior_variant_b_heavy',
@@ -131,6 +163,7 @@ export const GOBLIN_WARRIOR_IMAGE_OPTIONS: GoblinImageOption[] = [
 
 const goblinGuardImageKeys: Set<string> = new Set(GOBLIN_GUARD_IMAGE_OPTIONS.map(option => option.key))
 const goblinThiefImageKeys: Set<string> = new Set(GOBLIN_THIEF_IMAGE_OPTIONS.map(option => option.key))
+const goblinMageImageKeys: Set<string> = new Set(GOBLIN_MAGE_IMAGE_OPTIONS.map(option => option.key))
 const goblinWarriorImageKeys: Set<string> = new Set(GOBLIN_WARRIOR_IMAGE_OPTIONS.map(option => option.key))
 
 export function getGoblinImageOptionsForJob(job: GoblinJob | undefined): GoblinImageOption[] {
@@ -139,6 +172,8 @@ export function getGoblinImageOptionsForJob(job: GoblinJob | undefined): GoblinI
       return GOBLIN_GUARD_IMAGE_OPTIONS
     case 'thief':
       return GOBLIN_THIEF_IMAGE_OPTIONS
+    case 'mage':
+      return GOBLIN_MAGE_IMAGE_OPTIONS
     case 'warrior':
       return GOBLIN_WARRIOR_IMAGE_OPTIONS
     default:
@@ -164,6 +199,11 @@ export function getGoblinDisplayImageScale(goblin: Pick<Goblin, 'avatar' | 'job'
   }
 
   if (goblin.job === 'thief') {
+    return 1.18
+  }
+
+  if (goblin.job === 'mage') {
+    if (imageName === 'goblin_mage') return 1
     return 1.18
   }
 
@@ -243,6 +283,12 @@ export function getGoblinDisplayImage(goblin: Pick<Goblin, 'avatar' | 'race' | '
         }
         return goblinImages.goblin_thief
       case 'mage':
+        {
+          const imageName = getGoblinImageKey(goblin.avatar)
+          if (imageName && goblinMageImageKeys.has(imageName)) {
+            return goblinImages[imageName]
+          }
+        }
         return goblinImages.goblin_mage
       case 'warrior':
         {

@@ -17,11 +17,12 @@ const equipmentRepository = SQLiteEquipmentRepository.getInstance()
 const CATEGORY_ORDER: Record<EquipmentCategory, number> = {
   weapon: 0,
   armor: 1,
-  shield: 2,
-  gauntlet: 3,
-  wand: 4,
-  rod: 5,
-  accessory: 6,
+  robe: 2,
+  shield: 3,
+  gauntlet: 4,
+  wand: 5,
+  rod: 6,
+  accessory: 7,
 }
 
 type ShopMode = 'buy' | 'sell'

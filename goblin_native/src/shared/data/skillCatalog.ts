@@ -188,6 +188,14 @@ function createMagicResistantSkill(numerator: number, denominator: number): Char
   }
 }
 
+function createCounterAvoidanceSkill(numerator: number, denominator: number): CharacterSkill {
+  const id = `counter_avoidance_${numerator}_${denominator}`
+  return {
+    id,
+    counterAttackAvoidanceRate: numerator / denominator,
+  }
+}
+
 function createRecoveryMagicSkill(level: number): CharacterSkill {
   return {
     id: `recovery_magic_lv${level}`,
@@ -258,6 +266,38 @@ export const CHARACTER_SKILL_CATALOG = {
   armor_mastery_150: {
     id: 'armor_mastery_150',
     equipmentCategoryMultiplier: { armor: 1.5 },
+  },
+  shield_mastery_120: {
+    id: 'shield_mastery_120',
+    equipmentCategoryMultiplier: { shield: 1.2 },
+  },
+  shield_mastery_130: {
+    id: 'shield_mastery_130',
+    equipmentCategoryMultiplier: { shield: 1.3 },
+  },
+  shield_mastery_150: {
+    id: 'shield_mastery_150',
+    equipmentCategoryMultiplier: { shield: 1.5 },
+  },
+  shield_mastery_200: {
+    id: 'shield_mastery_200',
+    equipmentCategoryMultiplier: { shield: 2.0 },
+  },
+  robe_mastery_120: {
+    id: 'robe_mastery_120',
+    equipmentCategoryMultiplier: { robe: 1.2 },
+  },
+  robe_mastery_130: {
+    id: 'robe_mastery_130',
+    equipmentCategoryMultiplier: { robe: 1.3 },
+  },
+  robe_mastery_150: {
+    id: 'robe_mastery_150',
+    equipmentCategoryMultiplier: { robe: 1.5 },
+  },
+  robe_mastery_200: {
+    id: 'robe_mastery_200',
+    equipmentCategoryMultiplier: { robe: 2.0 },
   },
   sword_mastery_120: {
     id: 'sword_mastery_120',
@@ -428,6 +468,10 @@ export const CHARACTER_SKILL_CATALOG = {
       criticalRateMultiplier: 0.5,
     },
   },
+
+  counter_avoidance_1_2: createCounterAvoidanceSkill(1, 2),
+  counter_avoidance_2_3: createCounterAvoidanceSkill(2, 3),
+  counter_avoidance_1_10: createCounterAvoidanceSkill(1, 10),
 
   goblin_pack_tactics: {
     id: 'goblin_pack_tactics',
@@ -600,6 +644,11 @@ export const CHARACTER_SKILL_CATALOG = {
   rear_guard: {
     id: 'rear_guard',
     protectRearAllyNormalAttackMultiplier: 2 / 3,
+  },
+
+  magic_rear_guard: {
+    id: 'magic_rear_guard',
+    protectRearAllyMagicDamageMultiplier: 2 / 3,
   },
 
   survive_lethal_hp1: {

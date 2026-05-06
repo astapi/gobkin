@@ -10,11 +10,13 @@ import {
   getLearnedSpellsFromSkills,
   getMagicDamageFollowUpFromSkills,
   getMagicDamageReductionFromSkills,
+  getCounterAttackAvoidanceRateFromSkills,
   getPhysicalCounterAttackFromSkills,
   getPhysicalDamagePercentFromSkills,
   getPhysicalDamageReductionFromSkills,
   getPureGoblinPartyStatBonusPercentFromSkills,
   getRearAllyDamageMultiplierFromSkills,
+  getRearMagicProtectionMultiplierFromSkills,
   getRearProtectionMultiplierFromSkills,
   getRowDamageMultiplierFromSkills,
   getSpellTakenMultiplierFromSkills,
@@ -188,6 +190,15 @@ describe('characterSkills - 物理ダメージ軽減', () => {
     ]
 
     expect(getRearProtectionMultiplierFromSkills(skills)).toBe(0.8)
+  })
+
+  it('同じidの魔法保護スキルは重複計算しない', () => {
+    const skills: CharacterSkill[] = [
+      { id: 'magic_rear_guard', protectRearAllyMagicDamageMultiplier: 2 / 3 },
+      { id: 'magic_rear_guard', protectRearAllyMagicDamageMultiplier: 2 / 3 },
+    ]
+
+    expect(getRearMagicProtectionMultiplierFromSkills(skills)).toBeCloseTo(2 / 3)
   })
 
   it('同じidの後列与ダメージ上昇スキルは重複計算しない', () => {
@@ -472,6 +483,16 @@ describe('characterSkills - 物理ダメージ軽減', () => {
     expect(getPhysicalCounterAttackFromSkills([{ id: 'plain' }])).toBeUndefined()
   })
 
+  it('反撃回避スキルの最大回避率を取得できる', () => {
+    const skills = [
+      getCharacterSkill('counter_avoidance_1_2'),
+      getCharacterSkill('counter_avoidance_2_3'),
+    ]
+
+    expect(getCounterAttackAvoidanceRateFromSkills(skills)).toBeCloseTo(2 / 3)
+    expect(getCounterAttackAvoidanceRateFromSkills([{ id: 'plain' }])).toBe(0)
+  })
+
   it('群れスキルの純粋ゴブリン人数補正を取得できる', () => {
     expect(getPureGoblinPartyStatBonusPercentFromSkills([getCharacterSkill('goblin_pack_tactics')])).toBe(5)
     expect(getPureGoblinPartyStatBonusPercentFromSkills([{ id: 'plain' }])).toBe(0)
@@ -694,6 +715,14 @@ describe('characterSkills - 物理ダメージ軽減', () => {
 
   it('打ち合いスキルの説明文を返す', () => {
     expect(describeCharacterSkill(getCharacterSkill('counter_attack'))).toContain('反撃')
+  })
+
+  it('魔法保護スキルの説明文を返す', () => {
+    expect(describeCharacterSkill(getCharacterSkill('magic_rear_guard'))).toContain('魔法ダメージ')
+  })
+
+  it('反撃回避スキルの説明文を返す', () => {
+    expect(describeCharacterSkill(getCharacterSkill('counter_avoidance_1_2'))).toContain('1/2')
   })
 
   it('群れスキルの説明文を返す', () => {

@@ -4,7 +4,7 @@ import type { CharacterSkill } from './CharacterSkill'
 /**
  * 装備の種別
  */
-export type EquipmentCategory = 'weapon' | 'armor' | 'shield' | 'gauntlet' | 'wand' | 'rod' | 'accessory'
+export type EquipmentCategory = 'weapon' | 'armor' | 'robe' | 'shield' | 'gauntlet' | 'wand' | 'rod' | 'accessory'
 
 /**
  * 武器のサブカテゴリ

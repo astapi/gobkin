@@ -147,6 +147,9 @@ const GOBLIN_JOB_DEFINITION_SEEDS: Record<GoblinJob, GoblinJobDefinitionSeed> = 
     skills: [
       {
         skillId: "recovery_magic_lv7"
+      },
+      {
+        skillId: "magic_rear_guard"
       }
     ],
     unlockRequiresClearedArea: "road_1",

@@ -1,5 +1,5 @@
 {
-  "version": "1.6.3",
+  "version": "1.6.4",
   "templates": [
     {
       "_comment": "===== 武器:剣 (melee) ====="
@@ -1082,6 +1082,159 @@
         "physical_reduction_12"
       ],
       "price": 720000,
+      "rank": 8
+    },
+    {
+      "_comment": "===== 防具:ローブ (robe) ====="
+    },
+    {
+      "id": "robe_robe",
+      "name": "ローブ",
+      "category": "robe",
+      "statBonuses": [
+        {
+          "stat": "magic_def_flat",
+          "value": 16
+        },
+        {
+          "stat": "hp_percent",
+          "value": 6
+        }
+      ],
+      "grantedSkillIds": [
+        "magic_resistant_4_5",
+        "magic_reduction_6"
+      ],
+      "price": 200,
+      "unlockRank": 1,
+      "rank": 2
+    },
+    {
+      "id": "robe_mithril",
+      "name": "ミスリルローブ",
+      "category": "robe",
+      "statBonuses": [
+        {
+          "stat": "magic_def_flat",
+          "value": 24
+        },
+        {
+          "stat": "hp_percent",
+          "value": 7
+        }
+      ],
+      "grantedSkillIds": [
+        "magic_resistant_4_5",
+        "magic_reduction_7"
+      ],
+      "price": 1000,
+      "rank": 3
+    },
+    {
+      "id": "robe_royal",
+      "name": "ロイヤルローブ",
+      "category": "robe",
+      "statBonuses": [
+        {
+          "stat": "magic_def_flat",
+          "value": 32
+        },
+        {
+          "stat": "hp_percent",
+          "value": 8
+        }
+      ],
+      "grantedSkillIds": [
+        "magic_resistant_4_5",
+        "magic_reduction_8"
+      ],
+      "price": 5000,
+      "rank": 4
+    },
+    {
+      "id": "robe_kaiser",
+      "name": "カイザーローブ",
+      "category": "robe",
+      "statBonuses": [
+        {
+          "stat": "magic_def_flat",
+          "value": 48
+        },
+        {
+          "stat": "hp_percent",
+          "value": 9
+        }
+      ],
+      "grantedSkillIds": [
+        "magic_resistant_4_5",
+        "magic_reduction_9"
+      ],
+      "price": 25000,
+      "unlockRank": 3,
+      "rank": 5
+    },
+    {
+      "id": "robe_ancient",
+      "name": "エンシェントローブ",
+      "category": "robe",
+      "statBonuses": [
+        {
+          "stat": "magic_def_flat",
+          "value": 64
+        },
+        {
+          "stat": "hp_percent",
+          "value": 10
+        }
+      ],
+      "grantedSkillIds": [
+        "magic_resistant_4_5",
+        "magic_reduction_10"
+      ],
+      "price": 125000,
+      "unlockRank": 5,
+      "rank": 6
+    },
+    {
+      "id": "robe_dragon",
+      "name": "ドラゴンローブ",
+      "category": "robe",
+      "statBonuses": [
+        {
+          "stat": "magic_def_flat",
+          "value": 96
+        },
+        {
+          "stat": "hp_percent",
+          "value": 11
+        }
+      ],
+      "grantedSkillIds": [
+        "magic_resistant_4_5",
+        "magic_reduction_11"
+      ],
+      "price": 500000,
+      "rank": 7
+    },
+    {
+      "id": "robe_adamant",
+      "name": "アダマントローブ",
+      "category": "robe",
+      "statBonuses": [
+        {
+          "stat": "magic_def_flat",
+          "value": 128
+        },
+        {
+          "stat": "hp_percent",
+          "value": 12
+        }
+      ],
+      "grantedSkillIds": [
+        "magic_resistant_4_5",
+        "magic_reduction_12"
+      ],
+      "price": 1500000,
       "rank": 8
     },
     {

@@ -479,6 +479,32 @@ describe('ModStatCalculator — 戦闘ステータス計算', () => {
     expect(result.magicAtk).toBe(10)
   })
 
+  it('シールド装備スキルはシールドカテゴリ装備の能力値を倍率強化する', () => {
+    const goblin = createTestGoblin({
+      skills: [{ id: 'shield_mastery_200', equipmentCategoryMultiplier: { shield: 2.0 } }],
+    })
+    const result = ModStatCalculator.calculate(goblin, [
+      { stat: 'def_flat', value: 10, sourceCategory: 'shield' },
+      { stat: 'magic_def_flat', value: 10, sourceCategory: 'shield' },
+    ])
+
+    expect(result.def).toBe(30)
+    expect(result.magicDef).toBe(31)
+  })
+
+  it('ローブ装備スキルはローブカテゴリ装備の能力値を倍率強化する', () => {
+    const goblin = createTestGoblin({
+      skills: [{ id: 'robe_mastery_200', equipmentCategoryMultiplier: { robe: 2.0 } }],
+    })
+    const result = ModStatCalculator.calculate(goblin, [
+      { stat: 'magic_def_flat', value: 10, sourceCategory: 'robe' },
+      { stat: 'hp_percent', value: 10, sourceCategory: 'robe' },
+    ])
+
+    expect(result.magicDef).toBe(31)
+    expect(result.hp).toBe(72)
+  })
+
   it('EquipmentServiceは装備カテゴリをボーナスへ保持する', () => {
     const bonuses = EquipmentService.calculateEquipmentBonuses([
       { id: 'eq1', templateId: 'sword_cypress_stick', slotIndex: 0, goblinId: 1 },
@@ -594,6 +620,24 @@ describe('ModStatCalculator — 戦闘ステータス計算', () => {
     EquipmentService.unequip(equipment, goblin)
 
     expect(goblin.skills.some((skill) => skill.physicalDamageReductionPercent === 6)).toBe(false)
+  })
+
+  it('ローブ装備は魔法防御・HP%・魔法耐性スキルを持つ', () => {
+    const bonuses = EquipmentService.calculateEquipmentBonuses([
+      { id: 'eq1', templateId: 'robe_robe', slotIndex: 0, goblinId: 1 },
+    ])
+    const skills = EquipmentService.collectGrantedSkills([
+      { id: 'eq1', templateId: 'robe_robe', slotIndex: 0, goblinId: 1 },
+    ])
+
+    expect(bonuses).toEqual(expect.arrayContaining([
+      expect.objectContaining({ stat: 'magic_def_flat', value: 16, sourceCategory: 'robe' }),
+      expect.objectContaining({ stat: 'hp_percent', value: 6, sourceCategory: 'robe' }),
+    ]))
+    expect(skills).toEqual(expect.arrayContaining([
+      expect.objectContaining({ id: 'magic_resistant_4_5', magicDamageTakenMultiplier: 0.8 }),
+      expect.objectContaining({ id: 'magic_reduction_6', magicDamageReductionPercent: 6 }),
+    ]))
   })
 
   it('EquipmentServiceは爪装備に応じた攻撃回数スキルを付与・解除する', () => {
@@ -1100,6 +1144,60 @@ describe('BattleSystem — 命中判定と複数回攻撃', () => {
 
     expect(rear).toBeDefined()
     expect(rear!.totalDamage).toBe(173)
+  })
+
+  it('魔法保護持ちより後列の仲間は魔法ダメージが2/3に軽減される', () => {
+    const protectedAllies = [
+      createTestGoblin({
+        id: 1,
+        stats: { hp: 9999, atk: 1, agility: 10, def: 0, magicDef: 0, attackCount: 1, accuracy: 1, evasion: 0 },
+        skills: [getCharacterSkill('magic_rear_guard')],
+      }),
+      createTestGoblin({
+        id: 2,
+        stats: { hp: 9999, atk: 1, agility: 1, def: 0, magicDef: 0, attackCount: 1, accuracy: 1, evasion: 0 },
+      }),
+    ]
+    const plainAllies = [
+      createTestGoblin({
+        id: 1,
+        stats: { hp: 9999, atk: 1, agility: 10, def: 0, magicDef: 0, attackCount: 1, accuracy: 1, evasion: 0 },
+      }),
+      createTestGoblin({
+        id: 2,
+        stats: { hp: 9999, atk: 1, agility: 1, def: 0, magicDef: 0, attackCount: 1, accuracy: 1, evasion: 0 },
+      }),
+    ]
+    const caster = createTestEnemy({
+      id: 'CASTER',
+      hp: 9999,
+      atk: 1,
+      magicAtk: 120,
+      def: 0,
+      magicDef: 0,
+      agility: 100,
+      attackCount: 0,
+      accuracy: 999,
+      evasion: 0,
+      spells: [{ spellId: 'fireball' }],
+      battleActionPolicy: { attackRate: 0, clericMagicRate: 0, mageMagicRate: 100 },
+    })
+
+    const protectedResult = new BattleSystem().executeBattle(protectedAllies, [9999, 9999], [[caster]], () => 0.5, 1)
+    const plainResult = new BattleSystem().executeBattle(plainAllies, [9999, 9999], [[createTestEnemy({
+      ...caster,
+      spells: [{ spellId: 'fireball' }],
+      battleActionPolicy: { attackRate: 0, clericMagicRate: 0, mageMagicRate: 100 },
+    })]], () => 0.5, 1)
+
+    const protectedRear = protectedResult.detailedLog.find(log => log.action === 'ファイヤーボール')!.targets.find(target => target.targetId === '2')
+    const plainRear = plainResult.detailedLog.find(log => log.action === 'ファイヤーボール')!.targets.find(target => target.targetId === '2')
+
+    expect(protectedRear).toBeDefined()
+    expect(plainRear).toBeDefined()
+    expect(protectedRear!.hitCount).toBe(plainRear!.hitCount)
+    expect(protectedRear!.totalDamage).toBeGreaterThanOrEqual(Math.floor(plainRear!.totalDamage * 0.62))
+    expect(protectedRear!.totalDamage).toBeLessThanOrEqual(Math.ceil(plainRear!.totalDamage * 0.68))
   })
 
   it('遠征戦闘でもスライムゴブリンの後列防護が適用される', () => {
@@ -2110,6 +2208,64 @@ describe('spell charges', () => {
     )
 
     expect(result.detailedLog.some(log => log.action === '打ち合い')).toBe(false)
+  })
+
+  it('反撃回避は反撃決定後に反撃をなかったことにする', () => {
+    const attacker = createTestGoblin({
+      id: 1,
+      stats: { hp: 300, atk: 80, agility: 100, def: 10, attackCount: 1, accuracy: 999, evasion: 0 },
+      skills: [getCharacterSkill('counter_avoidance_1_2')],
+    })
+    const defender = createTestEnemy({
+      id: 'COUNTER',
+      hp: 999,
+      atk: 20,
+      def: 1,
+      attackCount: 10,
+      accuracy: 999,
+      evasion: 0,
+      agility: 1,
+      baseAttributes: { power: 100, wisdom: 10, spirit: 10, vitality: 10, agility: 1, luck: 10 },
+      skills: [getCharacterSkill('counter_attack')],
+    })
+    const result = new BattleSystem().executeBattle(
+      [attacker],
+      [attacker.stats.hp],
+      [[defender]],
+      () => 0,
+      1,
+    )
+
+    expect(result.detailedLog.some(log => log.action === '打ち合い')).toBe(false)
+  })
+
+  it('反撃回避に失敗した場合は反撃する', () => {
+    const attacker = createTestGoblin({
+      id: 1,
+      stats: { hp: 300, atk: 80, agility: 100, def: 10, attackCount: 1, accuracy: 999, evasion: 0 },
+      skills: [getCharacterSkill('counter_avoidance_1_2')],
+    })
+    const defender = createTestEnemy({
+      id: 'COUNTER',
+      hp: 999,
+      atk: 20,
+      def: 1,
+      attackCount: 10,
+      accuracy: 999,
+      evasion: 0,
+      agility: 1,
+      baseAttributes: { power: 100, wisdom: 10, spirit: 10, vitality: 10, agility: 1, luck: 10 },
+      skills: [getCharacterSkill('counter_attack')],
+    })
+    const result = new BattleSystem().executeBattle(
+      [attacker],
+      [attacker.stats.hp],
+      [[defender]],
+      () => 0.9,
+      1,
+    )
+
+    expect(result.detailedLog.some(log => log.actorId === 'COUNTER' && log.action === '打ち合い')).toBe(true)
   })
 
   it('ヒールは魔法回復量ぶん最も傷ついた味方を回復する', () => {
