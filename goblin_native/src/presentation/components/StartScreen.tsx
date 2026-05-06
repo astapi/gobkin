@@ -8,8 +8,8 @@ import {
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useTranslation } from 'react-i18next'
-
-const startBackgroundImage = require('../../../assets/images/start-background.png')
+import { useState } from 'react'
+import { getRandomSplashBackgroundImage } from '@/shared/utils/splashImages'
 
 interface StartScreenProps {
   onStart?: () => void
@@ -18,6 +18,7 @@ interface StartScreenProps {
 
 export function StartScreen({ onStart, starting = false }: StartScreenProps) {
   const { t } = useTranslation()
+  const [startBackgroundImage] = useState(getRandomSplashBackgroundImage)
 
   const handleStart = () => {
     if (starting) return

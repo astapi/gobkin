@@ -11,7 +11,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   userInterfaceStyle: "light",
   newArchEnabled: true,
   splash: {
-    image: "./assets/images/splash.png",
+    image: "./assets/images/splash-fortress-defense.png",
     resizeMode: "cover",
     backgroundColor: "#07111C",
   },
@@ -24,7 +24,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       ITSAppUsesNonExemptEncryption: false,
     },
     splash: {
-      image: "./assets/images/splash.png",
+      image: "./assets/images/splash-fortress-defense.png",
       resizeMode: "cover",
       backgroundColor: "#07111C",
     },
@@ -38,7 +38,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     predictiveBackGestureEnabled: false,
     package: "com.astapi.gobkin",
     splash: {
-      image: "./assets/images/splash.png",
+      image: "./assets/images/splash-fortress-defense.png",
       resizeMode: "cover",
       backgroundColor: "#07111C",
     },
