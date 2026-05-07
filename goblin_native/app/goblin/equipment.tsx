@@ -2,7 +2,13 @@ import { useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import { View, Text, TouchableOpacity, StyleSheet, FlatList, Modal, Alert, ScrollView } from 'react-native'
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useLocalSearchParams } from 'expo-router'
-import type { EquipmentInstance, EquipmentTemplate, EquipmentCategory, CharacterSkill } from '@/shared/types'
+import type {
+  EquipmentInstance,
+  EquipmentTemplate,
+  EquipmentCategory,
+  WeaponSubCategory,
+  CharacterSkill,
+} from '@/shared/types'
 import { useGoblinStore } from '@/presentation/stores/useGoblinStore'
 import { useEquipmentService } from '@/presentation/hooks/useEquipmentService'
 import { EquipmentService } from '@/core/services/EquipmentService'
@@ -27,6 +33,61 @@ const CATEGORY_ORDER: Record<EquipmentCategory, number> = {
   accessory: 7,
 }
 
+const CATEGORY_LABELS: Record<EquipmentCategory, string> = {
+  weapon: '武器',
+  armor: '鎧',
+  robe: 'ローブ',
+  shield: '盾',
+  gauntlet: '小手',
+  wand: 'ワンド',
+  rod: 'ロッド',
+  accessory: 'アクセサリー',
+}
+
+const WEAPON_SUB_CATEGORY_LABELS: Record<WeaponSubCategory, string> = {
+  sword: '剣',
+  axe: '斧',
+  spear: '槍',
+  bow: '弓',
+  staff: '杖',
+  claw: '爪',
+}
+
+const CATEGORY_FILTER_ORDER: Exclude<EquipmentCategory, 'weapon'>[] = [
+  'armor',
+  'robe',
+  'shield',
+  'gauntlet',
+  'wand',
+  'rod',
+  'accessory',
+]
+
+const WEAPON_SUB_CATEGORY_FILTER_ORDER: WeaponSubCategory[] = [
+  'sword',
+  'claw',
+  'bow',
+]
+
+type InventoryFilter =
+  | {
+      type: 'all'
+      key: 'all'
+      label: string
+    }
+  | {
+      type: 'weaponSubCategory'
+      key: WeaponSubCategory
+      label: string
+    }
+  | {
+      type: 'category'
+      key: Exclude<EquipmentCategory, 'weapon'>
+      label: string
+    }
+
+const ALL_INVENTORY_FILTER: InventoryFilter = { type: 'all', key: 'all', label: 'すべて' }
+
 function getDisplayName(eq: EquipmentInstance, template: EquipmentTemplate): string {
   return getEquipmentDisplayName(eq, template)
 }
@@ -37,6 +98,18 @@ type InventoryGroup = {
   template: EquipmentTemplate
   count: number
 }
+
+type InventoryListEntry =
+  | {
+      type: 'category'
+      key: string
+      label: string
+    }
+  | {
+      type: 'item'
+      key: string
+      group: InventoryGroup
+    }
 
 type DisplayBonus = {
   stat: string
@@ -147,6 +220,72 @@ function groupInventory(items: EquipmentInstance[]): InventoryGroup[] {
   }
 
   return Array.from(grouped.values())
+}
+
+function buildInventoryListEntries(groups: InventoryGroup[]): InventoryListEntry[] {
+  const entries: InventoryListEntry[] = []
+  let currentSectionKey: string | null = null
+
+  for (const group of groups) {
+    const { category, subCategory } = group.template
+    const sectionKey = category === 'weapon'
+      ? `weapon-${subCategory ?? 'unknown'}`
+      : category
+
+    if (sectionKey !== currentSectionKey) {
+      entries.push({
+        type: 'category',
+        key: `category-${sectionKey}-${entries.length}`,
+        label: category === 'weapon' && subCategory
+          ? WEAPON_SUB_CATEGORY_LABELS[subCategory]
+          : CATEGORY_LABELS[category],
+      })
+      currentSectionKey = sectionKey
+    }
+
+    entries.push({
+      type: 'item',
+      key: group.key,
+      group,
+    })
+  }
+
+  return entries
+}
+
+function matchesInventoryFilter(group: InventoryGroup, filter: InventoryFilter): boolean {
+  if (filter.type === 'all') return true
+  if (filter.type === 'weaponSubCategory') {
+    return group.template.category === 'weapon' && group.template.subCategory === filter.key
+  }
+  return group.template.category === filter.key
+}
+
+function buildInventoryFilterOptions(groups: InventoryGroup[]): InventoryFilter[] {
+  const categories = new Set(groups.map((group) => group.template.category))
+  const weaponSubCategories = new Set(
+    groups
+      .map((group) => group.template.subCategory)
+      .filter((subCategory): subCategory is WeaponSubCategory => Boolean(subCategory)),
+  )
+
+  return [
+    ALL_INVENTORY_FILTER,
+    ...WEAPON_SUB_CATEGORY_FILTER_ORDER
+      .filter((subCategory) => weaponSubCategories.has(subCategory))
+      .map((subCategory): InventoryFilter => ({
+        type: 'weaponSubCategory',
+        key: subCategory,
+        label: WEAPON_SUB_CATEGORY_LABELS[subCategory],
+      })),
+    ...CATEGORY_FILTER_ORDER
+      .filter((category) => categories.has(category))
+      .map((category): InventoryFilter => ({
+        type: 'category',
+        key: category,
+        label: CATEGORY_LABELS[category],
+      })),
+  ]
 }
 
 /** 装備済みアイテムの詳細モーダル */
@@ -290,7 +429,7 @@ function EquipmentRow({
 export default function EquipmentScreenPage() {
   const { goblinId } = useLocalSearchParams<{ goblinId: string }>()
   const insets = useSafeAreaInsets()
-  const listRef = useRef<FlatList<InventoryGroup>>(null)
+  const listRef = useRef<FlatList<InventoryListEntry>>(null)
   const scrollOffsetRef = useRef(0)
   const headerHeightRef = useRef(0)
   const pendingScrollRestoreRef = useRef(false)
@@ -299,6 +438,10 @@ export default function EquipmentScreenPage() {
     useEquipmentService()
   const [goblin, setGoblin] = useState<Goblin | null>(null)
   const [selectedDetail, setSelectedDetail] = useState<EquipmentInstance | null>(null)
+  const [selectedInventoryFilter, setSelectedInventoryFilter] = useState<InventoryFilter>(
+    ALL_INVENTORY_FILTER,
+  )
+  const [isFilterSheetVisible, setIsFilterSheetVisible] = useState(false)
 
   useEffect(() => {
     if (!goblinId) return
@@ -320,6 +463,18 @@ export default function EquipmentScreenPage() {
 
   const sortedEquipped = useMemo(() => sortEquipment(equippedItems), [equippedItems])
   const groupedInventory = useMemo(() => groupInventory(inventoryItems), [inventoryItems])
+  const inventoryFilterOptions = useMemo(
+    () => buildInventoryFilterOptions(groupedInventory),
+    [groupedInventory],
+  )
+  const filteredInventoryGroups = useMemo(
+    () => groupedInventory.filter((group) => matchesInventoryFilter(group, selectedInventoryFilter)),
+    [groupedInventory, selectedInventoryFilter],
+  )
+  const inventoryListEntries = useMemo(
+    () => buildInventoryListEntries(filteredInventoryGroups),
+    [filteredInventoryGroups],
+  )
   const penaltyPercents = useMemo(() => {
     const multipliers = EquipmentService.getEquipmentPenaltyMultipliers(equippedItems)
     return new Map(
@@ -335,9 +490,12 @@ export default function EquipmentScreenPage() {
   )
   const emptySlots = maxSlots - equippedItems.length
   const listBottomSpacerHeight = useMemo(
-    () => insets.bottom + 56,
+    () => insets.bottom + 96,
     [insets.bottom],
   )
+  const inventoryEmptyText = inventoryItems.length === 0
+    ? '所持アイテムがありません'
+    : '条件に合うアイテムがありません'
 
   const restoreScrollPosition = useCallback((nextHeaderHeight: number) => {
     if (!pendingScrollRestoreRef.current) {
@@ -394,76 +552,168 @@ export default function EquipmentScreenPage() {
 
   return (
     <SafeAreaView style={styles.container} edges={['left', 'right', 'bottom']}>
-      <FlatList
-        ref={listRef}
-        style={styles.content}
-        contentContainerStyle={styles.contentContainer}
-        showsVerticalScrollIndicator={true}
-        scrollEventThrottle={16}
-        onScroll={(event) => {
-          scrollOffsetRef.current = event.nativeEvent.contentOffset.y
-        }}
-        data={groupedInventory}
-        keyExtractor={(item) => item.key}
-        renderItem={({ item }) => (
-          <EquipmentRow
-            eq={item.equipment}
-            template={item.template}
-            onPress={() => handleEquip(item.equipment)}
-            onShowDetail={() => setSelectedDetail(item.equipment)}
-            highlighted={emptySlots > 0}
-            count={item.count}
-            characterSkills={characterSkills}
-          />
-        )}
-        ListHeaderComponent={(
-          <>
-            <View
-              style={styles.section}
-              onLayout={(event) => {
-                restoreScrollPosition(event.nativeEvent.layout.height)
-              }}
-            >
-              <Text style={styles.sectionTitle}>装備枠 ({equippedItems.length}/{maxSlots})</Text>
-              <View style={styles.slotList}>
-                {sortedEquipped.map(eq => {
-                  const template = getEquipmentTemplate(eq.templateId)
-                  if (!template) return null
-                  return (
-                    <EquipmentRow
-                      key={eq.id}
-                      eq={eq}
-                      template={template}
-                      onPress={() => handleUnequip(eq)}
-                      onShowDetail={() => setSelectedDetail(eq)}
-                      characterSkills={characterSkills}
-                      penaltyPercent={penaltyPercents.get(eq.templateId)}
-                    />
-                  )
-                })}
-                {Array.from({ length: emptySlots }).map((_, i) => (
-                  <View key={`empty-${i}`} style={styles.emptySlot}>
-                    <Text style={styles.emptySlotText}>空きスロット</Text>
+        <FlatList
+          ref={listRef}
+          style={styles.content}
+          contentContainerStyle={styles.contentContainer}
+          showsVerticalScrollIndicator={true}
+          scrollEnabled={true}
+          bounces={true}
+          nestedScrollEnabled={true}
+          scrollEventThrottle={16}
+          onScroll={(event) => {
+            scrollOffsetRef.current = event.nativeEvent.contentOffset.y
+          }}
+          data={inventoryListEntries}
+          keyExtractor={(item) => item.key}
+          renderItem={({ item }) => {
+            if (item.type === 'category') {
+              return (
+                <View style={styles.inventoryCategoryHeader}>
+                  <Text style={styles.inventoryCategoryTitle}>
+                    {item.label}
+                  </Text>
+                </View>
+              )
+            }
+
+            return (
+              <EquipmentRow
+                eq={item.group.equipment}
+                template={item.group.template}
+                onPress={() => handleEquip(item.group.equipment)}
+                onShowDetail={() => setSelectedDetail(item.group.equipment)}
+                highlighted={emptySlots > 0}
+                count={item.group.count}
+                characterSkills={characterSkills}
+              />
+            )
+          }}
+          ListHeaderComponent={(
+            <>
+              <View
+                style={styles.equipmentHeaderGroup}
+                onLayout={(event) => {
+                  restoreScrollPosition(event.nativeEvent.layout.height)
+                }}
+              >
+                <View style={styles.flatSectionHeader}>
+                  <Text style={styles.flatSectionTitle}>装備枠 ({equippedItems.length}/{maxSlots})</Text>
+                </View>
+                <View style={styles.section}>
+                  <View style={styles.slotList}>
+                    {sortedEquipped.map(eq => {
+                      const template = getEquipmentTemplate(eq.templateId)
+                      if (!template) return null
+                      return (
+                        <EquipmentRow
+                          key={eq.id}
+                          eq={eq}
+                          template={template}
+                          onPress={() => handleUnequip(eq)}
+                          onShowDetail={() => setSelectedDetail(eq)}
+                          characterSkills={characterSkills}
+                          penaltyPercent={penaltyPercents.get(eq.templateId)}
+                        />
+                      )
+                    })}
+                    {Array.from({ length: emptySlots }).map((_, i) => (
+                      <View key={`empty-${i}`} style={styles.emptySlot}>
+                        <Text style={styles.emptySlotText}>空きスロット</Text>
+                      </View>
+                    ))}
                   </View>
-                ))}
+                </View>
+              </View>
+
+              <View style={[styles.flatSectionHeader, styles.inventoryHeaderRow]}>
+                <Text style={styles.flatSectionTitle}>所持アイテム</Text>
+                <TouchableOpacity
+                  style={styles.inventoryFilterButton}
+                  activeOpacity={0.8}
+                  onPress={() => setIsFilterSheetVisible(true)}
+                >
+                  <Text style={styles.inventoryFilterStatus}>
+                    {selectedInventoryFilter.label}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </>
+          )}
+          ListEmptyComponent={(
+            <View style={styles.inventoryEmptySection}>
+              <View style={styles.emptyInventory}>
+                <Text style={styles.emptyInventoryText}>{inventoryEmptyText}</Text>
               </View>
             </View>
+          )}
+          ListFooterComponent={<View style={{ height: listBottomSpacerHeight }} />}
+          ItemSeparatorComponent={() => <View style={styles.itemSeparator} />}
+        />
 
-            <View style={styles.section}>
-              <Text style={styles.sectionTitle}>所持アイテム</Text>
+      <Modal
+        visible={isFilterSheetVisible}
+        animationType="slide"
+        transparent
+        onRequestClose={() => setIsFilterSheetVisible(false)}
+      >
+        <View style={styles.filterSheetOverlay}>
+          <TouchableOpacity
+            style={styles.filterSheetBackdrop}
+            activeOpacity={1}
+            onPress={() => setIsFilterSheetVisible(false)}
+          />
+          <View
+            style={[styles.filterSheet, { paddingBottom: insets.bottom + 16 }]}
+          >
+            <View style={styles.filterSheetHeader}>
+              <Text style={styles.filterSheetTitle}>絞り込み</Text>
+              <TouchableOpacity onPress={() => setIsFilterSheetVisible(false)}>
+                <Text style={styles.filterSheetClose}>閉じる</Text>
+              </TouchableOpacity>
             </View>
-          </>
-        )}
-        ListEmptyComponent={(
-          <View style={[styles.section, styles.inventoryEmptySection]}>
-            <View style={styles.emptyInventory}>
-              <Text style={styles.emptyInventoryText}>所持アイテムがありません</Text>
-            </View>
+
+            <ScrollView
+              style={styles.filterOptionScroll}
+              contentContainerStyle={styles.filterOptionGrid}
+              showsVerticalScrollIndicator={false}
+            >
+              {inventoryFilterOptions.map((option) => {
+                  const isSelected = option.type === selectedInventoryFilter.type
+                    && option.key === selectedInventoryFilter.key
+                  return (
+                    <TouchableOpacity
+                      key={`${option.type}-${option.key}`}
+                      style={[
+                        styles.filterOption,
+                        isSelected && styles.filterOptionSelected,
+                      ]}
+                      onPress={() => {
+                        setSelectedInventoryFilter(option)
+                        setIsFilterSheetVisible(false)
+                        requestAnimationFrame(() => {
+                          listRef.current?.scrollToOffset({
+                            offset: headerHeightRef.current,
+                            animated: true,
+                          })
+                        })
+                      }}
+                    >
+                      <Text
+                        style={[
+                          styles.filterOptionText,
+                          isSelected && styles.filterOptionTextSelected,
+                        ]}
+                      >
+                        {option.label}
+                      </Text>
+                    </TouchableOpacity>
+                  )
+                })}
+            </ScrollView>
           </View>
-        )}
-        ListFooterComponent={<View style={{ height: listBottomSpacerHeight }} />}
-        ItemSeparatorComponent={() => <View style={styles.itemSeparator} />}
-      />
+        </View>
+      </Modal>
 
       {selectedDetail && getEquipmentTemplate(selectedDetail.templateId) && (
         <ItemDetail
@@ -499,8 +749,8 @@ const styles = StyleSheet.create({
   },
   section: {
     backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    padding: 16,
+    borderRadius: 10,
+    padding: 12,
     marginBottom: 16,
     borderWidth: 1,
     borderColor: '#E5E7EB',
@@ -510,6 +760,34 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#1F2937',
     marginBottom: 12,
+  },
+  flatSectionHeader: {
+    marginBottom: 10,
+  },
+  flatSectionTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#1F2937',
+  },
+  inventoryHeaderRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 12,
+  },
+  inventoryFilterButton: {
+    backgroundColor: '#E5E7EB',
+    borderRadius: 999,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+  },
+  inventoryFilterStatus: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#4B5563',
+  },
+  equipmentHeaderGroup: {
+    marginBottom: 0,
   },
   slotList: {
     gap: 8,
@@ -527,7 +805,16 @@ const styles = StyleSheet.create({
     height: 8,
   },
   inventoryEmptySection: {
-    marginTop: -16,
+    marginTop: -4,
+  },
+  inventoryCategoryHeader: {
+    paddingTop: 8,
+    paddingBottom: 2,
+  },
+  inventoryCategoryTitle: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#6B7280',
   },
   itemRowHighlighted: {
     borderColor: '#93C5FD',
@@ -586,27 +873,88 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#9CA3AF',
   },
+  filterSheetOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.28)',
+    justifyContent: 'flex-end',
+  },
+  filterSheetBackdrop: {
+    ...StyleSheet.absoluteFillObject,
+  },
+  filterSheet: {
+    backgroundColor: '#FFFFFF',
+    borderTopLeftRadius: 16,
+    borderTopRightRadius: 16,
+    padding: 16,
+    maxHeight: '72%',
+  },
+  filterSheetHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 14,
+  },
+  filterSheetTitle: {
+    fontSize: 17,
+    fontWeight: '800',
+    color: '#1F2937',
+  },
+  filterSheetClose: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#4B5563',
+  },
+  filterOptionScroll: {
+    flexGrow: 0,
+  },
+  filterOptionGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+  },
+  filterOption: {
+    minWidth: 72,
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    backgroundColor: '#F9FAFB',
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    alignItems: 'center',
+  },
+  filterOptionSelected: {
+    borderColor: '#1F2937',
+    backgroundColor: '#1F2937',
+  },
+  filterOptionText: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#374151',
+  },
+  filterOptionTextSelected: {
+    color: '#FFFFFF',
+  },
   overlayBackground: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    backgroundColor: 'rgba(0,0,0,0.42)',
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 32,
+    padding: 20,
   },
   detailCard: {
     backgroundColor: '#FFFFFF',
-    borderRadius: 16,
+    borderRadius: 10,
     width: '100%',
-    maxWidth: 340,
+    maxWidth: 360,
     maxHeight: '80%',
+    padding: 16,
     overflow: 'hidden',
   },
   detailScroll: {
     flexGrow: 0,
   },
   detailScrollContent: {
-    padding: 24,
-    paddingBottom: 16,
+    paddingBottom: 12,
   },
   detailName: {
     fontSize: 18,
@@ -615,7 +963,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   detailList: {
-    marginBottom: 10,
+    marginBottom: 12,
   },
   detailListText: {
     fontSize: 12,
@@ -626,10 +974,10 @@ const styles = StyleSheet.create({
   detailSkillDescriptionSection: {
     borderTopWidth: 1,
     borderTopColor: '#E5E7EB',
-    paddingTop: 10,
+    paddingTop: 12,
   },
   detailSkillDescriptionBlock: {
-    marginBottom: 8,
+    marginBottom: 10,
   },
   detailSkillName: {
     fontSize: 12,
@@ -644,16 +992,16 @@ const styles = StyleSheet.create({
   },
   detailActions: {
     flexDirection: 'row',
-    gap: 10,
-    marginTop: 0,
-    paddingHorizontal: 24,
-    paddingBottom: 20,
+    gap: 8,
+    paddingTop: 12,
+    borderTopWidth: 1,
+    borderTopColor: '#E5E7EB',
   },
   unequipButton: {
     flex: 1,
     backgroundColor: '#DC2626',
-    borderRadius: 10,
-    paddingVertical: 12,
+    borderRadius: 8,
+    paddingVertical: 11,
     alignItems: 'center',
   },
   unequipButtonText: {
@@ -664,8 +1012,8 @@ const styles = StyleSheet.create({
   detailCloseButton: {
     flex: 1,
     backgroundColor: '#E5E7EB',
-    borderRadius: 10,
-    paddingVertical: 12,
+    borderRadius: 8,
+    paddingVertical: 11,
     alignItems: 'center',
   },
   detailCloseButtonText: {
