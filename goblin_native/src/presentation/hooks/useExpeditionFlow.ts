@@ -33,6 +33,7 @@ import { useTutorialStore } from '../stores/useTutorialStore'
 import { useExpeditionNotification } from '../hooks/useExpeditionNotification'
 import { getDungeonName } from '../../shared/i18n/entityLocalization'
 import { getDungeonTierAreaLevel, getDungeonTierDisplayName } from '../../shared/types'
+import { isDungeonCompleted } from '../../shared/utils/expeditionClear'
 import { getExpeditionTimeMultiplierFromSkills } from '../../shared/data/characterSkills'
 import { EquipmentService } from '../../core/services/EquipmentService'
 import i18n from '../../shared/i18n'
@@ -144,7 +145,7 @@ export const useExpeditionFlow = ({
     const dungeon = areasData.find(area => area.id === record.dungeonId)
     if (!dungeon) return
 
-    const cleared = record.replay.summary.success &&
+    const cleared = isDungeonCompleted(record.replay) &&
       record.replay.summary.maxFloorReached >= dungeon.floors
     if (!cleared) return
 
@@ -164,11 +165,14 @@ export const useExpeditionFlow = ({
     const nextId = await getNextGoblinId()
     const areaLevel = record.replay.meta.effectiveAreaLevel ??
       getDungeonTierAreaLevel(dungeon.areaLevel ?? 1, tier ?? 0)
+    const latestGoblins = (
+      await Promise.all(record.replay.meta.party.map(id => goblinRepository.getGoblin(Number.parseInt(id, 10))))
+    ).filter((goblin): goblin is NonNullable<typeof goblin> => goblin !== null)
     const goblinBirthService = new GoblinBirthService()
     const newGoblin = goblinBirthService.createNewGoblin(
       nextId,
       undefined,
-      goblins,
+      latestGoblins.length > 0 ? latestGoblins : goblins,
       areaLevel,
       rank
     )
@@ -182,6 +186,7 @@ export const useExpeditionFlow = ({
     addPendingGoblin,
     checkAndUnlockStories,
     getNextGoblinId,
+    goblinRepository,
     goblins,
     isBaseLoading,
     isPendingLoading,

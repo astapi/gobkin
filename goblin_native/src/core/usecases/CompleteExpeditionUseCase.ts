@@ -12,6 +12,7 @@ import type { IEquipmentRepository } from '../repositories/IEquipmentRepository'
 import type { LevelUpResult } from '../services/ExperienceSystem'
 import { FactorService } from '../services/FactorService'
 import { captureDungeon } from '../services/BaseRankSystem'
+import { isDungeonCompleted } from '../../shared/utils/expeditionClear'
 
 export interface ExpeditionCompletionResult {
   levelUps: Map<number, LevelUpResult>
@@ -136,10 +137,11 @@ export class CompleteExpeditionUseCase {
     const bossEvent = replay.events.find(
       (e): e is Extract<TimelineEvent, { type: 'boss' }> => e.type === 'boss'
     )
+    const dungeonCompleted = isDungeonCompleted(replay)
 
     // 初回クリア判定（チュートリアル用の確定因子獲得などに使用）
     let isFirstClearSuccess = false
-    if (!isAbort && replay.summary.success) {
+    if (!isAbort && dungeonCompleted) {
       const baseStateBefore = await this.baseStateRepository.getBaseState()
       isFirstClearSuccess =
         baseStateBefore !== null &&
@@ -246,7 +248,7 @@ export class CompleteExpeditionUseCase {
           gold: currentBaseState.gold + goldGained,
         }
 
-        if (replay.summary.success) {
+        if (dungeonCompleted) {
           const wasCaptured = currentBaseState.capturedDungeons.includes(replay.meta.areaId)
           updatedBaseState = captureDungeon(replay.meta.areaId, updatedBaseState)
 

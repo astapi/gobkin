@@ -13,6 +13,7 @@ import type { ExpeditionRecord, Goblin, Story, TimelineEvent, TreasureDrop } fro
 import { getDungeonTierDisplayName } from '@/shared/types'
 import { getDungeonName, getEquipmentDisplayName } from '@/shared/i18n/entityLocalization'
 import { getEquipmentTemplate } from '@/shared/data/equipmentPoolLoader'
+import { isDungeonCompleted } from '@/shared/utils/expeditionClear'
 
 function resolveTreasureName(drop: TreasureDrop): string {
   const template = getEquipmentTemplate(drop.templateId)
@@ -115,7 +116,7 @@ export default function ExpeditionResultScreen() {
   const getHeaderText = () => {
     if (!replay) return ''
     const area = areasData.find(a => a.id === replay.meta.areaId)
-    if (replay.summary.success && replay.summary.maxFloorReached === area?.floors) {
+    if (isDungeonCompleted(replay) && replay.summary.maxFloorReached === area?.floors) {
       return t('ui.result.completed')
     }
     if (replay.summary.success) {
@@ -132,7 +133,7 @@ export default function ExpeditionResultScreen() {
 
   useEffect(() => {
     if (!replay || !dungeon) return
-    const cleared = replay.summary.success && replay.summary.maxFloorReached >= dungeon.floors
+    const cleared = isDungeonCompleted(replay) && replay.summary.maxFloorReached >= dungeon.floors
     if (cleared && !dungeon.cleared) {
       void (async () => {
         await markDungeonCleared(dungeon, true, replay.meta.tier)

@@ -56,6 +56,23 @@ function createBattleEvent(xp: number, allyHPDelta: number[], at = 10, floor = 1
   }
 }
 
+function createBossEvent(
+  enemyId: string,
+  xp: number,
+  allyHPDelta: number[],
+  at = 60,
+  floor = 2,
+): Extract<TimelineEvent, { type: 'boss' }> {
+  return {
+    type: 'boss',
+    at,
+    floor,
+    enemy: { id: enemyId, name: 'テストボス', lvl: 1, count: 1, gold: 10 },
+    combat: { rounds: 3, outcome: 'win', allyHPDelta, enemyDefeated: 1 },
+    xp,
+  }
+}
+
 function createTestReplay(overrides: Partial<ExpeditionReplay> = {}): ExpeditionReplay {
   const party = overrides?.meta?.party ?? ['1']
   const partySize = party.length
@@ -264,6 +281,88 @@ describe('CompleteExpeditionUseCase', () => {
       expect(result.newDungeonCaptured).toBe('dungeon_1')
       const savedState = (baseRepo.saveBaseState as jest.Mock).mock.calls[0][0] as BaseState
       expect(savedState.capturedDungeons).toContain('dungeon_1')
+    })
+
+    it('途中帰還成功ではダンジョン制圧と因子獲得を行わない', async () => {
+      const goblin = createTestGoblin({ id: 1 })
+      const party = createTestParty({ id: 1, memberIds: [1] })
+      const baseState = createTestBaseState({ capturedDungeons: [] })
+      const events: TimelineEvent[] = [
+        { type: 'move_start', at: 0, floor: 1 },
+        createBattleEvent(5, [-1], 10, 1),
+        { type: 'floor_up', at: 10, from: 1, to: 2 },
+        { type: 'return', at: 30, reason: 'policy_return' },
+      ]
+      const replay = createTestReplay({
+        meta: {
+          expeditionId: 'exp-1',
+          areaId: 'slime_cave',
+          areaName: 'スライムの洞窟',
+          floors: 2,
+          baseDurationSec: 30,
+          party: ['1'],
+          partyRewardMultipliers: DEFAULT_PARTY_REWARD_MULTIPLIERS,
+          returnPolicy: 'until_floor2',
+          seed: 12345,
+        },
+        events,
+        summary: { success: true, maxFloorReached: 2, xpGained: 5, goldGained: 0, casualties: [] },
+      })
+
+      const goblinRepo = createMockGoblinRepository([goblin])
+      const baseRepo = createMockBaseStateRepository(baseState)
+      const usecase = new CompleteExpeditionUseCase(goblinRepo, createMockPartyRepository([party]), baseRepo)
+      const result = await usecase.execute(1, replay)
+
+      expect(result.newDungeonCaptured).toBeUndefined()
+      expect(result.factorAcquisitions.size).toBe(0)
+      expect(goblinRepo.updateGoblinFactors).not.toHaveBeenCalled()
+      const savedState = (baseRepo.saveBaseState as jest.Mock).mock.calls[0][0] as BaseState
+      expect(savedState.capturedDungeons).not.toContain('slime_cave')
+    })
+
+    it('スライム洞窟の初回ボス踏破ではスライム因子を確定獲得する', async () => {
+      const goblin = createTestGoblin({ id: 1 })
+      const party = createTestParty({ id: 1, memberIds: [1] })
+      const baseState = createTestBaseState({ capturedDungeons: [] })
+      const events: TimelineEvent[] = [
+        { type: 'move_start', at: 0, floor: 1 },
+        createBattleEvent(5, [-1], 10, 1),
+        { type: 'floor_up', at: 10, from: 1, to: 2 },
+        createBossEvent('B_SLIME', 5, [-1], 30, 2),
+        { type: 'return', at: 30, reason: 'completed' },
+      ]
+      const replay = createTestReplay({
+        meta: {
+          expeditionId: 'exp-1',
+          areaId: 'slime_cave',
+          areaName: 'スライムの洞窟',
+          floors: 2,
+          baseDurationSec: 30,
+          party: ['1'],
+          partyRewardMultipliers: DEFAULT_PARTY_REWARD_MULTIPLIERS,
+          returnPolicy: 'never',
+          seed: 12345,
+        },
+        events,
+        summary: { success: true, maxFloorReached: 2, xpGained: 10, goldGained: 0, casualties: [] },
+      })
+
+      const goblinRepo = createMockGoblinRepository([goblin])
+      const usecase = new CompleteExpeditionUseCase(
+        goblinRepo,
+        createMockPartyRepository([party]),
+        createMockBaseStateRepository(baseState),
+      )
+      const result = await usecase.execute(1, replay)
+
+      expect(result.newDungeonCaptured).toBe('slime_cave')
+      expect(result.factorAcquisitions.get(1)).toEqual(['slime'])
+      expect(goblinRepo.updateGoblinFactors).toHaveBeenCalledWith(
+        1,
+        ['slime'],
+        expect.objectContaining({ hp: expect.any(Number) }),
+      )
     })
 
     it('��に制圧済みのダンジョンではnewDungeonCapturedがundefined', async () => {
