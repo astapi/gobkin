@@ -5,6 +5,7 @@ export interface AttackTargetDetail {
   targetRow: number       // ターゲットの隊列番号
   totalDamage: number     // このターゲットへの合計ダメージ（回復は負値）
   hitCount: number        // このターゲットへの命中回数
+  piercingHitCount?: number // 2列攻撃で後列へ貫通した命中回数
   defeated: boolean       // この攻撃で倒したか
   targetHP: number        // 攻撃後の残りHP
 }

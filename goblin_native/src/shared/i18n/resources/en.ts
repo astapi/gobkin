@@ -427,6 +427,8 @@ const en = {
         attackCriticalSummary: '[Row {{row}}] {{actor}} critical attack! Hit {{count}} times!',
         targetDefeated: '[Row {{row}}] dealt {{damage}} to {{name}} and defeated them!',
         targetHits: '[Row {{row}}] dealt {{damage}} to {{name}} ({{count}} hits)',
+        targetPierced: '[Row {{row}}] the attack pierced through to rear {{name}} for {{damage}} damage ({{count}} hits)',
+        targetPiercedDefeated: '[Row {{row}}] the attack pierced through to rear {{name}}, dealing {{damage}} damage and defeating them!',
         targetHealed: '[Row {{row}}] healed {{name}} for {{heal}}',
         outcomeWin: 'Victory!',
         outcomeLose: 'Defeat...',

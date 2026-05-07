@@ -418,6 +418,8 @@ const ko = {
         attackCriticalSummary: '[열{{row}}] {{actor}}의 필살 공격! {{count}}회 히트!',
         targetDefeated: '[열{{row}}] {{name}}에게 {{damage}} 피해를 주고 쓰러뜨렸다!',
         targetHits: '[열{{row}}] {{name}}에게 {{damage}} 피해 ({{count}}회)',
+        targetPierced: '[열{{row}}] 후열의 {{name}}에게 공격이 관통! {{damage}} 피해 ({{count}}회)',
+        targetPiercedDefeated: '[열{{row}}] 후열의 {{name}}에게 공격이 관통해 {{damage}} 피해를 주고 쓰러뜨렸다!',
         targetHealed: '[열{{row}}] {{name}}을(를) {{heal}} 회복',
         outcomeWin: '전투에 승리했다!',
         outcomeLose: '전투에 패배했다...',
