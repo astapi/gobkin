@@ -367,6 +367,16 @@ const en = {
         meleeWeapon: 'Melee Weapon',
         rangedWeapon: 'Ranged Weapon',
         noSkill: 'No Skill',
+        partySkillTitle: 'Party Skills',
+        partySkillCategory: {
+          rare: 'Item Acquisition Multiplier',
+          title: 'Title Grant Rate',
+          gold: 'Gold Gained',
+        },
+        noPartySkills: 'None',
+        statusComparisonTitle: 'Status Comparison',
+        factorListTitle: 'Factors',
+        noFactors: 'No factors',
       },
       playback: {
         dataNotFound: 'Expedition data not found',

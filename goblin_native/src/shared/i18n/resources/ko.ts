@@ -358,6 +358,16 @@ const ko = {
         meleeWeapon: '근접 무기',
         rangedWeapon: '원거리 무기',
         noSkill: '스킬 없음',
+        partySkillTitle: '파티 스킬 목록',
+        partySkillCategory: {
+          rare: '아이템 획득 배율',
+          title: '칭호 부여율',
+          gold: '획득 Gold',
+        },
+        noPartySkills: '없음',
+        statusComparisonTitle: '스테이터스 비교',
+        factorListTitle: '인자 목록',
+        noFactors: '인자 없음',
       },
       playback: {
         dataNotFound: '원정 데이터를 찾을 수 없습니다',
