@@ -661,16 +661,17 @@ export class BattleSystem {
 
       const initialTarget = fixedTarget ?? selectTarget(aliveTargets, rng)
       const target = fixedTarget ?? this.resolveCoverTarget(initialTarget, targetGroup)
-      const attackTargets = [{ target, damageMultiplier: 1 }]
+      const attackTargets = [{ target, damageMultiplier: 1, isPiercing: false }]
       const secondColumnTarget = this.selectSecondColumnAttackTarget(unit, target, targetGroup, rng)
       if (secondColumnTarget) {
         attackTargets.push({
           target: secondColumnTarget,
           damageMultiplier: TWO_COLUMN_ATTACK_DAMAGE_MULTIPLIER,
+          isPiercing: true,
         })
       }
 
-      for (const { target: attackTarget, damageMultiplier } of attackTargets) {
+      for (const { target: attackTarget, damageMultiplier, isPiercing } of attackTargets) {
         if (unit.currentHP <= 0 || attackTarget.currentHP <= 0) continue
 
         const hitRate = this.calculateHitRate(unit, attackTarget, atkIdx + 1, rng)
@@ -717,7 +718,7 @@ export class BattleSystem {
           turnConsumedUnitKeys,
         )
 
-        this.accumulateTargetDetail(targetDetails, attackTarget, damage)
+        this.accumulateTargetDetail(targetDetails, attackTarget, damage, isPiercing)
       }
     }
 
@@ -1334,12 +1335,16 @@ export class BattleSystem {
     details: Map<string, AttackTargetDetail>,
     target: BattleUnit,
     damage: number,
+    isPiercing = false,
   ): void {
     const targetKey = this.getUnitKey(target)
     const existing = details.get(targetKey)
     if (existing) {
       existing.totalDamage += damage
       existing.hitCount++
+      if (isPiercing) {
+        existing.piercingHitCount = (existing.piercingHitCount ?? 0) + 1
+      }
       existing.defeated = target.currentHP <= 0
       existing.targetHP = target.currentHP
     } else {
@@ -1349,6 +1354,7 @@ export class BattleSystem {
         targetRow: target.row + 1,
         totalDamage: damage,
         hitCount: 1,
+        piercingHitCount: isPiercing ? 1 : undefined,
         defeated: target.currentHP <= 0,
         targetHP: target.currentHP,
       })

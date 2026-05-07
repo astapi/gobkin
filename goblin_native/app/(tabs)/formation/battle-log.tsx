@@ -224,6 +224,10 @@ export default function BattleLogScreen() {
                   <Text key={`target-${targetIndex}`} style={[styles.logText, actorImage ? styles.logTargetIndented : undefined]}>
                     {target.totalDamage < 0
                       ? t('ui.formation.battleLog.targetHealed', { row: target.targetRow, name: target.targetName, heal: Math.abs(target.totalDamage) })
+                      : target.piercingHitCount && target.defeated
+                      ? t('ui.formation.battleLog.targetPiercedDefeated', { row: target.targetRow, name: target.targetName, damage: target.totalDamage })
+                      : target.piercingHitCount
+                      ? t('ui.formation.battleLog.targetPierced', { row: target.targetRow, name: target.targetName, damage: target.totalDamage, count: target.hitCount })
                       : target.defeated
                       ? t('ui.formation.battleLog.targetDefeated', { row: target.targetRow, name: target.targetName, damage: target.totalDamage })
                       : t('ui.formation.battleLog.targetHits', { row: target.targetRow, name: target.targetName, damage: target.totalDamage, count: target.hitCount })}

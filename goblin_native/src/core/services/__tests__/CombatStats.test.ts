@@ -922,6 +922,8 @@ describe('BattleSystem — 命中判定と複数回攻撃', () => {
     expect(log.hitCount).toBe(2)
     expect(log.targets.map(target => target.targetId)).toEqual(['E_FRONT', 'E_BACK'])
     expect(log.targets.map(target => target.targetRow)).toEqual([1, 2])
+    expect(log.targets.find(target => target.targetId === 'E_FRONT')!.piercingHitCount).toBeUndefined()
+    expect(log.targets.find(target => target.targetId === 'E_BACK')!.piercingHitCount).toBe(1)
     const frontDamage = log.targets.find(target => target.targetId === 'E_FRONT')!.totalDamage
     const backDamage = log.targets.find(target => target.targetId === 'E_BACK')!.totalDamage
     expect(backDamage).toBe(Math.floor(frontDamage * 0.5))

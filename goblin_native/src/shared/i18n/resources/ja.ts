@@ -427,6 +427,8 @@ const ja = {
         attackCriticalSummary: '[列{{row}}] {{actor}}の必殺攻撃！{{count}}回ヒット！',
         targetDefeated: '[列{{row}}] {{name}}に {{damage}}ダメージを与えて倒した！',
         targetHits: '[列{{row}}] {{name}}に {{damage}}ダメージ ({{count}}回)',
+        targetPierced: '[列{{row}}] 後列の{{name}}へ攻撃が貫通！{{damage}}ダメージ ({{count}}回)',
+        targetPiercedDefeated: '[列{{row}}] 後列の{{name}}へ攻撃が貫通し、{{damage}}ダメージを与えて倒した！',
         targetHealed: '[列{{row}}] {{name}}を {{heal}}回復',
         outcomeWin: '戦いに勝利した！',
         outcomeLose: '戦いに敗北した...',
