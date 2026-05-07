@@ -367,6 +367,16 @@ const ja = {
         meleeWeapon: '近接武器',
         rangedWeapon: '遠距離武器',
         noSkill: 'スキルなし',
+        partySkillTitle: 'PTスキル一覧',
+        partySkillCategory: {
+          rare: 'アイテム獲得倍率',
+          title: '称号付与率',
+          gold: '取得Gold',
+        },
+        noPartySkills: 'なし',
+        statusComparisonTitle: 'ステータス比較',
+        factorListTitle: '因子一覧',
+        noFactors: '因子なし',
       },
       playback: {
         dataNotFound: '遠征データが見つかりません',
