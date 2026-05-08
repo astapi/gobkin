@@ -1,5 +1,5 @@
 import type { FC } from 'react'
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet, ActivityIndicator, Image, ImageBackground } from 'react-native'
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet, ActivityIndicator, ImageBackground } from 'react-native'
 import type { ImageSourcePropType } from 'react-native'
 import type { SvgProps } from 'react-native-svg'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -21,10 +21,10 @@ import MaxPartiesIcon from '../../assets/tab/tab_hensei.svg'
 
 const EQUIPMENT_SHOP_UNLOCK_RANK = 2
 const baseHeaderImages: Record<number, ImageSourcePropType> = {
-  1: require('../../assets/base/base-header-rank-1-cave.png'),
-  2: require('../../assets/base/base-header-rank-2-goblin-settlement.png'),
-  3: require('../../assets/base/base-header-rank-3-frontier-village.png'),
-  4: require('../../assets/base/base-header-rank-4-orc-fortress.png'),
+  1: require('../../assets/base/base-header-rank-1-cave.jpg'),
+  2: require('../../assets/base/base-header-rank-2-goblin-settlement.jpg'),
+  3: require('../../assets/base/base-header-rank-3-frontier-village.jpg'),
+  4: require('../../assets/base/base-header-rank-4-orc-fortress.jpg'),
 }
 type BaseMenuItem = {
   title: string
@@ -191,6 +191,7 @@ const styles = StyleSheet.create({
     minHeight: 264,
     justifyContent: 'flex-end',
     overflow: 'hidden',
+    backgroundColor: '#EFE6D3',
   },
   headerOverlay: {
     ...StyleSheet.absoluteFillObject,
