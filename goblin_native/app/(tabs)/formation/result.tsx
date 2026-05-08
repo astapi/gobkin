@@ -284,7 +284,7 @@ export default function ExpeditionResultScreen() {
               <TouchableOpacity
                 key={story.id}
                 style={styles.storyButton}
-                onPress={() => router.push({ pathname: '/story/reader', params: { storyId: story.id } })}
+                onPress={() => router.push({ pathname: '/(tabs)/story/reader', params: { storyId: story.id } })}
               >
                 <Text style={styles.storyButtonText}>{story.title}</Text>
                 <Text style={styles.storyButtonArrow}>→</Text>

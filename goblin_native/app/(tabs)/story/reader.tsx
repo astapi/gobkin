@@ -17,6 +17,14 @@ export default function StoryReaderScreen() {
     return stories.find(s => s.id === storyId) ?? null
   }, [stories, storyId])
 
+  const navigateBackToStoryList = useCallback(() => {
+    if (router.canGoBack()) {
+      router.back()
+      return
+    }
+    router.replace('/(tabs)/story')
+  }, [])
+
   // データリセットなどで storyId が失われた / 該当ストーリーが消えた場合は物語タブへ戻す
   useEffect(() => {
     if (isStoryLoading) return
@@ -61,7 +69,7 @@ export default function StoryReaderScreen() {
       <SafeAreaView style={styles.container}>
         <View style={styles.center}>
           <Text style={styles.errorText}>{t('ui.story.notFound')}</Text>
-          <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
+          <TouchableOpacity style={styles.backButton} onPress={navigateBackToStoryList}>
             <Text style={styles.backButtonText}>{t('ui.common.back')}</Text>
           </TouchableOpacity>
         </View>
@@ -74,7 +82,7 @@ export default function StoryReaderScreen() {
   return (
     <SafeAreaView style={styles.container} edges={['top', 'left', 'right', 'bottom']}>
       <View style={styles.navBar}>
-        <TouchableOpacity onPress={() => router.back()}>
+        <TouchableOpacity onPress={navigateBackToStoryList}>
           <Text style={styles.navBack}>← {t('ui.common.back')}</Text>
         </TouchableOpacity>
         <Text style={styles.navTitle} numberOfLines={1}>{story.title}</Text>
@@ -116,7 +124,7 @@ export default function StoryReaderScreen() {
           </View>
         )}
 
-        <TouchableOpacity style={styles.returnButton} onPress={() => router.back()}>
+        <TouchableOpacity style={styles.returnButton} onPress={navigateBackToStoryList}>
           <Text style={styles.returnButtonText}>{t('ui.common.back')}</Text>
         </TouchableOpacity>
       </ScrollView>

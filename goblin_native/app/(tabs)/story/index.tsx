@@ -20,7 +20,7 @@ export default function StoryTabScreen() {
   })
 
   const handleStoryPress = useCallback((storyId: string) => {
-    router.push({ pathname: '/story/reader', params: { storyId } })
+    router.push({ pathname: '/(tabs)/story/reader', params: { storyId } })
   }, [])
 
   return (
