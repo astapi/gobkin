@@ -1,5 +1,7 @@
+import type { FC } from 'react'
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet, ActivityIndicator, Image, ImageBackground } from 'react-native'
 import type { ImageSourcePropType } from 'react-native'
+import type { SvgProps } from 'react-native-svg'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { router } from 'expo-router'
 import type { Href } from 'expo-router'
@@ -8,6 +10,14 @@ import { useBaseStore, selectRank, selectMaxParties, selectMaxGoblins } from '@/
 import { useGoblinStore } from '@/presentation/stores/useGoblinStore'
 import { GOBLIN_TRAINING_UNLOCK_RANK } from '@/shared/data/goblinJobs'
 import { getBaseLocationName } from '@/shared/i18n/entityLocalization'
+import CapacityIcon from '../../assets/base/icon-capacity.svg'
+import EquipmentShopIcon from '../../assets/base/icon-equipment-shop.svg'
+import HealingIcon from '../../assets/base/icon-healing.svg'
+import RankBadgeIcon from '../../assets/base/rank-badge.svg'
+import SpecialShopIcon from '../../assets/base/icon-special-shop.svg'
+import TrainingIcon from '../../assets/base/icon-training.svg'
+import UpgradeIcon from '../../assets/base/icon-upgrade.svg'
+import MaxPartiesIcon from '../../assets/tab/tab_hensei.svg'
 
 const EQUIPMENT_SHOP_UNLOCK_RANK = 2
 const baseHeaderImages: Record<number, ImageSourcePropType> = {
@@ -16,16 +26,12 @@ const baseHeaderImages: Record<number, ImageSourcePropType> = {
   3: require('../../assets/base/base-header-rank-3-frontier-village.png'),
   4: require('../../assets/base/base-header-rank-4-orc-fortress.png'),
 }
-const rankBadgeImage = require('../../assets/base/rank-badge.png')
-const capacityIcon = require('../../assets/base/icon-capacity.png')
-const maxPartiesIcon = require('../../assets/base/icon-max-parties.png')
-
 type BaseMenuItem = {
   title: string
   description: string
   href: Extract<Href, string>
   unlockRank: number
-  icon: ImageSourcePropType
+  Icon: FC<SvgProps>
 }
 
 export default function BaseManagementScreen() {
@@ -44,35 +50,35 @@ export default function BaseManagementScreen() {
       description: t('ui.base.healingDescription'),
       href: '/base/healing' as const,
       unlockRank: 1,
-      icon: require('../../assets/base/icon-healing.png'),
+      Icon: HealingIcon,
     },
     {
       title: t('ui.base.upgradeTitle'),
       description: t('ui.base.upgradeDescription'),
       href: '/base/upgrade' as const,
       unlockRank: 1,
-      icon: require('../../assets/base/icon-upgrade.png'),
+      Icon: UpgradeIcon,
     },
     {
       title: t('ui.base.trainingTitle'),
       description: t('ui.base.trainingDescription'),
       href: '/base/training' as const,
       unlockRank: GOBLIN_TRAINING_UNLOCK_RANK,
-      icon: require('../../assets/base/icon-training.png'),
+      Icon: TrainingIcon,
     },
     {
       title: t('ui.base.shopTitle'),
       description: t('ui.base.shopDescription'),
       href: '/base/shop' as const,
       unlockRank: EQUIPMENT_SHOP_UNLOCK_RANK,
-      icon: require('../../assets/base/icon-equipment-shop.png'),
+      Icon: EquipmentShopIcon,
     },
     {
       title: t('ui.base.premiumShopTitle'),
       description: t('ui.base.premiumShopDescription'),
       href: '/shop' as const,
       unlockRank: 1,
-      icon: require('../../assets/base/icon-special-shop.png'),
+      Icon: SpecialShopIcon,
     },
   ].filter((item) => rank >= item.unlockRank)
 
@@ -97,7 +103,7 @@ export default function BaseManagementScreen() {
             <Text style={styles.screenLead}>{t('ui.base.lead')}</Text>
             <View style={styles.baseOverview}>
               <View style={styles.rankBadgeWrap}>
-                <Image source={rankBadgeImage} style={styles.rankBadgeImage} />
+                <RankBadgeIcon width={104} height={112} style={styles.rankBadgeImage} />
                 <View style={styles.rankBadgeTextWrap}>
                   <Text style={styles.rankBadgeLabel}>{t('ui.base.rankLabel')}</Text>
                   <Text style={styles.rankBadgeValue}>{rank}</Text>
@@ -113,12 +119,13 @@ export default function BaseManagementScreen() {
         <View style={styles.bodyContent}>
           <View style={styles.metricsGrid}>
             <MetricCard
-              icon={capacityIcon}
+              Icon={CapacityIcon}
+              iconSize={38}
               label={t('ui.base.capacityLabel')}
               value={t('ui.base.capacityValue', { current: goblins.length, max: maxGoblins })}
             />
             <MetricCard
-              icon={maxPartiesIcon}
+              Icon={MaxPartiesIcon}
               label={t('ui.base.maxPartiesLabel')}
               value={t('ui.base.maxPartiesValue', { maxParties })}
             />
@@ -132,7 +139,7 @@ export default function BaseManagementScreen() {
           <View style={styles.menuList}>
             {menuItems.map((item) => (
               <TouchableOpacity key={item.href} style={styles.menuButton} onPress={() => router.push(item.href)}>
-                <Image source={item.icon} style={styles.menuIcon} />
+                <item.Icon width={42} height={42} />
                 <View style={styles.menuButtonTextGroup}>
                   <Text style={styles.menuButtonTitle}>{item.title}</Text>
                   <Text style={styles.menuButtonDescription}>{item.description}</Text>
@@ -147,10 +154,10 @@ export default function BaseManagementScreen() {
   )
 }
 
-function MetricCard({ icon, label, value }: { icon: ImageSourcePropType; label: string; value: string }) {
+function MetricCard({ Icon, iconSize = 28, label, value }: { Icon: FC<SvgProps>; iconSize?: number; label: string; value: string }) {
   return (
     <View style={styles.metricCard}>
-      <Image source={icon} style={styles.metricIcon} />
+      <Icon width={iconSize} height={iconSize} />
       <View style={styles.metricTextGroup}>
         <Text style={styles.metricLabel}>{label}</Text>
         <Text style={styles.metricValue}>{value}</Text>
@@ -221,16 +228,13 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   rankBadgeWrap: {
-    width: 72,
-    height: 82,
+    width: 104,
+    height: 112,
     alignItems: 'center',
     justifyContent: 'center',
   },
   rankBadgeImage: {
     position: 'absolute',
-    width: 72,
-    height: 82,
-    resizeMode: 'contain',
   },
   rankBadgeTextWrap: {
     alignItems: 'center',
@@ -241,13 +245,13 @@ const styles = StyleSheet.create({
     fontSize: 9,
     lineHeight: 13,
     fontWeight: '700',
-    color: '#F7F0CF',
+    color: '#101722',
   },
   rankBadgeValue: {
     fontSize: 28,
     lineHeight: 33,
     fontWeight: '800',
-    color: '#FFFFFF',
+    color: '#101722',
   },
   heroTextGroup: {
     flex: 1,
@@ -289,11 +293,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.06,
     shadowRadius: 8,
     shadowOffset: { width: 0, height: 2 },
-  },
-  metricIcon: {
-    width: 28,
-    height: 28,
-    resizeMode: 'contain',
   },
   metricTextGroup: {
     alignItems: 'center',
@@ -346,11 +345,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.05,
     shadowRadius: 6,
     shadowOffset: { width: 0, height: 2 },
-  },
-  menuIcon: {
-    width: 42,
-    height: 42,
-    resizeMode: 'contain',
   },
   menuButtonTextGroup: {
     flex: 1,
