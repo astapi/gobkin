@@ -1,14 +1,17 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet, ActivityIndicator, Alert, Modal } from 'react-native'
-import { SafeAreaView } from 'react-native-safe-area-context'
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet, ActivityIndicator, Alert, Modal, FlatList } from 'react-native'
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useTranslation } from 'react-i18next'
 import { SQLiteEquipmentRepository } from '@/infrastructure/repositories/SQLiteEquipmentRepository'
 import { selectGold, selectRank, useBaseStore } from '@/presentation/stores/useBaseStore'
+import { CurrentTimeBadge } from '@/presentation/components/CurrentTimeBadge'
+import { GoldBadge } from '@/presentation/components/GoldBadge'
+import { GoldenAcornBadge } from '@/presentation/components/GoldenAcornBadge'
 import { describeCharacterSkill, getCharacterSkillDescription } from '@/shared/data/characterSkills'
 import { getShopEquipment, getEquipmentTemplate, getEquipmentTemplates } from '@/shared/data/equipmentPoolLoader'
 import { EQUIPMENT_TITLE_DEFS } from '@/shared/data/equipmentTitleConfig'
 import { getEquipmentDisplayName, getEquipmentLabel, getStatLabel } from '@/shared/i18n/entityLocalization'
-import type { EquipmentCategory, EquipmentInstance, EquipmentTemplate } from '@/shared/types'
+import type { EquipmentCategory, EquipmentInstance, EquipmentTemplate, WeaponSubCategory } from '@/shared/types'
 
 const SHOP_UNLOCK_RANK = 2
 const SELL_PRICE_RATE = 0.5
@@ -25,10 +28,65 @@ const CATEGORY_ORDER: Record<EquipmentCategory, number> = {
   accessory: 7,
 }
 
+const CATEGORY_LABELS: Record<EquipmentCategory, string> = {
+  weapon: '武器',
+  armor: '鎧',
+  robe: 'ローブ',
+  shield: '盾',
+  gauntlet: '小手',
+  wand: 'ワンド',
+  rod: 'ロッド',
+  accessory: 'アクセサリー',
+}
+
+const WEAPON_SUB_CATEGORY_LABELS: Record<WeaponSubCategory, string> = {
+  sword: '剣',
+  axe: '斧',
+  spear: '槍',
+  bow: '弓',
+  staff: '杖',
+  claw: '爪',
+}
+
+const CATEGORY_FILTER_ORDER: Exclude<EquipmentCategory, 'weapon'>[] = [
+  'armor',
+  'robe',
+  'shield',
+  'gauntlet',
+  'wand',
+  'rod',
+  'accessory',
+]
+
+const WEAPON_SUB_CATEGORY_FILTER_ORDER: WeaponSubCategory[] = [
+  'sword',
+  'claw',
+  'bow',
+]
+
 type ShopMode = 'buy' | 'sell'
 type SelectedShopItem =
   | { mode: 'buy'; template: EquipmentTemplate }
   | { mode: 'sell'; group: InventoryGroup }
+
+type ShopFilter =
+  | {
+      type: 'all'
+      key: 'all'
+      label: string
+    }
+  | {
+      type: 'weaponSubCategory'
+      key: WeaponSubCategory
+      label: string
+    }
+  | {
+      type: 'category'
+      key: Exclude<EquipmentCategory, 'weapon'>
+      label: string
+    }
+
+const ALL_SHOP_FILTER: ShopFilter = { type: 'all', key: 'all', label: 'すべて' }
 
 type InventoryGroup = {
   key: string
@@ -36,6 +94,23 @@ type InventoryGroup = {
   template: EquipmentTemplate
   count: number
 }
+
+type ShopListEntry =
+  | {
+      type: 'category'
+      key: string
+      label: string
+    }
+  | {
+      type: 'buyItem'
+      key: string
+      template: EquipmentTemplate
+    }
+  | {
+      type: 'sellItem'
+      key: string
+      group: InventoryGroup
+    }
 
 function formatPrice(value: number): string {
   return `${value.toLocaleString()}G`
@@ -45,6 +120,18 @@ function formatBonus(stat: string, value: number): string {
   const displayValue = Number.isInteger(value) ? value : Math.trunc(value * 10) / 10
   const isPercent = stat.includes('percent') || stat === 'damage_reduction'
   return `${displayValue > 0 ? '+' : ''}${displayValue}${isPercent ? '%' : ''}`
+}
+
+function isDisplayValueZero(value: number): boolean {
+  const displayValue = Number.isInteger(value) ? value : Math.trunc(value * 10) / 10
+  return displayValue === 0
+}
+
+function getInlineStats(template: EquipmentTemplate): string {
+  return template.statBonuses
+    .filter((bonus) => !isDisplayValueZero(bonus.value))
+    .map((bonus) => `${getStatLabel(bonus.stat)}${formatBonus(bonus.stat, bonus.value)}`)
+    .join('  ')
 }
 
 function getSellPrice(item: EquipmentInstance): number {
@@ -100,6 +187,103 @@ function sortInventoryGroups(items: EquipmentInstance[]): InventoryGroup[] {
     if (orderDiff !== 0) return orderDiff
     return getSellPrice(a.item) - getSellPrice(b.item)
   })
+}
+
+function getSectionKey(template: EquipmentTemplate): string {
+  return template.category === 'weapon'
+    ? `weapon-${template.subCategory ?? 'unknown'}`
+    : template.category
+}
+
+function getSectionLabel(template: EquipmentTemplate): string {
+  return template.category === 'weapon' && template.subCategory
+    ? WEAPON_SUB_CATEGORY_LABELS[template.subCategory]
+    : CATEGORY_LABELS[template.category]
+}
+
+function matchesShopFilter(template: EquipmentTemplate, filter: ShopFilter): boolean {
+  if (filter.type === 'all') return true
+  if (filter.type === 'weaponSubCategory') {
+    return template.category === 'weapon' && template.subCategory === filter.key
+  }
+  return template.category === filter.key
+}
+
+function buildShopFilterOptions(templates: EquipmentTemplate[]): ShopFilter[] {
+  const categories = new Set(templates.map((template) => template.category))
+  const weaponSubCategories = new Set(
+    templates
+      .map((template) => template.subCategory)
+      .filter((subCategory): subCategory is WeaponSubCategory => Boolean(subCategory)),
+  )
+
+  return [
+    ALL_SHOP_FILTER,
+    ...WEAPON_SUB_CATEGORY_FILTER_ORDER
+      .filter((subCategory) => weaponSubCategories.has(subCategory))
+      .map((subCategory): ShopFilter => ({
+        type: 'weaponSubCategory',
+        key: subCategory,
+        label: WEAPON_SUB_CATEGORY_LABELS[subCategory],
+      })),
+    ...CATEGORY_FILTER_ORDER
+      .filter((category) => categories.has(category))
+      .map((category): ShopFilter => ({
+        type: 'category',
+        key: category,
+        label: CATEGORY_LABELS[category],
+      })),
+  ]
+}
+
+function buildBuyListEntries(templates: EquipmentTemplate[]): ShopListEntry[] {
+  const entries: ShopListEntry[] = []
+  let currentSectionKey: string | null = null
+
+  for (const template of templates) {
+    const sectionKey = getSectionKey(template)
+    if (sectionKey !== currentSectionKey) {
+      entries.push({
+        type: 'category',
+        key: `category-${sectionKey}-${entries.length}`,
+        label: getSectionLabel(template),
+      })
+      currentSectionKey = sectionKey
+    }
+
+    entries.push({
+      type: 'buyItem',
+      key: template.id,
+      template,
+    })
+  }
+
+  return entries
+}
+
+function buildSellListEntries(groups: InventoryGroup[]): ShopListEntry[] {
+  const entries: ShopListEntry[] = []
+  let currentSectionKey: string | null = null
+
+  for (const group of groups) {
+    const sectionKey = getSectionKey(group.template)
+    if (sectionKey !== currentSectionKey) {
+      entries.push({
+        type: 'category',
+        key: `category-${sectionKey}-${entries.length}`,
+        label: getSectionLabel(group.template),
+      })
+      currentSectionKey = sectionKey
+    }
+
+    entries.push({
+      type: 'sellItem',
+      key: group.key,
+      group,
+    })
+  }
+
+  return entries
 }
 
 function ShopItemDetail({
@@ -189,8 +373,58 @@ function ShopItemDetail({
   )
 }
 
+function ShopEquipmentRow({
+  name,
+  template,
+  price,
+  disabled,
+  onPress,
+  onShowDetail,
+}: {
+  name: string
+  template: EquipmentTemplate
+  price: number
+  disabled?: boolean
+  onPress: () => void
+  onShowDetail: () => void
+}) {
+  const inlineStats = getInlineStats(template)
+
+  return (
+    <TouchableOpacity
+      style={[styles.itemRow, disabled && styles.itemRowDisabled]}
+      onPress={onPress}
+      activeOpacity={0.85}
+    >
+      <View style={styles.itemInfo}>
+        <Text style={styles.itemStats} numberOfLines={1}>
+          {inlineStats}
+        </Text>
+        <View style={styles.itemNameRow}>
+          <Text style={styles.itemName} numberOfLines={1}>
+            {name}
+          </Text>
+          <Text style={[styles.itemPrice, disabled && styles.itemPriceDisabled]}>
+            {formatPrice(price)}
+          </Text>
+        </View>
+      </View>
+      <TouchableOpacity
+        style={styles.itemTipsButton}
+        onPress={(event) => {
+          event.stopPropagation()
+          onShowDetail()
+        }}
+      >
+        <Text style={styles.itemTipsButtonText}>i</Text>
+      </TouchableOpacity>
+    </TouchableOpacity>
+  )
+}
+
 export default function EquipmentShopScreen() {
   const { t } = useTranslation()
+  const insets = useSafeAreaInsets()
   const rank = useBaseStore(selectRank)
   const gold = useBaseStore(selectGold)
   const baseLoading = useBaseStore((state) => state.isLoading)
@@ -200,10 +434,53 @@ export default function EquipmentShopScreen() {
   const [loading, setLoading] = useState(true)
   const [processingId, setProcessingId] = useState<string | null>(null)
   const [selectedItem, setSelectedItem] = useState<SelectedShopItem | null>(null)
+  const [selectedFilter, setSelectedFilter] = useState<ShopFilter>(ALL_SHOP_FILTER)
+  const [isFilterSheetVisible, setIsFilterSheetVisible] = useState(false)
 
   const shopItems = useMemo(() => sortTemplates(getShopEquipment(rank)), [rank])
   const sellGroups = useMemo(() => sortInventoryGroups(inventory), [inventory])
   const unlocked = rank >= SHOP_UNLOCK_RANK
+  const activeTemplates = useMemo(
+    () => mode === 'buy' ? shopItems : sellGroups.map((group) => group.template),
+    [mode, shopItems, sellGroups],
+  )
+  const filterOptions = useMemo(
+    () => buildShopFilterOptions(activeTemplates),
+    [activeTemplates],
+  )
+  const filteredShopItems = useMemo(
+    () => shopItems.filter((template) => matchesShopFilter(template, selectedFilter)),
+    [shopItems, selectedFilter],
+  )
+  const filteredSellGroups = useMemo(
+    () => sellGroups.filter((group) => matchesShopFilter(group.template, selectedFilter)),
+    [sellGroups, selectedFilter],
+  )
+  const listEntries = useMemo(
+    () => mode === 'buy'
+      ? buildBuyListEntries(filteredShopItems)
+      : buildSellListEntries(filteredSellGroups),
+    [filteredShopItems, filteredSellGroups, mode],
+  )
+  const listBottomSpacerHeight = useMemo(
+    () => insets.bottom + 96,
+    [insets.bottom],
+  )
+  const badgeBottom = insets.bottom + 8
+  const emptyListText = mode === 'buy'
+    ? '条件に合う商品がありません'
+    : sellGroups.length === 0
+      ? t('ui.shop.emptySell')
+      : '条件に合うアイテムがありません'
+
+  useEffect(() => {
+    const isSelectedAvailable = filterOptions.some(
+      (option) => option.type === selectedFilter.type && option.key === selectedFilter.key,
+    )
+    if (!isSelectedAvailable) {
+      setSelectedFilter(ALL_SHOP_FILTER)
+    }
+  }, [filterOptions, selectedFilter])
 
   const refreshInventory = useCallback(async () => {
     const unequipped = await equipmentRepository.getUnequipped()
@@ -295,80 +572,153 @@ export default function EquipmentShopScreen() {
 
   return (
     <SafeAreaView style={styles.container} edges={['left', 'right', 'bottom']}>
-      <ScrollView style={styles.scrollView} contentContainerStyle={styles.contentContainer}>
-        <View style={styles.summaryCard}>
-          <Text style={styles.summaryTitle}>{t('ui.shop.title')}</Text>
-          <View style={styles.summaryRow}>
-            <Text style={styles.summaryLabel}>{t('ui.shop.goldLabel')}</Text>
-            <Text style={styles.summaryValue}>{formatPrice(gold)}</Text>
-          </View>
-        </View>
-
-        {!unlocked ? (
-          <View style={styles.emptyCard}>
-            <Text style={styles.emptyText}>{t('ui.shop.locked', { rank: SHOP_UNLOCK_RANK })}</Text>
-          </View>
-        ) : (
+      <FlatList
+        style={styles.content}
+        contentContainerStyle={styles.contentContainer}
+        data={unlocked ? listEntries : []}
+        keyExtractor={(item) => item.key}
+        ItemSeparatorComponent={() => <View style={styles.itemSeparator} />}
+        ListHeaderComponent={(
           <>
-            <View style={styles.segment}>
-              <TouchableOpacity
-                style={[styles.segmentButton, mode === 'buy' && styles.segmentButtonActive]}
-                onPress={() => setMode('buy')}
-              >
-                <Text style={[styles.segmentText, mode === 'buy' && styles.segmentTextActive]}>{t('ui.shop.buyTab')}</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.segmentButton, mode === 'sell' && styles.segmentButtonActive]}
-                onPress={() => setMode('sell')}
-              >
-                <Text style={[styles.segmentText, mode === 'sell' && styles.segmentTextActive]}>{t('ui.shop.sellTab')}</Text>
-              </TouchableOpacity>
-            </View>
-
-            {mode === 'buy' ? (
-              shopItems.map((template) => {
-                const disabled = gold < template.price || processingId === template.id
-                return (
-                  <TouchableOpacity
-                    key={template.id}
-                    style={styles.itemCard}
-                    onPress={() => setSelectedItem({ mode: 'buy', template })}
-                    activeOpacity={0.85}
-                  >
-                    <Text style={styles.itemName} numberOfLines={1}>{getEquipmentLabel(template)}</Text>
-                    <Text style={[styles.itemPrice, disabled && styles.itemPriceDisabled]}>
-                      {formatPrice(template.price)}
-                    </Text>
-                  </TouchableOpacity>
-                )
-              })
-            ) : sellGroups.length === 0 ? (
+            {!unlocked ? (
               <View style={styles.emptyCard}>
-                <Text style={styles.emptyText}>{t('ui.shop.emptySell')}</Text>
+                <Text style={styles.emptyText}>{t('ui.shop.locked', { rank: SHOP_UNLOCK_RANK })}</Text>
               </View>
             ) : (
-              sellGroups.map((group) => {
-                const price = getSellPrice(group.item)
-                return (
+              <>
+                <View style={styles.segment}>
                   <TouchableOpacity
-                    key={group.key}
-                    style={styles.itemCard}
-                    onPress={() => setSelectedItem({ mode: 'sell', group })}
-                    activeOpacity={0.85}
+                    style={[styles.segmentButton, mode === 'buy' && styles.segmentButtonActive]}
+                    onPress={() => setMode('buy')}
                   >
-                    <Text style={styles.itemName} numberOfLines={1}>
-                      {group.count > 1
-                        ? `x${group.count} ${getEquipmentDisplayName(group.item, group.template)}`
-                        : getEquipmentDisplayName(group.item, group.template)}
+                    <Text style={[styles.segmentText, mode === 'buy' && styles.segmentTextActive]}>
+                      {t('ui.shop.buyTab')}
                     </Text>
-                    <Text style={styles.itemPrice}>{formatPrice(price)}</Text>
                   </TouchableOpacity>
-                )
-              })
+                  <TouchableOpacity
+                    style={[styles.segmentButton, mode === 'sell' && styles.segmentButtonActive]}
+                    onPress={() => setMode('sell')}
+                  >
+                    <Text style={[styles.segmentText, mode === 'sell' && styles.segmentTextActive]}>
+                      {t('ui.shop.sellTab')}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+
+                <View style={styles.inventoryHeaderRow}>
+                  <Text style={styles.flatSectionTitle}>
+                    {mode === 'buy' ? t('ui.shop.buyTab') : t('ui.shop.sellTab')}
+                  </Text>
+                  <TouchableOpacity
+                    style={styles.inventoryFilterButton}
+                    activeOpacity={0.8}
+                    onPress={() => setIsFilterSheetVisible(true)}
+                  >
+                    <Text style={styles.inventoryFilterStatus}>
+                      {selectedFilter.label}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </>
             )}
           </>
         )}
-      </ScrollView>
+        ListEmptyComponent={unlocked ? (
+          <View style={styles.emptyInventory}>
+            <Text style={styles.emptyInventoryText}>{emptyListText}</Text>
+          </View>
+        ) : null}
+        ListFooterComponent={<View style={{ height: listBottomSpacerHeight }} />}
+        renderItem={({ item }) => {
+          if (item.type === 'category') {
+            return (
+              <View style={styles.inventoryCategoryHeader}>
+                <Text style={styles.inventoryCategoryTitle}>{item.label}</Text>
+              </View>
+            )
+          }
+
+          if (item.type === 'buyItem') {
+            const disabled = gold < item.template.price || processingId === item.template.id
+            return (
+              <ShopEquipmentRow
+                name={getEquipmentLabel(item.template)}
+                template={item.template}
+                price={item.template.price}
+                disabled={disabled}
+                onPress={() => setSelectedItem({ mode: 'buy', template: item.template })}
+                onShowDetail={() => setSelectedItem({ mode: 'buy', template: item.template })}
+              />
+            )
+          }
+
+          const price = getSellPrice(item.group.item)
+          const name = item.group.count > 1
+            ? `x${item.group.count} ${getEquipmentDisplayName(item.group.item, item.group.template)}`
+            : getEquipmentDisplayName(item.group.item, item.group.template)
+          return (
+            <ShopEquipmentRow
+              name={name}
+              template={item.group.template}
+              price={price}
+              disabled={processingId === item.group.item.id}
+              onPress={() => setSelectedItem({ mode: 'sell', group: item.group })}
+              onShowDetail={() => setSelectedItem({ mode: 'sell', group: item.group })}
+            />
+          )
+        }}
+      />
+
+      <CurrentTimeBadge bottom={badgeBottom} />
+      <GoldenAcornBadge bottom={badgeBottom + 32} />
+      <GoldBadge bottom={badgeBottom} />
+
+      <Modal
+        visible={isFilterSheetVisible}
+        animationType="slide"
+        transparent
+        onRequestClose={() => setIsFilterSheetVisible(false)}
+      >
+        <View style={styles.filterSheetOverlay}>
+          <TouchableOpacity
+            style={styles.filterSheetBackdrop}
+            activeOpacity={1}
+            onPress={() => setIsFilterSheetVisible(false)}
+          />
+          <View style={[styles.filterSheet, { paddingBottom: insets.bottom + 16 }]}>
+            <View style={styles.filterSheetHeader}>
+              <Text style={styles.filterSheetTitle}>絞り込み</Text>
+              <TouchableOpacity onPress={() => setIsFilterSheetVisible(false)}>
+                <Text style={styles.filterSheetClose}>閉じる</Text>
+              </TouchableOpacity>
+            </View>
+
+            <ScrollView
+              style={styles.filterOptionScroll}
+              contentContainerStyle={styles.filterOptionGrid}
+              showsVerticalScrollIndicator={false}
+            >
+              {filterOptions.map((option) => {
+                const isSelected = option.type === selectedFilter.type && option.key === selectedFilter.key
+                return (
+                  <TouchableOpacity
+                    key={`${option.type}-${option.key}`}
+                    style={[styles.filterOption, isSelected && styles.filterOptionSelected]}
+                    onPress={() => {
+                      setSelectedFilter(option)
+                      setIsFilterSheetVisible(false)
+                    }}
+                  >
+                    <Text style={[styles.filterOptionText, isSelected && styles.filterOptionTextSelected]}>
+                      {option.label}
+                    </Text>
+                  </TouchableOpacity>
+                )
+              })}
+            </ScrollView>
+          </View>
+        </View>
+      </Modal>
 
       {selectedItem && (
         <ShopItemDetail
@@ -414,40 +764,13 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#6B7280',
   },
-  scrollView: {
+  content: {
     flex: 1,
   },
   contentContainer: {
     padding: 16,
-    paddingBottom: 88,
-    gap: 8,
-  },
-  summaryCard: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 8,
-    padding: 16,
-    borderWidth: 1,
-    borderColor: '#E5E7EB',
-    gap: 10,
-  },
-  summaryTitle: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: '#111827',
-  },
-  summaryRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    gap: 12,
-  },
-  summaryLabel: {
-    fontSize: 13,
-    color: '#6B7280',
-  },
-  summaryValue: {
-    fontSize: 14,
-    fontWeight: '700',
-    color: '#111827',
+    paddingBottom: 32,
+    flexGrow: 1,
   },
   segment: {
     flexDirection: 'row',
@@ -455,6 +778,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 4,
     gap: 4,
+    marginBottom: 14,
   },
   segmentButton: {
     flex: 1,
@@ -473,23 +797,72 @@ const styles = StyleSheet.create({
   segmentTextActive: {
     color: '#111827',
   },
-  itemCard: {
+  flatSectionTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#1F2937',
+  },
+  inventoryHeaderRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: '#FFFFFF',
-    borderRadius: 8,
-    paddingVertical: 8,
+    gap: 12,
+    marginBottom: 10,
+  },
+  inventoryFilterButton: {
+    backgroundColor: '#E5E7EB',
+    borderRadius: 999,
     paddingHorizontal: 10,
+    paddingVertical: 5,
+  },
+  inventoryFilterStatus: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#4B5563',
+  },
+  inventoryCategoryHeader: {
+    paddingTop: 8,
+    paddingBottom: 2,
+  },
+  inventoryCategoryTitle: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#6B7280',
+  },
+  itemRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 12,
+    borderRadius: 10,
     borderWidth: 1,
     borderColor: '#E5E7EB',
-    gap: 8,
+    backgroundColor: '#F9FAFB',
+  },
+  itemRowDisabled: {
+    opacity: 0.58,
+  },
+  itemSeparator: {
+    height: 8,
+  },
+  itemInfo: {
+    flex: 1,
+  },
+  itemStats: {
+    fontSize: 12,
+    color: '#6B7280',
+    marginBottom: 4,
+    minHeight: 16,
+  },
+  itemNameRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
   },
   itemName: {
     flex: 1,
     fontSize: 14,
-    fontWeight: '700',
-    color: '#111827',
+    fontWeight: '600',
+    color: '#1F2937',
   },
   itemPrice: {
     fontSize: 13,
@@ -499,61 +872,80 @@ const styles = StyleSheet.create({
   itemPriceDisabled: {
     color: '#9CA3AF',
   },
+  itemTipsButton: {
+    backgroundColor: '#E5E7EB',
+    borderRadius: 999,
+    width: 24,
+    height: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginLeft: 12,
+  },
+  itemTipsButtonText: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#4B5563',
+  },
   overlayBackground: {
     flex: 1,
-    backgroundColor: 'rgba(17, 24, 39, 0.45)',
+    backgroundColor: 'rgba(0,0,0,0.42)',
     justifyContent: 'center',
+    alignItems: 'center',
     padding: 20,
   },
   detailCard: {
-    maxHeight: '82%',
     backgroundColor: '#FFFFFF',
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: '#E5E7EB',
+    borderRadius: 10,
+    width: '100%',
+    maxWidth: 360,
+    maxHeight: '80%',
+    padding: 16,
     overflow: 'hidden',
   },
   detailScroll: {
-    maxHeight: 440,
+    flexGrow: 0,
   },
   detailScrollContent: {
-    padding: 16,
-    gap: 12,
+    paddingBottom: 12,
   },
   detailName: {
     fontSize: 18,
     fontWeight: '700',
-    color: '#111827',
+    color: '#1F2937',
+    marginBottom: 12,
   },
   detailList: {
-    gap: 6,
+    marginBottom: 12,
   },
   detailListText: {
-    fontSize: 13,
-    lineHeight: 19,
-    color: '#374151',
+    fontSize: 12,
+    color: '#1F2937',
+    fontWeight: '600',
+    lineHeight: 16,
   },
   detailSkillDescriptionSection: {
-    gap: 10,
-    marginTop: 4,
+    borderTopWidth: 1,
+    borderTopColor: '#E5E7EB',
+    paddingTop: 12,
   },
   detailSkillDescriptionBlock: {
-    gap: 4,
+    marginBottom: 10,
   },
   detailSkillName: {
-    fontSize: 13,
-    fontWeight: '700',
-    color: '#111827',
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#1F2937',
+    marginBottom: 2,
   },
   detailSkillDescription: {
     fontSize: 12,
-    lineHeight: 18,
-    color: '#6B7280',
+    lineHeight: 16,
+    color: '#4B5563',
   },
   detailActions: {
     flexDirection: 'row',
-    gap: 10,
-    padding: 12,
+    gap: 8,
+    paddingTop: 12,
     borderTopWidth: 1,
     borderTopColor: '#E5E7EB',
   },
@@ -579,7 +971,7 @@ const styles = StyleSheet.create({
   detailCloseButton: {
     flex: 1,
     borderRadius: 8,
-    backgroundColor: '#F3F4F6',
+    backgroundColor: '#E5E7EB',
     paddingVertical: 11,
     alignItems: 'center',
   },
@@ -602,5 +994,74 @@ const styles = StyleSheet.create({
     fontSize: 13,
     lineHeight: 20,
     color: '#6B7280',
+  },
+  emptyInventory: {
+    paddingVertical: 24,
+    alignItems: 'center',
+  },
+  emptyInventoryText: {
+    fontSize: 14,
+    color: '#9CA3AF',
+  },
+  filterSheetOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.28)',
+    justifyContent: 'flex-end',
+  },
+  filterSheetBackdrop: {
+    ...StyleSheet.absoluteFillObject,
+  },
+  filterSheet: {
+    backgroundColor: '#FFFFFF',
+    borderTopLeftRadius: 16,
+    borderTopRightRadius: 16,
+    padding: 16,
+    maxHeight: '72%',
+  },
+  filterSheetHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 14,
+  },
+  filterSheetTitle: {
+    fontSize: 17,
+    fontWeight: '800',
+    color: '#1F2937',
+  },
+  filterSheetClose: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#4B5563',
+  },
+  filterOptionScroll: {
+    flexGrow: 0,
+  },
+  filterOptionGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+  },
+  filterOption: {
+    minWidth: 72,
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    backgroundColor: '#F9FAFB',
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    alignItems: 'center',
+  },
+  filterOptionSelected: {
+    borderColor: '#1F2937',
+    backgroundColor: '#1F2937',
+  },
+  filterOptionText: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#374151',
+  },
+  filterOptionTextSelected: {
+    color: '#FFFFFF',
   },
 })
