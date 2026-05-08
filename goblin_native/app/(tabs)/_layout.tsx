@@ -1,5 +1,5 @@
-import { memo, useEffect } from 'react'
-import { Tabs } from 'expo-router'
+import { memo, useEffect, useMemo } from 'react'
+import { Tabs, usePathname } from 'expo-router'
 import { View, StyleSheet, useWindowDimensions } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useTranslation } from 'react-i18next'
@@ -11,9 +11,11 @@ import SettingIcon from '../../assets/tab/tab_setting.svg'
 import { CurrentTimeBadge } from '@/presentation/components/CurrentTimeBadge'
 import { GoldBadge } from '@/presentation/components/GoldBadge'
 import { GoldenAcornBadge } from '@/presentation/components/GoldenAcornBadge'
+import { TipsBar, TIPS_BAR_HEIGHT } from '@/presentation/components/TipsBar'
 import { useStoryStore } from '@/presentation/stores/useStoryStore'
 import { useTutorialStore } from '@/presentation/stores/useTutorialStore'
 import { useTutorialOverlayStore } from '@/presentation/stores/useTutorialOverlayStore'
+import tipsData from '@/shared/data/tips.json'
 import type { TutorialStep } from '@/shared/types/Tutorial'
 
 interface TabIconProps {
@@ -49,16 +51,27 @@ const FULL_SCREEN_MESSAGE_BY_STEP: Partial<Record<TutorialStep, string>> = {
 }
 
 const TAB_COUNT = 5
+const FALLBACK_TIP_TEXT = 'ゴブリンたちは特定の敵から因子を獲得する可能性がある'
+
+function pickTipText(): string {
+  const tips = tipsData.tips.filter((tip) => tip.enabled && tip.text.trim().length > 0)
+  if (tips.length === 0) return FALLBACK_TIP_TEXT
+  const index = Math.floor(Math.random() * tips.length)
+  return tips[index].text
+}
 
 export default function TabLayout() {
   const { t } = useTranslation()
+  const pathname = usePathname()
+  const tipText = useMemo(() => pickTipText(), [pathname])
   const unreadCount = useStoryStore((state) => state.unreadCount)
   const insets = useSafeAreaInsets()
   const basePadding = 8
   const baseHeight = 60
   const safeAreaPadding = Math.max(basePadding, insets.bottom)
   const tabBarHeight = baseHeight + safeAreaPadding
-  const badgeBottom = baseHeight + safeAreaPadding + 8
+  const tipsBarBottom = tabBarHeight
+  const badgeBottom = tabBarHeight + TIPS_BAR_HEIGHT + 8
   const { width: screenWidth, height: screenHeight } = useWindowDimensions()
   const tutorialStep = useTutorialStore((state) => state.step)
   const setEntry = useTutorialOverlayStore((state) => state.setEntry)
@@ -124,6 +137,9 @@ export default function TabLayout() {
           fontSize: 12,
           fontWeight: '600',
         },
+        sceneStyle: {
+          paddingBottom: TIPS_BAR_HEIGHT,
+        },
         headerShown: true,
         headerStyle: {
           backgroundColor: '#FFFFFF',
@@ -180,6 +196,7 @@ export default function TabLayout() {
         }}
       />
     </Tabs>
+    <TipsBar bottom={tipsBarBottom} text={tipText} />
     <CurrentTimeBadge bottom={badgeBottom} />
     <GoldenAcornBadge bottom={badgeBottom + 32} />
     <GoldBadge bottom={badgeBottom} />

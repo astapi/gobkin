@@ -11,6 +11,7 @@ import { SkillCatalogPage } from './pages/SkillCatalogPage'
 import { EquipmentPoolPage } from './pages/EquipmentPoolPage'
 import { DungeonUnlockFlowPage } from './pages/DungeonUnlockFlowPage'
 import { BalanceReferencePage } from './pages/BalanceReferencePage'
+import { TipsPage } from './pages/TipsPage'
 import { PartyStoreProvider } from './stores/partyStore'
 
 export function App() {
@@ -27,6 +28,7 @@ export function App() {
             <Link to="/stories">ストーリー</Link>
             <Link to="/goblins">ゴブリン</Link>
             <Link to="/equipment">アイテム</Link>
+            <Link to="/tips">TIPS</Link>
             <Link to="/skills">Skill</Link>
             <Link to="/party">PT編成</Link>
             <Link to="/simulate">シミュレーション</Link>
@@ -43,6 +45,7 @@ export function App() {
             <Route path="/stories/:storyId" element={<StoryDetailPage />} />
             <Route path="/goblins" element={<GoblinDataPage />} />
             <Route path="/equipment" element={<EquipmentPoolPage />} />
+            <Route path="/tips" element={<TipsPage />} />
             <Route path="/skills" element={<SkillCatalogPage />} />
             <Route path="/party" element={<PartyPage />} />
             <Route path="/simulate" element={<SimulatePage />} />

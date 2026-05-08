@@ -34,6 +34,16 @@ interface StoryFile {
   stories: StoryRecord[]
 }
 
+interface TipRecord {
+  id: string
+  text: string
+  enabled: boolean
+}
+
+interface TipsFile {
+  tips: TipRecord[]
+}
+
 interface StorySummary {
   id: string
   title: string
@@ -146,6 +156,7 @@ export function dataApiPlugin(options: Options): Plugin {
   const areaDir = path.join(options.appSrc, 'shared', 'data', 'expeditionArea')
   const enemyDir = path.join(options.appSrc, 'shared', 'data', 'enemy')
   const storyFile = path.join(options.appSrc, 'shared', 'data', 'story', 'stories.json')
+  const tipsFile = path.join(options.appSrc, 'shared', 'data', 'tips.json')
   const racesFile = path.join(options.appSrc, 'shared', 'data', 'races.ts')
   const factorsFile = path.join(options.appSrc, 'shared', 'data', 'factors.ts')
   const jobsFile = path.join(options.appSrc, 'shared', 'data', 'goblinJobs.ts')
@@ -285,6 +296,23 @@ export function dataApiPlugin(options: Options): Plugin {
           if (req.method === 'PUT') {
             const body = await readBody(req)
             await writeEquipmentPool(equipmentPoolFile, body)
+            return json(res, 200, { ok: true })
+          }
+          return json(res, 405, { error: 'Method not allowed' })
+        } catch (err) {
+          const message = err instanceof Error ? err.message : 'Unknown error'
+          return json(res, 500, { error: message })
+        }
+      })
+
+      server.middlewares.use('/api/tips', async (req, res) => {
+        try {
+          if (req.method === 'GET') {
+            return json(res, 200, await readTipsFile(tipsFile))
+          }
+          if (req.method === 'PUT') {
+            const body = await readBody(req)
+            await writeTipsFile(tipsFile, body)
             return json(res, 200, { ok: true })
           }
           return json(res, 405, { error: 'Method not allowed' })
@@ -636,6 +664,34 @@ async function writeEquipmentPool(filePath: string, body: unknown): Promise<void
   await writeJson(filePath, body)
 }
 
+async function readTipsFile(filePath: string): Promise<TipsFile> {
+  const raw = await readJson(filePath)
+  if (!isTipsFileShape(raw)) {
+    throw new Error('Invalid tips file')
+  }
+  return raw
+}
+
+async function writeTipsFile(filePath: string, body: unknown): Promise<void> {
+  if (!isTipsFileShape(body)) {
+    throw new Error('Tips file must contain tips array with id/text/enabled')
+  }
+  const ids = new Set<string>()
+  for (const tip of body.tips) {
+    if (tip.id.trim() === '') {
+      throw new Error('Tip id must not be empty')
+    }
+    if (tip.text.trim() === '') {
+      throw new Error(`Tip ${tip.id} text must not be empty`)
+    }
+    if (ids.has(tip.id)) {
+      throw new Error(`Duplicate tip id: ${tip.id}`)
+    }
+    ids.add(tip.id)
+  }
+  await writeJson(filePath, body)
+}
+
 async function readJson(filePath: string): Promise<any> {
   const raw = await fs.readFile(filePath, 'utf8')
   return JSON.parse(raw)
@@ -760,6 +816,23 @@ function isStoryShape(value: unknown): value is StoryRecord {
     typeof record.order === 'number' &&
     Array.isArray(record.rewards) &&
     Array.isArray(record.chapters)
+  )
+}
+
+function isTipsFileShape(value: unknown): value is TipsFile {
+  if (!value || typeof value !== 'object') return false
+  const record = value as Record<string, unknown>
+  return (
+    Array.isArray(record.tips) &&
+    record.tips.every((tip) => {
+      if (!tip || typeof tip !== 'object') return false
+      const tipRecord = tip as Record<string, unknown>
+      return (
+        typeof tipRecord.id === 'string' &&
+        typeof tipRecord.text === 'string' &&
+        typeof tipRecord.enabled === 'boolean'
+      )
+    })
   )
 }
 

@@ -308,6 +308,20 @@ code {
   background: var(--highlight);
 }
 
+.tips-table tbody tr {
+  cursor: default;
+}
+
+.tips-table td:nth-child(3) {
+  width: 100%;
+}
+
+.tips-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 0.8rem;
+}
+
 .enemy-table td.num,
 .enemy-table th.num,
 .weights td.num,
