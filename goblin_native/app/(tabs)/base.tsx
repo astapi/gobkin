@@ -1,10 +1,32 @@
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native'
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet, ActivityIndicator, Image, ImageBackground } from 'react-native'
+import type { ImageSourcePropType } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { router } from 'expo-router'
+import type { Href } from 'expo-router'
 import { useTranslation } from 'react-i18next'
-import { useBaseStore, selectRank, selectMaxParties, selectMaxGoblins, selectIvBonus } from '@/presentation/stores/useBaseStore'
+import { useBaseStore, selectRank, selectMaxParties, selectMaxGoblins } from '@/presentation/stores/useBaseStore'
 import { useGoblinStore } from '@/presentation/stores/useGoblinStore'
+import { GOBLIN_TRAINING_UNLOCK_RANK } from '@/shared/data/goblinJobs'
 import { getBaseLocationName } from '@/shared/i18n/entityLocalization'
+
+const EQUIPMENT_SHOP_UNLOCK_RANK = 2
+const baseHeaderImages: Record<number, ImageSourcePropType> = {
+  1: require('../../assets/base/base-header-rank-1-cave.png'),
+  2: require('../../assets/base/base-header-rank-2-goblin-settlement.png'),
+  3: require('../../assets/base/base-header-rank-3-frontier-village.png'),
+  4: require('../../assets/base/base-header-rank-4-orc-fortress.png'),
+}
+const rankBadgeImage = require('../../assets/base/rank-badge.png')
+const capacityIcon = require('../../assets/base/icon-capacity.png')
+const maxPartiesIcon = require('../../assets/base/icon-max-parties.png')
+
+type BaseMenuItem = {
+  title: string
+  description: string
+  href: Extract<Href, string>
+  unlockRank: number
+  icon: ImageSourcePropType
+}
 
 export default function BaseManagementScreen() {
   const { t } = useTranslation()
@@ -12,9 +34,47 @@ export default function BaseManagementScreen() {
   const rank = useBaseStore(selectRank)
   const maxParties = useBaseStore(selectMaxParties)
   const maxGoblins = useBaseStore(selectMaxGoblins)
-  const ivBonus = useBaseStore(selectIvBonus)
   const goblins = useGoblinStore((state) => state.goblins)
   const baseLocationName = getBaseLocationName(rank) || t('ui.base.locationUnknown')
+  const baseHeaderImage = baseHeaderImages[rank] ?? baseHeaderImages[4]
+
+  const menuItems: BaseMenuItem[] = [
+    {
+      title: t('ui.base.healingTitle'),
+      description: t('ui.base.healingDescription'),
+      href: '/base/healing' as const,
+      unlockRank: 1,
+      icon: require('../../assets/base/icon-healing.png'),
+    },
+    {
+      title: t('ui.base.upgradeTitle'),
+      description: t('ui.base.upgradeDescription'),
+      href: '/base/upgrade' as const,
+      unlockRank: 1,
+      icon: require('../../assets/base/icon-upgrade.png'),
+    },
+    {
+      title: t('ui.base.trainingTitle'),
+      description: t('ui.base.trainingDescription'),
+      href: '/base/training' as const,
+      unlockRank: GOBLIN_TRAINING_UNLOCK_RANK,
+      icon: require('../../assets/base/icon-training.png'),
+    },
+    {
+      title: t('ui.base.shopTitle'),
+      description: t('ui.base.shopDescription'),
+      href: '/base/shop' as const,
+      unlockRank: EQUIPMENT_SHOP_UNLOCK_RANK,
+      icon: require('../../assets/base/icon-equipment-shop.png'),
+    },
+    {
+      title: t('ui.base.premiumShopTitle'),
+      description: t('ui.base.premiumShopDescription'),
+      href: '/shop' as const,
+      unlockRank: 1,
+      icon: require('../../assets/base/icon-special-shop.png'),
+    },
+  ].filter((item) => rank >= item.unlockRank)
 
   if (baseLoading) {
     return (
@@ -30,72 +90,71 @@ export default function BaseManagementScreen() {
   return (
     <SafeAreaView style={styles.container} edges={['top', 'left', 'right', 'bottom']}>
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.contentContainer}>
-        <Text style={styles.screenTitle}>{t('ui.base.title')}</Text>
-        <Text style={styles.screenLead}>{t('ui.base.lead')}</Text>
-
-        <View style={styles.heroCard}>
-          <StatusRow label={t('ui.base.rankLabel')} value={t('ui.base.rankValue', { rank })} />
-          <StatusRow label={t('ui.base.locationLabel')} value={baseLocationName} />
-          <StatusRow label={t('ui.base.capacityLabel')} value={t('ui.base.capacityValue', { current: goblins.length, max: maxGoblins })} />
-          <StatusRow label={t('ui.base.maxPartiesLabel')} value={t('ui.base.maxPartiesValue', { maxParties })} />
-          <StatusRow label={t('ui.base.ivBonusLabel')} value={t('ui.base.ivBonusValue', { ivBonus })} />
-        </View>
-
-        <View style={styles.card}>
-          <Text style={styles.cardTitle}>{t('ui.base.menuTitle')}</Text>
-
-          <TouchableOpacity style={styles.menuButton} onPress={() => router.push('/base/healing')}>
-            <View style={styles.menuButtonTextGroup}>
-              <Text style={styles.menuButtonTitle}>{t('ui.base.healingTitle')}</Text>
-              <Text style={styles.menuButtonDescription}>{t('ui.base.healingDescription')}</Text>
-            </View>
-            <Text style={styles.menuButtonArrow}>›</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.menuButton} onPress={() => router.push('/base/upgrade')}>
-            <View style={styles.menuButtonTextGroup}>
-              <Text style={styles.menuButtonTitle}>{t('ui.base.upgradeTitle')}</Text>
-              <Text style={styles.menuButtonDescription}>{t('ui.base.upgradeDescription')}</Text>
-            </View>
-            <Text style={styles.menuButtonArrow}>›</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.menuButton} onPress={() => router.push('/base/training')}>
-            <View style={styles.menuButtonTextGroup}>
-              <Text style={styles.menuButtonTitle}>{t('ui.base.trainingTitle')}</Text>
-              <Text style={styles.menuButtonDescription}>{t('ui.base.trainingDescription')}</Text>
-            </View>
-            <Text style={styles.menuButtonArrow}>›</Text>
-          </TouchableOpacity>
-
-          {rank >= 2 && (
-            <TouchableOpacity style={styles.menuButton} onPress={() => router.push('/base/shop')}>
-              <View style={styles.menuButtonTextGroup}>
-                <Text style={styles.menuButtonTitle}>{t('ui.base.shopTitle')}</Text>
-                <Text style={styles.menuButtonDescription}>{t('ui.base.shopDescription')}</Text>
+        <ImageBackground source={baseHeaderImage} resizeMode="cover" style={styles.header}>
+          <View style={styles.headerOverlay} />
+          <View style={styles.headerContent}>
+            <Text style={styles.screenTitle}>{t('ui.base.title')}</Text>
+            <Text style={styles.screenLead}>{t('ui.base.lead')}</Text>
+            <View style={styles.baseOverview}>
+              <View style={styles.rankBadgeWrap}>
+                <Image source={rankBadgeImage} style={styles.rankBadgeImage} />
+                <View style={styles.rankBadgeTextWrap}>
+                  <Text style={styles.rankBadgeLabel}>{t('ui.base.rankLabel')}</Text>
+                  <Text style={styles.rankBadgeValue}>{rank}</Text>
+                </View>
               </View>
-              <Text style={styles.menuButtonArrow}>›</Text>
-            </TouchableOpacity>
-          )}
-
-          <TouchableOpacity style={styles.menuButton} onPress={() => router.push('/shop')}>
-            <View style={styles.menuButtonTextGroup}>
-              <Text style={styles.menuButtonTitle}>{t('ui.base.premiumShopTitle')}</Text>
-              <Text style={styles.menuButtonDescription}>{t('ui.base.premiumShopDescription')}</Text>
+              <View style={styles.heroTextGroup}>
+                <Text style={styles.baseName}>{baseLocationName}</Text>
+              </View>
             </View>
-            <Text style={styles.menuButtonArrow}>›</Text>
-          </TouchableOpacity>
+          </View>
+        </ImageBackground>
+
+        <View style={styles.bodyContent}>
+          <View style={styles.metricsGrid}>
+            <MetricCard
+              icon={capacityIcon}
+              label={t('ui.base.capacityLabel')}
+              value={t('ui.base.capacityValue', { current: goblins.length, max: maxGoblins })}
+            />
+            <MetricCard
+              icon={maxPartiesIcon}
+              label={t('ui.base.maxPartiesLabel')}
+              value={t('ui.base.maxPartiesValue', { maxParties })}
+            />
+          </View>
+
+          <View style={styles.menuSectionHeader}>
+            <Text style={styles.cardTitle}>{t('ui.base.menuTitle')}</Text>
+            <View style={styles.menuDivider} />
+          </View>
+
+          <View style={styles.menuList}>
+            {menuItems.map((item) => (
+              <TouchableOpacity key={item.href} style={styles.menuButton} onPress={() => router.push(item.href)}>
+                <Image source={item.icon} style={styles.menuIcon} />
+                <View style={styles.menuButtonTextGroup}>
+                  <Text style={styles.menuButtonTitle}>{item.title}</Text>
+                  <Text style={styles.menuButtonDescription}>{item.description}</Text>
+                </View>
+                <Text style={styles.menuButtonArrow}>›</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
         </View>
       </ScrollView>
     </SafeAreaView>
   )
 }
 
-function StatusRow({ label, value }: { label: string; value: string }) {
+function MetricCard({ icon, label, value }: { icon: ImageSourcePropType; label: string; value: string }) {
   return (
-    <View style={styles.statusRow}>
-      <Text style={styles.statusLabel}>{label}</Text>
-      <Text style={styles.statusValue}>{value}</Text>
+    <View style={styles.metricCard}>
+      <Image source={icon} style={styles.metricIcon} />
+      <View style={styles.metricTextGroup}>
+        <Text style={styles.metricLabel}>{label}</Text>
+        <Text style={styles.metricValue}>{value}</Text>
+      </View>
     </View>
   )
 }
@@ -119,92 +178,198 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   contentContainer: {
-    padding: 16,
-    paddingTop: 0,
     paddingBottom: 88,
-    gap: 16,
+  },
+  header: {
+    minHeight: 264,
+    justifyContent: 'flex-end',
+    overflow: 'hidden',
+  },
+  headerOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(245, 239, 224, 0.28)',
+  },
+  headerContent: {
+    paddingHorizontal: 16,
+    paddingTop: 16,
+    paddingBottom: 18,
+    gap: 11,
   },
   screenTitle: {
-    fontSize: 22,
-    fontWeight: '700',
-    color: '#111827',
+    fontSize: 24,
+    lineHeight: 31,
+    fontWeight: '800',
+    color: '#101725',
+    textShadowColor: 'rgba(255, 255, 255, 0.7)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 2,
   },
   screenLead: {
-    fontSize: 13,
-    lineHeight: 20,
-    color: '#6B7280',
-    marginTop: -10,
+    width: '68%',
+    fontSize: 11,
+    lineHeight: 17,
+    fontWeight: '600',
+    color: '#25303D',
+    textShadowColor: 'rgba(255, 255, 255, 0.7)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 2,
   },
-  heroCard: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 8,
-    paddingVertical: 10,
-    paddingHorizontal: 14,
-    gap: 2,
-    borderWidth: 1,
-    borderColor: '#E5E7EB',
-  },
-  statusRow: {
+  baseOverview: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    gap: 16,
-    paddingVertical: 7,
-    borderBottomWidth: 1,
-    borderBottomColor: '#E5E7EB',
+    gap: 14,
+    marginTop: 4,
   },
-  statusLabel: {
-    fontSize: 13,
-    color: '#6B7280',
+  rankBadgeWrap: {
+    width: 72,
+    height: 82,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  statusValue: {
-    fontSize: 15,
+  rankBadgeImage: {
+    position: 'absolute',
+    width: 72,
+    height: 82,
+    resizeMode: 'contain',
+  },
+  rankBadgeTextWrap: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingTop: 2,
+  },
+  rankBadgeLabel: {
+    fontSize: 9,
+    lineHeight: 13,
     fontWeight: '700',
-    color: '#111827',
-    flexShrink: 1,
-    textAlign: 'right',
+    color: '#F7F0CF',
   },
-  card: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 8,
-    padding: 16,
-    borderWidth: 1,
-    borderColor: '#E5E7EB',
+  rankBadgeValue: {
+    fontSize: 28,
+    lineHeight: 33,
+    fontWeight: '800',
+    color: '#FFFFFF',
+  },
+  heroTextGroup: {
+    flex: 1,
+    gap: 5,
+  },
+  baseName: {
+    fontSize: 19,
+    lineHeight: 25,
+    fontWeight: '800',
+    color: '#101722',
+    flexShrink: 1,
+    textShadowColor: 'rgba(255, 255, 255, 0.65)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 2,
+  },
+  bodyContent: {
+    paddingHorizontal: 12,
+    paddingTop: 10,
     gap: 12,
+  },
+  metricsGrid: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  metricCard: {
+    flex: 1,
+    minHeight: 58,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.92)',
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    borderWidth: 1,
+    borderColor: '#E7E2D8',
+    gap: 8,
+    shadowColor: '#2B2112',
+    shadowOpacity: 0.06,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 2 },
+  },
+  metricIcon: {
+    width: 28,
+    height: 28,
+    resizeMode: 'contain',
+  },
+  metricTextGroup: {
+    alignItems: 'center',
+    gap: 1,
+  },
+  metricLabel: {
+    fontSize: 11,
+    lineHeight: 15,
+    fontWeight: '700',
+    color: '#273241',
+  },
+  metricValue: {
+    fontSize: 17,
+    lineHeight: 21,
+    fontWeight: '800',
+    color: '#101623',
+  },
+  menuSectionHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    marginTop: 2,
   },
   cardTitle: {
     fontSize: 16,
-    fontWeight: '700',
-    color: '#1F2937',
+    lineHeight: 22,
+    fontWeight: '800',
+    color: '#172033',
+  },
+  menuDivider: {
+    flex: 1,
+    height: 1,
+    backgroundColor: 'rgba(122, 105, 69, 0.28)',
+  },
+  menuList: {
+    gap: 8,
   },
   menuButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: '#F9FAFB',
+    backgroundColor: 'rgba(255, 255, 255, 0.92)',
     borderRadius: 8,
-    padding: 14,
+    paddingVertical: 11,
+    paddingHorizontal: 12,
     borderWidth: 1,
-    borderColor: '#E5E7EB',
+    borderColor: '#E7E2D8',
     gap: 12,
+    shadowColor: '#2B2112',
+    shadowOpacity: 0.05,
+    shadowRadius: 6,
+    shadowOffset: { width: 0, height: 2 },
+  },
+  menuIcon: {
+    width: 42,
+    height: 42,
+    resizeMode: 'contain',
   },
   menuButtonTextGroup: {
     flex: 1,
-    gap: 4,
+    gap: 3,
   },
   menuButtonTitle: {
     fontSize: 15,
-    fontWeight: '700',
-    color: '#111827',
+    lineHeight: 20,
+    fontWeight: '800',
+    color: '#111722',
   },
   menuButtonDescription: {
-    fontSize: 12,
-    lineHeight: 18,
-    color: '#6B7280',
+    fontSize: 11,
+    lineHeight: 17,
+    color: '#4F5968',
   },
   menuButtonArrow: {
     fontSize: 26,
     lineHeight: 26,
-    color: '#9CA3AF',
+    color: '#8A919D',
   },
 })
