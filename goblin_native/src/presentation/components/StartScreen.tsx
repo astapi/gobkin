@@ -5,6 +5,7 @@ import {
   StyleSheet,
   ImageBackground,
   ActivityIndicator,
+  Platform,
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useTranslation } from 'react-i18next'
@@ -31,12 +32,15 @@ export function StartScreen({ onStart, starting = false }: StartScreenProps) {
       style={styles.container}
       resizeMode="cover"
     >
-      <View style={styles.topScrim} />
       <SafeAreaView style={styles.safeArea} edges={['top', 'bottom']}>
         <View style={styles.content}>
           <View style={styles.header}>
             <Text style={styles.title}>{t('ui.start.title')}</Text>
-            <Text style={styles.subtitle}>{t('ui.start.subtitle')}</Text>
+            <View style={styles.subtitleRow}>
+              <View style={styles.subtitleLine} />
+              <Text style={styles.subtitle}>{t('ui.start.subtitle')}</Text>
+              <View style={styles.subtitleLine} />
+            </View>
           </View>
 
           <View style={styles.footer}>
@@ -51,7 +55,7 @@ export function StartScreen({ onStart, starting = false }: StartScreenProps) {
                 disabled={starting}
               >
                 {starting ? (
-                  <ActivityIndicator color="#1F2937" />
+                  <ActivityIndicator color="#374151" />
                 ) : (
                   <Text style={styles.startButtonText}>{t('ui.start.beginButton')}</Text>
                 )}
@@ -78,32 +82,44 @@ const styles = StyleSheet.create({
     paddingHorizontal: 22,
     justifyContent: 'space-between',
   },
-  topScrim: {
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    left: 0,
-    height: 230,
-    backgroundColor: 'rgba(6, 12, 24, 0.28)',
-  },
   header: {
     alignItems: 'center',
-    marginTop: 48,
+    marginTop: 52,
   },
   title: {
-    fontSize: 38,
-    fontWeight: '900',
-    color: '#FBBF24',
+    fontSize: 36,
+    fontFamily: Platform.select({
+      ios: 'Hiragino Mincho ProN',
+      android: 'serif',
+      default: 'serif',
+    }),
+    fontWeight: Platform.select({
+      ios: '600',
+      android: '700',
+      default: '700',
+    }),
+    color: '#F0C05A',
     textAlign: 'center',
-    textShadowColor: 'rgba(0, 0, 0, 0.75)',
-    textShadowOffset: { width: 0, height: 3 },
-    textShadowRadius: 8,
+    textShadowColor: 'rgba(0, 0, 0, 0.9)',
+    textShadowOffset: { width: 2, height: 3 },
+    textShadowRadius: 2,
+  },
+  subtitleRow: {
+    marginTop: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 14,
+  },
+  subtitleLine: {
+    width: 34,
+    height: 1,
+    backgroundColor: 'rgba(240, 192, 90, 0.75)',
   },
   subtitle: {
-    marginTop: 10,
-    fontSize: 14,
-    color: '#CBD5F5',
-    letterSpacing: 4,
+    fontSize: 13,
+    color: '#E4E7EE',
+    letterSpacing: 5,
     textAlign: 'center',
     textShadowColor: 'rgba(0, 0, 0, 0.8)',
     textShadowOffset: { width: 0, height: 2 },
@@ -111,39 +127,39 @@ const styles = StyleSheet.create({
   },
   footer: {
     alignItems: 'center',
-    paddingBottom: 26,
+    paddingBottom: 28,
   },
   buttonScrim: {
     width: '100%',
-    borderRadius: 22,
-    backgroundColor: 'rgba(3, 8, 18, 0.34)',
-    padding: 10,
+    paddingHorizontal: 2,
   },
   startButton: {
     width: '100%',
-    minHeight: 74,
-    borderRadius: 18,
-    backgroundColor: '#F59E0B',
+    minHeight: 70,
+    borderRadius: 22,
+    backgroundColor: 'rgba(248, 250, 252, 0.9)',
     alignItems: 'center',
     justifyContent: 'center',
     shadowColor: '#000',
-    shadowOpacity: 0.3,
-    shadowRadius: 12,
-    shadowOffset: { width: 0, height: 6 },
-    elevation: 6,
-    borderWidth: 2,
-    borderColor: 'rgba(255, 214, 102, 0.45)',
+    shadowOpacity: 0.24,
+    shadowRadius: 16,
+    shadowOffset: { width: 0, height: 7 },
+    elevation: 7,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.72)',
+    borderBottomWidth: 2,
+    borderBottomColor: 'rgba(217, 119, 6, 0.7)',
   },
   startButtonPressed: {
-    opacity: 0.85,
+    opacity: 0.92,
     transform: [{ scale: 0.98 }],
   },
   startButtonDisabled: {
     opacity: 0.6,
   },
   startButtonText: {
-    color: '#1F2937',
-    fontSize: 18,
+    color: '#263241',
+    fontSize: 17,
     fontWeight: '800',
   },
   tagline: {
