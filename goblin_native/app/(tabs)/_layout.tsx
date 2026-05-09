@@ -7,6 +7,7 @@ import ListIcon from '../../assets/tab/tab_list.svg'
 import HenseiIcon from '../../assets/tab/tab_hensei.svg'
 import BaseIcon from '../../assets/tab/tab_base.svg'
 import StoryIcon from '../../assets/tab/tab_story.svg'
+import EncyclopediaIcon from '../../assets/tab/tab_encyclopedia.svg'
 import SettingIcon from '../../assets/tab/tab_setting.svg'
 import { CurrentTimeBadge } from '@/presentation/components/CurrentTimeBadge'
 import { GoldBadge } from '@/presentation/components/GoldBadge'
@@ -34,7 +35,7 @@ const TabIcon = memo(function TabIcon({ Icon, color, size = 24 }: TabIconProps) 
 
 // (tabs)/_layout.tsx 内の Tabs.Screen 定義順と一致させる
 const TAB_INDEX_BY_STEP: Partial<Record<TutorialStep, number>> = {
-  // story=0, index=1, formation=2, base=3, settings=4
+  // story=0, index=1, formation=2, base=3, encyclopedia=4, settings=5
   see_first_goblin: 1,
   view_first_goblin: 2,
   open_formation: 2,
@@ -50,7 +51,7 @@ const FULL_SCREEN_MESSAGE_BY_STEP: Partial<Record<TutorialStep, string>> = {
   wait_clear: 'ui.tutorial.banner.waitClear',
 }
 
-const TAB_COUNT = 5
+const TAB_COUNT = 6
 const FALLBACK_TIP_TEXT = 'ゴブリンたちは特定の敵から因子を獲得する可能性がある'
 
 function pickTipText(): string {
@@ -185,6 +186,15 @@ export default function TabLayout() {
           headerTitle: t('ui.tabs.base'),
           headerShown: false,
           tabBarIcon: ({ color }) => <TabIcon Icon={BaseIcon} color={color} size={40} />,
+        }}
+      />
+      <Tabs.Screen
+        name="encyclopedia"
+        options={{
+          title: t('ui.tabs.encyclopedia'),
+          headerTitle: t('ui.tabs.encyclopedia'),
+          headerShown: false,
+          tabBarIcon: ({ color }) => <TabIcon Icon={EncyclopediaIcon} color={color} />,
         }}
       />
       <Tabs.Screen

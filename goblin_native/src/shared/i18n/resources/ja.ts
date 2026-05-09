@@ -19,6 +19,7 @@ const ja = {
       goblinList: '一覧',
       formation: '編成',
       base: '拠点',
+      encyclopedia: '図鑑',
       settings: '設定',
     },
     root: {
@@ -73,6 +74,18 @@ const ja = {
         errorImportVersionMismatch: 'このバックアップは現在のアプリと互換性がありません。アプリを最新版に更新してください。',
         errorImportTampered: 'バックアップファイルが書き換えられている可能性があるため、読み込みを中止しました。',
       },
+    },
+    encyclopedia: {
+      title: '図鑑',
+      description: '解放済みダンジョンの敵情報を確認できます。',
+      dungeons: 'ダンジョン',
+      empty: '解放済みのダンジョンがありません。',
+      boss: 'ボス',
+      normal: '通常敵',
+      skills: 'スキル',
+      rareDrops: 'レアドロップ',
+      none: 'なし',
+      spellCharges: '使用回数 {{count}}',
     },
     goblin: {
       stats: 'ステータス',

@@ -234,6 +234,28 @@ export default function RootLayout() {
                     title: t('ui.root.goblinDetail'),
                   }}
                 />
+                <Stack.Screen
+                  name="encyclopedia-detail/[dungeonId]"
+                  options={{
+                    headerShown: true,
+                    headerStyle: { backgroundColor: '#FFFFFF' },
+                    headerTitleStyle: { color: '#1F2937', fontWeight: 'bold' },
+                    headerTintColor: '#6B7280',
+                    headerBackTitle: t('ui.common.back'),
+                    title: t('ui.encyclopedia.title'),
+                  }}
+                />
+                <Stack.Screen
+                  name="encyclopedia-detail/[dungeonId]/[enemyId]"
+                  options={{
+                    headerShown: true,
+                    headerStyle: { backgroundColor: '#FFFFFF' },
+                    headerTitleStyle: { color: '#1F2937', fontWeight: 'bold' },
+                    headerTintColor: '#6B7280',
+                    headerBackTitle: t('ui.common.back'),
+                    title: t('ui.encyclopedia.title'),
+                  }}
+                />
               </Stack>
               <StatusBar style="auto" />
             </ResetProvider>
