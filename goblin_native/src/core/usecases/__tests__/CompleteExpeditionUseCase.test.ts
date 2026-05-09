@@ -1,5 +1,6 @@
 import { CompleteExpeditionUseCase } from '../CompleteExpeditionUseCase'
 import type { IGoblinRepository, IPartyRepository, IBaseStateRepository } from '../../repositories'
+import { getCharacterSkill } from '../../../shared/data/skillCatalog'
 import { getDefaultSkillsForRace } from '../../../shared/data/raceSkills'
 import { DEFAULT_PARTY_REWARD_MULTIPLIERS } from '../../../shared/types'
 import type { Goblin, GoblinStats, Party, BaseState, ExpeditionReplay, TimelineEvent } from '../../../shared/types'
@@ -361,6 +362,54 @@ describe('CompleteExpeditionUseCase', () => {
       expect(goblinRepo.updateGoblinFactors).toHaveBeenCalledWith(
         1,
         ['slime'],
+        expect.objectContaining({ hp: expect.any(Number) }),
+      )
+    })
+
+    it('因子獲得倍率スキルは持っているゴブリンの因子獲得確率だけを上げる', async () => {
+      const boostedGoblin = createTestGoblin({
+        id: 1,
+        name: '倍率持ち',
+        skills: [getCharacterSkill('factor_drop_mult_1_5')],
+      })
+      const plainGoblin = createTestGoblin({ id: 2, name: '倍率なし', skills: [] })
+      const party = createTestParty({ id: 1, memberIds: [1, 2] })
+      const baseState = createTestBaseState({ capturedDungeons: [] })
+      const events: TimelineEvent[] = [
+        { type: 'move_start', at: 0, floor: 1 },
+        createBossEvent('B_CANNON', 5, [-1, -1], 30, 1),
+        { type: 'return', at: 30, reason: 'completed' },
+      ]
+      const replay = createTestReplay({
+        meta: {
+          expeditionId: 'exp-1',
+          areaId: 'human_village',
+          areaName: '人間の村',
+          floors: 1,
+          baseDurationSec: 30,
+          party: ['1', '2'],
+          partyRewardMultipliers: DEFAULT_PARTY_REWARD_MULTIPLIERS,
+          returnPolicy: 'never',
+          seed: 12345,
+        },
+        events,
+        summary: { success: true, maxFloorReached: 1, xpGained: 5, goldGained: 0, casualties: [] },
+      })
+
+      const goblinRepo = createMockGoblinRepository([boostedGoblin, plainGoblin])
+      const usecase = new CompleteExpeditionUseCase(
+        goblinRepo,
+        createMockPartyRepository([party]),
+        createMockBaseStateRepository(baseState),
+      )
+      const result = await usecase.execute(1, replay)
+
+      expect(result.factorAcquisitions.get(1)).toEqual(['human'])
+      expect(result.factorAcquisitions.get(2)).toBeUndefined()
+      expect(goblinRepo.updateGoblinFactors).toHaveBeenCalledTimes(1)
+      expect(goblinRepo.updateGoblinFactors).toHaveBeenCalledWith(
+        1,
+        ['human'],
         expect.objectContaining({ hp: expect.any(Number) }),
       )
     })

@@ -56,6 +56,8 @@ export interface CharacterSkill {
   extraSpellCharges?: number
   expBonusPercent?: number
   expMultiplier?: number
+  factorDropBonusPercent?: number
+  factorDropMultiplier?: number
   goldBonusPercent?: number
   partyRareMultiplier?: number
   partyTitleMultiplier?: number

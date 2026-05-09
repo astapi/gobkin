@@ -4,6 +4,8 @@ import {
   describeCharacterSkill,
   getAdditionalDamageFromSkills,
   getExpeditionTimeMultiplierFromSkills,
+  getFactorDropBonusPercentFromSkills,
+  getFactorDropMultiplierFromSkills,
   getPartyRareMultiplierFromSkills,
   getPartyTitleMultiplierFromSkills,
   getCharacterSkillEffectDescriptions,
@@ -310,6 +312,20 @@ describe('characterSkills - 物理ダメージ軽減', () => {
     expect(getPartyTitleMultiplierFromSkills(skills)).toBeCloseTo(1.25)
   })
 
+  it('因子獲得倍率スキルを集計できる', () => {
+    const skills: CharacterSkill[] = [
+      { id: 'factor_drop_bonus_10', factorDropBonusPercent: 10 },
+      { id: 'factor_drop_bonus_20', factorDropBonusPercent: 20 },
+      { id: 'factor_drop_bonus_50', factorDropBonusPercent: 50 },
+      { id: 'factor_drop_bonus_50', factorDropBonusPercent: 50 },
+      { id: 'factor_drop_mult_1_5', factorDropMultiplier: 1.5 },
+      { id: 'factor_drop_mult_1_2', factorDropMultiplier: 1.2 },
+    ]
+
+    expect(getFactorDropBonusPercentFromSkills(skills)).toBe(80)
+    expect(getFactorDropMultiplierFromSkills(skills)).toBeCloseTo(1.8)
+  })
+
   it('基本能力値加算とPT報酬倍率のカタログを取得できる', () => {
     expect(getCharacterSkill('abnormal_marku')).toMatchObject({
       baseAttributeBonuses: { power: 3, wisdom: 3, luck: 3 },
@@ -336,6 +352,14 @@ describe('characterSkills - 物理ダメージ軽減', () => {
     for (const suffix of ['1_05', '1_1', '1_25', '1_3', '1_5']) {
       expect(getCharacterSkill(`party_rare_mult_${suffix}`).partyRareMultiplier).toBeGreaterThan(1)
       expect(getCharacterSkill(`party_title_mult_${suffix}`).partyTitleMultiplier).toBeGreaterThan(1)
+    }
+
+    for (const value of [10, 20, 30, 50]) {
+      expect(getCharacterSkill(`factor_drop_bonus_${value}`).factorDropBonusPercent).toBe(value)
+    }
+
+    for (const [suffix, value] of [['1_2', 1.2], ['1_3', 1.3], ['1_5', 1.5]] as const) {
+      expect(getCharacterSkill(`factor_drop_mult_${suffix}`).factorDropMultiplier).toBe(value)
     }
   })
 

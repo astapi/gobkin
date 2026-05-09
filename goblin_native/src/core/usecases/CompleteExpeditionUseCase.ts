@@ -4,6 +4,8 @@ import { getEffectiveStats } from '../../shared/utils/goblinStats'
 import {
   getExpBonusPercentFromSkills,
   getExpMultiplierFromSkills,
+  getFactorDropBonusPercentFromSkills,
+  getFactorDropMultiplierFromSkills,
   hasUndeadSkill,
 } from '../../shared/data/characterSkills'
 import { GoblinEntity } from '../domain'
@@ -179,10 +181,15 @@ export class CompleteExpeditionUseCase {
             }
 
             const latest = latestGoblins.get(goblin.id)!
+            const factorDropBonusPercent = getFactorDropBonusPercentFromSkills(latest.skills)
+            const factorDropMultiplier = getFactorDropMultiplierFromSkills(latest.skills)
+            const probabilityMultiplier =
+              (1 + Math.max(0, factorDropBonusPercent) / 100) * factorDropMultiplier
             const acquired = FactorService.rollFactorDrops(
               latest,
               allFactorDrops,
-              replay.meta.seed
+              replay.meta.seed,
+              probabilityMultiplier
             )
 
             if (acquired.length > 0) {
