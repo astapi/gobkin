@@ -6,7 +6,7 @@ import type {
   Party,
 } from '../../shared/types'
 import { normalizePartyRewardMultipliers } from '../../shared/types'
-import { getEffectiveStats } from '../../shared/utils/goblinStats'
+import { calculateGoblinEffectiveStats } from '../../shared/utils/goblinStats'
 import { EquipmentService } from '../services/EquipmentService'
 import { PartyEntity } from '../domain'
 import type { IGoblinRepository, IPartyRepository, IEquipmentRepository } from '../repositories'
@@ -70,17 +70,22 @@ export class StartExpeditionUseCase {
 
   /**
    * 遠征出発時のゴブリンデータを準備する。
-   * DB の effectiveStats は装備込みで保存済み。
-   * skills のみ装備由来スキルをマージして戦闘に反映する。
+   * 遠征開始時点の装備状態から実効ステータスを再計算する。
+   * DB の effectiveStats が古い場合でも、戦闘には現在の装備を反映する。
    */
   private async prepareDepartingGoblins(goblins: Goblin[]): Promise<Goblin[]> {
     return Promise.all(goblins.map(async goblin => {
       const equippedItems = await this.equipmentRepository.getByGoblinId(goblin.id)
       const equipmentSkills = EquipmentService.collectGrantedSkills(equippedItems)
-      const effectiveStats = getEffectiveStats(goblin)
+      const mergedSkills = [...goblin.skills, ...equipmentSkills]
+      const effectiveStats = calculateGoblinEffectiveStats(
+        { ...goblin, skills: mergedSkills },
+        equippedItems,
+      )
       return {
         ...goblin,
-        skills: [...goblin.skills, ...equipmentSkills],
+        skills: mergedSkills,
+        effectiveStats,
         currentHp: goblin.currentHp === 0 ? 0 : effectiveStats.hp,
       }
     }))
