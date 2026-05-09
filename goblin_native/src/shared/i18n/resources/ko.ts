@@ -18,6 +18,7 @@ const ko = {
       goblinList: '고블린',
       formation: '편성',
       base: '거점',
+      encyclopedia: '도감',
       settings: '설정',
     },
     root: {
@@ -72,6 +73,18 @@ const ko = {
         errorImportVersionMismatch: '이 백업은 현재 앱과 호환되지 않습니다. 앱을 최신 버전으로 업데이트하세요.',
         errorImportTampered: '백업 파일이 변경된 것으로 보여 가져오기를 중단했습니다.',
       },
+    },
+    encyclopedia: {
+      title: '도감',
+      description: '해방된 던전의 적 정보를 확인합니다.',
+      dungeons: '던전',
+      empty: '해방된 던전이 없습니다.',
+      boss: '보스',
+      normal: '일반 적',
+      skills: '스킬',
+      rareDrops: '희귀 드롭',
+      none: '없음',
+      spellCharges: '{{count}}회 사용',
     },
     goblin: {
       stats: '스탯',

@@ -19,6 +19,7 @@ const en = {
       goblinList: 'Goblins',
       formation: 'Formation',
       base: 'Base',
+      encyclopedia: 'Codex',
       settings: 'Settings',
     },
     root: {
@@ -73,6 +74,18 @@ const en = {
         errorImportVersionMismatch: 'This backup is not compatible with the current app. Please update the app to the latest version.',
         errorImportTampered: 'The backup file appears to have been modified, so the import was aborted.',
       },
+    },
+    encyclopedia: {
+      title: 'Codex',
+      description: 'View enemy information for unlocked dungeons.',
+      dungeons: 'Dungeons',
+      empty: 'No dungeons have been unlocked.',
+      boss: 'Boss',
+      normal: 'Enemy',
+      skills: 'Skills',
+      rareDrops: 'Rare Drops',
+      none: 'None',
+      spellCharges: '{{count}} uses',
     },
     goblin: {
       stats: 'Stats',
