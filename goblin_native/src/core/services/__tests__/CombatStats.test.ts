@@ -760,6 +760,97 @@ describe('BattleSystem — 命中判定と複数回攻撃', () => {
     expect(log.targets[0].hitCount).toBeGreaterThan(0)
   })
 
+  it('通常攻撃のダメージ減衰はミスを除いた命中HIT番号で決まる', () => {
+    const fakeDamageCalculator = {
+      calcDamage: jest.fn(() => 100),
+    }
+    const battle = new BattleSystem(undefined, fakeDamageCalculator as any)
+    const attacker: any = {
+      combatant: {
+        id: '1',
+        name: '攻撃者',
+        atk: 100,
+        def: 0,
+        attackCount: 3,
+        accuracy: 999,
+        evasion: 0,
+        raceTags: ['goblin'],
+      },
+      currentHP: 100,
+      maxHP: 100,
+      power: 10,
+      agility: 10,
+      luck: 10,
+      attackCount: 3,
+      accuracy: 999,
+      evasion: 0,
+      isAlly: true,
+      originalIndex: 0,
+      damageReduction: 0,
+      physicalDamageReduction: 0,
+      magicDamageReduction: 0,
+      breathDamageReduction: 0,
+      shieldBarrierDamageReduction: 0,
+      shieldBarrierBreathDamageReduction: 0,
+      magicBarrierDamageReduction: 0,
+      physicalDamageDealtMultiplier: 1,
+      physicalDamagePercent: 0,
+      magicAtk: 0,
+      magicHeal: 0,
+      criticalRate: 0,
+      spellDamagePercent: 0,
+      magicFieldDamageMultiplier: 1,
+      row: 0,
+      rowSlot: 0,
+      level: 1,
+      spellCharges: [],
+      skills: [],
+      battleActionPolicy: {},
+      isDefending: false,
+    }
+    const target: any = {
+      ...attacker,
+      combatant: {
+        id: 'E',
+        name: '対象',
+        atk: 0,
+        def: 0,
+        attackCount: 0,
+        accuracy: 0,
+        evasion: 0,
+        raceTags: ['human'],
+      },
+      currentHP: 1000,
+      maxHP: 1000,
+      isAlly: false,
+    }
+    const rolls = [
+      0.99, // critical判定: 非クリティカル
+      0.5, 0.99, // 1試行目: 命中率乱数, ミス
+      0.5, 0.99, // 2試行目: 命中率乱数, ミス
+      0.5, 0.0,  // 3試行目: 命中率乱数, 初命中
+    ]
+    const rng = () => rolls.shift() ?? 0
+
+    const result = (battle as any).executeBasicAttack(
+      attacker,
+      [target],
+      [attacker],
+      [attacker],
+      1,
+      [],
+      new Set(),
+      new Set(),
+      rng,
+      3,
+      0,
+    )
+
+    const detail = [...result.targetDetails.values()][0]
+    expect(result.totalHitCount).toBe(1)
+    expect(detail.totalDamage).toBe(100)
+  })
+
   it('命中精度0・回避極大でほぼ全ミスになる', () => {
     const allies = [createTestGoblin({
       stats: { hp: 100, atk: 50, agility: 100, def: 10, attackCount: 1, accuracy: 0, evasion: 10 },
@@ -1141,7 +1232,7 @@ describe('BattleSystem — 命中判定と複数回攻撃', () => {
     const rear = result.detailedLog.find(log => log.action === '通常攻撃' && !log.isAlly)!.targets.find(target => target.targetId === '3')
 
     expect(rear).toBeDefined()
-    expect(rear!.totalDamage).toBe(173)
+    expect(rear!.totalDamage).toBe(178)
   })
 
   it('魔法保護持ちより後列の仲間は魔法ダメージが2/3に軽減される', () => {

@@ -3,6 +3,7 @@ import type { DungeonTier } from "./DungeonTier"
 import type { CharacterSkill } from "./CharacterSkill"
 import type { LearnedSpell } from "./Spell"
 import type { BattleActionPolicy } from "./Battle"
+import type { GoblinStats } from "./Goblin"
 
 export type PartyStatus = "idle" | "expedition"
 
@@ -66,6 +67,8 @@ export interface PartyState {
   accuracy: number
   evasion: number
   magicHeal: number
+  // 装備・スキル適用済みステータス。遠征中の戦闘再構築で装備補正を保持する。
+  effectiveStats?: GoblinStats
   isKO: boolean
   isDead: boolean
   skills: CharacterSkill[]

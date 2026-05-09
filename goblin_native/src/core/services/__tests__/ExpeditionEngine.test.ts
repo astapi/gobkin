@@ -175,6 +175,75 @@ describe('ExpeditionEngine reward multipliers', () => {
   })
 })
 
+describe('ExpeditionEngine combat stats', () => {
+  it('遠征中の戦闘再構築で effectiveStats を保持する', () => {
+    const engine = new ExpeditionEngine(1)
+    const partyState: PartyState[] = [
+      {
+        id: '1',
+        name: '装備ゴブリン',
+        race: 'ゴブリン',
+        currentHP: 100,
+        maxHP: 100,
+        baseHP: 100,
+        atk: 10,
+        magicAtk: 10,
+        def: 10,
+        magicDef: 10,
+        agility: 10,
+        luck: 10,
+        attackCount: 1,
+        accuracy: 1000,
+        evasion: 10,
+        magicHeal: 10,
+        effectiveStats: {
+          hp: 100,
+          atk: 300,
+          magicAtk: 10,
+          def: 10,
+          magicDef: 10,
+          attackCount: 1,
+          accuracy: 1000,
+          evasion: 10,
+          magicHeal: 10,
+          criticalRate: 0,
+        },
+        isKO: false,
+        isDead: false,
+        skills: [],
+        factors: [],
+        battleActionPolicy: { attackRate: 100, clericMagicRate: 0, mageMagicRate: 0 },
+        level: 1,
+        avatar: 'test.png',
+      },
+    ]
+    const enemy: Enemy = {
+      id: 'dummy',
+      name: 'ダミー',
+      raceTags: ['beast'],
+      level: 1,
+      hp: 999,
+      baseAttributes: { power: 1, wisdom: 1, spirit: 1, vitality: 1, agility: 1, luck: 1 },
+      atk: 0,
+      def: 0,
+      magicAtk: 0,
+      magicDef: 0,
+      attackCount: 0,
+      accuracy: 0,
+      evasion: 0,
+      exp: 0,
+      gold: 0,
+    }
+
+    const combat = (engine as any).resolveCombat(partyState, [[enemy]], { areaLevel: 1 }, false)
+    const targetDamage = combat.detailedLog
+      .flatMap((log: { targets: Array<{ targetId: string; totalDamage: number }> }) => log.targets)
+      .find((target: { targetId: string }) => target.targetId === 'dummy')?.totalDamage
+
+    expect(targetDamage).toBeGreaterThan(100)
+  })
+})
+
 describe('ExpeditionEngine dungeon tier scaling', () => {
   const baseEnemy: Enemy = {
     id: 'scale-test',

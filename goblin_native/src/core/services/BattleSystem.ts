@@ -677,8 +677,11 @@ export class BattleSystem {
         const hitRate = this.calculateHitRate(unit, attackTarget, atkIdx + 1, rng)
         const isHit = rng() * 100 < hitRate
 
-        if (!isHit) continue
+        if (!isHit) {
+          continue
+        }
 
+        const landedHitNumber = totalHitCount + 1
         totalHitCount++
 
         const damageTarget = isCritical
@@ -692,7 +695,7 @@ export class BattleSystem {
           DEFAULT_DAMAGE_OPTIONS,
           rng,
         )
-        const dmgMod = getDamageModifier(atkIdx + 1)
+        const dmgMod = getDamageModifier(landedHitNumber)
         const additionalDamage = getAdditionalDamageFromSkills(unit.skills)
         const rearDamageMultiplier = this.getRearDamageMultiplier(unit, sourceGroup)
         const rowDamageMultiplier = getRowDamageMultiplierFromSkills(unit.skills, unit.row)
