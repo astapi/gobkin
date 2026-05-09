@@ -27,10 +27,12 @@ export class FactorService {
   static rollFactorDrops(
     goblin: Goblin,
     factorDrops: FactorDropConfig[],
-    seed: number
+    seed: number,
+    probabilityMultiplier = 1
   ): string[] {
     const acquired: string[] = []
     const rng = createSeededRandom(seed + goblin.id)
+    const clampedMultiplier = Math.max(0, probabilityMultiplier)
 
     for (const drop of factorDrops) {
       // 既に持っている因子はスキップ
@@ -39,7 +41,7 @@ export class FactorService {
       }
 
       // 確率判定
-      if (rng() < drop.probability) {
+      if (rng() < Math.min(1, drop.probability * clampedMultiplier)) {
         acquired.push(drop.factorId)
       }
     }

@@ -745,6 +745,41 @@ export const CHARACTER_SKILL_CATALOG = {
     expMultiplier: 1.5,
   },
 
+  factor_drop_bonus_10: {
+    id: 'factor_drop_bonus_10',
+    factorDropBonusPercent: 10,
+  },
+
+  factor_drop_bonus_20: {
+    id: 'factor_drop_bonus_20',
+    factorDropBonusPercent: 20,
+  },
+
+  factor_drop_bonus_30: {
+    id: 'factor_drop_bonus_30',
+    factorDropBonusPercent: 30,
+  },
+
+  factor_drop_bonus_50: {
+    id: 'factor_drop_bonus_50',
+    factorDropBonusPercent: 50,
+  },
+
+  factor_drop_mult_1_2: {
+    id: 'factor_drop_mult_1_2',
+    factorDropMultiplier: 1.2,
+  },
+
+  factor_drop_mult_1_3: {
+    id: 'factor_drop_mult_1_3',
+    factorDropMultiplier: 1.3,
+  },
+
+  factor_drop_mult_1_5: {
+    id: 'factor_drop_mult_1_5',
+    factorDropMultiplier: 1.5,
+  },
+
   gold_bonus_50: {
     id: 'gold_bonus_50',
     goldBonusPercent: 50,
