@@ -593,8 +593,8 @@ export const useExpeditionFlow = ({
           const dungeon = areasData.find(d => d.id === result.newDungeonCaptured)
           if (dungeon?.isBaseCapture) {
             Alert.alert(
-              i18n.t('ui.result.completed'),
-              i18n.t('ui.result.unlockedArea', { name: getDungeonName(dungeon) }),
+              i18n.t('ui.result.baseCaptured'),
+              i18n.t('ui.result.baseCapturedHint', { name: getDungeonName(dungeon) }),
               [{ text: 'OK' }]
             )
           }

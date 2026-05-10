@@ -184,7 +184,7 @@ export const StoryUnlockConditionSchema = z
   .nullable()
 
 export const StoryRewardSchema = z.object({
-  type: z.enum(['gold', 'goblin', 'equipment']),
+  type: z.enum(['gold', 'goblin', 'equipment', 'golden_acorn', 'skill']),
   value: z.union([z.number(), z.string()]),
 })
 

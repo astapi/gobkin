@@ -148,6 +148,8 @@ const ko = {
       gainedGoldWithMultiplier: '{{value}} Gold 획득 (×{{multiplier}})',
       items: '획득 아이템',
       unlockedArea: '다음 지역 "{{name}}"이 해금되었습니다',
+      baseCaptured: '거점을 점령했습니다',
+      baseCapturedHint: '"{{name}}"을(를) 점령했습니다!\n거점 관리 화면에서 거점을 랭크업하세요.',
       storyUnlocked: '새로운 이야기가 해금되었습니다',
       backToMenu: '메뉴로 돌아가기',
     },

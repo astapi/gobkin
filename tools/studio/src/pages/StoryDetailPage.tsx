@@ -445,20 +445,23 @@ function StoryRewardCard({
           <span className="field-input">
             <select
               value={reward.type}
-              onChange={(e) =>
+              onChange={(e) => {
+                const nextType = e.target.value as StoryReward['type']
                 onChange({
-                  type: e.target.value as StoryReward['type'],
-                  value: e.target.value === 'gold' ? 0 : '',
+                  type: nextType,
+                  value: nextType === 'gold' || nextType === 'golden_acorn' ? 0 : '',
                 })
-              }
+              }}
             >
               <option value="gold">gold</option>
               <option value="goblin">goblin</option>
               <option value="equipment">equipment</option>
+              <option value="golden_acorn">golden_acorn</option>
+              <option value="skill">skill</option>
             </select>
           </span>
         </label>
-        {reward.type === 'gold' ? (
+        {reward.type === 'gold' || reward.type === 'golden_acorn' ? (
           <NumberField
             size="sm"
             label="value"

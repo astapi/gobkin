@@ -149,6 +149,8 @@ const en = {
       gainedGoldWithMultiplier: 'Gained {{value}} Gold (×{{multiplier}})',
       items: 'Items Obtained',
       unlockedArea: 'Unlocked next area: "{{name}}"',
+      baseCaptured: 'Base Captured',
+      baseCapturedHint: 'You captured "{{name}}"!\nRank up your base from the Base Management screen.',
       storyUnlocked: 'A new story has been unlocked',
       backToMenu: 'Back to Menu',
     },
