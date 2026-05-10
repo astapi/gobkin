@@ -1,6 +1,7 @@
 import { getEnemyDatabase } from '@/shared/data/enemy'
 import { getEquipmentTemplate } from '@/shared/data/equipmentPoolLoader'
-import { getEquipmentLabel } from '@/shared/i18n/entityLocalization'
+import { getFactor } from '@/shared/data/factors'
+import { getEquipmentLabel, getFactorName } from '@/shared/i18n/entityLocalization'
 import { DUNGEON_TIER_LIST, type DungeonTier } from '@/shared/types/DungeonTier'
 import type { Dungeon, Enemy } from '@/shared/types'
 
@@ -94,5 +95,12 @@ export function getRareDropNames(enemy: Enemy): string[] {
   return (enemy.rareEquipmentDrops ?? []).map((drop) => {
     const template = getEquipmentTemplate(drop.templateId)
     return template ? getEquipmentLabel(template) : drop.templateId
+  })
+}
+
+export function getFactorDropNames(enemy: Enemy): string[] {
+  return (enemy.factorDrops ?? []).map((drop) => {
+    const factor = getFactor(drop.factorId)
+    return factor ? getFactorName(factor) : drop.factorId
   })
 }
