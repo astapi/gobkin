@@ -14,6 +14,7 @@ import { GoldBadge } from '@/presentation/components/GoldBadge'
 import { GoldenAcornBadge } from '@/presentation/components/GoldenAcornBadge'
 import { TipsBar, TIPS_BAR_HEIGHT } from '@/presentation/components/TipsBar'
 import { useStoryStore } from '@/presentation/stores/useStoryStore'
+import { useBaseStore, selectCanRankUp } from '@/presentation/stores/useBaseStore'
 import { useTutorialStore } from '@/presentation/stores/useTutorialStore'
 import { useTutorialOverlayStore } from '@/presentation/stores/useTutorialOverlayStore'
 import tipsData from '@/shared/data/tips.json'
@@ -66,6 +67,7 @@ export default function TabLayout() {
   const pathname = usePathname()
   const tipText = useMemo(() => pickTipText(), [pathname])
   const unreadCount = useStoryStore((state) => state.unreadCount)
+  const canRankUp = useBaseStore(selectCanRankUp)
   const insets = useSafeAreaInsets()
   const basePadding = 8
   const baseHeight = 60
@@ -186,6 +188,8 @@ export default function TabLayout() {
           headerTitle: t('ui.tabs.base'),
           headerShown: false,
           tabBarIcon: ({ color }) => <TabIcon Icon={BaseIcon} color={color} size={40} />,
+          tabBarBadge: canRankUp ? '!' : undefined,
+          tabBarBadgeStyle: { backgroundColor: '#DC2626', color: '#FFFFFF', fontSize: 10, fontWeight: '800' },
         }}
       />
       <Tabs.Screen
