@@ -38,15 +38,17 @@ export const goblinVariantDefinitions: Record<string, GoblinVariantDefinition> =
       agility: 8,
       luck: 10,
       power: 8,
-      spirit: 13,
-      vitality: 13,
+      spirit: 10,
+      vitality: 10,
       wisdom: 8
     },
     defaultSkillIds: [
       "talent_hp_150",
       "armor_mastery_130",
       "rear_guard",
-      "hp_regen_20"
+      "hp_regen_20",
+      "base_spirit_up_3",
+      "base_vitality_up_3"
     ],
     factorDescription: "スライムの特性を宿した因子。耐久性が増す。",
     factorEffects: [
@@ -68,9 +70,9 @@ export const goblinVariantDefinitions: Record<string, GoblinVariantDefinition> =
   wolf: {
     avatar: "/src/assets/goblin/wolf_goblin.png",
     baseAttributes: {
-      agility: 13,
-      luck: 12,
-      power: 11,
+      agility: 10,
+      luck: 10,
+      power: 10,
       spirit: 10,
       vitality: 10,
       wisdom: 9
@@ -79,7 +81,10 @@ export const goblinVariantDefinitions: Record<string, GoblinVariantDefinition> =
       "talent_accuracy_150",
       "attack_count_up_2",
       "equipment_accuracy_200",
-      "additional_damage_13"
+      "additional_damage_13",
+      "base_power_up_1",
+      "base_agility_up_3",
+      "base_luck_up_2"
     ],
     factorDescription: "ウルフの特性を宿した因子。敏捷性が増す。",
     factorEffects: [
@@ -103,13 +108,18 @@ export const goblinVariantDefinitions: Record<string, GoblinVariantDefinition> =
     baseAttributes: {
       agility: 7,
       luck: 8,
-      power: 15,
+      power: 10,
       spirit: 9,
-      vitality: 15,
+      vitality: 10,
       wisdom: 8
     },
     defaultSkillIds: [
-      "talent_atk_150"
+      "talent_atk_150",
+      "physical_reduction_5",
+      "counter_attack",
+      "base_power_up_5",
+      "base_vitality_up_5",
+      "physical_damage_20"
     ],
     factorDescription: "オークの特性を宿した因子。攻撃力と防御力が増す。",
     factorEffects: [
@@ -138,15 +148,18 @@ export const goblinVariantDefinitions: Record<string, GoblinVariantDefinition> =
     baseAttributes: {
       agility: 7,
       luck: 9,
-      power: 11,
+      power: 10,
       spirit: 10,
-      vitality: 15,
+      vitality: 10,
       wisdom: 8
     },
     defaultSkillIds: [
       "talent_itemSlots",
       "undead_trait",
-      "hp_regen_20"
+      "hp_regen_20",
+      "physical_reduction_5",
+      "base_vitality_up_5",
+      "base_power_up_1"
     ],
     factorDescription: "アンデッドの特性を宿した因子。生命力と耐毒性が増す。",
     factorEffects: [
@@ -167,18 +180,22 @@ export const goblinVariantDefinitions: Record<string, GoblinVariantDefinition> =
   hobgoblin: {
     avatar: "/src/assets/goblin/hobgoblin.png",
     baseAttributes: {
-      agility: 11,
+      agility: 10,
       luck: 10,
-      power: 13,
-      spirit: 11,
-      vitality: 11,
-      wisdom: 11
+      power: 10,
+      spirit: 10,
+      vitality: 10,
+      wisdom: 10
     },
     defaultSkillIds: [
       "talent_atk_150",
       "inspire_150",
       "survive_lethal_hp1",
-      "goblin_binder"
+      "goblin_binder",
+      "base_power_up_3",
+      "base_spirit_up_1",
+      "base_vitality_up_1",
+      "base_agility_up_1"
     ],
     factorDescription: "上位ゴブリンの特性を宿した因子。全能力が底上げされる。",
     factorEffects: [
@@ -314,7 +331,9 @@ export const goblinVariantDefinitions: Record<string, GoblinVariantDefinition> =
   lizardman: {
     avatar: "/src/assets/goblin/scale_goblin.png",
     defaultSkillIds: [
-      "two_column_attack"
+      "two_column_attack",
+      "base_agility_up_2",
+      "physical_reduction_5"
     ],
     factorDescription: "リザードマンの特性を宿した因子。全体的な耐性とHPが増す。",
     factorEffects: [
