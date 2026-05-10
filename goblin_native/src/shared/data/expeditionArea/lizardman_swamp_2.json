@@ -1,7 +1,7 @@
 {
   "id": "lizardman_swamp_2",
   "name": "リザードマンの沼砦・深沼",
-  "areaLevel": 46,
+  "areaLevel": 42,
   "floors": 2,
   "baseDurationSec": 6420,
   "description": "砦の深部。呪術師や暗殺者が潜む危険な沼地。",

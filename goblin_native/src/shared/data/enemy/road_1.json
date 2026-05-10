@@ -6,14 +6,14 @@
       "raceTags": [
         "beast"
       ],
-      "level": 8,
-      "hp": 80,
+      "level": 14,
+      "hp": 130,
       "atk": 18,
-      "def": 15,
+      "def": 20,
       "attackCount": 2,
       "accuracy": 270,
-      "evasion": 18,
-      "exp": 24,
+      "evasion": 22,
+      "exp": 42,
       "gold": 16,
       "magicDef": 7,
       "baseAttributes": {
@@ -31,14 +31,14 @@
       "raceTags": [
         "beast"
       ],
-      "level": 9,
-      "hp": 100,
+      "level": 14,
+      "hp": 170,
       "atk": 24,
-      "def": 20,
+      "def": 25,
       "attackCount": 3,
       "accuracy": 300,
       "evasion": 18,
-      "exp": 32,
+      "exp": 42,
       "gold": 22,
       "magicDef": 10,
       "baseAttributes": {
@@ -56,14 +56,14 @@
       "raceTags": [
         "insect"
       ],
-      "level": 10,
-      "hp": 130,
+      "level": 14,
+      "hp": 260,
       "atk": 28,
-      "def": 34,
+      "def": 41,
       "attackCount": 3,
       "accuracy": 305,
-      "evasion": 17,
-      "exp": 38,
+      "evasion": 13,
+      "exp": 42,
       "gold": 26,
       "magicDef": 19,
       "baseAttributes": {
@@ -88,7 +88,7 @@
       "attackCount": 0,
       "accuracy": 0,
       "evasion": 28,
-      "exp": 120,
+      "exp": 98,
       "gold": 180,
       "magicDef": 33,
       "baseAttributes": {
@@ -113,7 +113,7 @@
       "attackCount": 1,
       "accuracy": 380,
       "evasion": 25,
-      "exp": 85,
+      "exp": 104,
       "gold": 70,
       "skills": [
         {
@@ -145,7 +145,7 @@
       "attackCount": 10,
       "accuracy": 395,
       "evasion": 28,
-      "exp": 90,
+      "exp": 104,
       "gold": 72,
       "magicDef": 33,
       "baseAttributes": {
@@ -171,7 +171,7 @@
       "attackCount": 1,
       "accuracy": 385,
       "evasion": 28,
-      "exp": 92,
+      "exp": 98,
       "gold": 76,
       "skills": [
         {
@@ -209,7 +209,7 @@
       "attackCount": 1,
       "accuracy": 375,
       "evasion": 27,
-      "exp": 95,
+      "exp": 98,
       "gold": 78,
       "skills": [
         {

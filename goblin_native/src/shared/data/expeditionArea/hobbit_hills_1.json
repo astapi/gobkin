@@ -1,7 +1,7 @@
 {
   "id": "hobbit_hills_1",
   "name": "ホビットの丘陵村",
-  "areaLevel": 25,
+  "areaLevel": 50,
   "floors": 2,
   "baseDurationSec": 5700,
   "description": "辺境の村の先に広がる丘陵地。身軽なホビットの斥候と投石手が補給路を守っている。",
