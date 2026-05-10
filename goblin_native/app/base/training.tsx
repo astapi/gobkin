@@ -199,6 +199,7 @@ export default function BaseTrainingScreen() {
 
         <View style={styles.noteCard}>
           <Text style={styles.noteText}>{t('ui.training.noteGoblinOnly')}</Text>
+          <Text style={styles.noteText}>{t('ui.training.noteJobLocked')}</Text>
         </View>
       </ScrollView>
 

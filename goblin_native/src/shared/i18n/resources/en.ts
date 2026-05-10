@@ -265,6 +265,7 @@ const en = {
       trainButton: 'Train {{name}}',
       selectJobPlaceholder: 'Select a job',
       noteGoblinOnly: 'Only goblins can be trained. Slime goblins and wolf goblins cannot be trained.',
+      noteJobLocked: 'Once a goblin has been assigned a job, the job cannot be changed.',
       modalTitle: 'Select Training Target',
       modalEmpty: 'No goblins available to select',
       modalGoblinLine: '{{race}} / {{jobName}}',

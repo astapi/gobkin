@@ -240,7 +240,7 @@ export function isPureGoblin(goblin: Goblin): boolean {
 }
 
 export function canTrainGoblin(goblin: Goblin): boolean {
-  return isPureGoblin(goblin) && !isProtectedGoblin(goblin)
+  return isPureGoblin(goblin) && !isProtectedGoblin(goblin) && !goblin.job
 }
 
 export function getGoblinJobSkills(job: GoblinJob, level: number): CharacterSkill[] {

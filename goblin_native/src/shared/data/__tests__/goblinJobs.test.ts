@@ -43,6 +43,11 @@ describe('goblinJobs', () => {
     expect(canTrainGoblin(createGoblin({ id: 0, race: '始祖ゴブリン', raceId: 'founder' }))).toBe(false)
   })
 
+  it('既にジョブを持つゴブリンは訓練対象にならない', () => {
+    expect(canTrainGoblin(createGoblin({ race: 'ゴブリン', job: 'guard' }))).toBe(false)
+    expect(canTrainGoblin(createGoblin({ race: 'ゴブリン', job: 'mage' }))).toBe(false)
+  })
+
   it('ジョブ変更時に種族スキルとジョブスキルを再構成し、その他のスキルは保持する', () => {
     const goblin = createGoblin({
       job: 'guard',
