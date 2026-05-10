@@ -6,7 +6,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { router } from 'expo-router'
 import type { Href } from 'expo-router'
 import { useTranslation } from 'react-i18next'
-import { useBaseStore, selectRank, selectMaxParties, selectMaxGoblins } from '@/presentation/stores/useBaseStore'
+import { useBaseStore, selectRank, selectMaxParties, selectMaxGoblins, selectCanRankUp } from '@/presentation/stores/useBaseStore'
 import { useGoblinStore } from '@/presentation/stores/useGoblinStore'
 import { GOBLIN_TRAINING_UNLOCK_RANK } from '@/shared/data/goblinJobs'
 import { getBaseLocationName } from '@/shared/i18n/entityLocalization'
@@ -32,6 +32,7 @@ type BaseMenuItem = {
   href: Extract<Href, string>
   unlockRank: number
   Icon: FC<SvgProps>
+  showBadge?: boolean
 }
 
 export default function BaseManagementScreen() {
@@ -40,6 +41,7 @@ export default function BaseManagementScreen() {
   const rank = useBaseStore(selectRank)
   const maxParties = useBaseStore(selectMaxParties)
   const maxGoblins = useBaseStore(selectMaxGoblins)
+  const canRankUp = useBaseStore(selectCanRankUp)
   const goblins = useGoblinStore((state) => state.goblins)
   const baseLocationName = getBaseLocationName(rank) || t('ui.base.locationUnknown')
   const baseHeaderImage = baseHeaderImages[rank] ?? baseHeaderImages[4]
@@ -58,6 +60,7 @@ export default function BaseManagementScreen() {
       href: '/base/upgrade' as const,
       unlockRank: 1,
       Icon: UpgradeIcon,
+      showBadge: canRankUp,
     },
     {
       title: t('ui.base.trainingTitle'),
@@ -139,7 +142,14 @@ export default function BaseManagementScreen() {
           <View style={styles.menuList}>
             {menuItems.map((item) => (
               <TouchableOpacity key={item.href} style={styles.menuButton} onPress={() => router.push(item.href)}>
-                <item.Icon width={42} height={42} />
+                <View style={styles.menuButtonIconWrap}>
+                  <item.Icon width={42} height={42} />
+                  {item.showBadge ? (
+                    <View style={styles.menuButtonBadge} pointerEvents="none">
+                      <Text style={styles.menuButtonBadgeText}>!</Text>
+                    </View>
+                  ) : null}
+                </View>
                 <View style={styles.menuButtonTextGroup}>
                   <Text style={styles.menuButtonTitle}>{item.title}</Text>
                   <Text style={styles.menuButtonDescription}>{item.description}</Text>
@@ -346,6 +356,31 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.05,
     shadowRadius: 6,
     shadowOffset: { width: 0, height: 2 },
+  },
+  menuButtonIconWrap: {
+    width: 42,
+    height: 42,
+    position: 'relative',
+  },
+  menuButtonBadge: {
+    position: 'absolute',
+    top: -4,
+    right: -4,
+    minWidth: 18,
+    height: 18,
+    paddingHorizontal: 4,
+    borderRadius: 9,
+    backgroundColor: '#DC2626',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1.5,
+    borderColor: '#FFFFFF',
+  },
+  menuButtonBadgeText: {
+    fontSize: 11,
+    lineHeight: 14,
+    fontWeight: '800',
+    color: '#FFFFFF',
   },
   menuButtonTextGroup: {
     flex: 1,

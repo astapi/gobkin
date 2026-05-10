@@ -2,7 +2,7 @@ import { create } from 'zustand'
 import type { BaseState, Goblin } from '../../shared/types'
 import { SQLiteBaseStateRepository } from '../../infrastructure/repositories'
 import { SQLitePendingGoblinRepository } from '../../infrastructure/repositories'
-import { performRankUp as executeRankUp } from '../../core/services/BaseRankSystem'
+import { performRankUp as executeRankUp, checkRankUpAvailable } from '../../core/services/BaseRankSystem'
 
 const baseStateRepository = SQLiteBaseStateRepository.getInstance()
 const pendingGoblinRepository = SQLitePendingGoblinRepository.getInstance()
@@ -104,6 +104,8 @@ export const selectMaxParties = (s: BaseStoreState) => s.baseState?.currentMaxPa
 export const selectIvBonus = (s: BaseStoreState) => s.baseState?.currentIVBonus ?? 0
 export const selectGold = (s: BaseStoreState) => s.baseState?.gold ?? 0
 export const selectCapacity = (s: BaseStoreState) => s.baseState?.capacity ?? 10
+export const selectCanRankUp = (s: BaseStoreState) =>
+  s.baseState ? checkRankUpAvailable(s.baseState).canRankUp : false
 
 /** UseCase等にリポジトリを渡す必要がある場合に使用 */
 export const getBaseStateRepository = () => baseStateRepository
