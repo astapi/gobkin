@@ -112,7 +112,7 @@
       "range": "melee",
       "price": 60,
       "unlockRank": 1,
-      "rank": 1
+      "rank": 0
     },
     {
       "id": "sword_long",
@@ -143,7 +143,7 @@
       "range": "melee",
       "price": 100,
       "unlockRank": 1,
-      "rank": 2
+      "rank": 1
     },
     {
       "id": "sword_mithril",
@@ -174,7 +174,7 @@
       "range": "melee",
       "price": 500,
       "unlockRank": 2,
-      "rank": 3
+      "rank": 2
     },
     {
       "id": "sword_royal",
@@ -205,7 +205,7 @@
       "range": "melee",
       "price": 2500,
       "unlockRank": 2,
-      "rank": 4
+      "rank": 3
     },
     {
       "id": "sword_kaiser",
@@ -236,7 +236,7 @@
       "range": "melee",
       "price": 12500,
       "unlockRank": 3,
-      "rank": 5
+      "rank": 4
     },
     {
       "id": "sword_ancient",
@@ -267,7 +267,7 @@
       "range": "melee",
       "price": 60000,
       "unlockRank": 5,
-      "rank": 6
+      "rank": 5
     },
     {
       "id": "sword_dragon",
@@ -297,7 +297,7 @@
       ],
       "range": "melee",
       "price": 240000,
-      "rank": 7
+      "rank": 6
     },
     {
       "id": "sword_adamant",
@@ -327,7 +327,7 @@
       ],
       "range": "melee",
       "price": 720000,
-      "rank": 8
+      "rank": 7
     },
     {
       "_comment": "===== 武器:爪 (melee) ====="
@@ -422,7 +422,7 @@
       "range": "melee",
       "price": 60,
       "unlockRank": 1,
-      "rank": 1
+      "rank": 0
     },
     {
       "id": "claw_steel",
@@ -445,7 +445,7 @@
       "range": "melee",
       "price": 100,
       "unlockRank": 1,
-      "rank": 2
+      "rank": 1
     },
     {
       "id": "claw_mithril",
@@ -468,7 +468,7 @@
       "range": "melee",
       "price": 500,
       "unlockRank": 2,
-      "rank": 3
+      "rank": 2
     },
     {
       "id": "claw_royal",
@@ -491,7 +491,7 @@
       "range": "melee",
       "price": 2500,
       "unlockRank": 2,
-      "rank": 4
+      "rank": 3
     },
     {
       "id": "claw_kaiser",
@@ -514,7 +514,7 @@
       "range": "melee",
       "price": 12500,
       "unlockRank": 3,
-      "rank": 5
+      "rank": 4
     },
     {
       "id": "claw_ancient",
@@ -537,7 +537,7 @@
       "range": "melee",
       "price": 60000,
       "unlockRank": 5,
-      "rank": 6
+      "rank": 5
     },
     {
       "id": "claw_dragon",
@@ -559,7 +559,7 @@
       ],
       "range": "melee",
       "price": 240000,
-      "rank": 7
+      "rank": 6
     },
     {
       "id": "claw_adamant",
@@ -581,7 +581,7 @@
       ],
       "range": "melee",
       "price": 720000,
-      "rank": 8
+      "rank": 7
     },
     {
       "_comment": "===== 武器:弓 (ranged) ====="
@@ -628,7 +628,7 @@
       "range": "ranged",
       "price": 40,
       "unlockRank": 1,
-      "rank": 1
+      "rank": 0
     },
     {
       "id": "bow_long",
@@ -659,7 +659,7 @@
       "range": "ranged",
       "price": 1000,
       "unlockRank": 1,
-      "rank": 2
+      "rank": 1
     },
     {
       "id": "bow_mithril",
@@ -690,7 +690,7 @@
       "range": "ranged",
       "price": 5000,
       "unlockRank": 2,
-      "rank": 3
+      "rank": 2
     },
     {
       "id": "bow_royal",
@@ -721,7 +721,7 @@
       "range": "ranged",
       "price": 25000,
       "unlockRank": 2,
-      "rank": 4
+      "rank": 3
     },
     {
       "id": "bow_kaiser",
@@ -752,7 +752,7 @@
       "range": "ranged",
       "price": 125000,
       "unlockRank": 3,
-      "rank": 5
+      "rank": 4
     },
     {
       "id": "bow_ancient",
@@ -783,7 +783,7 @@
       "range": "ranged",
       "price": 500000,
       "unlockRank": 5,
-      "rank": 6
+      "rank": 5
     },
     {
       "id": "bow_dragon",
@@ -813,7 +813,7 @@
       ],
       "range": "ranged",
       "price": 1500000,
-      "rank": 7
+      "rank": 6
     },
     {
       "id": "bow_adamant",
@@ -843,7 +843,7 @@
       ],
       "range": "ranged",
       "price": 3000000,
-      "rank": 8
+      "rank": 7
     },
     {
       "_comment": "===== 防具:鎧 (armor) ====="
@@ -909,7 +909,7 @@
       ],
       "price": 30,
       "unlockRank": 1,
-      "rank": 1
+      "rank": 0
     },
     {
       "id": "armor_armor",
@@ -934,7 +934,7 @@
       ],
       "price": 100,
       "unlockRank": 1,
-      "rank": 2
+      "rank": 1
     },
     {
       "id": "armor_mithril",
@@ -959,7 +959,7 @@
       ],
       "price": 500,
       "unlockRank": 2,
-      "rank": 3
+      "rank": 2
     },
     {
       "id": "armor_royal",
@@ -984,7 +984,7 @@
       ],
       "price": 2500,
       "unlockRank": 2,
-      "rank": 4
+      "rank": 3
     },
     {
       "id": "armor_kaiser",
@@ -1009,7 +1009,7 @@
       ],
       "price": 12500,
       "unlockRank": 3,
-      "rank": 5
+      "rank": 4
     },
     {
       "id": "armor_ancient",
@@ -1034,7 +1034,7 @@
       ],
       "price": 60000,
       "unlockRank": 5,
-      "rank": 6
+      "rank": 5
     },
     {
       "id": "armor_dragon",
@@ -1058,7 +1058,7 @@
         "physical_reduction_11"
       ],
       "price": 240000,
-      "rank": 7
+      "rank": 6
     },
     {
       "id": "armor_adamant",
@@ -1082,7 +1082,7 @@
         "physical_reduction_12"
       ],
       "price": 720000,
-      "rank": 8
+      "rank": 7
     },
     {
       "_comment": "===== 防具:ローブ (robe) ====="
@@ -1107,7 +1107,7 @@
       ],
       "price": 200,
       "unlockRank": 1,
-      "rank": 2
+      "rank": 1
     },
     {
       "id": "robe_mithril",
@@ -1128,7 +1128,7 @@
         "magic_reduction_7"
       ],
       "price": 1000,
-      "rank": 3
+      "rank": 2
     },
     {
       "id": "robe_royal",
@@ -1149,7 +1149,7 @@
         "magic_reduction_8"
       ],
       "price": 5000,
-      "rank": 4
+      "rank": 3
     },
     {
       "id": "robe_kaiser",
@@ -1171,7 +1171,7 @@
       ],
       "price": 25000,
       "unlockRank": 3,
-      "rank": 5
+      "rank": 4
     },
     {
       "id": "robe_ancient",
@@ -1193,7 +1193,7 @@
       ],
       "price": 125000,
       "unlockRank": 5,
-      "rank": 6
+      "rank": 5
     },
     {
       "id": "robe_dragon",
@@ -1214,7 +1214,7 @@
         "magic_reduction_11"
       ],
       "price": 500000,
-      "rank": 7
+      "rank": 6
     },
     {
       "id": "robe_adamant",
@@ -1235,7 +1235,7 @@
         "magic_reduction_12"
       ],
       "price": 1500000,
-      "rank": 8
+      "rank": 7
     },
     {
       "_comment": "===== 防具:盾 (shield) ====="
@@ -1278,7 +1278,7 @@
       ],
       "price": 30,
       "unlockRank": 1,
-      "rank": 1
+      "rank": 0
     },
     {
       "id": "shield_shield",
@@ -1309,7 +1309,7 @@
       ],
       "price": 80,
       "unlockRank": 1,
-      "rank": 2
+      "rank": 1
     },
     {
       "id": "shield_mithril",
@@ -1340,7 +1340,7 @@
       ],
       "price": 400,
       "unlockRank": 2,
-      "rank": 3
+      "rank": 2
     },
     {
       "id": "shield_royal",
@@ -1371,7 +1371,7 @@
       ],
       "price": 2000,
       "unlockRank": 2,
-      "rank": 4
+      "rank": 3
     },
     {
       "id": "shield_kaiser",
@@ -1402,7 +1402,7 @@
       ],
       "price": 10000,
       "unlockRank": 3,
-      "rank": 5
+      "rank": 4
     },
     {
       "id": "shield_ancient",
@@ -1433,7 +1433,7 @@
       ],
       "price": 50000,
       "unlockRank": 5,
-      "rank": 6
+      "rank": 5
     },
     {
       "id": "shield_dragon",
@@ -1463,7 +1463,7 @@
         "breath_reduction_11"
       ],
       "price": 200000,
-      "rank": 7
+      "rank": 6
     },
     {
       "id": "shield_adamant",
@@ -1493,7 +1493,7 @@
         "breath_reduction_12"
       ],
       "price": 600000,
-      "rank": 8
+      "rank": 7
     },
     {
       "_comment": "===== 防具:小手 (gauntlet) ====="
@@ -1574,7 +1574,7 @@
       ],
       "price": 30,
       "unlockRank": 1,
-      "rank": 1
+      "rank": 0
     },
     {
       "id": "gauntlet_gauntlet",
@@ -1600,7 +1600,7 @@
       ],
       "price": 2000,
       "unlockRank": 1,
-      "rank": 2
+      "rank": 1
     },
     {
       "id": "gauntlet_mithril",
@@ -1626,7 +1626,7 @@
       ],
       "price": 10000,
       "unlockRank": 2,
-      "rank": 3
+      "rank": 2
     },
     {
       "id": "gauntlet_royal",
@@ -1652,7 +1652,7 @@
       ],
       "price": 50000,
       "unlockRank": 2,
-      "rank": 4
+      "rank": 3
     },
     {
       "id": "gauntlet_kaiser",
@@ -1678,7 +1678,7 @@
       ],
       "price": 250000,
       "unlockRank": 3,
-      "rank": 5
+      "rank": 4
     },
     {
       "id": "gauntlet_ancient",
@@ -1704,7 +1704,7 @@
       ],
       "price": 1250000,
       "unlockRank": 5,
-      "rank": 6
+      "rank": 5
     },
     {
       "id": "gauntlet_dragon",
@@ -1729,7 +1729,7 @@
         "critical_rate_up_10"
       ],
       "price": 2500000,
-      "rank": 7
+      "rank": 6
     },
     {
       "id": "gauntlet_adamant",
@@ -1754,7 +1754,7 @@
         "critical_rate_up_10"
       ],
       "price": 5000000,
-      "rank": 8
+      "rank": 7
     },
     {
       "_comment": "===== 魔具:ワンド (wand) ====="
@@ -1789,7 +1789,7 @@
       ],
       "price": 30,
       "unlockRank": 1,
-      "rank": 1
+      "rank": 0
     },
     {
       "id": "wand_wand",
@@ -1810,7 +1810,7 @@
       ],
       "price": 200,
       "unlockRank": 1,
-      "rank": 2
+      "rank": 1
     },
     {
       "id": "wand_mithril",
@@ -1831,7 +1831,7 @@
       ],
       "price": 1000,
       "unlockRank": 2,
-      "rank": 3
+      "rank": 2
     },
     {
       "id": "wand_royal",
@@ -1852,7 +1852,7 @@
       ],
       "price": 5000,
       "unlockRank": 2,
-      "rank": 4
+      "rank": 3
     },
     {
       "id": "wand_kaiser",
@@ -1873,7 +1873,7 @@
       ],
       "price": 25000,
       "unlockRank": 3,
-      "rank": 5
+      "rank": 4
     },
     {
       "id": "wand_ancient",
@@ -1894,7 +1894,7 @@
       ],
       "price": 125000,
       "unlockRank": 5,
-      "rank": 6
+      "rank": 5
     },
     {
       "id": "wand_dragon",
@@ -1914,7 +1914,7 @@
         "spell_damage_15"
       ],
       "price": 500000,
-      "rank": 7
+      "rank": 6
     },
     {
       "id": "wand_adamant",
@@ -1934,7 +1934,7 @@
         "spell_damage_16"
       ],
       "price": 1500000,
-      "rank": 8
+      "rank": 7
     },
     {
       "_comment": "===== 魔具:ロッド (rod) ====="
@@ -1969,7 +1969,7 @@
       ],
       "price": 30,
       "unlockRank": 1,
-      "rank": 1
+      "rank": 0
     },
     {
       "id": "rod_rod",
@@ -1990,7 +1990,7 @@
       ],
       "price": 200,
       "unlockRank": 1,
-      "rank": 2
+      "rank": 1
     },
     {
       "id": "rod_mithril",
@@ -2011,7 +2011,7 @@
       ],
       "price": 1000,
       "unlockRank": 2,
-      "rank": 3
+      "rank": 2
     },
     {
       "id": "rod_royal",
@@ -2032,7 +2032,7 @@
       ],
       "price": 5000,
       "unlockRank": 2,
-      "rank": 4
+      "rank": 3
     },
     {
       "id": "rod_kaiser",
@@ -2053,7 +2053,7 @@
       ],
       "price": 25000,
       "unlockRank": 3,
-      "rank": 5
+      "rank": 4
     },
     {
       "id": "rod_ancient",
@@ -2074,7 +2074,7 @@
       ],
       "price": 125000,
       "unlockRank": 5,
-      "rank": 6
+      "rank": 5
     },
     {
       "id": "rod_dragon",
@@ -2094,7 +2094,7 @@
         "magic_heal_to_hp_11"
       ],
       "price": 500000,
-      "rank": 7
+      "rank": 6
     },
     {
       "id": "rod_adamant",
@@ -2114,7 +2114,7 @@
         "magic_heal_to_hp_12"
       ],
       "price": 1500000,
-      "rank": 8
+      "rank": 7
     },
     {
       "id": "accessory_split_core",
