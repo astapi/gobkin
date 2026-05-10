@@ -4,6 +4,7 @@ import { Link, useParams } from 'react-router-dom'
 import { AreaConfigSchema, EnemyDatabaseSchema } from '../lib/schema'
 import type { AreaConfig, DungeonDetailDto, EnemyDatabase } from '../lib/schema'
 import { AreaSettingsEditor } from '../components/AreaSettingsEditor'
+import { DungeonDropsView } from '../components/DungeonDropsView'
 import { EnemyEditor } from '../components/EnemyEditor'
 import { PatternEditor } from '../components/PatternEditor'
 
@@ -18,7 +19,7 @@ type SaveState =
   | { kind: 'error'; message: string }
   | { kind: 'success' }
 
-type Tab = 'area' | 'enemies' | 'patterns'
+type Tab = 'area' | 'enemies' | 'patterns' | 'drops'
 
 interface DraftState {
   area: AreaConfig
@@ -107,9 +108,21 @@ export function DungeonDetail() {
     if (draft.enemy) {
       const enemyResult = EnemyDatabaseSchema.safeParse(draft.enemy)
       if (!enemyResult.success) {
+        const enemies = draft.enemy.enemies
+        const formatted = enemyResult.error.issues.map((i) => {
+          const path = i.path.join('.')
+          const match = /^enemies\.(\d+)\.(.+)$/.exec(path)
+          if (match) {
+            const idx = Number(match[1])
+            const target = enemies[idx]
+            const label = target ? `${target.id}/${target.name}` : `enemies[${idx}]`
+            return `${label}.${match[2]}: ${i.message}`
+          }
+          return `${path}: ${i.message}`
+        })
         setSaveState({
           kind: 'error',
-          message: `enemy 検証失敗: ${enemyResult.error.issues.map((i) => `${i.path.join('.')}: ${i.message}`).join(' / ')}`,
+          message: `enemy 検証失敗: ${formatted.join(' / ')}`,
         })
         return
       }
@@ -201,6 +214,13 @@ export function DungeonDetail() {
         >
           パターン{enemy ? ` (${enemy.patterns.length})` : ''}
         </button>
+        <button
+          className={tab === 'drops' ? 'tab active' : 'tab'}
+          onClick={() => setTab('drops')}
+          disabled={!enemy}
+        >
+          ドロップ予測
+        </button>
       </div>
       <div className="tab-panel">
         {tab === 'area' && <AreaSettingsEditor area={area} onChange={updateArea} />}
@@ -208,6 +228,7 @@ export function DungeonDetail() {
         {tab === 'patterns' && enemy && (
           <PatternEditor enemy={enemy} enemyNameMap={enemyNameMap} onChange={updateEnemy} />
         )}
+        {tab === 'drops' && <DungeonDropsView enemy={enemy} />}
       </div>
     </div>
   )

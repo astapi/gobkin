@@ -18,6 +18,7 @@ import { SkillIdListEditor } from './SkillEditors'
 const CATEGORIES: EquipmentCategory[] = [
   'weapon',
   'armor',
+  'robe',
   'shield',
   'gauntlet',
   'wand',
