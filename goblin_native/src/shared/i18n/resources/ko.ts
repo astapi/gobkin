@@ -264,6 +264,7 @@ const ko = {
       trainButton: '{{name}} 훈련하기',
       selectJobPlaceholder: '직업을 선택하세요',
       noteGoblinOnly: '훈련 대상은 고블린뿐입니다. 슬라임 고블린과 울프 고블린은 훈련할 수 없습니다.',
+      noteJobLocked: '한번 직업을 얻은 고블린은 직업을 변경할 수 없습니다.',
       modalTitle: '훈련 대상 선택',
       modalEmpty: '선택할 수 있는 고블린이 없습니다',
       modalGoblinLine: '{{race}} / {{jobName}}',

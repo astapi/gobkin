@@ -265,6 +265,7 @@ const ja = {
       trainButton: '{{name}}を訓練する',
       selectJobPlaceholder: 'ジョブを選択してください',
       noteGoblinOnly: '・訓練はゴブリンのみ対象です。スライムゴブリン、ウルフゴブリンは訓練できません。',
+      noteJobLocked: '・一度ジョブに就いたゴブリンは、ジョブを変更できません。',
       modalTitle: '訓練対象を選択',
       modalEmpty: '選択できるゴブリンがいません',
       modalGoblinLine: '{{race}} / {{jobName}}',
