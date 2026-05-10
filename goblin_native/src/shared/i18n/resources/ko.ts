@@ -83,6 +83,7 @@ const ko = {
       normal: '일반 적',
       skills: '스킬',
       rareDrops: '희귀 드롭',
+      factorDrops: '인자',
       none: '없음',
       spellCharges: '{{count}}회 사용',
     },

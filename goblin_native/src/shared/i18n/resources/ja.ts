@@ -84,6 +84,7 @@ const ja = {
       normal: '通常敵',
       skills: 'スキル',
       rareDrops: 'レアドロップ',
+      factorDrops: '因子',
       none: 'なし',
       spellCharges: '使用回数 {{count}}',
     },

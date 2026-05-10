@@ -7,6 +7,7 @@ import {
   STAT_ROWS,
   formatStatValue,
   getEnemyEntry,
+  getFactorDropNames,
   getRareDropNames,
   getUnlockedTiers,
 } from '@/presentation/encyclopedia/encyclopediaData'
@@ -67,6 +68,7 @@ export default function EncyclopediaMonsterDetailScreen() {
         {tiers.map((tier) => {
           const tieredEnemy = applyDungeonTierScalingToEnemy(entry.enemy, tier)
           const rareDrops = getRareDropNames(tieredEnemy)
+          const factorDrops = getFactorDropNames(tieredEnemy)
           const skills = tieredEnemy.skills ?? []
           const spells = tieredEnemy.spells ?? []
           const tierMeta = DUNGEON_TIER_META.find((meta) => meta.tier === tier)
@@ -82,18 +84,18 @@ export default function EncyclopediaMonsterDetailScreen() {
                 </View>
               </View>
 
-              <View style={styles.statList}>
+              <View style={styles.statGrid}>
                 {STAT_ROWS.map((row) => (
-                  <View key={row.key} style={styles.statRow}>
+                  <View key={row.key} style={styles.statCell}>
                     <Text style={styles.statLabel}>{row.label}</Text>
                     <Text style={styles.statValue}>{formatStatValue(tieredEnemy[row.key])}</Text>
                   </View>
                 ))}
               </View>
 
-              <View style={styles.statList}>
+              <View style={styles.attributeGrid}>
                 {ATTRIBUTE_ROWS.map((row) => (
-                  <View key={row.key} style={styles.statRow}>
+                  <View key={row.key} style={styles.attributeCell}>
                     <Text style={styles.statLabel}>{row.label}</Text>
                     <Text style={styles.statValue}>{tieredEnemy.baseAttributes[row.key]}</Text>
                   </View>
@@ -142,6 +144,15 @@ export default function EncyclopediaMonsterDetailScreen() {
                   ))
                 )}
               </View>
+
+              {factorDrops.length > 0 ? (
+                <View style={styles.infoBlock}>
+                  <Text style={styles.infoTitle}>{t('ui.encyclopedia.factorDrops')}</Text>
+                  {factorDrops.map((factorName) => (
+                    <Text key={factorName} style={styles.dropLine}>・{factorName}</Text>
+                  ))}
+                </View>
+              ) : null}
             </View>
           )
         })}
@@ -232,21 +243,41 @@ const styles = StyleSheet.create({
     fontSize: 12,
     lineHeight: 17,
   },
-  statList: {
+  statGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
     borderRadius: 8,
     backgroundColor: '#F9FAFB',
     borderWidth: 1,
     borderColor: '#E5E7EB',
     overflow: 'hidden',
   },
-  statRow: {
+  statCell: {
+    width: '50%',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 8,
+    gap: 8,
+    paddingVertical: 6,
     paddingHorizontal: 10,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#E5E7EB',
+  },
+  attributeGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    borderRadius: 8,
+    backgroundColor: '#F9FAFB',
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    overflow: 'hidden',
+  },
+  attributeCell: {
+    width: '33.3333%',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    gap: 8,
+    paddingVertical: 6,
+    paddingHorizontal: 10,
   },
   statLabel: {
     fontSize: 12,

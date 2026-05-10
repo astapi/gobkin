@@ -84,6 +84,7 @@ const en = {
       normal: 'Enemy',
       skills: 'Skills',
       rareDrops: 'Rare Drops',
+      factorDrops: 'Factors',
       none: 'None',
       spellCharges: '{{count}} uses',
     },
