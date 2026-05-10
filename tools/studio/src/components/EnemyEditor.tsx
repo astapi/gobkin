@@ -1,5 +1,9 @@
 import { useEffect, useMemo, useState } from 'react'
 import {
+  calculateEnemyBaseAccuracyFromInputs,
+  calculateEnemyBaseAtkFromInputs,
+  calculateEnemyBaseDefFromInputs,
+  calculateEnemyBaseEvasionFromInputs,
   calculateEnemyBaseHpFromInputs,
   detectEnemyHpSpecies,
   getEnemyHpSpeciesCoefficient,
@@ -75,6 +79,7 @@ export function EnemyEditor({
               <th className="num">HP</th>
               <th className="num">ATK</th>
               <th className="num">DEF</th>
+              <th className="num">攻撃回数</th>
               <th className="num">AGI</th>
               <th className="num">EXP</th>
               <th className="num">Gold</th>
@@ -93,6 +98,7 @@ export function EnemyEditor({
                 <td className="num">{e.hp}</td>
                 <td className="num">{e.atk}</td>
                 <td className="num">{e.def}</td>
+                <td className={`num${e.attackCount > 0 ? '' : ' invalid-cell'}`}>{e.attackCount}</td>
                 <td className="num">{e.baseAttributes.agility}</td>
                 <td className="num">{e.exp}</td>
                 <td className="num">{e.gold}</td>
@@ -100,7 +106,7 @@ export function EnemyEditor({
             ))}
             {filtered.length === 0 && (
               <tr>
-                <td colSpan={9} className="subtle">該当する敵がいません</td>
+                <td colSpan={10} className="subtle">該当する敵がいません</td>
               </tr>
             )}
           </tbody>
@@ -133,6 +139,20 @@ function EnemyForm({
       },
     }))
   const calculatedHp = calculateEnemyBaseHpFromInputs(enemy.level, enemy.baseAttributes.vitality, hpSpecies)
+  const calculatedDef = calculateEnemyBaseDefFromInputs(enemy.level, enemy.baseAttributes.vitality, hpSpecies)
+  const calculatedEvasion = calculateEnemyBaseEvasionFromInputs(
+    enemy.level,
+    enemy.baseAttributes.agility,
+    enemy.baseAttributes.luck,
+    hpSpecies,
+  )
+  const calculatedAtk = calculateEnemyBaseAtkFromInputs(enemy.level, enemy.baseAttributes.power, hpSpecies)
+  const calculatedAccuracy = calculateEnemyBaseAccuracyFromInputs(
+    enemy.level,
+    enemy.baseAttributes.power,
+    enemy.baseAttributes.agility,
+    hpSpecies,
+  )
   const hpCoefficient = getEnemyHpSpeciesCoefficient(hpSpecies)
   const raceResistance = getRaceResistanceTotals(enemy.raceTags)
   const toggleRaceTag = (raceId: string) =>
@@ -193,7 +213,7 @@ function EnemyForm({
       <h4>ステータス</h4>
       <FieldRow>
         <label className="field field-size-md">
-          <span className="field-label">HP算出用種族</span>
+          <span className="field-label">算出用種族</span>
           <span className="field-input">
             <select value={hpSpecies} onChange={(e) => setHpSpecies(e.target.value as EnemyHpSpecies)}>
               <option value="goblin">ゴブリン x0.8</option>
@@ -206,9 +226,23 @@ function EnemyForm({
         <button type="button" className="btn ghost small" onClick={() => set('hp', calculatedHp)}>
           算出HPを反映
         </button>
+        <button type="button" className="btn ghost small" onClick={() => set('atk', calculatedAtk)}>
+          算出ATKを反映
+        </button>
+        <button type="button" className="btn ghost small" onClick={() => set('def', calculatedDef)}>
+          算出DEFを反映
+        </button>
+        <button type="button" className="btn ghost small" onClick={() => set('accuracy', calculatedAccuracy)}>
+          算出命中を反映
+        </button>
+        <button type="button" className="btn ghost small" onClick={() => set('evasion', calculatedEvasion)}>
+          算出回避を反映
+        </button>
       </FieldRow>
       <p className="subtle">
-        Lv {enemy.level} / 体力 {enemy.baseAttributes.vitality} / 種族係数 {hpCoefficient} → 算出HP {calculatedHp}
+        Lv {enemy.level} / 力 {enemy.baseAttributes.power} / 体力 {enemy.baseAttributes.vitality} / 敏捷 {enemy.baseAttributes.agility} / 幸運 {enemy.baseAttributes.luck} / 種族係数 {hpCoefficient}
+        <br />
+        → HP {calculatedHp} / ATK {calculatedAtk} / DEF {calculatedDef} / 命中 {calculatedAccuracy} / 回避 {calculatedEvasion}
       </p>
       <FieldGroup columns={2}>
         <NumberField label="level" value={enemy.level} min={0} onChange={(v) => set('level', v)} />

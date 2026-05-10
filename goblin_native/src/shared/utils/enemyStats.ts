@@ -55,3 +55,81 @@ export function calculateEnemyBaseHp(enemy: Pick<Enemy, 'level' | 'raceTags' | '
     detectEnemyHpSpecies(enemy.raceTags),
   )
 }
+
+export function calculateEnemyBaseDefFromInputs(
+  level: number,
+  vitality: number,
+  species: EnemyHpSpecies,
+): number {
+  const levelScale = getGoblinHpLevelScale(level, species)
+  const coefficient = getEnemyHpSpeciesCoefficient(species)
+  return Math.round(vitality * (1 + levelScale * coefficient))
+}
+
+export function calculateEnemyBaseDef(enemy: Pick<Enemy, 'level' | 'raceTags' | 'baseAttributes'>): number {
+  return calculateEnemyBaseDefFromInputs(
+    enemy.level,
+    enemy.baseAttributes.vitality,
+    detectEnemyHpSpecies(enemy.raceTags),
+  )
+}
+
+export function calculateEnemyBaseEvasionFromInputs(
+  level: number,
+  agility: number,
+  luck: number,
+  species: EnemyHpSpecies,
+): number {
+  const levelScale = getGoblinHpLevelScale(level, species)
+  const coefficient = getEnemyHpSpeciesCoefficient(species)
+  const attributeAverage = (agility + luck) / 2
+  return Math.round(attributeAverage * (1 + levelScale * coefficient))
+}
+
+export function calculateEnemyBaseEvasion(enemy: Pick<Enemy, 'level' | 'raceTags' | 'baseAttributes'>): number {
+  return calculateEnemyBaseEvasionFromInputs(
+    enemy.level,
+    enemy.baseAttributes.agility,
+    enemy.baseAttributes.luck,
+    detectEnemyHpSpecies(enemy.raceTags),
+  )
+}
+
+export function calculateEnemyBaseAtkFromInputs(
+  level: number,
+  power: number,
+  species: EnemyHpSpecies,
+): number {
+  const levelScale = getGoblinHpLevelScale(level, species)
+  const coefficient = getEnemyHpSpeciesCoefficient(species)
+  return Math.round(power * (1 + levelScale * coefficient))
+}
+
+export function calculateEnemyBaseAtk(enemy: Pick<Enemy, 'level' | 'raceTags' | 'baseAttributes'>): number {
+  return calculateEnemyBaseAtkFromInputs(
+    enemy.level,
+    enemy.baseAttributes.power,
+    detectEnemyHpSpecies(enemy.raceTags),
+  )
+}
+
+export function calculateEnemyBaseAccuracyFromInputs(
+  level: number,
+  power: number,
+  agility: number,
+  species: EnemyHpSpecies,
+): number {
+  const levelScale = getGoblinHpLevelScale(level, species)
+  const coefficient = getEnemyHpSpeciesCoefficient(species)
+  const attributeAverage = (power + agility) / 2
+  return Math.round(attributeAverage * (1 + levelScale * 2 * coefficient) + 50)
+}
+
+export function calculateEnemyBaseAccuracy(enemy: Pick<Enemy, 'level' | 'raceTags' | 'baseAttributes'>): number {
+  return calculateEnemyBaseAccuracyFromInputs(
+    enemy.level,
+    enemy.baseAttributes.power,
+    enemy.baseAttributes.agility,
+    detectEnemyHpSpecies(enemy.raceTags),
+  )
+}

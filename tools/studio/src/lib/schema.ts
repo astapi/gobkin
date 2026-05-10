@@ -58,7 +58,7 @@ export const EnemySchema = z
     def: z.number().int().nonnegative(),
     magicDef: z.number().int().nonnegative().optional(),
     magicHeal: z.number().int().nonnegative().optional(),
-    attackCount: z.number().int().positive(),
+    attackCount: z.number().int().nonnegative(),
     accuracy: z.number().nonnegative(),
     evasion: z.number().nonnegative(),
     criticalRate: z.number().nonnegative().optional(),
@@ -86,6 +86,7 @@ export const EnemyDatabaseSchema = z.object({
 export const EquipmentCategorySchema = z.enum([
   'weapon',
   'armor',
+  'robe',
   'shield',
   'gauntlet',
   'wand',

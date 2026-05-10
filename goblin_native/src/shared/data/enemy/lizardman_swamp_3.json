@@ -7,13 +7,13 @@
         "lizardman"
       ],
       "level": 44,
-      "hp": 1115,
+      "hp": 1260,
       "atk": 293,
-      "def": 59,
+      "def": 145,
       "magicDef": 40,
       "attackCount": 6,
       "accuracy": 640,
-      "evasion": 46,
+      "evasion": 69,
       "exp": 47,
       "gold": 38,
       "skills": [
@@ -31,7 +31,7 @@
         "wisdom": 18,
         "spirit": 7,
         "vitality": 22,
-        "agility": 10,
+        "agility": 16,
         "luck": 5
       }
     },
@@ -42,13 +42,13 @@
         "lizardman"
       ],
       "level": 44,
-      "hp": 924,
+      "hp": 1030,
       "atk": 220,
-      "def": 15,
+      "def": 119,
       "magicDef": 22,
       "attackCount": 6,
       "accuracy": 660,
-      "evasion": 70,
+      "evasion": 86,
       "exp": 50,
       "gold": 41,
       "skills": [
@@ -62,7 +62,7 @@
         "wisdom": 18,
         "spirit": 4,
         "vitality": 18,
-        "agility": 12,
+        "agility": 20,
         "luck": 6
       }
     },
@@ -73,9 +73,9 @@
         "lizardman"
       ],
       "level": 55,
-      "hp": 1884,
+      "hp": 2030,
       "atk": 481,
-      "def": 138,
+      "def": 227,
       "magicDef": 62,
       "attackCount": 8,
       "accuracy": 680,
@@ -93,7 +93,7 @@
         "wisdom": 23,
         "spirit": 11,
         "vitality": 27,
-        "agility": 9,
+        "agility": 10,
         "luck": 5
       },
       "factorDrops": [
