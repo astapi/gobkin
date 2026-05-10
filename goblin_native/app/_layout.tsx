@@ -20,6 +20,7 @@ import { useStoryStore } from '@/presentation/stores/useStoryStore'
 import { useTutorialStore } from '@/presentation/stores/useTutorialStore'
 import { StartScreen } from '@/presentation/components/StartScreen'
 import { TutorialSpotlight } from '@/presentation/components/TutorialSpotlight'
+import { ExpeditionDropToastHost } from '@/presentation/components/ExpeditionDropToastHost'
 import { initializeI18n } from '@/shared/i18n'
 
 export default function RootLayout() {
@@ -258,6 +259,7 @@ export default function RootLayout() {
                 />
               </Stack>
               <StatusBar style="auto" />
+              <ExpeditionDropToastHost />
             </ResetProvider>
         </AuthProvider>
         <TutorialSpotlight />
