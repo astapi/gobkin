@@ -90,6 +90,7 @@
       "evasion": 96,
       "criticalRate": 0.2,
       "exp": 3600,
+      "isBoss": true,
       "gold": 2800,
       "factorDrops": [
         {

@@ -139,6 +139,7 @@
       "accuracy": 810,
       "evasion": 40,
       "exp": 600,
+      "isBoss": true,
       "gold": 500,
       "magicDef": 72,
       "baseAttributes": {

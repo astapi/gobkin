@@ -51,12 +51,11 @@ export function EnemyEditor({
 
   const bossEnemyIds = useMemo(() => {
     const ids = new Set<string>()
-    enemy.patterns.forEach((pattern) => {
-      if (!pattern.isBoss) return
-      pattern.enemies.flat().forEach((id) => ids.add(id))
+    enemy.enemies.forEach((e) => {
+      if (e.isBoss === true) ids.add(e.id)
     })
     return ids
-  }, [enemy.patterns])
+  }, [enemy.enemies])
 
   const calculatedExpById = useMemo(() => {
     const map = new Map<string, number>()
@@ -280,6 +279,17 @@ function EnemyForm({
 
       <h4>ステータス</h4>
       <FieldRow>
+        <label className="field field-size-md">
+          <span className="field-label">ボス枠</span>
+          <span className="field-input">
+            <input
+              type="checkbox"
+              checked={enemy.isBoss === true}
+              onChange={(e) => set('isBoss', e.target.checked || undefined)}
+            />
+            <span className="subtle"> EXP × 1.5</span>
+          </span>
+        </label>
         <label className="field field-size-md">
           <span className="field-label">算出用種族</span>
           <span className="field-input">

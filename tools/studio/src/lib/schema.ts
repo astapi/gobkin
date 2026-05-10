@@ -67,6 +67,7 @@ export const EnemySchema = z
     criticalResistancePercent: z.number().optional(),
     magicResistancePercent: z.number().optional(),
     exp: z.number().int().nonnegative(),
+    isBoss: z.boolean().optional(),
     gold: z.number().int().nonnegative(),
   })
   .passthrough()

@@ -29,6 +29,7 @@ export interface Enemy {
   criticalResistancePercent?: number    // 必殺耐性
   magicResistancePercent?: number       // 魔法耐性
   exp?: number  // 互換用に残す。実際の経験値は calculateEnemyExp で算出する。
+  isBoss?: boolean // この敵自身がボスか。ボスパターンに含まれる随伴敵には付けない。
   gold: number
   factorDrops?: FactorDropConfig[]      // この敵を倒すと得られる可能性のある因子
   rareEquipmentDrops?: EquipmentDropConfig[] // この敵固有のレアドロップ候補（運乱数によるレア抽選で当選した場合に1点抽選）

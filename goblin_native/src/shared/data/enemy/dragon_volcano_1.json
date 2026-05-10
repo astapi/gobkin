@@ -90,6 +90,7 @@
       "evasion": 42,
       "criticalRate": 0.12,
       "exp": 780,
+      "isBoss": true,
       "gold": 680,
       "magicDef": 56,
       "baseAttributes": {
