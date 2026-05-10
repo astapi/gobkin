@@ -97,6 +97,7 @@ type InventoryGroup = {
   equipment: EquipmentInstance
   template: EquipmentTemplate
   count: number
+  isEquipped: boolean
 }
 
 type InventoryListEntry =
@@ -197,14 +198,17 @@ function sortEquipment(items: EquipmentInstance[]): EquipmentInstance[] {
   })
 }
 
-function groupInventory(items: EquipmentInstance[]): InventoryGroup[] {
+function groupInventory(
+  inventoryItems: EquipmentInstance[],
+  equippedItems: EquipmentInstance[],
+): InventoryGroup[] {
   const grouped = new Map<string, InventoryGroup>()
 
-  for (const eq of sortEquipment(items)) {
+  for (const eq of inventoryItems) {
     const template = getEquipmentTemplate(eq.templateId)
     if (!template) continue
 
-    const key = `${eq.templateId}::${eq.titleId ?? 'none'}`
+    const key = `inv::${eq.templateId}::${eq.titleId ?? 'none'}`
     const existing = grouped.get(key)
     if (existing) {
       existing.count += 1
@@ -216,10 +220,45 @@ function groupInventory(items: EquipmentInstance[]): InventoryGroup[] {
       equipment: eq,
       template,
       count: 1,
+      isEquipped: false,
     })
   }
 
-  return Array.from(grouped.values())
+  const equippedGroups: InventoryGroup[] = []
+  for (const eq of equippedItems) {
+    const template = getEquipmentTemplate(eq.templateId)
+    if (!template) continue
+    equippedGroups.push({
+      key: `eq::${eq.id}`,
+      equipment: eq,
+      template,
+      count: 1,
+      isEquipped: true,
+    })
+  }
+
+  return sortInventoryGroups([...grouped.values(), ...equippedGroups])
+}
+
+function sortInventoryGroups(groups: InventoryGroup[]): InventoryGroup[] {
+  const allTemplates = getEquipmentTemplates()
+  const templateOrder = new Map(allTemplates.map((t, i) => [t.id, i]))
+  const titleOrder = new Map(EQUIPMENT_TITLE_DEFS.map((t, i) => [t.id, i]))
+  return [...groups].sort((a, b) => {
+    const tA = a.template
+    const tB = b.template
+    const catDiff = CATEGORY_ORDER[tA.category] - CATEGORY_ORDER[tB.category]
+    if (catDiff !== 0) return catDiff
+    const rareDiff = (tA.isRare ? 1 : 0) - (tB.isRare ? 1 : 0)
+    if (rareDiff !== 0) return rareDiff
+    const orderA = templateOrder.get(tA.id) ?? 0
+    const orderB = templateOrder.get(tB.id) ?? 0
+    if (orderA !== orderB) return orderA - orderB
+    const titleA = titleOrder.get(a.equipment.titleId ?? 'none') ?? 0
+    const titleB = titleOrder.get(b.equipment.titleId ?? 'none') ?? 0
+    if (titleA !== titleB) return titleA - titleB
+    return (a.isEquipped ? 1 : 0) - (b.isEquipped ? 1 : 0)
+  })
 }
 
 function buildInventoryListEntries(groups: InventoryGroup[]): InventoryListEntry[] {
@@ -462,7 +501,10 @@ export default function EquipmentScreenPage() {
   }, [goblin, refreshEquipment])
 
   const sortedEquipped = useMemo(() => sortEquipment(equippedItems), [equippedItems])
-  const groupedInventory = useMemo(() => groupInventory(inventoryItems), [inventoryItems])
+  const groupedInventory = useMemo(
+    () => groupInventory(inventoryItems, equippedItems),
+    [inventoryItems, equippedItems],
+  )
   const inventoryFilterOptions = useMemo(
     () => buildInventoryFilterOptions(groupedInventory),
     [groupedInventory],
@@ -493,7 +535,7 @@ export default function EquipmentScreenPage() {
     () => insets.bottom + 96,
     [insets.bottom],
   )
-  const inventoryEmptyText = inventoryItems.length === 0
+  const inventoryEmptyText = inventoryItems.length === 0 && equippedItems.length === 0
     ? '所持アイテムがありません'
     : '条件に合うアイテムがありません'
 
@@ -577,15 +619,18 @@ export default function EquipmentScreenPage() {
               )
             }
 
+            const { group } = item
+            const isEquipped = group.isEquipped
             return (
               <EquipmentRow
-                eq={item.group.equipment}
-                template={item.group.template}
-                onPress={() => handleEquip(item.group.equipment)}
-                onShowDetail={() => setSelectedDetail(item.group.equipment)}
-                highlighted={emptySlots > 0}
-                count={item.group.count}
+                eq={group.equipment}
+                template={group.template}
+                onPress={() => isEquipped ? handleUnequip(group.equipment) : handleEquip(group.equipment)}
+                onShowDetail={() => setSelectedDetail(group.equipment)}
+                highlighted={!isEquipped && emptySlots > 0}
+                count={group.count}
                 characterSkills={characterSkills}
+                penaltyPercent={isEquipped ? penaltyPercents.get(group.equipment.templateId) : undefined}
               />
             )
           }}
