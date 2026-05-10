@@ -8,9 +8,46 @@ import { useGoblinStore } from '@/presentation/stores/useGoblinStore'
 import { SQLiteEquipmentRepository } from '@/infrastructure/repositories/SQLiteEquipmentRepository'
 import { EquipmentService } from '@/core/services/EquipmentService'
 import { getEquipmentTemplate } from '@/shared/data/equipmentPoolLoader'
+import { applySkillBonusesToEquipmentBonuses } from '@/shared/data/characterSkills'
 import { getGoblinDisplayImage } from '@/shared/utils/goblinImages'
-import type { EquipmentInstance, EquipmentTemplate, Goblin, Party } from '@/shared/types'
-import { getEquipmentDisplayName } from '@/shared/i18n/entityLocalization'
+import type { CharacterSkill, EquipmentInstance, Goblin, Party } from '@/shared/types'
+import { getEquipmentDisplayName, getStatLabel } from '@/shared/i18n/entityLocalization'
+
+type DisplayBonus = {
+  stat: string
+  value: number
+}
+
+function formatBonus(stat: string, value: number): string {
+  const displayValue = Number.isInteger(value) ? value : Math.trunc(value * 10) / 10
+  const isPercent = stat.includes('percent') || stat === 'damage_reduction'
+  return `${displayValue > 0 ? '+' : ''}${displayValue}${isPercent ? '%' : ''}`
+}
+
+function isDisplayValueZero(value: number): boolean {
+  const displayValue = Number.isInteger(value) ? value : Math.trunc(value * 10) / 10
+  return displayValue === 0
+}
+
+function getDisplayBonuses(
+  eq: EquipmentInstance,
+  skills: CharacterSkill[],
+  penaltyMultiplier: number,
+): DisplayBonus[] {
+  const originalBonuses = EquipmentService.calculateEquipmentBonuses([eq])
+  const penalizedBonuses = originalBonuses.map((bonus) => ({
+    ...bonus,
+    value: Number((bonus.value * penaltyMultiplier).toFixed(4)),
+  }))
+  const adjustedBonuses = applySkillBonusesToEquipmentBonuses(skills, penalizedBonuses)
+  return adjustedBonuses
+    .map((bonus) => ({ stat: bonus.stat, value: bonus.value }))
+    .filter((bonus) => !isDisplayValueZero(bonus.value))
+}
+
+function getInlineBonusLabel(bonus: DisplayBonus): string {
+  return `${getStatLabel(bonus.stat)}${formatBonus(bonus.stat, bonus.value)}`
+}
 
 export default function PartyEquipmentListScreen() {
   const { t } = useTranslation()
@@ -114,6 +151,11 @@ export default function PartyEquipmentListScreen() {
           partyMembers.map(member => {
             const equippedItems = equipmentMap[member.id] ?? []
             const maxSlots = EquipmentService.getAvailableSlots(member)
+            const penaltyMultipliers = EquipmentService.getEquipmentPenaltyMultipliers(equippedItems)
+            const characterSkills: CharacterSkill[] = [
+              ...member.skills,
+              ...EquipmentService.collectGrantedSkills(equippedItems),
+            ]
 
             return (
               <TouchableOpacity
@@ -141,11 +183,28 @@ export default function PartyEquipmentListScreen() {
                       const template = getEquipmentTemplate(item.templateId)
                       if (!template) return null
 
+                      const multiplier = penaltyMultipliers.get(item.templateId) ?? 1
+                      const penaltyPercent = multiplier !== 1 ? Math.round(multiplier * 100) : undefined
+                      const displayBonuses = getDisplayBonuses(item, characterSkills, multiplier)
+                      const inlineStats = displayBonuses.map((bonus) => getInlineBonusLabel(bonus)).join('  ')
+                      const displayName = getEquipmentDisplayName(item, template)
+                      const itemName = penaltyPercent !== undefined
+                        ? `${penaltyPercent}％ ${displayName}`
+                        : displayName
+
                       return (
-                        <View key={item.id} style={styles.equipmentChip}>
-                          <Text style={styles.equipmentChipText} numberOfLines={1}>
-                            {getEquipmentDisplayName(item, template)}
-                          </Text>
+                        <View
+                          key={item.id}
+                          style={[styles.itemRow, penaltyPercent !== undefined && styles.itemRowPenalty]}
+                        >
+                          <View style={styles.itemInfo}>
+                            <Text style={styles.itemStats} numberOfLines={1}>
+                              {inlineStats}
+                            </Text>
+                            <Text style={styles.itemName} numberOfLines={1}>
+                              {itemName}
+                            </Text>
+                          </View>
                         </View>
                       )
                     })}
@@ -258,21 +317,32 @@ const styles = StyleSheet.create({
     color: '#9CA3AF',
   },
   equipmentList: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
     gap: 8,
   },
-  equipmentChip: {
-    backgroundColor: '#EFF6FF',
+  itemRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 12,
+    borderRadius: 10,
     borderWidth: 1,
-    borderColor: '#BFDBFE',
-    borderRadius: 999,
-    paddingHorizontal: 10,
-    paddingVertical: 6,
-    maxWidth: '100%',
+    borderColor: '#E5E7EB',
+    backgroundColor: '#F9FAFB',
   },
-  equipmentChipText: {
+  itemRowPenalty: {
+    borderColor: '#F59E0B',
+    backgroundColor: '#FFFBEB',
+  },
+  itemInfo: {
+    flex: 1,
+  },
+  itemStats: {
     fontSize: 12,
-    color: '#1D4ED8',
+    color: '#6B7280',
+    marginBottom: 4,
+  },
+  itemName: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#1F2937',
   },
 })
