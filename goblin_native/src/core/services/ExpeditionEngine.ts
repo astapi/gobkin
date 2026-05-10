@@ -158,7 +158,7 @@ export class ExpeditionEngine {
             const pattern = this.selectEnemyPattern(enemyDatabase.patterns, currentFloor, false)
             const enemies = this.applyTierScaling(this.getEnemiesFromPattern(pattern, enemyDatabase.enemies), tierScaling)
             const combat = this.resolveCombat(partyState, enemies, area)
-            const xp = combat.outcome === 'win' ? this.calculateEnemyXp(enemies, false) : 0
+            const xp = combat.outcome === 'win' ? this.calculateEnemyXp(enemies) : 0
 
             events.push({
               type: "battle",
@@ -222,7 +222,7 @@ export class ExpeditionEngine {
             const pattern = this.selectEnemyPattern(enemyDatabase.patterns, currentFloor, false)
             const enemies = this.applyTierScaling(this.getEnemiesFromPattern(pattern, enemyDatabase.enemies), tierScaling)
             const combat = this.resolveCombat(partyState, enemies, area)
-            const xp = combat.outcome === 'win' ? this.calculateEnemyXp(enemies, false) : 0
+            const xp = combat.outcome === 'win' ? this.calculateEnemyXp(enemies) : 0
 
             events.push({
               type: "battle",
@@ -295,7 +295,7 @@ export class ExpeditionEngine {
         const bossEnemies = this.applyTierScaling(this.getEnemiesFromPattern(bossPattern, enemyDatabase.enemies), tierScaling)
 
         const bossCombat = this.resolveCombat(partyState, bossEnemies, area, true)
-        const bossXp = bossCombat.outcome === 'win' ? this.calculateEnemyXp(bossEnemies, true) : 0
+        const bossXp = bossCombat.outcome === 'win' ? this.calculateEnemyXp(bossEnemies) : 0
 
         // 規定時間の終端でボス戦を行う（最後の秒で戦闘開始）
         const bossTime = adjustedDuration
@@ -497,19 +497,18 @@ export class ExpeditionEngine {
     )
   }
 
-  private calculateEnemyXp(enemies2D: Enemy[][], isBoss: boolean): number {
+  private calculateEnemyXp(enemies2D: Enemy[][]): number {
     return enemies2D.flat().reduce(
-      (sum, enemy) => sum + calculateEnemyExp(enemy.level, enemy.raceTags, isBoss),
+      (sum, enemy) => sum + calculateEnemyExp(enemy.level, enemy.raceTags, enemy.isBoss === true),
       0
     )
   }
 
   private createEnemySnap(enemies2D: Enemy[][], isBoss = false): EnemySnap {
     const enemies = enemies2D.flat()
-    // ボス戦の場合、ボス（IDが "B" または "B_" で始まる敵）を代表として選ぶ
     let representative = enemies[0]
     if (isBoss) {
-      const boss = enemies.find(e => e.id.startsWith('B_') || e.id.startsWith('B'))
+      const boss = enemies.find(e => e.isBoss === true)
       if (boss) {
         representative = boss
       }

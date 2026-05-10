@@ -54,13 +54,12 @@ export function buildEnemyEntries(areaId: string): EnemyEntry[] {
       if (!enemy) return
       const existing = entries.get(enemyId)
       if (existing) {
-        existing.isBoss = existing.isBoss || Boolean(pattern.isBoss)
         existing.floors = [...new Set([...existing.floors, ...pattern.floors])].sort((a, b) => a - b)
         return
       }
       entries.set(enemyId, {
         enemy,
-        isBoss: Boolean(pattern.isBoss),
+        isBoss: enemy.isBoss === true,
         floors: [...pattern.floors].sort((a, b) => a - b),
       })
     })
@@ -68,7 +67,7 @@ export function buildEnemyEntries(areaId: string): EnemyEntry[] {
 
   if (entries.size === 0) {
     database.enemies.forEach((enemy) => {
-      entries.set(enemy.id, { enemy, isBoss: enemy.id.startsWith('B'), floors: [] })
+      entries.set(enemy.id, { enemy, isBoss: enemy.isBoss === true, floors: [] })
     })
   }
 

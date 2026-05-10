@@ -39,6 +39,7 @@
       "accuracy": 640,
       "evasion": 52,
       "exp": 360,
+      "isBoss": true,
       "gold": 320,
       "factorDrops": [
         {

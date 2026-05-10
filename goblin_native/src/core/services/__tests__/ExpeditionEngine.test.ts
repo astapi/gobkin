@@ -413,13 +413,19 @@ describe('ExpeditionEngine enemy XP rewards', () => {
   it('通常戦闘ではLv×3×種族係数で経験値を算出する', () => {
     // slime(beast) Lv5 → 5*3*1.0 = 15
     // human Lv5 → 5*3*1.15 = 17.25 → 17
-    expect((engine as any).calculateEnemyXp(enemies, false)).toBe(32)
+    expect((engine as any).calculateEnemyXp(enemies)).toBe(32)
   })
 
-  it('ボス戦ではボス係数1.5が乗算される', () => {
-    // slime(beast) Lv5 ボス → 5*3*1.0*1.5 = 22.5 → 23
+  it('isBoss=true の敵だけにボス係数1.5を乗算する', () => {
+    // slime(beast) Lv5 通常 → 15
     // human Lv5 ボス → 5*3*1.15*1.5 = 25.875 → 26
-    expect((engine as any).calculateEnemyXp(enemies, true)).toBe(49)
+    const withBoss: Enemy[][] = [[enemies[0][0], { ...enemies[0][1], isBoss: true }]]
+    expect((engine as any).calculateEnemyXp(withBoss)).toBe(15 + 26)
+  })
+
+  it('ボスパターンでも随伴敵(isBoss未指定)にはボス係数を乗算しない', () => {
+    // 全員 isBoss 無し → 通常計算
+    expect((engine as any).calculateEnemyXp(enemies)).toBe(32)
   })
 })
 

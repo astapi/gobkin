@@ -89,6 +89,7 @@
       "accuracy": 0,
       "evasion": 28,
       "exp": 98,
+      "isBoss": true,
       "gold": 180,
       "magicDef": 33,
       "baseAttributes": {
@@ -114,6 +115,7 @@
       "accuracy": 380,
       "evasion": 25,
       "exp": 104,
+      "isBoss": true,
       "gold": 70,
       "skills": [
         {
@@ -146,6 +148,7 @@
       "accuracy": 395,
       "evasion": 28,
       "exp": 104,
+      "isBoss": true,
       "gold": 72,
       "magicDef": 33,
       "baseAttributes": {
@@ -172,6 +175,7 @@
       "accuracy": 385,
       "evasion": 28,
       "exp": 98,
+      "isBoss": true,
       "gold": 76,
       "skills": [
         {
@@ -210,6 +214,7 @@
       "accuracy": 375,
       "evasion": 27,
       "exp": 98,
+      "isBoss": true,
       "gold": 78,
       "skills": [
         {

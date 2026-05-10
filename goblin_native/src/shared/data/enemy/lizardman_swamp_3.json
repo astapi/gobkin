@@ -81,6 +81,7 @@
       "accuracy": 680,
       "evasion": 60,
       "exp": 275,
+      "isBoss": true,
       "gold": 220,
       "skills": [
         {
