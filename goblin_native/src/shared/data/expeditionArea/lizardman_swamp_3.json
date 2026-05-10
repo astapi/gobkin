@@ -1,7 +1,7 @@
 {
   "id": "lizardman_swamp_3",
   "name": "リザードマンの沼砦・本拠",
-  "areaLevel": 46,
+  "areaLevel": 44,
   "floors": 2,
   "baseDurationSec": 6600,
   "description": "砦の本拠。鱗の重装兵に守られた沼王が待ち受ける。毒と夜襲の術を奪い、次の大戦に備えろ。",

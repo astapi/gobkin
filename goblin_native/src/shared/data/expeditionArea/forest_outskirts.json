@@ -1,7 +1,7 @@
 {
   "id": "forest_outskirts",
   "name": "周辺の森",
-  "areaLevel": 4,
+  "areaLevel": 2,
   "floors": 3,
   "baseDurationSec": 180,
   "description": "明るい森、弱い獣や小鬼が出現",

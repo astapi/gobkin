@@ -1,7 +1,7 @@
 {
   "id": "subjugation_force_3",
   "name": "vs討伐隊防衛戦・決戦",
-  "areaLevel": 44,
+  "areaLevel": 68,
   "floors": 3,
   "baseDurationSec": 6000,
   "description": "辺境城騎士団長が自ら前線に立つ。精鋭部隊との最終決戦。撃退せよ。",

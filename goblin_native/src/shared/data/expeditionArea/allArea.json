@@ -14,7 +14,7 @@
     {
       "id": "forest_outskirts",
       "name": "周辺の森",
-      "areaLevel": 4,
+      "areaLevel": 2,
       "floors": 3,
       "exploration_time_sec_first": 180,
       "exploration_time_sec": 60,
@@ -25,7 +25,7 @@
     {
       "id": "goblin_village_1",
       "name": "ゴブリン集落・外縁",
-      "areaLevel": 6,
+      "areaLevel": 5,
       "floors": 2,
       "exploration_time_sec_first": 540,
       "exploration_time_sec": 180,
@@ -36,7 +36,7 @@
     {
       "id": "goblin_village_2",
       "name": "ゴブリン集落・内部",
-      "areaLevel": 7,
+      "areaLevel": 6,
       "floors": 2,
       "exploration_time_sec_first": 600,
       "exploration_time_sec": 200,
@@ -47,7 +47,7 @@
     {
       "id": "goblin_village_3",
       "name": "ゴブリン集落・中枢",
-      "areaLevel": 8,
+      "areaLevel": 7,
       "floors": 2,
       "exploration_time_sec_first": 720,
       "exploration_time_sec": 240,
@@ -60,7 +60,7 @@
     {
       "id": "undead_ruins_1",
       "name": "忘れられた廃墟・入口",
-      "areaLevel": 9,
+      "areaLevel": 10,
       "floors": 2,
       "exploration_time_sec_first": 900,
       "exploration_time_sec": 300,
@@ -82,7 +82,7 @@
     {
       "id": "undead_ruins_3",
       "name": "忘れられた廃墟・最奥",
-      "areaLevel": 11,
+      "areaLevel": 10,
       "floors": 2,
       "exploration_time_sec_first": 1260,
       "exploration_time_sec": 420,
@@ -93,7 +93,7 @@
     {
       "id": "road_1",
       "name": "街道",
-      "areaLevel": 12,
+      "areaLevel": 14,
       "floors": 2,
       "exploration_time_sec_first": 1620,
       "exploration_time_sec": 540,
@@ -104,7 +104,7 @@
     {
       "id": "orc_camp_1",
       "name": "オークの野営地・前哨",
-      "areaLevel": 20,
+      "areaLevel": 14,
       "floors": 2,
       "exploration_time_sec_first": 2160,
       "exploration_time_sec": 720,
@@ -115,7 +115,7 @@
     {
       "id": "orc_camp_2",
       "name": "オークの野営地・陣営",
-      "areaLevel": 21,
+      "areaLevel": 14,
       "floors": 2,
       "exploration_time_sec_first": 2340,
       "exploration_time_sec": 780,
@@ -126,7 +126,7 @@
     {
       "id": "orc_camp_3",
       "name": "オークの野営地・本陣",
-      "areaLevel": 22,
+      "areaLevel": 14,
       "floors": 2,
       "exploration_time_sec_first": 2700,
       "exploration_time_sec": 900,
@@ -140,7 +140,7 @@
     {
       "id": "human_village",
       "name": "辺境の村",
-      "areaLevel": 24,
+      "areaLevel": 21,
       "floors": 4,
       "exploration_time_sec_first": 5400,
       "exploration_time_sec": 1800,
@@ -153,7 +153,7 @@
     {
       "id": "wolf_grassland_1",
       "name": "ウルフ草原",
-      "areaLevel": 34,
+      "areaLevel": 30,
       "floors": 3,
       "exploration_time_sec_first": 5880,
       "exploration_time_sec": 1960,
@@ -164,7 +164,7 @@
     {
       "id": "subjugation_force_1",
       "name": "vs討伐隊防衛戦・先遣隊",
-      "areaLevel": 40,
+      "areaLevel": 66,
       "floors": 3,
       "exploration_time_sec_first": 5700,
       "exploration_time_sec": 1900,
@@ -175,7 +175,7 @@
     {
       "id": "subjugation_force_2",
       "name": "vs討伐隊防衛戦・本隊",
-      "areaLevel": 42,
+      "areaLevel": 64,
       "floors": 3,
       "exploration_time_sec_first": 5820,
       "exploration_time_sec": 1940,
@@ -186,7 +186,7 @@
     {
       "id": "subjugation_force_3",
       "name": "vs討伐隊防衛戦・決戦",
-      "areaLevel": 44,
+      "areaLevel": 68,
       "floors": 3,
       "exploration_time_sec_first": 6000,
       "exploration_time_sec": 2000,
@@ -241,7 +241,7 @@
     {
       "id": "hobbit_hills_1",
       "name": "ホビットの丘陵村",
-      "areaLevel": 25,
+      "areaLevel": 50,
       "floors": 2,
       "exploration_time_sec_first": 5700,
       "exploration_time_sec": 1900,
@@ -250,7 +250,7 @@
     {
       "id": "dwarf_mine_1",
       "name": "ドワーフ坑道・入口",
-      "areaLevel": 25,
+      "areaLevel": 50,
       "floors": 2,
       "exploration_time_sec_first": 6000,
       "exploration_time_sec": 2000,
@@ -260,7 +260,7 @@
     {
       "id": "dwarf_mine_2",
       "name": "ドワーフ坑道・深層",
-      "areaLevel": 27,
+      "areaLevel": 50,
       "floors": 2,
       "exploration_time_sec_first": 6120,
       "exploration_time_sec": 2040,
@@ -271,7 +271,7 @@
     {
       "id": "dwarf_mine_3",
       "name": "ドワーフ坑道・最深部",
-      "areaLevel": 29,
+      "areaLevel": 50,
       "floors": 2,
       "exploration_time_sec_first": 6300,
       "exploration_time_sec": 2100,
@@ -312,7 +312,7 @@
     {
       "id": "lizardman_swamp_1",
       "name": "リザードマンの沼砦・浅瀬",
-      "areaLevel": 46,
+      "areaLevel": 36,
       "floors": 2,
       "exploration_time_sec_first": 6300,
       "exploration_time_sec": 2100,
@@ -323,7 +323,7 @@
     {
       "id": "lizardman_swamp_2",
       "name": "リザードマンの沼砦・深沼",
-      "areaLevel": 46,
+      "areaLevel": 42,
       "floors": 2,
       "exploration_time_sec_first": 6420,
       "exploration_time_sec": 2140,
@@ -334,7 +334,7 @@
     {
       "id": "lizardman_swamp_3",
       "name": "リザードマンの沼砦・本拠",
-      "areaLevel": 46,
+      "areaLevel": 44,
       "floors": 2,
       "exploration_time_sec_first": 6600,
       "exploration_time_sec": 2200,
@@ -344,7 +344,7 @@
     {
       "id": "orc_fortress_1",
       "name": "オークの砦",
-      "areaLevel": 75,
+      "areaLevel": 45,
       "floors": 5,
       "exploration_time_sec_first": 10800,
       "exploration_time_sec": 3600,

@@ -1,7 +1,7 @@
 {
   "id": "lizardman_swamp_1",
   "name": "リザードマンの沼砦・浅瀬",
-  "areaLevel": 46,
+  "areaLevel": 36,
   "floors": 2,
   "baseDurationSec": 6300,
   "description": "沼砦の浅瀬。沼の戦士と毒牙兵が水際で襲いかかる。",

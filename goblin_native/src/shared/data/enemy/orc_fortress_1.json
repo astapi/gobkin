@@ -6,15 +6,15 @@
       "raceTags": [
         "orc"
       ],
-      "level": 42,
-      "hp": 1064,
+      "level": 45,
+      "hp": 1290,
       "atk": 294,
-      "def": 70,
+      "def": 149,
       "magicDef": 50,
       "attackCount": 5,
       "accuracy": 560,
-      "evasion": 46,
-      "exp": 59,
+      "evasion": 44,
+      "exp": 203,
       "gold": 50,
       "skills": [
         {
@@ -44,15 +44,15 @@
       "raceTags": [
         "orc"
       ],
-      "level": 40,
-      "hp": 840,
+      "level": 45,
+      "hp": 1060,
       "atk": 200,
-      "def": 13,
+      "def": 122,
       "magicDef": 20,
       "attackCount": 4,
       "accuracy": 560,
-      "evasion": 46,
-      "exp": 45,
+      "evasion": 61,
+      "exp": 203,
       "gold": 37,
       "skills": [
         {
@@ -75,15 +75,15 @@
       "raceTags": [
         "troll"
       ],
-      "level": 44,
-      "hp": 1115,
+      "level": 47,
+      "hp": 1370,
       "atk": 308,
-      "def": 73,
+      "def": 156,
       "magicDef": 53,
       "attackCount": 5,
       "accuracy": 560,
       "evasion": 46,
-      "exp": 62,
+      "exp": 212,
       "gold": 53,
       "skills": [
         {
@@ -110,15 +110,15 @@
       "raceTags": [
         "orc"
       ],
-      "level": 54,
-      "hp": 1850,
+      "level": 65,
+      "hp": 2590,
       "atk": 473,
-      "def": 135,
+      "def": 283,
       "magicDef": 61,
       "attackCount": 7,
       "accuracy": 640,
-      "evasion": 52,
-      "exp": 270,
+      "evasion": 73,
+      "exp": 293,
       "gold": 216,
       "skills": [
         {
