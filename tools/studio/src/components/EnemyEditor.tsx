@@ -9,6 +9,7 @@ import {
   getEnemyHpSpeciesCoefficient,
   type EnemyHpSpecies,
 } from '@app/shared/utils/enemyStats'
+import { calculateEnemyExp } from '@app/shared/utils/enemyExp'
 import { races } from '@app/shared/data/races'
 import { getRaceResistanceTotals } from '@app/shared/data/races'
 import type { CharacterSkill } from '@app/shared/types/CharacterSkill'
@@ -48,6 +49,32 @@ export function EnemyEditor({
     )
   }, [enemy.enemies, query])
 
+  const bossEnemyIds = useMemo(() => {
+    const ids = new Set<string>()
+    enemy.patterns.forEach((pattern) => {
+      if (!pattern.isBoss) return
+      pattern.enemies.flat().forEach((id) => ids.add(id))
+    })
+    return ids
+  }, [enemy.patterns])
+
+  const calculatedExpById = useMemo(() => {
+    const map = new Map<string, number>()
+    enemy.enemies.forEach((e) => {
+      map.set(e.id, calculateEnemyExp(e.level, e.raceTags, bossEnemyIds.has(e.id)))
+    })
+    return map
+  }, [enemy.enemies, bossEnemyIds])
+
+  const expDiffCount = useMemo(
+    () =>
+      enemy.enemies.reduce(
+        (count, e) => (calculatedExpById.get(e.id) !== e.exp ? count + 1 : count),
+        0,
+      ),
+    [enemy.enemies, calculatedExpById],
+  )
+
   const selectedIndex = enemy.enemies.findIndex((e) => e.id === selectedId)
   const selected = selectedIndex >= 0 ? enemy.enemies[selectedIndex] : null
 
@@ -60,6 +87,18 @@ export function EnemyEditor({
     })
   }
 
+  const applyAllCalculatedExp = () => {
+    if (expDiffCount === 0) return
+    if (!window.confirm(`算出EXPを ${expDiffCount} 体に一括反映します。よろしいですか?`)) return
+    onChange((prev) => ({
+      ...prev,
+      enemies: prev.enemies.map((e) => {
+        const next = calculateEnemyExp(e.level, e.raceTags, bossEnemyIds.has(e.id))
+        return next === e.exp ? e : { ...e, exp: next }
+      }),
+    }))
+  }
+
   return (
     <div className="enemy-layout">
       <div className="enemy-list">
@@ -70,6 +109,17 @@ export function EnemyEditor({
           onChange={(e) => setQuery(e.target.value)}
           className="search-input"
         />
+        <div className="enemy-list-actions">
+          <button
+            type="button"
+            className="btn ghost small"
+            onClick={applyAllCalculatedExp}
+            disabled={expDiffCount === 0}
+            title="Lv × 3 × 種族係数 × ボス係数 (1.5) で算出"
+          >
+            算出EXPを一括反映{expDiffCount > 0 ? ` (${expDiffCount})` : ''}
+          </button>
+        </div>
         <table className="enemy-table">
           <thead>
             <tr>
@@ -82,37 +132,52 @@ export function EnemyEditor({
               <th className="num">攻撃回数</th>
               <th className="num">AGI</th>
               <th className="num">EXP</th>
+              <th className="num">算出EXP</th>
               <th className="num">Gold</th>
             </tr>
           </thead>
           <tbody>
-            {filtered.map((e) => (
-              <tr
-                key={e.id}
-                className={selectedId === e.id ? 'selected' : ''}
-                onClick={() => setSelectedId(e.id)}
-              >
-                <td><code>{e.id}</code></td>
-                <td>{e.name}</td>
-                <td className="num">{e.level}</td>
-                <td className="num">{e.hp}</td>
-                <td className="num">{e.atk}</td>
-                <td className="num">{e.def}</td>
-                <td className={`num${e.attackCount > 0 ? '' : ' invalid-cell'}`}>{e.attackCount}</td>
-                <td className="num">{e.baseAttributes.agility}</td>
-                <td className="num">{e.exp}</td>
-                <td className="num">{e.gold}</td>
-              </tr>
-            ))}
+            {filtered.map((e) => {
+              const calcExp = calculatedExpById.get(e.id) ?? 0
+              const expMatches = calcExp === e.exp
+              return (
+                <tr
+                  key={e.id}
+                  className={selectedId === e.id ? 'selected' : ''}
+                  onClick={() => setSelectedId(e.id)}
+                >
+                  <td><code>{e.id}</code></td>
+                  <td>
+                    {e.name}
+                    {bossEnemyIds.has(e.id) && <span className="subtle"> (Boss)</span>}
+                  </td>
+                  <td className="num">{e.level}</td>
+                  <td className="num">{e.hp}</td>
+                  <td className="num">{e.atk}</td>
+                  <td className="num">{e.def}</td>
+                  <td className={`num${e.attackCount > 0 ? '' : ' invalid-cell'}`}>{e.attackCount}</td>
+                  <td className="num">{e.baseAttributes.agility}</td>
+                  <td className="num">{e.exp}</td>
+                  <td className={`num${expMatches ? '' : ' invalid-cell'}`}>{calcExp}</td>
+                  <td className="num">{e.gold}</td>
+                </tr>
+              )
+            })}
             {filtered.length === 0 && (
               <tr>
-                <td colSpan={10} className="subtle">該当する敵がいません</td>
+                <td colSpan={11} className="subtle">該当する敵がいません</td>
               </tr>
             )}
           </tbody>
         </table>
       </div>
-      {selected && <EnemyForm enemy={selected} onChange={updateSelected} />}
+      {selected && (
+        <EnemyForm
+          enemy={selected}
+          onChange={updateSelected}
+          isBoss={bossEnemyIds.has(selected.id)}
+        />
+      )}
     </div>
   )
 }
@@ -120,9 +185,11 @@ export function EnemyEditor({
 function EnemyForm({
   enemy,
   onChange,
+  isBoss,
 }: {
   enemy: Enemy
   onChange: (updater: (prev: Enemy) => Enemy) => void
+  isBoss: boolean
 }) {
   const [hpSpecies, setHpSpecies] = useState<EnemyHpSpecies>(() => detectEnemyHpSpecies(enemy.raceTags))
   useEffect(() => {
@@ -153,6 +220,7 @@ function EnemyForm({
     enemy.baseAttributes.agility,
     hpSpecies,
   )
+  const calculatedExp = calculateEnemyExp(enemy.level, enemy.raceTags, isBoss)
   const hpCoefficient = getEnemyHpSpeciesCoefficient(hpSpecies)
   const raceResistance = getRaceResistanceTotals(enemy.raceTags)
   const toggleRaceTag = (raceId: string) =>
@@ -238,11 +306,21 @@ function EnemyForm({
         <button type="button" className="btn ghost small" onClick={() => set('evasion', calculatedEvasion)}>
           算出回避を反映
         </button>
+        <button
+          type="button"
+          className="btn ghost small"
+          onClick={() => set('exp', calculatedExp)}
+          title="Lv × 3 × 種族係数 × ボス係数 (1.5) で算出"
+        >
+          算出EXPを反映
+        </button>
       </FieldRow>
       <p className="subtle">
         Lv {enemy.level} / 力 {enemy.baseAttributes.power} / 体力 {enemy.baseAttributes.vitality} / 敏捷 {enemy.baseAttributes.agility} / 幸運 {enemy.baseAttributes.luck} / 種族係数 {hpCoefficient}
         <br />
         → HP {calculatedHp} / ATK {calculatedAtk} / DEF {calculatedDef} / 命中 {calculatedAccuracy} / 回避 {calculatedEvasion}
+        <br />
+        → EXP {calculatedExp} ({isBoss ? 'Boss' : '通常'})
       </p>
       <FieldGroup columns={2}>
         <NumberField label="level" value={enemy.level} min={0} onChange={(v) => set('level', v)} />

@@ -1,16 +1,16 @@
 {
-  "id": "goblin_village_3",
-  "name": "ゴブリン集落・中枢",
   "areaLevel": 8,
-  "floors": 2,
   "baseDurationSec": 720,
   "description": "集落の中枢。ガードに守られた奥にホブゴブリンが君臨する。独立を勝ち取るため、反逆の狼煙を上げる。",
   "encounter": {
-    "perFloorEvents": 3,
     "eventWeights": {
       "battle": 60,
       "exploring": 40
-    }
+    },
+    "perFloorEvents": 3
   },
+  "floors": 2,
+  "id": "goblin_village_3",
+  "name": "ゴブリン集落・中枢",
   "unlockNext": "undead_ruins_1"
 }

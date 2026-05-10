@@ -183,6 +183,12 @@ const GOBLIN_JOB_DEFINITION_SEEDS: Record<GoblinJob, GoblinJobDefinitionSeed> = 
     skills: [
       {
         skillId: "critical_support"
+      },
+      {
+        skillId: "attack_count_up_3"
+      },
+      {
+        skillId: "action_order_150"
       }
     ],
     unlockRequiresReadStory: "story_after_wolf_grassland"
