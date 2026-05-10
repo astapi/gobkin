@@ -51,71 +51,71 @@ function createDummyEnemy(overrides?: Partial<Enemy>): Enemy {
 
 describe('rollTreasureDrops', () => {
   describe('アイテムランク定義', () => {
-    it('最大ランクは 8。rank 0 は1カテゴリに複数個ありうる', () => {
-      // 剣（11アイテム: 下位3つはrank 0、その後1刻みで8まで）
+    it('最大ランクは 7。rank 0 は1カテゴリに複数個ありうる', () => {
+      // 剣（11アイテム: 下位4つはrank 0、その後1刻みで7まで）
       expect(getEquipmentTemplate('sword_cypress_stick')?.rank).toBe(0)
       expect(getEquipmentTemplate('sword_club')?.rank).toBe(0)
       expect(getEquipmentTemplate('sword_copper')?.rank).toBe(0)
-      expect(getEquipmentTemplate('sword_broad')?.rank).toBe(1)
-      expect(getEquipmentTemplate('sword_long')?.rank).toBe(2)
-      expect(getEquipmentTemplate('sword_mithril')?.rank).toBe(3)
-      expect(getEquipmentTemplate('sword_royal')?.rank).toBe(4)
-      expect(getEquipmentTemplate('sword_kaiser')?.rank).toBe(5)
-      expect(getEquipmentTemplate('sword_ancient')?.rank).toBe(6)
-      expect(getEquipmentTemplate('sword_dragon')?.rank).toBe(7)
-      expect(getEquipmentTemplate('sword_adamant')?.rank).toBe(8)
+      expect(getEquipmentTemplate('sword_broad')?.rank).toBe(0)
+      expect(getEquipmentTemplate('sword_long')?.rank).toBe(1)
+      expect(getEquipmentTemplate('sword_mithril')?.rank).toBe(2)
+      expect(getEquipmentTemplate('sword_royal')?.rank).toBe(3)
+      expect(getEquipmentTemplate('sword_kaiser')?.rank).toBe(4)
+      expect(getEquipmentTemplate('sword_ancient')?.rank).toBe(5)
+      expect(getEquipmentTemplate('sword_dragon')?.rank).toBe(6)
+      expect(getEquipmentTemplate('sword_adamant')?.rank).toBe(7)
 
       // 爪（剣と同じ配列）
       expect(getEquipmentTemplate('claw_sharp')?.rank).toBe(0)
       expect(getEquipmentTemplate('claw_beast')?.rank).toBe(0)
       expect(getEquipmentTemplate('claw_copper')?.rank).toBe(0)
-      expect(getEquipmentTemplate('claw_adamant')?.rank).toBe(8)
+      expect(getEquipmentTemplate('claw_adamant')?.rank).toBe(7)
 
-      // 弓（9アイテム: 0〜8）
+      // 弓（9アイテム: 0〜7）
       expect(getEquipmentTemplate('bow_slingshot')?.rank).toBe(0)
-      expect(getEquipmentTemplate('bow_adamant')?.rank).toBe(8)
+      expect(getEquipmentTemplate('bow_adamant')?.rank).toBe(7)
 
-      // 鎧（10アイテム: 下位2つがrank 0）
+      // 鎧（10アイテム: 下位3つがrank 0）
       expect(getEquipmentTemplate('armor_tattered_cloth')?.rank).toBe(0)
       expect(getEquipmentTemplate('armor_leather_vest')?.rank).toBe(0)
-      expect(getEquipmentTemplate('armor_fur_vest')?.rank).toBe(1)
-      expect(getEquipmentTemplate('armor_adamant')?.rank).toBe(8)
+      expect(getEquipmentTemplate('armor_fur_vest')?.rank).toBe(0)
+      expect(getEquipmentTemplate('armor_adamant')?.rank).toBe(7)
 
-      // 盾（9アイテム: 0〜8、入門帯を追加）
+      // 盾（9アイテム: 0〜7、入門帯を追加）
       expect(getEquipmentTemplate('shield_pot_lid')?.rank).toBe(0)
-      expect(getEquipmentTemplate('shield_wooden')?.rank).toBe(1)
-      expect(getEquipmentTemplate('shield_shield')?.rank).toBe(2)
-      expect(getEquipmentTemplate('shield_mithril')?.rank).toBe(3)
-      expect(getEquipmentTemplate('shield_adamant')?.rank).toBe(8)
+      expect(getEquipmentTemplate('shield_wooden')?.rank).toBe(0)
+      expect(getEquipmentTemplate('shield_shield')?.rank).toBe(1)
+      expect(getEquipmentTemplate('shield_mithril')?.rank).toBe(2)
+      expect(getEquipmentTemplate('shield_adamant')?.rank).toBe(7)
 
       // 小手（10アイテム: 下位2つがrank 0）
       expect(getEquipmentTemplate('gauntlet_cloth_gloves')?.rank).toBe(0)
       expect(getEquipmentTemplate('gauntlet_leather')?.rank).toBe(0)
-      expect(getEquipmentTemplate('gauntlet_adamant')?.rank).toBe(8)
+      expect(getEquipmentTemplate('gauntlet_adamant')?.rank).toBe(7)
 
-      // ワンド（9アイテム: 0〜8、入門帯を追加）
+      // ワンド（9アイテム: 0〜7、入門帯を追加）
       expect(getEquipmentTemplate('wand_twig')?.rank).toBe(0)
-      expect(getEquipmentTemplate('wand_apprentice')?.rank).toBe(1)
-      expect(getEquipmentTemplate('wand_wand')?.rank).toBe(2)
-      expect(getEquipmentTemplate('wand_mithril')?.rank).toBe(3)
-      expect(getEquipmentTemplate('wand_adamant')?.rank).toBe(8)
+      expect(getEquipmentTemplate('wand_apprentice')?.rank).toBe(0)
+      expect(getEquipmentTemplate('wand_wand')?.rank).toBe(1)
+      expect(getEquipmentTemplate('wand_mithril')?.rank).toBe(2)
+      expect(getEquipmentTemplate('wand_adamant')?.rank).toBe(7)
 
-      // ロッド（9アイテム: 0〜8、入門帯を追加）
+      // ロッド（9アイテム: 0〜7、入門帯を追加）
       expect(getEquipmentTemplate('rod_acolyte')?.rank).toBe(0)
-      expect(getEquipmentTemplate('rod_wooden')?.rank).toBe(1)
-      expect(getEquipmentTemplate('rod_rod')?.rank).toBe(2)
-      expect(getEquipmentTemplate('rod_mithril')?.rank).toBe(3)
-      expect(getEquipmentTemplate('rod_adamant')?.rank).toBe(8)
+      expect(getEquipmentTemplate('rod_wooden')?.rank).toBe(0)
+      expect(getEquipmentTemplate('rod_rod')?.rank).toBe(1)
+      expect(getEquipmentTemplate('rod_mithril')?.rank).toBe(2)
+      expect(getEquipmentTemplate('rod_adamant')?.rank).toBe(7)
     })
 
-    it('装備の rank は全カテゴリで 0〜8 に収まる', () => {
-      for (let r = 0; r <= 8; r++) {
+    it('装備の rank は全カテゴリで 0〜7 に収まる', () => {
+      for (let r = 0; r <= 7; r++) {
         // 各ランクに最低1アイテムは存在する（全カテゴリ合算）
         expect(getEquipmentByRank(r).length).toBeGreaterThan(0)
       }
-      // rank 9 以上は存在しない
+      // rank 8 以上は存在しない
+      expect(getEquipmentByRank(8).length).toBe(0)
       expect(getEquipmentByRank(9).length).toBe(0)
-      expect(getEquipmentByRank(10).length).toBe(0)
     })
 
     it('getEquipmentByRank(0) は全カテゴリの最弱装備を含む（盾/ワンド/ロッドの入門帯も）', () => {
@@ -130,17 +130,17 @@ describe('rollTreasureDrops', () => {
       expect(ids.has('rod_acolyte')).toBe(true)
     })
 
-    it('getEquipmentByRank(1) は各カテゴリの入門上位を含む', () => {
+    it('getEquipmentByRank(1) は各カテゴリのスタンダード帯を含む', () => {
       const ids = new Set(getEquipmentByRank(1).map((t) => t.id))
-      expect(ids.has('shield_wooden')).toBe(true)
-      expect(ids.has('wand_apprentice')).toBe(true)
-      expect(ids.has('rod_wooden')).toBe(true)
-      expect(ids.has('sword_broad')).toBe(true)
-      expect(ids.has('armor_fur_vest')).toBe(true)
+      expect(ids.has('shield_shield')).toBe(true)
+      expect(ids.has('wand_wand')).toBe(true)
+      expect(ids.has('rod_rod')).toBe(true)
+      expect(ids.has('sword_long')).toBe(true)
+      expect(ids.has('armor_armor')).toBe(true)
     })
 
-    it('getEquipmentByRank(8) は全カテゴリのアダマント装備を含む', () => {
-      const ids = new Set(getEquipmentByRank(8).map((t) => t.id))
+    it('getEquipmentByRank(7) は全カテゴリのアダマント装備を含む', () => {
+      const ids = new Set(getEquipmentByRank(7).map((t) => t.id))
       expect(ids.has('sword_adamant')).toBe(true)
       expect(ids.has('claw_adamant')).toBe(true)
       expect(ids.has('bow_adamant')).toBe(true)
@@ -460,7 +460,7 @@ describe('rollTreasureDrops', () => {
     })
 
     it('rare=1 のときレアドロップ率は極めて低い (約 0.1% 以下)', () => {
-      // 敵レベル1のためノーマルは rank0 のみ → sword_kaiser (rank5) はノーマルでは出ない
+      // 敵レベル1のためノーマルは rank0 のみ → sword_kaiser (rank4) はノーマルでは出ない
       const enemy = createDummyEnemy({
         level: 1,
         rareEquipmentDrops: [{ templateId: 'sword_kaiser' }],
@@ -478,7 +478,7 @@ describe('rollTreasureDrops', () => {
     })
 
     it('rareDropMultiplierBoost を 2 にするとレアドロップ率が上がる（ノーマルには波及しない）', () => {
-      // 敵レベル1のためノーマルは rank0 のみ → sword_kaiser (rank5) はノーマルでは出ない
+      // 敵レベル1のためノーマルは rank0 のみ → sword_kaiser (rank4) はノーマルでは出ない
       const enemy = createDummyEnemy({
         level: 1,
         rareEquipmentDrops: [{ templateId: 'sword_kaiser' }],
