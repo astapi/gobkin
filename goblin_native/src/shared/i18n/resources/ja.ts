@@ -149,6 +149,8 @@ const ja = {
       gainedGoldWithMultiplier: '{{value}} Gold を獲得 (×{{multiplier}})',
       items: '獲得アイテム',
       unlockedArea: '次のエリア「{{name}}」が解放されました',
+      baseCaptured: '拠点を制圧した',
+      baseCapturedHint: '「{{name}}」を制圧した！\n拠点管理画面から、拠点をランクアップさせよう。',
       storyUnlocked: '新しい物語が解放されました',
       backToMenu: 'メニューに戻る',
     },
