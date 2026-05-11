@@ -335,6 +335,33 @@ export const PureGoblinSkillManifestationRuleSchema = z.object({
   skills: z.array(BirthSkillLotteryEntrySchema),
 })
 
+export const PureGoblinSeedSchema = z.object({
+  baseAttributes: GoblinBaseAttributesSchema,
+  hpCoefficient: z.number(),
+  defaultSkillIds: z.array(z.string()),
+})
+
+export const FounderGoblinSeedStatsSchema = z.object({
+  hp: z.number(),
+  atk: z.number(),
+  def: z.number(),
+  attackCount: z.number(),
+  accuracy: z.number(),
+  evasion: z.number(),
+})
+
+export const FounderGoblinSeedSchema = z.object({
+  id: z.number().int().nonnegative(),
+  name: z.string().min(1),
+  race: z.string().min(1),
+  raceId: z.string().min(1),
+  level: z.number().int().nonnegative(),
+  experience: z.number().int().nonnegative(),
+  avatar: z.string(),
+  stats: FounderGoblinSeedStatsSchema,
+  defaultSkillIds: z.array(z.string()),
+})
+
 export const GoblinStudioDataSchema = z.object({
   races: z.array(GoblinRaceEntrySchema),
   factors: z.array(GoblinFactorSeedSchema),
@@ -342,6 +369,8 @@ export const GoblinStudioDataSchema = z.object({
   variants: z.array(GoblinVariantSeedSchema),
   factorSkillInheritanceRules: z.array(FactorSkillInheritanceRuleSchema),
   pureGoblinSkillManifestationRules: z.array(PureGoblinSkillManifestationRuleSchema),
+  pureGoblin: PureGoblinSeedSchema,
+  founder: FounderGoblinSeedSchema,
 })
 
 export type GoblinBaseAttributes = z.infer<typeof GoblinBaseAttributesSchema>
@@ -354,4 +383,7 @@ export type GoblinFactorSeed = z.infer<typeof GoblinFactorSeedSchema>
 export type BirthSkillLotteryEntry = z.infer<typeof BirthSkillLotteryEntrySchema>
 export type FactorSkillInheritanceRule = z.infer<typeof FactorSkillInheritanceRuleSchema>
 export type PureGoblinSkillManifestationRule = z.infer<typeof PureGoblinSkillManifestationRuleSchema>
+export type FounderGoblinSeedStats = z.infer<typeof FounderGoblinSeedStatsSchema>
+export type FounderGoblinSeed = z.infer<typeof FounderGoblinSeedSchema>
+export type PureGoblinSeed = z.infer<typeof PureGoblinSeedSchema>
 export type GoblinStudioData = z.infer<typeof GoblinStudioDataSchema>

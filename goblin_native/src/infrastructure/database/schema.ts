@@ -2,6 +2,9 @@
  * SQLiteスキーマ定義
  * 各テーブルのCREATE文を定義
  */
+import { founderGoblinSeed } from '../../shared/data/founderGoblin'
+
+const sqlString = (value: string): string => `'${value.replace(/'/g, "''")}'`
 
 export const SCHEMA = {
   goblins: `
@@ -164,6 +167,6 @@ export const SCHEMA = {
   goblinsInit: `
     INSERT OR IGNORE INTO goblins (id, name, race, race_id, level, experience, avatar, stats_json, skills_json)
     VALUES
-      (0, 'マルク', '始祖ゴブリン', 'founder', 1, 0, '/src/assets/goblin/marku.png', '{"hp":68,"atk":13,"def":11,"attackCount":2,"accuracy":160,"evasion":15}', '[]')
+      (${founderGoblinSeed.id}, ${sqlString(founderGoblinSeed.name)}, ${sqlString(founderGoblinSeed.race)}, ${sqlString(founderGoblinSeed.raceId)}, ${founderGoblinSeed.level}, ${founderGoblinSeed.experience}, ${sqlString(founderGoblinSeed.avatar)}, ${sqlString(JSON.stringify(founderGoblinSeed.stats))}, '[]')
   `,
 }
