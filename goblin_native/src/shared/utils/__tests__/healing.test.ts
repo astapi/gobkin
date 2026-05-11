@@ -19,9 +19,16 @@ describe('calculateHealingCost', () => {
     expect(calculateHealingCost(createGoblin(1))).toBe(5)
   })
 
-  it('Lv2以降は1.2倍ずつ増える', () => {
-    expect(calculateHealingCost(createGoblin(2))).toBe(6)
-    expect(calculateHealingCost(createGoblin(3))).toBe(8)
+  it('低レベル帯は二次関数で緩やかに増える', () => {
+    expect(calculateHealingCost(createGoblin(2))).toBe(10)
+    expect(calculateHealingCost(createGoblin(5))).toBe(63)
+    expect(calculateHealingCost(createGoblin(10))).toBe(250)
+  })
+
+  it('高レベル帯は参考値に近い値になる', () => {
+    expect(calculateHealingCost(createGoblin(50))).toBe(6250)
+    expect(calculateHealingCost(createGoblin(130))).toBe(42250)
+    expect(calculateHealingCost(createGoblin(135))).toBe(45563)
   })
 
   it('亜種ゴブリンは1.2倍の治療費になる', () => {
