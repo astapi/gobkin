@@ -62,10 +62,6 @@ const GOBLIN_JOB_DEFINITION_SEEDS: Record<GoblinJob, GoblinJobDefinitionSeed> = 
       {
         skillId: "rear_guard",
         unlockLevel: 15
-      },
-      {
-        skillId: "mana_recovery",
-        unlockLevel: 15
       }
     ],
     baseAttributes: {
@@ -107,6 +103,12 @@ const GOBLIN_JOB_DEFINITION_SEEDS: Record<GoblinJob, GoblinJobDefinitionSeed> = 
     skills: [
       {
         skillId: "mage_magic_lv7"
+      },
+      {
+        skillId: "mana_recovery"
+      },
+      {
+        skillId: "spell_damage_20"
       }
     ],
     baseAttributes: {
@@ -189,6 +191,9 @@ const GOBLIN_JOB_DEFINITION_SEEDS: Record<GoblinJob, GoblinJobDefinitionSeed> = 
       },
       {
         skillId: "action_order_150"
+      },
+      {
+        skillId: "counter_avoidance_2_3"
       }
     ],
     unlockRequiresReadStory: "story_after_wolf_grassland"

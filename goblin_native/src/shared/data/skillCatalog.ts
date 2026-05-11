@@ -562,6 +562,7 @@ export const CHARACTER_SKILL_CATALOG = {
   spell_damage_14: createSpellDamageSkill(14),
   spell_damage_15: createSpellDamageSkill(15),
   spell_damage_16: createSpellDamageSkill(16),
+  spell_damage_20: createSpellDamageSkill(20),
   spell_damage_58: createSpellDamageSkill(58),
   spell_damage_110: createSpellDamageSkill(110),
   spell_damage_175: createSpellDamageSkill(175),
