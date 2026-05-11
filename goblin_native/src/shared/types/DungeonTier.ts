@@ -98,6 +98,34 @@ export function getDungeonTierDisplayName(baseName: string, tier: DungeonTier): 
 /** 探索時間 tier 係数: time(tier) = base + delta × DUNGEON_TIER_TIME_FACTOR[tier] */
 export const DUNGEON_TIER_TIME_FACTOR = [0, 1, 8 / 3, 5, 10, 20] as const
 
+/**
+ * Tier ごとのボス因子ドロップ実効確率（敵JSONの `probability` は基準値 0.015 を想定し、
+ * 実行時に `tierRate / baseRate` の倍率として `probabilityMultiplier` に合成する）
+ *
+ * - 0 通常: 1.5%
+ * - 1 魔性: 2.5%
+ * - 2 宿った: 3.5%
+ * - 3 伝説: 4.5%
+ * - 4 恐ろしい: 5.5%
+ * - 5 壊れた: 6.5%（+1% の等差を延長）
+ */
+export const DUNGEON_TIER_FACTOR_DROP_RATE = [
+  0.015,
+  0.025,
+  0.035,
+  0.045,
+  0.055,
+  0.065,
+] as const
+
+const BASE_FACTOR_DROP_RATE = DUNGEON_TIER_FACTOR_DROP_RATE[0]
+
+/** Tier に応じた因子ドロップ倍率（敵JSON の基準 1.5% に乗算する係数）を返す */
+export function getDungeonTierFactorDropMultiplier(tier: DungeonTier = 0): number {
+  const rate = DUNGEON_TIER_FACTOR_DROP_RATE[tier] ?? BASE_FACTOR_DROP_RATE
+  return rate / BASE_FACTOR_DROP_RATE
+}
+
 /** ダンジョン探索時間クラス */
 export type DungeonTierClass = 'A' | 'B' | 'C'
 

@@ -15,6 +15,7 @@ import type { LevelUpResult } from '../services/ExperienceSystem'
 import { FactorService } from '../services/FactorService'
 import { captureDungeon } from '../services/BaseRankSystem'
 import { isDungeonCompleted } from '../../shared/utils/expeditionClear'
+import { getDungeonTierFactorDropMultiplier } from '../../shared/types/DungeonTier'
 
 export interface ExpeditionCompletionResult {
   levelUps: Map<number, LevelUpResult>
@@ -175,6 +176,8 @@ export class CompleteExpeditionUseCase {
               return drop
             })
 
+          const tierMultiplier = getDungeonTierFactorDropMultiplier(replay.meta.tier ?? 0)
+
           for (const goblin of goblins) {
             if (replay.summary.casualties.includes(goblin.id.toString())) {
               continue
@@ -184,7 +187,7 @@ export class CompleteExpeditionUseCase {
             const factorDropBonusPercent = getFactorDropBonusPercentFromSkills(latest.skills)
             const factorDropMultiplier = getFactorDropMultiplierFromSkills(latest.skills)
             const probabilityMultiplier =
-              (1 + Math.max(0, factorDropBonusPercent) / 100) * factorDropMultiplier
+              (1 + Math.max(0, factorDropBonusPercent) / 100) * factorDropMultiplier * tierMultiplier
             const acquired = FactorService.rollFactorDrops(
               latest,
               allFactorDrops,
