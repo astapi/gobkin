@@ -226,8 +226,8 @@ export default function ExpeditionPreparationScreen() {
 
   const estimatedExplorationTime = useMemo(() => {
     if (!selectedDungeon) return null
-    return estimateExplorationTime(selectedDungeon, selectedReturnPolicy)
-  }, [estimateExplorationTime, selectedDungeon, selectedReturnPolicy])
+    return estimateExplorationTime(selectedDungeon, selectedReturnPolicy, 1, false, selectedTier)
+  }, [estimateExplorationTime, selectedDungeon, selectedReturnPolicy, selectedTier])
 
   const handleEditParty = useCallback(() => {
     void advanceTutorial('select_party_member')
