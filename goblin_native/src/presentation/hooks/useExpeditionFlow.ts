@@ -34,6 +34,7 @@ import { useExpeditionNotification } from '../hooks/useExpeditionNotification'
 import { getDungeonName } from '../../shared/i18n/entityLocalization'
 import { getDungeonTierAreaLevel, getDungeonTierDisplayName } from '../../shared/types'
 import { isDungeonCompleted } from '../../shared/utils/expeditionClear'
+import { computeCurrentFloor } from '../../shared/utils/expeditionFloor'
 import { getExpeditionTimeMultiplierFromSkills } from '../../shared/data/characterSkills'
 import { EquipmentService } from '../../core/services/EquipmentService'
 import i18n from '../../shared/i18n'
@@ -646,7 +647,9 @@ export const useExpeditionFlow = ({
       const items = history.map(record => {
         const dungeon = areasData.find(area => area.id === record.dungeonId)
         const ongoing = isExpeditionOngoing(record, currentTime)
-        const floorReached = record.replay?.summary.maxFloorReached ?? 1
+        const floorReached = ongoing
+          ? computeCurrentFloor(record, currentTime)
+          : record.replay?.summary.maxFloorReached ?? 1
         const remainingMinutes = ongoing && record.returnTime
           ? getRemainingMinutes(record.returnTime, currentTime)
           : 0
