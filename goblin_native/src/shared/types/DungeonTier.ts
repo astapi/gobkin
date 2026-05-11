@@ -118,7 +118,8 @@ const DUNGEON_TIER_CLASS_MAP: Record<string, DungeonTierClass> = {
   undead_ruins_1: 'A',
   undead_ruins_2: 'A',
   undead_ruins_3: 'A',
-  // Class C: 辺境の村, オークの野営地, ウルフ草原, リザードマンの沼砦, オークの砦, vs討伐軍
+  // Class C: 街道, 辺境の村, オークの野営地, ウルフ草原, リザードマンの沼砦, オークの砦, vs討伐軍
+  road_1: 'C',
   human_village: 'C',
   orc_camp_1: 'C',
   orc_camp_2: 'C',
