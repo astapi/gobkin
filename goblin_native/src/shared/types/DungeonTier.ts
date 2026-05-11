@@ -94,3 +94,62 @@ export function getDungeonTierDisplayName(baseName: string, tier: DungeonTier): 
   if (!meta.prefix) return baseName
   return `${meta.prefix} ${baseName}`
 }
+
+/** 探索時間 tier 係数: time(tier) = base + delta × DUNGEON_TIER_TIME_FACTOR[tier] */
+export const DUNGEON_TIER_TIME_FACTOR = [0, 1, 8 / 3, 5, 10, 20] as const
+
+/** ダンジョン探索時間クラス */
+export type DungeonTierClass = 'A' | 'B' | 'C'
+
+/** クラスごとの tier delta（増分単位、秒）: first=踏破前, cleared=踏破後 */
+export const DUNGEON_TIER_TIME_DELTA: Record<DungeonTierClass, { first: number; cleared: number }> = {
+  A: { first: 540, cleared: 270 },
+  B: { first: 2160, cleared: 675 },
+  C: { first: 2160, cleared: 630 },
+}
+
+const DUNGEON_TIER_CLASS_MAP: Record<string, DungeonTierClass> = {
+  // Class A: スライムの洞窟, 周辺の森, ゴブリン集落, 廃墟
+  slime_cave: 'A',
+  forest_outskirts: 'A',
+  goblin_village_1: 'A',
+  goblin_village_2: 'A',
+  goblin_village_3: 'A',
+  undead_ruins_1: 'A',
+  undead_ruins_2: 'A',
+  undead_ruins_3: 'A',
+  // Class C: 辺境の村, オークの野営地, ウルフ草原, リザードマンの沼砦, オークの砦, vs討伐軍
+  human_village: 'C',
+  orc_camp_1: 'C',
+  orc_camp_2: 'C',
+  orc_camp_3: 'C',
+  wolf_grassland_1: 'C',
+  lizardman_swamp_1: 'C',
+  lizardman_swamp_2: 'C',
+  lizardman_swamp_3: 'C',
+  orc_fortress_1: 'C',
+  subjugation_force_1: 'C',
+  subjugation_force_2: 'C',
+  subjugation_force_3: 'C',
+}
+
+/** ダンジョン ID から探索時間クラスを取得（未指定は B） */
+export function getDungeonTierClass(dungeonId: string): DungeonTierClass {
+  return DUNGEON_TIER_CLASS_MAP[dungeonId] ?? 'B'
+}
+
+/** ダンジョンと tier からその tier の探索時間を算出 */
+export function computeDungeonExplorationTime(
+  dungeonId: string,
+  baseFirst: number,
+  baseCleared: number,
+  tier: DungeonTier,
+  isTierCleared: boolean,
+): number {
+  const cls = getDungeonTierClass(dungeonId)
+  const delta = DUNGEON_TIER_TIME_DELTA[cls]
+  const factor = DUNGEON_TIER_TIME_FACTOR[tier] ?? 0
+  const base = isTierCleared ? baseCleared : baseFirst
+  const deltaPerUnit = isTierCleared ? delta.cleared : delta.first
+  return Math.round(base + deltaPerUnit * factor)
+}

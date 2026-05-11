@@ -32,7 +32,7 @@ import { useStoryStore } from '../stores/useStoryStore'
 import { useTutorialStore } from '../stores/useTutorialStore'
 import { useExpeditionNotification } from '../hooks/useExpeditionNotification'
 import { getDungeonName } from '../../shared/i18n/entityLocalization'
-import { getDungeonTierAreaLevel, getDungeonTierDisplayName } from '../../shared/types'
+import { computeDungeonExplorationTime, getDungeonTierAreaLevel, getDungeonTierDisplayName } from '../../shared/types'
 import { isDungeonCompleted } from '../../shared/utils/expeditionClear'
 import { computeCurrentFloor } from '../../shared/utils/expeditionFloor'
 import { getExpeditionTimeMultiplierFromSkills } from '../../shared/data/characterSkills'
@@ -200,14 +200,20 @@ export const useExpeditionFlow = ({
     returnPolicy: ExpeditionRequest['returnPolicy'],
     partyExpeditionTimeMultiplier: number = 1,
     goldenAcornUsed: boolean = false,
+    tier: DungeonTier = 0,
   ): number => {
     if (instantDungeonExploration) {
       return 1
     }
 
-    const baseTime = dungeon.cleared
-      ? dungeon.exploration_time_sec
-      : dungeon.exploration_time_sec_first
+    const tierCleared = (dungeon.maxClearedTier ?? 0) > tier
+    const baseTime = computeDungeonExplorationTime(
+      dungeon.id,
+      dungeon.exploration_time_sec_first,
+      dungeon.exploration_time_sec,
+      tier,
+      tierCleared,
+    )
     const multiplierMap: Record<ExpeditionRequest['returnPolicy'], number> = {
       never: 1.0,
       until_floor2: 0.4,
@@ -288,6 +294,7 @@ export const useExpeditionFlow = ({
           returnPolicy,
           partyExpeditionTimeMultiplier,
           useGoldenAcorn,
+          tier ?? 0,
         )
         const request: ExpeditionRequest = {
           partyId: party.id.toString(),
@@ -391,6 +398,7 @@ export const useExpeditionFlow = ({
             returnPolicy,
             partyExpeditionTimeMultiplier,
             acornAppliedForThisInput,
+            tier ?? 0,
           )
           const request: ExpeditionRequest = {
             partyId: party.id.toString(),

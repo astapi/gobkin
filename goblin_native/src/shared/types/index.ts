@@ -60,12 +60,16 @@ export type {
 // Dungeon related types
 export type { Dungeon } from "./Dungeon"
 export type { DungeonProgressState } from "./DungeonProgress"
-export type { DungeonTier } from "./DungeonTier"
+export type { DungeonTier, DungeonTierClass } from "./DungeonTier"
 export {
   DUNGEON_TIER_LIST,
   DUNGEON_TIER_META,
   DUNGEON_TIER_SCALING,
+  DUNGEON_TIER_TIME_FACTOR,
+  DUNGEON_TIER_TIME_DELTA,
+  computeDungeonExplorationTime,
   getDungeonTierAreaLevel,
+  getDungeonTierClass,
   getDungeonTierDisplayName,
 } from "./DungeonTier"
 
