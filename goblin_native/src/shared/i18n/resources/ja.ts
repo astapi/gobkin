@@ -192,7 +192,7 @@ const ja = {
       insufficientGoldTitle: 'ゴールドが足りません',
       insufficientGoldBody: '必要額: {{price}}G\n所持ゴールド: {{gold}}G',
       buySuccessTitle: '購入しました',
-      buySuccessBody: '{{name}}を在庫に追加しました。',
+      buySuccessBody: '{{name}}を購入しました。',
       sellConfirmTitle: '売却確認',
       sellConfirmBody: '{{name}}を{{price}}Gで売却しますか？',
       sellAction: '売却する',
