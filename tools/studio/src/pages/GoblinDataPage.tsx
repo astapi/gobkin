@@ -3,6 +3,7 @@ import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } fro
 import { getGoblinJobDefinition } from '@app/shared/data/goblinJobs'
 
 import type {
+  FounderGoblinSeed,
   GoblinBaseAttributes,
   GoblinFactorSeed,
   GoblinJobSeed,
@@ -11,6 +12,7 @@ import type {
   GoblinVariantSeed,
   BirthSkillLotteryEntry,
   FactorSkillInheritanceRule,
+  PureGoblinSeed,
   PureGoblinSkillManifestationRule,
 } from '../lib/schema'
 import { GoblinStudioDataSchema } from '../lib/schema'
@@ -35,7 +37,14 @@ type SaveState =
   | { kind: 'error'; message: string }
   | { kind: 'success' }
 
-type Tab = 'races' | 'factors' | 'variants' | 'jobs' | 'birthSkills'
+type Tab =
+  | 'races'
+  | 'factors'
+  | 'variants'
+  | 'jobs'
+  | 'birthSkills'
+  | 'pureGoblin'
+  | 'founder'
 
 const EMPTY_ATTRIBUTES: GoblinBaseAttributes = {
   power: 10,
@@ -239,6 +248,18 @@ export function GoblinDataPage() {
           onClick={() => setTab('birthSkills')}
         >
           誕生スキル
+        </button>
+        <button
+          className={tab === 'pureGoblin' ? 'tab active' : 'tab'}
+          onClick={() => setTab('pureGoblin')}
+        >
+          純ゴブリン
+        </button>
+        <button
+          className={tab === 'founder' ? 'tab active' : 'tab'}
+          onClick={() => setTab('founder')}
+        >
+          マルク
         </button>
       </div>
 
@@ -548,6 +569,21 @@ export function GoblinDataPage() {
             onManifestationChange={(pureGoblinSkillManifestationRules) =>
               updateDraft((prev) => ({ ...prev, pureGoblinSkillManifestationRules }))
             }
+          />
+        )}
+
+        {tab === 'pureGoblin' && (
+          <PureGoblinEditor
+            pureGoblin={draft.pureGoblin}
+            onChange={(pureGoblin) => updateDraft((prev) => ({ ...prev, pureGoblin }))}
+          />
+        )}
+
+        {tab === 'founder' && (
+          <FounderEditor
+            founder={draft.founder}
+            races={draft.races}
+            onChange={(founder) => updateDraft((prev) => ({ ...prev, founder }))}
           />
         )}
       </div>
@@ -1058,6 +1094,209 @@ function JobEditor({
         </div>
         <JobSkillListEditor skills={job.skills} onChange={(skills) => onChange({ ...job, skills })} />
         {job.skills.length === 0 && <p className="subtle">未設定</p>}
+      </section>
+    </div>
+  )
+}
+
+function PureGoblinEditor({
+  pureGoblin,
+  onChange,
+}: {
+  pureGoblin: PureGoblinSeed
+  onChange: (pureGoblin: PureGoblinSeed) => void
+}) {
+  return (
+    <div className="panel-stack">
+      <section className="card">
+        <h3>基本情報</h3>
+        <p className="subtle">
+          純ゴブリン (raceId: <code>goblin</code>) の基準値です。新規誕生する亜種でない
+          ゴブリンの基礎能力値・HP 係数・初期スキルとして使用されます。
+        </p>
+        <FieldRow>
+          <NumberField
+            size="sm"
+            label="hpCoefficient"
+            value={pureGoblin.hpCoefficient}
+            step={0.05}
+            onChange={(value) => onChange({ ...pureGoblin, hpCoefficient: value })}
+          />
+        </FieldRow>
+      </section>
+
+      <section className="card">
+        <h3>基本能力値</h3>
+        <AttributeEditor
+          value={pureGoblin.baseAttributes}
+          onChange={(baseAttributes) => onChange({ ...pureGoblin, baseAttributes })}
+        />
+      </section>
+
+      <section className="card">
+        <h3>デフォルトスキル</h3>
+        <p className="subtle">
+          誕生時に付与されるスキルです。raceId の race スキル
+          (例: <code>goblin.skillIds</code>) と重複排除のうえ合成されます。
+        </p>
+        <SkillIdListEditor
+          skillIds={pureGoblin.defaultSkillIds}
+          onChange={(defaultSkillIds) => onChange({ ...pureGoblin, defaultSkillIds })}
+        />
+      </section>
+    </div>
+  )
+}
+
+function FounderEditor({
+  founder,
+  races,
+  onChange,
+}: {
+  founder: FounderGoblinSeed
+  races: GoblinRaceEntry[]
+  onChange: (founder: FounderGoblinSeed) => void
+}) {
+  return (
+    <div className="panel-stack">
+      <section className="card">
+        <h3>基本情報</h3>
+        <p className="subtle">
+          初期ゴブリン「マルク」の固定データです。アプリの初期投入 (schema.ts) と
+          始祖ゴブリン化マイグレーション (v14) の両方で使用されます。
+        </p>
+        <FieldRow>
+          <NumberField
+            size="xs"
+            label="id"
+            value={founder.id}
+            min={0}
+            onChange={(value) => onChange({ ...founder, id: value })}
+          />
+          <TextField
+            size="md"
+            label="name"
+            value={founder.name}
+            onChange={(value) => onChange({ ...founder, name: value })}
+          />
+          <TextField
+            size="md"
+            label="race (表示名)"
+            value={founder.race}
+            onChange={(value) => onChange({ ...founder, race: value })}
+          />
+          <label className="field field-size-md">
+            <span className="field-label">raceId</span>
+            <span className="field-input">
+              <select
+                value={founder.raceId}
+                onChange={(e) => onChange({ ...founder, raceId: e.target.value })}
+              >
+                {!races.some((race) => race.id === founder.raceId) && (
+                  <option value={founder.raceId}>{founder.raceId}</option>
+                )}
+                {races.map((race) => (
+                  <option key={race.id} value={race.id}>
+                    {race.label || race.id} / {race.id}
+                  </option>
+                ))}
+              </select>
+            </span>
+          </label>
+        </FieldRow>
+        <FieldRow>
+          <NumberField
+            size="xs"
+            label="level"
+            value={founder.level}
+            min={1}
+            onChange={(value) => onChange({ ...founder, level: value })}
+          />
+          <NumberField
+            size="sm"
+            label="experience"
+            value={founder.experience}
+            min={0}
+            onChange={(value) => onChange({ ...founder, experience: value })}
+          />
+          <TextField
+            size="xl"
+            label="avatar"
+            value={founder.avatar}
+            onChange={(value) => onChange({ ...founder, avatar: value })}
+          />
+        </FieldRow>
+      </section>
+
+      <section className="card">
+        <h3>ステータス (stats_json)</h3>
+        <p className="subtle">
+          DB の stats_json に書き込まれる値です。スキルは raceId のデフォルトスキル
+          (getDefaultSkillsForRace) から導出されるため、ここでは設定しません。
+        </p>
+        <FieldRow>
+          <NumberField
+            size="sm"
+            label="hp"
+            value={founder.stats.hp}
+            min={0}
+            onChange={(value) => onChange({ ...founder, stats: { ...founder.stats, hp: value } })}
+          />
+          <NumberField
+            size="sm"
+            label="atk"
+            value={founder.stats.atk}
+            min={0}
+            onChange={(value) => onChange({ ...founder, stats: { ...founder.stats, atk: value } })}
+          />
+          <NumberField
+            size="sm"
+            label="def"
+            value={founder.stats.def}
+            min={0}
+            onChange={(value) => onChange({ ...founder, stats: { ...founder.stats, def: value } })}
+          />
+          <NumberField
+            size="sm"
+            label="attackCount"
+            value={founder.stats.attackCount}
+            min={0}
+            onChange={(value) =>
+              onChange({ ...founder, stats: { ...founder.stats, attackCount: value } })
+            }
+          />
+          <NumberField
+            size="sm"
+            label="accuracy"
+            value={founder.stats.accuracy}
+            min={0}
+            onChange={(value) =>
+              onChange({ ...founder, stats: { ...founder.stats, accuracy: value } })
+            }
+          />
+          <NumberField
+            size="sm"
+            label="evasion"
+            value={founder.stats.evasion}
+            min={0}
+            onChange={(value) =>
+              onChange({ ...founder, stats: { ...founder.stats, evasion: value } })
+            }
+          />
+        </FieldRow>
+      </section>
+
+      <section className="card">
+        <h3>デフォルトスキル</h3>
+        <p className="subtle">
+          マルク誕生時に付与されるスキルです。raceId で導出される race スキル
+          (例: <code>founder.skillIds</code> / 継承元 <code>goblin.skillIds</code>) と
+          ここに登録した skillId が重複排除のうえ skills_json に書き込まれます。
+        </p>
+        <SkillIdListEditor
+          skillIds={founder.defaultSkillIds}
+          onChange={(defaultSkillIds) => onChange({ ...founder, defaultSkillIds })}
+        />
       </section>
     </div>
   )

@@ -3,6 +3,7 @@ import type { FactorEffect } from '../types/Factor'
 import type { CharacterSkillId } from './skillCatalog'
 import type { GoblinRaceId } from '../types/Race'
 import { normalizeGoblinRaceId } from '../types/Race'
+import { pureGoblinSeed } from './pureGoblin'
 
 export interface GoblinVariantDefinition {
   factorId: string
@@ -20,16 +21,9 @@ export interface GoblinVariantDefinition {
   defaultSkillIds?: CharacterSkillId[]
 }
 
-export const BASE_GOBLIN_BASE_ATTRIBUTES: GoblinBaseAttributes = {
-  power: 10,
-  wisdom: 10,
-  spirit: 10,
-  vitality: 10,
-  agility: 10,
-  luck: 10,
-}
+export const BASE_GOBLIN_BASE_ATTRIBUTES: GoblinBaseAttributes = pureGoblinSeed.baseAttributes
 
-export const BASE_GOBLIN_HP_COEFFICIENT = 0.8
+export const BASE_GOBLIN_HP_COEFFICIENT = pureGoblinSeed.hpCoefficient
 
 export const goblinVariantDefinitions: Record<string, GoblinVariantDefinition> = {
   slime: {

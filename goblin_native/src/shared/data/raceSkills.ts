@@ -1,21 +1,19 @@
 import type { CharacterSkill } from '../types'
 import { getGoblinVariantByRace } from './goblinVariants'
 import { getCharacterSkills } from './skillCatalog'
-import type { CharacterSkillId } from './skillCatalog'
-import { isBaseGoblinRaceId, normalizeGoblinRaceId } from '../types/Race'
+import { normalizeGoblinRaceId } from '../types/Race'
 import { getRaceSkillIds } from './races'
-
-const PURE_GOBLIN_DEFAULT_SKILL_IDS: CharacterSkillId[] = [
-  'exp_bonus_70',
-  'goblin_pack_tactics',
-]
+import { pureGoblinSeed } from './pureGoblin'
+import { founderGoblinSeed } from './founderGoblin'
 
 export function getDefaultSkillsForRace(race: string): CharacterSkill[] {
   const normalizedRace = normalizeGoblinRaceId(race)
   const raceSkillIds = getRaceSkillIds([normalizedRace])
   const defaultSkillIds =
-    isBaseGoblinRaceId(normalizedRace)
-      ? PURE_GOBLIN_DEFAULT_SKILL_IDS
+    normalizedRace === 'founder'
+      ? founderGoblinSeed.defaultSkillIds
+      : normalizedRace === 'goblin'
+      ? pureGoblinSeed.defaultSkillIds
       : (getGoblinVariantByRace(normalizedRace)?.defaultSkillIds ?? [])
 
   return getCharacterSkills([...new Set([...raceSkillIds, ...defaultSkillIds])])

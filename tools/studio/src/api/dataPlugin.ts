@@ -143,6 +143,33 @@ interface PureGoblinSkillManifestationRule {
   skills: BirthSkillLotteryEntry[]
 }
 
+interface PureGoblinSeed {
+  baseAttributes: GoblinBaseAttributes
+  hpCoefficient: number
+  defaultSkillIds: string[]
+}
+
+interface FounderGoblinSeedStats {
+  hp: number
+  atk: number
+  def: number
+  attackCount: number
+  accuracy: number
+  evasion: number
+}
+
+interface FounderGoblinSeed {
+  id: number
+  name: string
+  race: string
+  raceId: string
+  level: number
+  experience: number
+  avatar: string
+  stats: FounderGoblinSeedStats
+  defaultSkillIds: string[]
+}
+
 interface GoblinStudioData {
   races: GoblinRaceEntry[]
   factors: GoblinFactorSeed[]
@@ -150,6 +177,8 @@ interface GoblinStudioData {
   variants: GoblinVariantSeed[]
   factorSkillInheritanceRules: FactorSkillInheritanceRule[]
   pureGoblinSkillManifestationRules: PureGoblinSkillManifestationRule[]
+  pureGoblin: PureGoblinSeed
+  founder: FounderGoblinSeed
 }
 
 export function dataApiPlugin(options: Options): Plugin {
@@ -162,6 +191,8 @@ export function dataApiPlugin(options: Options): Plugin {
   const jobsFile = path.join(options.appSrc, 'shared', 'data', 'goblinJobs.ts')
   const variantsFile = path.join(options.appSrc, 'shared', 'data', 'goblinVariants.ts')
   const skillBirthRulesFile = path.join(options.appSrc, 'shared', 'data', 'skillBirthRules.ts')
+  const founderGoblinFile = path.join(options.appSrc, 'shared', 'data', 'founderGoblin.ts')
+  const pureGoblinFile = path.join(options.appSrc, 'shared', 'data', 'pureGoblin.ts')
   const equipmentPoolFile = path.join(options.appSrc, 'shared', 'data', 'equipmentPool.json')
   const presetsFile = path.join(options.dataDir, 'party-presets.json')
   const libraryFile = path.join(options.dataDir, 'character-library.json')
@@ -367,6 +398,8 @@ export function dataApiPlugin(options: Options): Plugin {
                 jobsFile,
                 variantsFile,
                 skillBirthRulesFile,
+                founderGoblinFile,
+                pureGoblinFile,
               }),
             )
           }
@@ -376,7 +409,15 @@ export function dataApiPlugin(options: Options): Plugin {
               res,
               200,
               await writeGoblinStudioData(
-                { racesFile, factorsFile, jobsFile, variantsFile, skillBirthRulesFile },
+                {
+                  racesFile,
+                  factorsFile,
+                  jobsFile,
+                  variantsFile,
+                  skillBirthRulesFile,
+                  founderGoblinFile,
+                  pureGoblinFile,
+                },
                 body,
               ),
             )
@@ -846,13 +887,25 @@ async function readGoblinStudioData(paths: {
   jobsFile: string
   variantsFile: string
   skillBirthRulesFile: string
+  founderGoblinFile: string
+  pureGoblinFile: string
 }): Promise<GoblinStudioData> {
-  const [racesSource, factorsSource, jobsSource, variantsSource, skillBirthRulesSource] = await Promise.all([
+  const [
+    racesSource,
+    factorsSource,
+    jobsSource,
+    variantsSource,
+    skillBirthRulesSource,
+    founderGoblinSource,
+    pureGoblinSource,
+  ] = await Promise.all([
     fs.readFile(paths.racesFile, 'utf8'),
     fs.readFile(paths.factorsFile, 'utf8'),
     fs.readFile(paths.jobsFile, 'utf8'),
     fs.readFile(paths.variantsFile, 'utf8'),
     fs.readFile(paths.skillBirthRulesFile, 'utf8'),
+    fs.readFile(paths.founderGoblinFile, 'utf8'),
+    fs.readFile(paths.pureGoblinFile, 'utf8'),
   ])
 
   const racesObject = evaluateObjectLiteral<
@@ -885,6 +938,12 @@ async function readGoblinStudioData(paths: {
   )
   const pureGoblinSkillManifestationRules = evaluateObjectLiteral<PureGoblinSkillManifestationRule[]>(
     extractConstArrayLiteral(skillBirthRulesSource, 'pureGoblinSkillManifestationRules'),
+  )
+  const founder = evaluateObjectLiteral<FounderGoblinSeed>(
+    extractConstObjectLiteral(founderGoblinSource, 'founderGoblinSeed'),
+  )
+  const pureGoblin = evaluateObjectLiteral<PureGoblinSeed>(
+    extractConstObjectLiteral(pureGoblinSource, 'pureGoblinSeed'),
   )
   const variantFactors: GoblinFactorSeed[] = Object.values(variantsObject).map((variant) => ({
     id: variant.factorId,
@@ -919,6 +978,8 @@ async function readGoblinStudioData(paths: {
     variants: Object.values(variantsObject),
     factorSkillInheritanceRules: Object.values(factorSkillInheritanceRulesObject),
     pureGoblinSkillManifestationRules,
+    pureGoblin,
+    founder,
   }
 }
 
@@ -929,6 +990,8 @@ async function writeGoblinStudioData(
     jobsFile: string
     variantsFile: string
     skillBirthRulesFile: string
+    founderGoblinFile: string
+    pureGoblinFile: string
   },
   body: unknown,
 ) {
@@ -936,12 +999,22 @@ async function writeGoblinStudioData(
     throw new Error('Invalid goblin data payload')
   }
 
-  const [racesSource, factorsSource, jobsSource, variantsSource, skillBirthRulesSource] = await Promise.all([
+  const [
+    racesSource,
+    factorsSource,
+    jobsSource,
+    variantsSource,
+    skillBirthRulesSource,
+    founderGoblinSource,
+    pureGoblinSource,
+  ] = await Promise.all([
     fs.readFile(paths.racesFile, 'utf8'),
     fs.readFile(paths.factorsFile, 'utf8'),
     fs.readFile(paths.jobsFile, 'utf8'),
     fs.readFile(paths.variantsFile, 'utf8'),
     fs.readFile(paths.skillBirthRulesFile, 'utf8'),
+    fs.readFile(paths.founderGoblinFile, 'utf8'),
+    fs.readFile(paths.pureGoblinFile, 'utf8'),
   ])
 
   const racesObject = Object.fromEntries(
@@ -1025,6 +1098,16 @@ async function writeGoblinStudioData(
     'pureGoblinSkillManifestationRules',
     formatJsValue(body.pureGoblinSkillManifestationRules, 0),
   )
+  const nextFounderGoblin = replaceConstObjectLiteral(
+    founderGoblinSource,
+    'founderGoblinSeed',
+    formatJsValue(body.founder, 0),
+  )
+  const nextPureGoblin = replaceConstObjectLiteral(
+    pureGoblinSource,
+    'pureGoblinSeed',
+    formatJsValue(body.pureGoblin, 0),
+  )
 
   await Promise.all([
     fs.writeFile(paths.racesFile, nextRaces, 'utf8'),
@@ -1032,6 +1115,8 @@ async function writeGoblinStudioData(
     fs.writeFile(paths.jobsFile, nextJobs, 'utf8'),
     fs.writeFile(paths.variantsFile, nextVariants, 'utf8'),
     fs.writeFile(paths.skillBirthRulesFile, nextSkillBirthRules, 'utf8'),
+    fs.writeFile(paths.founderGoblinFile, nextFounderGoblin, 'utf8'),
+    fs.writeFile(paths.pureGoblinFile, nextPureGoblin, 'utf8'),
   ])
 
   return { ok: true }
@@ -1205,6 +1290,64 @@ function isGoblinStudioDataShape(value: unknown): value is GoblinStudioData {
     Array.isArray(record.jobs) &&
     Array.isArray(record.variants) &&
     Array.isArray(record.factorSkillInheritanceRules) &&
-    Array.isArray(record.pureGoblinSkillManifestationRules)
+    Array.isArray(record.pureGoblinSkillManifestationRules) &&
+    isFounderGoblinSeedShape(record.founder) &&
+    isPureGoblinSeedShape(record.pureGoblin)
+  )
+}
+
+function isPureGoblinSeedShape(value: unknown): value is PureGoblinSeed {
+  if (!value || typeof value !== 'object') return false
+  const record = value as Record<string, unknown>
+  if (typeof record.hpCoefficient !== 'number') return false
+  if (
+    !Array.isArray(record.defaultSkillIds) ||
+    !record.defaultSkillIds.every((id) => typeof id === 'string')
+  ) {
+    return false
+  }
+  const attrs = record.baseAttributes as Record<string, unknown> | undefined
+  if (!attrs || typeof attrs !== 'object') return false
+  return (
+    typeof attrs.power === 'number' &&
+    typeof attrs.wisdom === 'number' &&
+    typeof attrs.spirit === 'number' &&
+    typeof attrs.vitality === 'number' &&
+    typeof attrs.agility === 'number' &&
+    typeof attrs.luck === 'number'
+  )
+}
+
+function isFounderGoblinSeedShape(value: unknown): value is FounderGoblinSeed {
+  if (!value || typeof value !== 'object') return false
+  const record = value as Record<string, unknown>
+  if (
+    typeof record.id !== 'number' ||
+    typeof record.name !== 'string' ||
+    typeof record.race !== 'string' ||
+    typeof record.raceId !== 'string' ||
+    typeof record.level !== 'number' ||
+    typeof record.experience !== 'number' ||
+    typeof record.avatar !== 'string'
+  ) {
+    return false
+  }
+  const stats = record.stats as Record<string, unknown> | undefined
+  if (!stats || typeof stats !== 'object') return false
+  if (
+    !(
+      typeof stats.hp === 'number' &&
+      typeof stats.atk === 'number' &&
+      typeof stats.def === 'number' &&
+      typeof stats.attackCount === 'number' &&
+      typeof stats.accuracy === 'number' &&
+      typeof stats.evasion === 'number'
+    )
+  ) {
+    return false
+  }
+  return (
+    Array.isArray(record.defaultSkillIds) &&
+    record.defaultSkillIds.every((id) => typeof id === 'string')
   )
 }
