@@ -324,6 +324,9 @@ const ja = {
         goldenAcornBulkPromptBody: '{{count}}PT分（{{count}}個）を消費し、各PTの探索時間 1/2、Gold・レア・称号 2倍 で出撃します。\n残り {{remaining}} 個',
         goldenAcornBulkUseAndStart: '全PTで使用して出撃',
         goldenAcornBulkStartWithout: '使わずに出撃',
+        bulkLaunchConfirmTitle: '出撃するパーティ',
+        bulkLaunchConfirmBody: '{{names}}',
+        bulkLaunchGoldenAcornButton: '★金のドングリを使用',
       },
       preparation: {
         title: '冒険準備',
@@ -364,6 +367,11 @@ const ja = {
         goldenAcornPromptBody: '探索時間 1/2、Gold・レア・称号倍率がすべて 2倍 になります。\n残り {{count}} 個',
         goldenAcornUseAndStart: '使用して出発',
         goldenAcornStartWithout: '使わずに出発',
+        launchConfirmBody: '目標階層：{{target}}\n帰還条件：{{returnPolicy}}\n探索時間：{{explorationTime}}',
+        launchConfirmTargetDeepest: '最下層まで攻略する',
+        launchConfirmTargetUntil: '{{floor}}フロアまで攻略する',
+        launchConfirmDurationFormat: '{{hours}}時間{{minutes}}分{{seconds}}秒',
+        launchConfirmGoldenAcornButton: '★金のドングリを使用',
       },
       edit: {
         title: 'メンバー編集',

@@ -319,6 +319,9 @@ const ko = {
         abortConfirmTitle: '귀환 확인',
         abortConfirmBody: '원정을 중도 종료합니다.\n골드와 아이템은 가져올 수 없습니다.\n경험치와 HP 상태는 유지됩니다.',
         abortConfirmOk: '귀환하기',
+        bulkLaunchConfirmTitle: '출격할 파티',
+        bulkLaunchConfirmBody: '{{names}}',
+        bulkLaunchGoldenAcornButton: '★금 도토리 사용',
       },
       preparation: {
         title: '원정 준비',
@@ -355,6 +358,11 @@ const ko = {
         startFailedTitle: '원정에 실패했습니다',
         startFailedBody: '원정 시작 중 오류가 발생했습니다',
         pendingOverflowBody: '대기 슬롯이 가득 찼습니다. 원정 성공 시 고블린이 추가되면 받지 못하고 폐기될 수 있습니다. 출격할까요?',
+        launchConfirmBody: '목표 층: {{target}}\n귀환 조건: {{returnPolicy}}\n탐색 시간: {{explorationTime}}',
+        launchConfirmTargetDeepest: '최하층까지 탐색',
+        launchConfirmTargetUntil: '{{floor}}층까지 공략',
+        launchConfirmDurationFormat: '{{hours}}시간 {{minutes}}분 {{seconds}}초',
+        launchConfirmGoldenAcornButton: '★금 도토리 사용',
       },
       edit: {
         title: '멤버 편집',

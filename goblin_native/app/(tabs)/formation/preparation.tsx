@@ -353,25 +353,55 @@ export default function ExpeditionPreparationScreen() {
       }
     }
 
-    const promptGoldenAcorn = (onChoose: (useAcorn: boolean) => void) => {
+    const promptGoldenAcornDetails = () => {
       const acornCount = getGoldenAcornCount()
-      if (acornCount <= 0) {
-        onChoose(false)
-        return
-      }
       Alert.alert(
         t('ui.formation.preparation.goldenAcornPromptTitle'),
         t('ui.formation.preparation.goldenAcornPromptBody', { count: acornCount }),
         [
           { text: t('ui.common.cancel'), style: 'cancel' },
-          { text: t('ui.formation.preparation.goldenAcornStartWithout'), onPress: () => onChoose(false) },
-          { text: t('ui.formation.preparation.goldenAcornUseAndStart'), onPress: () => onChoose(true) },
+          { text: t('ui.formation.preparation.goldenAcornUseAndStart'), onPress: () => void doStartExpedition(true) },
         ],
       )
     }
 
-    const launchWithGoldenAcornPrompt = () => {
-      promptGoldenAcorn((useAcorn) => void doStartExpedition(useAcorn))
+    const showLaunchConfirmation = () => {
+      const dungeonLabel = getDungeonTierDisplayName(
+        formatDungeonLabel(selectedDungeon, selectedTier),
+        selectedTier,
+      )
+      const targetText = selectedTargetFloor === null
+        ? t('ui.formation.preparation.launchConfirmTargetDeepest')
+        : t('ui.formation.preparation.launchConfirmTargetUntil', { floor: selectedTargetFloor })
+      const returnPolicyText = getReturnPolicyLabel(selectedReturnPolicy)
+      const totalSeconds = estimatedExplorationTime ?? 0
+      const hours = Math.floor(totalSeconds / 3600)
+      const minutes = Math.floor((totalSeconds % 3600) / 60)
+      const seconds = totalSeconds % 60
+      const explorationTimeText = t('ui.formation.preparation.launchConfirmDurationFormat', {
+        hours,
+        minutes,
+        seconds,
+      })
+      const body = t('ui.formation.preparation.launchConfirmBody', {
+        target: targetText,
+        returnPolicy: returnPolicyText,
+        explorationTime: explorationTimeText,
+      })
+
+      const acornCount = getGoldenAcornCount()
+      const buttons: Array<{ text: string; style?: 'cancel' | 'destructive'; onPress?: () => void }> = [
+        { text: t('ui.formation.common.launch'), onPress: () => void doStartExpedition(false) },
+      ]
+      if (acornCount > 0) {
+        buttons.push({
+          text: t('ui.formation.preparation.launchConfirmGoldenAcornButton'),
+          onPress: promptGoldenAcornDetails,
+        })
+      }
+      buttons.push({ text: t('ui.common.cancel'), style: 'cancel' })
+
+      Alert.alert(dungeonLabel, body, buttons)
     }
 
     const maxPendingGoblins = rank * 5
@@ -381,20 +411,22 @@ export default function ExpeditionPreparationScreen() {
         t('ui.formation.preparation.pendingOverflowBody'),
         [
           { text: t('ui.common.cancel'), style: 'cancel' },
-          { text: t('ui.formation.common.launch'), onPress: launchWithGoldenAcornPrompt },
+          { text: t('ui.formation.common.launch'), onPress: showLaunchConfirmation },
         ],
       )
       return
     }
 
-    launchWithGoldenAcornPrompt()
+    showLaunchConfirmation()
   }, [
+    estimatedExplorationTime,
     pendingGoblins.length,
     party,
     rank,
     selectedDungeon,
     selectedDungeonId,
     selectedReturnPolicy,
+    selectedTargetFloor,
     selectedTier,
     partyMembers.length,
     startExpedition,
