@@ -386,13 +386,8 @@ export default function FormationScreen() {
       return
     }
 
-    const promptGoldenAcornBulk = (onChoose: (useAcorn: boolean) => void) => {
+    const promptGoldenAcornBulkDetails = () => {
       const acornCount = getGoldenAcornCount()
-      // 全PT分のドングリを保有している場合のみ選択肢を出す
-      if (acornCount < inputs.length) {
-        onChoose(false)
-        return
-      }
       Alert.alert(
         t('ui.formation.index.goldenAcornBulkPromptTitle'),
         t('ui.formation.index.goldenAcornBulkPromptBody', {
@@ -401,14 +396,27 @@ export default function FormationScreen() {
         }),
         [
           { text: t('ui.common.cancel'), style: 'cancel' },
-          { text: t('ui.formation.index.goldenAcornBulkStartWithout'), onPress: () => onChoose(false) },
-          { text: t('ui.formation.index.goldenAcornBulkUseAndStart'), onPress: () => onChoose(true) },
+          { text: t('ui.formation.index.goldenAcornBulkUseAndStart'), onPress: () => void doBulkLaunch(true) },
         ],
       )
     }
 
-    const launchWithGoldenAcornPrompt = () => {
-      promptGoldenAcornBulk((useAcorn) => void doBulkLaunch(useAcorn))
+    const showBulkLaunchConfirmation = () => {
+      const names = inputs.map((input) => input.party.name).join('\n')
+      const body = t('ui.formation.index.bulkLaunchConfirmBody', { names })
+      const acornCount = getGoldenAcornCount()
+      const buttons: Array<{ text: string; style?: 'cancel' | 'destructive'; onPress?: () => void }> = [
+        { text: t('ui.formation.common.launch'), onPress: () => void doBulkLaunch(false) },
+      ]
+      if (acornCount >= inputs.length) {
+        buttons.push({
+          text: t('ui.formation.index.bulkLaunchGoldenAcornButton'),
+          onPress: promptGoldenAcornBulkDetails,
+        })
+      }
+      buttons.push({ text: t('ui.common.cancel'), style: 'cancel' })
+
+      Alert.alert(t('ui.formation.index.bulkLaunchConfirmTitle'), body, buttons)
     }
 
     const maxPendingGoblins = rank * 5
@@ -419,13 +427,13 @@ export default function FormationScreen() {
         t('ui.formation.index.pendingOverflowBody', { count: inputs.length }),
         [
           { text: t('ui.common.cancel'), style: 'cancel' },
-          { text: t('ui.formation.common.launch'), onPress: launchWithGoldenAcornPrompt },
+          { text: t('ui.formation.common.launch'), onPress: showBulkLaunchConfirmation },
         ],
       )
       return
     }
 
-    launchWithGoldenAcornPrompt()
+    showBulkLaunchConfirmation()
   }, [dungeons, parties, pendingGoblins.length, rank, startBulkExpedition, t])
 
   const canBulkLaunch = useMemo(() => {

@@ -324,6 +324,9 @@ const en = {
         goldenAcornBulkPromptBody: 'Spend {{count}} acorns to halve travel time and double Gold, rare drops, and titles for each party.\n{{remaining}} remaining',
         goldenAcornBulkUseAndStart: 'Use for All & Dispatch',
         goldenAcornBulkStartWithout: 'Dispatch Without',
+        bulkLaunchConfirmTitle: 'Parties to Dispatch',
+        bulkLaunchConfirmBody: '{{names}}',
+        bulkLaunchGoldenAcornButton: '★ Use Golden Acorns',
       },
       preparation: {
         title: 'Expedition Prep',
@@ -364,6 +367,11 @@ const en = {
         goldenAcornPromptBody: 'Halves travel time and doubles Gold, rare drops, and titles.\n{{count}} remaining',
         goldenAcornUseAndStart: 'Use and Dispatch',
         goldenAcornStartWithout: 'Dispatch Without',
+        launchConfirmBody: 'Target Floor: {{target}}\nReturn Policy: {{returnPolicy}}\nDuration: {{explorationTime}}',
+        launchConfirmTargetDeepest: 'Explore to the deepest floor',
+        launchConfirmTargetUntil: 'Up to Floor {{floor}}',
+        launchConfirmDurationFormat: '{{hours}}h {{minutes}}m {{seconds}}s',
+        launchConfirmGoldenAcornButton: '★ Use Golden Acorn',
       },
       edit: {
         title: 'Edit Members',
