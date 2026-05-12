@@ -9,6 +9,7 @@ import {
   getPartyRareMultiplierFromSkills,
   getPartyTitleMultiplierFromSkills,
   getCharacterSkillEffectDescriptions,
+  getCriticalDamageBonusFromSkills,
   getLearnedSpellsFromSkills,
   getMagicDamageFollowUpFromSkills,
   getMagicDamageReductionFromSkills,
@@ -184,6 +185,25 @@ describe('characterSkills - 物理ダメージ軽減', () => {
     ]
 
     expect(getPhysicalDamagePercentFromSkills(skills)).toBe(10)
+  })
+
+  it('会心威力スキルの値を合算する', () => {
+    const skills: CharacterSkill[] = [
+      { id: 'critical_damage_6', criticalDamageBonusPercent: 6 },
+      { id: 'critical_damage_7', criticalDamageBonusPercent: 7 },
+      { id: 'other', additionalDamage: 13 },
+    ]
+
+    expect(getCriticalDamageBonusFromSkills(skills)).toBe(13)
+  })
+
+  it('同じidの会心威力スキルは重複計算しない', () => {
+    const skills: CharacterSkill[] = [
+      { id: 'critical_damage_shared', criticalDamageBonusPercent: 10 },
+      { id: 'critical_damage_shared', criticalDamageBonusPercent: 10 },
+    ]
+
+    expect(getCriticalDamageBonusFromSkills(skills)).toBe(10)
   })
 
   it('同じidの後列保護スキルは重複計算しない', () => {

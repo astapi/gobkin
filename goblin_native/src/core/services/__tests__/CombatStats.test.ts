@@ -798,6 +798,7 @@ describe('BattleSystem — 命中判定と複数回攻撃', () => {
       magicAtk: 0,
       magicHeal: 0,
       criticalRate: 0,
+      criticalDamageBonusPercent: 0,
       spellDamagePercent: 0,
       magicFieldDamageMultiplier: 1,
       row: 0,
@@ -849,6 +850,93 @@ describe('BattleSystem — 命中判定と複数回攻撃', () => {
     const detail = [...result.targetDetails.values()][0]
     expect(result.totalHitCount).toBe(1)
     expect(detail.totalDamage).toBe(100)
+  })
+
+  it('会心威力スキルは会心時の通常攻撃ダメージを増加させる', () => {
+    const fakeDamageCalculator = {
+      calcDamage: jest.fn(() => 100),
+    }
+    const battle = new BattleSystem(undefined, fakeDamageCalculator as any)
+    const attacker: any = {
+      combatant: {
+        id: '1',
+        name: '攻撃者',
+        atk: 100,
+        def: 0,
+        attackCount: 1,
+        accuracy: 999,
+        evasion: 0,
+        raceTags: ['goblin'],
+      },
+      currentHP: 100,
+      maxHP: 100,
+      power: 10,
+      agility: 10,
+      luck: 10,
+      attackCount: 1,
+      accuracy: 999,
+      evasion: 0,
+      isAlly: true,
+      originalIndex: 0,
+      damageReduction: 0,
+      physicalDamageReduction: 0,
+      magicDamageReduction: 0,
+      breathDamageReduction: 0,
+      shieldBarrierDamageReduction: 0,
+      shieldBarrierBreathDamageReduction: 0,
+      magicBarrierDamageReduction: 0,
+      physicalDamageDealtMultiplier: 1,
+      physicalDamagePercent: 0,
+      magicAtk: 0,
+      magicHeal: 0,
+      criticalRate: 100,
+      criticalDamageBonusPercent: 50,
+      spellDamagePercent: 0,
+      magicFieldDamageMultiplier: 1,
+      row: 0,
+      rowSlot: 0,
+      level: 1,
+      spellCharges: [],
+      skills: [{ id: 'critical_damage_50', criticalDamageBonusPercent: 50 }],
+      battleActionPolicy: {},
+      isDefending: false,
+    }
+    const target: any = {
+      ...attacker,
+      combatant: {
+        id: 'E',
+        name: '対象',
+        atk: 0,
+        def: 0,
+        attackCount: 0,
+        accuracy: 0,
+        evasion: 0,
+        raceTags: ['human'],
+      },
+      currentHP: 1000,
+      maxHP: 1000,
+      isAlly: false,
+      criticalRate: 0,
+      criticalDamageBonusPercent: 0,
+    }
+
+    const result = (battle as any).executeBasicAttack(
+      attacker,
+      [target],
+      [attacker],
+      [attacker],
+      1,
+      [],
+      new Set(),
+      new Set(),
+      () => 0,
+      1,
+      100,
+    )
+
+    const detail = [...result.targetDetails.values()][0]
+    expect(result.isCritical).toBe(true)
+    expect(detail.totalDamage).toBe(150)
   })
 
   it('命中精度0・回避極大でほぼ全ミスになる', () => {
@@ -1641,6 +1729,7 @@ describe('selectTarget — 隊列ターゲット選択', () => {
       magicAtk: 0,
       magicHeal: 0,
       criticalRate: 0,
+      criticalDamageBonusPercent: 0,
       spellDamagePercent: 0,
       magicFieldDamageMultiplier: 1,
       row,
