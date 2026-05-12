@@ -6,6 +6,7 @@ import {
   getAdditionalDamageFromSkills,
   getMagicDamageFollowUpFromSkills,
   getCriticalAttackFollowUpFromSkills,
+  getCriticalDamageBonusFromSkills,
   getPhysicalCounterAttackFromSkills,
   getCounterAttackAvoidanceRateFromSkills,
   getPhysicalDamagePercentFromSkills,
@@ -84,6 +85,7 @@ interface BattleUnit {
   magicAtk: number              // 魔法攻撃力
   magicHeal: number             // 魔法回復量
   criticalRate: number          // 必殺率（%）
+  criticalDamageBonusPercent: number // 会心威力上昇（%）
   spellDamagePercent: number    // 魔法威力の増減（%）
   magicFieldDamageMultiplier: number // PT効果による魔法与ダメージ倍率
   shieldBarrierActive?: boolean  // シールドバリア状態
@@ -705,9 +707,12 @@ export class BattleSystem {
         const protectionFactor = this.getRearGuardReductionFactor(attackTarget, allyUnits)
         const defendingFactor = this.getDefendingDamageFactor(attackTarget)
         const physicalDamageFactor = 1 + unit.physicalDamagePercent / 100
+        const criticalDamageFactor = isCritical
+          ? 1 + (unit.criticalDamageBonusPercent ?? 0) / 100
+          : 1
         const damage = Math.max(
           1,
-          Math.floor((baseDamage * dmgMod * rearDamageMultiplier * rowDamageMultiplier + additionalDamage) * physicalDamageFactor * unit.physicalDamageDealtMultiplier * reductionFactor * physicalReductionFactor * shieldBarrierReductionFactor * protectionFactor * defendingFactor * damageMultiplier),
+          Math.floor((baseDamage * dmgMod * rearDamageMultiplier * rowDamageMultiplier + additionalDamage) * physicalDamageFactor * criticalDamageFactor * unit.physicalDamageDealtMultiplier * reductionFactor * physicalReductionFactor * shieldBarrierReductionFactor * protectionFactor * defendingFactor * damageMultiplier),
         )
 
         this.applyDamage(attackTarget, damage)
@@ -1598,6 +1603,7 @@ export class BattleSystem {
       magicAtk: effectiveStats.magicAtk,
       magicHeal: effectiveStats.magicHeal,
       criticalRate: effectiveStats.criticalRate,
+      criticalDamageBonusPercent: getCriticalDamageBonusFromSkills(goblin.skills),
       spellDamagePercent: getSpellDamagePercentFromSkills(goblin.skills),
       magicFieldDamageMultiplier: 1,
       shieldBarrierActive: false,
@@ -1650,6 +1656,7 @@ export class BattleSystem {
       magicAtk: enemy.magicAtk ?? enemy.atk,
       magicHeal: enemy.magicHeal ?? 0,
       criticalRate: enemy.criticalRate ?? 0,
+      criticalDamageBonusPercent: getCriticalDamageBonusFromSkills(skills),
       spellDamagePercent: getSpellDamagePercentFromSkills(skills),
       magicFieldDamageMultiplier: 1,
       shieldBarrierActive: false,
