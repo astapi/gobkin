@@ -124,6 +124,22 @@ const en = {
       add: 'Add',
       dismiss: 'Dismiss',
       processing: 'Processing...',
+      sort: {
+        party: 'By Party',
+        hp: 'By HP',
+      },
+      filter: {
+        trigger: 'Filter',
+        title: 'Filter',
+        reset: 'Reset',
+        raceSection: 'Variant',
+        jobSection: 'Job',
+        applyWithCount: 'Show {{count}}',
+        allRaces: 'All',
+        pureGoblin: 'Pure Goblin',
+        allJobs: 'All',
+        noJob: 'No Job',
+      },
     },
     equipmentList: {
       title: 'Equipment List',

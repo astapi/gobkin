@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useRef, useState } from 'react'
 import { useFocusEffect } from 'expo-router'
-import { View, Text, TouchableOpacity, Pressable, StyleSheet, FlatList, ActivityIndicator, Image, Alert } from 'react-native'
+import { View, Text, TouchableOpacity, Pressable, StyleSheet, FlatList, ScrollView, ActivityIndicator, Image, Alert, Modal } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { router } from 'expo-router'
 import { useTranslation } from 'react-i18next'
@@ -11,7 +11,8 @@ import { usePartyStore } from '@/presentation/stores/usePartyStore'
 import { GoblinCard } from '@/presentation/components/GoblinCard'
 import { useTutorialStore } from '@/presentation/stores/useTutorialStore'
 import { useTutorialTarget } from '@/presentation/hooks/useTutorialTarget'
-import type { Goblin } from '@/shared/types'
+import type { Goblin, GoblinJob } from '@/shared/types'
+import { GOBLIN_RACE_IDS, normalizeGoblinRaceId, type GoblinRaceId } from '@/shared/types/Race'
 import { getGoblinDisplayImage } from '@/shared/utils/goblinImages'
 import { getEffectiveStats } from '@/shared/utils/goblinStats'
 import { isProtectedGoblin } from '@/shared/utils/goblinProtection'
@@ -19,9 +20,26 @@ import { getFactorImage } from '@/shared/utils/factorImages'
 import { getFactor } from '@/shared/data/factors'
 import { getDefaultSkillsForRace } from '@/shared/data/raceSkills'
 import { getUniqueSkillsById } from '@/shared/data/characterSkills'
-import { GOBLIN_JOB_SKILL_IDS } from '@/shared/data/goblinJobs'
+import { GOBLIN_JOB_SKILL_IDS, isPureGoblin } from '@/shared/data/goblinJobs'
 import { EQUIPMENT_GRANTED_SKILL_IDS } from '@/shared/data/equipmentPoolLoader'
-import { getFactorName, getSkillLabel } from '@/shared/i18n/entityLocalization'
+import { getFactorName, getGoblinJobLabel, getRaceLabel, getSkillLabel } from '@/shared/i18n/entityLocalization'
+
+type SortKey = 'party' | 'hp'
+type RaceFilter = 'all' | 'pure' | GoblinRaceId
+type JobFilter = 'all' | 'none' | GoblinJob
+
+function FilterChip({ label, active, onPress }: { label: string; active: boolean; onPress: () => void }) {
+  return (
+    <TouchableOpacity
+      style={[styles.filterChip, active && styles.filterChipActive]}
+      onPress={onPress}
+    >
+      <Text style={[styles.filterChipText, active && styles.filterChipTextActive]} numberOfLines={1}>
+        {label}
+      </Text>
+    </TouchableOpacity>
+  )
+}
 
 function getCardUniqueSkills(goblin: Goblin) {
   const raceSkillIds = new Set(
@@ -72,16 +90,79 @@ export default function GoblinListScreen() {
 
   const hasCapacity = goblins.length < maxGoblins
   const maxPendingGoblins = rank * 5
-  const [sortKey, setSortKey] = useState<'level' | 'atk' | 'hp'>('level')
+  const [sortKey, setSortKey] = useState<SortKey>('party')
+  const [raceFilter, setRaceFilter] = useState<RaceFilter>('all')
+  const [jobFilter, setJobFilter] = useState<JobFilter>('all')
+  const [isFilterModalVisible, setIsFilterModalVisible] = useState(false)
+  const activeFilterCount = (raceFilter !== 'all' ? 1 : 0) + (jobFilter !== 'all' ? 1 : 0)
 
-  const sortedGoblins = useMemo(() => (
-    [...goblins].sort((a, b) => {
-      if (sortKey === 'level') return b.level - a.level
-      const statsA = getEffectiveStats(a)
-      const statsB = getEffectiveStats(b)
-      return sortKey === 'atk' ? statsB.atk - statsA.atk : statsB.hp - statsA.hp
+  const hasPureGoblin = useMemo(() => goblins.some(isPureGoblin), [goblins])
+  const availableRaceIds = useMemo(() => {
+    const owned = new Set<GoblinRaceId>()
+    goblins.forEach((goblin) => {
+      const raceId = normalizeGoblinRaceId(goblin.raceId ?? goblin.race)
+      if (raceId !== 'goblin' && raceId !== 'founder') {
+        owned.add(raceId)
+      }
     })
-  ), [goblins, sortKey])
+    return GOBLIN_RACE_IDS.filter((id) => owned.has(id))
+  }, [goblins])
+  const availableJobs = useMemo(() => {
+    const owned = new Set<GoblinJob>()
+    goblins.forEach((goblin) => {
+      if (goblin.job) owned.add(goblin.job)
+    })
+    return Array.from(owned)
+  }, [goblins])
+  const hasUnemployedPureGoblin = useMemo(
+    () => goblins.some((goblin) => isPureGoblin(goblin) && !goblin.job),
+    [goblins],
+  )
+  const hasJobFilterOptions = availableJobs.length > 0 || hasUnemployedPureGoblin
+
+  const filteredGoblins = useMemo(() => (
+    goblins.filter((goblin) => {
+      if (raceFilter === 'pure') {
+        if (!isPureGoblin(goblin)) return false
+      } else if (raceFilter !== 'all') {
+        if (normalizeGoblinRaceId(goblin.raceId ?? goblin.race) !== raceFilter) return false
+      }
+      if (jobFilter === 'none') {
+        if (goblin.job) return false
+      } else if (jobFilter !== 'all') {
+        if (goblin.job !== jobFilter) return false
+      }
+      return true
+    })
+  ), [goblins, raceFilter, jobFilter])
+
+  const sortedGoblins = useMemo(() => {
+    if (sortKey === 'hp') {
+      return [...filteredGoblins].sort((a, b) => (
+        getEffectiveStats(b).hp - getEffectiveStats(a).hp
+      ))
+    }
+    const partyMemberIds: number[] = []
+    const seen = new Set<number>()
+    parties.forEach((party) => {
+      party.memberIds.forEach((memberId) => {
+        if (!seen.has(memberId)) {
+          seen.add(memberId)
+          partyMemberIds.push(memberId)
+        }
+      })
+    })
+    const byId = new Map<number, Goblin>(filteredGoblins.map((g) => [g.id, g]))
+    const ordered: Goblin[] = []
+    partyMemberIds.forEach((id) => {
+      const found = byId.get(id)
+      if (found) ordered.push(found)
+    })
+    const others = filteredGoblins
+      .filter((g) => !seen.has(g.id))
+      .sort((a, b) => b.level - a.level)
+    return [...ordered, ...others]
+  }, [filteredGoblins, parties, sortKey])
 
   const partyNameByGoblinId = useMemo(() => {
     const mapping = new Map<number, string>()
@@ -405,23 +486,133 @@ export default function GoblinListScreen() {
           <Text style={styles.headerTitle}>{t('ui.goblinList.title')}</Text>
           <Text style={styles.headerCount}>{goblins.length} / {maxGoblins}</Text>
         </View>
-        <View style={styles.sortRow}>
-          {(['level', 'atk', 'hp'] as const).map((key) => (
-            <TouchableOpacity
-              key={key}
-              style={[styles.sortButton, sortKey === key && styles.sortButtonActive]}
-              onPress={() => {
-                closeOpenSwipeable()
-                setSortKey(key)
-              }}
+        <View style={styles.controlsRow}>
+          <View style={styles.sortRow}>
+            {(['party', 'hp'] as const).map((key) => (
+              <TouchableOpacity
+                key={key}
+                style={[styles.sortButton, sortKey === key && styles.sortButtonActive]}
+                onPress={() => {
+                  closeOpenSwipeable()
+                  setSortKey(key)
+                }}
+              >
+                <Text style={[styles.sortButtonText, sortKey === key && styles.sortButtonTextActive]}>
+                  {t(`ui.goblinList.sort.${key}`)}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+          <TouchableOpacity
+            style={[styles.filterTriggerButton, activeFilterCount > 0 && styles.filterTriggerButtonActive]}
+            onPress={() => {
+              closeOpenSwipeable()
+              setIsFilterModalVisible(true)
+            }}
+          >
+            <Text
+              style={[styles.filterTriggerText, activeFilterCount > 0 && styles.filterTriggerTextActive]}
             >
-              <Text style={[styles.sortButtonText, sortKey === key && styles.sortButtonTextActive]}>
-                {key === 'level' ? 'Lv' : key.toUpperCase()}
-              </Text>
-            </TouchableOpacity>
-          ))}
+              {t('ui.goblinList.filter.trigger')}
+            </Text>
+            {activeFilterCount > 0 && (
+              <View style={styles.filterTriggerBadge}>
+                <Text style={styles.filterTriggerBadgeText}>{activeFilterCount}</Text>
+              </View>
+            )}
+          </TouchableOpacity>
         </View>
       </View>
+      <Modal
+        visible={isFilterModalVisible}
+        animationType="slide"
+        transparent
+        onRequestClose={() => setIsFilterModalVisible(false)}
+      >
+        <Pressable style={styles.modalBackdrop} onPress={() => setIsFilterModalVisible(false)}>
+          <Pressable style={styles.modalSheet} onPress={(e) => e.stopPropagation()}>
+            <View style={styles.modalHandle} />
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>{t('ui.goblinList.filter.title')}</Text>
+              <TouchableOpacity
+                onPress={() => {
+                  setRaceFilter('all')
+                  setJobFilter('all')
+                }}
+                disabled={activeFilterCount === 0}
+              >
+                <Text
+                  style={[styles.modalResetText, activeFilterCount === 0 && styles.modalResetTextDisabled]}
+                >
+                  {t('ui.goblinList.filter.reset')}
+                </Text>
+              </TouchableOpacity>
+            </View>
+            <ScrollView contentContainerStyle={styles.modalBody}>
+              <Text style={styles.modalSectionTitle}>{t('ui.goblinList.filter.raceSection')}</Text>
+              <View style={styles.modalChipWrap}>
+                <FilterChip
+                  label={t('ui.goblinList.filter.allRaces')}
+                  active={raceFilter === 'all'}
+                  onPress={() => setRaceFilter('all')}
+                />
+                {hasPureGoblin && (
+                  <FilterChip
+                    label={t('ui.goblinList.filter.pureGoblin')}
+                    active={raceFilter === 'pure'}
+                    onPress={() => setRaceFilter('pure')}
+                  />
+                )}
+                {availableRaceIds.map((raceId) => (
+                  <FilterChip
+                    key={raceId}
+                    label={getRaceLabel(raceId)}
+                    active={raceFilter === raceId}
+                    onPress={() => setRaceFilter(raceId)}
+                  />
+                ))}
+              </View>
+              {hasJobFilterOptions && (
+                <>
+                  <Text style={[styles.modalSectionTitle, styles.modalSectionTitleSpaced]}>
+                    {t('ui.goblinList.filter.jobSection')}
+                  </Text>
+                  <View style={styles.modalChipWrap}>
+                    <FilterChip
+                      label={t('ui.goblinList.filter.allJobs')}
+                      active={jobFilter === 'all'}
+                      onPress={() => setJobFilter('all')}
+                    />
+                    {hasUnemployedPureGoblin && (
+                      <FilterChip
+                        label={t('ui.goblinList.filter.noJob')}
+                        active={jobFilter === 'none'}
+                        onPress={() => setJobFilter('none')}
+                      />
+                    )}
+                    {availableJobs.map((job) => (
+                      <FilterChip
+                        key={job}
+                        label={getGoblinJobLabel(job)}
+                        active={jobFilter === job}
+                        onPress={() => setJobFilter(job)}
+                      />
+                    ))}
+                  </View>
+                </>
+              )}
+            </ScrollView>
+            <TouchableOpacity
+              style={styles.modalApplyButton}
+              onPress={() => setIsFilterModalVisible(false)}
+            >
+              <Text style={styles.modalApplyButtonText}>
+                {t('ui.goblinList.filter.applyWithCount', { count: sortedGoblins.length })}
+              </Text>
+            </TouchableOpacity>
+          </Pressable>
+        </Pressable>
+      </Modal>
       <FlatList
         data={sortedGoblins}
         keyExtractor={(item) => item.id.toString()}
@@ -498,9 +689,142 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#6B7280',
   },
+  controlsRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 8,
+  },
   sortRow: {
     flexDirection: 'row',
     gap: 8,
+  },
+  filterTriggerButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    paddingVertical: 4,
+    paddingHorizontal: 10,
+    borderRadius: 14,
+    backgroundColor: '#FFFFFF',
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: '#D1D5DB',
+  },
+  filterTriggerButtonActive: {
+    backgroundColor: '#374151',
+    borderColor: '#374151',
+  },
+  filterTriggerText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#4B5563',
+  },
+  filterTriggerTextActive: {
+    color: '#FFFFFF',
+  },
+  filterTriggerBadge: {
+    minWidth: 16,
+    paddingHorizontal: 4,
+    height: 16,
+    borderRadius: 8,
+    backgroundColor: '#10B981',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  filterTriggerBadgeText: {
+    fontSize: 10,
+    fontWeight: '700',
+    color: '#FFFFFF',
+  },
+  filterChip: {
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 14,
+    backgroundColor: '#F3F4F6',
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: '#E5E7EB',
+  },
+  filterChipActive: {
+    backgroundColor: '#10B981',
+    borderColor: '#10B981',
+  },
+  filterChipText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#4B5563',
+  },
+  filterChipTextActive: {
+    color: '#FFFFFF',
+  },
+  modalBackdrop: {
+    flex: 1,
+    backgroundColor: 'rgba(17, 24, 39, 0.4)',
+    justifyContent: 'flex-end',
+  },
+  modalSheet: {
+    backgroundColor: '#FFFFFF',
+    borderTopLeftRadius: 16,
+    borderTopRightRadius: 16,
+    paddingHorizontal: 16,
+    paddingTop: 8,
+    paddingBottom: 24,
+    maxHeight: '80%',
+  },
+  modalHandle: {
+    alignSelf: 'center',
+    width: 36,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: '#D1D5DB',
+    marginBottom: 8,
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 12,
+  },
+  modalTitle: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#1F2937',
+  },
+  modalResetText: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#2563EB',
+  },
+  modalResetTextDisabled: {
+    color: '#9CA3AF',
+  },
+  modalBody: {
+    paddingBottom: 12,
+  },
+  modalSectionTitle: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#374151',
+    marginBottom: 8,
+  },
+  modalSectionTitleSpaced: {
+    marginTop: 16,
+  },
+  modalChipWrap: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+  },
+  modalApplyButton: {
+    marginTop: 8,
+    backgroundColor: '#374151',
+    borderRadius: 10,
+    paddingVertical: 12,
+    alignItems: 'center',
+  },
+  modalApplyButtonText: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#FFFFFF',
   },
   sortButton: {
     paddingVertical: 4,
