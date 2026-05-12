@@ -123,6 +123,22 @@ const ko = {
       add: '추가',
       dismiss: '해고',
       processing: '처리 중...',
+      sort: {
+        party: '파티별',
+        hp: 'HP순',
+      },
+      filter: {
+        trigger: '필터',
+        title: '필터',
+        reset: '초기화',
+        raceSection: '아종',
+        jobSection: '직업',
+        applyWithCount: '{{count}}명 표시',
+        allRaces: '전체',
+        pureGoblin: '순수 고블린',
+        allJobs: '전체',
+        noJob: '직업 없음',
+      },
     },
     equipmentList: {
       title: '장비 목록',

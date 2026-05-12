@@ -124,6 +124,22 @@ const ja = {
       add: '追加',
       dismiss: '解雇',
       processing: '処理中...',
+      sort: {
+        party: 'PT編成順',
+        hp: 'HP順',
+      },
+      filter: {
+        trigger: '絞り込み',
+        title: '絞り込み',
+        reset: 'リセット',
+        raceSection: '亜種',
+        jobSection: 'ジョブ',
+        applyWithCount: '{{count}}体を表示',
+        allRaces: 'すべて',
+        pureGoblin: '純ゴブリン',
+        allJobs: 'すべて',
+        noJob: 'ジョブなし',
+      },
     },
     equipmentList: {
       title: '装備アイテムの一覧',
