@@ -399,6 +399,8 @@ const ja = {
           gold: '取得Gold',
         },
         noPartySkills: 'なし',
+        memberUniqueSkillTitle: 'メンバーの固有スキル',
+        noUniqueSkills: '固有スキルなし',
         statusComparisonTitle: 'ステータス比較',
         factorListTitle: '因子一覧',
         noFactors: '因子なし',

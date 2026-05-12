@@ -390,6 +390,8 @@ const ko = {
           gold: '획득 Gold',
         },
         noPartySkills: '없음',
+        memberUniqueSkillTitle: '멤버 고유 스킬',
+        noUniqueSkills: '고유 스킬 없음',
         statusComparisonTitle: '스테이터스 비교',
         factorListTitle: '인자 목록',
         noFactors: '인자 없음',

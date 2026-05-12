@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, useCallback } from 'react'
-import { ActivityIndicator, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { ActivityIndicator, Alert, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { Stack, router, useLocalSearchParams } from 'expo-router'
 import { useTranslation } from 'react-i18next'
 import { usePartyStore } from '@/presentation/stores/usePartyStore'
@@ -8,9 +8,14 @@ import { getGoblinDisplayImage } from '@/shared/utils/goblinImages'
 import { getFactorImage } from '@/shared/utils/factorImages'
 import { calculateGoblinEffectiveStats, getEffectiveStats } from '@/shared/utils/goblinStats'
 import { getExpForNextLevel } from '@/core/services/ExperienceSystem'
-import { getRowDamageMultiplierFromSkills, getUniqueSkillsById } from '@/shared/data/characterSkills'
+import {
+  getCharacterSkillEffectDescriptions,
+  getRowDamageMultiplierFromSkills,
+  getUniqueSkillsById,
+} from '@/shared/data/characterSkills'
+import { getDefaultSkillsForRace } from '@/shared/data/raceSkills'
 import { getFactor } from '@/shared/data/factors'
-import { getFactorName, getStatLabel } from '@/shared/i18n/entityLocalization'
+import { getFactorName, getSkillLabel, getStatLabel } from '@/shared/i18n/entityLocalization'
 import { SQLiteEquipmentRepository } from '@/infrastructure/repositories/SQLiteEquipmentRepository'
 import { EquipmentService } from '@/core/services/EquipmentService'
 import type { CharacterSkill, Goblin, GoblinStats, Party } from '@/shared/types'
@@ -125,6 +130,20 @@ function getPartySkillEntries(goblin: Goblin, skills: CharacterSkill[]): PartySk
   })
 }
 
+function includesSkillId(skills: readonly CharacterSkill[], skillId: string): boolean {
+  return skills.some((skill) => skill.id === skillId)
+}
+
+function getMemberUniqueSkills(goblin: Goblin, equipmentSkills: CharacterSkill[]): CharacterSkill[] {
+  const characterSkills = getUniqueSkillsById(goblin.skills)
+  const raceSkills = getUniqueSkillsById(getDefaultSkillsForRace(goblin.raceId ?? goblin.race))
+  const equipmentSkillIds = new Set(getUniqueSkillsById(equipmentSkills).map((skill) => skill.id))
+  return characterSkills.filter((skill) => (
+    !includesSkillId(raceSkills, skill.id) &&
+    !equipmentSkillIds.has(skill.id)
+  ))
+}
+
 export default function PartyInfoScreen() {
   const { t } = useTranslation()
   const { partyId } = useLocalSearchParams<{ partyId: string }>()
@@ -133,6 +152,7 @@ export default function PartyInfoScreen() {
   const goblinsLoading = useGoblinStore((state) => state.isLoading)
   const [party, setParty] = useState<Party | null>(null)
   const [memberSkillsById, setMemberSkillsById] = useState<Record<number, CharacterSkill[]>>({})
+  const [memberEquipmentSkillsById, setMemberEquipmentSkillsById] = useState<Record<number, CharacterSkill[]>>({})
   const [memberStatsById, setMemberStatsById] = useState<Record<number, GoblinStats>>({})
 
   useEffect(() => {
@@ -158,12 +178,20 @@ export default function PartyInfoScreen() {
     return partyMembers.flatMap((goblin) => getPartySkillEntries(goblin, memberSkillsById[goblin.id] ?? goblin.skills))
   }, [memberSkillsById, partyMembers])
 
+  const memberUniqueSkillsById = useMemo(() => {
+    return partyMembers.reduce<Record<number, CharacterSkill[]>>((acc, goblin) => {
+      acc[goblin.id] = getMemberUniqueSkills(goblin, memberEquipmentSkillsById[goblin.id] ?? [])
+      return acc
+    }, {})
+  }, [memberEquipmentSkillsById, partyMembers])
+
   useEffect(() => {
     let cancelled = false
 
     const loadMemberSkills = async (): Promise<void> => {
       if (partyMembers.length === 0) {
         setMemberSkillsById({})
+        setMemberEquipmentSkillsById({})
         setMemberStatsById({})
         return
       }
@@ -174,7 +202,7 @@ export default function PartyInfoScreen() {
           const equippedItems = await repository.getByGoblinId(goblin.id)
           const equipmentSkills = EquipmentService.collectGrantedSkills(equippedItems)
           const effectiveStats = calculateGoblinEffectiveStats(goblin, equippedItems)
-          return [goblin.id, [...goblin.skills, ...equipmentSkills], effectiveStats] as const
+          return [goblin.id, [...goblin.skills, ...equipmentSkills], equipmentSkills, effectiveStats] as const
         }),
       )
 
@@ -186,8 +214,14 @@ export default function PartyInfoScreen() {
           return acc
         }, {}),
       )
+      setMemberEquipmentSkillsById(
+        entries.reduce<Record<number, CharacterSkill[]>>((acc, [goblinId, , equipmentSkills]) => {
+          acc[goblinId] = [...equipmentSkills]
+          return acc
+        }, {}),
+      )
       setMemberStatsById(
-        entries.reduce<Record<number, GoblinStats>>((acc, [goblinId, , stats]) => {
+        entries.reduce<Record<number, GoblinStats>>((acc, [goblinId, , , stats]) => {
           acc[goblinId] = stats
           return acc
         }, {}),
@@ -203,6 +237,10 @@ export default function PartyInfoScreen() {
 
   const handleBack = useCallback(() => {
     router.back()
+  }, [])
+
+  const handlePressSkill = useCallback((skill: CharacterSkill) => {
+    Alert.alert(getSkillLabel(skill), getCharacterSkillEffectDescriptions(skill).join('\n'))
   }, [])
 
   if (partiesLoading || goblinsLoading) {
@@ -305,6 +343,40 @@ export default function PartyInfoScreen() {
               </View>
             )
           })}
+        </View>
+
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>{t('ui.formation.partyInfo.memberUniqueSkillTitle')}</Text>
+          <View style={styles.skillMemberList}>
+            {partyMembers.map((goblin) => {
+              const skills = memberUniqueSkillsById[goblin.id] ?? []
+
+              return (
+                <View key={`unique-skills-${goblin.id}`} style={styles.skillMemberBlock}>
+                  <View style={styles.factorMemberHeader}>
+                    <Image source={getGoblinDisplayImage(goblin)} style={styles.compactAvatar} />
+                    <Text style={styles.factorMemberName} numberOfLines={1}>{goblin.name}</Text>
+                  </View>
+                  {skills.length > 0 ? (
+                    <View style={styles.skillChipList}>
+                      {skills.map((skill, index) => (
+                        <TouchableOpacity
+                          key={`${goblin.id}-${skill.id}-${index}`}
+                          style={styles.skillChip}
+                          activeOpacity={0.75}
+                          onPress={() => handlePressSkill(skill)}
+                        >
+                          <Text style={styles.skillChipText} numberOfLines={1}>{getSkillLabel(skill)}</Text>
+                        </TouchableOpacity>
+                      ))}
+                    </View>
+                  ) : (
+                    <Text style={styles.factorEmptyText}>{t('ui.formation.partyInfo.noUniqueSkills')}</Text>
+                  )}
+                </View>
+              )
+            })}
+          </View>
         </View>
 
         <View style={styles.section}>
@@ -505,6 +577,32 @@ const styles = StyleSheet.create({
     paddingLeft: 8,
     fontSize: 12,
     color: '#9CA3AF',
+  },
+  skillMemberList: {
+    gap: 12,
+  },
+  skillMemberBlock: {
+    alignItems: 'flex-start',
+    gap: 6,
+  },
+  skillChipList: {
+    maxWidth: '100%',
+    alignItems: 'flex-start',
+    gap: 6,
+    paddingLeft: 32,
+  },
+  skillChip: {
+    maxWidth: '100%',
+    backgroundColor: '#ECFDF5',
+    borderRadius: 4,
+    paddingHorizontal: 7,
+    paddingVertical: 3,
+  },
+  skillChipText: {
+    flexShrink: 1,
+    fontSize: 11,
+    fontWeight: '800',
+    color: '#047857',
   },
   factorMemberList: {
     gap: 12,
