@@ -399,6 +399,8 @@ const en = {
           gold: 'Gold Gained',
         },
         noPartySkills: 'None',
+        memberUniqueSkillTitle: 'Member Unique Skills',
+        noUniqueSkills: 'No Unique Skills',
         statusComparisonTitle: 'Status Comparison',
         factorListTitle: 'Factors',
         noFactors: 'No factors',
