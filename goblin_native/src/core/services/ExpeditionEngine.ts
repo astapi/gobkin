@@ -186,7 +186,8 @@ export class ExpeditionEngine {
               partyLuckAverage,
               effectiveRewardMultipliers,
               rareDropMultiplierBoost,
-              titleMultiplierBoost
+              titleMultiplierBoost,
+              tier
             )
             if (treasureDrops.length > 0) {
               events.push({
@@ -249,7 +250,8 @@ export class ExpeditionEngine {
               partyLuckAverage,
               effectiveRewardMultipliers,
               rareDropMultiplierBoost,
-              titleMultiplierBoost
+              titleMultiplierBoost,
+              tier
             )
             if (defaultTreasure.length > 0) {
               events.push({
@@ -320,7 +322,8 @@ export class ExpeditionEngine {
             partyLuckAverage,
             effectiveRewardMultipliers,
             rareDropMultiplierBoost,
-            titleMultiplierBoost
+            titleMultiplierBoost,
+            tier
           )
           if (bossTreasure.length > 0) {
             events.push({
@@ -640,7 +643,7 @@ export class ExpeditionEngine {
    * 共通:
    *  - 運乱数は PT平均運値から `rollLuckValue` で算出する（敵ごとに振り直し）。
    *  - 戦闘終了後、ドロップした templateId を遠征全体の重複防止に登録する。
-   *  - ドロップ時は称号倍率に応じて称号を抽選する。
+   *  - ドロップ時は称号倍率に応じて称号を抽選する（付与判定 + Tier 別の判定回数で最高位採用）。
    */
   private rollTreasureDrops(
     enemies: Enemy[],
@@ -648,7 +651,8 @@ export class ExpeditionEngine {
     partyLuckAverage: number,
     rewardMultipliers?: PartyRewardMultipliers,
     rareDropMultiplierBoost: number = 1,
-    titleMultiplierBoost: number = 1
+    titleMultiplierBoost: number = 1,
+    tier: DungeonTier = 0
   ): TreasureDrop[] {
     const { title: titleMultiplier, rare: rareMultiplier } = normalizePartyRewardMultipliers(rewardMultipliers)
     const effectiveTitleMultiplier = titleMultiplier * (titleMultiplierBoost > 0 ? titleMultiplierBoost : 1)
@@ -674,7 +678,8 @@ export class ExpeditionEngine {
       const index = Math.floor(this.rng() * candidates.length)
       const selected = candidates[index]
 
-      const title = EquipmentTitleService.rollTitle(effectiveTitleMultiplier, this.rng)
+      const titleLuckRoll = rollLuckValue(partyLuckAverage, this.rng)
+      const title = EquipmentTitleService.rollTitle(effectiveTitleMultiplier, titleLuckRoll, tier, this.rng)
       drops.push({
         templateId: selected.id,
         titleId: title.titleId !== 'none' ? title.titleId : undefined,
@@ -696,7 +701,8 @@ export class ExpeditionEngine {
         const luckRoll = rollLuckValue(partyLuckAverage, this.rng)
         if (!(rareThreshold < luckRoll)) continue
 
-        const title = EquipmentTitleService.rollTitle(effectiveTitleMultiplier, this.rng)
+        const titleLuckRoll = rollLuckValue(partyLuckAverage, this.rng)
+        const title = EquipmentTitleService.rollTitle(effectiveTitleMultiplier, titleLuckRoll, tier, this.rng)
         drops.push({
           templateId: drop.templateId,
           titleId: title.titleId !== 'none' ? title.titleId : undefined,
