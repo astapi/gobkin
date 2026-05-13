@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>ドロップ・称号・因子 仕様書</title>
+<style>
+  :root {
+    --bg: #fafaf6;
+    --ink: #1a1a1a;
+    --muted: #5b6068;
+    --line: #d8d4c4;
+    --accent: #b8463c;
+    --accent2: #2f6a48;
+    --accent3: #3a5da6;
+    --accent4: #8a5cb8;
+    --warn: #d48f1f;
+    --code-bg: #f1ede0;
+    --card: #fffdf6;
+    --negative: #c66860;
+    --positive: #2f6a48;
+    --neutral: #888;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    margin: 0;
+    line-height: 1.7;
+  }
+  .container {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 40px 28px 80px;
+  }
+  h1 {
+    font-size: 28px;
+    margin: 0 0 8px;
+    padding-bottom: 14px;
+    border-bottom: 3px solid var(--accent);
+  }
+  h2 {
+    font-size: 22px;
+    margin: 48px 0 16px;
+    padding: 8px 14px;
+    background: var(--accent);
+    color: #fff;
+    border-radius: 4px;
+  }
+  h3 {
+    font-size: 17px;
+    margin: 28px 0 10px;
+    padding-left: 12px;
+    border-left: 4px solid var(--accent2);
+  }
+  h4 {
+    font-size: 15px;
+    margin: 18px 0 8px;
+    color: var(--muted);
+  }
+  .lead {
+    color: var(--muted);
+    margin-bottom: 32px;
+  }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 18px 22px;
+    margin: 14px 0;
+  }
+  code, .formula {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    background: var(--code-bg);
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 0.94em;
+  }
+  .formula {
+    display: inline-block;
+    padding: 6px 12px;
+    font-size: 15px;
+    font-weight: 600;
+    border-left: 3px solid var(--accent);
+  }
+  .formula-block {
+    display: block;
+    padding: 14px 16px;
+    margin: 12px 0;
+    background: var(--code-bg);
+    border-left: 4px solid var(--accent);
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 14px;
+    white-space: pre;
+    overflow-x: auto;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0;
+    font-size: 14px;
+  }
+  th, td {
+    padding: 8px 12px;
+    border: 1px solid var(--line);
+    text-align: left;
+  }
+  th {
+    background: #ece8d6;
+    font-weight: 600;
+  }
+  td.num { text-align: right; font-variant-numeric: tabular-nums; }
+  td.center { text-align: center; }
+  .rank-neg { background: #fbe9e7; }
+  .rank-zero { background: #f4f4ef; }
+  .rank-pos { background: #e8f3ec; }
+  .rank-rare { background: #e7ebf7; }
+  .rank-epic { background: #f1e7f7; }
+
+  ul.notes { padding-left: 20px; }
+  ul.notes li { margin: 4px 0; }
+
+  .pill {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    margin-right: 6px;
+  }
+  .pill-norm { background: #e1f0e8; color: var(--positive); }
+  .pill-rare { background: #e7ebf7; color: var(--accent3); }
+  .pill-boss { background: #f1e7f7; color: var(--accent4); }
+  .pill-warn { background: #fbe6cf; color: var(--warn); }
+
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  @media (max-width: 720px) {
+    .grid-2 { grid-template-columns: 1fr; }
+  }
+
+  /* Flow diagram styles */
+  .flow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    margin: 20px 0;
+  }
+  .flow-node {
+    background: #fff;
+    border: 2px solid var(--accent2);
+    border-radius: 8px;
+    padding: 10px 18px;
+    min-width: 220px;
+    text-align: center;
+    font-size: 14px;
+    box-shadow: 0 2px 0 rgba(0,0,0,0.04);
+  }
+  .flow-node.start { border-color: var(--accent3); background: #eef2fb; }
+  .flow-node.decision {
+    border-color: var(--warn);
+    background: #fff7e8;
+    border-radius: 22px;
+  }
+  .flow-node.end-yes { border-color: var(--positive); background: #e8f3ec; }
+  .flow-node.end-no { border-color: var(--negative); background: #fbe9e7; }
+  .flow-arrow {
+    width: 2px;
+    height: 22px;
+    background: #888;
+    position: relative;
+  }
+  .flow-arrow::after {
+    content: "";
+    position: absolute;
+    bottom: -6px;
+    left: -4px;
+    width: 0; height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 7px solid #888;
+  }
+  .flow-arrow.labeled {
+    width: 80px;
+    height: 2px;
+    margin: 14px 0;
+  }
+  .flow-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    margin: 4px 0;
+  }
+  .flow-row .branch-label {
+    font-size: 12px;
+    color: var(--muted);
+    margin: 0 6px;
+  }
+
+  /* Title bar chart */
+  .bar-row {
+    display: grid;
+    grid-template-columns: 110px 1fr 70px;
+    align-items: center;
+    gap: 10px;
+    margin: 4px 0;
+    font-size: 13px;
+  }
+  .bar-track {
+    background: #ede8d4;
+    border-radius: 3px;
+    height: 18px;
+    overflow: hidden;
+  }
+  .bar-fill {
+    height: 100%;
+    background: var(--accent2);
+  }
+  .bar-fill.neg { background: var(--negative); }
+  .bar-fill.pos { background: var(--positive); }
+  .bar-fill.rare { background: var(--accent3); }
+  .bar-fill.epic { background: var(--accent4); }
+  .bar-fill.legend { background: var(--warn); }
+
+  /* Legend */
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin: 8px 0 20px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .legend-item { display: flex; align-items: center; gap: 6px; }
+  .legend-box {
+    width: 14px; height: 14px; border-radius: 3px;
+  }
+
+  /* SVG container */
+  .svg-wrap {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 16px;
+    margin: 16px 0;
+    overflow-x: auto;
+  }
+
+  .toc {
+    background: var(--code-bg);
+    border-left: 4px solid var(--accent2);
+    padding: 14px 22px;
+    margin: 22px 0 36px;
+    border-radius: 4px;
+  }
+  .toc ol { margin: 6px 0; padding-left: 22px; }
+  .toc a { color: var(--accent); text-decoration: none; }
+  .toc a:hover { text-decoration: underline; }
+
+  .note-callout {
+    background: #fff7e8;
+    border-left: 4px solid var(--warn);
+    padding: 12px 16px;
+    margin: 12px 0;
+    font-size: 13px;
+  }
+  .file-ref {
+    color: var(--muted);
+    font-size: 12px;
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>ゴブリンキングダム ドロップ仕様書</h1>
+<p class="lead">装備ドロップ・称号付与・因子ドロップの計算ロジックと確率テーブル。</p>
+
+<div class="toc">
+  <strong>目次</strong>
+  <ol>
+    <li><a href="#overview">全体フロー</a></li>
+    <li><a href="#drop">装備ドロップ仕様</a></li>
+    <li><a href="#title">称号付与仕様</a></li>
+    <li><a href="#factor">因子ドロップ仕様</a></li>
+    <li><a href="#refs">参照箇所</a></li>
+  </ol>
+</div>
+
+<!-- ===================== 1. 全体フロー ===================== -->
+<h2 id="overview">1. 全体フロー</h2>
+
+<p>戦闘勝利時に発生する報酬は <strong>装備ドロップ</strong>・<strong>称号付与</strong>・<strong>因子ドロップ</strong>・<strong>ゴールド</strong> の4種類。下図は戦闘1回ぶんの処理順序。</p>
+
+<div class="svg-wrap">
+<svg viewBox="0 0 920 360" width="100%" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#666" />
+    </marker>
+  </defs>
+  <!-- Battle start -->
+  <rect x="20" y="20" width="160" height="50" rx="6" fill="#eef2fb" stroke="#3a5da6" stroke-width="2"/>
+  <text x="100" y="50" text-anchor="middle" font-size="14" fill="#1a1a1a">戦闘勝利</text>
+
+  <!-- Normal drop branch -->
+  <rect x="220" y="20" width="200" height="50" rx="6" fill="#e8f3ec" stroke="#2f6a48" stroke-width="2"/>
+  <text x="320" y="42" text-anchor="middle" font-size="13">①ノーマルドロップ判定</text>
+  <text x="320" y="58" text-anchor="middle" font-size="11" fill="#5b6068">敵1体ごと</text>
+
+  <!-- Title for normal -->
+  <rect x="460" y="20" width="200" height="50" rx="6" fill="#fff7e8" stroke="#d48f1f" stroke-width="2"/>
+  <text x="560" y="42" text-anchor="middle" font-size="13">称号抽選</text>
+  <text x="560" y="58" text-anchor="middle" font-size="11" fill="#5b6068">付与判定→種別抽選</text>
+
+  <!-- Drop result -->
+  <rect x="700" y="20" width="200" height="50" rx="6" fill="#fffdf6" stroke="#888" stroke-width="2"/>
+  <text x="800" y="42" text-anchor="middle" font-size="13">装備＋称号確定</text>
+
+  <!-- Rare drop -->
+  <rect x="220" y="100" width="200" height="50" rx="6" fill="#e7ebf7" stroke="#3a5da6" stroke-width="2"/>
+  <text x="320" y="122" text-anchor="middle" font-size="13">②レアドロップ判定</text>
+  <text x="320" y="138" text-anchor="middle" font-size="11" fill="#5b6068">rareEquipmentDrops</text>
+
+  <rect x="460" y="100" width="200" height="50" rx="6" fill="#fff7e8" stroke="#d48f1f" stroke-width="2"/>
+  <text x="560" y="122" text-anchor="middle" font-size="13">称号抽選</text>
+
+  <rect x="700" y="100" width="200" height="50" rx="6" fill="#fffdf6" stroke="#888" stroke-width="2"/>
+  <text x="800" y="122" text-anchor="middle" font-size="13">レア装備＋称号確定</text>
+
+  <!-- Factor (boss only) -->
+  <rect x="220" y="180" width="200" height="50" rx="6" fill="#f1e7f7" stroke="#8a5cb8" stroke-width="2"/>
+  <text x="320" y="202" text-anchor="middle" font-size="13">③因子ドロップ判定</text>
+  <text x="320" y="218" text-anchor="middle" font-size="11" fill="#5b6068">ボス戦のみ</text>
+
+  <rect x="460" y="180" width="200" height="50" rx="6" fill="#fffdf6" stroke="#8a5cb8" stroke-width="2"/>
+  <text x="560" y="202" text-anchor="middle" font-size="13">生存メンバーに付与</text>
+  <text x="560" y="218" text-anchor="middle" font-size="11" fill="#5b6068">既所持除外</text>
+
+  <!-- Gold -->
+  <rect x="220" y="260" width="200" height="50" rx="6" fill="#fff7e8" stroke="#d48f1f" stroke-width="2"/>
+  <text x="320" y="282" text-anchor="middle" font-size="13">④ゴールド加算</text>
+  <text x="320" y="298" text-anchor="middle" font-size="11" fill="#5b6068">gold倍率適用</text>
+
+  <!-- Connect -->
+  <line x1="180" y1="45" x2="218" y2="45" stroke="#666" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="420" y1="45" x2="458" y2="45" stroke="#666" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="660" y1="45" x2="698" y2="45" stroke="#666" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <line x1="100" y1="70" x2="100" y2="125" stroke="#666" stroke-width="2"/>
+  <line x1="100" y1="125" x2="218" y2="125" stroke="#666" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="420" y1="125" x2="458" y2="125" stroke="#666" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="660" y1="125" x2="698" y2="125" stroke="#666" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <line x1="100" y1="125" x2="100" y2="205" stroke="#666" stroke-width="2"/>
+  <line x1="100" y1="205" x2="218" y2="205" stroke="#666" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="420" y1="205" x2="458" y2="205" stroke="#666" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <line x1="100" y1="205" x2="100" y2="285" stroke="#666" stroke-width="2"/>
+  <line x1="100" y1="285" x2="218" y2="285" stroke="#666" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- Label legend -->
+  <text x="100" y="340" text-anchor="middle" font-size="11" fill="#5b6068">※③因子はボス戦のみ実行</text>
+</svg>
+</div>
+
+<!-- ===================== 2. 装備ドロップ ===================== -->
+<h2 id="drop">2. 装備ドロップ仕様</h2>
+
+<p>ドロップは <strong>ノーマル</strong>（全敵）と <strong>レア</strong>（敵JSONの <code>rareEquipmentDrops</code> 配列）の2系統。両方とも同じ運乱数仕組みで当落を決め、ドロップ確定後に称号抽選を行う。</p>
+
+<h3>2.1 運乱数（共通基盤）</h3>
+<p>PT平均運値から運乱数 <code>luckRoll</code> を抽選。各判定ごとに振り直し。</p>
+
+<table>
+  <thead>
+    <tr><th>運値</th><th>luckRoll 範囲</th><th>期待値</th></tr>
+  </thead>
+  <tbody>
+    <tr><td class="center">0〜14</td><td>[0.00, 99.99)</td><td class="num">≈50</td></tr>
+    <tr><td class="center">15〜19</td><td>[7.00, 99.99)</td><td class="num">≈53</td></tr>
+    <tr><td class="center">20〜24</td><td>[15.00, 99.99)</td><td class="num">≈57</td></tr>
+    <tr><td class="center">25〜29</td><td>[22.00, 99.99)</td><td class="num">≈61</td></tr>
+    <tr><td class="center">30〜34</td><td>[30.00, 99.99)</td><td class="num">≈65</td></tr>
+    <tr><td class="center">35+</td><td>[37.00, 99.99)</td><td class="num">≈68</td></tr>
+  </tbody>
+</table>
+<p class="file-ref">src/core/services/LuckRoller.ts:23-30</p>
+
+<h3>2.2 ノーマルドロップ <span class="pill pill-norm">敵1体ごと</span></h3>
+
+<div class="formula-block">normalThreshold = 100 − rareMultiplier × 10
+ドロップ条件: luckRoll &gt; normalThreshold</div>
+
+<div class="svg-wrap">
+<svg viewBox="0 0 800 300" width="100%" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="arrow2" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect x="30" y="20" width="180" height="50" rx="6" fill="#eef2fb" stroke="#3a5da6" stroke-width="2"/>
+  <text x="120" y="50" text-anchor="middle" font-size="13">敵N体の戦闘勝利</text>
+
+  <rect x="280" y="20" width="220" height="50" rx="22" fill="#fff7e8" stroke="#d48f1f" stroke-width="2"/>
+  <text x="390" y="42" text-anchor="middle" font-size="13">luckRoll &gt; 100 − rare×10 ?</text>
+  <text x="390" y="58" text-anchor="middle" font-size="11" fill="#5b6068">敵ごとに判定</text>
+
+  <rect x="570" y="0" width="200" height="40" rx="6" fill="#fbe9e7" stroke="#c66860" stroke-width="2"/>
+  <text x="670" y="25" text-anchor="middle" font-size="13">外れ → ドロップなし</text>
+
+  <rect x="570" y="50" width="200" height="40" rx="6" fill="#e8f3ec" stroke="#2f6a48" stroke-width="2"/>
+  <text x="670" y="75" text-anchor="middle" font-size="13">当たり → ランク抽選へ</text>
+
+  <line x1="210" y1="45" x2="278" y2="45" stroke="#666" stroke-width="2" marker-end="url(#arrow2)"/>
+  <line x1="500" y1="35" x2="568" y2="20" stroke="#666" stroke-width="2" marker-end="url(#arrow2)"/>
+  <line x1="500" y1="55" x2="568" y2="70" stroke="#666" stroke-width="2" marker-end="url(#arrow2)"/>
+
+  <!-- step 2 -->
+  <rect x="280" y="120" width="220" height="50" rx="6" fill="#e8f3ec" stroke="#2f6a48" stroke-width="2"/>
+  <text x="390" y="142" text-anchor="middle" font-size="13">DROP_RANK_TABLE</text>
+  <text x="390" y="158" text-anchor="middle" font-size="11" fill="#5b6068">敵Lvからランク決定</text>
+
+  <line x1="670" y1="90" x2="670" y2="120" stroke="#666" stroke-width="2"/>
+  <line x1="670" y1="120" x2="500" y2="145" stroke="#666" stroke-width="2" marker-end="url(#arrow2)"/>
+
+  <rect x="280" y="200" width="220" height="50" rx="6" fill="#e8f3ec" stroke="#2f6a48" stroke-width="2"/>
+  <text x="390" y="222" text-anchor="middle" font-size="13">該当ランクから均等抽選</text>
+  <text x="390" y="238" text-anchor="middle" font-size="11" fill="#5b6068">遠征中の重複は除外</text>
+
+  <line x1="390" y1="170" x2="390" y2="200" stroke="#666" stroke-width="2" marker-end="url(#arrow2)"/>
+
+  <rect x="540" y="200" width="230" height="50" rx="6" fill="#fff7e8" stroke="#d48f1f" stroke-width="2"/>
+  <text x="655" y="222" text-anchor="middle" font-size="13">称号抽選 →</text>
+  <text x="655" y="238" text-anchor="middle" font-size="11" fill="#5b6068">第3章「称号付与」参照</text>
+
+  <line x1="500" y1="225" x2="538" y2="225" stroke="#666" stroke-width="2" marker-end="url(#arrow2)"/>
+</svg>
+</div>
+
+<table>
+  <thead><tr><th>運値</th><th>rare=1.0 のノーマルドロップ確率</th><th>rare=2.0（どんぐり×2）</th></tr></thead>
+  <tbody>
+    <tr><td class="center">0〜14</td><td class="num">10.0%</td><td class="num">20.0%</td></tr>
+    <tr><td class="center">25〜29</td><td class="num">12.8%</td><td class="num">25.6%</td></tr>
+    <tr><td class="center">35+</td><td class="num">15.9%</td><td class="num">31.7%</td></tr>
+  </tbody>
+</table>
+
+<h3>2.3 レアドロップ <span class="pill pill-rare">rareEquipmentDrops</span></h3>
+
+<div class="formula-block">effectiveRare = rareMultiplier × rareDropMultiplierBoost
+rareThreshold = 100 − effectiveRare × 0.1
+ドロップ条件: luckRoll &gt; rareThreshold</div>
+
+<p>敵の <code>rareEquipmentDrops</code> 配列の<strong>アイテムごとに</strong>判定する。係数 <code>0.1</code> はノーマルの <code>10</code> の 1/100 で、デフォルト倍率では極めて低確率。</p>
+
+<table>
+  <thead><tr><th>条件</th><th>レアドロップ確率</th></tr></thead>
+  <tbody>
+    <tr><td>rare=1.0, 運値0〜14</td><td class="num">≈ 0.09%</td></tr>
+    <tr><td>rare=1.0, 運値35+</td><td class="num">≈ 0.14%</td></tr>
+    <tr><td>rare=1.0, どんぐり×2 (effectiveRare=2), 運値35+</td><td class="num">≈ 0.29%</td></tr>
+  </tbody>
+</table>
+
+<h3>2.4 ランクテーブル <span class="pill pill-norm">敵Lv→装備Rank</span></h3>
+<p>敵レベルから装備の Rank（0〜7）を決定。`DROP_RANK_TABLE` を上から見て 70% 累積判定で確定する方式。</p>
+
+<table>
+  <thead><tr><th>敵レベル</th><th>主に出るRank</th><th>備考</th></tr></thead>
+  <tbody>
+    <tr><td>1〜3</td><td>Rank 0</td><td>木の棒・銅剣・革鎧など</td></tr>
+    <tr><td>4〜11</td><td>Rank 1</td><td>70%で確定、外れて Rank 0</td></tr>
+    <tr><td>20〜29</td><td>Rank 2</td><td>ミスリル帯</td></tr>
+    <tr><td>40〜57</td><td>Rank 3</td><td>ロイヤル帯</td></tr>
+    <tr><td>58〜98</td><td>Rank 4</td><td>カイザー帯</td></tr>
+    <tr><td>99〜149</td><td>Rank 5</td><td>古代帯</td></tr>
+    <tr><td>150+</td><td>Rank 6 or 7</td><td>ドラゴン・アダマント</td></tr>
+  </tbody>
+</table>
+<p class="file-ref">src/core/services/DropRankRoller.ts:24-40</p>
+
+<h3>2.5 抑制要因</h3>
+<ul class="notes">
+  <li><strong>遠征内の重複防止</strong>: 同じ templateId は1遠征で1回しか落ちない（<code>droppedTemplateIds</code>）。</li>
+  <li><strong>Tier倍率はドロップ率に効かない</strong>: <code>DUNGEON_TIER_SCALING.statScale</code> は敵性能と報酬額のみで、装備ドロップ率には影響しない。</li>
+  <li><strong>低層ではRank 0固定</strong>: 敵Lv 1〜3 は Rank 0 しか出ない。</li>
+</ul>
+
+<!-- ===================== 3. 称号付与 ===================== -->
+<h2 id="title">3. 称号付与仕様</h2>
+
+<p>装備ドロップが確定した後、各装備に対して <strong>2段階</strong> で称号を決定する。</p>
+
+<div class="card">
+  <strong>抽選フロー</strong>
+  <ol>
+    <li><strong>付与判定</strong>: 称号を付けるかどうかを運乱数で判定</li>
+    <li><strong>種別抽選</strong>: 付与する場合、Tier 別の判定回数だけ称号テーブルを引いて、最も rank の高い称号を採用</li>
+  </ol>
+</div>
+
+<h3>3.1 付与判定</h3>
+<div class="formula-block">x = party.titleMultiplier × Πスキル × titleBoost  (どんぐり出撃なら ×2)
+titleThreshold = 100 − x × 30
+付与条件: luckRoll &gt; titleThreshold</div>
+
+<div class="svg-wrap">
+<svg viewBox="0 0 760 220" width="100%" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="arrow3" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect x="30" y="20" width="180" height="50" rx="6" fill="#eef2fb" stroke="#3a5da6" stroke-width="2"/>
+  <text x="120" y="50" text-anchor="middle" font-size="13">装備ドロップ確定</text>
+
+  <rect x="270" y="20" width="240" height="50" rx="22" fill="#fff7e8" stroke="#d48f1f" stroke-width="2"/>
+  <text x="390" y="42" text-anchor="middle" font-size="13">luckRoll &gt; 100 − x×30 ?</text>
+  <text x="390" y="58" text-anchor="middle" font-size="11" fill="#5b6068">x = 称号付与倍率</text>
+
+  <rect x="570" y="0" width="180" height="40" rx="6" fill="#f4f4ef" stroke="#888" stroke-width="2"/>
+  <text x="660" y="25" text-anchor="middle" font-size="13">称号なし (none)</text>
+
+  <rect x="570" y="50" width="180" height="40" rx="6" fill="#e8f3ec" stroke="#2f6a48" stroke-width="2"/>
+  <text x="660" y="75" text-anchor="middle" font-size="13">→ 種別抽選へ</text>
+
+  <line x1="210" y1="45" x2="268" y2="45" stroke="#666" stroke-width="2" marker-end="url(#arrow3)"/>
+  <line x1="510" y1="35" x2="568" y2="20" stroke="#666" stroke-width="2" marker-end="url(#arrow3)"/>
+  <line x1="510" y1="55" x2="568" y2="70" stroke="#666" stroke-width="2" marker-end="url(#arrow3)"/>
+
+  <text x="540" y="20" font-size="11" fill="#5b6068">No</text>
+  <text x="540" y="78" font-size="11" fill="#5b6068">Yes</text>
+
+  <!-- table sample -->
+  <rect x="30" y="120" width="700" height="80" rx="6" fill="#f1ede0" stroke="#d8d4c4"/>
+  <text x="50" y="142" font-size="13" font-weight="600">付与閾値の例</text>
+  <text x="50" y="166" font-size="13">x=1（デフォルト） → threshold=70 → 運値35平均で付与率 ≈ 47.6%</text>
+  <text x="50" y="186" font-size="13">x=2（どんぐり）  → threshold=40 → 運値35平均で付与率 ≈ 95%</text>
+</svg>
+</div>
+
+<table>
+  <thead><tr><th>倍率 x</th><th>threshold</th><th>付与率（運値35）</th><th>付与率（運値0）</th></tr></thead>
+  <tbody>
+    <tr><td class="center">1.0（素）</td><td class="num">70</td><td class="num">47.6%</td><td class="num">30.0%</td></tr>
+    <tr><td class="center">2.0（どんぐり）</td><td class="num">40</td><td class="num">95.2%</td><td class="num">60.0%</td></tr>
+    <tr><td class="center">3.0</td><td class="num">10</td><td class="num">100%</td><td class="num">90.0%</td></tr>
+    <tr><td class="center">≥ 3.34</td><td class="num">&lt; 0</td><td class="num">100%</td><td class="num">100%</td></tr>
+  </tbody>
+</table>
+
+<h3>3.2 称号テーブル</h3>
+<p>付与判定で「あり」となった場合、以下の重み（rollWeight）で称号を抽選する。</p>
+
+<table>
+  <thead>
+    <tr><th>称号</th><th>rank</th><th>rollWeight</th><th>1回引き確率</th><th>+補正</th><th>−補正</th><th>価格倍率</th></tr>
+  </thead>
+  <tbody>
+    <tr class="rank-neg"><td>最低な</td><td class="num">1</td><td class="num">28,571</td><td class="num">28.571%</td><td>×0.50</td><td>×2.00</td><td>×0.50</td></tr>
+    <tr class="rank-neg"><td>臭い</td><td class="num">2</td><td class="num">37,986</td><td class="num">37.986%</td><td>×0.80</td><td>×1.25</td><td>×0.80</td></tr>
+    <tr class="rank-pos"><td>名工の</td><td class="num">3</td><td class="num">28,571</td><td class="num">28.571%</td><td>×1.33</td><td>×0.75</td><td>×2.00</td></tr>
+    <tr class="rank-pos"><td>魔性の</td><td class="num">4</td><td class="num">3,657</td><td class="num">3.657%</td><td>×1.58</td><td>×0.63</td><td>×3.00</td></tr>
+    <tr class="rank-rare"><td>宿った</td><td class="num">5</td><td class="num">914</td><td class="num">0.914%</td><td>×2.10</td><td>×0.48</td><td>×9.00</td></tr>
+    <tr class="rank-rare"><td>伝説の</td><td class="num">6</td><td class="num">229</td><td class="num">0.229%</td><td>×2.75</td><td>×0.36</td><td>×20.00</td></tr>
+    <tr class="rank-epic"><td>恐ろしい</td><td class="num">7</td><td class="num">57</td><td class="num">0.057%</td><td>×3.50</td><td>×0.29</td><td>×42.00</td></tr>
+    <tr class="rank-epic"><td>壊れた</td><td class="num">8</td><td class="num">14</td><td class="num">0.014%</td><td>×5.00</td><td>×0.20</td><td>×125.00</td></tr>
+  </tbody>
+</table>
+<p class="file-ref">src/shared/data/equipmentTitleConfig.ts</p>
+
+<div class="legend">
+  <div class="legend-item"><span class="legend-box" style="background:#fbe9e7"></span>マイナス称号</div>
+  <div class="legend-item"><span class="legend-box" style="background:#e8f3ec"></span>プラス・低位</div>
+  <div class="legend-item"><span class="legend-box" style="background:#e7ebf7"></span>レア</div>
+  <div class="legend-item"><span class="legend-box" style="background:#f1e7f7"></span>超レア</div>
+</div>
+
+<h3>3.3 Tier別 判定回数</h3>
+<p>Tier が高いほど判定回数が増え、その中で <strong>最も rank が高い称号</strong> が採用される。</p>
+
+<div class="svg-wrap">
+<svg viewBox="0 0 760 240" width="100%" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+  <text x="20" y="20" font-size="13" font-weight="600">Tier別の判定回数（高いほど高位称号が出やすい）</text>
+
+  <g font-size="13">
+    <!-- Bars -->
+    <text x="20" y="55">Tier 0 通常</text>
+    <rect x="120" y="42" width="24" height="20" fill="#a8d4b8"/>
+    <text x="160" y="55">1 回</text>
+
+    <text x="20" y="85">Tier 1 魔性</text>
+    <rect x="120" y="72" width="48" height="20" fill="#88c4a0"/>
+    <text x="190" y="85">2 回</text>
+
+    <text x="20" y="115">Tier 2 宿った</text>
+    <rect x="120" y="102" width="96" height="20" fill="#6cb287"/>
+    <text x="240" y="115">4 回</text>
+
+    <text x="20" y="145">Tier 3 伝説</text>
+    <rect x="120" y="132" width="168" height="20" fill="#5aa176"/>
+    <text x="310" y="145">7 回</text>
+
+    <text x="20" y="175">Tier 4 恐ろしい</text>
+    <rect x="120" y="162" width="288" height="20" fill="#458e64"/>
+    <text x="430" y="175">12 回</text>
+
+    <text x="20" y="205">Tier 5 壊れた</text>
+    <rect x="120" y="192" width="600" height="20" fill="#2f6a48"/>
+    <text x="730" y="205" text-anchor="end" fill="#fff" font-weight="600">25 回</text>
+  </g>
+</svg>
+</div>
+
+<table>
+  <thead><tr><th>Tier</th><th>名称</th><th>判定回数</th></tr></thead>
+  <tbody>
+    <tr><td class="center">0</td><td>通常</td><td class="num">1</td></tr>
+    <tr><td class="center">1</td><td>魔性</td><td class="num">2</td></tr>
+    <tr><td class="center">2</td><td>宿った</td><td class="num">4</td></tr>
+    <tr><td class="center">3</td><td>伝説</td><td class="num">7</td></tr>
+    <tr><td class="center">4</td><td>恐ろしい</td><td class="num">12</td></tr>
+    <tr><td class="center">5</td><td>壊れた</td><td class="num">25</td></tr>
+  </tbody>
+</table>
+<p class="file-ref">src/shared/types/DungeonTier.ts: DUNGEON_TIER_TITLE_ROLL_COUNTS</p>
+
+<h3>3.4 採用ロジック（"n回引いて最高位採用"）</h3>
+
+<div class="svg-wrap">
+<svg viewBox="0 0 800 220" width="100%" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+  <text x="20" y="20" font-size="13" font-weight="600">例: Tier 3（7回引き）の場合</text>
+
+  <!-- 7 dice -->
+  <g font-size="11">
+    <rect x="20" y="40" width="80" height="40" rx="4" fill="#fbe9e7" stroke="#c66860"/>
+    <text x="60" y="55" text-anchor="middle">引き1</text>
+    <text x="60" y="72" text-anchor="middle" font-weight="600">最低な</text>
+
+    <rect x="110" y="40" width="80" height="40" rx="4" fill="#fbe9e7" stroke="#c66860"/>
+    <text x="150" y="55" text-anchor="middle">引き2</text>
+    <text x="150" y="72" text-anchor="middle" font-weight="600">臭い</text>
+
+    <rect x="200" y="40" width="80" height="40" rx="4" fill="#e8f3ec" stroke="#2f6a48"/>
+    <text x="240" y="55" text-anchor="middle">引き3</text>
+    <text x="240" y="72" text-anchor="middle" font-weight="600">名工の</text>
+
+    <rect x="290" y="40" width="80" height="40" rx="4" fill="#fbe9e7" stroke="#c66860"/>
+    <text x="330" y="55" text-anchor="middle">引き4</text>
+    <text x="330" y="72" text-anchor="middle" font-weight="600">臭い</text>
+
+    <rect x="380" y="40" width="80" height="40" rx="4" fill="#e7ebf7" stroke="#3a5da6" stroke-width="3"/>
+    <text x="420" y="55" text-anchor="middle">引き5</text>
+    <text x="420" y="72" text-anchor="middle" font-weight="600">宿った</text>
+
+    <rect x="470" y="40" width="80" height="40" rx="4" fill="#e8f3ec" stroke="#2f6a48"/>
+    <text x="510" y="55" text-anchor="middle">引き6</text>
+    <text x="510" y="72" text-anchor="middle" font-weight="600">名工の</text>
+
+    <rect x="560" y="40" width="80" height="40" rx="4" fill="#fbe9e7" stroke="#c66860"/>
+    <text x="600" y="55" text-anchor="middle">引き7</text>
+    <text x="600" y="72" text-anchor="middle" font-weight="600">最低な</text>
+  </g>
+
+  <!-- Arrow -->
+  <path d="M 420 85 L 420 130" stroke="#3a5da6" stroke-width="3" marker-end="url(#arrow_t)"/>
+  <defs>
+    <marker id="arrow_t" markerWidth="12" markerHeight="12" refX="6" refY="6" orient="auto">
+      <path d="M0,0 L0,12 L10,6 z" fill="#3a5da6"/>
+    </marker>
+  </defs>
+
+  <!-- Result -->
+  <rect x="320" y="140" width="200" height="60" rx="6" fill="#e7ebf7" stroke="#3a5da6" stroke-width="3"/>
+  <text x="420" y="165" text-anchor="middle" font-size="14" font-weight="600">採用: 宿った</text>
+  <text x="420" y="186" text-anchor="middle" font-size="12" fill="#5b6068">7枚中の最高位 (rank 5)</text>
+</svg>
+</div>
+
+<h3>3.5 実測の称号確率（運値35, multiplier=1）</h3>
+
+<h4>付与された場合の Tier別 称号内訳（理論値）</h4>
+<div class="card">
+  <div class="bar-row"><span>Tier 0（1回）</span><div class="bar-track"><div class="bar-fill neg" style="width:66.6%"></div></div><span>マイナス 66.6%</span></div>
+  <div class="bar-row"><span>Tier 1（2回）</span><div class="bar-track"><div class="bar-fill neg" style="width:44.3%"></div></div><span>マイナス 44.3%</span></div>
+  <div class="bar-row"><span>Tier 2（4回）</span><div class="bar-track"><div class="bar-fill neg" style="width:19.6%"></div></div><span>マイナス 19.6%</span></div>
+  <div class="bar-row"><span>Tier 3（7回）</span><div class="bar-track"><div class="bar-fill neg" style="width:5.8%"></div></div><span>マイナス 5.8%</span></div>
+  <div class="bar-row"><span>Tier 4（12回）</span><div class="bar-track"><div class="bar-fill neg" style="width:0.7%"></div></div><span>マイナス 0.7%</span></div>
+  <div class="bar-row"><span>Tier 5（25回）</span><div class="bar-track"><div class="bar-fill neg" style="width:0.001%"></div></div><span>マイナス ≈0%</span></div>
+</div>
+
+<h4>Tier別 「壊れた」出現確率（理論値）</h4>
+<table>
+  <thead><tr><th>Tier</th><th>判定回数</th><th>壊れた出現率</th><th>恐ろしい以上</th><th>伝説以上</th></tr></thead>
+  <tbody>
+    <tr><td class="center">0</td><td class="num">1</td><td class="num">0.014%</td><td class="num">0.07%</td><td class="num">0.30%</td></tr>
+    <tr><td class="center">1</td><td class="num">2</td><td class="num">0.028%</td><td class="num">0.14%</td><td class="num">0.60%</td></tr>
+    <tr><td class="center">3</td><td class="num">7</td><td class="num">0.098%</td><td class="num">0.50%</td><td class="num">2.1%</td></tr>
+    <tr><td class="center">5</td><td class="num">25</td><td class="num">0.35%</td><td class="num">1.78%</td><td class="num">7.2%</td></tr>
+  </tbody>
+</table>
+
+<div class="note-callout">
+  Tier が上がるほど <strong>マイナス称号は消え、高位称号が出やすくなる</strong>。Tier 5 では <strong>付与された場合の 99.999% が masterwork（名工の）以上</strong>になる。
+</div>
+
+<!-- ===================== 4. 因子 ===================== -->
+<h2 id="factor">4. 因子ドロップ仕様</h2>
+
+<p>因子は装備とは別系統。<strong>ボス戦勝利時のみ</strong>、生存メンバーごとに判定する。</p>
+
+<h3>4.1 判定式</h3>
+<div class="formula-block">probabilityMultiplier = (1 + bonusPercent / 100) × factorDropMultiplier × tierMultiplier
+最終確率 = min(1, 敵JSONの probability × probabilityMultiplier)
+判定: rng() &lt; 最終確率</div>
+
+<ul class="notes">
+  <li><code>probability</code>: 敵JSON で各因子に定義された基準確率（基準は 0.015 = 1.5%）</li>
+  <li><code>bonusPercent</code>: スキルや装備による因子ドロップ率ボーナス</li>
+  <li><code>factorDropMultiplier</code>: イベント／消費アイテム由来のブースト</li>
+  <li><code>tierMultiplier</code>: ダンジョン Tier 別の倍率（下表）</li>
+  <li><strong>既所持の因子は除外</strong>される</li>
+  <li><strong>生存メンバーのみ</strong>判定対象</li>
+</ul>
+
+<h3>4.2 Tier別 因子ドロップ率</h3>
+
+<div class="svg-wrap">
+<svg viewBox="0 0 760 240" width="100%" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+  <text x="20" y="20" font-size="13" font-weight="600">Tier別 因子ドロップ確率</text>
+
+  <g font-size="13">
+    <text x="20" y="55">Tier 0 通常</text>
+    <rect x="130" y="42" width="46" height="20" fill="#cdb6db"/>
+    <text x="200" y="55">1.5% (基準)</text>
+
+    <text x="20" y="85">Tier 1 魔性</text>
+    <rect x="130" y="72" width="77" height="20" fill="#b59ace"/>
+    <text x="230" y="85">2.5% (×1.67)</text>
+
+    <text x="20" y="115">Tier 2 宿った</text>
+    <rect x="130" y="102" width="108" height="20" fill="#9e7fc1"/>
+    <text x="260" y="115">3.5% (×2.33)</text>
+
+    <text x="20" y="145">Tier 3 伝説</text>
+    <rect x="130" y="132" width="138" height="20" fill="#8a64b5"/>
+    <text x="290" y="145">4.5% (×3.0)</text>
+
+    <text x="20" y="175">Tier 4 恐ろしい</text>
+    <rect x="130" y="162" width="169" height="20" fill="#724ba2"/>
+    <text x="320" y="175">5.5% (×3.67)</text>
+
+    <text x="20" y="205">Tier 5 壊れた</text>
+    <rect x="130" y="192" width="200" height="20" fill="#5a3590"/>
+    <text x="350" y="205">6.5% (×4.33)</text>
+  </g>
+</svg>
+</div>
+
+<table>
+  <thead><tr><th>Tier</th><th>名称</th><th>実効ドロップ率</th><th>基準1.5%からの倍率</th></tr></thead>
+  <tbody>
+    <tr><td class="center">0</td><td>通常</td><td class="num">1.5%</td><td class="num">×1.00</td></tr>
+    <tr><td class="center">1</td><td>魔性</td><td class="num">2.5%</td><td class="num">×1.67</td></tr>
+    <tr><td class="center">2</td><td>宿った</td><td class="num">3.5%</td><td class="num">×2.33</td></tr>
+    <tr><td class="center">3</td><td>伝説</td><td class="num">4.5%</td><td class="num">×3.00</td></tr>
+    <tr><td class="center">4</td><td>恐ろしい</td><td class="num">5.5%</td><td class="num">×3.67</td></tr>
+    <tr><td class="center">5</td><td>壊れた</td><td class="num">6.5%</td><td class="num">×4.33</td></tr>
+  </tbody>
+</table>
+<p class="file-ref">src/shared/types/DungeonTier.ts: DUNGEON_TIER_FACTOR_DROP_RATE</p>
+
+<h3>4.3 判定フロー</h3>
+<div class="svg-wrap">
+<svg viewBox="0 0 800 300" width="100%" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="arrow4" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect x="30" y="20" width="200" height="50" rx="6" fill="#f1e7f7" stroke="#8a5cb8" stroke-width="2"/>
+  <text x="130" y="50" text-anchor="middle" font-size="13">ボス戦勝利</text>
+
+  <rect x="300" y="20" width="220" height="50" rx="6" fill="#fff" stroke="#8a5cb8" stroke-width="2"/>
+  <text x="410" y="42" text-anchor="middle" font-size="13">生存メンバー1人を選択</text>
+  <text x="410" y="58" text-anchor="middle" font-size="11" fill="#5b6068">パーティ全員に対しループ</text>
+
+  <rect x="580" y="20" width="200" height="50" rx="6" fill="#fff" stroke="#8a5cb8" stroke-width="2"/>
+  <text x="680" y="42" text-anchor="middle" font-size="13">敵JSONの factorDrops</text>
+  <text x="680" y="58" text-anchor="middle" font-size="11" fill="#5b6068">1因子ずつ判定</text>
+
+  <rect x="300" y="110" width="220" height="50" rx="22" fill="#fff7e8" stroke="#d48f1f" stroke-width="2"/>
+  <text x="410" y="132" text-anchor="middle" font-size="13">既所持？</text>
+
+  <rect x="580" y="100" width="200" height="40" rx="6" fill="#f4f4ef" stroke="#888" stroke-width="2"/>
+  <text x="680" y="125" text-anchor="middle" font-size="13">スキップ</text>
+
+  <rect x="300" y="190" width="220" height="50" rx="22" fill="#fff7e8" stroke="#d48f1f" stroke-width="2"/>
+  <text x="410" y="208" text-anchor="middle" font-size="13">rng() &lt; 最終確率 ?</text>
+  <text x="410" y="226" text-anchor="middle" font-size="11" fill="#5b6068">prob × tier × bonus</text>
+
+  <rect x="580" y="180" width="200" height="40" rx="6" fill="#e8f3ec" stroke="#2f6a48" stroke-width="2"/>
+  <text x="680" y="205" text-anchor="middle" font-size="13">因子付与</text>
+
+  <rect x="580" y="230" width="200" height="40" rx="6" fill="#fbe9e7" stroke="#c66860" stroke-width="2"/>
+  <text x="680" y="255" text-anchor="middle" font-size="13">付与なし</text>
+
+  <line x1="230" y1="45" x2="298" y2="45" stroke="#666" stroke-width="2" marker-end="url(#arrow4)"/>
+  <line x1="520" y1="45" x2="578" y2="45" stroke="#666" stroke-width="2" marker-end="url(#arrow4)"/>
+  <line x1="680" y1="70" x2="410" y2="110" stroke="#666" stroke-width="2" marker-end="url(#arrow4)"/>
+  <line x1="520" y1="125" x2="578" y2="120" stroke="#666" stroke-width="2" marker-end="url(#arrow4)"/>
+  <text x="540" y="115" font-size="11" fill="#5b6068">Yes</text>
+  <line x1="410" y1="160" x2="410" y2="188" stroke="#666" stroke-width="2" marker-end="url(#arrow4)"/>
+  <text x="420" y="180" font-size="11" fill="#5b6068">No</text>
+  <line x1="520" y1="205" x2="578" y2="200" stroke="#666" stroke-width="2" marker-end="url(#arrow4)"/>
+  <line x1="520" y1="225" x2="578" y2="245" stroke="#666" stroke-width="2" marker-end="url(#arrow4)"/>
+  <text x="540" y="200" font-size="11" fill="#5b6068">Yes</text>
+  <text x="540" y="248" font-size="11" fill="#5b6068">No</text>
+</svg>
+</div>
+
+<!-- ===================== 5. 参照 ===================== -->
+<h2 id="refs">5. 参照箇所</h2>
+
+<table>
+  <thead><tr><th>ファイル</th><th>役割</th></tr></thead>
+  <tbody>
+    <tr><td><code>src/core/services/ExpeditionEngine.ts</code></td><td>rollTreasureDrops（ノーマル・レアドロップ判定）</td></tr>
+    <tr><td><code>src/core/services/LuckRoller.ts</code></td><td>運値→運乱数テーブル</td></tr>
+    <tr><td><code>src/core/services/DropRankRoller.ts</code></td><td>敵Lv→装備Rank テーブル</td></tr>
+    <tr><td><code>src/core/services/EquipmentTitleService.ts</code></td><td>称号抽選ロジック（付与判定＋種別抽選）</td></tr>
+    <tr><td><code>src/shared/data/equipmentTitleConfig.ts</code></td><td>称号テーブル（rollWeight/rank）</td></tr>
+    <tr><td><code>src/shared/types/DungeonTier.ts</code></td><td>Tier倍率、判定回数、因子ドロップ率</td></tr>
+    <tr><td><code>src/core/services/FactorService.ts</code></td><td>rollFactorDrops（因子ドロップ判定）</td></tr>
+    <tr><td><code>src/core/usecases/CompleteExpeditionUseCase.ts</code></td><td>遠征完了時の因子付与</td></tr>
+  </tbody>
+</table>
+
+</div>
+</body>
+</html>

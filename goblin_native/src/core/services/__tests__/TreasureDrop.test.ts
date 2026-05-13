@@ -17,14 +17,18 @@ function callRollTreasureDrops(
   droppedIds: Set<string>,
   partyLuckAverage: number = 10,
   rewardMultipliers?: Partial<PartyRewardMultipliers>,
-  rareDropMultiplierBoost: number = 1
+  rareDropMultiplierBoost: number = 1,
+  titleMultiplierBoost: number = 1,
+  tier: number = 0,
 ) {
   return (engine as any).rollTreasureDrops(
     enemies,
     droppedIds,
     partyLuckAverage,
     rewardMultipliers,
-    rareDropMultiplierBoost
+    rareDropMultiplierBoost,
+    titleMultiplierBoost,
+    tier,
   )
 }
 
@@ -388,7 +392,8 @@ describe('rollTreasureDrops', () => {
   })
 
   describe('称号付与倍率の統合', () => {
-    it('titleMultiplier=1 では称号なしが大半', () => {
+    it('titleMultiplier=1（threshold=70）では称号なしが過半数', () => {
+      // 運値35平均、luckRoll=[37,99.99) → 付与率 ≒ 47.6%
       let titleCount = 0
       let totalDrops = 0
       const iterations = 1500
@@ -403,11 +408,14 @@ describe('rollTreasureDrops', () => {
       }
 
       if (totalDrops > 0) {
-        expect(titleCount / totalDrops).toBeLessThan(0.20)
+        // 付与率の理論値 ~47.6% 周辺。粗く 60% 以下、25% 以上で範囲確認
+        const titleRate = titleCount / totalDrops
+        expect(titleRate).toBeLessThan(0.60)
+        expect(titleRate).toBeGreaterThan(0.25)
       }
     })
 
-    it('titleMultiplier=99 では称号付きが増加する', () => {
+    it('titleMultiplier=99 では必ず称号付き（threshold が負）', () => {
       let titleCount = 0
       let totalDrops = 0
       const iterations = 1500
@@ -422,8 +430,46 @@ describe('rollTreasureDrops', () => {
       }
 
       if (totalDrops > 0) {
-        expect(titleCount / totalDrops).toBeGreaterThan(0.85)
+        // multiplier=99 → threshold=-2870、luckRoll は必ず大きい → 全件付与
+        expect(titleCount / totalDrops).toBe(1)
       }
+    })
+
+    it('Tier が上がると高位称号（masterwork 以上）の出現比率が上がる', () => {
+      const measureHighRate = (tier: number): number => {
+        let highCount = 0
+        let totalDrops = 0
+        const iterations = 800
+        for (let seed = 0; seed < iterations; seed++) {
+          const engine = createEngine(seed * 17 + tier * 3)
+          const result = callRollTreasureDrops(
+            engine,
+            [createDummyEnemy()],
+            new Set(),
+            35,
+            { rare: 1, title: 99 },
+            1,
+            1,
+            tier,
+          )
+          for (const drop of result) {
+            totalDrops++
+            // masterwork(3) 以上を「高位」とみなす
+            const positiveIds = ['masterwork', 'magical', 'imbued', 'legendary', 'terrifying', 'broken']
+            if (drop.titleId && positiveIds.includes(drop.titleId)) {
+              highCount++
+            }
+          }
+        }
+        return totalDrops > 0 ? highCount / totalDrops : 0
+      }
+
+      const t0 = measureHighRate(0)
+      const t5 = measureHighRate(5)
+
+      expect(t5).toBeGreaterThan(t0)
+      // Tier 5 ではほぼ確実に masterwork 以上
+      expect(t5).toBeGreaterThan(0.95)
     })
   })
 

@@ -1,47 +1,68 @@
-import type { EquipmentTitleId, EquipmentTitleInstance } from '../../shared/types/EquipmentTitle'
+import type { EquipmentTitleDef, EquipmentTitleId, EquipmentTitleInstance } from '../../shared/types/EquipmentTitle'
 import { EQUIPMENT_TITLE_DEFS } from '../../shared/data/equipmentTitleConfig'
 import { getEquipmentTitleLabel } from '../../shared/i18n/entityLocalization'
+import { getDungeonTierTitleRollCount, type DungeonTier } from '../../shared/types/DungeonTier'
+
+const ROLLABLE_TITLE_DEFS: EquipmentTitleDef[] = EQUIPMENT_TITLE_DEFS.filter(def => def.rollWeight > 0)
+const ROLLABLE_TOTAL_WEIGHT = ROLLABLE_TITLE_DEFS.reduce((sum, def) => sum + def.rollWeight, 0)
 
 /**
  * 装備の称号を抽選するサービス
  *
- * 各称号の重み = baseWeight × multiplier^power
- * 「称号なし」(power=0)は固定重みで、倍率が上がると相対的に確率が下がる。
+ * 抽選フロー:
+ *   1. 付与判定: `運乱数 > 100 - effectiveTitleMultiplier × 30` を満たせば称号あり
+ *   2. あり判定の場合のみ、Tier 別の判定回数だけ rollWeight でテーブル抽選し、
+ *      その中で rank が最も高い称号を採用する
  */
 export class EquipmentTitleService {
   /**
    * 称号を抽選する
-   * @param titleMultiplier 称号付与倍率（1〜99）
+   * @param titleMultiplier 称号付与倍率（パーティ倍率 × スキル × どんぐり 等。1 でデフォルト）
+   * @param luckRoll 運乱数（LuckRoller.rollLuckValue で得た値）
+   * @param tier ダンジョン Tier（判定回数に使用）
    * @param rng 乱数生成関数（0〜1）
    * @returns 称号インスタンス（称号なしの場合も返す）
    */
-  static rollTitle(titleMultiplier: number, rng: () => number): EquipmentTitleInstance {
-    const m = Math.max(1, Math.min(99, titleMultiplier))
+  static rollTitle(
+    titleMultiplier: number,
+    luckRoll: number,
+    tier: DungeonTier,
+    rng: () => number,
+  ): EquipmentTitleInstance {
+    const m = titleMultiplier > 0 ? titleMultiplier : 1
+    const threshold = 100 - m * 30
 
-    // 各称号の重みを計算
-    const weights = EQUIPMENT_TITLE_DEFS.map(def => ({
-      def,
-      weight: def.power === 0
-        ? def.baseWeight // 固定重み（称号なし）
-        : def.baseWeight * Math.pow(m, def.power),
-    }))
+    // 1) 付与判定
+    if (!(luckRoll > threshold)) {
+      return this.buildInstance('none')
+    }
 
-    const totalWeight = weights.reduce((sum, w) => sum + w.weight, 0)
-    const roll = rng() * totalWeight
-
-    let cumulative = 0
-    for (const { def, weight } of weights) {
-      cumulative += weight
-      if (roll < cumulative) {
-        return {
-          titleId: def.id,
-          titleName: getEquipmentTitleLabel(def.id),
-        }
+    // 2) Tier 別の判定回数だけ引いて rank 最大を採用
+    const rollCount = getDungeonTierTitleRollCount(tier)
+    let best: EquipmentTitleDef | null = null
+    for (let i = 0; i < rollCount; i++) {
+      const rolled = this.pickByWeight(rng)
+      if (best === null || rolled.rank > best.rank) {
+        best = rolled
       }
     }
 
-    // フォールバック（到達しないはず）
-    return { titleId: 'none', titleName: getEquipmentTitleLabel('none') }
+    return this.buildInstance(best ? best.id : 'none')
+  }
+
+  /** rollWeight に従って 1 つ抽選する */
+  private static pickByWeight(rng: () => number): EquipmentTitleDef {
+    const roll = rng() * ROLLABLE_TOTAL_WEIGHT
+    let cumulative = 0
+    for (const def of ROLLABLE_TITLE_DEFS) {
+      cumulative += def.rollWeight
+      if (roll < cumulative) return def
+    }
+    return ROLLABLE_TITLE_DEFS[ROLLABLE_TITLE_DEFS.length - 1]
+  }
+
+  private static buildInstance(titleId: EquipmentTitleId): EquipmentTitleInstance {
+    return { titleId, titleName: getEquipmentTitleLabel(titleId) }
   }
 
   /**

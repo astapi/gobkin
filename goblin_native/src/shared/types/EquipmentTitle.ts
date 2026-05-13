@@ -14,6 +14,14 @@ export type EquipmentTitleId =
 
 /**
  * 称号の定義
+ *
+ * 抽選フロー:
+ *   1. 付与判定（運乱数 > 100 - effectiveTitleMultiplier × 30）
+ *   2. 付与する場合のみ、Tier 別の判定回数だけ rollWeight に基づき抽選し、
+ *      最も rank の高い称号を採用する
+ *
+ * - rollWeight は「称号付き」の中での重み（none は 0、抽選対象外）
+ * - rank は称号の優劣順（大きいほど高位／良い称号）
  */
 export interface EquipmentTitleDef {
   id: EquipmentTitleId
@@ -21,8 +29,8 @@ export interface EquipmentTitleDef {
   plusMultiplier: number  // プラス補正の倍率
   minusMultiplier: number // マイナス補正の倍率
   priceMultiplier: number // 価格倍率
-  baseWeight: number      // 基本重み（倍率1倍時）
-  power: number           // 倍率に対するスケーリング指数
+  rollWeight: number      // 称号抽選時の重み（none は 0 で抽選対象外）
+  rank: number            // 称号の優劣順（大きいほど高位）
 }
 
 /**

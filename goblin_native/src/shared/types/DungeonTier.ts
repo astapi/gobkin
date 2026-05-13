@@ -126,6 +126,20 @@ export function getDungeonTierFactorDropMultiplier(tier: DungeonTier = 0): numbe
   return rate / BASE_FACTOR_DROP_RATE
 }
 
+/**
+ * 称号抽選の判定回数（Tier 別）
+ *
+ * - 付与判定で「あり」となった場合のみ、この回数だけ称号テーブルを抽選し、
+ *   その中で rank が最も高い称号を採用する
+ * - Tier が高いほど高位称号の出現確率が上がる
+ */
+export const DUNGEON_TIER_TITLE_ROLL_COUNTS = [1, 2, 4, 7, 12, 25] as const
+
+/** Tier に応じた称号抽選の判定回数を返す */
+export function getDungeonTierTitleRollCount(tier: DungeonTier = 0): number {
+  return DUNGEON_TIER_TITLE_ROLL_COUNTS[tier] ?? DUNGEON_TIER_TITLE_ROLL_COUNTS[0]
+}
+
 /** ダンジョン探索時間クラス */
 export type DungeonTierClass = 'A' | 'B' | 'C'
 

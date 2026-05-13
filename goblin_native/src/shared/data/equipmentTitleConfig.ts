@@ -3,12 +3,13 @@ import type { EquipmentTitleDef } from '../types/EquipmentTitle'
 /**
  * 称号の定義一覧
  *
- * 抽選時の重み計算: weight(M) = baseWeight × M^power
- * 「称号なし」は固定重みで、倍率が上がると相対的に確率が下がる。
- * レア称号ほど power が高く、倍率上昇の恩恵が大きい。
+ * 抽選フロー:
+ *   1. 付与判定: `運乱数 > 100 - effectiveTitleMultiplier × 30` を満たすかで「あり/なし」を決める
+ *   2. 付与する場合のみ、Tier 別の判定回数だけ rollWeight に基づき抽選し、rank が最も高い称号を採用
  *
- * 倍率1倍時: 壊れた=0.01%、称号なし=88%
- * 倍率99倍時: 壊れた≈1.5%、称号なし≈6%
+ * - rollWeight は「称号付き」の中での重み（合計 99999 = 約100%）
+ * - rank は称号の優劣順（broken が最高、worst が最低）
+ * - 'none' は付与判定で別経路扱いになるため rollWeight=0、rank=0 とする
  */
 export const EQUIPMENT_TITLE_DEFS: EquipmentTitleDef[] = [
   {
@@ -17,8 +18,8 @@ export const EQUIPMENT_TITLE_DEFS: EquipmentTitleDef[] = [
     plusMultiplier: 0.50,
     minusMultiplier: 2.00,
     priceMultiplier: 0.50,
-    baseWeight: 200,
-    power: 0.3,
+    rollWeight: 28571,
+    rank: 1,
   },
   {
     id: 'stinky',
@@ -26,8 +27,8 @@ export const EQUIPMENT_TITLE_DEFS: EquipmentTitleDef[] = [
     plusMultiplier: 0.80,
     minusMultiplier: 1.25,
     priceMultiplier: 0.80,
-    baseWeight: 300,
-    power: 0.3,
+    rollWeight: 37986,
+    rank: 2,
   },
   {
     id: 'none',
@@ -35,8 +36,8 @@ export const EQUIPMENT_TITLE_DEFS: EquipmentTitleDef[] = [
     plusMultiplier: 1.00,
     minusMultiplier: 1.00,
     priceMultiplier: 1.00,
-    baseWeight: 8800,
-    power: 0, // 固定重み
+    rollWeight: 0,
+    rank: 0,
   },
   {
     id: 'masterwork',
@@ -44,8 +45,8 @@ export const EQUIPMENT_TITLE_DEFS: EquipmentTitleDef[] = [
     plusMultiplier: 1.33,
     minusMultiplier: 0.75,
     priceMultiplier: 2.00,
-    baseWeight: 400,
-    power: 1.0,
+    rollWeight: 28571,
+    rank: 3,
   },
   {
     id: 'magical',
@@ -53,8 +54,8 @@ export const EQUIPMENT_TITLE_DEFS: EquipmentTitleDef[] = [
     plusMultiplier: 1.58,
     minusMultiplier: 0.63,
     priceMultiplier: 3.00,
-    baseWeight: 200,
-    power: 1.1,
+    rollWeight: 3657,
+    rank: 4,
   },
   {
     id: 'imbued',
@@ -62,8 +63,8 @@ export const EQUIPMENT_TITLE_DEFS: EquipmentTitleDef[] = [
     plusMultiplier: 2.10,
     minusMultiplier: 0.48,
     priceMultiplier: 9.00,
-    baseWeight: 80,
-    power: 1.25,
+    rollWeight: 914,
+    rank: 5,
   },
   {
     id: 'legendary',
@@ -71,8 +72,8 @@ export const EQUIPMENT_TITLE_DEFS: EquipmentTitleDef[] = [
     plusMultiplier: 2.75,
     minusMultiplier: 0.36,
     priceMultiplier: 20.00,
-    baseWeight: 15,
-    power: 1.55,
+    rollWeight: 229,
+    rank: 6,
   },
   {
     id: 'terrifying',
@@ -80,8 +81,8 @@ export const EQUIPMENT_TITLE_DEFS: EquipmentTitleDef[] = [
     plusMultiplier: 3.50,
     minusMultiplier: 0.29,
     priceMultiplier: 42.00,
-    baseWeight: 4,
-    power: 1.80,
+    rollWeight: 57,
+    rank: 7,
   },
   {
     id: 'broken',
@@ -89,8 +90,8 @@ export const EQUIPMENT_TITLE_DEFS: EquipmentTitleDef[] = [
     plusMultiplier: 5.00,
     minusMultiplier: 0.20,
     priceMultiplier: 125.00,
-    baseWeight: 1,
-    power: 1.67,
+    rollWeight: 14,
+    rank: 8,
   },
 ]
 
