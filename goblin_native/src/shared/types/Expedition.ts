@@ -65,11 +65,13 @@ export type TimelineEvent =
  * 探索時間の短縮は ExpeditionRequest.durationSec 計算時点で適用するため、ここでは扱わない。
  *
  * - rareDropMultiplier: レアドロップ判定の倍率（1 で無効）
+ * - expMultiplier: 戦闘で得られる経験値の倍率（1 で無効）
  * - goldMultiplier: 戦闘で得られる Gold の倍率（1 で無効）
  * - titleMultiplier: 装備に付与される称号の倍率（1 で無効）
  */
 export interface ExpeditionBoost {
   rareDropMultiplier?: number
+  expMultiplier?: number
   goldMultiplier?: number
   titleMultiplier?: number
 }

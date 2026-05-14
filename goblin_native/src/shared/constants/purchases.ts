@@ -63,6 +63,7 @@ export const BOOST_TICKET_MULTIPLIER = 2.0    // ドロップ率・経験値倍�
 
 // 金のドングリ効果（出撃時に1個消費する Consumable）
 export const GOLDEN_ACORN_SPEED_MULTIPLIER = 0.5   // 探索時間 1/2
+export const GOLDEN_ACORN_EXP_MULTIPLIER = 2.0     // 経験値倍率 2倍
 export const GOLDEN_ACORN_GOLD_MULTIPLIER = 2.0    // Gold 倍率 2倍
 export const GOLDEN_ACORN_RARE_MULTIPLIER = 2.0    // レアドロップ倍率 2倍
 export const GOLDEN_ACORN_TITLE_MULTIPLIER = 2.0   // 称号倍率 2倍

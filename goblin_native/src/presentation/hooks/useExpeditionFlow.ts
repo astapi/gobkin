@@ -24,6 +24,7 @@ import { getSpeedMultiplier, usePurchaseStore } from '../stores/usePurchaseStore
 import {
   TICKET_TYPES,
   GOLDEN_ACORN_SPEED_MULTIPLIER,
+  GOLDEN_ACORN_EXP_MULTIPLIER,
   GOLDEN_ACORN_GOLD_MULTIPLIER,
   GOLDEN_ACORN_RARE_MULTIPLIER,
   GOLDEN_ACORN_TITLE_MULTIPLIER,
@@ -59,6 +60,7 @@ interface StartExpeditionResult {
 }
 
 const GOLDEN_ACORN_BOOST: ExpeditionBoost = {
+  expMultiplier: GOLDEN_ACORN_EXP_MULTIPLIER,
   goldMultiplier: GOLDEN_ACORN_GOLD_MULTIPLIER,
   rareDropMultiplier: GOLDEN_ACORN_RARE_MULTIPLIER,
   titleMultiplier: GOLDEN_ACORN_TITLE_MULTIPLIER,
