@@ -2,7 +2,7 @@ import { useCallback, useMemo, useState } from 'react'
 import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useTranslation } from 'react-i18next'
-import { useBaseStore, selectGold, selectIvBonus, selectMaxGoblins, selectMaxParties, selectRank } from '@/presentation/stores/useBaseStore'
+import { useBaseStore, selectGold, selectMaxGoblins, selectMaxParties, selectRank } from '@/presentation/stores/useBaseStore'
 import { BASE_RANK_CONFIGS } from '@/core/services/BaseRankSystem'
 import { areasData } from '@/shared/data'
 import { getDungeonName } from '@/shared/i18n/entityLocalization'
@@ -14,7 +14,6 @@ export default function BaseUpgradeScreen() {
   const rank = useBaseStore(selectRank)
   const maxParties = useBaseStore(selectMaxParties)
   const maxGoblins = useBaseStore(selectMaxGoblins)
-  const ivBonus = useBaseStore(selectIvBonus)
   const gold = useBaseStore(selectGold)
   const [isRankingUp, setIsRankingUp] = useState(false)
 
@@ -32,7 +31,6 @@ export default function BaseUpgradeScreen() {
       isCaptured,
       maxParties: nextConfig.maxParties,
       maxGoblins: nextConfig.maxGoblins,
-      ivBonus: nextConfig.ivBonus,
       upgradeCost: nextConfig.upgradeCost,
     }
   }, [baseState, rank])
@@ -59,7 +57,7 @@ export default function BaseUpgradeScreen() {
             if (result.success) {
               Alert.alert(
                 t('ui.baseUpgrade.successTitle'),
-                t('ui.baseUpgrade.successBody', { nextRank: nextRankInfo.nextRank })
+                t('ui.baseUpgrade.successBody')
               )
             } else {
               Alert.alert(t('ui.baseUpgrade.failureTitle'), result.error)
@@ -103,7 +101,6 @@ export default function BaseUpgradeScreen() {
               <View style={styles.benefitList}>
                 <Text style={styles.benefitItem}>{t('ui.baseUpgrade.maxPartiesBenefit', { current: maxParties, next: nextRankInfo.maxParties })}</Text>
                 <Text style={styles.benefitItem}>{t('ui.baseUpgrade.capacityBenefit', { current: maxGoblins, next: nextRankInfo.maxGoblins })}</Text>
-                <Text style={styles.benefitItem}>{t('ui.baseUpgrade.ivBonusBenefit', { current: ivBonus, next: nextRankInfo.ivBonus })}</Text>
               </View>
 
               <TouchableOpacity
