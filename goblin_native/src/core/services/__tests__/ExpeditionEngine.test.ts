@@ -1,6 +1,6 @@
 import { ExpeditionEngine } from '../ExpeditionEngine'
 import { DEFAULT_PARTY_REWARD_MULTIPLIERS, DUNGEON_TIER_SCALING, getDungeonTierAreaLevel } from '../../../shared/types'
-import type { CharacterSkill, DungeonTier, Enemy, TimelineEvent, PartyState } from '../../../shared/types'
+import type { CharacterSkill, DungeonTier, Enemy, Goblin, TimelineEvent, PartyState } from '../../../shared/types'
 import {
   getMagicDamageReductionFromSkills,
   getPhysicalDamageReductionFromSkills,
@@ -172,6 +172,217 @@ describe('ExpeditionEngine reward multipliers', () => {
     const summary = (engine as any).calculateRewardSummary(events, partyState)
 
     expect(summary.xpGained).toBe(0)
+  })
+})
+
+describe('ExpeditionEngine golden acorn clear encounter', () => {
+  const party: Goblin[] = [{
+    id: 1,
+    name: 'テストゴブリン',
+    race: 'ゴブリン',
+    level: 20,
+    experience: 0,
+    avatar: 'test.png',
+    stats: {
+      hp: 999,
+      atk: 999,
+      magicAtk: 999,
+      def: 999,
+      magicDef: 999,
+      attackCount: 1,
+      accuracy: 999,
+      evasion: 999,
+      magicHeal: 0,
+      criticalRate: 0,
+    },
+    skills: [],
+  }]
+
+  it('金のドングリ使用時に踏破後ラタトスク戦を追加する', async () => {
+    const battleSystem = {
+      executeBattle: jest.fn(() => ({
+        rounds: 1,
+        outcome: 'win',
+        allyHPDelta: [0],
+        enemyDefeated: 1,
+        detailedLog: [],
+      })),
+    }
+    const engine = new ExpeditionEngine(1, battleSystem as any)
+
+    const replay = await engine.generateExpedition(
+      {
+        partyId: '1',
+        areaId: 'slime_cave',
+        returnPolicy: 'never',
+        clientVersion: 'test',
+        durationSec: 30,
+      },
+      party,
+      DEFAULT_PARTY_REWARD_MULTIPLIERS,
+      { expMultiplier: 2, goldMultiplier: 2, rareDropMultiplier: 2, titleMultiplier: 2 },
+    )
+
+    const ratatoskrEvent = replay.events.find(
+      (event) => event.type === 'battle' && event.enemy.id === 'golden_acorn_ratatoskr',
+    )
+
+    expect(ratatoskrEvent).toEqual(expect.objectContaining({
+      floor: 2,
+      enemy: expect.objectContaining({
+        name: 'ラタトスク',
+        lvl: 10,
+        gold: 998,
+      }),
+      xp: 1996,
+    }))
+    expect(battleSystem.executeBattle).toHaveBeenCalledWith(
+      expect.any(Array),
+      expect.any(Array),
+      [[expect.objectContaining({
+        id: 'golden_acorn_ratatoskr',
+        hp: 10,
+        atk: 10,
+        def: 10,
+        accuracy: 200,
+        evasion: 1000,
+        skills: [expect.objectContaining({ magicDamageReductionPercent: 99 })],
+      })]],
+      expect.any(Function),
+    )
+    expect(replay.summary.xpGained).toBeGreaterThanOrEqual(1996)
+    expect(replay.summary.goldGained).toBeGreaterThanOrEqual(998 * 2)
+  })
+
+  it('金のドングリ未使用時はラタトスク戦を追加しない', async () => {
+    const battleSystem = {
+      executeBattle: jest.fn(() => ({
+        rounds: 1,
+        outcome: 'win',
+        allyHPDelta: [0],
+        enemyDefeated: 1,
+        detailedLog: [],
+      })),
+    }
+    const engine = new ExpeditionEngine(1, battleSystem as any)
+
+    const replay = await engine.generateExpedition(
+      {
+        partyId: '1',
+        areaId: 'slime_cave',
+        returnPolicy: 'never',
+        clientVersion: 'test',
+        durationSec: 30,
+      },
+      party,
+      DEFAULT_PARTY_REWARD_MULTIPLIERS,
+    )
+
+    expect(replay.events.some(
+      (event) => (event.type === 'battle' || event.type === 'boss') && event.enemy.id === 'golden_acorn_ratatoskr',
+    )).toBe(false)
+  })
+
+  it('ラタトスク戦が退却でも踏破扱いを維持する', async () => {
+    const battleSystem = {
+      executeBattle: jest.fn((_allies, _hp, enemies: Enemy[][]) => {
+        const isRatatoskr = enemies.flat().some(enemy => enemy.id === 'golden_acorn_ratatoskr')
+        return {
+          rounds: isRatatoskr ? 20 : 1,
+          outcome: isRatatoskr ? 'retreat' : 'win',
+          allyHPDelta: [0],
+          enemyDefeated: isRatatoskr ? 0 : 1,
+          detailedLog: [],
+        }
+      }),
+    }
+    const engine = new ExpeditionEngine(1, battleSystem as any)
+
+    const replay = await engine.generateExpedition(
+      {
+        partyId: '1',
+        areaId: 'slime_cave',
+        returnPolicy: 'never',
+        clientVersion: 'test',
+        durationSec: 30,
+      },
+      party,
+      DEFAULT_PARTY_REWARD_MULTIPLIERS,
+      { expMultiplier: 2, goldMultiplier: 2, rareDropMultiplier: 2, titleMultiplier: 2 },
+    )
+
+    const ratatoskrEvent = replay.events.find(
+      (event) => event.type === 'battle' && event.enemy.id === 'golden_acorn_ratatoskr',
+    )
+    const returnEvent = replay.events.find(event => event.type === 'return')
+
+    expect(ratatoskrEvent).toEqual(expect.objectContaining({
+      combat: expect.objectContaining({ outcome: 'escape' }),
+      xp: 0,
+    }))
+    expect(returnEvent).toEqual(expect.objectContaining({ reason: 'completed' }))
+    expect(replay.summary.success).toBe(true)
+  })
+})
+
+describe('ExpeditionEngine normal battle retreat', () => {
+  const party: Goblin[] = [{
+    id: 1,
+    name: 'テストゴブリン',
+    race: 'ゴブリン',
+    level: 20,
+    experience: 0,
+    avatar: 'test.png',
+    stats: {
+      hp: 999,
+      atk: 999,
+      magicAtk: 999,
+      def: 999,
+      magicDef: 999,
+      attackCount: 1,
+      accuracy: 999,
+      evasion: 999,
+      magicHeal: 0,
+      criticalRate: 0,
+    },
+    skills: [],
+  }]
+
+  it('通常戦闘の20ターン退却は探索を失敗にせず継続する', async () => {
+    const battleSystem = {
+      executeBattle: jest.fn((_allies, _hp, enemies: Enemy[][]) => {
+        const isBoss = enemies.flat().some(enemy => enemy.isBoss === true)
+        return {
+          rounds: isBoss ? 1 : 20,
+          outcome: isBoss ? 'win' : 'retreat',
+          allyHPDelta: [0],
+          enemyDefeated: isBoss ? 1 : 0,
+          detailedLog: [],
+        }
+      }),
+    }
+    const engine = new ExpeditionEngine(1, battleSystem as any)
+
+    const replay = await engine.generateExpedition(
+      {
+        partyId: '1',
+        areaId: 'slime_cave',
+        returnPolicy: 'never',
+        clientVersion: 'test',
+        durationSec: 30,
+      },
+      party,
+      DEFAULT_PARTY_REWARD_MULTIPLIERS,
+    )
+
+    expect(replay.events.some(
+      event => event.type === 'battle' && event.combat.outcome === 'escape',
+    )).toBe(true)
+    expect(replay.events.some(event => event.type === 'boss')).toBe(true)
+    expect(replay.events.find(event => event.type === 'return')).toEqual(
+      expect.objectContaining({ reason: 'completed' }),
+    )
+    expect(replay.summary.success).toBe(true)
   })
 })
 
@@ -426,6 +637,10 @@ describe('ExpeditionEngine enemy XP rewards', () => {
   it('ボスパターンでも随伴敵(isBoss未指定)にはボス係数を乗算しない', () => {
     // 全員 isBoss 無し → 通常計算
     expect((engine as any).calculateEnemyXp(enemies)).toBe(32)
+  })
+
+  it('経験値倍率を全敵の合計経験値に適用する', () => {
+    expect((engine as any).calculateEnemyXp(enemies, 2)).toBe(64)
   })
 })
 

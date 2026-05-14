@@ -35,6 +35,39 @@ import { getEffectiveStats } from '../../shared/utils/goblinStats'
 import { calculateEnemyExp } from '../../shared/utils/enemyExp'
 import { applyDungeonTierScalingToEnemy } from '../../shared/utils/enemyTierScaling'
 
+const GOLDEN_ACORN_CLEAR_ENCOUNTER_ID = 'golden_acorn_ratatoskr'
+const GOLDEN_ACORN_CLEAR_ENCOUNTER_EXP = 998
+
+const GOLDEN_ACORN_CLEAR_ENCOUNTER: Enemy[][] = [[{
+  id: GOLDEN_ACORN_CLEAR_ENCOUNTER_ID,
+  name: 'ラタトスク',
+  raceTags: ['beast'],
+  level: 10,
+  hp: 10,
+  baseAttributes: {
+    power: 10,
+    wisdom: 10,
+    spirit: 10,
+    vitality: 10,
+    agility: 10,
+    luck: 10,
+  },
+  atk: 10,
+  def: 10,
+  magicDef: 10,
+  attackCount: 1,
+  accuracy: 200,
+  evasion: 1000,
+  exp: GOLDEN_ACORN_CLEAR_ENCOUNTER_EXP,
+  gold: 998,
+  skills: [
+    {
+      id: 'ratatoskr_magic_reduction_99',
+      magicDamageReductionPercent: 99,
+    },
+  ],
+}]]
+
 export class ExpeditionEngine {
   private rng: () => number
   private seed: number
@@ -81,6 +114,9 @@ export class ExpeditionEngine {
       : 1
     const titleMultiplierBoost = expeditionBoost?.titleMultiplier && expeditionBoost.titleMultiplier > 0
       ? expeditionBoost.titleMultiplier
+      : 1
+    const expMultiplierBoost = expeditionBoost?.expMultiplier && expeditionBoost.expMultiplier > 0
+      ? expeditionBoost.expMultiplier
       : 1
     const tier = request.tier ?? 0
     const tierScaling = DUNGEON_TIER_SCALING[tier] ?? DUNGEON_TIER_SCALING[0]
@@ -158,7 +194,7 @@ export class ExpeditionEngine {
             const pattern = this.selectEnemyPattern(enemyDatabase.patterns, currentFloor, false)
             const enemies = this.applyTierScaling(this.getEnemiesFromPattern(pattern, enemyDatabase.enemies), tierScaling)
             const combat = this.resolveCombat(partyState, enemies, area)
-            const xp = combat.outcome === 'win' ? this.calculateEnemyXp(enemies) : 0
+            const xp = combat.outcome === 'win' ? this.calculateEnemyXp(enemies, expMultiplierBoost) : 0
 
             events.push({
               type: "battle",
@@ -179,23 +215,24 @@ export class ExpeditionEngine {
               break
             }
 
-            // 宝箱ドロップ判定（勝利時のみ）
-            const treasureDrops = this.rollTreasureDrops(
-              enemies.flat(),
-              droppedTemplateIds,
-              partyLuckAverage,
-              effectiveRewardMultipliers,
-              rareDropMultiplierBoost,
-              titleMultiplierBoost,
-              tier
-            )
-            if (treasureDrops.length > 0) {
-              events.push({
-                type: "treasure",
-                at: currentTime,
-                floor: currentFloor,
-                items: treasureDrops
-              })
+            if (combat.outcome === 'win') {
+              const treasureDrops = this.rollTreasureDrops(
+                enemies.flat(),
+                droppedTemplateIds,
+                partyLuckAverage,
+                effectiveRewardMultipliers,
+                rareDropMultiplierBoost,
+                titleMultiplierBoost,
+                tier
+              )
+              if (treasureDrops.length > 0) {
+                events.push({
+                  type: "treasure",
+                  at: currentTime,
+                  floor: currentFloor,
+                  items: treasureDrops
+                })
+              }
             }
 
             // 帰還条件をチェック
@@ -223,7 +260,7 @@ export class ExpeditionEngine {
             const pattern = this.selectEnemyPattern(enemyDatabase.patterns, currentFloor, false)
             const enemies = this.applyTierScaling(this.getEnemiesFromPattern(pattern, enemyDatabase.enemies), tierScaling)
             const combat = this.resolveCombat(partyState, enemies, area)
-            const xp = combat.outcome === 'win' ? this.calculateEnemyXp(enemies) : 0
+            const xp = combat.outcome === 'win' ? this.calculateEnemyXp(enemies, expMultiplierBoost) : 0
 
             events.push({
               type: "battle",
@@ -243,23 +280,24 @@ export class ExpeditionEngine {
               break
             }
 
-            // 宝箱ドロップ判定（勝利時のみ）
-            const defaultTreasure = this.rollTreasureDrops(
-              enemies.flat(),
-              droppedTemplateIds,
-              partyLuckAverage,
-              effectiveRewardMultipliers,
-              rareDropMultiplierBoost,
-              titleMultiplierBoost,
-              tier
-            )
-            if (defaultTreasure.length > 0) {
-              events.push({
-                type: "treasure",
-                at: currentTime,
-                floor: currentFloor,
-                items: defaultTreasure
-              })
+            if (combat.outcome === 'win') {
+              const defaultTreasure = this.rollTreasureDrops(
+                enemies.flat(),
+                droppedTemplateIds,
+                partyLuckAverage,
+                effectiveRewardMultipliers,
+                rareDropMultiplierBoost,
+                titleMultiplierBoost,
+                tier
+              )
+              if (defaultTreasure.length > 0) {
+                events.push({
+                  type: "treasure",
+                  at: currentTime,
+                  floor: currentFloor,
+                  items: defaultTreasure
+                })
+              }
             }
 
             const returnCheck = this.checkReturnConditions(partyState, request.returnPolicy, currentFloor)
@@ -297,7 +335,7 @@ export class ExpeditionEngine {
         const bossEnemies = this.applyTierScaling(this.getEnemiesFromPattern(bossPattern, enemyDatabase.enemies), tierScaling)
 
         const bossCombat = this.resolveCombat(partyState, bossEnemies, area, true)
-        const bossXp = bossCombat.outcome === 'win' ? this.calculateEnemyXp(bossEnemies) : 0
+        const bossXp = bossCombat.outcome === 'win' ? this.calculateEnemyXp(bossEnemies, expMultiplierBoost) : 0
 
         // 規定時間の終端でボス戦を行う（最後の秒で戦闘開始）
         const bossTime = adjustedDuration
@@ -339,6 +377,25 @@ export class ExpeditionEngine {
       } else {
         // ボスなしエリア: 最終階層到達で遠征完了
         returnReason = "completed"
+      }
+
+      if (returnReason === 'completed' && this.shouldTriggerGoldenAcornClearEncounter(expeditionBoost)) {
+        const encounterCombat = this.resolveCombat(partyState, GOLDEN_ACORN_CLEAR_ENCOUNTER, area)
+        const encounterXp = encounterCombat.outcome === 'win'
+          ? this.calculateEnemyXp(GOLDEN_ACORN_CLEAR_ENCOUNTER, expMultiplierBoost)
+          : 0
+
+        events.push({
+          type: "battle",
+          at: adjustedDuration,
+          floor: area.floors,
+          enemy: this.createEnemySnap(GOLDEN_ACORN_CLEAR_ENCOUNTER),
+          combat: encounterCombat,
+          xp: encounterXp
+        })
+
+        this.applyBattleResults(partyState, encounterCombat)
+        returnReason = 'completed'
       }
       shouldReturn = true
     }
@@ -500,10 +557,26 @@ export class ExpeditionEngine {
     )
   }
 
-  private calculateEnemyXp(enemies2D: Enemy[][]): number {
-    return enemies2D.flat().reduce(
-      (sum, enemy) => sum + calculateEnemyExp(enemy.level, enemy.raceTags, enemy.isBoss === true),
+  private calculateEnemyXp(enemies2D: Enemy[][], expMultiplier: number = 1): number {
+    const baseXp = enemies2D.flat().reduce(
+      (sum, enemy) => sum + this.calculateSingleEnemyXp(enemy),
       0
+    )
+    return Math.floor(baseXp * Math.max(0, expMultiplier))
+  }
+
+  private calculateSingleEnemyXp(enemy: Enemy): number {
+    if (enemy.id === GOLDEN_ACORN_CLEAR_ENCOUNTER_ID) {
+      return GOLDEN_ACORN_CLEAR_ENCOUNTER_EXP
+    }
+    return calculateEnemyExp(enemy.level, enemy.raceTags, enemy.isBoss === true)
+  }
+
+  private shouldTriggerGoldenAcornClearEncounter(expeditionBoost?: ExpeditionBoost): boolean {
+    return (
+      (expeditionBoost?.goldMultiplier ?? 1) > 1 &&
+      (expeditionBoost?.rareDropMultiplier ?? 1) > 1 &&
+      (expeditionBoost?.titleMultiplier ?? 1) > 1
     )
   }
 
@@ -566,7 +639,7 @@ export class ExpeditionEngine {
     const battleResult = this.battleSystem.executeBattle(allGoblins, currentHP, enemies, this.rng)
 
     // CombatReplayに変換
-    const outcome = battleResult.outcome === 'retreat' ? 'lose' : battleResult.outcome
+    const outcome = battleResult.outcome === 'retreat' ? 'escape' : battleResult.outcome
 
     return {
       rounds: battleResult.rounds,
