@@ -16,6 +16,11 @@ import { useTutorialTarget } from '@/presentation/hooks/useTutorialTarget'
 import { getGoblinDisplayImage } from '@/shared/utils/goblinImages'
 import { getPartyEffectiveStats } from '@/shared/utils/goblinStats'
 import {
+  GOLDEN_ACORN_GOLD_MULTIPLIER,
+  GOLDEN_ACORN_RARE_MULTIPLIER,
+  GOLDEN_ACORN_TITLE_MULTIPLIER,
+} from '@/shared/constants/purchases'
+import {
   getGoldBonusPercentFromSkills,
   getPartyRareMultiplierFromSkills,
   getPartyTitleMultiplierFromSkills,
@@ -27,6 +32,15 @@ const MAX_PARTY_SLOTS = 6
 
 function formatMultiplier(value: number): string {
   return value.toFixed(1)
+}
+
+function isGoldenAcornExpedition(record?: ExpeditionRecord): boolean {
+  const boost = record?.expeditionMeta?.expeditionBoost
+  return (
+    boost?.goldMultiplier === GOLDEN_ACORN_GOLD_MULTIPLIER &&
+    boost.rareDropMultiplier === GOLDEN_ACORN_RARE_MULTIPLIER &&
+    boost.titleMultiplier === GOLDEN_ACORN_TITLE_MULTIPLIER
+  )
 }
 
 interface MemberSlotProps {
@@ -78,6 +92,7 @@ interface PartyCardProps {
   onLogPress: (record: ExpeditionRecord) => void
   slotSize: number
   avatarSize: number
+  usedGoldenAcorn: boolean
 }
 
 const PartyCard = memo(function PartyCard({
@@ -90,6 +105,7 @@ const PartyCard = memo(function PartyCard({
   onLogPress,
   slotSize,
   avatarSize,
+  usedGoldenAcorn,
 }: PartyCardProps) {
   const { t } = useTranslation()
   const members = useMemo(() => {
@@ -132,7 +148,7 @@ const PartyCard = memo(function PartyCard({
 
   const status = party.status ?? 'idle'
   return (
-    <View style={styles.partyCard}>
+    <View style={[styles.partyCard, status === 'expedition' && usedGoldenAcorn && styles.partyCardGoldenAcorn]}>
       <TouchableOpacity onPress={onPress} activeOpacity={0.7}>
         <View style={styles.partyHeader}>
           <Text style={styles.partyName}>{party.name}</Text>
@@ -458,6 +474,8 @@ export default function FormationScreen() {
   const renderPartyItem = useCallback(({ item, index }: { item: Party | null; index: number }) => {
     const wrapperRef = index === 0 ? pt1Ref : undefined
     if (item) {
+      const latestHistory = partyHistories[item.id]?.[0]
+      const usedGoldenAcorn = (item.status ?? 'idle') === 'expedition' && isGoldenAcornExpedition(latestHistory)
       return (
         <View ref={wrapperRef} collapsable={false}>
           <PartyCard
@@ -470,6 +488,7 @@ export default function FormationScreen() {
             onLogPress={handleLogPress}
             slotSize={slotSize}
             avatarSize={avatarSize}
+            usedGoldenAcorn={usedGoldenAcorn}
           />
         </View>
       )
@@ -493,7 +512,7 @@ export default function FormationScreen() {
         </TouchableOpacity>
       </View>
     )
-  }, [avatarSize, goblins, handleAbort, handleHistoryPress, handleLogPress, handlePartyPress, partyHistoryDisplays, pt1Ref, slotSize, t])
+  }, [avatarSize, goblins, handleAbort, handleHistoryPress, handleLogPress, handlePartyPress, partyHistories, partyHistoryDisplays, pt1Ref, slotSize, t])
 
   return (
     <SafeAreaView style={styles.container} edges={['left', 'right', 'bottom']}>
@@ -561,6 +580,8 @@ const styles = StyleSheet.create({
   partyCard: {
     backgroundColor: '#FFFFFF',
     borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#FFFFFF',
     padding: 12,
     marginBottom: 12,
     shadowColor: '#000',
@@ -568,6 +589,10 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 2,
     elevation: 2,
+  },
+  partyCardGoldenAcorn: {
+    backgroundColor: '#F7EFE6',
+    borderColor: '#A16207',
   },
   historySection: {
     marginTop: 16,
