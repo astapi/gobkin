@@ -115,6 +115,12 @@ const en = {
       battleActionSaveFailedTitle: 'Save Error',
       battleActionSaveFailedBody: 'Could not save battle action settings.',
       unassigned: 'Unassigned',
+      renameTitle: 'Rename Goblin',
+      renamePlaceholder: 'Enter goblin name',
+      nameRequiredTitle: 'Please enter a goblin name',
+      nameRequiredBody: 'An empty name cannot be saved.',
+      renameFailedTitle: 'Could not rename goblin',
+      renameFailedBody: 'Please try again later.',
     },
     goblinList: {
       title: 'Goblin List',
