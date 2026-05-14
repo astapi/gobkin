@@ -115,6 +115,12 @@ const ja = {
       battleActionSaveFailedTitle: '保存エラー',
       battleActionSaveFailedBody: '戦闘行動設定の保存に失敗しました。',
       unassigned: '未設定',
+      renameTitle: 'ゴブリン名を変更',
+      renamePlaceholder: 'ゴブリン名を入力',
+      nameRequiredTitle: 'ゴブリン名を入力してください',
+      nameRequiredBody: '空のゴブリン名は保存できません',
+      renameFailedTitle: 'ゴブリン名を変更できませんでした',
+      renameFailedBody: '時間をおいて再度お試しください',
     },
     goblinList: {
       title: 'ゴブリン一覧',

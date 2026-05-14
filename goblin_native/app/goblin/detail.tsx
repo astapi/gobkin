@@ -1,5 +1,5 @@
 import { useMemo, useCallback, useEffect, useRef, useState } from 'react'
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, Alert, PanResponder } from 'react-native'
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, Alert, PanResponder, Modal, Pressable, TextInput } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useLocalSearchParams, router, useNavigation } from 'expo-router'
 import { useTranslation } from 'react-i18next'
@@ -189,6 +189,9 @@ export default function GoblinDetailScreen() {
   )
   const [isSavingBattleActionPolicy, setIsSavingBattleActionPolicy] = useState(false)
   const [isSlidingBattleActionPolicy, setIsSlidingBattleActionPolicy] = useState(false)
+  const [isRenameModalVisible, setIsRenameModalVisible] = useState(false)
+  const [editingName, setEditingName] = useState('')
+  const [isSavingName, setIsSavingName] = useState(false)
   const savedBattleActionPolicyRef = useRef<string>(JSON.stringify(normalizeBattleActionPolicy()))
   const parentNav = useNavigation()
   const isPendingGoblin = source === 'pending'
@@ -327,6 +330,40 @@ export default function GoblinDetailScreen() {
     router.push({ pathname: '/goblin/avatar', params: { goblinId: String(goblin.id) } })
   }, [goblin])
 
+  const handleOpenRenameModal = useCallback(() => {
+    if (!goblin || isPendingGoblin) return
+    setEditingName(goblin.name)
+    setIsRenameModalVisible(true)
+  }, [goblin, isPendingGoblin])
+
+  const handleSaveName = useCallback(async () => {
+    if (!goblin) return
+
+    const trimmedName = editingName.trim()
+    if (!trimmedName) {
+      Alert.alert(t('ui.goblin.nameRequiredTitle'), t('ui.goblin.nameRequiredBody'))
+      return
+    }
+
+    if (trimmedName === goblin.name) {
+      setIsRenameModalVisible(false)
+      return
+    }
+
+    try {
+      setIsSavingName(true)
+      const nextGoblin = { ...goblin, name: trimmedName }
+      await saveGoblin(nextGoblin)
+      setGoblin(nextGoblin)
+      setIsRenameModalVisible(false)
+    } catch (error) {
+      console.error('[GoblinDetail] Failed to rename goblin', error)
+      Alert.alert(t('ui.goblin.renameFailedTitle'), t('ui.goblin.renameFailedBody'))
+    } finally {
+      setIsSavingName(false)
+    }
+  }, [editingName, goblin, saveGoblin, t])
+
   const handlePressSkill = useCallback((skill: CharacterSkill) => {
     if (!goblin) return
     const title = getSkillLabel(skill)
@@ -378,7 +415,20 @@ export default function GoblinDetailScreen() {
               <Image source={getGoblinDisplayImage(goblin)} style={styles.profileAvatarImage} />
             </View>
             <View style={styles.profileInfo}>
-              <Text style={styles.profileName}>{goblin.name}</Text>
+              {isPendingGoblin ? (
+                <Text style={styles.profileName}>{goblin.name}</Text>
+              ) : (
+                <TouchableOpacity
+                  onPress={handleOpenRenameModal}
+                  activeOpacity={0.6}
+                  style={styles.profileNameTouchable}
+                  accessibilityRole="button"
+                  accessibilityLabel={t('ui.goblin.renameTitle')}
+                >
+                  <Text style={styles.profileName}>{goblin.name}</Text>
+                  <Text style={styles.profileNameEditHint}>✎</Text>
+                </TouchableOpacity>
+              )}
               <Text style={styles.profileRace}>{getRaceLabel(goblin.raceId ?? goblin.race)}</Text>
               {jobLabel && <Text style={styles.profileJob}>{jobLabel}</Text>}
               <Text style={styles.profileLevel}>{t('ui.common.levelShort')}{goblin.level}</Text>
@@ -552,6 +602,57 @@ export default function GoblinDetailScreen() {
           </>
         )}
       </ScrollView>
+
+      <Modal
+        transparent
+        visible={isRenameModalVisible}
+        animationType="fade"
+        onRequestClose={() => {
+          if (!isSavingName) setIsRenameModalVisible(false)
+        }}
+      >
+        <Pressable
+          style={styles.renameModalOverlay}
+          onPress={() => {
+            if (!isSavingName) setIsRenameModalVisible(false)
+          }}
+        >
+          <Pressable style={styles.renameModalContent} onPress={() => undefined}>
+            <Text style={styles.renameModalTitle}>{t('ui.goblin.renameTitle')}</Text>
+            <TextInput
+              value={editingName}
+              onChangeText={setEditingName}
+              placeholder={t('ui.goblin.renamePlaceholder')}
+              maxLength={12}
+              editable={!isSavingName}
+              style={styles.renameInput}
+              autoFocus
+              returnKeyType="done"
+              onSubmitEditing={() => {
+                void handleSaveName()
+              }}
+            />
+            <View style={styles.renameActionRow}>
+              <TouchableOpacity
+                style={[styles.renameActionButton, styles.renameCancelButton]}
+                onPress={() => setIsRenameModalVisible(false)}
+                disabled={isSavingName}
+              >
+                <Text style={styles.renameCancelButtonText}>{t('ui.common.cancel')}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.renameActionButton, styles.renamePrimaryButton, isSavingName && styles.renamePrimaryButtonDisabled]}
+                onPress={() => void handleSaveName()}
+                disabled={isSavingName}
+              >
+                <Text style={styles.renamePrimaryButtonText}>
+                  {isSavingName ? t('ui.common.saving') : t('ui.common.save')}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </Pressable>
+        </Pressable>
+      </Modal>
     </SafeAreaView>
   )
 }
@@ -597,11 +698,25 @@ const styles = StyleSheet.create({
   profileInfo: {
     flex: 1,
   },
+  profileNameTouchable: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignSelf: 'flex-start',
+    paddingVertical: 2,
+    paddingRight: 8,
+    marginBottom: 2,
+  },
   profileName: {
     fontSize: 17,
     fontWeight: '700',
     color: '#1F2937',
     marginBottom: 2,
+  },
+  profileNameEditHint: {
+    marginLeft: 6,
+    marginBottom: 2,
+    fontSize: 12,
+    color: '#6B7280',
   },
   profileRace: {
     fontSize: 12,
@@ -909,5 +1024,62 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontWeight: '700',
     fontSize: 12,
+  },
+  renameModalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.35)',
+    justifyContent: 'center',
+    paddingHorizontal: 16,
+  },
+  renameModalContent: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    padding: 16,
+  },
+  renameModalTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#1F2937',
+    marginBottom: 12,
+  },
+  renameInput: {
+    backgroundColor: '#F9FAFB',
+    borderWidth: 1,
+    borderColor: '#D1D5DB',
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    fontSize: 16,
+    color: '#111827',
+    marginBottom: 16,
+  },
+  renameActionRow: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  renameActionButton: {
+    flex: 1,
+    paddingVertical: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  renameCancelButton: {
+    backgroundColor: '#E5E7EB',
+  },
+  renameCancelButtonText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#374151',
+  },
+  renamePrimaryButton: {
+    backgroundColor: '#2563EB',
+  },
+  renamePrimaryButtonDisabled: {
+    backgroundColor: '#93C5FD',
+  },
+  renamePrimaryButtonText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#FFFFFF',
   },
 })

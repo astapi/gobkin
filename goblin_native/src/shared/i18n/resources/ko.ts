@@ -114,6 +114,12 @@ const ko = {
       battleActionSaveFailedTitle: '저장 오류',
       battleActionSaveFailedBody: '전투 행동 설정 저장에 실패했습니다.',
       unassigned: '미설정',
+      renameTitle: '고블린 이름 변경',
+      renamePlaceholder: '고블린 이름 입력',
+      nameRequiredTitle: '고블린 이름을 입력하세요',
+      nameRequiredBody: '빈 이름은 저장할 수 없습니다',
+      renameFailedTitle: '고블린 이름을 변경할 수 없습니다',
+      renameFailedBody: '잠시 후 다시 시도해 주세요',
     },
     goblinList: {
       title: '고블린 목록',
