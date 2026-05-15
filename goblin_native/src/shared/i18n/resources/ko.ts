@@ -616,6 +616,7 @@ const ko = {
       elf: { name: '엘프 인자', description: '엘프의 특성을 지닌 인자. 민첩성과 정신력이 증가합니다.' },
       lizardman: { name: '리자드맨 인자', description: '리자드맨의 특성을 지닌 인자. 전반적인 저항성과 HP가 증가합니다.' },
       troll: { name: '트롤 인자', description: '트롤의 특성을 지닌 인자. HP가 크게 증가하고 방어력도 상승합니다.' },
+      ratatoskr: { name: '라타토스크 인자', description: '라타토스크의 특성을 지닌 인자. 명중 정확도와 회피가 증가합니다.' },
     },
     equipment: equipmentKo,
     job: {

@@ -625,6 +625,7 @@ const en = {
       elf: { name: 'Elf Factor', description: 'A factor infused with elf traits. Increases agility and spirit.' },
       lizardman: { name: 'Lizardman Factor', description: 'A factor infused with lizardman traits. Improves overall resistance and HP.' },
       troll: { name: 'Troll Factor', description: 'A factor infused with troll traits. Greatly increases HP and also raises defense.' },
+      ratatoskr: { name: 'Ratatoskr Factor', description: 'A factor infused with Ratatoskr traits. Increases accuracy and evasion.' },
     },
     equipment: equipmentEn,
     job: {

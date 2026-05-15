@@ -121,8 +121,16 @@ export const DUNGEON_TIER_FACTOR_DROP_RATE = [
 const BASE_FACTOR_DROP_RATE = DUNGEON_TIER_FACTOR_DROP_RATE[0]
 
 /** Tier に応じた因子ドロップ倍率（敵JSON の基準 1.5% に乗算する係数）を返す */
-export function getDungeonTierFactorDropMultiplier(tier: DungeonTier = 0): number {
-  const rate = DUNGEON_TIER_FACTOR_DROP_RATE[tier] ?? BASE_FACTOR_DROP_RATE
+export function getDungeonTierFactorDropMultiplier(tier: DungeonTier = 0, minTier: DungeonTier = 0): number {
+  if (tier < minTier) {
+    return 0
+  }
+
+  const rate =
+    minTier === 0
+      ? DUNGEON_TIER_FACTOR_DROP_RATE[tier] ?? BASE_FACTOR_DROP_RATE
+      : BASE_FACTOR_DROP_RATE + (tier - minTier) * 0.01
+
   return rate / BASE_FACTOR_DROP_RATE
 }
 

@@ -35,8 +35,13 @@ import { getEffectiveStats } from '../../shared/utils/goblinStats'
 import { calculateEnemyExp } from '../../shared/utils/enemyExp'
 import { applyDungeonTierScalingToEnemy } from '../../shared/utils/enemyTierScaling'
 
-const GOLDEN_ACORN_CLEAR_ENCOUNTER_ID = 'golden_acorn_ratatoskr'
+export const GOLDEN_ACORN_CLEAR_ENCOUNTER_ID = 'golden_acorn_ratatoskr'
 const GOLDEN_ACORN_CLEAR_ENCOUNTER_EXP = 998
+export const GOLDEN_ACORN_CLEAR_FACTOR_DROPS = [{
+  factorId: 'ratatoskr',
+  probability: 0.015,
+  minDungeonTier: 3,
+} satisfies NonNullable<Enemy['factorDrops']>[number]]
 
 const GOLDEN_ACORN_CLEAR_ENCOUNTER: Enemy[][] = [[{
   id: GOLDEN_ACORN_CLEAR_ENCOUNTER_ID,
@@ -60,6 +65,7 @@ const GOLDEN_ACORN_CLEAR_ENCOUNTER: Enemy[][] = [[{
   evasion: 1000,
   exp: GOLDEN_ACORN_CLEAR_ENCOUNTER_EXP,
   gold: 998,
+  factorDrops: GOLDEN_ACORN_CLEAR_FACTOR_DROPS,
   skills: [
     {
       id: 'ratatoskr_magic_reduction_99',

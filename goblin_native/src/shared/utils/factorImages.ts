@@ -34,6 +34,7 @@ const factorImages: Record<string, React.FC<SvgProps>> = {
   vampire: FactorVampire,
   dragon: FactorDragon,
   shadow: FactorWolf,
+  ratatoskr: FactorWolf,
 }
 
 // デフォルト画像（スライム）

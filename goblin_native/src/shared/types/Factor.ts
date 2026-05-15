@@ -1,4 +1,5 @@
 import type { GoblinRaceId } from './Race'
+import type { DungeonTier } from './DungeonTier'
 
 /**
  * 因子の基本定義
@@ -37,4 +38,5 @@ export interface FactorVariantConfig {
 export interface FactorDropConfig {
   factorId: string     // 獲得できる因子のID
   probability: number  // 獲得確率 (0.0 ~ 1.0)  例: 0.03 = 3%
+  minDungeonTier?: DungeonTier // 獲得可能になる最低ダンジョンTier。未指定は通常Tierから
 }
