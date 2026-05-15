@@ -1320,7 +1320,7 @@ describe('BattleSystem — 命中判定と複数回攻撃', () => {
     const rear = result.detailedLog.find(log => log.action === '通常攻撃' && !log.isAlly)!.targets.find(target => target.targetId === '3')
 
     expect(rear).toBeDefined()
-    expect(rear!.totalDamage).toBe(178)
+    expect(rear!.totalDamage).toBe(124)
   })
 
   it('魔法保護持ちより後列の仲間は魔法ダメージが2/3に軽減される', () => {
@@ -1676,20 +1676,20 @@ describe('getRowWeight', () => {
     expect(getRowWeight(0, 1)).toBe(1)
   })
 
-  it('2列: 1列目=1/2, 2列目=1/2（最後2列同率）', () => {
-    expect(getRowWeight(0, 2)).toBe(0.5)
-    expect(getRowWeight(1, 2)).toBe(0.5)
+  it('2列: 列1=13/12, 列2=1/3', () => {
+    expect(getRowWeight(0, 2)).toBe(13 / 12)
+    expect(getRowWeight(1, 2)).toBe(1 / 3)
   })
 
-  it('3列: 1列目=1/2, 2列目=1/4, 3列目=1/4', () => {
-    expect(getRowWeight(0, 3)).toBe(0.5)
-    expect(getRowWeight(1, 3)).toBe(0.25)
+  it('3列: 列1=13/12, 列2=1/3, 列3=1/4', () => {
+    expect(getRowWeight(0, 3)).toBe(13 / 12)
+    expect(getRowWeight(1, 3)).toBe(1 / 3)
     expect(getRowWeight(2, 3)).toBe(0.25)
   })
 
-  it('6列: 1/2, 1/4, 1/8, 1/16, 1/32, 1/32', () => {
-    expect(getRowWeight(0, 6)).toBe(0.5)
-    expect(getRowWeight(1, 6)).toBe(0.25)
+  it('6列: 13/12, 1/3, 1/8, 1/16, 1/32, 1/32（比率 65/20/7.5/3.75/1.875/1.875）', () => {
+    expect(getRowWeight(0, 6)).toBe(13 / 12)
+    expect(getRowWeight(1, 6)).toBe(1 / 3)
     expect(getRowWeight(2, 6)).toBe(0.125)
     expect(getRowWeight(3, 6)).toBe(0.0625)
     expect(getRowWeight(4, 6)).toBe(0.03125)
@@ -1761,11 +1761,10 @@ describe('selectTarget — 隊列ターゲット選択', () => {
       counts[target.combatant.id]++
     }
 
-    // 2列の場合、前列=1/2, 後列=1/2（最後2列同率）なので均等に近いが
-    // 実際は列が2つなので最後2列ルールで同率
-    // → 50%ずつ（±5%の誤差許容）
-    expect(counts['前列'] / 10000).toBeGreaterThan(0.4)
-    expect(counts['後列'] / 10000).toBeGreaterThan(0.4)
+    // 2列: 列1=13/12, 列2=1/3 → 前列≈76.5%, 後列≈23.5%
+    expect(counts['前列'] / 10000).toBeGreaterThan(0.7)
+    expect(counts['後列'] / 10000).toBeGreaterThan(0.18)
+    expect(counts['前列']).toBeGreaterThan(counts['後列'])
   })
 
   it('3列の場合、前列ほど狙われやすい', () => {
@@ -1801,10 +1800,10 @@ describe('selectTarget — 隊列ターゲット選択', () => {
       counts[target.combatant.id]++
     }
 
-    // 列内2体: slot0=1/2, slot1=1/2（最後2列同率ルール適用）
-    // → 両方50%ずつ
-    expect(counts['A'] / 10000).toBeGreaterThan(0.4)
-    expect(counts['B'] / 10000).toBeGreaterThan(0.4)
+    // 列内2体: slot0=13/12, slot1=1/3 → A≈76.5%, B≈23.5%
+    expect(counts['A']).toBeGreaterThan(counts['B'])
+    expect(counts['A'] / 10000).toBeGreaterThan(0.7)
+    expect(counts['B'] / 10000).toBeGreaterThan(0.18)
   })
 
   it('前詰め: 列0が空で列1,2が生存 → 列1が最前列扱い', () => {
@@ -1821,12 +1820,13 @@ describe('selectTarget — 隊列ターゲット選択', () => {
       counts[target.combatant.id]++
     }
 
-    // 2列で最後2列同率 → 均等
-    expect(counts['列1ユニット'] / 10000).toBeGreaterThan(0.4)
-    expect(counts['列2ユニット'] / 10000).toBeGreaterThan(0.4)
+    // 前詰め後の2列分布: 約76.5% / 23.5%
+    expect(counts['列1ユニット'] / 10000).toBeGreaterThan(0.7)
+    expect(counts['列2ユニット'] / 10000).toBeGreaterThan(0.18)
+    expect(counts['列1ユニット']).toBeGreaterThan(counts['列2ユニット'])
   })
 
-  it('4列の分布: 1/2, 1/4, 1/8, 1/8', () => {
+  it('4列の分布: 13/12, 1/3, 1/8, 1/8 （比率 65/20/7.5/7.5）', () => {
     const units = [
       makeMockUnit('R0', 0),
       makeMockUnit('R1', 1),
@@ -1841,11 +1841,11 @@ describe('selectTarget — 隊列ターゲット選択', () => {
       counts[selectTarget(units, rng).combatant.id]++
     }
 
-    // R0≈50%, R1≈25%, R2≈12.5%, R3≈12.5%
-    expect(counts.R0 / N).toBeGreaterThan(0.43)
-    expect(counts.R0 / N).toBeLessThan(0.57)
-    expect(counts.R1 / N).toBeGreaterThan(0.19)
-    expect(counts.R1 / N).toBeLessThan(0.31)
+    // R0≈65%, R1≈20%, R2≈7.5%, R3≈7.5%
+    expect(counts.R0 / N).toBeGreaterThan(0.58)
+    expect(counts.R0 / N).toBeLessThan(0.72)
+    expect(counts.R1 / N).toBeGreaterThan(0.14)
+    expect(counts.R1 / N).toBeLessThan(0.26)
     // R2とR3はほぼ同率
     expect(Math.abs(counts.R2 - counts.R3) / N).toBeLessThan(0.05)
   })
@@ -2476,7 +2476,8 @@ describe('spell charges', () => {
     const result = battleSystem.executeBattle([attacker], [attacker.stats.hp], [[guard], [cleric]], createSeededRng(11), 1)
     const healLog = result.detailedLog.find(log => log.actorId === 'CLERIC' && log.action === 'ヒール')
 
-    expect(healLog?.targets[0].targetId).toBe('CLERIC')
+    // 攻撃者の攻撃が最前列の GUARD に偏るため、より傷ついた GUARD が回復対象になる
+    expect(healLog?.targets[0].targetId).toBe('GUARD')
     expect(healLog?.targets[0].totalDamage).toBe(-45)
   })
 

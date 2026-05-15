@@ -211,11 +211,14 @@ export function getHitRateRandomModifier(rng: () => number): number {
 
 /**
  * 隊列の狙われ率の重みを取得
- * row 0→1/2, row 1→1/4, ... 最後2列は同率
+ * 列1(タンク)=13/12, 列2=1/3, 列3以降=0.5^(n+1), 最後2列は同率
+ * 6列フル時の比率: 65% / 20% / 7.5% / 3.75% / 1.875% / 1.875%
  * totalRows: 生存列数
  */
 export function getRowWeight(row: number, totalRows: number): number {
   if (totalRows <= 1) return 1
+  if (row === 0) return 13 / 12
+  if (row === 1) return 1 / 3
   // 最後の2列は同率
   const effectiveRow = Math.min(row, totalRows - 2)
   return Math.pow(0.5, effectiveRow + 1)
