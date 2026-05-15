@@ -462,7 +462,7 @@ export class BattleSystem {
             actorMaxHP: unit.maxHP,
             isAlly: unit.isAlly,
             actionEffect: spellAction.effect ?? 'damage',
-            targets: [...targetDetails.values()],
+            targets: this.getSortedTargetDetails(targetDetails),
           })
           this.tryMagicSupportFollowUps(
             unit,
@@ -504,7 +504,7 @@ export class BattleSystem {
             actorMaxHP: unit.maxHP,
             isAlly: unit.isAlly,
             isCritical,
-            targets: [...targetDetails.values()],
+            targets: this.getSortedTargetDetails(targetDetails),
           })
           if (isCritical) {
             this.tryCriticalAttackFollowUps(
@@ -807,7 +807,7 @@ export class BattleSystem {
         isAlly: defender.isAlly,
         isCritical,
         actionEffect: 'damage',
-        targets: [...targetDetails.values()],
+        targets: this.getSortedTargetDetails(targetDetails),
       })
 
       this.tryPhysicalCounterAttacks(
@@ -873,7 +873,7 @@ export class BattleSystem {
         isAlly: supporter.isAlly,
         isCritical,
         actionEffect: 'damage',
-        targets: [...targetDetails.values()],
+        targets: this.getSortedTargetDetails(targetDetails),
       })
       this.tryPhysicalCounterAttacks(
         supporter,
@@ -942,7 +942,7 @@ export class BattleSystem {
         isAlly: supporter.isAlly,
         isCritical,
         actionEffect: 'damage',
-        targets: [...targetDetails.values()],
+        targets: this.getSortedTargetDetails(targetDetails),
       })
       this.tryPhysicalCounterAttacks(
         supporter,
@@ -1372,6 +1372,20 @@ export class BattleSystem {
     }
   }
 
+  private getSortedTargetDetails(
+    details: Map<string, AttackTargetDetail>,
+  ): AttackTargetDetail[] {
+    return [...details.values()]
+      .map((detail, index) => ({ detail, index }))
+      .sort((a, b) => {
+        if (a.detail.targetRow !== b.detail.targetRow) {
+          return a.detail.targetRow - b.detail.targetRow
+        }
+        return a.index - b.index
+      })
+      .map(({ detail }) => detail)
+  }
+
   private applyDamage(target: BattleUnit, damage: number): void {
     const nextHP = target.currentHP - damage
 
@@ -1466,7 +1480,7 @@ export class BattleSystem {
       actionEffect: 'heal',
       attackCount: targetDetails.size,
       hitCount: targetDetails.size,
-      targets: [...targetDetails.values()],
+      targets: this.getSortedTargetDetails(targetDetails),
     })
   }
 

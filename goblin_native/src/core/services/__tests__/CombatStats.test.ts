@@ -136,6 +136,45 @@ describe('getHitRateRandomModifier', () => {
   })
 })
 
+describe('BattleSystem — 戦闘ログ', () => {
+  it('攻撃対象の詳細を列番号の小さい順に並べる', () => {
+    const battle = new BattleSystem()
+    const details = new Map([
+      ['row3', {
+        targetId: 'row3',
+        targetName: '列3',
+        targetRow: 3,
+        totalDamage: 10,
+        hitCount: 1,
+        defeated: false,
+        targetHP: 90,
+      }],
+      ['row1', {
+        targetId: 'row1',
+        targetName: '列1',
+        targetRow: 1,
+        totalDamage: 20,
+        hitCount: 2,
+        defeated: false,
+        targetHP: 80,
+      }],
+      ['row2', {
+        targetId: 'row2',
+        targetName: '列2',
+        targetRow: 2,
+        totalDamage: 10,
+        hitCount: 1,
+        defeated: false,
+        targetHP: 90,
+      }],
+    ])
+
+    const sorted = (battle as any).getSortedTargetDetails(details)
+
+    expect(sorted.map((detail: { targetName: string }) => detail.targetName)).toEqual(['列1', '列2', '列3'])
+  })
+})
+
 // =========================================================================
 // GoblinBirthService — 新ステータスの生成
 // =========================================================================
