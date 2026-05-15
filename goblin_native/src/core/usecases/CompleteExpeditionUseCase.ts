@@ -12,8 +12,10 @@ import { GoblinEntity } from '../domain'
 import type { IGoblinRepository, IPartyRepository, IBaseStateRepository } from '../repositories'
 import type { IEquipmentRepository } from '../repositories/IEquipmentRepository'
 import type { LevelUpResult } from '../services/ExperienceSystem'
+import type { FactorDropConfig } from '../../shared/types/Factor'
 import { FactorService } from '../services/FactorService'
 import { captureDungeon } from '../services/BaseRankSystem'
+import { GOLDEN_ACORN_CLEAR_ENCOUNTER_ID, GOLDEN_ACORN_CLEAR_FACTOR_DROPS } from '../services/ExpeditionEngine'
 import { isDungeonCompleted } from '../../shared/utils/expeditionClear'
 import { getDungeonTierFactorDropMultiplier } from '../../shared/types/DungeonTier'
 
@@ -151,10 +153,22 @@ export class CompleteExpeditionUseCase {
         !baseStateBefore.capturedDungeons.includes(replay.meta.areaId)
     }
 
-    if (!isAbort && bossEvent && bossEvent.combat.outcome === 'win') {
+    if (!isAbort) {
+      const allFactorDrops: FactorDropConfig[] = []
+
+      const ratatoskrEvent = replay.events.find(
+        (e): e is Extract<TimelineEvent, { type: 'battle' }> =>
+          e.type === 'battle' &&
+          e.enemy.id === GOLDEN_ACORN_CLEAR_ENCOUNTER_ID &&
+          e.combat.outcome === 'win'
+      )
+      if (ratatoskrEvent) {
+        allFactorDrops.push(...GOLDEN_ACORN_CLEAR_FACTOR_DROPS)
+      }
+
       const enemyDatabase = getEnemyDatabase(replay.meta.areaId)
 
-      if (enemyDatabase) {
+      if (bossEvent && bossEvent.combat.outcome === 'win' && enemyDatabase) {
         const bossPattern = enemyDatabase.patterns.find(p => p.isBoss)
         const bossEnemyIds = bossPattern?.enemies.flat() ?? [bossEvent.enemy.id]
         const enemiesWithFactorDrops = enemyDatabase.enemies.filter(
@@ -162,7 +176,7 @@ export class CompleteExpeditionUseCase {
         )
 
         if (enemiesWithFactorDrops.length > 0) {
-          const allFactorDrops = enemiesWithFactorDrops
+          allFactorDrops.push(...enemiesWithFactorDrops
             .flatMap(e => e.factorDrops!)
             .map(drop => {
               // チュートリアル: スライム洞窟初回クリア時はスライム因子を確定獲得
@@ -174,41 +188,47 @@ export class CompleteExpeditionUseCase {
                 return { ...drop, probability: 1 }
               }
               return drop
-            })
+            }))
+        }
+      } else if (bossEvent && bossEvent.combat.outcome === 'win' && !enemyDatabase) {
+        console.warn(`Enemy data not found for area: ${replay.meta.areaId}`)
+      }
 
-          const tierMultiplier = getDungeonTierFactorDropMultiplier(replay.meta.tier ?? 0)
+      if (allFactorDrops.length > 0) {
+        const tier = replay.meta.tier ?? 0
+        const tierAdjustedFactorDrops = allFactorDrops.map(drop => ({
+          ...drop,
+          probability: drop.probability * getDungeonTierFactorDropMultiplier(tier, drop.minDungeonTier ?? 0),
+        }))
 
-          for (const goblin of goblins) {
-            if (replay.summary.casualties.includes(goblin.id.toString())) {
-              continue
-            }
+        for (const goblin of goblins) {
+          if (replay.summary.casualties.includes(goblin.id.toString())) {
+            continue
+          }
 
-            const latest = latestGoblins.get(goblin.id)!
-            const factorDropBonusPercent = getFactorDropBonusPercentFromSkills(latest.skills)
-            const factorDropMultiplier = getFactorDropMultiplierFromSkills(latest.skills)
-            const probabilityMultiplier =
-              (1 + Math.max(0, factorDropBonusPercent) / 100) * factorDropMultiplier * tierMultiplier
-            const acquired = FactorService.rollFactorDrops(
-              latest,
-              allFactorDrops,
-              replay.meta.seed,
-              probabilityMultiplier
-            )
+          const latest = latestGoblins.get(goblin.id)!
+          const factorDropBonusPercent = getFactorDropBonusPercentFromSkills(latest.skills)
+          const factorDropMultiplier = getFactorDropMultiplierFromSkills(latest.skills)
+          const probabilityMultiplier =
+            (1 + Math.max(0, factorDropBonusPercent) / 100) * factorDropMultiplier
+          const acquired = FactorService.rollFactorDrops(
+            latest,
+            tierAdjustedFactorDrops,
+            replay.meta.seed,
+            probabilityMultiplier
+          )
 
-            if (acquired.length > 0) {
-              const withFactors = FactorService.addFactors(latest, acquired)
-              // 因子と実効ステータスだけをUPDATEし、レベルアップ等の他データを上書きしない
-              await this.goblinRepository.updateGoblinFactors(goblin.id, withFactors.factors!, withFactors.effectiveStats!)
-              factorAcquisitions.set(goblin.id, acquired)
+          if (acquired.length > 0) {
+            const withFactors = FactorService.addFactors(latest, acquired)
+            // 因子と実効ステータスだけをUPDATEし、レベルアップ等の他データを上書きしない
+            await this.goblinRepository.updateGoblinFactors(goblin.id, withFactors.factors!, withFactors.effectiveStats!)
+            factorAcquisitions.set(goblin.id, acquired)
 
-              if (!updatedGoblinIds.includes(goblin.id)) {
-                updatedGoblinIds.push(goblin.id)
-              }
+            if (!updatedGoblinIds.includes(goblin.id)) {
+              updatedGoblinIds.push(goblin.id)
             }
           }
         }
-      } else {
-        console.warn(`Enemy data not found for area: ${replay.meta.areaId}`)
       }
     }
 

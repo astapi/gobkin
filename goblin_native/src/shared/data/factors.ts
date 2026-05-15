@@ -1,7 +1,18 @@
 import type { Factor } from '../types/Factor'
 import { goblinVariantDefinitions } from './goblinVariants'
 
-const standaloneFactorDatabase: Record<string, Factor> = {}
+const standaloneFactorDatabase: Record<string, Factor> = {
+  ratatoskr: {
+    id: 'ratatoskr',
+    name: 'ラタトスク因子',
+    description: 'ラタトスクの特性を宿した因子。命中精度と回避能力が増す。',
+    inheritProbability: 0.18,
+    effects: [
+      { type: 'stat_bonus', target: 'accuracy', value: 10 },
+      { type: 'stat_bonus', target: 'evasion', value: 10 },
+    ],
+  },
+}
 
 /**
  * 因子マスターデータ

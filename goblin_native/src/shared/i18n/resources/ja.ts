@@ -625,6 +625,7 @@ const ja = {
       elf: { name: 'エルフ因子', description: 'エルフの特性を宿した因子。敏捷性と精神力が増す。' },
       lizardman: { name: 'リザードマン因子', description: 'リザードマンの特性を宿した因子。全体的な耐性とHPが増す。' },
       troll: { name: 'トロル因子', description: 'トロルの特性を宿した因子。HPが大幅に増し、防御力も上がる。' },
+      ratatoskr: { name: 'ラタトスク因子', description: 'ラタトスクの特性を宿した因子。命中精度と回避能力が増す。' },
     },
     equipment: equipmentJa,
     job: {

@@ -1,8 +1,10 @@
 import { CompleteExpeditionUseCase } from '../CompleteExpeditionUseCase'
+import { GOLDEN_ACORN_CLEAR_ENCOUNTER_ID } from '../../services/ExpeditionEngine'
 import type { IGoblinRepository, IPartyRepository, IBaseStateRepository } from '../../repositories'
 import { getCharacterSkill } from '../../../shared/data/skillCatalog'
 import { getDefaultSkillsForRace } from '../../../shared/data/raceSkills'
 import { DEFAULT_PARTY_REWARD_MULTIPLIERS } from '../../../shared/types'
+import { getDungeonTierFactorDropMultiplier } from '../../../shared/types/DungeonTier'
 import type { Goblin, GoblinStats, Party, BaseState, ExpeditionReplay, TimelineEvent } from '../../../shared/types'
 
 // --- テストヘルパー ---
@@ -411,6 +413,75 @@ describe('CompleteExpeditionUseCase', () => {
         1,
         ['human'],
         expect.objectContaining({ hp: expect.any(Number) }),
+      )
+    })
+
+    it('上位Tier解禁因子は解禁Tierを1.5%起点として獲得判定される', async () => {
+      expect(0.015 * getDungeonTierFactorDropMultiplier(3, 3)).toBeCloseTo(0.015)
+      expect(0.015 * getDungeonTierFactorDropMultiplier(4, 3)).toBeCloseTo(0.025)
+      expect(0.015 * getDungeonTierFactorDropMultiplier(5, 3)).toBeCloseTo(0.035)
+      expect(getDungeonTierFactorDropMultiplier(2, 3)).toBe(0)
+
+      const party = createTestParty({ id: 1, memberIds: [1] })
+      const baseState = createTestBaseState({ capturedDungeons: ['slime_cave'] })
+      const events: TimelineEvent[] = [
+        { type: 'move_start', at: 0, floor: 1 },
+        createBossEvent('B_SLIME', 5, [-1], 30, 2),
+        {
+          type: 'battle',
+          at: 30,
+          floor: 2,
+          enemy: { id: GOLDEN_ACORN_CLEAR_ENCOUNTER_ID, name: 'ラタトスク', lvl: 10, count: 1, gold: 998 },
+          combat: { rounds: 1, outcome: 'win', allyHPDelta: [0], enemyDefeated: 1 },
+          xp: 998,
+        },
+        { type: 'return', at: 30, reason: 'completed' },
+      ]
+      const replayBase = {
+        meta: {
+          expeditionId: 'exp-1',
+          areaId: 'slime_cave',
+          areaName: 'スライムの洞窟',
+          floors: 2,
+          baseDurationSec: 30,
+          party: ['1'],
+          partyRewardMultipliers: DEFAULT_PARTY_REWARD_MULTIPLIERS,
+          returnPolicy: 'never' as const,
+          seed: 1971,
+        },
+        events,
+        summary: { success: true, maxFloorReached: 3, xpGained: 5, goldGained: 0, casualties: [] },
+      }
+
+      const tier2Goblin = createTestGoblin()
+      const tier2Usecase = new CompleteExpeditionUseCase(
+        createMockGoblinRepository([tier2Goblin]),
+        createMockPartyRepository([party]),
+        createMockBaseStateRepository(baseState),
+      )
+      const tier2Result = await tier2Usecase.execute(1, createTestReplay({
+        ...replayBase,
+        meta: { ...replayBase.meta, tier: 2 },
+      }))
+
+      const tier3Goblin = createTestGoblin()
+      const tier3GoblinRepo = createMockGoblinRepository([tier3Goblin])
+      const tier3Usecase = new CompleteExpeditionUseCase(
+        tier3GoblinRepo,
+        createMockPartyRepository([party]),
+        createMockBaseStateRepository(baseState),
+      )
+      const tier3Result = await tier3Usecase.execute(1, createTestReplay({
+        ...replayBase,
+        meta: { ...replayBase.meta, tier: 3 },
+      }))
+
+      expect(tier2Result.factorAcquisitions.get(1)).toBeUndefined()
+      expect(tier3Result.factorAcquisitions.get(1)).toEqual(['ratatoskr'])
+      expect(tier3GoblinRepo.updateGoblinFactors).toHaveBeenCalledWith(
+        1,
+        ['ratatoskr'],
+        expect.objectContaining({ accuracy: expect.any(Number) }),
       )
     })
 
