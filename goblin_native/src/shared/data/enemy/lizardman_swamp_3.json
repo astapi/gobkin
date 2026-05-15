@@ -13,8 +13,8 @@
       "magicDef": 40,
       "attackCount": 6,
       "accuracy": 640,
-      "evasion": 69,
-      "exp": 47,
+      "evasion": 300,
+      "exp": 132,
       "gold": 38,
       "skills": [
         {
@@ -48,8 +48,8 @@
       "magicDef": 22,
       "attackCount": 6,
       "accuracy": 660,
-      "evasion": 86,
-      "exp": 50,
+      "evasion": 800,
+      "exp": 132,
       "gold": 41,
       "skills": [
         {
@@ -79,14 +79,26 @@
       "magicDef": 62,
       "attackCount": 8,
       "accuracy": 680,
-      "evasion": 60,
-      "exp": 275,
+      "evasion": 250,
+      "exp": 248,
       "isBoss": true,
       "gold": 220,
       "skills": [
         {
           "id": "physical_reduction_10",
           "physicalDamageReductionPercent": 10
+        },
+        {
+          "id": "rear_guard",
+          "protectRearAllyNormalAttackMultiplier": 0.6666666666666666
+        },
+        {
+          "id": "physical_reduction_5",
+          "physicalDamageReductionPercent": 5
+        },
+        {
+          "id": "physical_damage_30",
+          "physicalDamagePercent": 30
         }
       ],
       "baseAttributes": {
