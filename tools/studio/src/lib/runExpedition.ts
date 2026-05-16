@@ -222,10 +222,8 @@ export async function runSingleExpedition(
 }
 
 export const RETURN_POLICIES: { value: ReturnPolicy; label: string }[] = [
-  { value: 'never', label: '帰還しない（到達階まで進む）' },
-  { value: 'until_floor2', label: '2F到達で帰還' },
-  { value: 'until_floor3', label: '3F到達で帰還' },
-  { value: 'if_any_ko', label: '誰か気絶したら帰還' },
-  { value: 'if_two_ko', label: '2名気絶したら帰還' },
-  { value: 'last_one', label: '最後の一人になったら帰還' },
+  { value: 'if_any_ko', label: '1人でも死亡したら帰還' },
+  { value: 'if_two_ko', label: '2人が死亡したら帰還' },
+  { value: 'last_one', label: '最後の1人になったら帰還' },
+  { value: 'never', label: '帰還しない（どんな状態でも進む）' },
 ]

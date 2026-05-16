@@ -10,7 +10,7 @@
 
 ```
 【準備画面】
-  パーティ選択 → ダンジョン選択 → 帰還ポリシー選択
+  パーティ選択 → ダンジョン選択 → 目標階層選択 → 帰還ポリシー選択
   ↓
 【遠征開始】StartExpeditionUseCase
   パーティ状態確認 → ゴブリンロード → ExpeditionEngine.generateExpedition()
@@ -101,18 +101,24 @@ eventTime = max(floorStart + 1, baseTime + jitter)
 | `treasure` | 宝箱ドロップ時 | `items`: TreasureDrop[] |
 | `return` | 遠征終了時 | `reason`: 終了理由 |
 
+## 目標階層
+
+パーティ派遣時に、どの階層まで探索するかを帰還ポリシーとは別に選択する。
+未指定の場合は最下層まで探索する。
+
+- 目標階層が最下層未満の場合、対象階層のイベント処理後に `policy_return` として帰還する
+- 最下層を目標にした場合のみ、ボス戦と制圧判定へ進む
+
 ## 帰還ポリシー
 
-パーティ派遣時に6種類から選択。戦闘勝利後に判定される。
+パーティ派遣時に4種類から選択。戦闘勝利後に判定される。
 
 | ポリシー | 条件 | 判定内容 |
 |---------|------|---------|
+| `if_any_ko` | 1人でも死亡したら帰還 | `partyState.some(m => m.isKO)` |
+| `if_two_ko` | 2人が死亡したら帰還 | `partyState.filter(m => m.isKO).length >= 2` |
+| `last_one` | 最後の1人になったら帰還 | `aliveMembers <= 1` |
 | `never` | 帰還しない | ボスクリアまたは全滅まで続行 |
-| `until_floor2` | 2階到達で帰還 | `currentFloor >= 2` |
-| `until_floor3` | 3階到達で帰還 | `currentFloor >= 3` |
-| `if_any_ko` | 1体でも戦闘不能 | `partyState.some(m => m.isKO)` |
-| `if_two_ko` | 2体以上戦闘不能 | `partyState.filter(m => m.isKO).length >= 2` |
-| `last_one` | 生存1体以下 | `aliveMembers <= 1` |
 
 ### 帰還判定のタイミング
 
@@ -122,13 +128,12 @@ eventTime = max(floorStart + 1, baseTime + jitter)
 
 ### 推定探索時間への影響
 
-帰還ポリシーごとに時間倍率が異なる:
+目標階層に応じて `目標階層 / ダンジョン階層数` の倍率がかかる。
+さらに帰還ポリシーごとに時間倍率が異なる:
 
 | ポリシー | 倍率 |
 |---------|------|
 | never | ×1.0 |
-| until_floor2 | ×0.4 |
-| until_floor3 | ×0.6 |
 | if_any_ko | ×0.7 |
 | if_two_ko | ×0.75 |
 | last_one | ×0.9 |

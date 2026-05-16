@@ -142,6 +142,7 @@ export class ExpeditionEngine {
       throw new Error(`Area not found: ${request.areaId} (mapped to: ${areaId})`)
     }
     const effectiveAreaLevel = getDungeonTierAreaLevel(area.areaLevel, tier)
+    const targetFloor = this.normalizeTargetFloor(request.targetFloor, area.floors)
 
     // 敵データを取得
     const enemyDatabase = getEnemyDatabase(areaId)
@@ -178,14 +179,14 @@ export class ExpeditionEngine {
     let loopCount = 0
     const MAX_LOOPS = 1000 // 安全装置
 
-    while (currentFloor <= area.floors && !shouldReturn) {
+    while (currentFloor <= targetFloor && !shouldReturn) {
       loopCount++
       if (loopCount > MAX_LOOPS) {
         console.error('ExpeditionEngine: Loop safety limit reached!')
         break
       }
       console.log(`Loop ${loopCount}: Floor ${currentFloor}/${area.floors}, shouldReturn: ${shouldReturn}`)
-      const floorEvents = this.generateFloorEvents(area, currentFloor, adjustedDuration)
+      const floorEvents = this.generateFloorEvents(area, currentFloor, adjustedDuration, targetFloor)
 
       console.log(`Floor ${currentFloor} events:`, floorEvents)
       for (const eventTime of floorEvents) {
@@ -316,6 +317,11 @@ export class ExpeditionEngine {
         }
       }
 
+      if (currentFloor >= targetFloor && targetFloor < area.floors && !shouldReturn) {
+        shouldReturn = true
+        returnReason = 'policy_return'
+      }
+
       // 階層移動
       if (currentFloor < area.floors && !shouldReturn) {
         currentFloor++
@@ -333,7 +339,7 @@ export class ExpeditionEngine {
     }
 
     // ボス戦（最上階到達時）
-    if (currentFloor > area.floors && !shouldReturn) {
+    if (targetFloor >= area.floors && currentFloor > area.floors && !shouldReturn) {
       const bossPatterns = enemyDatabase.patterns.filter(p => p.isBoss && p.floors.includes(area.floors))
 
       if (bossPatterns.length > 0) {
@@ -495,8 +501,8 @@ export class ExpeditionEngine {
     )
   }
 
-  private generateFloorEvents(area: AreaConfig, floor: number, totalDuration: number): number[] {
-    const floorDuration = totalDuration / area.floors
+  private generateFloorEvents(area: AreaConfig, floor: number, totalDuration: number, explorationFloors: number): number[] {
+    const floorDuration = totalDuration / explorationFloors
     const floorStart = (floor - 1) * floorDuration
     const events: number[] = []
 
@@ -668,7 +674,7 @@ export class ExpeditionEngine {
     })
   }
 
-  private checkReturnConditions(partyState: PartyState[], returnPolicy: ExpeditionRequest["returnPolicy"], currentFloor: number): { shouldReturn: boolean; reason: ExpeditionEndReason | null } {
+  private checkReturnConditions(partyState: PartyState[], returnPolicy: ExpeditionRequest["returnPolicy"], _currentFloor: number): { shouldReturn: boolean; reason: ExpeditionEndReason | null } {
     const aliveMembers = partyState.filter(member => !member.isKO).length
 
     switch (returnPolicy) {
@@ -687,22 +693,19 @@ export class ExpeditionEngine {
           return { shouldReturn: true, reason: "policy_return" }
         }
         break
-      case "until_floor2":
-        if (currentFloor >= 2) {
-          return { shouldReturn: true, reason: "policy_return" }
-        }
-        break
-      case "until_floor3":
-        if (currentFloor >= 3) {
-          return { shouldReturn: true, reason: "policy_return" }
-        }
-        break
       case "never":
         // 帰還条件なし - 最後まで探索（ボスクリアまたは全滅まで続行）
         break
     }
 
     return { shouldReturn: false, reason: null }
+  }
+
+  private normalizeTargetFloor(targetFloor: number | null | undefined, areaFloors: number): number {
+    if (typeof targetFloor !== 'number' || !Number.isFinite(targetFloor)) {
+      return areaFloors
+    }
+    return Math.max(1, Math.min(areaFloors, Math.floor(targetFloor)))
   }
 
   /**

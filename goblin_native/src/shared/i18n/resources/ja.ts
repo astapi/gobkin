@@ -364,6 +364,7 @@ const ja = {
         estimatedTime: '推定探索時間',
         seconds: '{{value}}秒',
         selectDungeonTitle: '遠征先を選択',
+        selectTargetFloorTitle: '目標階層を選択',
         noDungeon: '選択できるダンジョンがありません',
         renameTitle: 'パーティ名を変更',
         renamePlaceholder: 'パーティ名を入力',
@@ -669,12 +670,10 @@ const ja = {
       damage_reduction: '被ダメ軽減',
     },
     returnPolicy: {
-      never: '帰還しない',
-      until_floor2: '2階で帰還',
-      until_floor3: '3階で帰還',
-      if_any_ko: '誰か倒れたら',
-      if_two_ko: '2人倒れたら',
-      last_one: '最後の1人まで',
+      never: '帰還しない（どんな状態でも進む）',
+      if_any_ko: '1人でも死亡したら帰還',
+      if_two_ko: '2人が死亡したら帰還',
+      last_one: '最後の1人になったら帰還',
     },
     skill: {
       abnormal_marku: {

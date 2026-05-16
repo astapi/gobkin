@@ -9,7 +9,8 @@ export interface ExpeditionRequest {
   partyId: string
   areaId: string
   tier?: DungeonTier
-  returnPolicy: "until_floor2" | "until_floor3" | "if_any_ko" | "if_two_ko" | "last_one" | "never"
+  targetFloor?: number | null
+  returnPolicy: "if_any_ko" | "if_two_ko" | "last_one" | "never"
   clientVersion: string
   durationSec?: number
 }
