@@ -177,7 +177,6 @@ const PartyCard = memo(function PartyCard({
 
       {historyDisplays.length > 0 && (
         <View style={styles.historySection}>
-          <Text style={styles.historyTitle}>{t('ui.formation.index.historyTitle')}</Text>
           <View style={styles.historyList}>
             {historyDisplays.map(item => (
               <View key={item.id} style={styles.historyRow}>
@@ -583,7 +582,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     borderWidth: 1,
     borderColor: '#FFFFFF',
-    padding: 12,
+    padding: 6,
     marginBottom: 12,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
@@ -596,37 +595,31 @@ const styles = StyleSheet.create({
     borderColor: '#A16207',
   },
   historySection: {
-    marginTop: 16,
-    paddingTop: 12,
+    marginTop: 10,
+    paddingTop: 8,
     borderTopWidth: 1,
     borderTopColor: '#E5E7EB',
   },
-  historyTitle: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#6B7280',
-    marginBottom: 8,
-  },
   historyList: {
-    gap: 8,
+    gap: 6,
   },
   historyRow: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#F3F4F6',
     borderRadius: 8,
-    paddingHorizontal: 10,
-    paddingVertical: 8,
+    paddingHorizontal: 8,
+    paddingVertical: 6,
   },
   historyContent: {
     flex: 1,
   },
   historyText: {
-    fontSize: 12,
+    fontSize: 13,
     color: '#374151',
   },
   historyDungeon: {
-    fontSize: 11,
+    fontSize: 12,
     color: '#6B7280',
     marginTop: 2,
   },
@@ -653,7 +646,7 @@ const styles = StyleSheet.create({
   partyRewardText: {
     fontSize: 13,
     color: '#6B7280',
-    marginBottom: 6,
+    marginBottom: 1,
   },
   expeditionBadge: {
     backgroundColor: '#3B82F6',
@@ -680,7 +673,7 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontWeight: '600',
     color: '#374151',
-    marginBottom: 4,
+    marginBottom: 1,
   },
   memberAvatar: {
     width: 40,

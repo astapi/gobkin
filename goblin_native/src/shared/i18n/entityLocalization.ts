@@ -174,6 +174,10 @@ export function getFactorName(factor: Pick<Factor, 'id' | 'name'>): string {
   return translateWithFallback(`entities.factor.${factor.id}.name`, factor.name)
 }
 
+export function getFactorShortName(factor: Pick<Factor, 'id' | 'name'>): string {
+  return translateWithFallback(`entities.factor.${factor.id}.shortName`, getFactorName(factor))
+}
+
 export function getFactorDescription(factor: Pick<Factor, 'id' | 'description'>): string {
   return translateWithFallback(`entities.factor.${factor.id}.description`, factor.description)
 }

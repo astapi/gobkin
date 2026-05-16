@@ -5,7 +5,7 @@ import { getGoblinDisplayImage, getGoblinDisplayImageScale } from '@/shared/util
 import { getFactorImage } from '@/shared/utils/factorImages'
 import { getEffectiveStats } from '@/shared/utils/goblinStats'
 import type { Goblin } from '@/shared/types'
-import { getFactorName, getRaceLabel, getSkillLabel } from '@/shared/i18n/entityLocalization'
+import { getFactorShortName, getRaceLabel, getSkillLabel } from '@/shared/i18n/entityLocalization'
 import { getDefaultSkillsForRace } from '@/shared/data/raceSkills'
 import { getUniqueSkillsById } from '@/shared/data/characterSkills'
 import { getFactor } from '@/shared/data/factors'
@@ -84,7 +84,7 @@ export const GoblinCard = memo(function GoblinCard({
                     <View key={`${factorId}-${index}`} style={styles.factorChip}>
                       <FactorIcon width={13} height={13} />
                       <Text style={styles.factorChipText} numberOfLines={1}>
-                        {getFactorName(getFactor(factorId) ?? { id: factorId, name: factorId })}
+                        {getFactorShortName(getFactor(factorId) ?? { id: factorId, name: factorId })}
                       </Text>
                     </View>
                   )
@@ -226,7 +226,7 @@ const styles = StyleSheet.create({
     gap: 3,
     backgroundColor: '#EEF2FF',
     borderRadius: 4,
-    paddingHorizontal: 5,
+    paddingHorizontal: 3,
     paddingVertical: 2,
   },
   factorChipText: {
