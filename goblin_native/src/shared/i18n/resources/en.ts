@@ -17,7 +17,7 @@ const en = {
     tabs: {
       story: 'Story',
       goblinList: 'Goblins',
-      formation: 'Formation',
+      formation: 'Quest',
       base: 'Base',
       encyclopedia: 'Codex',
       settings: 'Settings',
@@ -528,9 +528,9 @@ const en = {
       banner: {
         readPrologue: 'Read "Awakening" to begin the story.',
         afterPrologue: 'Open the "List" tab to check on your awakened goblin.',
-        seeFirstGoblin: 'A goblin has awakened. Open the "Formation" tab to prepare for an expedition.',
-        viewFirstGoblin: 'Your awakened goblin "Marku". Continue to formation first.',
-        openFormationTab: 'Open the "Formation" tab to start preparing your expedition.',
+        seeFirstGoblin: 'A goblin has awakened. Open the "Quest" tab to prepare for an expedition.',
+        viewFirstGoblin: 'Your awakened goblin "Marku". Continue to the quest first.',
+        openFormationTab: 'Open the "Quest" tab to start preparing your expedition.',
         openFormation: 'Tap a party card to start preparing your expedition.',
         editParty: 'Tap "Edit Members" and add a goblin to your party.',
         selectPartyMember: 'Tap a goblin card to add them to the party.',

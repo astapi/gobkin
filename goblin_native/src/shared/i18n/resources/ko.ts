@@ -16,7 +16,7 @@ const ko = {
     tabs: {
       story: '이야기',
       goblinList: '고블린',
-      formation: '편성',
+      formation: '원정',
       base: '거점',
       encyclopedia: '도감',
       settings: '설정',
@@ -519,9 +519,9 @@ const ko = {
       banner: {
         readPrologue: '먼저 "각성"을 읽고 이야기를 시작해 보세요.',
         afterPrologue: '"목록" 탭을 열어 깨어난 고블린을 확인하세요.',
-        seeFirstGoblin: '동료 고블린이 깨어났습니다. "편성" 탭에서 원정을 준비합시다.',
-        viewFirstGoblin: '깨어난 고블린 "마르쿠"입니다. 먼저 편성으로 이동하세요.',
-        openFormationTab: '"편성" 탭을 열어 원정 준비를 시작하세요.',
+        seeFirstGoblin: '동료 고블린이 깨어났습니다. "원정" 탭에서 준비합시다.',
+        viewFirstGoblin: '깨어난 고블린 "마르쿠"입니다. 먼저 원정으로 이동하세요.',
+        openFormationTab: '"원정" 탭을 열어 준비를 시작하세요.',
         openFormation: '파티 카드를 탭해 원정 준비를 시작하세요.',
         editParty: '"멤버 편성" 버튼을 눌러 파티에 고블린을 추가하세요.',
         selectPartyMember: '고블린 카드를 탭해 파티에 추가하세요.',

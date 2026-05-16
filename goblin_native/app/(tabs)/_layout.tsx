@@ -34,6 +34,8 @@ const TabIcon = memo(function TabIcon({ Icon, color, size = 24 }: TabIconProps) 
   )
 })
 
+// Expo Router の内部ルート名は formation のまま維持する。
+// 表示上のタブ名は i18n 側で「遠征 / Quest」として扱う。
 // (tabs)/_layout.tsx 内の Tabs.Screen 定義順と一致させる
 const TAB_INDEX_BY_STEP: Partial<Record<TutorialStep, number>> = {
   // story=0, index=1, formation=2, base=3, encyclopedia=4, settings=5
