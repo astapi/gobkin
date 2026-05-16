@@ -347,7 +347,7 @@ export default function FormationScreen() {
 
   const handleBulkLaunch = useCallback(() => {
     const skippedReasons: string[] = []
-    const inputs: Array<{ party: Party; dungeon: Dungeon; returnPolicy: ExpeditionRequest['returnPolicy']; tier: DungeonTier }> = []
+    const inputs: Array<{ party: Party; dungeon: Dungeon; returnPolicy: ExpeditionRequest['returnPolicy']; targetFloor?: number | null; tier: DungeonTier }> = []
 
     for (const party of parties) {
       if ((party.status ?? 'idle') === 'expedition') {
@@ -371,6 +371,7 @@ export default function FormationScreen() {
         party,
         dungeon,
         returnPolicy: party.returnPolicy ?? 'never',
+        targetFloor: party.targetFloor ?? null,
         tier: party.dungeonTier ?? 0,
       })
     }

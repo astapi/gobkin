@@ -25,6 +25,21 @@ interface PartyRow {
   updated_at: string
 }
 
+function normalizeReturnPolicy(value: string | null): ExpeditionRequest['returnPolicy'] | undefined {
+  switch (value) {
+    case 'if_any_ko':
+    case 'if_two_ko':
+    case 'last_one':
+    case 'never':
+      return value
+    case 'until_floor2':
+    case 'until_floor3':
+      return 'never'
+    default:
+      return undefined
+  }
+}
+
 export class SQLitePartyRepository implements IPartyRepository {
   private static instance: SQLitePartyRepository | null = null
 
@@ -131,7 +146,7 @@ export class SQLitePartyRepository implements IPartyRepository {
       dungeonId: row.dungeon_id ?? undefined,
       dungeonTier: (row.dungeon_tier ?? 0) as DungeonTier,
       targetFloor: row.target_floor ?? undefined,
-      returnPolicy: (row.return_policy as ExpeditionRequest['returnPolicy']) ?? undefined,
+      returnPolicy: normalizeReturnPolicy(row.return_policy),
       rewardMultipliers: normalizePartyRewardMultipliers({
         gold: row.gold_multiplier ?? undefined,
         rare: row.rare_multiplier ?? undefined,

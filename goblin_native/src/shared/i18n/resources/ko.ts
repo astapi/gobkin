@@ -359,6 +359,7 @@ const ko = {
         estimatedTime: '예상 탐색 시간',
         seconds: '{{value}}초',
         selectDungeonTitle: '원정지 선택',
+        selectTargetFloorTitle: '목표 층 선택',
         noDungeon: '선택 가능한 던전이 없습니다',
         renameTitle: '파티 이름 변경',
         renamePlaceholder: '파티 이름 입력',
@@ -661,11 +662,9 @@ const ko = {
     },
     returnPolicy: {
       never: '귀환 안 함',
-      until_floor2: '2층에서 귀환',
-      until_floor3: '3층에서 귀환',
       if_any_ko: '누군가 쓰러지면',
       if_two_ko: '2명 쓰러지면',
-      last_one: '마지막 1명까지',
+      last_one: '마지막 1명만 남으면 귀환',
     },
     skill: {
       abnormal_marku: {

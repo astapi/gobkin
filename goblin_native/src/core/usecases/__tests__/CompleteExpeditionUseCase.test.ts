@@ -305,7 +305,7 @@ describe('CompleteExpeditionUseCase', () => {
           baseDurationSec: 30,
           party: ['1'],
           partyRewardMultipliers: DEFAULT_PARTY_REWARD_MULTIPLIERS,
-          returnPolicy: 'until_floor2',
+          returnPolicy: 'if_any_ko',
           seed: 12345,
         },
         events,

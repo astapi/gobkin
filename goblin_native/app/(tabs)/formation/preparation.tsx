@@ -122,6 +122,7 @@ export default function ExpeditionPreparationScreen() {
   const [selectedReturnPolicy, setSelectedReturnPolicy] = useState<ReturnPolicy>(party?.returnPolicy ?? 'never')
   const [selectedTargetFloor, setSelectedTargetFloor] = useState<number | null>(party?.targetFloor ?? null)
   const [isDungeonModalVisible, setIsDungeonModalVisible] = useState(false)
+  const [isTargetFloorModalVisible, setIsTargetFloorModalVisible] = useState(false)
   const [isReturnPolicyModalVisible, setIsReturnPolicyModalVisible] = useState(false)
   const [isPartyNameModalVisible, setIsPartyNameModalVisible] = useState(false)
   const [editingPartyName, setEditingPartyName] = useState('')
@@ -226,8 +227,8 @@ export default function ExpeditionPreparationScreen() {
 
   const estimatedExplorationTime = useMemo(() => {
     if (!selectedDungeon) return null
-    return estimateExplorationTime(selectedDungeon, selectedReturnPolicy, 1, false, selectedTier)
-  }, [estimateExplorationTime, selectedDungeon, selectedReturnPolicy, selectedTier])
+    return estimateExplorationTime(selectedDungeon, selectedReturnPolicy, selectedTargetFloor, 1, false, selectedTier)
+  }, [estimateExplorationTime, selectedDungeon, selectedReturnPolicy, selectedTargetFloor, selectedTier])
 
   const handleEditParty = useCallback(() => {
     void advanceTutorial('select_party_member')
@@ -303,8 +304,14 @@ export default function ExpeditionPreparationScreen() {
     if (partyId) {
       void setDungeon(parseInt(partyId, 10), dungeon.id)
     }
+    if (selectedTargetFloor !== null && selectedTargetFloor > dungeon.floors) {
+      setSelectedTargetFloor(null)
+      if (partyId) {
+        void setTargetFloor(parseInt(partyId, 10), null)
+      }
+    }
     autoSelectTier(dungeon)
-  }, [partyId, setDungeon, autoSelectTier])
+  }, [partyId, selectedTargetFloor, setDungeon, setTargetFloor, autoSelectTier])
 
   const handleSelectTier = useCallback((tier: DungeonTier) => {
     setSelectedTier(tier)
@@ -319,6 +326,13 @@ export default function ExpeditionPreparationScreen() {
       void setReturnPolicy(parseInt(partyId, 10), policy)
     }
   }, [partyId, setReturnPolicy])
+
+  const handleSelectTargetFloor = useCallback((floor: number | null) => {
+    setSelectedTargetFloor(floor)
+    if (partyId) {
+      void setTargetFloor(parseInt(partyId, 10), floor)
+    }
+  }, [partyId, setTargetFloor])
 
   const handleStartExpedition = useCallback(() => {
     if (!selectedDungeonId) {
@@ -342,6 +356,7 @@ export default function ExpeditionPreparationScreen() {
           party,
           dungeon: selectedDungeon,
           returnPolicy: selectedReturnPolicy,
+          targetFloor: selectedTargetFloor,
           tier: selectedTier,
           useGoldenAcorn,
         })
@@ -587,11 +602,15 @@ export default function ExpeditionPreparationScreen() {
             {/* 目標階数 */}
             <View style={styles.settingItem}>
               <Text style={styles.settingLabel}>{t('ui.formation.preparation.targetFloor')}</Text>
-              <View style={styles.settingValue}>
+              <TouchableOpacity
+                style={styles.settingValue}
+                onPress={() => setIsTargetFloorModalVisible(true)}
+                disabled={!selectedDungeon}
+              >
                 <Text style={styles.settingValueText}>
                   {selectedTargetFloor === null ? t('ui.formation.preparation.targetFloorDeepest') : t('ui.formation.preparation.targetFloorUntil', { floor: selectedTargetFloor })}
                 </Text>
-              </View>
+              </TouchableOpacity>
             </View>
 
             {/* 帰還条件 */}
@@ -721,6 +740,61 @@ export default function ExpeditionPreparationScreen() {
 
       <Modal
         transparent
+        visible={isTargetFloorModalVisible}
+        animationType="fade"
+        onRequestClose={() => setIsTargetFloorModalVisible(false)}
+      >
+        <Pressable style={styles.modalOverlay} onPress={() => setIsTargetFloorModalVisible(false)}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>{t('ui.formation.preparation.selectTargetFloorTitle')}</Text>
+            <ScrollView style={styles.modalList} contentContainerStyle={styles.modalListContent}>
+              <TouchableOpacity
+                style={[
+                  styles.modalOption,
+                  selectedTargetFloor === null && styles.modalOptionSelected,
+                ]}
+                onPress={() => {
+                  handleSelectTargetFloor(null)
+                  setIsTargetFloorModalVisible(false)
+                }}
+              >
+                <Text style={[
+                  styles.modalOptionTitle,
+                  selectedTargetFloor === null && styles.modalOptionTitleSelected,
+                ]}>
+                  {t('ui.formation.preparation.targetFloorDeepest')}
+                </Text>
+              </TouchableOpacity>
+              {selectedDungeon ? Array.from({ length: selectedDungeon.floors }, (_, index) => index + 1).map(floor => (
+                <TouchableOpacity
+                  key={floor}
+                  style={[
+                    styles.modalOption,
+                    selectedTargetFloor === floor && styles.modalOptionSelected,
+                  ]}
+                  onPress={() => {
+                    handleSelectTargetFloor(floor)
+                    setIsTargetFloorModalVisible(false)
+                  }}
+                >
+                  <Text style={[
+                    styles.modalOptionTitle,
+                    selectedTargetFloor === floor && styles.modalOptionTitleSelected,
+                  ]}>
+                    {t('ui.formation.preparation.targetFloorUntil', { floor })}
+                  </Text>
+                </TouchableOpacity>
+              )) : null}
+            </ScrollView>
+            <TouchableOpacity style={styles.modalCloseButton} onPress={() => setIsTargetFloorModalVisible(false)}>
+              <Text style={styles.modalCloseButtonText}>{t('ui.formation.common.close')}</Text>
+            </TouchableOpacity>
+          </View>
+        </Pressable>
+      </Modal>
+
+      <Modal
+        transparent
         visible={isReturnPolicyModalVisible}
         animationType="fade"
         onRequestClose={() => setIsReturnPolicyModalVisible(false)}
@@ -729,7 +803,7 @@ export default function ExpeditionPreparationScreen() {
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>{t('ui.formation.preparation.selectReturnPolicyTitle')}</Text>
             <ScrollView style={styles.modalList} contentContainerStyle={styles.modalListContent}>
-              {(['never', 'until_floor2', 'until_floor3', 'if_any_ko', 'last_one'] as ReturnPolicy[]).map(policy => (
+              {(['if_any_ko', 'if_two_ko', 'last_one', 'never'] as ReturnPolicy[]).map(policy => (
                 <TouchableOpacity
                   key={policy}
                   style={[

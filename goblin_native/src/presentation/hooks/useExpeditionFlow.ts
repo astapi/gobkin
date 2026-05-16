@@ -50,6 +50,7 @@ interface StartExpeditionInput {
   party: Party
   dungeon: Dungeon
   returnPolicy: ExpeditionRequest['returnPolicy']
+  targetFloor?: number | null
   tier?: DungeonTier
   /** 出発時に金のドングリを消費するか */
   useGoldenAcorn?: boolean
@@ -200,6 +201,7 @@ export const useExpeditionFlow = ({
   const estimateExplorationTime = useCallback((
     dungeon: Dungeon,
     returnPolicy: ExpeditionRequest['returnPolicy'],
+    targetFloor: number | null = null,
     partyExpeditionTimeMultiplier: number = 1,
     goldenAcornUsed: boolean = false,
     tier: DungeonTier = 0,
@@ -218,17 +220,19 @@ export const useExpeditionFlow = ({
     )
     const multiplierMap: Record<ExpeditionRequest['returnPolicy'], number> = {
       never: 1.0,
-      until_floor2: 0.4,
-      until_floor3: 0.6,
       if_any_ko: 0.7,
       if_two_ko: 0.75,
       last_one: 0.9,
     }
     const multiplier = multiplierMap[returnPolicy] ?? 1.0
+    const normalizedTargetFloor = typeof targetFloor === 'number' && Number.isFinite(targetFloor)
+      ? Math.max(1, Math.min(dungeon.floors, Math.floor(targetFloor)))
+      : dungeon.floors
+    const floorMultiplier = normalizedTargetFloor / dungeon.floors
     const speedMultiplier = getSpeedMultiplier()
     const goldenAcornSpeed = goldenAcornUsed ? GOLDEN_ACORN_SPEED_MULTIPLIER : 1
     return Math.floor(
-      baseTime * multiplier * speedMultiplier * partyExpeditionTimeMultiplier * goldenAcornSpeed,
+      baseTime * floorMultiplier * multiplier * speedMultiplier * partyExpeditionTimeMultiplier * goldenAcornSpeed,
     )
   }, [instantDungeonExploration])
 
@@ -269,7 +273,7 @@ export const useExpeditionFlow = ({
   }, [])
 
   const startExpedition = useCallback(
-    async ({ party, dungeon, returnPolicy, tier, useGoldenAcorn = false }: StartExpeditionInput): Promise<StartExpeditionResult> => {
+    async ({ party, dungeon, returnPolicy, targetFloor = null, tier, useGoldenAcorn = false }: StartExpeditionInput): Promise<StartExpeditionResult> => {
       setIsProcessing(true)
       const debugInstantAcorn = useDebugSettingsStore.getState().instantGoldenAcorn
       let acornConsumed = false
@@ -294,6 +298,7 @@ export const useExpeditionFlow = ({
         const durationSec = isTutorialSlimeLaunch ? 3 : estimateExplorationTime(
           dungeon,
           returnPolicy,
+          targetFloor,
           partyExpeditionTimeMultiplier,
           useGoldenAcorn,
           tier ?? 0,
@@ -302,6 +307,7 @@ export const useExpeditionFlow = ({
           partyId: party.id.toString(),
           areaId: dungeon.id,
           tier,
+          targetFloor,
           returnPolicy,
           clientVersion: 'native',
           durationSec,
@@ -377,7 +383,7 @@ export const useExpeditionFlow = ({
       let acornsConsumed = 0
 
       try {
-        for (const { party, dungeon, returnPolicy, tier, useGoldenAcorn = false } of inputs) {
+        for (const { party, dungeon, returnPolicy, targetFloor = null, tier, useGoldenAcorn = false } of inputs) {
           let acornAppliedForThisInput = false
           if (useGoldenAcorn) {
             if (debugInstantAcorn) {
@@ -398,6 +404,7 @@ export const useExpeditionFlow = ({
           const durationSec = estimateExplorationTime(
             dungeon,
             returnPolicy,
+            targetFloor,
             partyExpeditionTimeMultiplier,
             acornAppliedForThisInput,
             tier ?? 0,
@@ -406,6 +413,7 @@ export const useExpeditionFlow = ({
             partyId: party.id.toString(),
             areaId: dungeon.id,
             tier,
+            targetFloor,
             returnPolicy,
             clientVersion: 'native',
             durationSec,

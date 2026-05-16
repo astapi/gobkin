@@ -364,6 +364,7 @@ const en = {
         estimatedTime: 'Estimated Duration',
         seconds: '{{value}} sec',
         selectDungeonTitle: 'Select Destination',
+        selectTargetFloorTitle: 'Select Target Floor',
         noDungeon: 'No dungeons available',
         renameTitle: 'Rename Party',
         renamePlaceholder: 'Enter party name',
@@ -670,11 +671,9 @@ const en = {
     },
     returnPolicy: {
       never: 'Never Return',
-      until_floor2: 'Return on Floor 2',
-      until_floor3: 'Return on Floor 3',
       if_any_ko: 'Return if Anyone Falls',
       if_two_ko: 'Return if Two Fall',
-      last_one: 'Until the Last One',
+      last_one: 'Return When Only One Remains',
     },
     skill: {
       abnormal_marku: {
