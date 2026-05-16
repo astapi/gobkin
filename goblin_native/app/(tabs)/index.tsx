@@ -22,7 +22,7 @@ import { getDefaultSkillsForRace } from '@/shared/data/raceSkills'
 import { getUniqueSkillsById } from '@/shared/data/characterSkills'
 import { GOBLIN_JOB_SKILL_IDS, isPureGoblin } from '@/shared/data/goblinJobs'
 import { EQUIPMENT_GRANTED_SKILL_IDS } from '@/shared/data/equipmentPoolLoader'
-import { getFactorName, getGoblinJobLabel, getRaceLabel, getSkillLabel } from '@/shared/i18n/entityLocalization'
+import { getFactorShortName, getGoblinJobLabel, getRaceLabel, getSkillLabel } from '@/shared/i18n/entityLocalization'
 
 type SortKey = 'party' | 'hp'
 type RaceFilter = 'all' | 'pure' | GoblinRaceId
@@ -408,7 +408,7 @@ export default function GoblinListScreen() {
                                 <View key={`${factorId}-${index}`} style={styles.pendingFactorChip}>
                                   <FactorIcon width={13} height={13} />
                                   <Text style={styles.pendingFactorChipText} numberOfLines={1}>
-                                    {getFactorName(getFactor(factorId) ?? { id: factorId, name: factorId })}
+                                    {getFactorShortName(getFactor(factorId) ?? { id: factorId, name: factorId })}
                                   </Text>
                                 </View>
                               )
