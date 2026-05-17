@@ -341,6 +341,11 @@ const ko = {
         bulkLaunchConfirmTitle: '출격할 파티',
         bulkLaunchConfirmBody: '{{names}}',
         bulkLaunchGoldenAcornButton: '★금 도토리 사용',
+        singlePartyTutorial: {
+          details: '오른쪽의 > 를 누르면 모험 상세를 볼 수 있습니다.',
+          hpRecovery: '캐릭터 HP는 던전에 들어갈 때 자동으로 회복됩니다.',
+          injured: 'HP가 0이 된 캐릭터는 거점 치료소에서 회복해야 합니다.',
+        },
       },
       preparation: {
         title: '원정 준비',

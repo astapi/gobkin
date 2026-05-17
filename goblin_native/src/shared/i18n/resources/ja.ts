@@ -346,6 +346,11 @@ const ja = {
         bulkLaunchConfirmTitle: '出撃するパーティ',
         bulkLaunchConfirmBody: '{{names}}',
         bulkLaunchGoldenAcornButton: '★金のドングリを使用',
+        singlePartyTutorial: {
+          details: '右の > をタップすると冒険の詳細を見ることができます',
+          hpRecovery: 'キャラクターのHPはダンジョンに入る時に自動的に回復します。',
+          injured: 'HPが0になったキャラクターは拠点の治療所で回復させる必要があります。',
+        },
       },
       preparation: {
         title: '冒険準備',
