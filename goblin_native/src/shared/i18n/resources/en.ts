@@ -346,6 +346,11 @@ const en = {
         bulkLaunchConfirmTitle: 'Parties to Dispatch',
         bulkLaunchConfirmBody: '{{names}}',
         bulkLaunchGoldenAcornButton: '★ Use Golden Acorns',
+        singlePartyTutorial: {
+          details: 'Tap the > on the right to view adventure details.',
+          hpRecovery: 'Character HP automatically recovers when entering a dungeon.',
+          injured: 'Characters whose HP reaches 0 must recover at the base infirmary.',
+        },
       },
       preparation: {
         title: 'Expedition Prep',

@@ -462,6 +462,8 @@ export default function FormationScreen() {
     })
   }, [dungeons, parties])
 
+  const showSinglePartyTutorial = maxPartyCount === 1
+
   if (partiesLoading || goblinsLoading || dungeonsLoading || baseLoading) {
     return (
       <SafeAreaView style={styles.loadingContainer} edges={['left', 'right', 'bottom']}>
@@ -537,6 +539,13 @@ export default function FormationScreen() {
         renderItem={renderPartyItem}
         contentContainerStyle={styles.contentContainer}
         ListHeaderComponent={<Text style={styles.prepTitle}>{t('ui.formation.index.prepTitle')}</Text>}
+        ListFooterComponent={showSinglePartyTutorial ? (
+          <View style={styles.singlePartyTutorial}>
+            <Text style={styles.singlePartyTutorialText}>{t('ui.formation.index.singlePartyTutorial.details')}</Text>
+            <Text style={styles.singlePartyTutorialText}>{t('ui.formation.index.singlePartyTutorial.hpRecovery')}</Text>
+            <Text style={styles.singlePartyTutorialText}>{t('ui.formation.index.singlePartyTutorial.injured')}</Text>
+          </View>
+        ) : null}
       />
     </SafeAreaView>
   )
@@ -557,6 +566,17 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#6B7280',
     marginBottom: 8,
+  },
+  singlePartyTutorial: {
+    marginTop: 12,
+    paddingHorizontal: 8,
+    paddingVertical: 6,
+    gap: 8,
+  },
+  singlePartyTutorialText: {
+    fontSize: 13,
+    lineHeight: 19,
+    color: '#6B7280',
   },
   loadingContainer: {
     flex: 1,
