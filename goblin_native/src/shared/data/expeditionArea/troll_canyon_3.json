@@ -6,10 +6,11 @@
   "baseDurationSec": 8100,
   "description": "峡谷の最奥。巨大トロルの群れの先に、峡谷の暴君が待ち受ける。再生能力を手に入れろ。",
   "encounter": {
-    "perFloorEvents": 3,
+    "eventIntervalSec": 810,
     "eventWeights": {
-      "battle": 70,
-      "exploring": 30
+      "exploring": 60,
+      "goldTreasure": 10,
+      "battle": 30
     }
   },
   "unlockNext": "minotaur_labyrinth_1"

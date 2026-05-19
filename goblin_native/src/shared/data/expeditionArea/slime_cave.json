@@ -6,10 +6,11 @@
   "baseDurationSec": 30,
   "description": "スライムがたくさんいる洞窟",
   "encounter": {
-    "perFloorEvents": 2,
+    "eventIntervalSec": 3,
     "eventWeights": {
-      "battle": 70,
-      "exploring": 30
+      "exploring": 60,
+      "goldTreasure": 10,
+      "battle": 30
     }
   },
   "unlockNext": "forest_outskirts"

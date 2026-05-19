@@ -6,10 +6,11 @@
   "baseDurationSec": 360,
   "description": "明るい森、弱い獣や小鬼が出現",
   "encounter": {
-    "perFloorEvents": 3,
+    "eventIntervalSec": 12,
     "eventWeights": {
-      "battle": 40,
-      "exploring": 50
+      "exploring": 60,
+      "goldTreasure": 10,
+      "battle": 30
     }
   },
   "unlockNext": "mossy_cave"

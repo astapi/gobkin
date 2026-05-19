@@ -6,10 +6,11 @@
   "baseDurationSec": 17100,
   "description": "辺境の村の先に広がる丘陵地。身軽なホビットの斥候と投石手が補給路を守っている。",
   "encounter": {
-    "perFloorEvents": 3,
+    "eventIntervalSec": 570,
     "eventWeights": {
-      "battle": 65,
-      "exploring": 35
+      "exploring": 60,
+      "goldTreasure": 10,
+      "battle": 30
     }
   }
 }

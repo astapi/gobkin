@@ -6,10 +6,11 @@
   "baseDurationSec": 2340,
   "description": "野営地の陣営部。前に出るブルートを壁に、兵たちが厚く控える。",
   "encounter": {
-    "perFloorEvents": 3,
+    "eventIntervalSec": 234,
     "eventWeights": {
-      "battle": 65,
-      "exploring": 35
+      "exploring": 60,
+      "goldTreasure": 10,
+      "battle": 30
     }
   },
   "unlockNext": "orc_camp_3"

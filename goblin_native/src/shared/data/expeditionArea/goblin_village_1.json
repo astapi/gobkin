@@ -6,10 +6,11 @@
   "baseDurationSec": 1860,
   "description": "ゴブリン集落の外縁部。雑兵ゴブリンやシーフが群れをなして徘徊している。 集落の内部へ侵入。ウォリアーやメイジが組織的に守りを固めている。 集落の中枢。ガードに守られた奥にホブゴブリンが君臨する。独立を勝ち取るため、反逆の狼煙を上げる。",
   "encounter": {
-    "perFloorEvents": 3,
+    "eventIntervalSec": 62,
     "eventWeights": {
-      "battle": 60,
-      "exploring": 40
+      "exploring": 60,
+      "goldTreasure": 10,
+      "battle": 30
     }
   },
   "unlockNext": "undead_ruins_1"

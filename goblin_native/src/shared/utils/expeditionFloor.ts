@@ -24,7 +24,9 @@ export function computeCurrentFloor(record: ExpeditionRecord, now: Date): number
       event.type === 'battle' ||
       event.type === 'boss' ||
       event.type === 'exploring' ||
+      event.type === 'gold_treasure' ||
       event.type === 'treasure' ||
+      event.type === 'floor_end' ||
       event.type === 'move_start'
     ) {
       floor = Math.max(floor, event.floor)

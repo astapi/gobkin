@@ -6,10 +6,11 @@
   "baseDurationSec": 54000,
   "description": "王城内部へ侵攻。聖騎士や王国禁衛隊が最後の防衛線を張る。",
   "encounter": {
-    "perFloorEvents": 3,
+    "eventIntervalSec": 1350,
     "eventWeights": {
-      "battle": 75,
-      "exploring": 25
+      "exploring": 60,
+      "goldTreasure": 10,
+      "battle": 30
     }
   },
   "unlockNext": "dragon_volcano_1"

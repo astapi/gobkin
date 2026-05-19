@@ -148,8 +148,12 @@ export default function ExpeditionPlaybackScreen() {
         return [createEntry(t('ui.formation.playback.explorationStart', { floor: event.floor }))]
       case 'floor_up':
         return [createEntry(t('ui.formation.playback.floorMove', { from: event.from, to: event.to }))]
+      case 'floor_end':
+        return [createEntry(t('ui.formation.playback.floorEnd', { floor: event.floor }))]
       case 'exploring':
         return [createEntry(t('ui.formation.playback.exploring'))]
+      case 'gold_treasure':
+        return [createEntry(t('ui.formation.playback.goldTreasure', { value: event.gold }))]
       case 'battle':
       case 'boss': {
         const label = event.type === 'boss' ? t('ui.formation.playback.boss') : t('ui.formation.playback.battle')
@@ -253,6 +257,9 @@ export default function ExpeditionPlaybackScreen() {
       setCurrentFloor(event.to)
     }
     if (event.type === 'move_start') {
+      setCurrentFloor(event.floor)
+    }
+    if (event.type === 'floor_end' || event.type === 'gold_treasure') {
       setCurrentFloor(event.floor)
     }
     if (event.type === 'battle' || event.type === 'boss') {

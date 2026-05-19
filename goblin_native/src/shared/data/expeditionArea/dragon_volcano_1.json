@@ -6,10 +6,11 @@
   "baseDurationSec": 31200,
   "description": "王城地下から通じる火山巣。王国が最後に解き放ったドラゴンを越えなければ玉座には届かない。",
   "encounter": {
-    "perFloorEvents": 3,
+    "eventIntervalSec": 1040,
     "eventWeights": {
-      "battle": 75,
-      "exploring": 25
+      "exploring": 60,
+      "goldTreasure": 10,
+      "battle": 30
     }
   },
   "unlockNext": "royal_capital_3"

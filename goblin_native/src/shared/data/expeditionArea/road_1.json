@@ -6,10 +6,11 @@
   "baseDurationSec": 4860,
   "description": "ゴブリン集落から最も近い街道。森から出てくる狼や盗賊、荷を守る人間の護衛が行き交う。",
   "encounter": {
-    "perFloorEvents": 3,
+    "eventIntervalSec": 162,
     "eventWeights": {
-      "battle": 65,
-      "exploring": 35
+      "exploring": 60,
+      "goldTreasure": 10,
+      "battle": 30
     }
   },
   "unlockNext": "orc_camp_1"

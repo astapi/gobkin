@@ -6,10 +6,11 @@
   "baseDurationSec": 1080,
   "description": "廃墟の深部。ゴーストや骨弓兵が加わり、アンデッドの密度が増す。",
   "encounter": {
-    "perFloorEvents": 3,
+    "eventIntervalSec": 108,
     "eventWeights": {
-      "battle": 65,
-      "exploring": 35
+      "exploring": 60,
+      "goldTreasure": 10,
+      "battle": 30
     }
   },
   "unlockNext": "undead_ruins_3"

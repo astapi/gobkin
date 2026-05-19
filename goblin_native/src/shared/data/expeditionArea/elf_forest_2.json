@@ -6,10 +6,11 @@
   "baseDurationSec": 7020,
   "description": "里の内部。精霊使いや月の衛士が守りを固めている。",
   "encounter": {
-    "perFloorEvents": 3,
+    "eventIntervalSec": 702,
     "eventWeights": {
-      "battle": 60,
-      "exploring": 40
+      "exploring": 60,
+      "goldTreasure": 10,
+      "battle": 30
     }
   },
   "unlockNext": "elf_forest_3"

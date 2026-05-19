@@ -6,10 +6,11 @@
   "baseDurationSec": 600,
   "description": "集落の内部へ侵入。ウォリアーやメイジが組織的に守りを固めている。",
   "encounter": {
-    "perFloorEvents": 3,
+    "eventIntervalSec": 60,
     "eventWeights": {
-      "battle": 60,
-      "exploring": 40
+      "exploring": 60,
+      "goldTreasure": 10,
+      "battle": 30
     }
   },
   "unlockNext": "goblin_village_3"

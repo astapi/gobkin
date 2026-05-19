@@ -6,10 +6,11 @@
   "baseDurationSec": 18420,
   "description": "坑道の入口。ドワーフ坑夫たちが工具を武器に抵抗してくる。 坑道深部。戦士やルーン鍛冶師が待ち構える。 坑道の最深部。坑道守護者と擲弾兵に守られた鍛冶王が待ち受ける。鍛冶能力をゴブリン国家に取り込め。",
   "encounter": {
-    "perFloorEvents": 3,
+    "eventIntervalSec": 614,
     "eventWeights": {
-      "battle": 65,
-      "exploring": 35
+      "exploring": 60,
+      "goldTreasure": 10,
+      "battle": 30
     }
   },
   "unlockNext": "elf_forest_1"

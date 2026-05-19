@@ -66,12 +66,28 @@ function TimelineEventRow({
           </span>
         </li>
       )
+    case 'floor_end':
+      return (
+        <li className="replay-row">
+          <span className="replay-time">{at}</span>
+          <span className="replay-tag">階末</span>
+          <span>{event.floor}F の最後へ到達した</span>
+        </li>
+      )
     case 'exploring':
       return (
         <li className="replay-row">
           <span className="replay-time">{at}</span>
           <span className="replay-tag">探索</span>
           <span>{event.floor}F</span>
+        </li>
+      )
+    case 'gold_treasure':
+      return (
+        <li className="replay-row">
+          <span className="replay-time">{at}</span>
+          <span className="replay-tag">財宝</span>
+          <span>{event.floor}F / Gold +{event.gold}</span>
         </li>
       )
     case 'treasure':

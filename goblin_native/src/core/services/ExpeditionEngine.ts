@@ -155,6 +155,8 @@ export class ExpeditionEngine {
     const isDebug = typeof __DEV__ !== 'undefined' ? __DEV__ : false
     const requestedDuration = request.durationSec ?? area.baseDurationSec
     const adjustedDuration = isDebug && request.durationSec == null ? 1 : Math.ceil(requestedDuration)
+    const simulationDuration = Math.ceil(requestedDuration)
+    const replayTimeScale = simulationDuration > 0 ? adjustedDuration / simulationDuration : 1
 
     const events: TimelineEvent[] = []
     let currentFloor = 1
@@ -167,6 +169,15 @@ export class ExpeditionEngine {
     let shouldReturn = false
     let returnReason: ExpeditionEndReason | null = null
     const droppedTemplateIds = new Set<string>()  // 遠征中に既にドロップしたアイテム
+    const partyGoldBonusPercent = partyState.reduce(
+      (max, member) => Math.max(max, getGoldBonusPercentFromSkills(member.skills)),
+      0,
+    )
+    const totalGoldMultiplier =
+      effectiveRewardMultipliers.gold *
+      (1 + partyGoldBonusPercent / 100) *
+      goldMultiplierBoost
+    const averageBattleGold = this.calculateAverageBattleGold(enemyDatabase.patterns, enemyDatabase.enemies, tierScaling)
 
     // 移動開始イベント
     events.push({
@@ -186,13 +197,20 @@ export class ExpeditionEngine {
         break
       }
       console.log(`Loop ${loopCount}: Floor ${currentFloor}/${area.floors}, shouldReturn: ${shouldReturn}`)
-      const floorEvents = this.generateFloorEvents(area, currentFloor, adjustedDuration, targetFloor)
+      const floorEvents = this.generateFloorEvents(area, currentFloor, simulationDuration, targetFloor)
 
       console.log(`Floor ${currentFloor} events:`, floorEvents)
       for (const floorEvent of floorEvents) {
         if (shouldReturn) break
 
-        currentTime = floorEvent.at
+        currentTime = Math.min(adjustedDuration, floorEvent.at * replayTimeScale)
+        if (floorEvent.isFloorEnd) {
+          events.push({
+            type: "floor_end",
+            at: currentTime,
+            floor: currentFloor,
+          })
+        }
         const eventType = floorEvent.isFloorEnd ? "battle" : this.selectEventType(area.encounter.eventWeights)
         console.log(`Event type selected: ${eventType} at time ${floorEvent.at}`)
 
@@ -248,6 +266,16 @@ export class ExpeditionEngine {
               shouldReturn = true
               returnReason = returnCheck.reason
             }
+            break
+          }
+
+          case "goldTreasure": {
+            events.push({
+              type: "gold_treasure",
+              at: currentTime,
+              floor: currentFloor,
+              gold: Math.floor(averageBattleGold * 1.1 * totalGoldMultiplier),
+            })
             break
           }
 
@@ -422,11 +450,6 @@ export class ExpeditionEngine {
     }
 
     console.log('ExpeditionEngine: Generated events:', events.length)
-    // PTメンバーのスキルからGold取得ボーナスを算出（複数持っていても最大値のみ有効）
-    const partyGoldBonusPercent = partyState.reduce(
-      (max, member) => Math.max(max, getGoldBonusPercentFromSkills(member.skills)),
-      0,
-    )
     const summary = this.calculateRewardSummary(events, partyState, effectiveRewardMultipliers, partyGoldBonusPercent, goldMultiplierBoost)
     console.log('ExpeditionEngine: Expedition complete', summary)
 
@@ -509,16 +532,20 @@ export class ExpeditionEngine {
   ): Array<{ at: number; isFloorEnd: boolean }> {
     const floorDuration = totalDuration / explorationFloors
     const floorStart = (floor - 1) * floorDuration
+    const floorEnd = floorStart + floorDuration
+    const eventIntervalSec = Math.max(1, area.encounter.eventIntervalSec ?? floorDuration)
     const events: Array<{ at: number; isFloorEnd: boolean }> = []
 
-    for (let i = 0; i < area.encounter.perFloorEvents; i++) {
-      const baseTime = floorStart + (i + 1) * (floorDuration / (area.encounter.perFloorEvents + 1))
-      const jitter = (this.rng() - 0.5) * (floorDuration * 0.2)
+    for (let at = floorStart + eventIntervalSec; at < floorEnd; at += eventIntervalSec) {
       events.push({
-        at: Math.max(floorStart + 1, baseTime + jitter),
-        isFloorEnd: i === area.encounter.perFloorEvents - 1,
+        at,
+        isFloorEnd: false,
       })
     }
+    events.push({
+      at: floorEnd,
+      isFloorEnd: true,
+    })
 
     return events.sort((a, b) => a.at - b.at)
   }
@@ -591,6 +618,22 @@ export class ExpeditionEngine {
         return enemy
       })
     )
+  }
+
+  private calculateAverageBattleGold(
+    patterns: EnemyPattern[],
+    enemyList: Enemy[],
+    scaling: (typeof DUNGEON_TIER_SCALING)[number]
+  ): number {
+    const battlePatterns = patterns.filter(pattern => !pattern.isBoss)
+    if (battlePatterns.length === 0) return 0
+
+    const totalGold = battlePatterns.reduce((sum, pattern) => {
+      const enemies = this.applyTierScaling(this.getEnemiesFromPattern(pattern, enemyList), scaling)
+      return sum + enemies.flat().reduce((enemySum, enemy) => enemySum + enemy.gold, 0)
+    }, 0)
+
+    return totalGold / battlePatterns.length
   }
 
   private calculateEnemyXp(enemies2D: Enemy[][], expMultiplier: number = 1): number {
@@ -836,6 +879,7 @@ export class ExpeditionEngine {
     const effectiveGoldBoost = goldMultiplierBoost > 0 ? goldMultiplierBoost : 1
     let xpGained = 0
     let baseGoldGained = 0
+    let flatGoldGained = 0
     let maxFloorReached = 1
     const treasureDrops: TreasureDrop[] = []
 
@@ -848,6 +892,11 @@ export class ExpeditionEngine {
         maxFloorReached = Math.max(maxFloorReached, event.floor)
       } else if (event.type === "floor_up") {
         maxFloorReached = Math.max(maxFloorReached, event.to)
+      } else if (event.type === "floor_end") {
+        maxFloorReached = Math.max(maxFloorReached, event.floor)
+      } else if (event.type === "gold_treasure") {
+        flatGoldGained += event.gold
+        maxFloorReached = Math.max(maxFloorReached, event.floor)
       } else if (event.type === "treasure") {
         treasureDrops.push(...event.items)
       }
@@ -864,7 +913,7 @@ export class ExpeditionEngine {
       successReasons.has(event.reason)
     )
 
-    const goldGained = Math.floor(baseGoldGained * goldMultiplier * skillGoldMultiplier * effectiveGoldBoost)
+    const goldGained = Math.floor(baseGoldGained * goldMultiplier * skillGoldMultiplier * effectiveGoldBoost) + flatGoldGained
     const totalGoldMultiplier = goldMultiplier * skillGoldMultiplier * effectiveGoldBoost
 
     return {
