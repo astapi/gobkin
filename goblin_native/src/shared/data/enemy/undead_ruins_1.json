@@ -124,11 +124,57 @@
         "agility": 5,
         "luck": 4
       }
+    },
+    {
+      "id": "B_LICH",
+      "name": "死霊術師の残骸",
+      "raceTags": [
+        "undead"
+      ],
+      "level": 20,
+      "hp": 250,
+      "atk": 28,
+      "magicAtk": 50,
+      "def": 24,
+      "attackCount": 2,
+      "accuracy": 330,
+      "evasion": 19,
+      "exp": 105,
+      "isBoss": true,
+      "gold": 92,
+      "skills": [
+        {
+          "id": "fireball",
+          "name": "ファイヤーボール",
+          "grantsSpellId": "fireball"
+        },
+        {
+          "id": "fireball_twice",
+          "name": "ファイヤーボール2回",
+          "spellChargeBonusForId": "fireball",
+          "extraSpellCharges": 1
+        }
+      ],
+      "factorDrops": [
+        {
+          "factorId": "undead",
+          "probability": 0.015
+        }
+      ],
+      "magicDef": 25,
+      "baseAttributes": {
+        "power": 7,
+        "wisdom": 10,
+        "spirit": 3,
+        "vitality": 8,
+        "agility": 10,
+        "luck": 5
+      }
     }
   ],
   "patterns": [
     {
-      "id": "UR1_001",
+      "id": "UNDEAD_RUINS_1_UR1_001",
       "floors": [
         1
       ],
@@ -140,7 +186,7 @@
       ]
     },
     {
-      "id": "UR1_002",
+      "id": "UNDEAD_RUINS_1_UR1_002",
       "floors": [
         1
       ],
@@ -153,7 +199,7 @@
       ]
     },
     {
-      "id": "UR1_003",
+      "id": "UNDEAD_RUINS_1_UR1_003",
       "floors": [
         1
       ],
@@ -164,7 +210,7 @@
       ]
     },
     {
-      "id": "UR1_004",
+      "id": "UNDEAD_RUINS_1_UR1_004",
       "floors": [
         1
       ],
@@ -179,7 +225,7 @@
       ]
     },
     {
-      "id": "UR1_005",
+      "id": "UNDEAD_RUINS_1_UR1_005",
       "floors": [
         1
       ],
@@ -196,7 +242,7 @@
       ]
     },
     {
-      "id": "UR1_006",
+      "id": "UNDEAD_RUINS_1_UR1_006",
       "floors": [
         2
       ],
@@ -209,7 +255,7 @@
       ]
     },
     {
-      "id": "UR1_007",
+      "id": "UNDEAD_RUINS_1_UR1_007",
       "floors": [
         2
       ],
@@ -221,7 +267,7 @@
       ]
     },
     {
-      "id": "UR1_008",
+      "id": "UNDEAD_RUINS_1_UR1_008",
       "floors": [
         2
       ],
@@ -236,7 +282,7 @@
       ]
     },
     {
-      "id": "UR1_009",
+      "id": "UNDEAD_RUINS_1_UR1_009",
       "floors": [
         2
       ],
@@ -252,7 +298,7 @@
       ]
     },
     {
-      "id": "UR1_010",
+      "id": "UNDEAD_RUINS_1_UR1_010",
       "floors": [
         2
       ],
@@ -267,6 +313,414 @@
           "UND001"
         ]
       ]
+    },
+    {
+      "id": "UNDEAD_RUINS_2_UR2_001",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "UND001",
+          "UND001"
+        ],
+        [
+          "UND003"
+        ]
+      ]
+    },
+    {
+      "id": "UNDEAD_RUINS_2_UR2_002",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "UND002",
+          "UND002"
+        ]
+      ]
+    },
+    {
+      "id": "UNDEAD_RUINS_2_UR2_003",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "UND003",
+          "UND003"
+        ]
+      ]
+    },
+    {
+      "id": "UNDEAD_RUINS_2_UR2_004",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "UND001",
+          "UND001",
+          "UND001"
+        ],
+        [
+          "UND002"
+        ]
+      ]
+    },
+    {
+      "id": "UNDEAD_RUINS_2_UR2_005",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "UND002",
+          "UND002"
+        ],
+        [
+          "UND003",
+          "UND003"
+        ]
+      ]
+    },
+    {
+      "id": "UNDEAD_RUINS_2_UR2_006",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "UND002",
+          "UND002"
+        ],
+        [
+          "UND003"
+        ]
+      ]
+    },
+    {
+      "id": "UNDEAD_RUINS_2_UR2_007",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "UND003",
+          "UND003"
+        ],
+        [
+          "UND004"
+        ]
+      ]
+    },
+    {
+      "id": "UNDEAD_RUINS_2_UR2_008",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "UND004",
+          "UND004"
+        ]
+      ]
+    },
+    {
+      "id": "UNDEAD_RUINS_2_UR2_009",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "UND002",
+          "UND002"
+        ],
+        [
+          "UND004"
+        ]
+      ]
+    },
+    {
+      "id": "UNDEAD_RUINS_2_UR2_010",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "UND003",
+          "UND003",
+          "UND003"
+        ],
+        [
+          "UND004",
+          "UND004"
+        ]
+      ]
+    },
+    {
+      "id": "UNDEAD_RUINS_3_UR3_001",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "UND004",
+          "UND004"
+        ],
+        [
+          "UND002"
+        ]
+      ]
+    },
+    {
+      "id": "UNDEAD_RUINS_3_UR3_002",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "UND005"
+        ],
+        [
+          "UND003"
+        ]
+      ]
+    },
+    {
+      "id": "UNDEAD_RUINS_3_UR3_003",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "UND005",
+          "UND005"
+        ]
+      ]
+    },
+    {
+      "id": "UNDEAD_RUINS_3_UR3_004",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "UND004",
+          "UND004"
+        ],
+        [
+          "UND003",
+          "UND003"
+        ]
+      ]
+    },
+    {
+      "id": "UNDEAD_RUINS_3_UR3_005",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "UND005"
+        ],
+        [
+          "UND004",
+          "UND004"
+        ],
+        [
+          "UND003"
+        ]
+      ]
+    },
+    {
+      "id": "UNDEAD_RUINS_3_UR3_006",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "UND005"
+        ],
+        [
+          "UND004",
+          "UND004"
+        ]
+      ]
+    },
+    {
+      "id": "UNDEAD_RUINS_3_UR3_007",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "UND005",
+          "UND005"
+        ]
+      ]
+    },
+    {
+      "id": "UNDEAD_RUINS_3_UR3_008",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "UND005"
+        ],
+        [
+          "UND003",
+          "UND003"
+        ],
+        [
+          "UND004"
+        ]
+      ]
+    },
+    {
+      "id": "UNDEAD_RUINS_3_UR3_009",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "UND005",
+          "UND005"
+        ],
+        [
+          "UND004",
+          "UND004"
+        ]
+      ]
+    },
+    {
+      "id": "UNDEAD_RUINS_3_BOSS",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "B_LICH"
+        ],
+        [
+          "UND005",
+          "UND005"
+        ],
+        [
+          "UND004",
+          "UND004"
+        ]
+      ],
+      "isBoss": true
+    },
+    {
+      "id": "UNDEAD_RUINS_1_UR1_005_F1_BOSS",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "UND001",
+          "UND001",
+          "UND001"
+        ],
+        [
+          "UND002",
+          "UND002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "UNDEAD_RUINS_1_UR1_010_F2_BOSS",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "UND002",
+          "UND002"
+        ],
+        [
+          "UND001",
+          "UND001",
+          "UND001"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "UNDEAD_RUINS_2_UR2_004_F3_BOSS",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "UND001",
+          "UND001",
+          "UND001"
+        ],
+        [
+          "UND002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "UNDEAD_RUINS_2_UR2_010_F4_BOSS",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "UND003",
+          "UND003",
+          "UND003"
+        ],
+        [
+          "UND004",
+          "UND004"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "UNDEAD_RUINS_3_UR3_005_F5_BOSS",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "UND005"
+        ],
+        [
+          "UND004",
+          "UND004"
+        ],
+        [
+          "UND003"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "UNDEAD_RUINS_3_UR3_009_F6_BOSS",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "UND005",
+          "UND005"
+        ],
+        [
+          "UND004",
+          "UND004"
+        ]
+      ],
+      "isFloorBoss": true
     }
   ]
 }

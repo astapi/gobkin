@@ -86,7 +86,11 @@
     {
       "id": "VC1_001",
       "floors": [
-        1
+        1,
+        2,
+        3,
+        4,
+        5
       ],
       "enemies": [
         [
@@ -101,7 +105,11 @@
     {
       "id": "VC1_002",
       "floors": [
-        1
+        1,
+        2,
+        3,
+        4,
+        5
       ],
       "enemies": [
         [
@@ -117,7 +125,7 @@
     {
       "id": "VC1_003",
       "floors": [
-        2
+        6
       ],
       "enemies": [
         [
@@ -133,7 +141,7 @@
     {
       "id": "BOSS",
       "floors": [
-        2
+        6
       ],
       "enemies": [
         [
@@ -146,6 +154,108 @@
         ]
       ],
       "isBoss": true
+    },
+    {
+      "id": "VC1_002_F1_BOSS",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "VMP002",
+          "VMP001"
+        ],
+        [
+          "VMP001",
+          "VMP002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "VC1_002_F2_BOSS",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "VMP002",
+          "VMP001"
+        ],
+        [
+          "VMP001",
+          "VMP002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "VC1_002_F3_BOSS",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "VMP002",
+          "VMP001"
+        ],
+        [
+          "VMP001",
+          "VMP002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "VC1_002_F4_BOSS",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "VMP002",
+          "VMP001"
+        ],
+        [
+          "VMP001",
+          "VMP002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "VC1_002_F5_BOSS",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "VMP002",
+          "VMP001"
+        ],
+        [
+          "VMP001",
+          "VMP002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "VC1_003_F6_BOSS",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "VMP002",
+          "VMP002"
+        ],
+        [
+          "VMP001",
+          "VMP001"
+        ]
+      ],
+      "isFloorBoss": true
     }
   ]
 }

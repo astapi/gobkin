@@ -108,7 +108,11 @@
     {
       "id": "SF1_001",
       "floors": [
-        1
+        1,
+        2,
+        3,
+        4,
+        5
       ],
       "enemies": [
         [
@@ -123,7 +127,11 @@
     {
       "id": "SF1_002",
       "floors": [
-        1
+        1,
+        2,
+        3,
+        4,
+        5
       ],
       "enemies": [
         [
@@ -139,7 +147,7 @@
     {
       "id": "SF1_003",
       "floors": [
-        2
+        6
       ],
       "enemies": [
         [
@@ -154,7 +162,7 @@
     {
       "id": "SF1_004",
       "floors": [
-        2
+        6
       ],
       "enemies": [
         [
@@ -170,7 +178,7 @@
     {
       "id": "BOSS",
       "floors": [
-        3
+        6
       ],
       "enemies": [
         [
@@ -182,6 +190,108 @@
         ]
       ],
       "isBoss": true
+    },
+    {
+      "id": "SF1_002_F1_BOSS",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "SPF002",
+          "SPF001"
+        ],
+        [
+          "SPF001",
+          "SPF001"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "SF1_002_F2_BOSS",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "SPF002",
+          "SPF001"
+        ],
+        [
+          "SPF001",
+          "SPF001"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "SF1_002_F3_BOSS",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "SPF002",
+          "SPF001"
+        ],
+        [
+          "SPF001",
+          "SPF001"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "SF1_002_F4_BOSS",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "SPF002",
+          "SPF001"
+        ],
+        [
+          "SPF001",
+          "SPF001"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "SF1_002_F5_BOSS",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "SPF002",
+          "SPF001"
+        ],
+        [
+          "SPF001",
+          "SPF001"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "SF1_004_F6_BOSS",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "SPF003",
+          "SPF001"
+        ],
+        [
+          "SPF002",
+          "SPF001"
+        ]
+      ],
+      "isFloorBoss": true
     }
   ]
 }

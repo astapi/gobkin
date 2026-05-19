@@ -124,11 +124,37 @@
         "agility": 8,
         "luck": 8
       }
+    },
+    {
+      "id": "B_COMMANDER",
+      "name": "城塞司令官",
+      "raceTags": [
+        "human"
+      ],
+      "level": 30,
+      "hp": 1200,
+      "atk": 72,
+      "def": 40,
+      "attackCount": 3,
+      "accuracy": 680,
+      "evasion": 35,
+      "exp": 480,
+      "isBoss": true,
+      "gold": 420,
+      "magicDef": 60,
+      "baseAttributes": {
+        "power": 18,
+        "wisdom": 18,
+        "spirit": 15,
+        "vitality": 20,
+        "agility": 10,
+        "luck": 9
+      }
     }
   ],
   "patterns": [
     {
-      "id": "HF1_001",
+      "id": "HUMAN_FORTRESS_1_HF1_001",
       "floors": [
         1
       ],
@@ -140,7 +166,7 @@
       ]
     },
     {
-      "id": "HF1_002",
+      "id": "HUMAN_FORTRESS_1_HF1_002",
       "floors": [
         1
       ],
@@ -157,7 +183,7 @@
       ]
     },
     {
-      "id": "HF1_003",
+      "id": "HUMAN_FORTRESS_1_HF1_003",
       "floors": [
         1
       ],
@@ -171,7 +197,7 @@
       ]
     },
     {
-      "id": "HF1_004",
+      "id": "HUMAN_FORTRESS_1_HF1_004",
       "floors": [
         1
       ],
@@ -189,7 +215,7 @@
       ]
     },
     {
-      "id": "HF1_005",
+      "id": "HUMAN_FORTRESS_1_HF1_005",
       "floors": [
         1
       ],
@@ -210,7 +236,7 @@
       ]
     },
     {
-      "id": "HF1_006",
+      "id": "HUMAN_FORTRESS_1_HF1_006",
       "floors": [
         2
       ],
@@ -223,7 +249,7 @@
       ]
     },
     {
-      "id": "HF1_007",
+      "id": "HUMAN_FORTRESS_1_HF1_007",
       "floors": [
         2
       ],
@@ -239,7 +265,7 @@
       ]
     },
     {
-      "id": "HF1_008",
+      "id": "HUMAN_FORTRESS_1_HF1_008",
       "floors": [
         2
       ],
@@ -254,7 +280,7 @@
       ]
     },
     {
-      "id": "HF1_009",
+      "id": "HUMAN_FORTRESS_1_HF1_009",
       "floors": [
         2
       ],
@@ -274,7 +300,7 @@
       ]
     },
     {
-      "id": "HF1_010",
+      "id": "HUMAN_FORTRESS_1_HF1_010",
       "floors": [
         2
       ],
@@ -294,6 +320,549 @@
           "FRT002"
         ]
       ]
+    },
+    {
+      "id": "HUMAN_FORTRESS_2_HF2_001",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "FRT001",
+          "FRT003",
+          "FRT002"
+        ]
+      ]
+    },
+    {
+      "id": "HUMAN_FORTRESS_2_HF2_002",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "FRT003",
+          "FRT004"
+        ],
+        [
+          "FRT001",
+          "FRT002"
+        ]
+      ]
+    },
+    {
+      "id": "HUMAN_FORTRESS_2_HF2_003",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "FRT003",
+          "FRT001",
+          "FRT004",
+          "FRT002",
+          "FRT001"
+        ]
+      ]
+    },
+    {
+      "id": "HUMAN_FORTRESS_2_HF2_004",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "FRT003",
+          "FRT003",
+          "FRT004"
+        ],
+        [
+          "FRT001",
+          "FRT002",
+          "FRT001",
+          "FRT004"
+        ]
+      ]
+    },
+    {
+      "id": "HUMAN_FORTRESS_2_HF2_005",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "FRT003",
+          "FRT004",
+          "FRT001"
+        ],
+        [
+          "FRT002",
+          "FRT003"
+        ],
+        [
+          "FRT004",
+          "FRT001",
+          "FRT002"
+        ]
+      ]
+    },
+    {
+      "id": "HUMAN_FORTRESS_2_HF2_006",
+      "floors": [
+        4,
+        5
+      ],
+      "enemies": [
+        [
+          "FRT004",
+          "FRT003"
+        ],
+        [
+          "FRT001",
+          "FRT002"
+        ]
+      ]
+    },
+    {
+      "id": "HUMAN_FORTRESS_2_HF2_007",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "FRT003",
+          "FRT001",
+          "FRT004",
+          "FRT002",
+          "FRT003"
+        ]
+      ]
+    },
+    {
+      "id": "HUMAN_FORTRESS_2_HF2_008",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "FRT004",
+          "FRT003",
+          "FRT002"
+        ],
+        [
+          "FRT001",
+          "FRT003",
+          "FRT004"
+        ]
+      ]
+    },
+    {
+      "id": "HUMAN_FORTRESS_2_HF2_009",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "FRT003",
+          "FRT004",
+          "FRT003"
+        ],
+        [
+          "FRT002",
+          "FRT001"
+        ],
+        [
+          "FRT004",
+          "FRT003"
+        ]
+      ]
+    },
+    {
+      "id": "HUMAN_FORTRESS_2_HF2_010",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "FRT003",
+          "FRT004",
+          "FRT001"
+        ],
+        [
+          "FRT002",
+          "FRT003",
+          "FRT004"
+        ],
+        [
+          "FRT001",
+          "FRT003"
+        ]
+      ]
+    },
+    {
+      "id": "HUMAN_FORTRESS_3_HF3_001",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "FRT005",
+          "FRT003",
+          "FRT004",
+          "FRT005"
+        ]
+      ]
+    },
+    {
+      "id": "HUMAN_FORTRESS_3_HF3_002",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "FRT005",
+          "FRT003",
+          "FRT005"
+        ],
+        [
+          "FRT004",
+          "FRT003"
+        ]
+      ]
+    },
+    {
+      "id": "HUMAN_FORTRESS_3_HF3_003",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "FRT003",
+          "FRT005",
+          "FRT004"
+        ],
+        [
+          "FRT005",
+          "FRT003",
+          "FRT004"
+        ]
+      ]
+    },
+    {
+      "id": "HUMAN_FORTRESS_3_HF3_004",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "FRT005",
+          "FRT005",
+          "FRT003"
+        ],
+        [
+          "FRT004",
+          "FRT005"
+        ],
+        [
+          "FRT003",
+          "FRT005"
+        ]
+      ]
+    },
+    {
+      "id": "HUMAN_FORTRESS_3_HF3_005",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "FRT005",
+          "FRT003",
+          "FRT005"
+        ],
+        [
+          "FRT004",
+          "FRT003",
+          "FRT005"
+        ],
+        [
+          "FRT003",
+          "FRT004"
+        ]
+      ]
+    },
+    {
+      "id": "HUMAN_FORTRESS_3_HF3_006",
+      "floors": [
+        7,
+        8
+      ],
+      "enemies": [
+        [
+          "FRT005",
+          "FRT003",
+          "FRT004"
+        ],
+        [
+          "FRT005",
+          "FRT003"
+        ]
+      ]
+    },
+    {
+      "id": "HUMAN_FORTRESS_3_HF3_007",
+      "floors": [
+        7
+      ],
+      "enemies": [
+        [
+          "FRT005",
+          "FRT005",
+          "FRT003",
+          "FRT004",
+          "FRT005",
+          "FRT003"
+        ]
+      ]
+    },
+    {
+      "id": "HUMAN_FORTRESS_3_HF3_008",
+      "floors": [
+        7
+      ],
+      "enemies": [
+        [
+          "FRT003",
+          "FRT005",
+          "FRT004"
+        ],
+        [
+          "FRT005",
+          "FRT003"
+        ],
+        [
+          "FRT004",
+          "FRT005"
+        ]
+      ]
+    },
+    {
+      "id": "HUMAN_FORTRESS_3_HF3_009",
+      "floors": [
+        7
+      ],
+      "enemies": [
+        [
+          "FRT005",
+          "FRT005",
+          "FRT003",
+          "FRT005"
+        ],
+        [
+          "FRT004",
+          "FRT003",
+          "FRT005",
+          "FRT004"
+        ]
+      ]
+    },
+    {
+      "id": "HUMAN_FORTRESS_3_BOSS",
+      "floors": [
+        8
+      ],
+      "enemies": [
+        [
+          "B_COMMANDER",
+          "FRT005",
+          "FRT005"
+        ],
+        [
+          "FRT003",
+          "FRT004",
+          "FRT005"
+        ],
+        [
+          "FRT005",
+          "FRT003",
+          "FRT004"
+        ],
+        [
+          "FRT005",
+          "FRT003"
+        ]
+      ],
+      "isBoss": true
+    },
+    {
+      "id": "HUMAN_FORTRESS_1_HF1_005_F1_BOSS",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "FRT001",
+          "FRT002",
+          "FRT001"
+        ],
+        [
+          "FRT002",
+          "FRT001"
+        ],
+        [
+          "FRT001",
+          "FRT002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "HUMAN_FORTRESS_1_HF1_010_F2_BOSS",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "FRT001",
+          "FRT002",
+          "FRT001"
+        ],
+        [
+          "FRT002",
+          "FRT001",
+          "FRT002"
+        ],
+        [
+          "FRT001",
+          "FRT002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "HUMAN_FORTRESS_2_HF2_005_F3_BOSS",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "FRT003",
+          "FRT004",
+          "FRT001"
+        ],
+        [
+          "FRT002",
+          "FRT003"
+        ],
+        [
+          "FRT004",
+          "FRT001",
+          "FRT002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "HUMAN_FORTRESS_2_HF2_010_F4_BOSS",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "FRT003",
+          "FRT004",
+          "FRT001"
+        ],
+        [
+          "FRT002",
+          "FRT003",
+          "FRT004"
+        ],
+        [
+          "FRT001",
+          "FRT003"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "HUMAN_FORTRESS_2_HF2_006_F5_BOSS",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "FRT004",
+          "FRT003"
+        ],
+        [
+          "FRT001",
+          "FRT002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "HUMAN_FORTRESS_3_HF3_005_F6_BOSS",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "FRT005",
+          "FRT003",
+          "FRT005"
+        ],
+        [
+          "FRT004",
+          "FRT003",
+          "FRT005"
+        ],
+        [
+          "FRT003",
+          "FRT004"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "HUMAN_FORTRESS_3_HF3_009_F7_BOSS",
+      "floors": [
+        7
+      ],
+      "enemies": [
+        [
+          "FRT005",
+          "FRT005",
+          "FRT003",
+          "FRT005"
+        ],
+        [
+          "FRT004",
+          "FRT003",
+          "FRT005",
+          "FRT004"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "HUMAN_FORTRESS_3_HF3_006_F8_BOSS",
+      "floors": [
+        8
+      ],
+      "enemies": [
+        [
+          "FRT005",
+          "FRT003",
+          "FRT004"
+        ],
+        [
+          "FRT005",
+          "FRT003"
+        ]
+      ],
+      "isFloorBoss": true
     }
   ]
 }

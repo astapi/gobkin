@@ -128,7 +128,9 @@
     {
       "id": "CF1_001",
       "floors": [
-        1
+        1,
+        2,
+        3
       ],
       "enemies": [
         [
@@ -145,7 +147,9 @@
     {
       "id": "CF1_002",
       "floors": [
-        1
+        1,
+        2,
+        3
       ],
       "enemies": [
         [
@@ -162,7 +166,8 @@
     {
       "id": "CF1_003",
       "floors": [
-        2
+        4,
+        5
       ],
       "enemies": [
         [
@@ -179,7 +184,8 @@
     {
       "id": "CF1_004",
       "floors": [
-        2
+        4,
+        5
       ],
       "enemies": [
         [
@@ -196,7 +202,7 @@
     {
       "id": "CF1_005",
       "floors": [
-        3
+        6
       ],
       "enemies": [
         [
@@ -216,7 +222,7 @@
     {
       "id": "BOSS",
       "floors": [
-        3
+        6
       ],
       "enemies": [
         [
@@ -233,6 +239,117 @@
         ]
       ],
       "isBoss": true
+    },
+    {
+      "id": "CF1_001_F1_BOSS",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "CAT001",
+          "CAT001",
+          "CAT002"
+        ],
+        [
+          "CAT002",
+          "CAT001"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "CF1_001_F2_BOSS",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "CAT001",
+          "CAT001",
+          "CAT002"
+        ],
+        [
+          "CAT002",
+          "CAT001"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "CF1_001_F3_BOSS",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "CAT001",
+          "CAT001",
+          "CAT002"
+        ],
+        [
+          "CAT002",
+          "CAT001"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "CF1_003_F4_BOSS",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "CAT002",
+          "CAT002"
+        ],
+        [
+          "CAT002",
+          "CAT001",
+          "CAT001"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "CF1_003_F5_BOSS",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "CAT002",
+          "CAT002"
+        ],
+        [
+          "CAT002",
+          "CAT001",
+          "CAT001"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "CF1_005_F6_BOSS",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "CAT002",
+          "CAT002"
+        ],
+        [
+          "CAT002",
+          "CAT001"
+        ],
+        [
+          "CAT001",
+          "CAT001"
+        ]
+      ],
+      "isFloorBoss": true
     }
   ]
 }

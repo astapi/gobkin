@@ -124,11 +124,43 @@
         "agility": 4,
         "luck": 6
       }
+    },
+    {
+      "id": "B_FORGEKING",
+      "name": "鍛冶王",
+      "raceTags": [
+        "dwarf"
+      ],
+      "level": 18,
+      "hp": 500,
+      "atk": 55,
+      "def": 32,
+      "attackCount": 2,
+      "accuracy": 470,
+      "evasion": 26,
+      "exp": 220,
+      "isBoss": true,
+      "gold": 200,
+      "factorDrops": [
+        {
+          "factorId": "dwarf",
+          "probability": 0.015
+        }
+      ],
+      "magicDef": 38,
+      "baseAttributes": {
+        "power": 14,
+        "wisdom": 14,
+        "spirit": 10,
+        "vitality": 16,
+        "agility": 5,
+        "luck": 7
+      }
     }
   ],
   "patterns": [
     {
-      "id": "DM1_001",
+      "id": "DWARF_MINE_1_DM1_001",
       "floors": [
         1
       ],
@@ -143,7 +175,7 @@
       ]
     },
     {
-      "id": "DM1_002",
+      "id": "DWARF_MINE_1_DM1_002",
       "floors": [
         1
       ],
@@ -159,7 +191,7 @@
       ]
     },
     {
-      "id": "DM1_003",
+      "id": "DWARF_MINE_1_DM1_003",
       "floors": [
         1
       ],
@@ -175,7 +207,7 @@
       ]
     },
     {
-      "id": "DM1_004",
+      "id": "DWARF_MINE_1_DM1_004",
       "floors": [
         1
       ],
@@ -194,7 +226,7 @@
       ]
     },
     {
-      "id": "DM1_005",
+      "id": "DWARF_MINE_1_DM1_005",
       "floors": [
         1
       ],
@@ -215,7 +247,7 @@
       ]
     },
     {
-      "id": "DM1_006",
+      "id": "DWARF_MINE_1_DM1_006",
       "floors": [
         2
       ],
@@ -230,7 +262,7 @@
       ]
     },
     {
-      "id": "DM1_007",
+      "id": "DWARF_MINE_1_DM1_007",
       "floors": [
         2
       ],
@@ -246,7 +278,7 @@
       ]
     },
     {
-      "id": "DM1_008",
+      "id": "DWARF_MINE_1_DM1_008",
       "floors": [
         2
       ],
@@ -265,7 +297,7 @@
       ]
     },
     {
-      "id": "DM1_009",
+      "id": "DWARF_MINE_1_DM1_009",
       "floors": [
         2
       ],
@@ -285,7 +317,7 @@
       ]
     },
     {
-      "id": "DM1_010",
+      "id": "DWARF_MINE_1_DM1_010",
       "floors": [
         2
       ],
@@ -304,6 +336,542 @@
           "DWF002"
         ]
       ]
+    },
+    {
+      "id": "DWARF_MINE_2_DM2_001",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "DWF002",
+          "DWF003"
+        ],
+        [
+          "DWF002"
+        ]
+      ]
+    },
+    {
+      "id": "DWARF_MINE_2_DM2_002",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "DWF005",
+          "DWF002"
+        ],
+        [
+          "DWF003",
+          "DWF002"
+        ]
+      ]
+    },
+    {
+      "id": "DWARF_MINE_2_DM2_003",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "DWF002",
+          "DWF003"
+        ],
+        [
+          "DWF005",
+          "DWF002"
+        ],
+        [
+          "DWF003"
+        ]
+      ]
+    },
+    {
+      "id": "DWARF_MINE_2_DM2_004",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "DWF005",
+          "DWF002"
+        ],
+        [
+          "DWF003",
+          "DWF002"
+        ],
+        [
+          "DWF002",
+          "DWF005"
+        ]
+      ]
+    },
+    {
+      "id": "DWARF_MINE_2_DM2_005",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "DWF002",
+          "DWF005",
+          "DWF002"
+        ],
+        [
+          "DWF003",
+          "DWF002"
+        ],
+        [
+          "DWF005",
+          "DWF003"
+        ]
+      ]
+    },
+    {
+      "id": "DWARF_MINE_2_DM2_006",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "DWF005",
+          "DWF003"
+        ],
+        [
+          "DWF002"
+        ]
+      ]
+    },
+    {
+      "id": "DWARF_MINE_2_DM2_007",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "DWF002",
+          "DWF005"
+        ],
+        [
+          "DWF003",
+          "DWF002"
+        ]
+      ]
+    },
+    {
+      "id": "DWARF_MINE_2_DM2_008",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "DWF005",
+          "DWF003"
+        ],
+        [
+          "DWF002",
+          "DWF005"
+        ],
+        [
+          "DWF002"
+        ]
+      ]
+    },
+    {
+      "id": "DWARF_MINE_2_DM2_009",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "DWF003",
+          "DWF005"
+        ],
+        [
+          "DWF002",
+          "DWF002"
+        ],
+        [
+          "DWF005",
+          "DWF003"
+        ]
+      ]
+    },
+    {
+      "id": "DWARF_MINE_2_DM2_010",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "DWF005",
+          "DWF002",
+          "DWF003"
+        ],
+        [
+          "DWF002",
+          "DWF005"
+        ],
+        [
+          "DWF003",
+          "DWF002"
+        ]
+      ]
+    },
+    {
+      "id": "DWARF_MINE_3_DM3_001",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "DWF004",
+          "DWF003"
+        ],
+        [
+          "DWF005",
+          "DWF003"
+        ]
+      ]
+    },
+    {
+      "id": "DWARF_MINE_3_DM3_002",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "DWF005",
+          "DWF003"
+        ],
+        [
+          "DWF004",
+          "DWF005"
+        ],
+        [
+          "DWF003"
+        ]
+      ]
+    },
+    {
+      "id": "DWARF_MINE_3_DM3_003",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "DWF004",
+          "DWF005"
+        ],
+        [
+          "DWF003",
+          "DWF004"
+        ],
+        [
+          "DWF005",
+          "DWF003"
+        ]
+      ]
+    },
+    {
+      "id": "DWARF_MINE_3_DM3_004",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "DWF005",
+          "DWF004",
+          "DWF003"
+        ],
+        [
+          "DWF004",
+          "DWF005"
+        ],
+        [
+          "DWF003",
+          "DWF004"
+        ]
+      ]
+    },
+    {
+      "id": "DWARF_MINE_3_DM3_005",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "DWF004",
+          "DWF005",
+          "DWF003"
+        ],
+        [
+          "DWF005",
+          "DWF004"
+        ],
+        [
+          "DWF003",
+          "DWF005",
+          "DWF004"
+        ]
+      ]
+    },
+    {
+      "id": "DWARF_MINE_3_DM3_006",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "DWF004",
+          "DWF005"
+        ],
+        [
+          "DWF003",
+          "DWF004"
+        ]
+      ]
+    },
+    {
+      "id": "DWARF_MINE_3_DM3_007",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "DWF005",
+          "DWF004"
+        ],
+        [
+          "DWF003",
+          "DWF005"
+        ],
+        [
+          "DWF004"
+        ]
+      ]
+    },
+    {
+      "id": "DWARF_MINE_3_DM3_008",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "DWF004",
+          "DWF005",
+          "DWF003"
+        ],
+        [
+          "DWF005",
+          "DWF004"
+        ],
+        [
+          "DWF003"
+        ]
+      ]
+    },
+    {
+      "id": "DWARF_MINE_3_DM3_009",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "DWF004",
+          "DWF005",
+          "DWF003"
+        ],
+        [
+          "DWF005",
+          "DWF004"
+        ],
+        [
+          "DWF003",
+          "DWF005"
+        ]
+      ]
+    },
+    {
+      "id": "DWARF_MINE_3_DM3_010",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "DWF005",
+          "DWF004",
+          "DWF003"
+        ],
+        [
+          "DWF004",
+          "DWF005"
+        ],
+        [
+          "DWF003",
+          "DWF004",
+          "DWF005"
+        ]
+      ]
+    },
+    {
+      "id": "DWARF_MINE_3_BOSS",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "B_FORGEKING",
+          "DWF004",
+          "DWF004"
+        ],
+        [
+          "DWF005",
+          "DWF003",
+          "DWF005"
+        ],
+        [
+          "DWF004",
+          "DWF003",
+          "DWF004"
+        ]
+      ],
+      "isBoss": true
+    },
+    {
+      "id": "DWARF_MINE_1_DM1_005_F1_BOSS",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "DWF001",
+          "DWF001",
+          "DWF002"
+        ],
+        [
+          "DWF001",
+          "DWF001"
+        ],
+        [
+          "DWF002",
+          "DWF001"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "DWARF_MINE_1_DM1_010_F2_BOSS",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "DWF001",
+          "DWF002",
+          "DWF001"
+        ],
+        [
+          "DWF002",
+          "DWF001"
+        ],
+        [
+          "DWF001",
+          "DWF002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "DWARF_MINE_2_DM2_005_F3_BOSS",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "DWF002",
+          "DWF005",
+          "DWF002"
+        ],
+        [
+          "DWF003",
+          "DWF002"
+        ],
+        [
+          "DWF005",
+          "DWF003"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "DWARF_MINE_2_DM2_010_F4_BOSS",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "DWF005",
+          "DWF002",
+          "DWF003"
+        ],
+        [
+          "DWF002",
+          "DWF005"
+        ],
+        [
+          "DWF003",
+          "DWF002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "DWARF_MINE_3_DM3_005_F5_BOSS",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "DWF004",
+          "DWF005",
+          "DWF003"
+        ],
+        [
+          "DWF005",
+          "DWF004"
+        ],
+        [
+          "DWF003",
+          "DWF005",
+          "DWF004"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "DWARF_MINE_3_DM3_010_F6_BOSS",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "DWF005",
+          "DWF004",
+          "DWF003"
+        ],
+        [
+          "DWF004",
+          "DWF005"
+        ],
+        [
+          "DWF003",
+          "DWF004",
+          "DWF005"
+        ]
+      ],
+      "isFloorBoss": true
     }
   ]
 }

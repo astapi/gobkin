@@ -2,8 +2,8 @@
   "id": "vampire_castle_1",
   "name": "ヴァンパイアの古城",
   "areaLevel": 55,
-  "floors": 2,
-  "baseDurationSec": 11700,
+  "floors": 6,
+  "baseDurationSec": 35100,
   "description": "王都へ向かう街道を見下ろす古城。夜の眷属を率いるヴァンパイアが影から進軍を阻む。",
   "encounter": {
     "perFloorEvents": 3,

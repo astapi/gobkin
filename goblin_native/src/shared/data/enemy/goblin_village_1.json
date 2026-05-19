@@ -1,142 +1,192 @@
 {
   "enemies": [
     {
+      "accuracy": 200,
+      "atk": 16,
+      "attackCount": 2,
+      "baseAttributes": {
+        "agility": 10,
+        "luck": 10,
+        "power": 10,
+        "spirit": 10,
+        "vitality": 10,
+        "wisdom": 10
+      },
+      "def": 16,
+      "evasion": 16,
+      "exp": 21,
+      "gold": 6,
+      "hp": 70,
       "id": "GOB001",
+      "level": 7,
+      "magicDef": 4,
       "name": "ゴブリン",
       "raceTags": [
         "goblin"
-      ],
-      "level": 5,
-      "hp": 50,
-      "atk": 14,
-      "def": 14,
-      "attackCount": 2,
-      "accuracy": 200,
-      "evasion": 14,
-      "exp": 15,
-      "gold": 6,
-      "magicDef": 4,
-      "baseAttributes": {
-        "power": 10,
-        "wisdom": 10,
-        "spirit": 10,
-        "vitality": 10,
-        "agility": 10,
-        "luck": 10
-      }
+      ]
     },
     {
+      "accuracy": 215,
+      "atk": 16,
+      "attackCount": 2,
+      "baseAttributes": {
+        "agility": 12,
+        "luck": 12,
+        "power": 10,
+        "spirit": 10,
+        "vitality": 8,
+        "wisdom": 10
+      },
+      "def": 12,
+      "evasion": 19,
+      "exp": 21,
+      "gold": 10,
+      "hp": 50,
       "id": "GOB002",
+      "level": 7,
+      "magicDef": 1,
       "name": "ゴブリンシーフ",
       "raceTags": [
         "goblin"
-      ],
-      "level": 5,
-      "hp": 60,
-      "atk": 14,
-      "def": 17,
-      "attackCount": 2,
-      "accuracy": 215,
-      "evasion": 17,
-      "exp": 15,
-      "gold": 10,
-      "magicDef": 1,
-      "baseAttributes": {
-        "power": 10,
-        "wisdom": 10,
-        "spirit": 10,
-        "vitality": 12,
-        "agility": 12,
-        "luck": 12
-      }
+      ]
     },
     {
+      "accuracy": 230,
+      "atk": 20,
+      "attackCount": 2,
+      "baseAttributes": {
+        "agility": 10,
+        "luck": 10,
+        "power": 10,
+        "spirit": 10,
+        "vitality": 13,
+        "wisdom": 10
+      },
+      "def": 20,
+      "evasion": 16,
+      "exp": 21,
+      "gold": 12,
+      "hp": 90,
       "id": "GOB003",
+      "level": 7,
+      "magicDef": 7,
       "name": "ゴブリンウォリアー",
       "raceTags": [
         "goblin"
-      ],
-      "level": 5,
-      "hp": 70,
-      "atk": 20,
-      "def": 18,
-      "attackCount": 2,
-      "accuracy": 230,
-      "evasion": 14,
-      "exp": 15,
-      "gold": 12,
-      "magicDef": 7,
-      "baseAttributes": {
-        "power": 10,
-        "wisdom": 10,
-        "spirit": 10,
-        "vitality": 13,
-        "agility": 10,
-        "luck": 10
-      }
+      ]
     },
     {
+      "accuracy": 230,
+      "atk": 16,
+      "attackCount": 2,
+      "baseAttributes": {
+        "agility": 10,
+        "luck": 10,
+        "power": 10,
+        "spirit": 10,
+        "vitality": 8,
+        "wisdom": 12
+      },
+      "def": 12,
+      "evasion": 16,
+      "exp": 21,
+      "gold": 15,
+      "hp": 50,
       "id": "GOB004",
+      "level": 7,
+      "magicAtk": 9,
+      "magicDef": 4,
       "name": "ゴブリンメイジ",
       "raceTags": [
         "goblin"
       ],
-      "level": 5,
-      "hp": 40,
-      "atk": 9,
-      "magicAtk": 9,
-      "def": 3,
-      "attackCount": 2,
-      "accuracy": 230,
-      "evasion": 13,
-      "exp": 15,
-      "gold": 15,
       "skills": [
         {
+          "grantsSpellId": "fireball",
           "id": "fireball",
-          "name": "ファイヤーボール",
-          "grantsSpellId": "fireball"
+          "name": "ファイヤーボール"
         }
-      ],
-      "magicDef": 4,
-      "baseAttributes": {
-        "power": 10,
-        "wisdom": 12,
-        "spirit": 10,
-        "vitality": 8,
-        "agility": 10,
-        "luck": 10
-      }
+      ]
     },
     {
+      "accuracy": 240,
+      "atk": 16,
+      "attackCount": 2,
+      "baseAttributes": {
+        "agility": 8,
+        "luck": 8,
+        "power": 10,
+        "spirit": 10,
+        "vitality": 15,
+        "wisdom": 10
+      },
+      "def": 30,
+      "evasion": 12,
+      "exp": 21,
+      "gold": 18,
+      "hp": 100,
       "id": "GOB005",
+      "level": 7,
+      "magicDef": 36,
       "name": "ゴブリンガード",
       "raceTags": [
         "goblin"
-      ],
-      "level": 6,
-      "hp": 90,
-      "atk": 7,
-      "def": 30,
+      ]
+    },
+    {
+      "accuracy": 310,
+      "atk": 30,
       "attackCount": 2,
-      "accuracy": 240,
-      "evasion": 14,
-      "exp": 18,
-      "gold": 18,
-      "magicDef": 36,
       "baseAttributes": {
-        "power": 10,
-        "wisdom": 10,
-        "spirit": 10,
-        "vitality": 15,
         "agility": 8,
-        "luck": 8
-      }
+        "luck": 6,
+        "power": 12,
+        "spirit": 6,
+        "vitality": 12,
+        "wisdom": 8
+      },
+      "def": 26,
+      "evasion": 15,
+      "exp": 68,
+      "isBoss": true,
+      "factorDrops": [
+        {
+          "factorId": "hobgoblin",
+          "probability": 0.015
+        }
+      ],
+      "gold": 70,
+      "hp": 160,
+      "id": "B_HOB",
+      "level": 15,
+      "magicDef": 17,
+      "name": "ホブゴブリン",
+      "raceTags": [
+        "goblin",
+        "hobgoblin"
+      ],
+      "rareEquipmentDrops": [
+        {
+          "templateId": "accessory_human_slayer"
+        }
+      ],
+      "skills": [
+        {
+          "id": "inspire_150",
+          "name": "鼓舞",
+          "rearAllyDamageMultiplier": 1.5
+        },
+        {
+          "id": "survive_lethal_hp1",
+          "name": "気合い",
+          "surviveLethalDamageAtHp1": true
+        }
+      ]
     }
   ],
   "patterns": [
     {
-      "id": "GV1_001",
+      "id": "GOBLIN_VILLAGE_1_GV1_001",
       "floors": [
         1
       ],
@@ -155,7 +205,7 @@
       ]
     },
     {
-      "id": "GV1_002",
+      "id": "GOBLIN_VILLAGE_1_GV1_002",
       "floors": [
         1
       ],
@@ -173,7 +223,7 @@
       ]
     },
     {
-      "id": "GV1_003",
+      "id": "GOBLIN_VILLAGE_1_GV1_003",
       "floors": [
         1
       ],
@@ -190,7 +240,7 @@
       ]
     },
     {
-      "id": "GV1_004",
+      "id": "GOBLIN_VILLAGE_1_GV1_004",
       "floors": [
         1
       ],
@@ -209,7 +259,7 @@
       ]
     },
     {
-      "id": "GV1_005",
+      "id": "GOBLIN_VILLAGE_1_GV1_005",
       "floors": [
         1
       ],
@@ -229,7 +279,7 @@
       ]
     },
     {
-      "id": "GV1_006",
+      "id": "GOBLIN_VILLAGE_1_GV1_006",
       "floors": [
         2
       ],
@@ -247,43 +297,7 @@
       ]
     },
     {
-      "id": "GV1_007",
-      "floors": [
-        2
-      ],
-      "enemies": [
-        [
-          "GOB001",
-          "GOB001",
-          "GOB001",
-          "GOB001",
-          "GOB001",
-          "GOB001"
-        ],
-        [
-          "GOB002"
-        ]
-      ]
-    },
-    {
-      "id": "GV1_008",
-      "floors": [
-        2
-      ],
-      "enemies": [
-        [
-          "GOB001",
-          "GOB001",
-          "GOB001",
-          "GOB001"
-        ],
-        [
-          "GOB002"
-        ]
-      ]
-    },
-    {
-      "id": "GV1_009",
+      "id": "GOBLIN_VILLAGE_1_GV1_007",
       "floors": [
         2
       ],
@@ -302,7 +316,43 @@
       ]
     },
     {
-      "id": "GV1_010",
+      "id": "GOBLIN_VILLAGE_1_GV1_008",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "GOB001",
+          "GOB001",
+          "GOB001",
+          "GOB001"
+        ],
+        [
+          "GOB002"
+        ]
+      ]
+    },
+    {
+      "id": "GOBLIN_VILLAGE_1_GV1_009",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "GOB001",
+          "GOB001",
+          "GOB001",
+          "GOB001",
+          "GOB001",
+          "GOB001"
+        ],
+        [
+          "GOB002"
+        ]
+      ]
+    },
+    {
+      "id": "GOBLIN_VILLAGE_1_GV1_010",
       "floors": [
         2
       ],
@@ -321,6 +371,587 @@
           "GOB002"
         ]
       ]
+    },
+    {
+      "id": "GOBLIN_VILLAGE_2_GV2_001",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "GOB001",
+          "GOB001",
+          "GOB001"
+        ],
+        [
+          "GOB003"
+        ],
+        [
+          "GOB002"
+        ],
+        [
+          "GOB004"
+        ]
+      ]
+    },
+    {
+      "id": "GOBLIN_VILLAGE_2_GV2_002",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "GOB001",
+          "GOB001",
+          "GOB001",
+          "GOB001"
+        ],
+        [
+          "GOB003"
+        ],
+        [
+          "GOB002"
+        ],
+        [
+          "GOB004"
+        ]
+      ]
+    },
+    {
+      "id": "GOBLIN_VILLAGE_2_GV2_003",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "GOB001",
+          "GOB001",
+          "GOB001"
+        ],
+        [
+          "GOB003"
+        ],
+        [
+          "GOB002"
+        ],
+        [
+          "GOB004"
+        ]
+      ]
+    },
+    {
+      "id": "GOBLIN_VILLAGE_2_GV2_004",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "GOB001",
+          "GOB001",
+          "GOB001",
+          "GOB001"
+        ],
+        [
+          "GOB003"
+        ],
+        [
+          "GOB002"
+        ]
+      ]
+    },
+    {
+      "id": "GOBLIN_VILLAGE_2_GV2_005",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "GOB001",
+          "GOB001",
+          "GOB001",
+          "GOB001"
+        ],
+        [
+          "GOB003"
+        ],
+        [
+          "GOB002"
+        ],
+        [
+          "GOB004"
+        ]
+      ]
+    },
+    {
+      "id": "GOBLIN_VILLAGE_2_GV2_006",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "GOB001",
+          "GOB001",
+          "GOB001",
+          "GOB001"
+        ],
+        [
+          "GOB003"
+        ],
+        [
+          "GOB002"
+        ],
+        [
+          "GOB004"
+        ]
+      ]
+    },
+    {
+      "id": "GOBLIN_VILLAGE_2_GV2_007",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "GOB001",
+          "GOB001",
+          "GOB001"
+        ],
+        [
+          "GOB003"
+        ],
+        [
+          "GOB002"
+        ],
+        [
+          "GOB004"
+        ]
+      ]
+    },
+    {
+      "id": "GOBLIN_VILLAGE_2_GV2_008",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "GOB001",
+          "GOB001",
+          "GOB001",
+          "GOB001"
+        ],
+        [
+          "GOB003"
+        ],
+        [
+          "GOB002"
+        ],
+        [
+          "GOB004"
+        ]
+      ]
+    },
+    {
+      "id": "GOBLIN_VILLAGE_2_GV2_009",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "GOB001",
+          "GOB001",
+          "GOB001",
+          "GOB001",
+          "GOB001"
+        ],
+        [
+          "GOB003"
+        ],
+        [
+          "GOB002"
+        ],
+        [
+          "GOB004"
+        ]
+      ]
+    },
+    {
+      "id": "GOBLIN_VILLAGE_2_GV2_010",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "GOB001",
+          "GOB001",
+          "GOB001",
+          "GOB001"
+        ],
+        [
+          "GOB003"
+        ],
+        [
+          "GOB002"
+        ],
+        [
+          "GOB004"
+        ]
+      ]
+    },
+    {
+      "enemies": [
+        [
+          "GOB001",
+          "GOB001",
+          "GOB005"
+        ],
+        [
+          "GOB003"
+        ],
+        [
+          "GOB002"
+        ]
+      ],
+      "floors": [
+        5
+      ],
+      "id": "GOBLIN_VILLAGE_3_GV3_001"
+    },
+    {
+      "enemies": [
+        [
+          "GOB001",
+          "GOB001",
+          "GOB001",
+          "GOB005"
+        ],
+        [
+          "GOB003"
+        ],
+        [
+          "GOB002"
+        ]
+      ],
+      "floors": [
+        5
+      ],
+      "id": "GOBLIN_VILLAGE_3_GV3_002"
+    },
+    {
+      "enemies": [
+        [
+          "GOB001",
+          "GOB001",
+          "GOB005"
+        ],
+        [
+          "GOB003"
+        ],
+        [
+          "GOB002"
+        ],
+        [
+          "GOB004"
+        ]
+      ],
+      "floors": [
+        5
+      ],
+      "id": "GOBLIN_VILLAGE_3_GV3_003"
+    },
+    {
+      "enemies": [
+        [
+          "GOB001",
+          "GOB001",
+          "GOB001",
+          "GOB005"
+        ],
+        [
+          "GOB003"
+        ],
+        [
+          "GOB002"
+        ]
+      ],
+      "floors": [
+        5
+      ],
+      "id": "GOBLIN_VILLAGE_3_GV3_004"
+    },
+    {
+      "enemies": [
+        [
+          "GOB001",
+          "GOB001",
+          "GOB005"
+        ],
+        [
+          "GOB003"
+        ],
+        [
+          "GOB002"
+        ],
+        [
+          "GOB004"
+        ]
+      ],
+      "floors": [
+        5
+      ],
+      "id": "GOBLIN_VILLAGE_3_GV3_005"
+    },
+    {
+      "enemies": [
+        [
+          "GOB001",
+          "GOB001",
+          "GOB001",
+          "GOB005"
+        ],
+        [
+          "GOB003"
+        ],
+        [
+          "GOB002"
+        ]
+      ],
+      "floors": [
+        6
+      ],
+      "id": "GOBLIN_VILLAGE_3_GV3_006"
+    },
+    {
+      "enemies": [
+        [
+          "GOB001",
+          "GOB001",
+          "GOB005"
+        ],
+        [
+          "GOB003"
+        ],
+        [
+          "GOB002"
+        ],
+        [
+          "GOB004"
+        ]
+      ],
+      "floors": [
+        6
+      ],
+      "id": "GOBLIN_VILLAGE_3_GV3_007"
+    },
+    {
+      "enemies": [
+        [
+          "GOB001",
+          "GOB001",
+          "GOB001",
+          "GOB005"
+        ],
+        [
+          "GOB003"
+        ],
+        [
+          "GOB002"
+        ],
+        [
+          "GOB004"
+        ]
+      ],
+      "floors": [
+        6
+      ],
+      "id": "GOBLIN_VILLAGE_3_GV3_008"
+    },
+    {
+      "enemies": [
+        [
+          "GOB001",
+          "GOB001",
+          "GOB001",
+          "GOB005"
+        ],
+        [
+          "GOB003"
+        ],
+        [
+          "GOB002"
+        ],
+        [
+          "GOB004"
+        ]
+      ],
+      "floors": [
+        6
+      ],
+      "id": "GOBLIN_VILLAGE_3_GV3_009"
+    },
+    {
+      "enemies": [
+        [
+          "GOB001",
+          "GOB001",
+          "GOB001",
+          "GOB005",
+          "GOB005"
+        ],
+        [
+          "GOB003",
+          "B_HOB"
+        ],
+        [
+          "GOB002"
+        ],
+        [
+          "GOB004"
+        ]
+      ],
+      "floors": [
+        6
+      ],
+      "id": "GOBLIN_VILLAGE_3_BOSS",
+      "isBoss": true
+    },
+    {
+      "id": "GOBLIN_VILLAGE_1_GV1_005_F1_BOSS",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "GOB001",
+          "GOB001",
+          "GOB001",
+          "GOB001",
+          "GOB001"
+        ],
+        [
+          "GOB001",
+          "GOB001",
+          "GOB002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "GOBLIN_VILLAGE_1_GV1_010_F2_BOSS",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "GOB001",
+          "GOB001",
+          "GOB001",
+          "GOB001",
+          "GOB001",
+          "GOB001"
+        ],
+        [
+          "GOB001",
+          "GOB001",
+          "GOB002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "GOBLIN_VILLAGE_2_GV2_002_F3_BOSS",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "GOB001",
+          "GOB001",
+          "GOB001",
+          "GOB001"
+        ],
+        [
+          "GOB003"
+        ],
+        [
+          "GOB002"
+        ],
+        [
+          "GOB004"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "GOBLIN_VILLAGE_2_GV2_009_F4_BOSS",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "GOB001",
+          "GOB001",
+          "GOB001",
+          "GOB001",
+          "GOB001"
+        ],
+        [
+          "GOB003"
+        ],
+        [
+          "GOB002"
+        ],
+        [
+          "GOB004"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "GOBLIN_VILLAGE_3_GV3_003_F5_BOSS",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "GOB001",
+          "GOB001",
+          "GOB005"
+        ],
+        [
+          "GOB003"
+        ],
+        [
+          "GOB002"
+        ],
+        [
+          "GOB004"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "GOBLIN_VILLAGE_3_GV3_008_F6_BOSS",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "GOB001",
+          "GOB001",
+          "GOB001",
+          "GOB005"
+        ],
+        [
+          "GOB003"
+        ],
+        [
+          "GOB002"
+        ],
+        [
+          "GOB004"
+        ]
+      ],
+      "isFloorBoss": true
     }
   ]
 }

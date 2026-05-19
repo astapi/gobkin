@@ -1,10 +1,10 @@
 {
   "id": "human_fortress_1",
-  "name": "辺境の城・外郭",
+  "name": "辺境の城",
   "areaLevel": 47,
-  "floors": 2,
-  "baseDurationSec": 9900,
-  "description": "辺境の城の外郭防衛線。討伐軍敗北の報を受けた騎士団が城門と外壁で迎え撃つ。",
+  "floors": 8,
+  "baseDurationSec": 30600,
+  "description": "辺境の城の外郭。城壁上の弓兵と騎士、魔術師が籠城戦で迎え撃つ。 辺境の城内へ侵入。重装騎兵と城内守備隊が最後の防衛線を張る。 辺境の城の本丸。精鋭近衛兵に守られた城代との最終決戦。異種族戦力を総動員して突破せよ。",
   "encounter": {
     "perFloorEvents": 3,
     "eventWeights": {
@@ -12,5 +12,5 @@
       "exploring": 30
     }
   },
-  "unlockNext": "human_fortress_2"
+  "unlockNext": "vampire_castle_1"
 }

@@ -189,16 +189,16 @@ export class ExpeditionEngine {
       const floorEvents = this.generateFloorEvents(area, currentFloor, adjustedDuration, targetFloor)
 
       console.log(`Floor ${currentFloor} events:`, floorEvents)
-      for (const eventTime of floorEvents) {
+      for (const floorEvent of floorEvents) {
         if (shouldReturn) break
 
-        currentTime = eventTime
-        const eventType = this.selectEventType(area.encounter.eventWeights)
-        console.log(`Event type selected: ${eventType} at time ${eventTime}`)
+        currentTime = floorEvent.at
+        const eventType = floorEvent.isFloorEnd ? "battle" : this.selectEventType(area.encounter.eventWeights)
+        console.log(`Event type selected: ${eventType} at time ${floorEvent.at}`)
 
         switch (eventType) {
           case "battle": {
-            const pattern = this.selectEnemyPattern(enemyDatabase.patterns, currentFloor, false)
+            const pattern = this.selectEnemyPattern(enemyDatabase.patterns, currentFloor, false, floorEvent.isFloorEnd)
             const enemies = this.applyTierScaling(this.getEnemiesFromPattern(pattern, enemyDatabase.enemies), tierScaling)
             const combat = this.resolveCombat(partyState, enemies, area)
             const xp = combat.outcome === 'win' ? this.calculateEnemyXp(enemies, expMultiplierBoost) : 0
@@ -264,7 +264,7 @@ export class ExpeditionEngine {
             // 未知のイベントタイプの処理
             console.warn(`Unknown event type: ${eventType}, treating as battle`)
             // battleとして処理
-            const pattern = this.selectEnemyPattern(enemyDatabase.patterns, currentFloor, false)
+            const pattern = this.selectEnemyPattern(enemyDatabase.patterns, currentFloor, false, floorEvent.isFloorEnd)
             const enemies = this.applyTierScaling(this.getEnemiesFromPattern(pattern, enemyDatabase.enemies), tierScaling)
             const combat = this.resolveCombat(partyState, enemies, area)
             const xp = combat.outcome === 'win' ? this.calculateEnemyXp(enemies, expMultiplierBoost) : 0
@@ -501,18 +501,26 @@ export class ExpeditionEngine {
     )
   }
 
-  private generateFloorEvents(area: AreaConfig, floor: number, totalDuration: number, explorationFloors: number): number[] {
+  private generateFloorEvents(
+    area: AreaConfig,
+    floor: number,
+    totalDuration: number,
+    explorationFloors: number
+  ): Array<{ at: number; isFloorEnd: boolean }> {
     const floorDuration = totalDuration / explorationFloors
     const floorStart = (floor - 1) * floorDuration
-    const events: number[] = []
+    const events: Array<{ at: number; isFloorEnd: boolean }> = []
 
     for (let i = 0; i < area.encounter.perFloorEvents; i++) {
       const baseTime = floorStart + (i + 1) * (floorDuration / (area.encounter.perFloorEvents + 1))
       const jitter = (this.rng() - 0.5) * (floorDuration * 0.2)
-      events.push(Math.max(floorStart + 1, baseTime + jitter))
+      events.push({
+        at: Math.max(floorStart + 1, baseTime + jitter),
+        isFloorEnd: i === area.encounter.perFloorEvents - 1,
+      })
     }
 
-    return events.sort((a, b) => a - b)
+    return events.sort((a, b) => a.at - b.at)
   }
 
   private selectEventType(weights: AreaConfig["encounter"]["eventWeights"]): string {
@@ -529,7 +537,12 @@ export class ExpeditionEngine {
     return "battle"
   }
 
-  private selectEnemyPattern(patterns: EnemyPattern[], floor: number, isBoss: boolean): EnemyPattern {
+  private selectEnemyPattern(
+    patterns: EnemyPattern[],
+    floor: number,
+    isBoss: boolean,
+    preferFloorBoss = false
+  ): EnemyPattern {
     // ボス戦の場合はボスパターンを選択
     if (isBoss) {
       const bossPatterns = patterns.filter(p => p.isBoss && p.floors.includes(floor))
@@ -539,9 +552,20 @@ export class ExpeditionEngine {
       return bossPatterns[Math.floor(this.rng() * bossPatterns.length)]
     }
 
+    if (preferFloorBoss) {
+      const floorBossPatterns = patterns.filter(p => p.isFloorBoss && !p.isBoss && p.floors.includes(floor))
+      if (floorBossPatterns.length > 0) {
+        return floorBossPatterns[Math.floor(this.rng() * floorBossPatterns.length)]
+      }
+    }
+
     // 通常戦闘の場合
-    const availablePatterns = patterns.filter(p => !p.isBoss && p.floors.includes(floor))
+    const availablePatterns = patterns.filter(p => !p.isBoss && !p.isFloorBoss && p.floors.includes(floor))
     if (availablePatterns.length === 0) {
+      const fallbackPatterns = patterns.filter(p => !p.isBoss && p.floors.includes(floor))
+      if (fallbackPatterns.length > 0) {
+        return fallbackPatterns[Math.floor(this.rng() * fallbackPatterns.length)]
+      }
       throw new Error(`No enemy pattern found for floor ${floor}`)
     }
     return availablePatterns[Math.floor(this.rng() * availablePatterns.length)]

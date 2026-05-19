@@ -83,7 +83,11 @@
     {
       "id": "ML1_001",
       "floors": [
-        1
+        1,
+        2,
+        3,
+        4,
+        5
       ],
       "enemies": [
         [
@@ -97,7 +101,11 @@
     {
       "id": "ML1_002",
       "floors": [
-        1
+        1,
+        2,
+        3,
+        4,
+        5
       ],
       "enemies": [
         [
@@ -112,7 +120,7 @@
     {
       "id": "ML1_003",
       "floors": [
-        2
+        6
       ],
       "enemies": [
         [
@@ -127,7 +135,7 @@
     {
       "id": "BOSS",
       "floors": [
-        2
+        6
       ],
       "enemies": [
         [
@@ -139,6 +147,102 @@
         ]
       ],
       "isBoss": true
+    },
+    {
+      "id": "ML1_002_F1_BOSS",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "MNT002"
+        ],
+        [
+          "MNT001",
+          "MNT001"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "ML1_002_F2_BOSS",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "MNT002"
+        ],
+        [
+          "MNT001",
+          "MNT001"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "ML1_002_F3_BOSS",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "MNT002"
+        ],
+        [
+          "MNT001",
+          "MNT001"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "ML1_002_F4_BOSS",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "MNT002"
+        ],
+        [
+          "MNT001",
+          "MNT001"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "ML1_002_F5_BOSS",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "MNT002"
+        ],
+        [
+          "MNT001",
+          "MNT001"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "ML1_003_F6_BOSS",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "MNT002",
+          "MNT001"
+        ],
+        [
+          "MNT002"
+        ]
+      ],
+      "isFloorBoss": true
     }
   ]
 }

@@ -148,7 +148,9 @@
     {
       "id": "OF1_001",
       "floors": [
-        1
+        1,
+        2,
+        3
       ],
       "enemies": [
         [
@@ -168,7 +170,9 @@
     {
       "id": "OF1_002",
       "floors": [
-        1
+        1,
+        2,
+        3
       ],
       "enemies": [
         [
@@ -191,7 +195,9 @@
     {
       "id": "OF1_003",
       "floors": [
-        1
+        1,
+        2,
+        3
       ],
       "enemies": [
         [
@@ -212,7 +218,7 @@
     {
       "id": "OF1_004",
       "floors": [
-        2
+        4
       ],
       "enemies": [
         [
@@ -235,7 +241,7 @@
     {
       "id": "OF1_005",
       "floors": [
-        2
+        4
       ],
       "enemies": [
         [
@@ -259,7 +265,7 @@
     {
       "id": "OF1_006",
       "floors": [
-        2
+        4
       ],
       "enemies": [
         [
@@ -283,7 +289,8 @@
     {
       "id": "OF1_007",
       "floors": [
-        3
+        5,
+        6
       ],
       "enemies": [
         [
@@ -307,7 +314,8 @@
     {
       "id": "OF1_008",
       "floors": [
-        3
+        5,
+        6
       ],
       "enemies": [
         [
@@ -333,7 +341,7 @@
     {
       "id": "OF1_009",
       "floors": [
-        4
+        7
       ],
       "enemies": [
         [
@@ -360,7 +368,7 @@
     {
       "id": "OF1_010",
       "floors": [
-        4
+        7
       ],
       "enemies": [
         [
@@ -387,7 +395,7 @@
     {
       "id": "OF1_011",
       "floors": [
-        5
+        8
       ],
       "enemies": [
         [
@@ -415,7 +423,7 @@
     {
       "id": "OF1_012",
       "floors": [
-        5
+        8
       ],
       "enemies": [
         [
@@ -443,7 +451,7 @@
     {
       "id": "BOSS",
       "floors": [
-        5
+        8
       ],
       "isBoss": true,
       "enemies": [
@@ -467,6 +475,210 @@
           "ORF002"
         ]
       ]
+    },
+    {
+      "id": "OF1_002_F1_BOSS",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "ORF001",
+          "ORF001"
+        ],
+        [
+          "ORF001"
+        ],
+        [
+          "ORF002",
+          "ORF002"
+        ],
+        [
+          "ORF002",
+          "ORF002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "OF1_002_F2_BOSS",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "ORF001",
+          "ORF001"
+        ],
+        [
+          "ORF001"
+        ],
+        [
+          "ORF002",
+          "ORF002"
+        ],
+        [
+          "ORF002",
+          "ORF002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "OF1_002_F3_BOSS",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "ORF001",
+          "ORF001"
+        ],
+        [
+          "ORF001"
+        ],
+        [
+          "ORF002",
+          "ORF002"
+        ],
+        [
+          "ORF002",
+          "ORF002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "OF1_005_F4_BOSS",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "ORF003",
+          "ORF001"
+        ],
+        [
+          "ORF001",
+          "ORF001"
+        ],
+        [
+          "ORF002",
+          "ORF002"
+        ],
+        [
+          "ORF002",
+          "ORF002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "OF1_007_F5_BOSS",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "ORF003",
+          "ORF003"
+        ],
+        [
+          "ORF001",
+          "ORF001"
+        ],
+        [
+          "ORF002",
+          "ORF002"
+        ],
+        [
+          "ORF002",
+          "ORF002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "OF1_007_F6_BOSS",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "ORF003",
+          "ORF003"
+        ],
+        [
+          "ORF001",
+          "ORF001"
+        ],
+        [
+          "ORF002",
+          "ORF002"
+        ],
+        [
+          "ORF002",
+          "ORF002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "OF1_009_F7_BOSS",
+      "floors": [
+        7
+      ],
+      "enemies": [
+        [
+          "ORF003",
+          "ORF003"
+        ],
+        [
+          "ORF001",
+          "ORF001"
+        ],
+        [
+          "ORF001"
+        ],
+        [
+          "ORF002",
+          "ORF002"
+        ],
+        [
+          "ORF002",
+          "ORF002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "OF1_012_F8_BOSS",
+      "floors": [
+        8
+      ],
+      "enemies": [
+        [
+          "ORF003",
+          "ORF001"
+        ],
+        [
+          "ORF003",
+          "ORF001"
+        ],
+        [
+          "ORF001",
+          "ORF001"
+        ],
+        [
+          "ORF002",
+          "ORF002"
+        ],
+        [
+          "ORF002",
+          "ORF002"
+        ]
+      ],
+      "isFloorBoss": true
     }
   ]
 }
