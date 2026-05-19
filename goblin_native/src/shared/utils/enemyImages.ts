@@ -51,6 +51,12 @@ const enemyImagesById: Record<string, ImageSourcePropType> = {
   CAT001: require('../../../assets/enemy/cat_shadow_scout.png'),
   CAT002: require('../../../assets/enemy/cat_moonfang_duelist.png'),
   B_CAT_SHADOWLORD: require('../../../assets/enemy/cat_shadowlord_nekomata.png'),
+  RD001: require('../../../assets/enemy/roadside_wolf.png'),
+  RD002: require('../../../assets/enemy/giant_snake.png'),
+  RD003: require('../../../assets/enemy/giant_scorpion.png'),
+  VIL001: require('../../../assets/enemy/village_militia.png'),
+  VIL002: require('../../../assets/enemy/village_guard.png'),
+  VIL003: require('../../../assets/enemy/village_hunter.png'),
 }
 
 const enemyImagesByName: Record<string, ImageSourcePropType> = {
@@ -103,6 +109,12 @@ const enemyImagesByName: Record<string, ImageSourcePropType> = {
   影爪の斥候: enemyImagesById.CAT001,
   月牙の双刃兵: enemyImagesById.CAT002,
   月影の遺跡主ネコマタ: enemyImagesById.B_CAT_SHADOWLORD,
+  街道オオカミ: enemyImagesById.RD001,
+  ジャイアントスネーク: enemyImagesById.RD002,
+  ジャイアントスコーピオン: enemyImagesById.RD003,
+  民兵: enemyImagesById.VIL001,
+  村守備兵: enemyImagesById.VIL002,
+  猟師: enemyImagesById.VIL003,
 }
 
 export function getEnemyImage(enemy: Pick<EnemySnap, 'id' | 'name'>): ImageSourcePropType | null {
