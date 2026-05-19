@@ -6,16 +6,16 @@
       "raceTags": [
         "human"
       ],
-      "level": 66,
-      "hp": 1672,
-      "atk": 440,
-      "def": 197,
-      "magicDef": 59,
+      "level": 68,
+      "hp": 1723,
+      "atk": 453,
+      "def": 91,
+      "magicDef": 61,
       "attackCount": 4,
       "accuracy": 560,
       "evasion": 46,
-      "exp": 70,
-      "gold": 57,
+      "exp": 73,
+      "gold": 59,
       "skills": [
         {
           "id": "physical_reduction_10",
@@ -26,7 +26,7 @@
         "power": 18,
         "wisdom": 18,
         "spirit": 7,
-        "vitality": 20,
+        "vitality": 22,
         "agility": 10,
         "luck": 5
       }
@@ -37,16 +37,16 @@
       "raceTags": [
         "human"
       ],
-      "level": 66,
-      "hp": 1298,
-      "atk": 242,
-      "def": 167,
-      "magicDef": 44,
+      "level": 68,
+      "hp": 1337,
+      "atk": 249,
+      "def": 18,
+      "magicDef": 45,
       "attackCount": 1,
       "accuracy": 560,
       "evasion": 46,
-      "exp": 84,
-      "gold": 70,
+      "exp": 86,
+      "gold": 73,
       "skills": [
         {
           "id": "grant_fireball",
@@ -78,16 +78,16 @@
       "raceTags": [
         "human"
       ],
-      "level": 66,
-      "hp": 1386,
-      "atk": 330,
-      "def": 177,
-      "magicDef": 33,
+      "level": 68,
+      "hp": 1428,
+      "atk": 340,
+      "def": 23,
+      "magicDef": 34,
       "attackCount": 4,
       "accuracy": 560,
       "evasion": 46,
-      "exp": 75,
-      "gold": 62,
+      "exp": 77,
+      "gold": 63,
       "skills": [
         {
           "id": "physical_reduction_10",
@@ -109,16 +109,16 @@
       "raceTags": [
         "human"
       ],
-      "level": 66,
-      "hp": 1386,
-      "atk": 154,
-      "def": 177,
-      "magicDef": 53,
+      "level": 68,
+      "hp": 1428,
+      "atk": 159,
+      "def": 36,
+      "magicDef": 54,
       "attackCount": 1,
       "accuracy": 560,
       "evasion": 46,
-      "exp": 79,
-      "gold": 66,
+      "exp": 82,
+      "gold": 68,
       "skills": [
         {
           "id": "recovery_magic_lv7",
@@ -137,7 +137,7 @@
         "agility": 8,
         "luck": 5
       },
-      "magicHeal": 220
+      "magicHeal": 227
     },
     {
       "id": "HUM005",
@@ -145,16 +145,16 @@
       "raceTags": [
         "human"
       ],
-      "level": 68,
-      "hp": 1723,
-      "atk": 476,
-      "def": 227,
-      "magicDef": 82,
-      "attackCount": 6,
+      "level": 70,
+      "hp": 1773,
+      "atk": 490,
+      "def": 117,
+      "magicDef": 84,
+      "attackCount": 5,
       "accuracy": 560,
       "evasion": 46,
-      "exp": 95,
-      "gold": 82,
+      "exp": 98,
+      "gold": 84,
       "skills": [
         {
           "id": "physical_reduction_10",
@@ -169,11 +169,43 @@
         "agility": 8,
         "luck": 5
       }
+    },
+    {
+      "id": "B_CAPTAIN",
+      "name": "辺境城騎士団長",
+      "raceTags": [
+        "human"
+      ],
+      "level": 80,
+      "hp": 2740,
+      "atk": 700,
+      "def": 200,
+      "magicDef": 90,
+      "attackCount": 7,
+      "accuracy": 640,
+      "evasion": 52,
+      "exp": 400,
+      "isBoss": true,
+      "gold": 320,
+      "skills": [
+        {
+          "id": "physical_reduction_10",
+          "physicalDamageReductionPercent": 10
+        }
+      ],
+      "baseAttributes": {
+        "power": 23,
+        "wisdom": 23,
+        "spirit": 11,
+        "vitality": 27,
+        "agility": 9,
+        "luck": 5
+      }
     }
   ],
   "patterns": [
     {
-      "id": "SF1_001",
+      "id": "SUBJUGATION_FORCE_1_SF1_001",
       "floors": [
         1
       ],
@@ -195,7 +227,7 @@
       ]
     },
     {
-      "id": "SF1_002",
+      "id": "SUBJUGATION_FORCE_1_SF1_002",
       "floors": [
         1
       ],
@@ -217,7 +249,7 @@
       ]
     },
     {
-      "id": "SF1_003",
+      "id": "SUBJUGATION_FORCE_1_SF1_003",
       "floors": [
         1
       ],
@@ -242,9 +274,9 @@
       ]
     },
     {
-      "id": "SF1_004",
+      "id": "SUBJUGATION_FORCE_1_SF1_004",
       "floors": [
-        2
+        1
       ],
       "enemies": [
         [
@@ -265,9 +297,9 @@
       ]
     },
     {
-      "id": "SF1_005",
+      "id": "SUBJUGATION_FORCE_1_SF1_005",
       "floors": [
-        2
+        1
       ],
       "enemies": [
         [
@@ -290,9 +322,9 @@
       ]
     },
     {
-      "id": "SF1_006",
+      "id": "SUBJUGATION_FORCE_1_SF1_006",
       "floors": [
-        2
+        1
       ],
       "enemies": [
         [
@@ -316,9 +348,9 @@
       ]
     },
     {
-      "id": "SF1_007",
+      "id": "SUBJUGATION_FORCE_1_SF1_007",
       "floors": [
-        3
+        2
       ],
       "enemies": [
         [
@@ -340,9 +372,9 @@
       ]
     },
     {
-      "id": "SF1_008",
+      "id": "SUBJUGATION_FORCE_1_SF1_008",
       "floors": [
-        3
+        2
       ],
       "enemies": [
         [
@@ -367,9 +399,9 @@
       ]
     },
     {
-      "id": "SF1_009",
+      "id": "SUBJUGATION_FORCE_1_SF1_009",
       "floors": [
-        3
+        2
       ],
       "enemies": [
         [
@@ -394,9 +426,9 @@
       ]
     },
     {
-      "id": "SF1_010",
+      "id": "SUBJUGATION_FORCE_1_SF1_010",
       "floors": [
-        3
+        2
       ],
       "enemies": [
         [
@@ -420,6 +452,1121 @@
           "HUM004"
         ]
       ]
+    },
+    {
+      "id": "SUBJUGATION_FORCE_2_SF2_001",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "HUM005"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM003",
+          "HUM002"
+        ]
+      ]
+    },
+    {
+      "id": "SUBJUGATION_FORCE_2_SF2_002",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "HUM005"
+        ],
+        [
+          "HUM001",
+          "HUM001"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM003",
+          "HUM002"
+        ],
+        [
+          "HUM004"
+        ]
+      ]
+    },
+    {
+      "id": "SUBJUGATION_FORCE_2_SF2_003",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "HUM005"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM003",
+          "HUM002"
+        ],
+        [
+          "HUM004"
+        ]
+      ]
+    },
+    {
+      "id": "SUBJUGATION_FORCE_2_SF2_004",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "HUM005"
+        ],
+        [
+          "HUM001",
+          "HUM001"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM003",
+          "HUM003"
+        ],
+        [
+          "HUM002",
+          "HUM004"
+        ]
+      ]
+    },
+    {
+      "id": "SUBJUGATION_FORCE_2_SF2_005",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "HUM005",
+          "HUM005"
+        ],
+        [
+          "HUM001",
+          "HUM001"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM003",
+          "HUM002"
+        ],
+        [
+          "HUM003",
+          "HUM004"
+        ]
+      ]
+    },
+    {
+      "id": "SUBJUGATION_FORCE_2_SF2_006",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "HUM005"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM003",
+          "HUM002"
+        ]
+      ]
+    },
+    {
+      "id": "SUBJUGATION_FORCE_2_SF2_007",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "HUM005"
+        ],
+        [
+          "HUM001",
+          "HUM001"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM003",
+          "HUM002"
+        ],
+        [
+          "HUM004"
+        ]
+      ]
+    },
+    {
+      "id": "SUBJUGATION_FORCE_2_SF2_008",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "HUM005"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM003",
+          "HUM003"
+        ],
+        [
+          "HUM002",
+          "HUM004"
+        ]
+      ]
+    },
+    {
+      "id": "SUBJUGATION_FORCE_2_SF2_009",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "HUM005",
+          "HUM005"
+        ],
+        [
+          "HUM001",
+          "HUM001"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM003",
+          "HUM002"
+        ],
+        [
+          "HUM004",
+          "HUM003"
+        ]
+      ]
+    },
+    {
+      "id": "SUBJUGATION_FORCE_2_SF2_010",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "HUM005",
+          "HUM005"
+        ],
+        [
+          "HUM001",
+          "HUM001"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM003",
+          "HUM003"
+        ],
+        [
+          "HUM002",
+          "HUM004"
+        ]
+      ]
+    },
+    {
+      "id": "SUBJUGATION_FORCE_2_SF2_011",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "HUM005",
+          "HUM005"
+        ],
+        [
+          "HUM001",
+          "HUM001"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM003",
+          "HUM002"
+        ],
+        [
+          "HUM004"
+        ]
+      ]
+    },
+    {
+      "id": "SUBJUGATION_FORCE_2_SF2_012",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "HUM005",
+          "HUM005"
+        ],
+        [
+          "HUM001",
+          "HUM001"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM003",
+          "HUM003"
+        ],
+        [
+          "HUM002",
+          "HUM004"
+        ]
+      ]
+    },
+    {
+      "id": "SUBJUGATION_FORCE_2_SF2_013",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "HUM005",
+          "HUM005"
+        ],
+        [
+          "HUM001",
+          "HUM001"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM003",
+          "HUM002"
+        ],
+        [
+          "HUM003",
+          "HUM004"
+        ]
+      ]
+    },
+    {
+      "id": "SUBJUGATION_FORCE_2_SF2_014",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "HUM005",
+          "HUM005"
+        ],
+        [
+          "HUM001",
+          "HUM001"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM003",
+          "HUM003"
+        ],
+        [
+          "HUM002",
+          "HUM004"
+        ]
+      ]
+    },
+    {
+      "id": "SUBJUGATION_FORCE_2_SF2_015",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "HUM005",
+          "HUM005"
+        ],
+        [
+          "HUM005"
+        ],
+        [
+          "HUM001",
+          "HUM001"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM003",
+          "HUM003"
+        ],
+        [
+          "HUM002",
+          "HUM004"
+        ]
+      ]
+    },
+    {
+      "id": "SUBJUGATION_FORCE_3_SF3_001",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "HUM005"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM003",
+          "HUM002"
+        ]
+      ]
+    },
+    {
+      "id": "SUBJUGATION_FORCE_3_SF3_002",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "HUM005"
+        ],
+        [
+          "HUM001",
+          "HUM001"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM003",
+          "HUM002"
+        ],
+        [
+          "HUM004"
+        ]
+      ]
+    },
+    {
+      "id": "SUBJUGATION_FORCE_3_SF3_003",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "HUM005"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM003",
+          "HUM002"
+        ],
+        [
+          "HUM004"
+        ]
+      ]
+    },
+    {
+      "id": "SUBJUGATION_FORCE_3_SF3_004",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "HUM005"
+        ],
+        [
+          "HUM001",
+          "HUM001"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM003",
+          "HUM003"
+        ],
+        [
+          "HUM002",
+          "HUM004"
+        ]
+      ]
+    },
+    {
+      "id": "SUBJUGATION_FORCE_3_SF3_005",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "HUM005",
+          "HUM005"
+        ],
+        [
+          "HUM001",
+          "HUM001"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM003",
+          "HUM002"
+        ],
+        [
+          "HUM003",
+          "HUM004"
+        ]
+      ]
+    },
+    {
+      "id": "SUBJUGATION_FORCE_3_SF3_006",
+      "floors": [
+        7
+      ],
+      "enemies": [
+        [
+          "HUM005"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM003",
+          "HUM002"
+        ]
+      ]
+    },
+    {
+      "id": "SUBJUGATION_FORCE_3_SF3_007",
+      "floors": [
+        7
+      ],
+      "enemies": [
+        [
+          "HUM005"
+        ],
+        [
+          "HUM001",
+          "HUM001"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM003",
+          "HUM002"
+        ],
+        [
+          "HUM004"
+        ]
+      ]
+    },
+    {
+      "id": "SUBJUGATION_FORCE_3_SF3_008",
+      "floors": [
+        7
+      ],
+      "enemies": [
+        [
+          "HUM005"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM003",
+          "HUM003"
+        ],
+        [
+          "HUM002",
+          "HUM004"
+        ]
+      ]
+    },
+    {
+      "id": "SUBJUGATION_FORCE_3_SF3_009",
+      "floors": [
+        7
+      ],
+      "enemies": [
+        [
+          "HUM005",
+          "HUM005"
+        ],
+        [
+          "HUM001",
+          "HUM001"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM003",
+          "HUM002"
+        ],
+        [
+          "HUM004",
+          "HUM003"
+        ]
+      ]
+    },
+    {
+      "id": "SUBJUGATION_FORCE_3_SF3_010",
+      "floors": [
+        7
+      ],
+      "enemies": [
+        [
+          "HUM005",
+          "HUM005"
+        ],
+        [
+          "HUM001",
+          "HUM001"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM003",
+          "HUM003"
+        ],
+        [
+          "HUM002",
+          "HUM004"
+        ]
+      ]
+    },
+    {
+      "id": "SUBJUGATION_FORCE_3_SF3_011",
+      "floors": [
+        8
+      ],
+      "enemies": [
+        [
+          "HUM005",
+          "HUM005"
+        ],
+        [
+          "HUM001",
+          "HUM001"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM003",
+          "HUM002"
+        ],
+        [
+          "HUM004"
+        ]
+      ]
+    },
+    {
+      "id": "SUBJUGATION_FORCE_3_SF3_012",
+      "floors": [
+        8
+      ],
+      "enemies": [
+        [
+          "HUM005",
+          "HUM005"
+        ],
+        [
+          "HUM001",
+          "HUM001"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM003",
+          "HUM003"
+        ],
+        [
+          "HUM002",
+          "HUM004"
+        ]
+      ]
+    },
+    {
+      "id": "SUBJUGATION_FORCE_3_SF3_013",
+      "floors": [
+        8
+      ],
+      "enemies": [
+        [
+          "HUM005",
+          "HUM005"
+        ],
+        [
+          "HUM001",
+          "HUM001"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM003",
+          "HUM002"
+        ],
+        [
+          "HUM003",
+          "HUM004"
+        ]
+      ]
+    },
+    {
+      "id": "SUBJUGATION_FORCE_3_SF3_014",
+      "floors": [
+        8
+      ],
+      "enemies": [
+        [
+          "HUM005",
+          "HUM005"
+        ],
+        [
+          "HUM001",
+          "HUM001"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM003",
+          "HUM003"
+        ],
+        [
+          "HUM002",
+          "HUM004"
+        ]
+      ]
+    },
+    {
+      "id": "SUBJUGATION_FORCE_3_SF3_015",
+      "floors": [
+        8
+      ],
+      "enemies": [
+        [
+          "HUM005",
+          "HUM005"
+        ],
+        [
+          "HUM005"
+        ],
+        [
+          "HUM001",
+          "HUM001"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM003",
+          "HUM003"
+        ],
+        [
+          "HUM002",
+          "HUM004"
+        ]
+      ]
+    },
+    {
+      "id": "SUBJUGATION_FORCE_3_BOSS",
+      "floors": [
+        8
+      ],
+      "enemies": [
+        [
+          "HUM005",
+          "HUM005"
+        ],
+        [
+          "HUM001",
+          "HUM001"
+        ],
+        [
+          "B_CAPTAIN"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM003",
+          "HUM003"
+        ],
+        [
+          "HUM002",
+          "HUM004"
+        ]
+      ],
+      "isBoss": true
+    },
+    {
+      "id": "SUBJUGATION_FORCE_1_SF1_006_F1_BOSS",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "HUM005"
+        ],
+        [
+          "HUM001",
+          "HUM001"
+        ],
+        [
+          "HUM003",
+          "HUM003"
+        ],
+        [
+          "HUM003",
+          "HUM002"
+        ],
+        [
+          "HUM004"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "SUBJUGATION_FORCE_1_SF1_010_F2_BOSS",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "HUM005",
+          "HUM005"
+        ],
+        [
+          "HUM001",
+          "HUM001"
+        ],
+        [
+          "HUM001",
+          "HUM001"
+        ],
+        [
+          "HUM003",
+          "HUM003"
+        ],
+        [
+          "HUM002",
+          "HUM004"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "SUBJUGATION_FORCE_2_SF2_005_F3_BOSS",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "HUM005",
+          "HUM005"
+        ],
+        [
+          "HUM001",
+          "HUM001"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM003",
+          "HUM002"
+        ],
+        [
+          "HUM003",
+          "HUM004"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "SUBJUGATION_FORCE_2_SF2_010_F4_BOSS",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "HUM005",
+          "HUM005"
+        ],
+        [
+          "HUM001",
+          "HUM001"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM003",
+          "HUM003"
+        ],
+        [
+          "HUM002",
+          "HUM004"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "SUBJUGATION_FORCE_2_SF2_015_F5_BOSS",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "HUM005",
+          "HUM005"
+        ],
+        [
+          "HUM005"
+        ],
+        [
+          "HUM001",
+          "HUM001"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM003",
+          "HUM003"
+        ],
+        [
+          "HUM002",
+          "HUM004"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "SUBJUGATION_FORCE_3_SF3_005_F6_BOSS",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "HUM005",
+          "HUM005"
+        ],
+        [
+          "HUM001",
+          "HUM001"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM003",
+          "HUM002"
+        ],
+        [
+          "HUM003",
+          "HUM004"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "SUBJUGATION_FORCE_3_SF3_010_F7_BOSS",
+      "floors": [
+        7
+      ],
+      "enemies": [
+        [
+          "HUM005",
+          "HUM005"
+        ],
+        [
+          "HUM001",
+          "HUM001"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM003",
+          "HUM003"
+        ],
+        [
+          "HUM002",
+          "HUM004"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "SUBJUGATION_FORCE_3_SF3_015_F8_BOSS",
+      "floors": [
+        8
+      ],
+      "enemies": [
+        [
+          "HUM005",
+          "HUM005"
+        ],
+        [
+          "HUM005"
+        ],
+        [
+          "HUM001",
+          "HUM001"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM003",
+          "HUM003"
+        ],
+        [
+          "HUM002",
+          "HUM004"
+        ]
+      ],
+      "isFloorBoss": true
     }
   ]
 }

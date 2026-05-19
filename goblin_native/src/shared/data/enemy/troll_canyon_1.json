@@ -124,11 +124,43 @@
         "agility": 7,
         "luck": 7
       }
+    },
+    {
+      "id": "B_TYRANT",
+      "name": "峡谷の暴君",
+      "raceTags": [
+        "troll"
+      ],
+      "level": 25,
+      "hp": 850,
+      "atk": 65,
+      "def": 34,
+      "attackCount": 2,
+      "accuracy": 580,
+      "evasion": 30,
+      "exp": 380,
+      "isBoss": true,
+      "gold": 340,
+      "factorDrops": [
+        {
+          "factorId": "troll",
+          "probability": 0.015
+        }
+      ],
+      "magicDef": 41,
+      "baseAttributes": {
+        "power": 16,
+        "wisdom": 16,
+        "spirit": 10,
+        "vitality": 17,
+        "agility": 6,
+        "luck": 8
+      }
     }
   ],
   "patterns": [
     {
-      "id": "TC1_001",
+      "id": "TROLL_CANYON_1_TC1_001",
       "floors": [
         1
       ],
@@ -139,7 +171,7 @@
       ]
     },
     {
-      "id": "TC1_002",
+      "id": "TROLL_CANYON_1_TC1_002",
       "floors": [
         1
       ],
@@ -151,7 +183,7 @@
       ]
     },
     {
-      "id": "TC1_003",
+      "id": "TROLL_CANYON_1_TC1_003",
       "floors": [
         1
       ],
@@ -165,7 +197,7 @@
       ]
     },
     {
-      "id": "TC1_004",
+      "id": "TROLL_CANYON_1_TC1_004",
       "floors": [
         1
       ],
@@ -180,7 +212,7 @@
       ]
     },
     {
-      "id": "TC1_005",
+      "id": "TROLL_CANYON_1_TC1_005",
       "floors": [
         1
       ],
@@ -196,7 +228,7 @@
       ]
     },
     {
-      "id": "TC1_006",
+      "id": "TROLL_CANYON_1_TC1_006",
       "floors": [
         2
       ],
@@ -208,7 +240,7 @@
       ]
     },
     {
-      "id": "TC1_007",
+      "id": "TROLL_CANYON_1_TC1_007",
       "floors": [
         2
       ],
@@ -222,7 +254,7 @@
       ]
     },
     {
-      "id": "TC1_008",
+      "id": "TROLL_CANYON_1_TC1_008",
       "floors": [
         2
       ],
@@ -237,7 +269,7 @@
       ]
     },
     {
-      "id": "TC1_009",
+      "id": "TROLL_CANYON_1_TC1_009",
       "floors": [
         2
       ],
@@ -253,7 +285,7 @@
       ]
     },
     {
-      "id": "TC1_010",
+      "id": "TROLL_CANYON_1_TC1_010",
       "floors": [
         2
       ],
@@ -270,6 +302,447 @@
           "TRL002"
         ]
       ]
+    },
+    {
+      "id": "TROLL_CANYON_2_TC2_001",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "TRL002",
+          "TRL003"
+        ]
+      ]
+    },
+    {
+      "id": "TROLL_CANYON_2_TC2_002",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "TRL003"
+        ],
+        [
+          "TRL005"
+        ]
+      ]
+    },
+    {
+      "id": "TROLL_CANYON_2_TC2_003",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "TRL002",
+          "TRL003"
+        ],
+        [
+          "TRL005"
+        ]
+      ]
+    },
+    {
+      "id": "TROLL_CANYON_2_TC2_004",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "TRL004",
+          "TRL003"
+        ],
+        [
+          "TRL005"
+        ]
+      ]
+    },
+    {
+      "id": "TROLL_CANYON_2_TC2_005",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "TRL002",
+          "TRL003"
+        ],
+        [
+          "TRL004",
+          "TRL005"
+        ]
+      ]
+    },
+    {
+      "id": "TROLL_CANYON_2_TC2_006",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "TRL004"
+        ],
+        [
+          "TRL003"
+        ]
+      ]
+    },
+    {
+      "id": "TROLL_CANYON_2_TC2_007",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "TRL003",
+          "TRL005"
+        ]
+      ]
+    },
+    {
+      "id": "TROLL_CANYON_2_TC2_008",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "TRL004",
+          "TRL003"
+        ],
+        [
+          "TRL005"
+        ]
+      ]
+    },
+    {
+      "id": "TROLL_CANYON_2_TC2_009",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "TRL004",
+          "TRL002"
+        ],
+        [
+          "TRL003",
+          "TRL005"
+        ]
+      ]
+    },
+    {
+      "id": "TROLL_CANYON_2_TC2_010",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "TRL004",
+          "TRL003"
+        ],
+        [
+          "TRL005",
+          "TRL002"
+        ],
+        [
+          "TRL003"
+        ]
+      ]
+    },
+    {
+      "id": "TROLL_CANYON_3_TC3_001",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "TRL004"
+        ],
+        [
+          "TRL003"
+        ]
+      ]
+    },
+    {
+      "id": "TROLL_CANYON_3_TC3_002",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "TRL004",
+          "TRL003"
+        ],
+        [
+          "TRL005"
+        ]
+      ]
+    },
+    {
+      "id": "TROLL_CANYON_3_TC3_003",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "TRL004",
+          "TRL005"
+        ],
+        [
+          "TRL003"
+        ]
+      ]
+    },
+    {
+      "id": "TROLL_CANYON_3_TC3_004",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "TRL004",
+          "TRL003"
+        ],
+        [
+          "TRL005",
+          "TRL004"
+        ]
+      ]
+    },
+    {
+      "id": "TROLL_CANYON_3_TC3_005",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "TRL004",
+          "TRL003"
+        ],
+        [
+          "TRL005",
+          "TRL004"
+        ],
+        [
+          "TRL003"
+        ]
+      ]
+    },
+    {
+      "id": "TROLL_CANYON_3_TC3_006",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "TRL004"
+        ],
+        [
+          "TRL003"
+        ]
+      ]
+    },
+    {
+      "id": "TROLL_CANYON_3_TC3_007",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "TRL004",
+          "TRL005"
+        ],
+        [
+          "TRL003"
+        ]
+      ]
+    },
+    {
+      "id": "TROLL_CANYON_3_TC3_008",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "TRL004",
+          "TRL003"
+        ],
+        [
+          "TRL005",
+          "TRL004"
+        ]
+      ]
+    },
+    {
+      "id": "TROLL_CANYON_3_TC3_009",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "TRL004",
+          "TRL004"
+        ],
+        [
+          "TRL003",
+          "TRL005"
+        ]
+      ]
+    },
+    {
+      "id": "TROLL_CANYON_3_TC3_010",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "TRL004",
+          "TRL003"
+        ],
+        [
+          "TRL005",
+          "TRL004"
+        ],
+        [
+          "TRL003"
+        ]
+      ]
+    },
+    {
+      "id": "TROLL_CANYON_3_BOSS",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "B_TYRANT"
+        ],
+        [
+          "TRL004",
+          "TRL005"
+        ],
+        [
+          "TRL003",
+          "TRL004"
+        ]
+      ],
+      "isBoss": true
+    },
+    {
+      "id": "TROLL_CANYON_1_TC1_005_F1_BOSS",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "TRL001",
+          "TRL002"
+        ],
+        [
+          "TRL001",
+          "TRL005"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "TROLL_CANYON_1_TC1_010_F2_BOSS",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "TRL002",
+          "TRL001"
+        ],
+        [
+          "TRL005",
+          "TRL001"
+        ],
+        [
+          "TRL002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "TROLL_CANYON_2_TC2_005_F3_BOSS",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "TRL002",
+          "TRL003"
+        ],
+        [
+          "TRL004",
+          "TRL005"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "TROLL_CANYON_2_TC2_010_F4_BOSS",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "TRL004",
+          "TRL003"
+        ],
+        [
+          "TRL005",
+          "TRL002"
+        ],
+        [
+          "TRL003"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "TROLL_CANYON_3_TC3_005_F5_BOSS",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "TRL004",
+          "TRL003"
+        ],
+        [
+          "TRL005",
+          "TRL004"
+        ],
+        [
+          "TRL003"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "TROLL_CANYON_3_TC3_010_F6_BOSS",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "TRL004",
+          "TRL003"
+        ],
+        [
+          "TRL005",
+          "TRL004"
+        ],
+        [
+          "TRL003"
+        ]
+      ],
+      "isFloorBoss": true
     }
   ]
 }

@@ -2,8 +2,8 @@
   "id": "human_village",
   "name": "辺境の村",
   "areaLevel": 21,
-  "floors": 4,
-  "baseDurationSec": 5400,
+  "floors": 6,
+  "baseDurationSec": 8100,
   "description": "辺境の村の中心部。自警団と猟師を退け、西方にゴブリンの脅威を刻みつけろ。",
   "encounter": {
     "perFloorEvents": 3,

@@ -1,10 +1,10 @@
 {
   "id": "lizardman_swamp_1",
-  "name": "リザードマンの沼砦・浅瀬",
-  "areaLevel": 36,
-  "floors": 2,
-  "baseDurationSec": 6300,
-  "description": "沼砦の浅瀬。沼の戦士と毒牙兵が水際で襲いかかる。",
+  "name": "リザードマンの沼砦",
+  "areaLevel": 44,
+  "floors": 6,
+  "baseDurationSec": 19320,
+  "description": "沼砦の浅瀬。沼の戦士と毒牙兵が水際で襲いかかる。 砦の深部。呪術師や暗殺者が潜む危険な沼地。 砦の本拠。鱗の重装兵に守られた沼王が待ち受ける。毒と夜襲の術を奪い、次の大戦に備えろ。",
   "encounter": {
     "perFloorEvents": 3,
     "eventWeights": {
@@ -12,5 +12,5 @@
       "exploring": 35
     }
   },
-  "unlockNext": "lizardman_swamp_2"
+  "unlockNext": "subjugation_force_1"
 }

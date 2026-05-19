@@ -50,11 +50,44 @@
         "luck": 3
       },
       "physicalResistancePercent": 5
+    },
+    {
+      "id": "B_ORC",
+      "name": "オーク遠征隊長",
+      "raceTags": [
+        "orc"
+      ],
+      "level": 20,
+      "hp": 450,
+      "atk": 120,
+      "def": 48,
+      "attackCount": 1,
+      "accuracy": 225,
+      "evasion": 22,
+      "exp": 160,
+      "isBoss": true,
+      "gold": 140,
+      "factorDrops": [
+        {
+          "factorId": "orc",
+          "probability": 0.015
+        }
+      ],
+      "magicDef": 22,
+      "baseAttributes": {
+        "power": 30,
+        "wisdom": 30,
+        "spirit": 6,
+        "vitality": 15,
+        "agility": 10,
+        "luck": 4
+      },
+      "physicalResistancePercent": 5
     }
   ],
   "patterns": [
     {
-      "id": "OC1_001",
+      "id": "ORC_CAMP_1_OC1_001",
       "floors": [
         1
       ],
@@ -69,7 +102,7 @@
       ]
     },
     {
-      "id": "OC1_002",
+      "id": "ORC_CAMP_1_OC1_002",
       "floors": [
         1
       ],
@@ -85,7 +118,7 @@
       ]
     },
     {
-      "id": "OC1_003",
+      "id": "ORC_CAMP_1_OC1_003",
       "floors": [
         1
       ],
@@ -103,7 +136,7 @@
       ]
     },
     {
-      "id": "OC1_004",
+      "id": "ORC_CAMP_1_OC1_004",
       "floors": [
         1
       ],
@@ -122,7 +155,7 @@
       ]
     },
     {
-      "id": "OC1_005",
+      "id": "ORC_CAMP_1_OC1_005",
       "floors": [
         1
       ],
@@ -138,7 +171,7 @@
       ]
     },
     {
-      "id": "OC1_006",
+      "id": "ORC_CAMP_1_OC1_006",
       "floors": [
         2
       ],
@@ -154,7 +187,7 @@
       ]
     },
     {
-      "id": "OC1_007",
+      "id": "ORC_CAMP_1_OC1_007",
       "floors": [
         2
       ],
@@ -173,7 +206,7 @@
       ]
     },
     {
-      "id": "OC1_008",
+      "id": "ORC_CAMP_1_OC1_008",
       "floors": [
         2
       ],
@@ -190,7 +223,7 @@
       ]
     },
     {
-      "id": "OC1_009",
+      "id": "ORC_CAMP_1_OC1_009",
       "floors": [
         2
       ],
@@ -207,7 +240,7 @@
       ]
     },
     {
-      "id": "OC1_010",
+      "id": "ORC_CAMP_1_OC1_010",
       "floors": [
         2
       ],
@@ -225,6 +258,505 @@
           "ORC002"
         ]
       ]
+    },
+    {
+      "id": "ORC_CAMP_2_OC2_001",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "ORC005"
+        ],
+        [
+          "ORC002",
+          "ORC002",
+          "ORC002"
+        ]
+      ]
+    },
+    {
+      "id": "ORC_CAMP_2_OC2_002",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "ORC005",
+          "ORC005"
+        ],
+        [
+          "ORC002",
+          "ORC002"
+        ]
+      ]
+    },
+    {
+      "id": "ORC_CAMP_2_OC2_003",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "ORC005"
+        ],
+        [
+          "ORC002",
+          "ORC002",
+          "ORC002"
+        ],
+        [
+          "ORC002"
+        ]
+      ]
+    },
+    {
+      "id": "ORC_CAMP_2_OC2_004",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "ORC005",
+          "ORC005"
+        ],
+        [
+          "ORC002",
+          "ORC002",
+          "ORC002"
+        ]
+      ]
+    },
+    {
+      "id": "ORC_CAMP_2_OC2_005",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "ORC005"
+        ],
+        [
+          "ORC002",
+          "ORC002",
+          "ORC002",
+          "ORC002"
+        ],
+        [
+          "ORC002"
+        ]
+      ]
+    },
+    {
+      "id": "ORC_CAMP_2_OC2_006",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "ORC005",
+          "ORC005"
+        ],
+        [
+          "ORC002",
+          "ORC002",
+          "ORC002"
+        ]
+      ]
+    },
+    {
+      "id": "ORC_CAMP_2_OC2_007",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "ORC005"
+        ],
+        [
+          "ORC002",
+          "ORC002",
+          "ORC002",
+          "ORC002"
+        ]
+      ]
+    },
+    {
+      "id": "ORC_CAMP_2_OC2_008",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "ORC005",
+          "ORC005"
+        ],
+        [
+          "ORC002",
+          "ORC002"
+        ],
+        [
+          "ORC002",
+          "ORC002"
+        ]
+      ]
+    },
+    {
+      "id": "ORC_CAMP_2_OC2_009",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "ORC005"
+        ],
+        [
+          "ORC002",
+          "ORC002",
+          "ORC002",
+          "ORC002"
+        ],
+        [
+          "ORC002"
+        ]
+      ]
+    },
+    {
+      "id": "ORC_CAMP_2_OC2_010",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "ORC005",
+          "ORC005"
+        ],
+        [
+          "ORC002",
+          "ORC002",
+          "ORC002"
+        ],
+        [
+          "ORC002",
+          "ORC002"
+        ]
+      ]
+    },
+    {
+      "id": "ORC_CAMP_3_OC3_001",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "ORC005"
+        ],
+        [
+          "ORC002",
+          "ORC002",
+          "ORC002"
+        ]
+      ]
+    },
+    {
+      "id": "ORC_CAMP_3_OC3_002",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "ORC005",
+          "ORC005"
+        ],
+        [
+          "ORC002",
+          "ORC002",
+          "ORC002"
+        ]
+      ]
+    },
+    {
+      "id": "ORC_CAMP_3_OC3_003",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "ORC005"
+        ],
+        [
+          "ORC002",
+          "ORC002",
+          "ORC002",
+          "ORC002"
+        ]
+      ]
+    },
+    {
+      "id": "ORC_CAMP_3_OC3_004",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "ORC005",
+          "ORC005"
+        ],
+        [
+          "ORC002",
+          "ORC002"
+        ],
+        [
+          "ORC002",
+          "ORC002"
+        ]
+      ]
+    },
+    {
+      "id": "ORC_CAMP_3_OC3_005",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "ORC005"
+        ],
+        [
+          "ORC002",
+          "ORC002",
+          "ORC002"
+        ],
+        [
+          "ORC002",
+          "ORC002"
+        ]
+      ]
+    },
+    {
+      "id": "ORC_CAMP_3_OC3_006",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "ORC005",
+          "ORC005"
+        ],
+        [
+          "ORC002",
+          "ORC002",
+          "ORC002",
+          "ORC002"
+        ]
+      ]
+    },
+    {
+      "id": "ORC_CAMP_3_OC3_007",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "ORC005"
+        ],
+        [
+          "ORC002",
+          "ORC002",
+          "ORC002",
+          "ORC002",
+          "ORC002"
+        ]
+      ]
+    },
+    {
+      "id": "ORC_CAMP_3_OC3_008",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "ORC005",
+          "ORC005"
+        ],
+        [
+          "ORC002",
+          "ORC002",
+          "ORC002"
+        ],
+        [
+          "ORC002",
+          "ORC002"
+        ]
+      ]
+    },
+    {
+      "id": "ORC_CAMP_3_OC3_009",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "ORC005"
+        ],
+        [
+          "ORC002",
+          "ORC002",
+          "ORC002",
+          "ORC002"
+        ],
+        [
+          "ORC002",
+          "ORC002"
+        ]
+      ]
+    },
+    {
+      "id": "ORC_CAMP_3_BOSS",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "ORC005",
+          "ORC005"
+        ],
+        [
+          "ORC002",
+          "ORC002",
+          "ORC002"
+        ],
+        [
+          "B_ORC"
+        ]
+      ],
+      "isBoss": true
+    },
+    {
+      "id": "ORC_CAMP_1_OC1_004_F1_BOSS",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "ORC005"
+        ],
+        [
+          "ORC002",
+          "ORC002",
+          "ORC002"
+        ],
+        [
+          "ORC002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "ORC_CAMP_1_OC1_010_F2_BOSS",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "ORC005",
+          "ORC005"
+        ],
+        [
+          "ORC002",
+          "ORC002"
+        ],
+        [
+          "ORC002",
+          "ORC002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "ORC_CAMP_2_OC2_005_F3_BOSS",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "ORC005"
+        ],
+        [
+          "ORC002",
+          "ORC002",
+          "ORC002",
+          "ORC002"
+        ],
+        [
+          "ORC002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "ORC_CAMP_2_OC2_010_F4_BOSS",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "ORC005",
+          "ORC005"
+        ],
+        [
+          "ORC002",
+          "ORC002",
+          "ORC002"
+        ],
+        [
+          "ORC002",
+          "ORC002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "ORC_CAMP_3_OC3_004_F5_BOSS",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "ORC005",
+          "ORC005"
+        ],
+        [
+          "ORC002",
+          "ORC002"
+        ],
+        [
+          "ORC002",
+          "ORC002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "ORC_CAMP_3_OC3_008_F6_BOSS",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "ORC005",
+          "ORC005"
+        ],
+        [
+          "ORC002",
+          "ORC002",
+          "ORC002"
+        ],
+        [
+          "ORC002",
+          "ORC002"
+        ]
+      ],
+      "isFloorBoss": true
     }
   ]
 }

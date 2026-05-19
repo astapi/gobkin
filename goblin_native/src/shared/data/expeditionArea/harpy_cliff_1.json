@@ -2,8 +2,8 @@
   "id": "harpy_cliff_1",
   "name": "風切りの断崖",
   "areaLevel": 46,
-  "floors": 2,
-  "baseDurationSec": 7200,
+  "floors": 6,
+  "baseDurationSec": 21600,
   "description": "死霊の墓原を越えた先にある断崖。急降下するハーピィたちが空と谷筋を支配している。",
   "encounter": {
     "perFloorEvents": 3,

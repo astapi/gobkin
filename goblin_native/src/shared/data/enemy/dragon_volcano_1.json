@@ -107,7 +107,9 @@
     {
       "id": "DV1_001",
       "floors": [
-        1
+        1,
+        2,
+        3
       ],
       "enemies": [
         [
@@ -122,7 +124,9 @@
     {
       "id": "DV1_002",
       "floors": [
-        1
+        1,
+        2,
+        3
       ],
       "enemies": [
         [
@@ -138,7 +142,8 @@
     {
       "id": "DV1_003",
       "floors": [
-        2
+        4,
+        5
       ],
       "enemies": [
         [
@@ -155,7 +160,8 @@
     {
       "id": "DV1_004",
       "floors": [
-        2
+        4,
+        5
       ],
       "enemies": [
         [
@@ -171,7 +177,7 @@
     {
       "id": "DV1_005",
       "floors": [
-        3
+        6
       ],
       "enemies": [
         [
@@ -186,7 +192,7 @@
     {
       "id": "BOSS",
       "floors": [
-        3
+        6
       ],
       "enemies": [
         [
@@ -202,6 +208,107 @@
         ]
       ],
       "isBoss": true
+    },
+    {
+      "id": "DV1_002_F1_BOSS",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "DRG002",
+          "DRG001"
+        ],
+        [
+          "DRG001",
+          "DRG002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "DV1_002_F2_BOSS",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "DRG002",
+          "DRG001"
+        ],
+        [
+          "DRG001",
+          "DRG002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "DV1_002_F3_BOSS",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "DRG002",
+          "DRG001"
+        ],
+        [
+          "DRG001",
+          "DRG002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "DV1_004_F4_BOSS",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "DRG003",
+          "DRG001"
+        ],
+        [
+          "DRG002",
+          "DRG002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "DV1_004_F5_BOSS",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "DRG003",
+          "DRG001"
+        ],
+        [
+          "DRG002",
+          "DRG002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "DV1_005_F6_BOSS",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "DRG003"
+        ],
+        [
+          "DRG002",
+          "DRG001"
+        ]
+      ],
+      "isFloorBoss": true
     }
   ]
 }

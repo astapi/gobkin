@@ -17,6 +17,7 @@ describe('expedition areas', () => {
 
     for (const area of areasData) {
       const unlockTargets = [
+        ...(area.unlockRequires ? [area.unlockRequires] : []),
         ...(area.unlockNext ? [area.unlockNext] : []),
         ...(area.unlockNexts ?? []),
       ]
@@ -27,21 +28,42 @@ describe('expedition areas', () => {
     }
   })
 
-  it('オークの砦は5階すべてに通常敵パターンがあり、最終階にボスパターンがある', () => {
-    const area = areasData.find(area => area.id === 'orc_fortress_1')
-    const enemyDatabase = getEnemyDatabase('orc_fortress_1')
+  it('スライムの洞窟以外は6〜8階で構成されている', () => {
+    for (const area of areasData) {
+      if (area.id === 'slime_cave') {
+        expect(area.floors).toBe(2)
+        continue
+      }
 
-    expect(area?.floors).toBe(5)
-    expect(enemyDatabase).not.toBeNull()
-
-    for (let floor = 1; floor <= 5; floor++) {
-      expect(enemyDatabase?.patterns.some(pattern =>
-        !pattern.isBoss && pattern.floors.includes(floor)
-      )).toBe(true)
+      expect(area.floors).toBeGreaterThanOrEqual(6)
+      expect(area.floors).toBeLessThanOrEqual(8)
     }
+  })
 
-    expect(enemyDatabase?.patterns.some(pattern =>
-      pattern.isBoss && pattern.floors.includes(5)
-    )).toBe(true)
+  it('各階に通常敵パターンとフロアボス相当パターンがある', () => {
+    for (const area of areasData) {
+      const enemyDatabase = getEnemyDatabase(area.id)
+
+      expect(enemyDatabase).not.toBeNull()
+
+      for (let floor = 1; floor <= area.floors; floor++) {
+        expect(enemyDatabase?.patterns.some(pattern =>
+          !pattern.isBoss && !pattern.isFloorBoss && pattern.floors.includes(floor)
+        )).toBe(true)
+
+        if (area.id !== 'slime_cave') {
+          expect(enemyDatabase?.patterns.some(pattern =>
+            pattern.isFloorBoss && pattern.floors.includes(floor)
+          )).toBe(true)
+        }
+      }
+
+      const hasBossPattern = enemyDatabase?.patterns.some(pattern => pattern.isBoss) ?? false
+      if (hasBossPattern) {
+        expect(enemyDatabase?.patterns.some(pattern =>
+          pattern.isBoss && pattern.floors.includes(area.floors)
+        )).toBe(true)
+      }
+    }
   })
 })

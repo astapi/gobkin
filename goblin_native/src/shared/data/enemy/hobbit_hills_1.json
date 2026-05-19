@@ -80,7 +80,11 @@
     {
       "id": "HH1_001",
       "floors": [
-        1
+        1,
+        2,
+        3,
+        4,
+        5
       ],
       "enemies": [
         [
@@ -95,7 +99,11 @@
     {
       "id": "HH1_002",
       "floors": [
-        1
+        1,
+        2,
+        3,
+        4,
+        5
       ],
       "enemies": [
         [
@@ -111,7 +119,7 @@
     {
       "id": "HH1_003",
       "floors": [
-        2
+        6
       ],
       "enemies": [
         [
@@ -127,7 +135,7 @@
     {
       "id": "BOSS",
       "floors": [
-        2
+        6
       ],
       "enemies": [
         [
@@ -139,6 +147,108 @@
         ]
       ],
       "isBoss": true
+    },
+    {
+      "id": "HH1_002_F1_BOSS",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "HBT002",
+          "HBT001"
+        ],
+        [
+          "HBT001",
+          "HBT002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "HH1_002_F2_BOSS",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "HBT002",
+          "HBT001"
+        ],
+        [
+          "HBT001",
+          "HBT002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "HH1_002_F3_BOSS",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "HBT002",
+          "HBT001"
+        ],
+        [
+          "HBT001",
+          "HBT002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "HH1_002_F4_BOSS",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "HBT002",
+          "HBT001"
+        ],
+        [
+          "HBT001",
+          "HBT002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "HH1_002_F5_BOSS",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "HBT002",
+          "HBT001"
+        ],
+        [
+          "HBT001",
+          "HBT002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "HH1_003_F6_BOSS",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "HBT002",
+          "HBT002"
+        ],
+        [
+          "HBT001",
+          "HBT001"
+        ]
+      ],
+      "isFloorBoss": true
     }
   ]
 }
