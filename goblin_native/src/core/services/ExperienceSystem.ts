@@ -1,18 +1,17 @@
 /**
  * 経験値システム
- * レベル200までの複合曲線パターン経験値テーブル
+ * レベル200までの近似曲線パターン経験値テーブル
  */
 
 const MAX_LEVEL = 200
-const BASE_EXP = 10
+const EXP_CURVE_SCALE = 0.00032188652886324764
+const EXP_CURVE_LEVEL_OFFSET = 9.17
+const EXP_CURVE_EXPONENT = 4.735402233154439
 
 /**
  * 次のレベルに必要な経験値を取得
- * 複合曲線パターン:
- * - LV1-50:   基本値 × (レベル ^ 1.5)
- * - LV51-100: 基本値 × (レベル ^ 2.0)
- * - LV101-150: 基本値 × (レベル ^ 2.5)
- * - LV151-200: 基本値 × (レベル ^ 3.0)
+ * 参考ゲームの観測値から推定した近似式:
+ * 0.00032188652886324764 × (レベル + 9.17) ^ 4.735402233154439
  */
 export function getExpForNextLevel(currentLevel: number): number {
   if (currentLevel >= MAX_LEVEL) {
@@ -20,19 +19,9 @@ export function getExpForNextLevel(currentLevel: number): number {
   }
 
   const level = currentLevel
-  let exponent: number
-
-  if (level <= 50) {
-    exponent = 1.5
-  } else if (level <= 100) {
-    exponent = 2.0
-  } else if (level <= 150) {
-    exponent = 2.5
-  } else {
-    exponent = 3.0
-  }
-
-  return Math.round(BASE_EXP * Math.pow(level, exponent))
+  return Math.round(
+    EXP_CURVE_SCALE * Math.pow(level + EXP_CURVE_LEVEL_OFFSET, EXP_CURVE_EXPONENT)
+  )
 }
 
 /**

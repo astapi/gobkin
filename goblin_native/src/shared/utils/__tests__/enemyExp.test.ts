@@ -30,18 +30,20 @@ describe('getRaceExpCoefficient', () => {
 })
 
 describe('calculateEnemyExp', () => {
-  it('魔獣の通常戦闘は Lv * 3 * 1.0', () => {
-    expect(calculateEnemyExp(10, ['orc'], false)).toBe(30)
-    expect(calculateEnemyExp(20, ['slime'], false)).toBe(60)
+  it('魔獣の通常戦闘は Lv * 1.8 * 1.0', () => {
+    expect(calculateEnemyExp(10, ['orc'], false)).toBe(18)
+    expect(calculateEnemyExp(20, ['slime'], false)).toBe(36)
   })
 
-  it('人間の通常戦闘は Lv * 3 * 1.15', () => {
-    expect(calculateEnemyExp(10, ['human'], false)).toBe(35) // 34.5 → 35
-    expect(calculateEnemyExp(20, ['dwarf'], false)).toBe(69) // 69
+  it('人間の通常戦闘は Lv * 1.8 * 1.15', () => {
+    expect(calculateEnemyExp(10, ['human'], false)).toBe(21) // 20.7 → 21
+    expect(calculateEnemyExp(20, ['dwarf'], false)).toBe(41) // 41.4 → 41
   })
 
-  it('ボス係数 1.5 を乗算する', () => {
-    expect(calculateEnemyExp(10, ['orc'], true)).toBe(45) // 30*1.5
-    expect(calculateEnemyExp(10, ['human'], true)).toBe(52) // 34.5*1.5 = 51.75 → 52
+  it('ボスは Lv * 9.6 * 種族係数で算出する', () => {
+    expect(calculateEnemyExp(10, ['orc'], true)).toBe(96)
+    expect(calculateEnemyExp(35, ['orc'], true)).toBe(336)
+    expect(calculateEnemyExp(56, ['orc'], true)).toBe(538)
+    expect(calculateEnemyExp(10, ['human'], true)).toBe(110) // 110.4 → 110
   })
 })
