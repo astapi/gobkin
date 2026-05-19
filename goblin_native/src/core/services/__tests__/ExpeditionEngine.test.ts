@@ -621,26 +621,26 @@ describe('ExpeditionEngine enemy XP rewards', () => {
     ],
   ]
 
-  it('通常戦闘ではLv×3×種族係数で経験値を算出する', () => {
-    // slime(beast) Lv5 → 5*3*1.0 = 15
-    // human Lv5 → 5*3*1.15 = 17.25 → 17
-    expect((engine as any).calculateEnemyXp(enemies)).toBe(32)
+  it('通常戦闘ではLv×1.8×種族係数で経験値を算出する', () => {
+    // slime(beast) Lv5 → 5*1.8*1.0 = 9
+    // human Lv5 → 5*1.8*1.15 = 10.35 → 10
+    expect((engine as any).calculateEnemyXp(enemies)).toBe(19)
   })
 
-  it('isBoss=true の敵だけにボス係数1.5を乗算する', () => {
-    // slime(beast) Lv5 通常 → 15
-    // human Lv5 ボス → 5*3*1.15*1.5 = 25.875 → 26
+  it('isBoss=true の敵だけにボス用の基準経験値を使う', () => {
+    // slime(beast) Lv5 通常 → 9
+    // human Lv5 ボス → 5*9.6*1.15 = 55.2 → 55
     const withBoss: Enemy[][] = [[enemies[0][0], { ...enemies[0][1], isBoss: true }]]
-    expect((engine as any).calculateEnemyXp(withBoss)).toBe(15 + 26)
+    expect((engine as any).calculateEnemyXp(withBoss)).toBe(9 + 55)
   })
 
   it('ボスパターンでも随伴敵(isBoss未指定)にはボス係数を乗算しない', () => {
     // 全員 isBoss 無し → 通常計算
-    expect((engine as any).calculateEnemyXp(enemies)).toBe(32)
+    expect((engine as any).calculateEnemyXp(enemies)).toBe(19)
   })
 
   it('経験値倍率を全敵の合計経験値に適用する', () => {
-    expect((engine as any).calculateEnemyXp(enemies, 2)).toBe(64)
+    expect((engine as any).calculateEnemyXp(enemies, 2)).toBe(38)
   })
 })
 

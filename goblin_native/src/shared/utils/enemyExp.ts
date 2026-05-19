@@ -8,9 +8,9 @@ const RACE_EXP_COEFFICIENTS: Record<string, number> = {
 
 const DEFAULT_RACE_EXP_COEFFICIENT = 1.0
 
-const BOSS_EXP_COEFFICIENT = 1.5
+const BOSS_EXP_BASE = 9.6
 
-const LEVEL_EXP_BASE = 3
+const LEVEL_EXP_BASE = 1.8
 
 function expandRaceTags(raceTags: readonly string[]): Set<string> {
   const expanded = new Set<string>()
@@ -44,8 +44,8 @@ export function calculateEnemyExp(
   raceTags: readonly string[],
   isBoss: boolean
 ): number {
-  const base = level * LEVEL_EXP_BASE
+  const levelBase = isBoss ? BOSS_EXP_BASE : LEVEL_EXP_BASE
+  const base = level * levelBase
   const raceCoefficient = getRaceExpCoefficient(raceTags)
-  const bossCoefficient = isBoss ? BOSS_EXP_COEFFICIENT : 1
-  return Math.round(base * raceCoefficient * bossCoefficient)
+  return Math.round(base * raceCoefficient)
 }
