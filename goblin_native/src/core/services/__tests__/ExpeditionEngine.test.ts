@@ -128,6 +128,57 @@ describe('ExpeditionEngine reward multipliers', () => {
     expect(boosted.goldMultiplier).toBeCloseTo(2.0)
   })
 
+  it('財宝Goldは計算済みGoldとして報酬に加算する', () => {
+    const engine = new ExpeditionEngine(1)
+    const events: TimelineEvent[] = [
+      { type: 'move_start', at: 0, floor: 1 },
+      {
+        type: 'battle',
+        at: 10,
+        floor: 1,
+        enemy: { id: 'e1', name: '敵1', lvl: 1, count: 1, gold: 100 },
+        combat: { rounds: 1, outcome: 'win', allyHPDelta: [0], enemyDefeated: 1 },
+        xp: 5,
+      },
+      { type: 'gold_treasure', at: 20, floor: 1, gold: 33 },
+      { type: 'return', at: 30, reason: 'completed' },
+    ]
+    const partyState: PartyState[] = [
+      {
+        id: '1',
+        name: 'テスト',
+        race: 'ゴブリン',
+        currentHP: 10,
+        maxHP: 10,
+        baseHP: 10,
+        atk: 5,
+        magicAtk: 0,
+        def: 5,
+        magicDef: 0,
+        agility: 5,
+        luck: 5,
+        attackCount: 1,
+        accuracy: 10,
+        evasion: 5,
+        magicHeal: 5,
+        isKO: false,
+        isDead: false,
+        skills: [],
+        factors: [],
+        level: 1,
+        avatar: 'test.png',
+      },
+    ]
+
+    const summary = (engine as any).calculateRewardSummary(
+      events,
+      partyState,
+      { ...DEFAULT_PARTY_REWARD_MULTIPLIERS, gold: 2 },
+    )
+
+    expect(summary.goldGained).toBe(233)
+  })
+
   it('敗北した戦闘の経験値を報酬合計に含めない', () => {
     const engine = new ExpeditionEngine(1)
     const events: TimelineEvent[] = [

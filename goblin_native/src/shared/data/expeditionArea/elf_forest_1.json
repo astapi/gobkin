@@ -6,10 +6,11 @@
   "baseDurationSec": 21120,
   "description": "隠れ里の外縁。森の斥候と射手が素早い攻撃を仕掛けてくる。 里の内部。精霊使いや月の衛士が守りを固めている。 里の中枢。古樹の戦士に守られた森の番人が最後の壁として立ちはだかる。魔法の力を手に入れろ。",
   "encounter": {
-    "perFloorEvents": 3,
+    "eventIntervalSec": 704,
     "eventWeights": {
-      "battle": 60,
-      "exploring": 40
+      "exploring": 60,
+      "goldTreasure": 10,
+      "battle": 30
     }
   },
   "unlockNext": "lizardman_swamp_1"

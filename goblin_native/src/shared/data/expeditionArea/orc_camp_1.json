@@ -6,10 +6,11 @@
   "baseDurationSec": 7200,
   "description": "オーク野営地の前哨。前線のブルートと、その後方に控える兵たちが見張りに立っている。 野営地の陣営部。前に出るブルートを壁に、兵たちが厚く控える。 野営地の本陣。ブルートが陣を固め、奥にはオーク遠征隊長が控える。攻略すれば拠点として利用可能。",
   "encounter": {
-    "perFloorEvents": 3,
+    "eventIntervalSec": 240,
     "eventWeights": {
-      "battle": 65,
-      "exploring": 35
+      "exploring": 60,
+      "goldTreasure": 10,
+      "battle": 30
     }
   },
   "unlockNext": "human_village"

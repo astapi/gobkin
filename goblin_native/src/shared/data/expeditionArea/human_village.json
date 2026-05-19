@@ -6,10 +6,11 @@
   "baseDurationSec": 8100,
   "description": "辺境の村の中心部。自警団と猟師を退け、西方にゴブリンの脅威を刻みつけろ。",
   "encounter": {
-    "perFloorEvents": 3,
+    "eventIntervalSec": 270,
     "eventWeights": {
-      "battle": 65,
-      "exploring": 35
+      "exploring": 60,
+      "goldTreasure": 10,
+      "battle": 30
     }
   },
   "unlockNext": "wolf_grassland_1"

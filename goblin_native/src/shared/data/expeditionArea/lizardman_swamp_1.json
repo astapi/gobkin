@@ -6,10 +6,11 @@
   "baseDurationSec": 19320,
   "description": "沼砦の浅瀬。沼の戦士と毒牙兵が水際で襲いかかる。 砦の深部。呪術師や暗殺者が潜む危険な沼地。 砦の本拠。鱗の重装兵に守られた沼王が待ち受ける。毒と夜襲の術を奪い、次の大戦に備えろ。",
   "encounter": {
-    "perFloorEvents": 3,
+    "eventIntervalSec": 644,
     "eventWeights": {
-      "battle": 65,
-      "exploring": 35
+      "exploring": 60,
+      "goldTreasure": 10,
+      "battle": 30
     }
   },
   "unlockNext": "subjugation_force_1"

@@ -6,10 +6,11 @@
   "baseDurationSec": 1260,
   "description": "廃墟の最深部。屍鬼が群れをなし、奥には死霊術師の残骸が眠る。",
   "encounter": {
-    "perFloorEvents": 3,
+    "eventIntervalSec": 126,
     "eventWeights": {
-      "battle": 65,
-      "exploring": 35
+      "exploring": 60,
+      "goldTreasure": 10,
+      "battle": 30
     }
   },
   "unlockNext": "road_1"

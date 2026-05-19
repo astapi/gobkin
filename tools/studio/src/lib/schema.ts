@@ -18,10 +18,12 @@ export const AreaConfigSchema = z.object({
   moveSpeedScale: z.number().positive().optional(),
   description: z.string().optional(),
   encounter: z.object({
-    perFloorEvents: z.number().int().positive(),
+    eventIntervalSec: z.number().positive(),
+    perFloorEvents: z.number().int().positive().optional(),
     eventWeights: z.object({
       battle: z.number().nonnegative(),
       exploring: z.number().nonnegative(),
+      goldTreasure: z.number().nonnegative().optional(),
       trap: z.number().nonnegative().optional(),
       npc: z.number().nonnegative().optional(),
     }),

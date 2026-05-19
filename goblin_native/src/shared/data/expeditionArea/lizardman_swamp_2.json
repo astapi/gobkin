@@ -6,10 +6,11 @@
   "baseDurationSec": 6420,
   "description": "砦の深部。呪術師や暗殺者が潜む危険な沼地。",
   "encounter": {
-    "perFloorEvents": 3,
+    "eventIntervalSec": 642,
     "eventWeights": {
-      "battle": 65,
-      "exploring": 35
+      "exploring": 60,
+      "goldTreasure": 10,
+      "battle": 30
     }
   },
   "unlockNext": "lizardman_swamp_3"

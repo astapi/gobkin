@@ -6,10 +6,11 @@
   "baseDurationSec": 21300,
   "description": "墓標が乱立する荒野の外縁。眠りを失った亡者たちが夜ごと這い出してくる。 崩れた墓所が密集する地帯。霊体と骨兵が入り混じり、足を止めた者から喰われていく。 墓原の中心にある古い霊廟。死の気配を束ねる主を倒し、断崖へ続く道を切り開け。",
   "encounter": {
-    "perFloorEvents": 3,
+    "eventIntervalSec": 710,
     "eventWeights": {
-      "battle": 65,
-      "exploring": 35
+      "exploring": 60,
+      "goldTreasure": 10,
+      "battle": 30
     }
   },
   "unlockNext": "harpy_cliff_1"

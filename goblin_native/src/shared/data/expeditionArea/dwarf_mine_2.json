@@ -6,10 +6,11 @@
   "baseDurationSec": 6120,
   "description": "坑道深部。戦士やルーン鍛冶師が待ち構える。",
   "encounter": {
-    "perFloorEvents": 3,
+    "eventIntervalSec": 612,
     "eventWeights": {
-      "battle": 65,
-      "exploring": 35
+      "exploring": 60,
+      "goldTreasure": 10,
+      "battle": 30
     }
   },
   "unlockNext": "dwarf_mine_3"

@@ -55,9 +55,11 @@ export interface TreasureDrop {
 export type TimelineEvent =
   | { type: "move_start"; at: number; floor: number }
   | { type: "floor_up"; at: number; from: number; to: number }
+  | { type: "floor_end"; at: number; floor: number }
   | { type: "battle"; at: number; floor: number; enemy: EnemySnap; combat: CombatReplay; xp: number }
   | { type: "boss"; at: number; floor: number; enemy: EnemySnap; combat: CombatReplay; xp: number }
   | { type: "exploring"; at: number; floor: number }
+  | { type: "gold_treasure"; at: number; floor: number; gold: number }
   | { type: "treasure"; at: number; floor: number; items: TreasureDrop[] }
   | { type: "return"; at: number; reason: ExpeditionEndReason }
 
@@ -132,10 +134,12 @@ export interface AreaConfig {
   baseDurationSec: number
   moveSpeedScale?: number
   encounter: {
-    perFloorEvents: number
+    eventIntervalSec: number
+    perFloorEvents?: number
     eventWeights: {
       battle: number
       exploring: number
+      goldTreasure?: number
       trap?: number
       npc?: number
     }

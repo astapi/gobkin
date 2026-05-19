@@ -6,10 +6,11 @@
   "baseDurationSec": 72000,
   "description": "最終決戦。勇者と人間王が最後の壁として立ちはだかる。ゴブリンキングダムの完成をかけた決戦。",
   "encounter": {
-    "perFloorEvents": 3,
+    "eventIntervalSec": 1800,
     "eventWeights": {
-      "battle": 75,
-      "exploring": 25
+      "exploring": 60,
+      "goldTreasure": 10,
+      "battle": 30
     }
   }
 }

@@ -8,7 +8,7 @@ import {
   TextField,
 } from './fields'
 
-type EventKey = 'battle' | 'exploring' | 'trap' | 'npc'
+type EventKey = 'battle' | 'exploring' | 'goldTreasure' | 'trap' | 'npc'
 
 export function AreaSettingsEditor({
   area,
@@ -19,7 +19,7 @@ export function AreaSettingsEditor({
 }) {
   const w = area.encounter.eventWeights
   const totalWeight =
-    (w.battle ?? 0) + (w.exploring ?? 0) + (w.trap ?? 0) + (w.npc ?? 0)
+    (w.battle ?? 0) + (w.exploring ?? 0) + (w.goldTreasure ?? 0) + (w.trap ?? 0) + (w.npc ?? 0)
 
   const setTopField = <K extends keyof AreaConfig>(key: K, value: AreaConfig[K]) => {
     onChange((prev) => ({ ...prev, [key]: value }))
@@ -121,10 +121,11 @@ export function AreaSettingsEditor({
         <FieldRow>
           <NumberField
             size="sm"
-            label="perFloorEvents"
-            value={area.encounter.perFloorEvents}
+            label="eventIntervalSec"
+            value={area.encounter.eventIntervalSec}
             min={1}
-            onChange={(v) => setEncounterField('perFloorEvents', v)}
+            suffix="秒"
+            onChange={(v) => setEncounterField('eventIntervalSec', v)}
           />
           <OptionalNumberField
             size="sm"
@@ -152,6 +153,13 @@ export function AreaSettingsEditor({
             total={totalWeight}
             onChange={(v) => setWeight('exploring', v)}
             required
+          />
+          <WeightRow
+            size="sm"
+            label="goldTreasure"
+            value={w.goldTreasure}
+            total={totalWeight}
+            onChange={(v) => setWeight('goldTreasure', v)}
           />
           <WeightRow
             size="sm"

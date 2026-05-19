@@ -6,10 +6,11 @@
   "baseDurationSec": 10500,
   "description": "辺境の城の本丸。近衛兵と司令官が最後の守りを固める、西方戦線の決着となる戦場。",
   "encounter": {
-    "perFloorEvents": 3,
+    "eventIntervalSec": 1050,
     "eventWeights": {
-      "battle": 70,
-      "exploring": 30
+      "exploring": 60,
+      "goldTreasure": 10,
+      "battle": 30
     }
   },
   "unlockNext": "vampire_castle_1"

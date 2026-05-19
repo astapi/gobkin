@@ -6,10 +6,11 @@
   "baseDurationSec": 26100,
   "description": "城塞へ続く古い迷宮。重い斧を振るうミノタウロスの戦士たちが侵入者を迷路へ誘い込む。",
   "encounter": {
-    "perFloorEvents": 3,
+    "eventIntervalSec": 870,
     "eventWeights": {
-      "battle": 72,
-      "exploring": 28
+      "exploring": 60,
+      "goldTreasure": 10,
+      "battle": 30
     }
   }
 }
