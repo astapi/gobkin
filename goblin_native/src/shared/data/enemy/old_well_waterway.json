@@ -1,0 +1,500 @@
+{
+  "enemies": [
+    {
+      "id": "OWW001",
+      "name": "大ネズミ",
+      "raceTags": [
+        "beast"
+      ],
+      "level": 9,
+      "hp": 70,
+      "atk": 19,
+      "def": 12,
+      "attackCount": 2,
+      "accuracy": 245,
+      "evasion": 20,
+      "exp": 20,
+      "gold": 8,
+      "magicDef": 5,
+      "baseAttributes": {
+        "power": 5,
+        "wisdom": 3,
+        "spirit": 2,
+        "vitality": 5,
+        "agility": 11,
+        "luck": 4
+      }
+    },
+    {
+      "id": "OWW002",
+      "name": "水棲スライム",
+      "raceTags": [
+        "slime"
+      ],
+      "level": 9,
+      "hp": 80,
+      "atk": 16,
+      "def": 16,
+      "attackCount": 1,
+      "accuracy": 235,
+      "evasion": 12,
+      "exp": 21,
+      "gold": 9,
+      "magicDef": 8,
+      "baseAttributes": {
+        "power": 3,
+        "wisdom": 3,
+        "spirit": 2,
+        "vitality": 8,
+        "agility": 5,
+        "luck": 4
+      }
+    },
+    {
+      "id": "OWW003",
+      "name": "スケルトン",
+      "raceTags": [
+        "undead"
+      ],
+      "level": 10,
+      "hp": 105,
+      "atk": 22,
+      "def": 16,
+      "attackCount": 1,
+      "accuracy": 245,
+      "evasion": 13,
+      "exp": 25,
+      "gold": 15,
+      "magicDef": 6,
+      "baseAttributes": {
+        "power": 6,
+        "wisdom": 4,
+        "spirit": 1,
+        "vitality": 7,
+        "agility": 6,
+        "luck": 3
+      }
+    },
+    {
+      "id": "OWW004",
+      "name": "地下水路の大蛇",
+      "raceTags": [
+        "beast"
+      ],
+      "level": 11,
+      "hp": 180,
+      "atk": 32,
+      "def": 22,
+      "attackCount": 2,
+      "accuracy": 280,
+      "evasion": 17,
+      "exp": 36,
+      "gold": 20,
+      "magicDef": 10,
+      "baseAttributes": {
+        "power": 9,
+        "wisdom": 5,
+        "spirit": 3,
+        "vitality": 13,
+        "agility": 8,
+        "luck": 4
+      }
+    },
+    {
+      "id": "B_OWW_GATEKEEPER",
+      "name": "水門の骸骨兵",
+      "raceTags": [
+        "undead"
+      ],
+      "level": 16,
+      "hp": 270,
+      "atk": 36,
+      "def": 28,
+      "attackCount": 2,
+      "accuracy": 320,
+      "evasion": 18,
+      "exp": 86,
+      "gold": 78,
+      "magicDef": 18,
+      "baseAttributes": {
+        "power": 10,
+        "wisdom": 8,
+        "spirit": 4,
+        "vitality": 14,
+        "agility": 9,
+        "luck": 5
+      },
+      "isBoss": true,
+      "factorDrops": [
+        {
+          "factorId": "undead",
+          "probability": 0.008
+        }
+      ]
+    }
+  ],
+  "patterns": [
+    {
+      "id": "OWW_01_001",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "OWW001",
+          "OWW001"
+        ]
+      ]
+    },
+    {
+      "id": "OWW_01_002",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "OWW002"
+        ]
+      ]
+    },
+    {
+      "id": "OWW_01_003",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "OWW001"
+        ],
+        [
+          "OWW002"
+        ]
+      ]
+    },
+    {
+      "id": "OWW_F1_BOSS",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "OWW001",
+          "OWW001",
+          "OWW001"
+        ],
+        [
+          "OWW002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "OWW_02_001",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "OWW002",
+          "OWW002"
+        ]
+      ]
+    },
+    {
+      "id": "OWW_02_002",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "OWW001",
+          "OWW001"
+        ],
+        [
+          "OWW002"
+        ]
+      ]
+    },
+    {
+      "id": "OWW_02_003",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "OWW003"
+        ]
+      ]
+    },
+    {
+      "id": "OWW_F2_BOSS",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "OWW002",
+          "OWW002"
+        ],
+        [
+          "OWW003"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "OWW_03_001",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "OWW003",
+          "OWW003"
+        ]
+      ]
+    },
+    {
+      "id": "OWW_03_002",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "OWW001",
+          "OWW001"
+        ],
+        [
+          "OWW003"
+        ]
+      ]
+    },
+    {
+      "id": "OWW_03_003",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "OWW002"
+        ],
+        [
+          "OWW003"
+        ]
+      ]
+    },
+    {
+      "id": "OWW_F3_BOSS",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "OWW003",
+          "OWW003"
+        ],
+        [
+          "OWW002",
+          "OWW002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "OWW_04_001",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "OWW004"
+        ]
+      ]
+    },
+    {
+      "id": "OWW_04_002",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "OWW003"
+        ],
+        [
+          "OWW004"
+        ]
+      ]
+    },
+    {
+      "id": "OWW_04_003",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "OWW001",
+          "OWW001"
+        ],
+        [
+          "OWW004"
+        ]
+      ]
+    },
+    {
+      "id": "OWW_F4_BOSS",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "OWW004"
+        ],
+        [
+          "OWW003",
+          "OWW003"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "OWW_05_001",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "OWW004"
+        ],
+        [
+          "OWW002",
+          "OWW002"
+        ]
+      ]
+    },
+    {
+      "id": "OWW_05_002",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "OWW003",
+          "OWW003"
+        ],
+        [
+          "OWW004"
+        ]
+      ]
+    },
+    {
+      "id": "OWW_05_003",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "OWW004",
+          "OWW004"
+        ]
+      ]
+    },
+    {
+      "id": "OWW_F5_BOSS",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "OWW004",
+          "OWW004"
+        ],
+        [
+          "OWW003"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "OWW_06_001",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "OWW004",
+          "OWW004"
+        ],
+        [
+          "OWW003"
+        ]
+      ]
+    },
+    {
+      "id": "OWW_06_002",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "OWW003",
+          "OWW003",
+          "OWW003"
+        ]
+      ]
+    },
+    {
+      "id": "OWW_06_003",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "OWW004"
+        ],
+        [
+          "OWW002",
+          "OWW002"
+        ],
+        [
+          "OWW003"
+        ]
+      ]
+    },
+    {
+      "id": "OWW_F6_BOSS",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "OWW004",
+          "OWW004"
+        ],
+        [
+          "OWW003",
+          "OWW003"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "OWW_FINAL_BOSS",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "B_OWW_GATEKEEPER"
+        ],
+        [
+          "OWW004"
+        ],
+        [
+          "OWW003",
+          "OWW003"
+        ]
+      ],
+      "isBoss": true
+    }
+  ]
+}

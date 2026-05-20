@@ -1,0 +1,17 @@
+{
+  "id": "bandit_hideout",
+  "name": "盗賊のアジト",
+  "areaLevel": 12,
+  "floors": 6,
+  "baseDurationSec": 3960,
+  "description": "辺境城の監視が届きにくい山道の隠れ家。街道の荷を襲う盗賊たちが、奪った武器と通行記録を溜め込んでいる。",
+  "encounter": {
+    "eventIntervalSec": 132,
+    "eventWeights": {
+      "exploring": 60,
+      "goldTreasure": 10,
+      "battle": 30
+    }
+  },
+  "unlockNext": "road_1"
+}

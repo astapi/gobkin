@@ -31,9 +31,31 @@
       "exploration_time_sec": 620,
       "description": "ゴブリン集落の外縁部。雑兵ゴブリンやシーフが群れをなして徘徊している。 集落の内部へ侵入。ウォリアーやメイジが組織的に守りを固めている。 集落の中枢。ガードに守られた奥にホブゴブリンが君臨する。独立を勝ち取るため、反逆の狼煙を上げる。",
       "unlockRequires": "forest_outskirts",
-      "unlockNext": "undead_ruins_1",
+      "unlockNext": "forest_edge_village",
       "isBaseCapture": true,
       "rankUpTarget": 2
+    },
+    {
+      "id": "forest_edge_village",
+      "name": "森外れの廃村",
+      "areaLevel": 9,
+      "floors": 6,
+      "exploration_time_sec_first": 8100,
+      "exploration_time_sec": 2700,
+      "description": "ゴブリン集落の外に残された、人間の古い開拓村。朽ちた畑と家屋の奥に、廃村の地下へ続く古井戸が口を開けている。",
+      "unlockRequires": "goblin_village_1",
+      "unlockNext": "old_well_waterway"
+    },
+    {
+      "id": "old_well_waterway",
+      "name": "古井戸の地下水路",
+      "areaLevel": 10,
+      "floors": 6,
+      "exploration_time_sec_first": 9180,
+      "exploration_time_sec": 3060,
+      "description": "廃村の古井戸から降りる地下水路。苔むした水路と崩れた排水路を抜けた先に、忘れられた廃墟の地下口がある。",
+      "unlockRequires": "forest_edge_village",
+      "unlockNext": "undead_ruins_1"
     },
     {
       "id": "undead_ruins_1",
@@ -42,8 +64,19 @@
       "floors": 6,
       "exploration_time_sec_first": 3240,
       "exploration_time_sec": 1080,
-      "description": "廃墟の入口付近。スケルトンとゾンビが徘徊する薄暗い回廊。 廃墟の深部。ゴーストや骨弓兵が加わり、アンデッドの密度が増す。 廃墟の最深部。屍鬼が群れをなし、奥には死霊術師の残骸が眠る。",
-      "unlockRequires": "goblin_village_1",
+      "description": "地下水路の出口に広がる忘れられた廃墟。スケルトンとゾンビが徘徊する薄暗い回廊から、死霊術師の残骸が眠る最奥へ進む。",
+      "unlockRequires": "old_well_waterway",
+      "unlockNext": "bandit_hideout"
+    },
+    {
+      "id": "bandit_hideout",
+      "name": "盗賊のアジト",
+      "areaLevel": 12,
+      "floors": 6,
+      "exploration_time_sec_first": 11880,
+      "exploration_time_sec": 3960,
+      "description": "辺境城の監視が届きにくい山道の隠れ家。街道の荷を襲う盗賊たちが、奪った武器と通行記録を溜め込んでいる。",
+      "unlockRequires": "undead_ruins_1",
       "unlockNext": "road_1"
     },
     {
@@ -53,8 +86,8 @@
       "floors": 6,
       "exploration_time_sec_first": 4860,
       "exploration_time_sec": 1620,
-      "description": "ゴブリン集落から最も近い街道。森から出てくる狼や盗賊、荷を守る人間の護衛が行き交う。",
-      "unlockRequires": "undead_ruins_1",
+      "description": "辺境の村と辺境の城を結ぶ生活路。森から出てくる獣や、荷を守る人間の護衛が行き交う。ここを押さえれば村は孤立する。",
+      "unlockRequires": "bandit_hideout",
       "unlockNext": "orc_camp_1"
     },
     {
