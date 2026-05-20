@@ -2,6 +2,7 @@
 export type DungeonTier = 0 | 1 | 2 | 3 | 4 | 5
 
 export const DUNGEON_TIER_LIST = [0, 1, 2, 3, 4, 5] as const
+export const DUNGEON_TIER_SELECTABLE_MAX = 3 as const
 
 export const DUNGEON_TIER_META = [
   { tier: 0 as const, prefix: '', labelKey: 'dungeonTier.normal' },

@@ -17,13 +17,17 @@ import {
   getPartyRareMultiplierFromSkills,
   getPartyTitleMultiplierFromSkills,
 } from '@/shared/data/characterSkills'
-import { normalizePartyRewardMultipliers, DUNGEON_TIER_META, getDungeonTierAreaLevel, getDungeonTierDisplayName } from '@/shared/types'
+import { normalizePartyRewardMultipliers, DUNGEON_TIER_META, DUNGEON_TIER_SELECTABLE_MAX, getDungeonTierAreaLevel, getDungeonTierDisplayName } from '@/shared/types'
 import type { ExpeditionRequest, Goblin, Dungeon, Party, DungeonTier } from '@/shared/types'
 import { getDungeonDescription, getDungeonName, getReturnPolicyLabel } from '@/shared/i18n/entityLocalization'
 
 type ReturnPolicy = ExpeditionRequest['returnPolicy']
 
 const MAX_PARTY_SLOTS = 6
+
+function clampSelectableTier(tier: number | undefined): DungeonTier {
+  return Math.min(Math.max(tier ?? 0, 0), DUNGEON_TIER_SELECTABLE_MAX) as DungeonTier
+}
 
 function formatDungeonLabel(dungeon: Dungeon, tier: DungeonTier = 0): string {
   if (dungeon.areaLevel === undefined) return getDungeonName(dungeon)
@@ -118,7 +122,7 @@ export default function ExpeditionPreparationScreen() {
   }, [party, partiesLoading, partyId, retryCount, refreshParties])
 
   const [selectedDungeonId, setSelectedDungeonId] = useState<string | undefined>(party?.dungeonId)
-  const [selectedTier, setSelectedTier] = useState<DungeonTier>(party?.dungeonTier ?? 0)
+  const [selectedTier, setSelectedTier] = useState<DungeonTier>(clampSelectableTier(party?.dungeonTier))
   const [selectedReturnPolicy, setSelectedReturnPolicy] = useState<ReturnPolicy>(party?.returnPolicy ?? 'never')
   const [selectedTargetFloor, setSelectedTargetFloor] = useState<number | null>(party?.targetFloor ?? null)
   const [isDungeonModalVisible, setIsDungeonModalVisible] = useState(false)
@@ -132,7 +136,7 @@ export default function ExpeditionPreparationScreen() {
   useEffect(() => {
     if (party) {
       setSelectedDungeonId(party.dungeonId)
-      setSelectedTier(party.dungeonTier ?? 0)
+      setSelectedTier(clampSelectableTier(party.dungeonTier))
       setSelectedReturnPolicy(party.returnPolicy ?? 'never')
       setSelectedTargetFloor(party.targetFloor ?? null)
       setEditingPartyName(party.name)
@@ -285,14 +289,14 @@ export default function ExpeditionPreparationScreen() {
     const maxCleared = selectedDungeon.maxClearedTier ?? 0
     // maxClearedTier=1 → 通常クリア済み → 魔性(tier=1)まで解放
     // maxClearedTier=0 → 未クリア → 通常(tier=0)のみ
-    return Math.min(maxCleared, 5) as DungeonTier
+    return clampSelectableTier(maxCleared)
   }, [selectedDungeon])
 
   // ダンジョン変更時にティアをデフォルト選択（クリア済みの最高ティア）
   const autoSelectTier = useCallback((dungeon: Dungeon) => {
     const maxCleared = dungeon.maxClearedTier ?? 0
     // maxClearedTier は「次に解放されるティア番号」なので、クリア済み最高は -1
-    const defaultTier = Math.min(Math.max(maxCleared - 1, 0), 5) as DungeonTier
+    const defaultTier = clampSelectableTier(maxCleared - 1)
     setSelectedTier(defaultTier)
     if (partyId) {
       void setDungeonTier(parseInt(partyId, 10), defaultTier)
@@ -314,9 +318,10 @@ export default function ExpeditionPreparationScreen() {
   }, [partyId, selectedTargetFloor, setDungeon, setTargetFloor, autoSelectTier])
 
   const handleSelectTier = useCallback((tier: DungeonTier) => {
-    setSelectedTier(tier)
+    const selectableTier = clampSelectableTier(tier)
+    setSelectedTier(selectableTier)
     if (partyId) {
-      void setDungeonTier(parseInt(partyId, 10), tier)
+      void setDungeonTier(parseInt(partyId, 10), selectableTier)
     }
   }, [partyId, setDungeonTier])
 
