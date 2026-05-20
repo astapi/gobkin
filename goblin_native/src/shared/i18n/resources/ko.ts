@@ -793,6 +793,7 @@ const ko = {
       blizzard_taken_0_6: { name: '[0.6배] 블리자드 피해' },
       blizzard_taken_1_5: { name: '[1.5배] 블리자드 피해' },
       blizzard_taken_2_0: { name: '[2.0배] 블리자드 피해' },
+      hp_regen_10: { name: '[10%] 회복 능력' },
       weapon_melee_attack: {
         name: '[무기] 근접 공격',
         description: '대열에서 뒤쪽으로 갈수록 일반 공격 피해가 감소합니다.',

@@ -1469,6 +1469,25 @@ code {
   min-width: 14rem;
 }
 
+.rare-drop-effect-summary {
+  margin-top: 0.45rem;
+  font-size: 0.82rem;
+}
+
+.rare-drop-effect-title {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.rare-drop-effect-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  margin: 0.35rem 0 0;
+  padding-left: 1rem;
+}
+
 @media (max-width: 1024px) {
   .rare-drops-layout {
     grid-template-columns: 1fr;

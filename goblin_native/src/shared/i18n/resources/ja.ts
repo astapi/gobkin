@@ -830,6 +830,7 @@ const ja = {
       blizzard_taken_2_0: { name: '[2.0倍]ブリザード被ダメージ' },
       undead_trait: { name: 'アンデッド' },
       hp_regen_20: { name: '[20%]回復能力' },
+      hp_regen_10: { name: '[10%]回復能力' },
       hp_regen_flat_10: { name: '[10]回復能力' },
       weapon_melee_attack: {
         name: '[武器]近距離攻撃',

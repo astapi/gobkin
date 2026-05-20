@@ -802,6 +802,7 @@ const en = {
       blizzard_taken_0_6: { name: '[0.6x] Blizzard Damage Taken' },
       blizzard_taken_1_5: { name: '[1.5x] Blizzard Damage Taken' },
       blizzard_taken_2_0: { name: '[2.0x] Blizzard Damage Taken' },
+      hp_regen_10: { name: '[10%] Regeneration' },
       weapon_melee_attack: {
         name: '[Weapon] Melee Attack',
         description: 'Normal attack damage decreases the farther back the unit is in the formation.',

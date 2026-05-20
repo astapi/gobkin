@@ -2128,6 +2128,17 @@
       "isRare": true
     },
     {
+      "id": "accessory_greater_split_core",
+      "name": "大分裂核",
+      "category": "accessory",
+      "statBonuses": [],
+      "grantedSkillIds": [
+        "hp_regen_10"
+      ],
+      "price": 25000,
+      "isRare": true
+    },
+    {
       "id": "accessory_luck_medal",
       "name": "ラッキーメダル",
       "category": "accessory",
