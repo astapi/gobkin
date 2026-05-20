@@ -838,6 +838,11 @@ export const CHARACTER_SKILL_CATALOG = {
     hpRegenPercent: 20,
   },
 
+  hp_regen_10: {
+    id: 'hp_regen_10',
+    hpRegenPercent: 10,
+  },
+
   hp_regen_flat_10: {
     id: 'hp_regen_flat_10',
     hpRegenAmount: 10,

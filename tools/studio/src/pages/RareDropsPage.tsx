@@ -1,14 +1,17 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import {
-  DUNGEON_TIER_META,
-  type DungeonTier,
-} from '@app/shared/types/DungeonTier'
+import { getCharacterSkillEffectDescriptions } from '@app/shared/data/characterSkills'
+import { getCharacterSkillDefinition, isCharacterSkillId } from '@app/shared/data/skillCatalog'
+import { getSkillLabel } from '@app/shared/i18n/entityLocalization'
+import type { CharacterSkill } from '@app/shared/types/CharacterSkill'
+import type { DungeonTier } from '@app/shared/types/DungeonTier'
 
 import {
   AreaConfigSchema,
   EnemyDatabaseSchema,
   type DungeonDetailDto,
   type DungeonSummary,
+  type EquipmentStat,
+  type EquipmentTemplate,
   type EnemyDatabase,
 } from '../lib/schema'
 import {
@@ -196,7 +199,7 @@ export function RareDropsPage() {
         <div>
           <h2>レアアイテム管理</h2>
           <p className="subtle">
-            通常は0〜1個、魔性と伝説は追加候補を設定できます。宿ったは追加なしです。
+            通常は0〜1個、魔性と伝説は追加候補を設定できます。
           </p>
         </div>
         <div className="save-bar">
@@ -262,7 +265,6 @@ export function RareDropsPage() {
                   <th>敵</th>
                   <th>通常</th>
                   <th>魔性 追加</th>
-                  <th>宿った</th>
                   <th>伝説 追加</th>
                 </tr>
               </thead>
@@ -276,7 +278,7 @@ export function RareDropsPage() {
                 ))}
                 {filteredEnemies.length === 0 && (
                   <tr>
-                    <td colSpan={5} className="subtle">該当する敵がいません</td>
+                    <td colSpan={4} className="subtle">該当する敵がいません</td>
                   </tr>
                 )}
               </tbody>
@@ -350,7 +352,6 @@ function RareDropRow({
           onChange={(value) => setTierDrop(1, value)}
         />
       </td>
-      <td className="subtle">{DUNGEON_TIER_META[2].prefix}は追加なし</td>
       <td>
         <RareTemplateCell
           value={tierDrops.get(3)?.[0]?.templateId ?? ''}
@@ -388,7 +389,104 @@ function RareTemplateCell({
   if (loadError) return <span className="save-error">{loadError}</span>
   if (!templates) return <span className="subtle">読み込み中…</span>
 
-  return <TemplateSelect value={value} templates={templates} onChange={onChange} />
+  const selectedTemplate = templates.find((template) => template.id === value)
+
+  return (
+    <>
+      <TemplateSelect value={value} templates={templates} onChange={onChange} />
+      <EquipmentEffectSummary template={selectedTemplate} templateId={value} />
+    </>
+  )
+}
+
+function EquipmentEffectSummary({
+  template,
+  templateId,
+}: {
+  template: EquipmentTemplate | undefined
+  templateId: string
+}) {
+  if (!templateId) return <p className="subtle rare-drop-effect-summary">未設定</p>
+  if (!template) {
+    return (
+      <p className="save-error rare-drop-effect-summary">
+        equipmentPool に存在しない templateId です: {templateId}
+      </p>
+    )
+  }
+
+  const effects = getEquipmentEffectLines(template)
+
+  return (
+    <div className="rare-drop-effect-summary">
+      <div className="rare-drop-effect-title">
+        <strong>{template.name}</strong>
+        <span className="subtle">
+          <code>{template.id}</code> · {template.category}
+          {template.subCategory ? ` / ${template.subCategory}` : ''}
+        </span>
+      </div>
+      {effects.length > 0 ? (
+        <ul className="rare-drop-effect-list">
+          {effects.map((effect, index) => (
+            <li key={`${effect}-${index}`}>{effect}</li>
+          ))}
+        </ul>
+      ) : (
+        <p className="subtle">効果なし</p>
+      )}
+    </div>
+  )
+}
+
+function getEquipmentEffectLines(template: EquipmentTemplate): string[] {
+  const effects: string[] = []
+
+  for (const bonus of template.statBonuses) {
+    const source = [
+      bonus.sourceCategory ? `カテゴリ:${bonus.sourceCategory}` : null,
+      bonus.sourceSubCategory ? `サブ:${bonus.sourceSubCategory}` : null,
+    ].filter(Boolean)
+    effects.push(
+      `${getEquipmentStatLabel(bonus.stat)} ${formatSignedValue(bonus.value)}${source.length > 0 ? ` (${source.join(' / ')})` : ''}`,
+    )
+  }
+
+  if (template.range) {
+    effects.push(`射程: ${template.range}`)
+  }
+
+  for (const skillId of template.grantedSkillIds ?? []) {
+    effects.push(...getSkillEffectLines(skillId))
+  }
+
+  for (const skill of template.grantedSkills ?? []) {
+    effects.push(...getInlineSkillEffectLines(skill))
+  }
+
+  return effects
+}
+
+function getSkillEffectLines(skillId: string): string[] {
+  if (!skillId) return []
+  if (!isCharacterSkillId(skillId)) return [`スキル: ${skillId} (catalog未登録)`]
+
+  const skill = getCharacterSkillDefinition(skillId)
+  return getInlineSkillEffectLines(skill)
+}
+
+function getInlineSkillEffectLines(skill: CharacterSkill): string[] {
+  const label = getSkillLabel(skill) || skill.id
+  const descriptions = getCharacterSkillEffectDescriptions(skill)
+  return descriptions.map((description) => `スキル: ${label} - ${description}`)
+}
+
+function formatSignedValue(value: number): string {
+  return value > 0 ? `+${value}` : String(value)
+}
+
+function getEquipmentStatLabel(stat: EquipmentStat): string {
+  return EQUIPMENT_STAT_LABELS[stat] ?? stat
 }
 
 function normalizeTierDrops(entries: TierRareDropEntry[] | undefined): Map<DungeonTier, RareDropEntry[]> {
@@ -416,4 +514,21 @@ function stableStringify(value: unknown): string {
     }
     return val
   })
+}
+
+const EQUIPMENT_STAT_LABELS: Record<EquipmentStat, string> = {
+  hp_flat: 'HP',
+  atk_flat: '攻撃',
+  def_flat: '防御',
+  magic_atk_flat: '魔力',
+  magic_def_flat: '魔防',
+  attackCount_flat: '攻撃回数',
+  accuracy_flat: '命中',
+  evasion_flat: '回避',
+  magicHeal_flat: '回復魔力',
+  hp_percent: 'HP%',
+  atk_percent: '攻撃%',
+  def_percent: '防御%',
+  critical_rate_percent: '会心率%',
+  damage_reduction: '被ダメージ軽減',
 }
