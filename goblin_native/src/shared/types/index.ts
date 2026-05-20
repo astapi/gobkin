@@ -7,7 +7,7 @@ export type { Party, PartyStatus, PartyState, PartyRewardMultipliers } from "./P
 export { DEFAULT_PARTY_REWARD_MULTIPLIERS, normalizePartyRewardMultipliers } from "./Party"
 
 // Enemy related types
-export type { Enemy, EnemyPattern, EnemyDatabase, EnemySnap, EquipmentDropConfig } from "./Enemy"
+export type { Enemy, EnemyPattern, EnemyDatabase, EnemySnap, EquipmentDropConfig, TierEquipmentDropConfig } from "./Enemy"
 
 // Factor related types
 export type { Factor, FactorEffect, FactorVariantConfig, FactorDropConfig } from "./Factor"

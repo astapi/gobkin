@@ -9,6 +9,22 @@ export const GoblinBaseAttributesSchema = z.object({
   luck: z.number(),
 })
 
+export const RareEquipmentDropSchema = z.object({
+  templateId: z.string(),
+})
+
+export const TierRareEquipmentDropSchema = z.object({
+  tier: z.union([
+    z.literal(0),
+    z.literal(1),
+    z.literal(2),
+    z.literal(3),
+    z.literal(4),
+    z.literal(5),
+  ]),
+  drops: z.array(RareEquipmentDropSchema),
+})
+
 export const AreaConfigSchema = z.object({
   id: z.string(),
   name: z.string(),
@@ -71,6 +87,8 @@ export const EnemySchema = z
     exp: z.number().int().nonnegative(),
     isBoss: z.boolean().optional(),
     gold: z.number().int().nonnegative(),
+    rareEquipmentDrops: z.array(RareEquipmentDropSchema).optional(),
+    tierRareEquipmentDrops: z.array(TierRareEquipmentDropSchema).optional(),
   })
   .passthrough()
 

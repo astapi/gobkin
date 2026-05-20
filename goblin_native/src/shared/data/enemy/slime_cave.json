@@ -28,6 +28,16 @@
         {
           "templateId": "accessory_split_core"
         }
+      ],
+      "tierRareEquipmentDrops": [
+        {
+          "tier": 1,
+          "drops": [
+            {
+              "templateId": "accessory_luck_medal"
+            }
+          ]
+        }
       ]
     },
     {

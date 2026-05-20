@@ -13,6 +13,7 @@ import { calculateEnemyExp } from '@app/shared/utils/enemyExp'
 import { races } from '@app/shared/data/races'
 import { getRaceResistanceTotals } from '@app/shared/data/races'
 import type { CharacterSkill } from '@app/shared/types/CharacterSkill'
+import type { DungeonTier } from '@app/shared/types/DungeonTier'
 
 import type { EnemyDatabase } from '../lib/schema'
 import {
@@ -24,6 +25,7 @@ import {
 } from './fields'
 import { EnemySkillListEditor } from './SkillEditors'
 import { RareEquipmentDropsEditor } from './RareEquipmentDropsEditor'
+import { TierRareEquipmentDropsEditor } from './TierRareEquipmentDropsEditor'
 
 type Enemy = EnemyDatabase['enemies'][number]
 const raceEntries = Object.entries(races).sort((a, b) => a[1].label.localeCompare(b[1].label, 'ja'))
@@ -451,6 +453,26 @@ function EnemyForm({
               delete next.rareEquipmentDrops
             } else {
               next.rareEquipmentDrops = rareEquipmentDrops
+            }
+            return next as Enemy
+          })
+        }
+        maxEntries={1}
+      />
+      <TierRareEquipmentDropsEditor
+        tierRareEquipmentDrops={
+          (enemy as Enemy & { tierRareEquipmentDrops?: Array<{ tier: DungeonTier; drops: Array<{ templateId: string }> }> })
+            .tierRareEquipmentDrops
+        }
+        onChange={(tierRareEquipmentDrops) =>
+          onChange((prev) => {
+            const next = { ...prev } as Enemy & {
+              tierRareEquipmentDrops?: Array<{ tier: DungeonTier; drops: Array<{ templateId: string }> }>
+            }
+            if (!tierRareEquipmentDrops || tierRareEquipmentDrops.length === 0) {
+              delete next.tierRareEquipmentDrops
+            } else {
+              next.tierRareEquipmentDrops = tierRareEquipmentDrops
             }
             return next as Enemy
           })

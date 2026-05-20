@@ -598,5 +598,32 @@ describe('rollTreasureDrops', () => {
         }
       }
     })
+
+    it('tierRareEquipmentDrops は指定Tier以上で追加される', () => {
+      const enemy = createDummyEnemy({
+        level: 1,
+        rareEquipmentDrops: [{ templateId: 'sword_royal' }],
+        tierRareEquipmentDrops: [
+          { tier: 1, drops: [{ templateId: 'sword_kaiser' }] },
+          { tier: 3, drops: [{ templateId: 'sword_ancient' }] },
+        ],
+      })
+
+      const hasDrop = (tier: number, templateId: string) => {
+        for (let seed = 0; seed < 500; seed++) {
+          const engine = createEngine(seed)
+          const result = callRollTreasureDrops(engine, [enemy], new Set(), 35, { rare: 99 }, 1, 1, tier)
+          if (result.some((drop: any) => drop.templateId === templateId)) return true
+        }
+        return false
+      }
+
+      expect(hasDrop(0, 'sword_royal')).toBe(true)
+      expect(hasDrop(0, 'sword_kaiser')).toBe(false)
+      expect(hasDrop(1, 'sword_kaiser')).toBe(true)
+      expect(hasDrop(2, 'sword_kaiser')).toBe(true)
+      expect(hasDrop(2, 'sword_ancient')).toBe(false)
+      expect(hasDrop(3, 'sword_ancient')).toBe(true)
+    })
   })
 })

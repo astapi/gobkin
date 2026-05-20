@@ -3,9 +3,15 @@ import type { CharacterSkill } from './CharacterSkill'
 import type { FactorDropConfig } from './Factor'
 import type { LearnedSpell } from './Spell'
 import type { BattleActionPolicy } from './Battle'
+import type { DungeonTier } from './DungeonTier'
 
 export interface EquipmentDropConfig {
   templateId: string   // EquipmentTemplate.id
+}
+
+export interface TierEquipmentDropConfig {
+  tier: DungeonTier
+  drops: EquipmentDropConfig[]
 }
 
 export interface Enemy {
@@ -32,7 +38,8 @@ export interface Enemy {
   isBoss?: boolean // この敵自身がボスか。ボスパターンに含まれる随伴敵には付けない。
   gold: number
   factorDrops?: FactorDropConfig[]      // この敵を倒すと得られる可能性のある因子
-  rareEquipmentDrops?: EquipmentDropConfig[] // この敵固有のレアドロップ候補（運乱数によるレア抽選で当選した場合に1点抽選）
+  rareEquipmentDrops?: EquipmentDropConfig[] // 通常Tierから落ちるレアドロップ候補
+  tierRareEquipmentDrops?: TierEquipmentDropConfig[] // 指定Tier以上で追加されるレアドロップ候補
   skills?: CharacterSkill[]              // パッシブ/呪文付与スキル
   spells?: LearnedSpell[]               // この敵が使える呪文リスト
   battleActionPolicy?: BattleActionPolicy // 戦闘時の行動率設定

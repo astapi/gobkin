@@ -1380,6 +1380,110 @@ code {
   min-width: 0;
 }
 
+.tier-rare-editor {
+  margin-top: 1rem;
+}
+
+.tier-rare-grid {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.rare-drops-layout {
+  display: grid;
+  grid-template-columns: 18rem 1fr;
+  gap: 1rem;
+  align-items: flex-start;
+  margin-top: 1rem;
+}
+
+.rare-drops-sidebar {
+  position: sticky;
+  top: 5rem;
+  max-height: calc(100vh - 6rem);
+  overflow-y: auto;
+}
+
+.rare-drops-area-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.area-list-button {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--text);
+  padding: 0.55rem 0.65rem;
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+}
+
+.area-list-button:hover,
+.area-list-button.active {
+  background: var(--surface-muted);
+  border-color: var(--border-strong);
+}
+
+.area-list-button small {
+  color: var(--text-sub);
+}
+
+.rare-drops-toolbar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.rare-drops-toolbar .search-input {
+  width: min(26rem, 100%);
+}
+
+.rare-drops-table th:first-child {
+  width: 14rem;
+}
+
+.rare-drops-table td {
+  vertical-align: top;
+}
+
+.rare-drops-table tbody tr {
+  cursor: default;
+}
+
+.rare-drops-enemy-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.rare-drops-table .rare-drop-select {
+  min-width: 14rem;
+}
+
+@media (max-width: 1024px) {
+  .rare-drops-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .rare-drops-sidebar {
+    position: static;
+    max-height: none;
+  }
+
+  .rare-drops-toolbar {
+    flex-direction: column;
+  }
+}
+
 .sortable {
   cursor: pointer;
   user-select: none;

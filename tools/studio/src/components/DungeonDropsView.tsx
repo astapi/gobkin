@@ -115,14 +115,26 @@ export function DungeonDropsView({ enemy }: { enemy: EnemyDatabase | null }) {
   }, [templates])
 
   const rareDropEntries = useMemo(() => {
-    const entries: Array<{ enemyId: string; enemyName: string; templateIds: string[] }> = []
+    const entries: Array<{
+      enemyId: string
+      enemyName: string
+      baseTemplateIds: string[]
+      tierTemplateIds: Array<{ tier: DungeonTier; templateIds: string[] }>
+    }> = []
     for (const e of enemies) {
       const drops = (e as { rareEquipmentDrops?: Array<{ templateId: string }> }).rareEquipmentDrops
-      if (!drops || drops.length === 0) continue
+      const tierDrops =
+        (e as { tierRareEquipmentDrops?: Array<{ tier: DungeonTier; drops: Array<{ templateId: string }> }> })
+          .tierRareEquipmentDrops ?? []
+      if ((!drops || drops.length === 0) && tierDrops.length === 0) continue
       entries.push({
         enemyId: e.id,
         enemyName: e.name,
-        templateIds: drops.map((d) => d.templateId),
+        baseTemplateIds: (drops ?? []).map((d) => d.templateId),
+        tierTemplateIds: tierDrops.map((entry) => ({
+          tier: entry.tier,
+          templateIds: entry.drops.map((drop) => drop.templateId),
+        })),
       })
     }
     return entries
@@ -155,9 +167,9 @@ export function DungeonDropsView({ enemy }: { enemy: EnemyDatabase | null }) {
       </section>
 
       <section className="card">
-        <h3>レアドロップ (ティア共通)</h3>
+        <h3>レアドロップ</h3>
         <p className="subtle">
-          各敵に登録された <code>rareEquipmentDrops</code> のアイテム一覧です。ティアによる増減はありません。
+          各敵に登録された <code>rareEquipmentDrops</code> と、Tierで追加される <code>tierRareEquipmentDrops</code> の一覧です。
         </p>
         {rareDropEntries.length === 0 && <p className="subtle">レアドロップは登録されていません。</p>}
         {rareDropEntries.map((entry) => (
@@ -165,31 +177,61 @@ export function DungeonDropsView({ enemy }: { enemy: EnemyDatabase | null }) {
             <h4>
               {entry.enemyName} <span className="subtle">/ <code>{entry.enemyId}</code></span>
             </h4>
-            <ul className="drop-list">
-              {entry.templateIds.map((templateId) => {
-                const t = templateMap.get(templateId)
-                return (
-                  <li key={templateId} className={t ? '' : 'invalid-cell'}>
-                    {t ? (
-                      <>
-                        <strong>{t.name}</strong>{' '}
-                        <span className="subtle">
-                          <code>{t.id}</code> · {t.category}
-                          {t.subCategory ? ` / ${t.subCategory}` : ''}
-                          {t.rank !== undefined ? ` · rank ${t.rank}` : ''}
-                        </span>
-                      </>
-                    ) : (
-                      <span>未登録の templateId: {templateId}</span>
-                    )}
-                  </li>
-                )
-              })}
-            </ul>
+            <RareDropList label="通常" templateIds={entry.baseTemplateIds} templateMap={templateMap} />
+            {entry.tierTemplateIds.map((tierEntry) => {
+              const meta = DUNGEON_TIER_META[tierEntry.tier]
+              const label = meta.prefix ? `${meta.prefix} 追加` : '通常追加'
+              return (
+                <RareDropList
+                  key={tierEntry.tier}
+                  label={label}
+                  templateIds={tierEntry.templateIds}
+                  templateMap={templateMap}
+                />
+              )
+            })}
           </div>
         ))}
       </section>
     </div>
+  )
+}
+
+function RareDropList({
+  label,
+  templateIds,
+  templateMap,
+}: {
+  label: string
+  templateIds: string[]
+  templateMap: Map<string, EquipmentTemplate>
+}) {
+  if (templateIds.length === 0) return null
+  return (
+    <>
+      <p className="subtle">{label}</p>
+      <ul className="drop-list">
+        {templateIds.map((templateId) => {
+          const t = templateMap.get(templateId)
+          return (
+            <li key={templateId} className={t ? '' : 'invalid-cell'}>
+              {t ? (
+                <>
+                  <strong>{t.name}</strong>{' '}
+                  <span className="subtle">
+                    <code>{t.id}</code> · {t.category}
+                    {t.subCategory ? ` / ${t.subCategory}` : ''}
+                    {t.rank !== undefined ? ` · rank ${t.rank}` : ''}
+                  </span>
+                </>
+              ) : (
+                <span>未登録の templateId: {templateId}</span>
+              )}
+            </li>
+          )
+        })}
+      </ul>
+    </>
   )
 }
 
