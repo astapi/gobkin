@@ -85,7 +85,7 @@
       "order": 3,
       "unlockCondition": {
         "type": "dungeon_cleared",
-        "dungeonId": "goblin_village_3"
+        "dungeonId": "goblin_village_1"
       },
       "rewards": [
         {
@@ -100,26 +100,78 @@
       "chapters": [
         {
           "id": "story_after_goblin_village_1",
-          "text": "外縁を崩し、内部へ入り、中枢にいたホブゴブリンを打ち倒した。\n\n荷を運ばされていた弱い群れは、ついに命令する声を黙らせた。\n\n集落の広場で、仲間たちは勝利の意味も知らずに騒いでいる。ただ、もう奪われない場所を得たことだけは分かっていた。"
+          "text": "ゴブリン集落への奇襲は、夜明け前に終わった。\n\n見張りが騒ぐ前に外縁を抜き、内部へ雪崩れ込み、中枢にいたホブゴブリンを打ち倒した。荷を運ばされていた弱い群れは、ついに命令する声を黙らせた。"
         },
         {
           "id": "story_after_goblin_village_2",
-          "text": "マルクは倒れた支配者を見下ろした。\n\nマルクの後ろには生き残った仲間が集まっていた。マルクは実質的にゴブリンたちのリーダーとなっていた。"
+          "text": "マルクたちは集落を奪い取り、初めて自分たちの拠点を得た。\n\nだが、勝っただけでは生きられない。食料も道具も、周囲の地形も足りない。支配していたゴブリンたちが隠していた古い道筋を辿り、森の外れに捨てられた人間の村を探ることになった。"
         },
         {
           "id": "story_after_goblin_village_3",
-          "text": "マルクたちは集落を奪い取り拠点とした。\n\n敵のゴブリンたちの中にはガード、シーフ、ウォリアー、メイジなど特定の能力に秀でたゴブリンがいた。\n\n我々も訓練すれば出来るはずだ。\n\n集落には訓練所もあった。ありがたく使わせてもらおう。"
+          "text": "集落には訓練所が残っていた。敵のゴブリンたちにはガード、シーフ、ウォリアー、メイジなど、特定の能力に秀でた者がいた。\n\n我々も訓練すれば出来るはずだ。マルクは仲間を集め、奪った場所をただの巣穴ではなく、群れの拠点へ変え始めた。"
+        }
+      ]
+    },
+    {
+      "id": "story_after_forest_edge_village",
+      "title": "人間の痕跡",
+      "category": "main",
+      "order": 4,
+      "unlockCondition": {
+        "type": "dungeon_cleared",
+        "dungeonId": "forest_edge_village"
+      },
+      "rewards": [
+        {
+          "type": "golden_acorn",
+          "value": 5
+        }
+      ],
+      "chapters": [
+        {
+          "id": "story_after_forest_edge_village_1",
+          "text": "森外れの廃村に、もう人間はいなかった。\n\n崩れた家、荒れた畑、朽ちた柵。ゴブリンたちは食えるものと使える鉄片を探して走り回ったが、マルクはそこに暮らしがあった痕跡を見ていた。"
+        },
+        {
+          "id": "story_after_forest_edge_village_2",
+          "text": "村の中央に古井戸があった。水は涸れていたが、底から冷たい風が吹き上がってくる。\n\n井戸の壁には、人間が後から掘り広げた足場が残っていた。下には水路がある。森から外へ出るための、誰にも見られない道かもしれなかった。"
+        }
+      ]
+    },
+    {
+      "id": "story_after_old_well_waterway",
+      "title": "井戸底の道",
+      "category": "main",
+      "order": 5,
+      "unlockCondition": {
+        "type": "dungeon_cleared",
+        "dungeonId": "old_well_waterway"
+      },
+      "rewards": [
+        {
+          "type": "golden_acorn",
+          "value": 5
+        }
+      ],
+      "chapters": [
+        {
+          "id": "story_after_old_well_waterway_1",
+          "text": "古井戸の底は、ただの水場ではなかった。\n\n苔むした水路、崩れた排水路、骨が溜まった貯水槽。廃村の住民たちは、何かから逃げるように地下へ降り、そのまま戻らなかった。"
+        },
+        {
+          "id": "story_after_old_well_waterway_2",
+          "text": "水門を越えた先で、古い石造りの回廊が現れた。\n\n廃村よりも古い、人間が死者を封じた場所。マルクたちは、森の外へ進むために、忘れられた廃墟の暗がりへ足を踏み入れる。"
         }
       ]
     },
     {
       "id": "story_after_ruins",
-      "title": "街道への進出",
+      "title": "廃墟の出口",
       "category": "main",
-      "order": 4,
+      "order": 6,
       "unlockCondition": {
         "type": "dungeon_cleared",
-        "dungeonId": "undead_ruins_3"
+        "dungeonId": "undead_ruins_1"
       },
       "rewards": [
         {
@@ -130,11 +182,37 @@
       "chapters": [
         {
           "id": "story_after_ruins_1",
-          "text": "忘れられた廃墟の奥で、動く死体たちは最後まで倒れなかった。\n\n腕が落ちても、腹を裂かれても、骨だけになっても前へ出てくる。そのしぶとさは、マルクの群れにも残った。\n\n弱いゴブリンたちは、死に近い場所を越えて、さらに死ににくい群れになった。"
+          "text": "忘れられた廃墟の奥で、動く死体たちは最後まで倒れなかった。\n\n腕が落ちても、腹を裂かれても、骨だけになっても前へ出てくる。そのしぶとさは、マルクの群れにも残った。弱いゴブリンたちは、死に近い場所を越えて、さらに死ににくい群れになった。"
         },
         {
           "id": "story_after_ruins_2",
-          "text": "廃墟を抜けると、森の匂いが薄れた。\n\n土を踏み固めた広い道。車輪の跡。捨てられた布。折れた矢。そこには、ゴブリンの集落にはなかったものがいくつも落ちていた。\n\nマルクはそれを拾わせた。人間たちが通る道には、食料も武器も情報もある。次に奪う場所は、この街道だ。"
+          "text": "廃墟を抜けると、森の匂いが薄れた。\n\nその先にあったのは王国の城ではなく、岩場に隠れた人間の巣だった。荷車の跡、奪われた箱、粗末な見張り台。王国からも外れた盗賊たちが、街道の荷を狙って潜んでいる。"
+        }
+      ]
+    },
+    {
+      "id": "story_after_bandit_hideout",
+      "title": "奪った地図",
+      "category": "main",
+      "order": 7,
+      "unlockCondition": {
+        "type": "dungeon_cleared",
+        "dungeonId": "bandit_hideout"
+      },
+      "rewards": [
+        {
+          "type": "golden_acorn",
+          "value": 5
+        }
+      ],
+      "chapters": [
+        {
+          "id": "story_after_bandit_hideout_1",
+          "text": "盗賊のアジトには、食料よりも多くの道具があった。\n\n短剣、弓、油、火打ち石、そして人間の文字が書かれた紙束。ゴブリンたちには価値が分からないものも、マルクには道を示すものに見えた。"
+        },
+        {
+          "id": "story_after_bandit_hideout_2",
+          "text": "盗賊たちは辺境の村と辺境の城を結ぶ道を襲っていた。\n\nその道を押さえれば、村への荷も、城への報告も止まる。マルクたちは初めて、人間の土地をただ襲うのではなく、流れを断つことを覚えた。次は街道だ。"
         }
       ]
     },
@@ -142,7 +220,7 @@
       "id": "story_after_road",
       "title": "オークとの邂逅",
       "category": "main",
-      "order": 5,
+      "order": 8,
       "unlockCondition": {
         "type": "dungeon_cleared",
         "dungeonId": "road_1"
@@ -156,11 +234,11 @@
       "chapters": [
         {
           "id": "story_after_road_1",
-          "text": "街道を押さえると、群れは初めて人間の荷を奪った。\n\n袋に詰められた穀物。手入れされた刃物。火を起こす道具。人間たちは、ゴブリンが奪えばすぐ役に立つものを運んでいた。\n\n仲間たちは荷を分け、刃物を選び、使える道具を集め始めた。マルクたちは、道を押さえれば物も情報も流れ込むことを理解し始めていた。"
+          "text": "街道を押さえると、群れは初めて人間の荷を奪った。\n\n袋に詰められた穀物。手入れされた刃物。火を起こす道具。辺境の村と辺境の城の間には、ゴブリンが奪えばすぐ役に立つものが流れていた。"
         },
         {
           "id": "story_after_road_2",
-          "text": "だが、街道は人間だけのものではなかった。\n\n先へ進むほど、折れた木と踏み潰された足跡が増えていく。人間の護衛とは違う、太く重い臭いが残っていた。\n\nオークだ。力で奪い、力で守る連中が、この先に陣を張っている。マルクの群れが大きくなるには、あの力も必要だった。"
+          "text": "だが、街道を荒らしていたのは盗賊だけではなかった。\n\n森側へ続く脇道には、折れた木と踏み潰された足跡が増えていく。人間の護衛とは違う、太く重い臭いが残っていた。\n\nオークだ。辺境の村を狙う前に、この道を力で奪い合う連中を退けなければならない。"
         }
       ]
     },
@@ -168,7 +246,7 @@
       "id": "story_after_orc_camp",
       "title": "辺境の脅威",
       "category": "main",
-      "order": 6,
+      "order": 9,
       "unlockCondition": {
         "type": "dungeon_cleared",
         "dungeonId": "orc_camp_3"
@@ -194,7 +272,7 @@
       "id": "story_after_village",
       "title": "辺境城の静観",
       "category": "main",
-      "order": 7,
+      "order": 10,
       "unlockCondition": {
         "type": "dungeon_cleared",
         "dungeonId": "human_village"
@@ -224,7 +302,7 @@
       "id": "story_after_wolf_grassland",
       "title": "狼を駆る者",
       "category": "main",
-      "order": 8,
+      "order": 11,
       "unlockCondition": {
         "type": "dungeon_cleared",
         "dungeonId": "wolf_grassland_1"
@@ -250,7 +328,7 @@
       "id": "story_after_lizardman_swamp",
       "title": "脅威の拡大",
       "category": "main",
-      "order": 9,
+      "order": 12,
       "unlockCondition": {
         "type": "dungeon_cleared",
         "dungeonId": "lizardman_swamp_3"
@@ -276,7 +354,7 @@
       "id": "story_after_subjugation",
       "title": "落とせぬ城",
       "category": "main",
-      "order": 10,
+      "order": 13,
       "unlockCondition": {
         "type": "dungeon_cleared",
         "dungeonId": "subjugation_force_3"
@@ -298,7 +376,7 @@
       "id": "story_after_spider_forest",
       "title": "巣森の盟約",
       "category": "main",
-      "order": 11,
+      "order": 14,
       "unlockCondition": {
         "type": "dungeon_cleared",
         "dungeonId": "spider_forest_1"
@@ -320,7 +398,7 @@
       "id": "story_after_dead_grave",
       "title": "墓原の先",
       "category": "main",
-      "order": 12,
+      "order": 15,
       "unlockCondition": {
         "type": "dungeon_cleared",
         "dungeonId": "dead_grave_3"
@@ -342,7 +420,7 @@
       "id": "story_after_harpy_cliff",
       "title": "空を得る",
       "category": "main",
-      "order": 13,
+      "order": 16,
       "unlockCondition": {
         "type": "dungeon_cleared",
         "dungeonId": "harpy_cliff_1"
@@ -364,7 +442,7 @@
       "id": "story_after_fortress",
       "title": "西方防衛線の崩壊",
       "category": "main",
-      "order": 14,
+      "order": 17,
       "unlockCondition": {
         "type": "dungeon_cleared",
         "dungeonId": "human_fortress_3"
@@ -386,7 +464,7 @@
       "id": "story_after_vampire",
       "title": "王都への道",
       "category": "main",
-      "order": 15,
+      "order": 18,
       "unlockCondition": {
         "type": "dungeon_cleared",
         "dungeonId": "vampire_castle_1"
@@ -408,7 +486,7 @@
       "id": "story_after_royal_capital_2",
       "title": "最後の試練",
       "category": "main",
-      "order": 16,
+      "order": 19,
       "unlockCondition": {
         "type": "dungeon_cleared",
         "dungeonId": "royal_capital_2"
@@ -430,7 +508,7 @@
       "id": "story_ending",
       "title": "ゴブリンキングダム",
       "category": "main",
-      "order": 17,
+      "order": 20,
       "unlockCondition": {
         "type": "dungeon_cleared",
         "dungeonId": "royal_capital_3"
@@ -456,7 +534,7 @@
       "id": "side_orc_fortress",
       "title": "オークの本拠地",
       "category": "side",
-      "order": 100,
+      "order": 103,
       "unlockCondition": {
         "type": "dungeon_cleared",
         "dungeonId": "orc_fortress_1"
@@ -482,7 +560,7 @@
       "id": "side_hobbit_hills",
       "title": "丘陵の民",
       "category": "side",
-      "order": 101,
+      "order": 104,
       "unlockCondition": {
         "type": "dungeon_cleared",
         "dungeonId": "hobbit_hills_1"
@@ -504,7 +582,7 @@
       "id": "side_dwarf_mine",
       "title": "鍛冶王の遺産",
       "category": "side",
-      "order": 102,
+      "order": 105,
       "unlockCondition": {
         "type": "dungeon_cleared",
         "dungeonId": "dwarf_mine_3"
@@ -526,7 +604,7 @@
       "id": "side_elf_forest",
       "title": "森の民との決着",
       "category": "side",
-      "order": 103,
+      "order": 106,
       "unlockCondition": {
         "type": "dungeon_cleared",
         "dungeonId": "elf_forest_3"
@@ -548,7 +626,7 @@
       "id": "side_lizardman_swamp",
       "title": "沼王の降伏",
       "category": "side",
-      "order": 104,
+      "order": 107,
       "unlockCondition": {
         "type": "dungeon_cleared",
         "dungeonId": "lizardman_swamp_3"
@@ -570,7 +648,7 @@
       "id": "side_troll_canyon",
       "title": "峡谷の暴君",
       "category": "side",
-      "order": 105,
+      "order": 108,
       "unlockCondition": {
         "type": "dungeon_cleared",
         "dungeonId": "troll_canyon_3"
@@ -592,7 +670,7 @@
       "id": "side_minotaur",
       "title": "迷宮の主",
       "category": "side",
-      "order": 106,
+      "order": 109,
       "unlockCondition": {
         "type": "dungeon_cleared",
         "dungeonId": "minotaur_labyrinth_1"
@@ -614,7 +692,7 @@
       "id": "side_harpy_cliff",
       "title": "空の支配者",
       "category": "side",
-      "order": 107,
+      "order": 110,
       "unlockCondition": {
         "type": "dungeon_cleared",
         "dungeonId": "harpy_cliff_1"

@@ -7,6 +7,8 @@ import dragonVolcano1 from './dragon_volcano_1.json'
 import elfForest1 from './elf_forest_1.json'
 import elfForest2 from './elf_forest_2.json'
 import elfForest3 from './elf_forest_3.json'
+import banditHideout from './bandit_hideout.json'
+import forestEdgeVillage from './forest_edge_village.json'
 import forestOutskirts from './forest_outskirts.json'
 import goblinVillage1 from './goblin_village_1.json'
 import goblinVillage2 from './goblin_village_2.json'
@@ -25,6 +27,7 @@ import orcCamp1 from './orc_camp_1.json'
 import orcCamp2 from './orc_camp_2.json'
 import orcCamp3 from './orc_camp_3.json'
 import orcFortress1 from './orc_fortress_1.json'
+import oldWellWaterway from './old_well_waterway.json'
 import royalCapital1 from './royal_capital_1.json'
 import royalCapital2 from './royal_capital_2.json'
 import royalCapital3 from './royal_capital_3.json'
@@ -51,6 +54,7 @@ const areaDatabases: Record<string, AreaConfig> = {
   dwarf_mine_1: dwarfMine1 as AreaConfig,
   dwarf_mine_2: dwarfMine2 as AreaConfig,
   dwarf_mine_3: dwarfMine3 as AreaConfig,
+  bandit_hideout: banditHideout as AreaConfig,
   cat_fortress_1: catFortress1 as AreaConfig,
   dragon_volcano_1: dragonVolcano1 as AreaConfig,
   dead_grave_1: deadGrave1 as AreaConfig,
@@ -59,6 +63,7 @@ const areaDatabases: Record<string, AreaConfig> = {
   elf_forest_1: elfForest1 as AreaConfig,
   elf_forest_2: elfForest2 as AreaConfig,
   elf_forest_3: elfForest3 as AreaConfig,
+  forest_edge_village: forestEdgeVillage as AreaConfig,
   forest_outskirts: forestOutskirts as AreaConfig,
   goblin_village_1: goblinVillage1 as AreaConfig,
   goblin_village_2: goblinVillage2 as AreaConfig,
@@ -77,6 +82,7 @@ const areaDatabases: Record<string, AreaConfig> = {
   orc_camp_2: orcCamp2 as AreaConfig,
   orc_camp_3: orcCamp3 as AreaConfig,
   orc_fortress_1: orcFortress1 as AreaConfig,
+  old_well_waterway: oldWellWaterway as AreaConfig,
   royal_capital_1: royalCapital1 as AreaConfig,
   royal_capital_2: royalCapital2 as AreaConfig,
   royal_capital_3: royalCapital3 as AreaConfig,

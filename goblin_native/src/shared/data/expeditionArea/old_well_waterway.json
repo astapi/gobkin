@@ -1,0 +1,17 @@
+{
+  "id": "old_well_waterway",
+  "name": "古井戸の地下水路",
+  "areaLevel": 10,
+  "floors": 6,
+  "baseDurationSec": 3060,
+  "description": "廃村の古井戸から降りる地下水路。苔むした水路と崩れた排水路を抜けた先に、忘れられた廃墟の地下口がある。",
+  "encounter": {
+    "eventIntervalSec": 102,
+    "eventWeights": {
+      "exploring": 60,
+      "goldTreasure": 10,
+      "battle": 30
+    }
+  },
+  "unlockNext": "undead_ruins_1"
+}

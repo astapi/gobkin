@@ -4,7 +4,7 @@
   "areaLevel": 14,
   "floors": 6,
   "baseDurationSec": 4860,
-  "description": "ゴブリン集落から最も近い街道。森から出てくる狼や盗賊、荷を守る人間の護衛が行き交う。",
+  "description": "辺境の村と辺境の城を結ぶ生活路。森から出てくる獣や、荷を守る人間の護衛が行き交う。ここを押さえれば村は孤立する。",
   "encounter": {
     "eventIntervalSec": 162,
     "eventWeights": {

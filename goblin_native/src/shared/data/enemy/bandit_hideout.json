@@ -1,0 +1,508 @@
+{
+  "enemies": [
+    {
+      "id": "BDT002",
+      "name": "盗賊",
+      "raceTags": [
+        "human"
+      ],
+      "level": 12,
+      "hp": 145,
+      "atk": 32,
+      "def": 22,
+      "attackCount": 2,
+      "accuracy": 300,
+      "evasion": 21,
+      "exp": 38,
+      "gold": 30,
+      "magicDef": 12,
+      "baseAttributes": {
+        "power": 9,
+        "wisdom": 6,
+        "spirit": 4,
+        "vitality": 10,
+        "agility": 11,
+        "luck": 8
+      }
+    },
+    {
+      "id": "BDT003",
+      "name": "盗賊弓兵",
+      "raceTags": [
+        "human"
+      ],
+      "level": 12,
+      "hp": 105,
+      "atk": 28,
+      "def": 16,
+      "attackCount": 2,
+      "accuracy": 315,
+      "evasion": 23,
+      "exp": 38,
+      "gold": 34,
+      "magicDef": 10,
+      "baseAttributes": {
+        "power": 8,
+        "wisdom": 6,
+        "spirit": 4,
+        "vitality": 7,
+        "agility": 12,
+        "luck": 8
+      }
+    },
+    {
+      "id": "BDT004",
+      "name": "盗賊斥候",
+      "raceTags": [
+        "human"
+      ],
+      "level": 13,
+      "hp": 115,
+      "atk": 30,
+      "def": 17,
+      "attackCount": 3,
+      "accuracy": 330,
+      "evasion": 30,
+      "exp": 42,
+      "gold": 38,
+      "magicDef": 12,
+      "baseAttributes": {
+        "power": 8,
+        "wisdom": 7,
+        "spirit": 5,
+        "vitality": 7,
+        "agility": 15,
+        "luck": 9
+      }
+    },
+    {
+      "id": "BDT005",
+      "name": "傭兵くずれ",
+      "raceTags": [
+        "human"
+      ],
+      "level": 14,
+      "hp": 260,
+      "atk": 42,
+      "def": 34,
+      "attackCount": 2,
+      "accuracy": 325,
+      "evasion": 17,
+      "exp": 58,
+      "gold": 50,
+      "magicDef": 24,
+      "baseAttributes": {
+        "power": 13,
+        "wisdom": 8,
+        "spirit": 6,
+        "vitality": 16,
+        "agility": 8,
+        "luck": 7
+      }
+    },
+    {
+      "id": "B_BDT_CHIEF",
+      "name": "赤傷のガルド",
+      "raceTags": [
+        "human"
+      ],
+      "level": 18,
+      "hp": 420,
+      "atk": 58,
+      "def": 36,
+      "attackCount": 3,
+      "accuracy": 390,
+      "evasion": 26,
+      "exp": 118,
+      "gold": 160,
+      "magicDef": 30,
+      "baseAttributes": {
+        "power": 16,
+        "wisdom": 10,
+        "spirit": 8,
+        "vitality": 18,
+        "agility": 14,
+        "luck": 10
+      },
+      "isBoss": true,
+      "rareEquipmentDrops": [
+        {
+          "templateId": "accessory_human_slayer"
+        }
+      ]
+    }
+  ],
+  "patterns": [
+    {
+      "id": "BDT_01_001",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "BDT002",
+          "BDT002"
+        ]
+      ]
+    },
+    {
+      "id": "BDT_01_002",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "BDT002"
+        ]
+      ]
+    },
+    {
+      "id": "BDT_01_003",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "BDT002"
+        ],
+        [
+          "BDT003"
+        ]
+      ]
+    },
+    {
+      "id": "BDT_F1_BOSS",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "BDT002"
+        ],
+        [
+          "BDT002",
+          "BDT002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "BDT_02_001",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "BDT002",
+          "BDT002"
+        ]
+      ]
+    },
+    {
+      "id": "BDT_02_002",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "BDT003",
+          "BDT003"
+        ]
+      ]
+    },
+    {
+      "id": "BDT_02_003",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "BDT002",
+          "BDT002"
+        ],
+        [
+          "BDT003"
+        ]
+      ]
+    },
+    {
+      "id": "BDT_F2_BOSS",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "BDT002",
+          "BDT002"
+        ],
+        [
+          "BDT003"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "BDT_03_001",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "BDT004"
+        ],
+        [
+          "BDT002"
+        ]
+      ]
+    },
+    {
+      "id": "BDT_03_002",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "BDT003",
+          "BDT003"
+        ],
+        [
+          "BDT002"
+        ]
+      ]
+    },
+    {
+      "id": "BDT_03_003",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "BDT002",
+          "BDT002"
+        ],
+        [
+          "BDT004"
+        ]
+      ]
+    },
+    {
+      "id": "BDT_F3_BOSS",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "BDT004"
+        ],
+        [
+          "BDT002",
+          "BDT002"
+        ],
+        [
+          "BDT003"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "BDT_04_001",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "BDT005"
+        ]
+      ]
+    },
+    {
+      "id": "BDT_04_002",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "BDT004",
+          "BDT004"
+        ]
+      ]
+    },
+    {
+      "id": "BDT_04_003",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "BDT005"
+        ],
+        [
+          "BDT003",
+          "BDT003"
+        ]
+      ]
+    },
+    {
+      "id": "BDT_F4_BOSS",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "BDT005"
+        ],
+        [
+          "BDT004"
+        ],
+        [
+          "BDT003",
+          "BDT003"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "BDT_05_001",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "BDT005"
+        ],
+        [
+          "BDT002",
+          "BDT002"
+        ]
+      ]
+    },
+    {
+      "id": "BDT_05_002",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "BDT004",
+          "BDT004"
+        ],
+        [
+          "BDT003"
+        ]
+      ]
+    },
+    {
+      "id": "BDT_05_003",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "BDT005",
+          "BDT005"
+        ]
+      ]
+    },
+    {
+      "id": "BDT_F5_BOSS",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "BDT005",
+          "BDT005"
+        ],
+        [
+          "BDT004"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "BDT_06_001",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "BDT005"
+        ],
+        [
+          "BDT004",
+          "BDT004"
+        ]
+      ]
+    },
+    {
+      "id": "BDT_06_002",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "BDT005",
+          "BDT005"
+        ],
+        [
+          "BDT003"
+        ]
+      ]
+    },
+    {
+      "id": "BDT_06_003",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "BDT004",
+          "BDT004"
+        ],
+        [
+          "BDT002",
+          "BDT002"
+        ]
+      ]
+    },
+    {
+      "id": "BDT_F6_BOSS",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "BDT005",
+          "BDT005"
+        ],
+        [
+          "BDT004",
+          "BDT004"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "BDT_FINAL_BOSS",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "B_BDT_CHIEF"
+        ],
+        [
+          "BDT005"
+        ],
+        [
+          "BDT004"
+        ],
+        [
+          "BDT003",
+          "BDT003"
+        ]
+      ],
+      "isBoss": true
+    }
+  ]
+}

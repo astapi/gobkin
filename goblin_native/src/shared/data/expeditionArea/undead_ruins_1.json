@@ -4,7 +4,7 @@
   "areaLevel": 10,
   "floors": 6,
   "baseDurationSec": 3240,
-  "description": "廃墟の入口付近。スケルトンとゾンビが徘徊する薄暗い回廊。 廃墟の深部。ゴーストや骨弓兵が加わり、アンデッドの密度が増す。 廃墟の最深部。屍鬼が群れをなし、奥には死霊術師の残骸が眠る。",
+  "description": "地下水路の出口に広がる忘れられた廃墟。スケルトンとゾンビが徘徊する薄暗い回廊から、死霊術師の残骸が眠る最奥へ進む。",
   "encounter": {
     "eventIntervalSec": 108,
     "eventWeights": {
@@ -13,5 +13,5 @@
       "battle": 30
     }
   },
-  "unlockNext": "road_1"
+  "unlockNext": "bandit_hideout"
 }
