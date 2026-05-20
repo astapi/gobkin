@@ -92,7 +92,11 @@ export function formatStatValue(value: Enemy[keyof Enemy]): string {
 }
 
 export function getRareDropNames(enemy: Enemy): string[] {
-  return (enemy.rareEquipmentDrops ?? []).map((drop) => {
+  const drops = [
+    ...(enemy.rareEquipmentDrops ?? []),
+    ...(enemy.tierRareEquipmentDrops ?? []).flatMap((entry) => entry.drops),
+  ]
+  return drops.map((drop) => {
     const template = getEquipmentTemplate(drop.templateId)
     return template ? getEquipmentLabel(template) : drop.templateId
   })

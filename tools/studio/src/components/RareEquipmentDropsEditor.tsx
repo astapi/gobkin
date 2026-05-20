@@ -6,14 +6,14 @@ import {
   type EquipmentTemplate,
 } from '../lib/schema'
 
-interface RareDropEntry {
+export interface RareDropEntry {
   templateId: string
 }
 
 let cachedPool: EquipmentTemplate[] | null = null
 let cachedPoolPromise: Promise<EquipmentTemplate[]> | null = null
 
-async function loadEquipmentTemplates(): Promise<EquipmentTemplate[]> {
+export async function loadEquipmentTemplates(): Promise<EquipmentTemplate[]> {
   if (cachedPool) return cachedPool
   if (cachedPoolPromise) return cachedPoolPromise
   cachedPoolPromise = (async () => {
@@ -39,9 +39,13 @@ export function invalidateEquipmentPoolCache() {
 export function RareEquipmentDropsEditor({
   rareEquipmentDrops,
   onChange,
+  title = 'レアドロップ (rareEquipmentDrops)',
+  maxEntries,
 }: {
   rareEquipmentDrops: RareDropEntry[] | undefined
   onChange: (next: RareDropEntry[] | undefined) => void
+  title?: string
+  maxEntries?: number
 }) {
   const entries = rareEquipmentDrops ?? []
   const [templates, setTemplates] = useState<EquipmentTemplate[] | null>(cachedPool)
@@ -83,20 +87,27 @@ export function RareEquipmentDropsEditor({
     onChange(next.length > 0 ? next : undefined)
   }
   const addEntry = () => {
+    if (maxEntries !== undefined && entries.length >= maxEntries) return
     onChange([...entries, { templateId: '' }])
   }
 
   return (
     <section className="card">
       <div className="section-head">
-        <h4>レアドロップ (rareEquipmentDrops)</h4>
-        <button className="btn ghost small" onClick={addEntry}>
+        <h4>{title}</h4>
+        <button
+          className="btn ghost small"
+          onClick={addEntry}
+          disabled={maxEntries !== undefined && entries.length >= maxEntries}
+        >
           + 追加
         </button>
       </div>
       <p className="subtle">
         登録したアイテム1つごとに運値ベースの当落判定が走ります（確率指定なし）。
-        同じ敵から複数種のレアアイテムがドロップする可能性があります。
+        {maxEntries === 1
+          ? 'この画面では候補を1個まで設定できます。'
+          : '同じ敵から複数種のレアアイテムがドロップする可能性があります。'}
         セレクトには <strong>isRare=true のアイテムのみ</strong> 表示されます（アイテム管理画面のチェックでON可）。
       </p>
       {loadError && <p className="save-error">{loadError}</p>}
@@ -144,7 +155,7 @@ export function RareEquipmentDropsEditor({
   )
 }
 
-function TemplateSelect({
+export function TemplateSelect({
   value,
   templates,
   onChange,

@@ -784,8 +784,9 @@ export class ExpeditionEngine {
    *    そのランクの装備プールから1点を均等抽選する。
    *
    * レアドロップ:
-   *  - 敵に `rareEquipmentDrops` が設定されているときのみ判定する。
-   *  - rareEquipmentDrops の **アイテム1つごとに** `100 - effectiveRare * 0.1 < 運乱数` で当落判定。
+   *  - 敵に `rareEquipmentDrops` / `tierRareEquipmentDrops` が設定されているときのみ判定する。
+   *  - Tier 追加分は `tier <= 現在Tier` の候補を `rareEquipmentDrops` に足して判定する。
+   *  - レア候補の **アイテム1つごとに** `100 - effectiveRare * 0.1 < 運乱数` で当落判定。
    *  - effectiveRare = `rare * rareDropMultiplierBoost`（boost は課金アイテム等で 2 倍化）。
    *  - 当選したアイテムをそれぞれドロップに追加する（同じ敵から複数種ドロップ可能）。
    *
@@ -836,11 +837,17 @@ export class ExpeditionEngine {
       pendingDroppedIds.add(selected.id)
     }
 
-    // レアドロップ判定（rareEquipmentDrops のアイテム1つごとに当落判定）
+    // レアドロップ判定（通常候補 + Tier 追加候補のアイテム1つごとに当落判定）
     for (const enemy of enemies) {
-      if (!enemy.rareEquipmentDrops || enemy.rareEquipmentDrops.length === 0) continue
+      const rareEquipmentDrops = [
+        ...(enemy.rareEquipmentDrops ?? []),
+        ...(enemy.tierRareEquipmentDrops ?? [])
+          .filter(tierDrops => tierDrops.tier <= tier)
+          .flatMap(tierDrops => tierDrops.drops),
+      ]
+      if (rareEquipmentDrops.length === 0) continue
 
-      for (const drop of enemy.rareEquipmentDrops) {
+      for (const drop of rareEquipmentDrops) {
         if (
           expeditionDroppedIds.has(drop.templateId) ||
           pendingDroppedIds.has(drop.templateId) ||
