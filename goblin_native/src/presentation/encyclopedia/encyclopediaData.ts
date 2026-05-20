@@ -2,7 +2,7 @@ import { getEnemyDatabase } from '@/shared/data/enemy'
 import { getEquipmentTemplate } from '@/shared/data/equipmentPoolLoader'
 import { getFactor } from '@/shared/data/factors'
 import { getEquipmentLabel, getFactorName } from '@/shared/i18n/entityLocalization'
-import { DUNGEON_TIER_LIST, type DungeonTier } from '@/shared/types/DungeonTier'
+import { DUNGEON_TIER_LIST, DUNGEON_TIER_SELECTABLE_MAX, type DungeonTier } from '@/shared/types/DungeonTier'
 import type { Dungeon, Enemy } from '@/shared/types'
 
 export type EnemyEntry = {
@@ -34,7 +34,7 @@ export const ATTRIBUTE_ROWS: Array<{ key: keyof Enemy['baseAttributes']; label: 
 ]
 
 export function getUnlockedMaxTier(dungeon: Dungeon): DungeonTier {
-  return Math.min(Math.max(dungeon.maxClearedTier ?? 0, 0), 5) as DungeonTier
+  return Math.min(Math.max(dungeon.maxClearedTier ?? 0, 0), DUNGEON_TIER_SELECTABLE_MAX) as DungeonTier
 }
 
 export function getUnlockedTiers(dungeon: Dungeon): DungeonTier[] {
