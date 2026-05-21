@@ -122,6 +122,7 @@ export const WeaponSubCategorySchema = z.enum([
   'bow',
   'staff',
   'claw',
+  'hidden',
 ])
 
 export const WeaponRangeSchema = z.enum(['melee', 'ranged'])

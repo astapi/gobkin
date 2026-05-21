@@ -33,6 +33,7 @@ const SUB_CATEGORIES: WeaponSubCategory[] = [
   'bow',
   'staff',
   'claw',
+  'hidden',
 ]
 
 const RANGES: WeaponRange[] = ['melee', 'ranged']

@@ -19,6 +19,7 @@ import {
   getRearProtectionMultiplierFromSkills,
   getRowDamageMultiplierFromSkills,
   getSpellTakenMultiplierFromSkills,
+  getSpellDamageMultiplierFromSkills,
   getSpellDamagePercentFromSkills,
   getPartyMagicDamageMultiplierFromSkills,
   hasCoverLowHpAllySkill,
@@ -1247,7 +1248,9 @@ export class BattleSystem {
           spellSkill, SPELL_DAMAGE_OPTIONS, rng,
         ) + spellBonusDamage
         const rearDamageMultiplier = this.getRearDamageMultiplier(unit, sourceGroup)
-        const spellDamageFactor = (1 + unit.spellDamagePercent / 100) * unit.magicFieldDamageMultiplier
+        const spellDamageFactor = (1 + unit.spellDamagePercent / 100)
+          * getSpellDamageMultiplierFromSkills(unit.skills, spellDef.id)
+          * unit.magicFieldDamageMultiplier
         const spellTakenMultiplier = getSpellTakenMultiplierFromSkills(target.skills, spellDef.id)
         const reductionFactor = 1 - target.damageReduction / 100
         const magicReductionFactor = 1 - target.magicDamageReduction / 100
@@ -1287,7 +1290,9 @@ export class BattleSystem {
           spellSkill, SPELL_DAMAGE_OPTIONS, rng,
         ) + spellBonusDamage
         const rearDamageMultiplier = this.getRearDamageMultiplier(unit, sourceGroup)
-        const spellDamageFactor = (1 + unit.spellDamagePercent / 100) * unit.magicFieldDamageMultiplier
+        const spellDamageFactor = (1 + unit.spellDamagePercent / 100)
+          * getSpellDamageMultiplierFromSkills(unit.skills, spellDef.id)
+          * unit.magicFieldDamageMultiplier
         const spellTakenMultiplier = getSpellTakenMultiplierFromSkills(target.skills, spellDef.id)
         const reductionFactor = 1 - target.damageReduction / 100
         const magicReductionFactor = 1 - target.magicDamageReduction / 100

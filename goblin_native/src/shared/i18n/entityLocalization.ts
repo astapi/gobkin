@@ -107,6 +107,15 @@ export function getSkillLabel(skill: CharacterSkill): string {
     return i18n.t('battle.spellDamagePercent', { value: skill.spellDamagePercent })
   }
 
+  for (const [spellId, value] of Object.entries(skill.spellDamageMultipliers ?? {})) {
+    if (value !== undefined) {
+      return i18n.t('battle.spellDamageMultiplier', {
+        spell: i18n.t(`entities.spell.${spellId}`, { defaultValue: spellId }),
+        value: value.toFixed(1),
+      })
+    }
+  }
+
   for (const [key, value] of Object.entries(skill.baseAttributeBonuses ?? {})) {
     if (value !== undefined) {
       return i18n.t('battle.baseAttributeBonus', {
