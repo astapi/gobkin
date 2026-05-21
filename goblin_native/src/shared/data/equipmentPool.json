@@ -1,5 +1,5 @@
 {
-  "version": "1.6.4",
+  "version": "1.6.6",
   "templates": [
     {
       "_comment": "===== 武器:剣 (melee) ====="
@@ -844,6 +844,459 @@
       "range": "ranged",
       "price": 3000000,
       "rank": 7
+    },
+    {
+      "_comment": "===== 武器:暗器 (melee) ====="
+    },
+    {
+      "id": "hidden_dagger",
+      "name": "ダガー",
+      "category": "weapon",
+      "subCategory": "hidden",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 9
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 64
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": 0.2
+        },
+        {
+          "stat": "evasion_flat",
+          "value": 4
+        }
+      ],
+      "grantedSkillIds": [
+        "additional_damage_6"
+      ],
+      "range": "melee",
+      "price": 100,
+      "rank": 1,
+      "unlockRank": 1
+    },
+    {
+      "id": "hidden_mithril_dagger",
+      "name": "ミスリルダガー",
+      "category": "weapon",
+      "subCategory": "hidden",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 14
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 96
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": 0.2
+        },
+        {
+          "stat": "evasion_flat",
+          "value": 6
+        }
+      ],
+      "grantedSkillIds": [
+        "additional_damage_7"
+      ],
+      "range": "melee",
+      "price": 500,
+      "rank": 2,
+      "unlockRank": 2
+    },
+    {
+      "id": "hidden_royal_dagger",
+      "name": "ロイヤルダガー",
+      "category": "weapon",
+      "subCategory": "hidden",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 20
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 128
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": 0.2
+        },
+        {
+          "stat": "evasion_flat",
+          "value": 8
+        }
+      ],
+      "grantedSkillIds": [
+        "additional_damage_8"
+      ],
+      "range": "melee",
+      "price": 2500,
+      "rank": 3,
+      "unlockRank": 2
+    },
+    {
+      "id": "hidden_kaiser_dagger",
+      "name": "カイザーダガー",
+      "category": "weapon",
+      "subCategory": "hidden",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 28
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 184
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": 0.3
+        },
+        {
+          "stat": "evasion_flat",
+          "value": 12
+        }
+      ],
+      "grantedSkillIds": [
+        "additional_damage_9"
+      ],
+      "range": "melee",
+      "price": 12500,
+      "rank": 4,
+      "unlockRank": 3
+    },
+    {
+      "id": "hidden_ancient_dagger",
+      "name": "エンシェントダガー",
+      "category": "weapon",
+      "subCategory": "hidden",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 42
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 240
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": 0.3
+        },
+        {
+          "stat": "evasion_flat",
+          "value": 16
+        }
+      ],
+      "grantedSkillIds": [
+        "additional_damage_10"
+      ],
+      "range": "melee",
+      "price": 50000,
+      "rank": 5,
+      "unlockRank": 5
+    },
+    {
+      "id": "hidden_dragon_dagger",
+      "name": "ドラゴンダガー",
+      "category": "weapon",
+      "subCategory": "hidden",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 56
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 300
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": 0.4
+        },
+        {
+          "stat": "evasion_flat",
+          "value": 20
+        }
+      ],
+      "grantedSkillIds": [
+        "additional_damage_11"
+      ],
+      "range": "melee",
+      "price": 150000,
+      "rank": 6
+    },
+    {
+      "id": "hidden_adamant_dagger",
+      "name": "アダマントダガー",
+      "category": "weapon",
+      "subCategory": "hidden",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 72
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 370
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": 0.4
+        },
+        {
+          "stat": "evasion_flat",
+          "value": 24
+        }
+      ],
+      "grantedSkillIds": [
+        "additional_damage_12"
+      ],
+      "range": "melee",
+      "price": 300000,
+      "rank": 7
+    },
+    {
+      "_comment": "===== 武器:暗器 (ranged rare) ====="
+    },
+    {
+      "id": "hidden_throwing_knife",
+      "name": "投げナイフ",
+      "category": "weapon",
+      "subCategory": "hidden",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 7
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 90
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": 0.2
+        }
+      ],
+      "grantedSkillIds": [
+        "additional_damage_6"
+      ],
+      "range": "ranged",
+      "price": 12500,
+      "isRare": true
+    },
+    {
+      "id": "hidden_poison_knife",
+      "name": "毒投げナイフ",
+      "category": "weapon",
+      "subCategory": "hidden",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 10
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 130
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": 0.2
+        }
+      ],
+      "grantedSkillIds": [
+        "additional_damage_7"
+      ],
+      "range": "ranged",
+      "price": 25000,
+      "isRare": true
+    },
+    {
+      "id": "hidden_shuriken",
+      "name": "手裏剣",
+      "category": "weapon",
+      "subCategory": "hidden",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 14
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 170
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": 0.3
+        },
+        {
+          "stat": "evasion_flat",
+          "value": 4
+        }
+      ],
+      "grantedSkillIds": [
+        "additional_damage_8"
+      ],
+      "range": "ranged",
+      "price": 50000,
+      "isRare": true
+    },
+    {
+      "id": "hidden_cross_shuriken",
+      "name": "十字手裏剣",
+      "category": "weapon",
+      "subCategory": "hidden",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 20
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 230
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": 0.3
+        },
+        {
+          "stat": "evasion_flat",
+          "value": 6
+        }
+      ],
+      "grantedSkillIds": [
+        "additional_damage_9"
+      ],
+      "range": "ranged",
+      "price": 125000,
+      "isRare": true
+    },
+    {
+      "id": "hidden_kunai",
+      "name": "くない",
+      "category": "weapon",
+      "subCategory": "hidden",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 24
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 210
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": 0.3
+        },
+        {
+          "stat": "evasion_flat",
+          "value": 4
+        }
+      ],
+      "grantedSkillIds": [
+        "additional_damage_9"
+      ],
+      "range": "ranged",
+      "price": 125000,
+      "isRare": true
+    },
+    {
+      "id": "hidden_cursed_needle",
+      "name": "呪いの針",
+      "category": "weapon",
+      "subCategory": "hidden",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 18
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 300
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": 0.4
+        },
+        {
+          "stat": "evasion_flat",
+          "value": 8
+        }
+      ],
+      "grantedSkillIds": [
+        "additional_damage_10"
+      ],
+      "range": "ranged",
+      "price": 500000,
+      "isRare": true
+    },
+    {
+      "id": "hidden_shadow_needle",
+      "name": "影縫い針",
+      "category": "weapon",
+      "subCategory": "hidden",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 26
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 380
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": 0.4
+        },
+        {
+          "stat": "evasion_flat",
+          "value": 10
+        }
+      ],
+      "grantedSkillIds": [
+        "additional_damage_11"
+      ],
+      "range": "ranged",
+      "price": 1500000,
+      "isRare": true
+    },
+    {
+      "id": "hidden_fuma_shuriken",
+      "name": "風魔手裏剣",
+      "category": "weapon",
+      "subCategory": "hidden",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 48
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 460
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": 0.4
+        },
+        {
+          "stat": "evasion_flat",
+          "value": 8
+        }
+      ],
+      "grantedSkillIds": [
+        "additional_damage_12"
+      ],
+      "range": "ranged",
+      "price": 3000000,
+      "isRare": true
     },
     {
       "_comment": "===== 防具:鎧 (armor) ====="
@@ -2115,6 +2568,373 @@
       ],
       "price": 1500000,
       "rank": 7
+    },
+    {
+      "id": "rod_shield_rod",
+      "name": "シールドロッド",
+      "category": "rod",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -2
+        },
+        {
+          "stat": "magicHeal_flat",
+          "value": 60
+        }
+      ],
+      "grantedSkillIds": [
+        "grant_shield_barrier"
+      ],
+      "price": 25000,
+      "isRare": true
+    },
+    {
+      "id": "rod_barrier_rod",
+      "name": "バリアロッド",
+      "category": "rod",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -2
+        },
+        {
+          "stat": "magicHeal_flat",
+          "value": 60
+        }
+      ],
+      "grantedSkillIds": [
+        "grant_magic_barrier"
+      ],
+      "price": 25000,
+      "isRare": true
+    },
+    {
+      "id": "wand_bakuen",
+      "name": "爆炎の杖",
+      "category": "wand",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -4
+        },
+        {
+          "stat": "magic_atk_flat",
+          "value": 50
+        }
+      ],
+      "grantedSkillIds": [
+        "grant_fireball",
+        "fireball_twice",
+        "fireball_damage_120"
+      ],
+      "price": 25000,
+      "isRare": true
+    },
+    {
+      "_comment": "===== 武器:剣 (rare) ====="
+    },
+    {
+      "id": "sword_aegis_blade",
+      "name": "アイギスブレード",
+      "category": "weapon",
+      "subCategory": "sword",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 20
+        },
+        {
+          "stat": "def_flat",
+          "value": 8
+        },
+        {
+          "stat": "hp_flat",
+          "value": 20
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 64
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": -0.1
+        }
+      ],
+      "grantedSkillIds": [
+        "talent_def_150"
+      ],
+      "range": "melee",
+      "price": 25000,
+      "isRare": true
+    },
+    {
+      "id": "sword_blood_sword",
+      "name": "ブラッドソード",
+      "category": "weapon",
+      "subCategory": "sword",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 18
+        },
+        {
+          "stat": "def_flat",
+          "value": 4
+        },
+        {
+          "stat": "hp_flat",
+          "value": 80
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 64
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": -0.1
+        }
+      ],
+      "grantedSkillIds": [
+        "talent_hp_150"
+      ],
+      "range": "melee",
+      "price": 25000,
+      "isRare": true
+    },
+    {
+      "id": "sword_hawkeye_blade",
+      "name": "ホークアイブレード",
+      "category": "weapon",
+      "subCategory": "sword",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 18
+        },
+        {
+          "stat": "def_flat",
+          "value": 4
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 160
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": -0.1
+        }
+      ],
+      "grantedSkillIds": [
+        "talent_accuracy_150"
+      ],
+      "range": "melee",
+      "price": 25000,
+      "isRare": true
+    },
+    {
+      "id": "sword_mirage_edge",
+      "name": "ミラージュエッジ",
+      "category": "weapon",
+      "subCategory": "sword",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 16
+        },
+        {
+          "stat": "def_flat",
+          "value": 3
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 64
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": 0
+        },
+        {
+          "stat": "evasion_flat",
+          "value": 24
+        }
+      ],
+      "grantedSkillIds": [
+        "talent_evasion_150"
+      ],
+      "range": "melee",
+      "price": 25000,
+      "isRare": true
+    },
+    {
+      "id": "sword_crimson_edge",
+      "name": "クリムゾンエッジ",
+      "category": "weapon",
+      "subCategory": "sword",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 22
+        },
+        {
+          "stat": "def_flat",
+          "value": 3
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 64
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": -0.2
+        },
+        {
+          "stat": "critical_rate_percent",
+          "value": 6
+        }
+      ],
+      "grantedSkillIds": [
+        "talent_criticalRate_150"
+      ],
+      "range": "melee",
+      "price": 25000,
+      "isRare": true
+    },
+    {
+      "id": "sword_beast_killer",
+      "name": "ビーストキラー",
+      "category": "weapon",
+      "subCategory": "sword",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 20
+        },
+        {
+          "stat": "def_flat",
+          "value": 4
+        },
+        {
+          "stat": "hp_flat",
+          "value": 20
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 64
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": -0.1
+        }
+      ],
+      "grantedSkillIds": [
+        "beast_slayer_1_5"
+      ],
+      "range": "melee",
+      "price": 25000,
+      "isRare": true
+    },
+    {
+      "id": "sword_undead_killer",
+      "name": "アンデッドキラー",
+      "category": "weapon",
+      "subCategory": "sword",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 20
+        },
+        {
+          "stat": "def_flat",
+          "value": 6
+        },
+        {
+          "stat": "hp_flat",
+          "value": 20
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 64
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": -0.1
+        }
+      ],
+      "grantedSkillIds": [
+        "undead_slayer_1_5"
+      ],
+      "range": "melee",
+      "price": 25000,
+      "isRare": true
+    },
+    {
+      "id": "sword_dragon_killer",
+      "name": "ドラゴンキラー",
+      "category": "weapon",
+      "subCategory": "sword",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 28
+        },
+        {
+          "stat": "def_flat",
+          "value": 8
+        },
+        {
+          "stat": "hp_flat",
+          "value": 30
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 72
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": -0.2
+        }
+      ],
+      "grantedSkillIds": [
+        "dragon_slayer_1_5"
+      ],
+      "range": "melee",
+      "price": 50000,
+      "isRare": true
+    },
+    {
+      "id": "sword_human_killer",
+      "name": "ヒューマンキラー",
+      "category": "weapon",
+      "subCategory": "sword",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 22
+        },
+        {
+          "stat": "def_flat",
+          "value": 4
+        },
+        {
+          "stat": "hp_flat",
+          "value": 20
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 80
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": -0.1
+        }
+      ],
+      "grantedSkillIds": [
+        "human_slayer_1_5"
+      ],
+      "range": "melee",
+      "price": 25000,
+      "isRare": true
     },
     {
       "id": "accessory_split_core",

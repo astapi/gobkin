@@ -55,6 +55,9 @@ export function cloneCharacterSkill(skill: CharacterSkill): CharacterSkill {
     spellTakenMultipliers: skill.spellTakenMultipliers
       ? { ...skill.spellTakenMultipliers }
       : undefined,
+    spellDamageMultipliers: skill.spellDamageMultipliers
+      ? { ...skill.spellDamageMultipliers }
+      : undefined,
     magicDamageFollowUp: skill.magicDamageFollowUp
       ? { ...skill.magicDamageFollowUp }
       : undefined,
@@ -205,6 +208,15 @@ export function describeCharacterSkill(skill: CharacterSkill): string {
 
   if (skill.spellDamagePercent !== undefined) {
     return i18n.t('battle.spellDamagePercent', { value: skill.spellDamagePercent })
+  }
+
+  for (const [spellId, value] of Object.entries(skill.spellDamageMultipliers ?? {})) {
+    if (value !== undefined) {
+      return i18n.t('battle.spellDamageMultiplier', {
+        spell: i18n.t(`entities.spell.${spellId}`, { defaultValue: spellId }),
+        value: value.toFixed(1),
+      })
+    }
   }
 
   if (skill.partyMagicDamageMultiplier !== undefined) {
@@ -458,6 +470,13 @@ export function getActionOrderMultiplierFromSkills(skills: CharacterSkill[]): nu
 export function getSpellTakenMultiplierFromSkills(skills: CharacterSkill[], spellId: string): number {
   return getUniqueSkillsById(skills).reduce((product, skill) => {
     const multiplier = skill.spellTakenMultipliers?.[spellId]
+    return product * (multiplier ?? 1)
+  }, 1)
+}
+
+export function getSpellDamageMultiplierFromSkills(skills: CharacterSkill[], spellId: string): number {
+  return getUniqueSkillsById(skills).reduce((product, skill) => {
+    const multiplier = skill.spellDamageMultipliers?.[spellId]
     return product * (multiplier ?? 1)
   }, 1)
 }

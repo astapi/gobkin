@@ -18,6 +18,9 @@ function cloneSkill(skill: CharacterSkill): CharacterSkill {
     spellTakenMultipliers: skill.spellTakenMultipliers
       ? { ...skill.spellTakenMultipliers }
       : undefined,
+    spellDamageMultipliers: skill.spellDamageMultipliers
+      ? { ...skill.spellDamageMultipliers }
+      : undefined,
     magicDamageFollowUp: skill.magicDamageFollowUp
       ? { ...skill.magicDamageFollowUp }
       : undefined,
@@ -120,6 +123,14 @@ function createPhysicalDamageSkill(value: number): CharacterSkill {
   return {
     id,
     physicalDamagePercent: value,
+  }
+}
+
+function createAdditionalDamageSkill(value: number): CharacterSkill {
+  const id = `additional_damage_${value}`
+  return {
+    id,
+    additionalDamage: value,
   }
 }
 
@@ -245,10 +256,14 @@ export const CHARACTER_SKILL_CATALOG = {
     partyTitleMultiplier: 1.1,
   },
 
-  additional_damage_13: {
-    id: 'additional_damage_13',
-    additionalDamage: 13,
-  },
+  additional_damage_6: createAdditionalDamageSkill(6),
+  additional_damage_7: createAdditionalDamageSkill(7),
+  additional_damage_8: createAdditionalDamageSkill(8),
+  additional_damage_9: createAdditionalDamageSkill(9),
+  additional_damage_10: createAdditionalDamageSkill(10),
+  additional_damage_11: createAdditionalDamageSkill(11),
+  additional_damage_12: createAdditionalDamageSkill(12),
+  additional_damage_13: createAdditionalDamageSkill(13),
 
   action_order_150: {
     id: 'action_order_150',
@@ -577,6 +592,17 @@ export const CHARACTER_SKILL_CATALOG = {
     id: 'grant_fireball',
     grantsSpellId: 'fireball',
   },
+  fireball_twice: {
+    id: 'fireball_twice',
+    spellChargeBonusForId: 'fireball',
+    extraSpellCharges: 1,
+  },
+  fireball_damage_120: {
+    id: 'fireball_damage_120',
+    spellDamageMultipliers: {
+      fireball: 1.2,
+    },
+  },
   grant_heal: {
     id: 'grant_heal',
     grantsSpellId: 'heal',
@@ -592,6 +618,10 @@ export const CHARACTER_SKILL_CATALOG = {
   grant_shield_barrier: {
     id: 'grant_shield_barrier',
     grantsSpellId: 'shield_barrier',
+  },
+  grant_magic_barrier: {
+    id: 'grant_magic_barrier',
+    grantsSpellId: 'magic_barrier',
   },
   magic_field: {
     id: 'magic_field',

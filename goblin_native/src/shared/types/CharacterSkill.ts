@@ -41,6 +41,7 @@ export interface CharacterSkill {
   breathDamageMultiplier?: number
   physicalDamagePercent?: number
   spellDamagePercent?: number
+  spellDamageMultipliers?: Partial<Record<string, number>>
   additionalDamage?: number
   protectRearAllyNormalAttackMultiplier?: number
   protectRearAllyMagicDamageMultiplier?: number

@@ -46,6 +46,7 @@ const WEAPON_SUB_CATEGORY_LABELS: Record<WeaponSubCategory, string> = {
   bow: '弓',
   staff: '杖',
   claw: '爪',
+  hidden: '暗器',
 }
 
 const CATEGORY_FILTER_ORDER: Exclude<EquipmentCategory, 'weapon'>[] = [
@@ -62,6 +63,7 @@ const WEAPON_SUB_CATEGORY_FILTER_ORDER: WeaponSubCategory[] = [
   'sword',
   'claw',
   'bow',
+  'hidden',
 ]
 
 type ShopMode = 'buy' | 'sell'

@@ -24,6 +24,7 @@ import {
   getRearProtectionMultiplierFromSkills,
   getRowDamageMultiplierFromSkills,
   getSpellTakenMultiplierFromSkills,
+  getSpellDamageMultiplierFromSkills,
   getSkillStatBonuses,
   getSkillBaseAttributeBonuses,
   getSkillStatMultipliers,
@@ -376,6 +377,10 @@ describe('characterSkills - 物理ダメージ軽減', () => {
 
     for (const value of [10, 20, 30, 50]) {
       expect(getCharacterSkill(`factor_drop_bonus_${value}`).factorDropBonusPercent).toBe(value)
+    }
+
+    for (const value of [6, 7, 8, 9, 10, 11, 12, 13]) {
+      expect(getCharacterSkill(`additional_damage_${value}`).additionalDamage).toBe(value)
     }
 
     for (const [suffix, value] of [['1_2', 1.2], ['1_3', 1.3], ['1_5', 1.5]] as const) {
@@ -838,5 +843,28 @@ describe('characterSkills - 物理ダメージ軽減', () => {
     ]
 
     expect(getLearnedSpellsFromSkills(skills)).toEqual([])
+  })
+})
+
+describe('characterSkills - 呪文別ダメージ倍率', () => {
+  it('指定呪文の与ダメージ倍率を乗算する', () => {
+    const skills: CharacterSkill[] = [
+      { id: 'fireball_damage_120', spellDamageMultipliers: { fireball: 1.2 } },
+      { id: 'fireball_damage_150', spellDamageMultipliers: { fireball: 1.5 } },
+      { id: 'magic_arrow_damage_200', spellDamageMultipliers: { magic_arrow: 2 } },
+    ]
+
+    expect(getSpellDamageMultiplierFromSkills(skills, 'fireball')).toBeCloseTo(1.8)
+    expect(getSpellDamageMultiplierFromSkills(skills, 'magic_arrow')).toBe(2)
+    expect(getSpellDamageMultiplierFromSkills(skills, 'blizzard')).toBe(1)
+  })
+
+  it('同じidの呪文別ダメージ倍率スキルは重複計算しない', () => {
+    const skills: CharacterSkill[] = [
+      { id: 'fireball_damage_120', spellDamageMultipliers: { fireball: 1.2 } },
+      { id: 'fireball_damage_120', spellDamageMultipliers: { fireball: 1.2 } },
+    ]
+
+    expect(getSpellDamageMultiplierFromSkills(skills, 'fireball')).toBe(1.2)
   })
 })

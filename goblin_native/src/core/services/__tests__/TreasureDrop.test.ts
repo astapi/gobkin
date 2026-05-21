@@ -79,6 +79,19 @@ describe('rollTreasureDrops', () => {
       expect(getEquipmentTemplate('bow_slingshot')?.rank).toBe(0)
       expect(getEquipmentTemplate('bow_adamant')?.rank).toBe(7)
 
+      // 暗器（melee通常ドロップのみrank対象、rangedレアは通常ドロップ対象外）
+      expect(getEquipmentTemplate('hidden_dagger')?.rank).toBe(1)
+      expect(getEquipmentTemplate('hidden_adamant_dagger')?.rank).toBe(7)
+      expect(getEquipmentTemplate('hidden_throwing_knife')?.rank).toBeUndefined()
+      expect(getEquipmentTemplate('hidden_fuma_shuriken')?.rank).toBeUndefined()
+
+      // 剣レアは通常ドロップ対象外
+      expect(getEquipmentTemplate('sword_aegis_blade')?.rank).toBeUndefined()
+      expect(getEquipmentTemplate('sword_dragon_killer')?.rank).toBeUndefined()
+      expect(getEquipmentTemplate('sword_aegis_blade')?.isRare).toBe(true)
+      expect(getEquipmentTemplate('sword_aegis_blade')?.grantedSkills?.some((skill) => skill.id === 'talent_def_150')).toBe(true)
+      expect(getEquipmentTemplate('sword_dragon_killer')?.grantedSkills?.some((skill) => skill.id === 'dragon_slayer_1_5')).toBe(true)
+
       // 鎧（10アイテム: 下位3つがrank 0）
       expect(getEquipmentTemplate('armor_tattered_cloth')?.rank).toBe(0)
       expect(getEquipmentTemplate('armor_leather_vest')?.rank).toBe(0)
@@ -140,7 +153,10 @@ describe('rollTreasureDrops', () => {
       expect(ids.has('wand_wand')).toBe(true)
       expect(ids.has('rod_rod')).toBe(true)
       expect(ids.has('sword_long')).toBe(true)
+      expect(ids.has('hidden_dagger')).toBe(true)
       expect(ids.has('armor_armor')).toBe(true)
+      expect(ids.has('hidden_throwing_knife')).toBe(false)
+      expect(ids.has('sword_aegis_blade')).toBe(false)
     })
 
     it('getEquipmentByRank(7) は全カテゴリのアダマント装備を含む', () => {
@@ -148,6 +164,9 @@ describe('rollTreasureDrops', () => {
       expect(ids.has('sword_adamant')).toBe(true)
       expect(ids.has('claw_adamant')).toBe(true)
       expect(ids.has('bow_adamant')).toBe(true)
+      expect(ids.has('hidden_adamant_dagger')).toBe(true)
+      expect(ids.has('hidden_fuma_shuriken')).toBe(false)
+      expect(ids.has('sword_dragon_killer')).toBe(false)
       expect(ids.has('armor_adamant')).toBe(true)
       expect(ids.has('gauntlet_adamant')).toBe(true)
       expect(ids.has('shield_adamant')).toBe(true)
