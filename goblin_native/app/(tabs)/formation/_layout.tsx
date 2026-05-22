@@ -78,6 +78,14 @@ export default function FormationLayout() {
           headerShown: false,
         }}
       />
+      <Stack.Screen
+        name="level-up-log"
+        options={{
+          title: t('ui.formation.layout.levelUpLog'),
+          presentation: 'card',
+          headerShown: false,
+        }}
+      />
     </Stack>
   )
 }

@@ -305,6 +305,7 @@ const ja = {
         result: '遠征結果',
         log: '遠征ログ',
         battleLog: '戦闘ログ',
+        levelUpLog: 'レベルアップ詳細',
       },
       common: {
         back: '戻る',
@@ -449,6 +450,7 @@ const ja = {
         win: '勝利',
         lose: '敗北',
         encounter: '{{label}} {{enemy}} Lv{{level}} ×{{count}}体と遭遇 → {{result}}[詳細]',
+        levelUpTitle: 'レベルアップ！',
         xpGain: '{{value}}XP獲得',
         treasureFound: '宝箱を発見！',
         treasureItem: '{{name}}が入っていた！',
@@ -491,6 +493,10 @@ const ja = {
         xpLine: 'Exp +{{totalXp}} {{name}} ({{baseXp}} x {{multiplier}}倍)',
         levelUpLine: 'レベルアップ！ Lv{{oldLevel}} → Lv{{newLevel}}',
         memberLine: '({{hp}}/{{maxHp}}) {{name}} Lv{{level}}',
+      },
+      levelUpLog: {
+        title: 'レベルアップ詳細',
+        loadFailed: 'レベルアップ詳細を読み込めませんでした。',
       },
       log: {
         title: '遠征ログ',
