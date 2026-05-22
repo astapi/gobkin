@@ -24,6 +24,17 @@ type GoblinRaceContext = Pick<Goblin, 'race' | 'baseAttributes'> & {
   skills?: Goblin['skills']
 }
 
+const BASE_ATTRIBUTE_KEYS: Array<keyof GoblinBaseAttributes> = [
+  'power',
+  'wisdom',
+  'spirit',
+  'vitality',
+  'agility',
+  'luck',
+]
+
+const BASE_ATTRIBUTE_MAX_BONUS = 10
+
 function resolveRaceId(goblin: { race: string; raceId?: Goblin['raceId'] }): string {
   return normalizeGoblinRaceId(goblin.raceId ?? goblin.race)
 }
@@ -36,30 +47,46 @@ export function getGoblinBaseAttributes(goblin: GoblinRaceContext): GoblinBaseAt
   return { ...(getGoblinVariantByRace(resolveRaceId(goblin))?.baseAttributes ?? DEFAULT_BASE_ATTRIBUTES) }
 }
 
+export function getGoblinBaseAttributeDefaults(goblin: GoblinRaceContext): GoblinBaseAttributes {
+  return { ...(getGoblinVariantByRace(resolveRaceId(goblin))?.baseAttributes ?? DEFAULT_BASE_ATTRIBUTES) }
+}
+
+export function getGoblinBaseAttributeMaximums(goblin: GoblinRaceContext): GoblinBaseAttributes {
+  const defaults = getGoblinBaseAttributeDefaults(goblin)
+  return {
+    power: defaults.power + BASE_ATTRIBUTE_MAX_BONUS,
+    wisdom: defaults.wisdom + BASE_ATTRIBUTE_MAX_BONUS,
+    spirit: defaults.spirit + BASE_ATTRIBUTE_MAX_BONUS,
+    vitality: defaults.vitality + BASE_ATTRIBUTE_MAX_BONUS,
+    agility: defaults.agility + BASE_ATTRIBUTE_MAX_BONUS,
+    luck: defaults.luck + BASE_ATTRIBUTE_MAX_BONUS,
+  }
+}
+
 /**
  * レベルによる基礎能力値ボーナスを返す
- * 4レベルごとに+1、Lv40で+10が上限
+ * レベル1を基準に、1レベルごとに+1
  */
 export function getBaseAttributeLevelBonus(level: number): number {
-  return Math.min(10, Math.floor(level / 4))
+  return Math.max(0, Math.floor(level) - 1)
 }
 
 /**
  * レベルを考慮した基礎能力値を返す
- * 初期値からLv40で全ステータス+10になるよう成長する
+ * 誕生時の初期値から1レベルごとに+1し、種族ごとの最大値で止まる
  */
 export function getGoblinBaseAttributesAtLevel(goblin: GoblinRaceContext, level: number): GoblinBaseAttributes {
   const base = getGoblinBaseAttributes(goblin)
   const bonus = getBaseAttributeLevelBonus(level)
+  const maximums = getGoblinBaseAttributeMaximums(goblin)
   const skillBonuses = goblin.skills?.length ? getSkillBaseAttributeBonuses(goblin.skills) : {}
-  return {
-    power: base.power + bonus + (skillBonuses.power ?? 0),
-    wisdom: base.wisdom + bonus + (skillBonuses.wisdom ?? 0),
-    spirit: base.spirit + bonus + (skillBonuses.spirit ?? 0),
-    vitality: base.vitality + bonus + (skillBonuses.vitality ?? 0),
-    agility: base.agility + bonus + (skillBonuses.agility ?? 0),
-    luck: base.luck + bonus + (skillBonuses.luck ?? 0),
+  const result = {} as GoblinBaseAttributes
+
+  for (const key of BASE_ATTRIBUTE_KEYS) {
+    result[key] = Math.min(maximums[key], base[key] + bonus) + (skillBonuses[key] ?? 0)
   }
+
+  return result
 }
 
 export function getGoblinHpCoefficient(goblin: Pick<Goblin, 'race' | 'job'> & { raceId?: Goblin['raceId'] }): number {

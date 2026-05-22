@@ -198,25 +198,25 @@ describe('GoblinBirthService — 戦闘ステータス生成', () => {
     expect(goblin.stats.attackCount).toBe(2)
   })
 
-  it('accuracyは120〜200の範囲に収まる', () => {
+  it('accuracyは誕生時の基本能力値ゆらぎ込みの範囲に収まる', () => {
     for (let i = 0; i < 100; i++) {
       const rng = createSeededRng(i * 7)
       const service = new GoblinBirthService(rng)
       const goblin = service.createNewGoblin(i)
 
-      expect(goblin.stats.accuracy).toBeGreaterThanOrEqual(60)
+      expect(goblin.stats.accuracy).toBeGreaterThanOrEqual(55)
       expect(goblin.stats.accuracy).toBeLessThanOrEqual(70)
     }
   })
 
-  it('evasionは10〜20の範囲に収まる', () => {
+  it('evasionは誕生時の基本能力値ゆらぎ込みの範囲に収まる', () => {
     for (let i = 0; i < 100; i++) {
       const rng = createSeededRng(i * 11)
       const service = new GoblinBirthService(rng)
       const goblin = service.createNewGoblin(i)
 
-      expect(goblin.stats.evasion).toBeGreaterThanOrEqual(10)
-      expect(goblin.stats.evasion).toBeLessThanOrEqual(20)
+      expect(goblin.stats.evasion).toBeGreaterThanOrEqual(5)
+      expect(goblin.stats.evasion).toBeLessThanOrEqual(15)
     }
   })
 
@@ -276,20 +276,20 @@ describe('GoblinStatCalculator — 戦闘ステータス計算', () => {
     })
     const result = GoblinStatCalculator.calculate(goblin)
 
-    expect(result.magicHeal).toBe(15)
+    expect(result.magicHeal).toBe(18)
   })
 
   it('[才能]スキルは各基礎ステータス式へ1.5倍を適用する', () => {
     const baseAttributes = { power: 10, wisdom: 10, spirit: 10, vitality: 10, agility: 10, luck: 10 }
     const skillCases = [
-      ['talent_hp_150', 'hp', 52],
-      ['talent_atk_150', 'atk', 19],
-      ['talent_def_150', 'def', 19],
-      ['talent_magicAtk_150', 'magicAtk', 19],
-      ['talent_magicDef_150', 'magicDef', 19],
+      ['talent_hp_150', 'hp', 62],
+      ['talent_atk_150', 'atk', 22],
+      ['talent_def_150', 'def', 22],
+      ['talent_magicAtk_150', 'magicAtk', 22],
+      ['talent_magicDef_150', 'magicDef', 22],
       ['talent_attackCount_150', 'attackCount', 3],
-      ['talent_evasion_150', 'evasion', 19],
-      ['talent_accuracy_150', 'accuracy', 97],
+      ['talent_evasion_150', 'evasion', 22],
+      ['talent_accuracy_150', 'accuracy', 102],
     ] as const
 
     for (const [skillId, stat, expected] of skillCases) {
@@ -309,7 +309,7 @@ describe('GoblinStatCalculator — 戦闘ステータス計算', () => {
       baseAttributes: { power: 10, wisdom: 10, spirit: 10, vitality: 10, agility: 30, luck: 15 },
     })
 
-    expect(GoblinStatCalculator.calculate(criticalGoblin).criticalRate).toBe(23)
+    expect(GoblinStatCalculator.calculate(criticalGoblin).criticalRate).toBe(14)
   })
 
   it('magicHealに因子・装備補正が適用される', () => {
@@ -328,7 +328,7 @@ describe('GoblinStatCalculator — 戦闘ステータス計算', () => {
     const bonuses = [{ stat: 'magicHeal_flat' as const, value: 3 }]
     const result = GoblinStatCalculator.calculate(goblin, bonuses)
 
-    expect(result.magicHeal).toBe(28)
+    expect(result.magicHeal).toBe(31)
     delete factorDatabase.test_magic_heal
   })
 
@@ -2284,14 +2284,14 @@ describe('spell charges', () => {
       [caster, supporter],
       [caster.stats.hp, supporter.stats.hp],
       [[enemy]],
-      () => 0.75,
+      () => 0,
       1,
     )
     const followUpLog = result.detailedLog.find(log => log.actorId === '2' && log.action === '魔法支援')
 
     expect(followUpLog?.attackCount).toBe(2)
     expect(followUpLog?.hitCount).toBe(2)
-    expect(followUpLog?.isCritical).toBe(false)
+    expect(followUpLog?.isCritical).toBe(true)
     expect(followUpLog?.targets[0]?.totalDamage).toBeGreaterThan(0)
   })
 
@@ -2350,7 +2350,7 @@ describe('spell charges', () => {
       [defender],
       [defender.stats.hp],
       [[enemy]],
-      () => 0.4,
+      () => 0,
       1,
     )
     const counterLog = result.detailedLog.find(log => log.actorId === '1' && log.action === '打ち合い')
@@ -2387,7 +2387,7 @@ describe('spell charges', () => {
       [defender],
       [defender.stats.hp],
       [[enemy]],
-      () => 0.4,
+      () => 0,
       1,
     )
     const counterLogs = result.detailedLog.filter(log => log.action === '打ち合い')

@@ -14,9 +14,13 @@ import {
   calculateGoblinBaseMagicAtk,
   calculateGoblinBaseMagicDef,
   calculateGoblinBaseMagicHeal,
+  getGoblinBaseAttributeDefaults,
   getGoblinBaseAttributes,
 } from '../../shared/utils/goblinHp'
 import { getLegacyRaceName, isBaseGoblinRaceId, normalizeGoblinRaceId } from '../../shared/types/Race'
+
+const BASE_ATTRIBUTE_RANDOM_MIN = -5
+const BASE_ATTRIBUTE_RANDOM_MAX = 3
 
 const GOBLIN_NAMES = [
   'グリム', 'ゴブタ', 'ボブ', 'ゴロー', 'クロ', 'シロ', 'アカ', 'アオ',
@@ -128,9 +132,10 @@ export class GoblinBirthService {
       ? normalizeGoblinRaceId(inheritance.variantRaceId ?? inheritance.variantRace)
       : 'goblin'
     const race = getLegacyRaceName(raceId)
+    const baseAttributes = this.generateBaseAttributes(race, raceId)
 
     // 基本ステータスを生成（因子ボーナスはGoblinStatCalculatorで計算時に適用）
-    const stats = this.generateStats(race)
+    const stats = this.generateStats(race, raceId, baseAttributes)
     const avatar = inheritance?.isVariant
       ? inheritance.variantAvatar!
       : '/src/assets/goblin/goblin.png'
@@ -154,7 +159,7 @@ export class GoblinBirthService {
       experience: 0,
       avatar,
       stats,
-      baseAttributes: getGoblinBaseAttributes({ race, raceId }),
+      baseAttributes,
       effectiveStats: stats,  // 仮設定、後で計算
       individualValue: clampedIV,
       skills: [...defaultSkills, ...birthSkills],
@@ -184,18 +189,42 @@ export class GoblinBirthService {
    * 初期ステータスを生成
    * @param bloodline 血統名
    */
-  private generateStats(bloodline: string): GoblinStats {
+  private generateStats(
+    bloodline: string,
+    raceId: ReturnType<typeof normalizeGoblinRaceId>,
+    baseAttributes = getGoblinBaseAttributes({ race: bloodline, raceId })
+  ): GoblinStats {
+    const context = { race: bloodline, raceId, baseAttributes }
     return {
-      hp: calculateGoblinBaseHp(1, { race: bloodline, raceId: normalizeGoblinRaceId(bloodline) }),
-      atk: calculateGoblinBaseAtk(1, { race: bloodline, raceId: normalizeGoblinRaceId(bloodline) }),
-      magicAtk: calculateGoblinBaseMagicAtk(1, { race: bloodline, raceId: normalizeGoblinRaceId(bloodline) }),
-      def: calculateGoblinBaseDef(1, { race: bloodline, raceId: normalizeGoblinRaceId(bloodline) }),
-      magicDef: calculateGoblinBaseMagicDef(1, { race: bloodline, raceId: normalizeGoblinRaceId(bloodline) }),
-      attackCount: calculateGoblinBaseAttackCount(1, { race: bloodline, raceId: normalizeGoblinRaceId(bloodline) }),
-      accuracy: calculateGoblinBaseAccuracy(1, { race: bloodline, raceId: normalizeGoblinRaceId(bloodline) }),
-      evasion: calculateGoblinBaseEvasion(1, { race: bloodline, raceId: normalizeGoblinRaceId(bloodline) }),
-      magicHeal: calculateGoblinBaseMagicHeal(1, { race: bloodline, raceId: normalizeGoblinRaceId(bloodline) }),
+      hp: calculateGoblinBaseHp(1, context),
+      atk: calculateGoblinBaseAtk(1, context),
+      magicAtk: calculateGoblinBaseMagicAtk(1, context),
+      def: calculateGoblinBaseDef(1, context),
+      magicDef: calculateGoblinBaseMagicDef(1, context),
+      attackCount: calculateGoblinBaseAttackCount(1, context),
+      accuracy: calculateGoblinBaseAccuracy(1, context),
+      evasion: calculateGoblinBaseEvasion(1, context),
+      magicHeal: calculateGoblinBaseMagicHeal(1, context),
       criticalRate: 0,
+    }
+  }
+
+  private generateBaseAttributes(
+    race: string,
+    raceId: ReturnType<typeof normalizeGoblinRaceId>
+  ): NonNullable<Goblin['baseAttributes']> {
+    const defaults = getGoblinBaseAttributeDefaults({ race, raceId })
+    const randomOffset = () =>
+      BASE_ATTRIBUTE_RANDOM_MIN +
+      Math.floor(this.random() * (BASE_ATTRIBUTE_RANDOM_MAX - BASE_ATTRIBUTE_RANDOM_MIN + 1))
+
+    return {
+      power: defaults.power + randomOffset(),
+      wisdom: defaults.wisdom + randomOffset(),
+      spirit: defaults.spirit + randomOffset(),
+      vitality: defaults.vitality + randomOffset(),
+      agility: defaults.agility + randomOffset(),
+      luck: defaults.luck + randomOffset(),
     }
   }
 }
