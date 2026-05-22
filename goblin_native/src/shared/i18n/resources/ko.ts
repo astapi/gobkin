@@ -304,6 +304,7 @@ const ko = {
         result: '원정 결과',
         log: '원정 로그',
         battleLog: '전투 로그',
+        levelUpLog: '레벨 업 상세',
       },
       common: {
         back: '뒤로',
@@ -440,6 +441,7 @@ const ko = {
         win: '승리',
         lose: '패배',
         encounter: '{{label}} {{enemy}} Lv{{level}} x{{count}}체와 조우 -> {{result}}[상세]',
+        levelUpTitle: '레벨 업!',
         xpGain: '{{value}}XP 획득',
         treasureFound: '보물상자를 발견!',
         treasureItem: '{{name}}이 들어 있었다!',
@@ -482,6 +484,10 @@ const ko = {
         xpLine: 'Exp +{{totalXp}} {{name}} ({{baseXp}} x {{multiplier}}배)',
         levelUpLine: '레벨 업! Lv{{oldLevel}} -> Lv{{newLevel}}',
         memberLine: '({{hp}}/{{maxHp}}) {{name}} Lv{{level}}',
+      },
+      levelUpLog: {
+        title: '레벨 업 상세',
+        loadFailed: '레벨 업 상세를 불러올 수 없습니다.',
       },
       log: {
         title: '원정 로그',

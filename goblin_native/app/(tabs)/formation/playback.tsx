@@ -7,11 +7,13 @@ import { usePartyStore } from '@/presentation/stores/usePartyStore'
 import { useGoblinStore } from '@/presentation/stores/useGoblinStore'
 import { useDungeonStore } from '@/presentation/stores/useDungeonStore'
 import { useExpeditionStore } from '@/presentation/stores/useExpeditionStore'
-import type { TimelineEvent, ExpeditionReplay, ExpeditionRecord, ExpeditionEndReason, Party, TreasureDrop } from '@/shared/types'
+import type { TimelineEvent, ExpeditionReplay, ExpeditionRecord, ExpeditionEndReason, Party, TreasureDrop, GoblinBaseAttributes } from '@/shared/types'
 import type { BattleLogEntry, BattleLogMeta } from '@/shared/types'
 import { storeBattleLog } from '@/presentation/contexts/battleLogStore'
+import { storeLevelUpLog, type LevelUpLogDetail, type LevelUpStatChange } from '@/presentation/contexts/levelUpLogStore'
 import { getGoblinDisplayImage } from '@/shared/utils/goblinImages'
 import { getEffectiveStats } from '@/shared/utils/goblinStats'
+import { getGoblinBaseAttributesAtLevel } from '@/shared/utils/goblinHp'
 import { getDungeonName, getEquipmentDisplayName } from '@/shared/i18n/entityLocalization'
 import { getEquipmentTemplate } from '@/shared/data/equipmentPoolLoader'
 import { getDungeonTierDisplayName } from '@/shared/types'
@@ -24,7 +26,17 @@ interface LogEntry {
   text: string
   detail?: BattleLogEntry[]
   meta?: BattleLogMeta
+  levelUps?: LevelUpLogDetail[]
 }
+
+const BASE_ATTRIBUTE_KEYS: Array<keyof GoblinBaseAttributes> = [
+  'power',
+  'wisdom',
+  'spirit',
+  'vitality',
+  'agility',
+  'luck',
+]
 
 function resolveTreasureName(item: TreasureDrop): string {
   const template = getEquipmentTemplate(item.templateId)
@@ -130,6 +142,11 @@ export default function ExpeditionPlaybackScreen() {
     router.push(`/formation/battle-log?logId=${encodeURIComponent(logId)}` as Href)
   }, [partyGoblins])
 
+  const openLevelUpLog = useCallback((levelUps: LevelUpLogDetail[]) => {
+    const logId = storeLevelUpLog(levelUps)
+    router.push(`/formation/level-up-log?logId=${encodeURIComponent(logId)}` as Href)
+  }, [])
+
   const getReturnReasonText = useCallback((reason: ExpeditionEndReason) => {
     if (reason === 'completed') return t('ui.formation.playback.completed')
     if (reason === 'defeated') return t('ui.formation.playback.defeated')
@@ -139,9 +156,14 @@ export default function ExpeditionPlaybackScreen() {
   }, [t])
 
   const buildLogEntries = useCallback((event: TimelineEvent): LogEntry[] => {
-    const createEntry = (text: string, detail?: BattleLogEntry[], meta?: BattleLogMeta) => {
+    const createEntry = (
+      text: string,
+      detail?: BattleLogEntry[],
+      meta?: BattleLogMeta,
+      levelUps?: LevelUpLogDetail[],
+    ) => {
       logIdRef.current += 1
-      return { id: `${logIdRef.current}`, text, detail, meta }
+      return { id: `${logIdRef.current}`, text, detail, meta, levelUps }
     }
     switch (event.type) {
       case 'move_start':
@@ -164,7 +186,11 @@ export default function ExpeditionPlaybackScreen() {
           .map((_, index) => index)
           .filter(index => (partyHpRef.current[index] ?? 0) > 0)
         const xpPerMember = aliveIndices.length > 0 ? Math.floor(rewardedXp / aliveIndices.length) : 0
-        const levelUps = new Map<number, { oldLevel: number; newLevel: number }>()
+        const levelUps = new Map<number, {
+          oldLevel: number
+          newLevel: number
+          statChanges: LevelUpStatChange[]
+        }>()
 
         // 各メンバーのEXPボーナス倍率を計算
         const memberExpMultipliers = partyMembers.map((_, idx) => {
@@ -178,6 +204,7 @@ export default function ExpeditionPlaybackScreen() {
           const nextExpState = partyExpRef.current.map(state => ({ ...state }))
           for (const index of aliveIndices) {
             const current = nextExpState[index]
+            const goblin = partyGoblins[index]
             if (!current) continue
 
             const boostedXp = Math.floor(xpPerMember * memberExpMultipliers[index])
@@ -187,9 +214,26 @@ export default function ExpeditionPlaybackScreen() {
               experience: levelUp.remainingExp,
             }
             if (levelUp.didLevelUp) {
+              const oldAttributes = goblin
+                ? getGoblinBaseAttributesAtLevel(goblin, levelUp.oldLevel)
+                : null
+              const newAttributes = goblin
+                ? getGoblinBaseAttributesAtLevel(goblin, levelUp.newLevel)
+                : null
+              const statChanges = oldAttributes && newAttributes
+                ? BASE_ATTRIBUTE_KEYS
+                    .map(key => ({
+                      key,
+                      oldValue: oldAttributes[key],
+                      newValue: newAttributes[key],
+                    }))
+                    .filter(change => change.newValue > change.oldValue)
+                : []
+
               levelUps.set(index, {
                 oldLevel: levelUp.oldLevel,
                 newLevel: levelUp.newLevel,
+                statChanges,
               })
             }
           }
@@ -224,6 +268,19 @@ export default function ExpeditionPlaybackScreen() {
             meta,
           ),
         ]
+        const levelUpDetails = Array.from(levelUps.entries()).map(([idx, levelUp]) => {
+          const memberId = partyMembers[idx]
+          const goblin = partyGoblins[idx]
+          return {
+            memberName: goblin?.name ?? `ID:${memberId}`,
+            oldLevel: levelUp.oldLevel,
+            newLevel: levelUp.newLevel,
+            statChanges: levelUp.statChanges,
+          }
+        })
+        if (levelUpDetails.length > 0) {
+          entries.push(createEntry(t('ui.formation.playback.levelUpTitle'), undefined, undefined, levelUpDetails))
+        }
         if (rewardedXp > 0) {
           entries.push(createEntry(t('ui.formation.playback.xpGain', { value: rewardedXp })))
         }
@@ -567,6 +624,22 @@ export default function ExpeditionPlaybackScreen() {
               )
             }
 
+            if (entry.levelUps) {
+              return (
+                <TouchableOpacity
+                  key={entry.id}
+                  style={styles.logRow}
+                  activeOpacity={0.7}
+                  accessibilityRole="button"
+                  hitSlop={{ top: 6, bottom: 6, left: 8, right: 8 }}
+                  onPress={() => openLevelUpLog(entry.levelUps!)}
+                >
+                  <Text style={styles.logText}>{baseText}</Text>
+                  <Text style={styles.logDetail}>{t('ui.formation.playback.detail')}</Text>
+                </TouchableOpacity>
+              )
+            }
+
             return (
               <View key={entry.id} style={styles.logRow}>
                 <Text style={styles.logText}>{baseText}</Text>
@@ -739,5 +812,36 @@ const styles = StyleSheet.create({
     color: '#2563EB',
     fontWeight: '600',
     fontSize: 12,
+  },
+  levelUpLogRow: {
+    flexDirection: 'column',
+    gap: 4,
+    paddingVertical: 4,
+  },
+  levelUpLogTitle: {
+    fontSize: 12,
+    color: '#92400E',
+    fontWeight: '700',
+    fontFamily: 'Courier',
+  },
+  levelUpMemberBlock: {
+    paddingLeft: 12,
+    paddingTop: 2,
+  },
+  levelUpMemberName: {
+    fontSize: 12,
+    color: '#111827',
+    fontWeight: '700',
+    fontFamily: 'Courier',
+  },
+  levelUpLine: {
+    fontSize: 12,
+    color: '#374151',
+    fontFamily: 'Courier',
+  },
+  levelUpStatLine: {
+    fontSize: 12,
+    color: '#4B5563',
+    fontFamily: 'Courier',
   },
 })

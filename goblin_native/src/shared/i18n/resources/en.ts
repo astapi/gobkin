@@ -305,6 +305,7 @@ const en = {
         result: 'Expedition Result',
         log: 'Expedition Log',
         battleLog: 'Battle Log',
+        levelUpLog: 'Level Up Details',
       },
       common: {
         back: 'Back',
@@ -449,6 +450,7 @@ const en = {
         win: 'Win',
         lose: 'Lose',
         encounter: '{{label}} encountered {{enemy}} Lv{{level}} x{{count}} -> {{result}}[Detail]',
+        levelUpTitle: 'Level up!',
         xpGain: 'Gained {{value}} XP',
         treasureFound: 'Found a treasure chest!',
         treasureItem: 'Contained {{name}}!',
@@ -491,6 +493,10 @@ const en = {
         xpLine: 'Exp +{{totalXp}} {{name}} ({{baseXp}} x {{multiplier}}x)',
         levelUpLine: 'Level up! Lv{{oldLevel}} -> Lv{{newLevel}}',
         memberLine: '({{hp}}/{{maxHp}}) {{name}} Lv{{level}}',
+      },
+      levelUpLog: {
+        title: 'Level Up Details',
+        loadFailed: 'Could not load the level up details.',
       },
       log: {
         title: 'Expedition Log',
