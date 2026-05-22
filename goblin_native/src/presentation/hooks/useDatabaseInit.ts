@@ -23,6 +23,7 @@ async function ensureDefaults(): Promise<void> {
         cleared: dungeon.cleared ?? false,
         unlockNotified: false,
         maxClearedTier: 0,
+        maxClearedFloorsByTier: dungeon.cleared ? { 0: dungeon.floors } : {},
       })
     }
   }

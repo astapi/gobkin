@@ -16,4 +16,5 @@ export type Dungeon = {
   isBaseCapture?: boolean           // 拠点化可能か
   rankUpTarget?: number             // このダンジョン制圧で到達するランク
   maxClearedTier?: number           // 最大クリア済みティア（0=未クリア, 1=通常, 2=魔性, 3=宿った, 4=伝説, 5=恐ろしい, 6=壊れた）
+  maxClearedFloorsByTier?: Record<number, number> // tier 別の最大クリア済みフロア
 }

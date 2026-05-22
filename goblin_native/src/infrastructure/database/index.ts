@@ -18,9 +18,10 @@ import { migrateV12 } from './migrations/v12'
 import { migrateV13 } from './migrations/v13'
 import { migrateV14 } from './migrations/v14'
 import { migrateV15 } from './migrations/v15'
+import { migrateV16 } from './migrations/v16'
 
 const DB_NAME = 'goblin_kingdom.db'
-export const CURRENT_SCHEMA_VERSION = 15
+export const CURRENT_SCHEMA_VERSION = 16
 
 let db: SQLite.SQLiteDatabase | null = null
 let initializationPromise: Promise<SQLite.SQLiteDatabase> | null = null
@@ -186,6 +187,13 @@ const runMigrations = async (database: SQLite.SQLiteDatabase): Promise<void> => 
     await migrateV15(database)
     await setSchemaVersion(database, 15)
     console.log('[DB] Migration v15 completed')
+  }
+
+  if (currentVersion < 16) {
+    console.log('[DB] Running migration v16...')
+    await migrateV16(database)
+    await setSchemaVersion(database, 16)
+    console.log('[DB] Migration v16 completed')
   }
 }
 
