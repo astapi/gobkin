@@ -8,7 +8,9 @@ import {
   calculateGoblinBaseDef,
   calculateGoblinBaseEvasion,
   calculateGoblinBaseHp,
+  getGoblinBaseAttributeMaximums,
   getGoblinBaseAttributes,
+  getGoblinBaseAttributesAtLevel,
   getGoblinHpLevelScale,
 } from '../../../shared/utils/goblinHp'
 
@@ -111,27 +113,27 @@ describe('GoblinBirthService', () => {
       expect(goblin.stats.def).toBeGreaterThan(0)
     })
 
-    it('Lv1の基礎ステータス式がそのまま反映される', () => {
+    it('誕生時の基本能力値は種族基準値から-5〜+3の範囲で決まる', () => {
       const iterations = 100
       for (let i = 0; i < iterations; i++) {
         const rng = createSeededRng(i * 13)
         const service = new GoblinBirthService(rng)
         const goblin = service.createNewGoblin(i)
 
-        expect(goblin.stats.hp).toBe(19)
-        expect(goblin.stats.atk).toBe(11)
-        expect(goblin.stats.def).toBe(11)
-        expect(goblin.stats.attackCount).toBe(2)
-        expect(goblin.stats.accuracy).toBe(62)
-        expect(goblin.stats.evasion).toBe(11)
+        expect(goblin.baseAttributes).toBeDefined()
+        for (const value of Object.values(goblin.baseAttributes!)) {
+          expect(value).toBeGreaterThanOrEqual(5)
+          expect(value).toBeLessThanOrEqual(13)
+        }
       }
     })
 
-    it('種族ごとの基本能力値が設定される', () => {
-      const rng = createSeededRng(701)
+    it('基本能力値はレベルごとに+1され、種族最大値で止まる', () => {
+      const rng = sequenceRng([0, 5 / 8, 5 / 8, 5 / 8, 5 / 8, 5 / 8, 5 / 8])
       const service = new GoblinBirthService(rng)
+      const goblin = service.createNewGoblin(1)
 
-      expect(service.createNewGoblin(1).baseAttributes).toEqual({
+      expect(goblin.baseAttributes).toEqual({
         power: 10,
         wisdom: 10,
         spirit: 10,
@@ -139,47 +141,58 @@ describe('GoblinBirthService', () => {
         agility: 10,
         luck: 10,
       })
-      expect(getGoblinBaseAttributes({ race: 'スライムゴブリン' }).vitality).toBe(13)
-      expect(getGoblinBaseAttributes({ race: 'ウルフゴブリン' }).agility).toBe(13)
-      expect(getGoblinBaseAttributes({ race: 'ホブゴブリン' }).power).toBe(13)
-      expect(getGoblinBaseAttributes({ race: 'オークゴブリン' }).vitality).toBe(15)
+      expect(getGoblinBaseAttributeMaximums(goblin)).toEqual({
+        power: 20,
+        wisdom: 20,
+        spirit: 20,
+        vitality: 20,
+        agility: 20,
+        luck: 20,
+      })
+      expect(getGoblinBaseAttributesAtLevel(goblin, 1)).toEqual(goblin.baseAttributes)
+      expect(getGoblinBaseAttributesAtLevel(goblin, 11)).toEqual(getGoblinBaseAttributeMaximums(goblin))
+
+      expect(getGoblinBaseAttributeMaximums({ race: 'スライムゴブリン', raceId: 'slime' }).vitality).toBe(20)
+      expect(getGoblinBaseAttributeMaximums({ race: 'ウルフゴブリン', raceId: 'wolf' }).agility).toBe(20)
+      expect(getGoblinBaseAttributeMaximums({ race: 'ホブゴブリン', raceId: 'hobgoblin' }).power).toBe(20)
+      expect(getGoblinBaseAttributeMaximums({ race: 'オークゴブリン', raceId: 'orc' }).vitality).toBe(20)
     })
 
     it('種族ごとのLv1HPが新計算式で決まる', () => {
-      const rng = createSeededRng(702)
+      const rng = sequenceRng([0, 5 / 8, 5 / 8, 5 / 8, 5 / 8, 5 / 8, 5 / 8])
       const service = new GoblinBirthService(rng)
       const goblin = service.createNewGoblin(1)
 
       expect(goblin.stats.hp).toBe(19)
-      expect(calculateGoblinBaseHp(1, { race: 'スライムゴブリン' })).toBe(29)
-      expect(calculateGoblinBaseHp(1, { race: 'ウルフゴブリン' })).toBe(20)
-      expect(calculateGoblinBaseHp(1, { race: 'ホブゴブリン' })).toBe(25)
-      expect(calculateGoblinBaseHp(1, { race: 'オークゴブリン' })).toBe(38)
+      expect(calculateGoblinBaseHp(1, { race: 'スライムゴブリン', raceId: 'slime' })).toBe(23)
+      expect(calculateGoblinBaseHp(1, { race: 'ウルフゴブリン', raceId: 'wolf' })).toBe(20)
+      expect(calculateGoblinBaseHp(1, { race: 'ホブゴブリン', raceId: 'hobgoblin' })).toBe(23)
+      expect(calculateGoblinBaseHp(1, { race: 'オークゴブリン', raceId: 'orc' })).toBe(26)
     })
 
     it('種族ごとのLv1基礎ステータスが式どおり決まる', () => {
       expect(calculateGoblinBaseAtk(1, { race: 'ゴブリン' })).toBe(11)
       expect(calculateGoblinBaseAtk(1, { race: 'スライムゴブリン' })).toBe(9)
-      expect(calculateGoblinBaseAtk(1, { race: 'ウルフゴブリン' })).toBe(12)
-      expect(calculateGoblinBaseAtk(1, { race: 'ホブゴブリン' })).toBe(15)
-      expect(calculateGoblinBaseAtk(1, { race: 'オークゴブリン' })).toBe(17)
+      expect(calculateGoblinBaseAtk(1, { race: 'ウルフゴブリン' })).toBe(11)
+      expect(calculateGoblinBaseAtk(1, { race: 'ホブゴブリン' })).toBe(11)
+      expect(calculateGoblinBaseAtk(1, { race: 'オークゴブリン' })).toBe(12)
 
       expect(calculateGoblinBaseDef(1, { race: 'ゴブリン' })).toBe(11)
-      expect(calculateGoblinBaseDef(1, { race: 'スライムゴブリン' })).toBe(15)
+      expect(calculateGoblinBaseDef(1, { race: 'スライムゴブリン' })).toBe(11)
       expect(calculateGoblinBaseDef(1, { race: 'ウルフゴブリン' })).toBe(11)
-      expect(calculateGoblinBaseDef(1, { race: 'ホブゴブリン' })).toBe(12)
-      expect(calculateGoblinBaseDef(1, { race: 'オークゴブリン' })).toBe(17)
+      expect(calculateGoblinBaseDef(1, { race: 'ホブゴブリン' })).toBe(11)
+      expect(calculateGoblinBaseDef(1, { race: 'オークゴブリン' })).toBe(12)
 
       expect(calculateGoblinBaseAccuracy(1, { race: 'ゴブリン' })).toBe(62)
       expect(calculateGoblinBaseAccuracy(1, { race: 'スライムゴブリン' })).toBe(60)
-      expect(calculateGoblinBaseAccuracy(1, { race: 'ウルフゴブリン' })).toBe(64)
-      expect(calculateGoblinBaseAccuracy(1, { race: 'ホブゴブリン' })).toBe(65)
-      expect(calculateGoblinBaseAccuracy(1, { race: 'オークゴブリン' })).toBe(64)
+      expect(calculateGoblinBaseAccuracy(1, { race: 'ウルフゴブリン' })).toBe(62)
+      expect(calculateGoblinBaseAccuracy(1, { race: 'ホブゴブリン' })).toBe(62)
+      expect(calculateGoblinBaseAccuracy(1, { race: 'オークゴブリン' })).toBe(61)
 
       expect(calculateGoblinBaseEvasion(1, { race: 'ゴブリン' })).toBe(11)
       expect(calculateGoblinBaseEvasion(1, { race: 'スライムゴブリン' })).toBe(10)
-      expect(calculateGoblinBaseEvasion(1, { race: 'ウルフゴブリン' })).toBe(14)
-      expect(calculateGoblinBaseEvasion(1, { race: 'ホブゴブリン' })).toBe(12)
+      expect(calculateGoblinBaseEvasion(1, { race: 'ウルフゴブリン' })).toBe(11)
+      expect(calculateGoblinBaseEvasion(1, { race: 'ホブゴブリン' })).toBe(11)
       expect(calculateGoblinBaseEvasion(1, { race: 'オークゴブリン' })).toBe(9)
 
       expect(calculateGoblinBaseAttackCount(1, { race: 'ゴブリン' })).toBe(2)
