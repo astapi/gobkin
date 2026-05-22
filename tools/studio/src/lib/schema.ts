@@ -67,6 +67,7 @@ export const EnemySchema = z
   .object({
     id: z.string(),
     name: z.string(),
+    attackType: z.enum(['melee', 'range']),
     raceTags: z.array(z.string()),
     level: z.number().int().nonnegative(),
     hp: z.number().int().nonnegative(),
@@ -109,6 +110,7 @@ export const EquipmentCategorySchema = z.enum([
   'armor',
   'robe',
   'shield',
+  'large_shield',
   'gauntlet',
   'wand',
   'rod',

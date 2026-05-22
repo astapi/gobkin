@@ -1949,6 +1949,105 @@
       "rank": 7
     },
     {
+      "_comment": "===== 防具:大盾 (large_shield) ====="
+    },
+    {
+      "id": "large_shield_iron_wall",
+      "name": "アイアンウォール",
+      "category": "large_shield",
+      "statBonuses": [
+        {
+          "stat": "def_flat",
+          "value": 30
+        },
+        {
+          "stat": "evasion_flat",
+          "value": -14
+        },
+        {
+          "stat": "magic_def_flat",
+          "value": 8
+        }
+      ],
+      "grantedSkillIds": [
+        "ranged_attack_reduction_9"
+      ],
+      "price": 25000,
+      "isRare": true
+    },
+    {
+      "id": "large_shield_fortress",
+      "name": "城塞の大盾",
+      "category": "large_shield",
+      "statBonuses": [
+        {
+          "stat": "def_flat",
+          "value": 48
+        },
+        {
+          "stat": "evasion_flat",
+          "value": -24
+        },
+        {
+          "stat": "magic_def_flat",
+          "value": 16
+        }
+      ],
+      "grantedSkillIds": [
+        "ranged_attack_reduction_13"
+      ],
+      "price": 50000,
+      "isRare": true
+    },
+    {
+      "id": "large_shield_dragon_scale",
+      "name": "竜鱗の大盾",
+      "category": "large_shield",
+      "statBonuses": [
+        {
+          "stat": "def_flat",
+          "value": 72
+        },
+        {
+          "stat": "evasion_flat",
+          "value": -36
+        },
+        {
+          "stat": "magic_def_flat",
+          "value": 28
+        }
+      ],
+      "grantedSkillIds": [
+        "ranged_attack_reduction_18"
+      ],
+      "price": 100000,
+      "isRare": true
+    },
+    {
+      "id": "large_shield_adamant_wall",
+      "name": "アダマントウォール",
+      "category": "large_shield",
+      "statBonuses": [
+        {
+          "stat": "def_flat",
+          "value": 100
+        },
+        {
+          "stat": "evasion_flat",
+          "value": -56
+        },
+        {
+          "stat": "magic_def_flat",
+          "value": 42
+        }
+      ],
+      "grantedSkillIds": [
+        "ranged_attack_reduction_22"
+      ],
+      "price": 600000,
+      "isRare": true
+    },
+    {
       "_comment": "===== 防具:小手 (gauntlet) ====="
     },
     {
@@ -2933,6 +3032,126 @@
         "human_slayer_1_5"
       ],
       "range": "melee",
+      "price": 25000,
+      "isRare": true
+    },
+    {
+      "id": "bow_beast_killer",
+      "name": "滅魔弓",
+      "category": "weapon",
+      "subCategory": "bow",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 24
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 128
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": -0.4
+        },
+        {
+          "stat": "evasion_flat",
+          "value": -8
+        }
+      ],
+      "grantedSkillIds": [
+        "beast_slayer_1_5"
+      ],
+      "range": "ranged",
+      "price": 25000,
+      "isRare": true
+    },
+    {
+      "id": "bow_undead_killer",
+      "name": "天使の弓",
+      "category": "weapon",
+      "subCategory": "bow",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 24
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 136
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": -0.4
+        },
+        {
+          "stat": "evasion_flat",
+          "value": -8
+        }
+      ],
+      "grantedSkillIds": [
+        "undead_slayer_1_5"
+      ],
+      "range": "ranged",
+      "price": 25000,
+      "isRare": true
+    },
+    {
+      "id": "bow_dragon_killer",
+      "name": "竜殺しの弓",
+      "category": "weapon",
+      "subCategory": "bow",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 36
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 160
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": -0.5
+        },
+        {
+          "stat": "evasion_flat",
+          "value": -12
+        }
+      ],
+      "grantedSkillIds": [
+        "dragon_slayer_1_5"
+      ],
+      "range": "ranged",
+      "price": 50000,
+      "isRare": true
+    },
+    {
+      "id": "bow_human_killer",
+      "name": "アサシンボウ",
+      "category": "weapon",
+      "subCategory": "bow",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 28
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 152
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": -0.4
+        },
+        {
+          "stat": "evasion_flat",
+          "value": -8
+        }
+      ],
+      "grantedSkillIds": [
+        "human_slayer_1_5"
+      ],
+      "range": "ranged",
       "price": 25000,
       "isRare": true
     },

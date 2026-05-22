@@ -20,6 +20,7 @@ const CATEGORIES: EquipmentCategory[] = [
   'armor',
   'robe',
   'shield',
+  'large_shield',
   'gauntlet',
   'wand',
   'rod',

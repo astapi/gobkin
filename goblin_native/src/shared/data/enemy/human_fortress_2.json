@@ -3,6 +3,7 @@
     {
       "id": "FRT001",
       "name": "騎士",
+      "attackType": "melee",
       "raceTags": [
         "human"
       ],
@@ -28,6 +29,7 @@
     {
       "id": "FRT002",
       "name": "宮廷魔術師",
+      "attackType": "melee",
       "raceTags": [
         "human"
       ],
@@ -53,6 +55,7 @@
     {
       "id": "FRT003",
       "name": "重装騎兵",
+      "attackType": "melee",
       "raceTags": [
         "human"
       ],
@@ -78,6 +81,7 @@
     {
       "id": "FRT004",
       "name": "攻城兵器操手",
+      "attackType": "melee",
       "raceTags": [
         "human"
       ],
@@ -103,6 +107,7 @@
     {
       "id": "FRT005",
       "name": "精鋭近衛兵",
+      "attackType": "melee",
       "raceTags": [
         "human"
       ],

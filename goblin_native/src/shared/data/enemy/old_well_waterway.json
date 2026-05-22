@@ -3,6 +3,7 @@
     {
       "id": "OWW001",
       "name": "大ネズミ",
+      "attackType": "melee",
       "raceTags": [
         "beast"
       ],
@@ -28,6 +29,7 @@
     {
       "id": "OWW002",
       "name": "水棲スライム",
+      "attackType": "melee",
       "raceTags": [
         "slime"
       ],
@@ -53,6 +55,7 @@
     {
       "id": "OWW003",
       "name": "スケルトン",
+      "attackType": "melee",
       "raceTags": [
         "undead"
       ],
@@ -78,6 +81,7 @@
     {
       "id": "OWW004",
       "name": "地下水路の大蛇",
+      "attackType": "melee",
       "raceTags": [
         "beast"
       ],
@@ -103,6 +107,7 @@
     {
       "id": "B_OWW_GATEKEEPER",
       "name": "水門の骸骨兵",
+      "attackType": "melee",
       "raceTags": [
         "undead"
       ],

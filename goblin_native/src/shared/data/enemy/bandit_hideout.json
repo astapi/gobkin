@@ -3,6 +3,7 @@
     {
       "id": "BDT002",
       "name": "盗賊",
+      "attackType": "melee",
       "raceTags": [
         "human"
       ],
@@ -28,6 +29,7 @@
     {
       "id": "BDT003",
       "name": "盗賊弓兵",
+      "attackType": "range",
       "raceTags": [
         "human"
       ],
@@ -53,6 +55,7 @@
     {
       "id": "BDT004",
       "name": "盗賊斥候",
+      "attackType": "melee",
       "raceTags": [
         "human"
       ],
@@ -78,6 +81,7 @@
     {
       "id": "BDT005",
       "name": "傭兵くずれ",
+      "attackType": "melee",
       "raceTags": [
         "human"
       ],
@@ -103,6 +107,7 @@
     {
       "id": "B_BDT_CHIEF",
       "name": "赤傷のガルド",
+      "attackType": "melee",
       "raceTags": [
         "human"
       ],

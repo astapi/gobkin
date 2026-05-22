@@ -3,6 +3,7 @@
     {
       "id": "ROY001",
       "name": "近衛騎士",
+      "attackType": "melee",
       "raceTags": [
         "human"
       ],
@@ -28,6 +29,7 @@
     {
       "id": "ROY002",
       "name": "大魔導師",
+      "attackType": "melee",
       "raceTags": [
         "human"
       ],
@@ -53,6 +55,7 @@
     {
       "id": "ROY003",
       "name": "聖騎士",
+      "attackType": "melee",
       "raceTags": [
         "human"
       ],
@@ -78,6 +81,7 @@
     {
       "id": "ROY004",
       "name": "王国禁衛隊",
+      "attackType": "melee",
       "raceTags": [
         "human"
       ],
@@ -103,6 +107,7 @@
     {
       "id": "ROY005",
       "name": "勇者",
+      "attackType": "melee",
       "raceTags": [
         "human"
       ],
@@ -128,6 +133,7 @@
     {
       "id": "B_KING",
       "name": "人間王",
+      "attackType": "melee",
       "raceTags": [
         "human"
       ],

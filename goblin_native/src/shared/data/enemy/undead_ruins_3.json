@@ -3,6 +3,7 @@
     {
       "id": "UND001",
       "name": "スケルトン兵",
+      "attackType": "melee",
       "raceTags": [
         "undead"
       ],
@@ -28,6 +29,7 @@
     {
       "id": "UND002",
       "name": "ゾンビ",
+      "attackType": "melee",
       "raceTags": [
         "undead"
       ],
@@ -53,6 +55,7 @@
     {
       "id": "UND003",
       "name": "ゴースト",
+      "attackType": "melee",
       "raceTags": [
         "undead"
       ],
@@ -78,6 +81,7 @@
     {
       "id": "UND004",
       "name": "骨弓兵",
+      "attackType": "range",
       "raceTags": [
         "undead"
       ],
@@ -103,6 +107,7 @@
     {
       "id": "UND005",
       "name": "屍鬼",
+      "attackType": "melee",
       "raceTags": [
         "undead"
       ],
@@ -128,6 +133,7 @@
     {
       "id": "B_LICH",
       "name": "死霊術師の残骸",
+      "attackType": "melee",
       "raceTags": [
         "undead"
       ],

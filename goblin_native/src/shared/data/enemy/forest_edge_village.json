@@ -3,6 +3,7 @@
     {
       "id": "FEV001",
       "name": "ゾンビドッグ",
+      "attackType": "melee",
       "raceTags": [
         "beast"
       ],
@@ -28,6 +29,7 @@
     {
       "id": "FEV002",
       "name": "ゾンビカラス",
+      "attackType": "melee",
       "raceTags": [
         "beast"
       ],
@@ -53,6 +55,7 @@
     {
       "id": "FEV003",
       "name": "亡者",
+      "attackType": "melee",
       "raceTags": [
         "undead"
       ],
@@ -78,6 +81,7 @@
     {
       "id": "FEV004",
       "name": "ゾンビ",
+      "attackType": "melee",
       "raceTags": [
         "undead",
         "human"
@@ -104,6 +108,7 @@
     {
       "id": "B_FEV_WRAITH",
       "name": "ジャイアントトード",
+      "attackType": "melee",
       "raceTags": [
         "beast"
       ],

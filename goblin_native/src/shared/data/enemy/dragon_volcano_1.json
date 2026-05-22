@@ -3,6 +3,7 @@
     {
       "id": "DRG001",
       "name": "火蜥蜴",
+      "attackType": "melee",
       "raceTags": [
         "dragon"
       ],
@@ -28,6 +29,7 @@
     {
       "id": "DRG002",
       "name": "ワイバーン",
+      "attackType": "melee",
       "raceTags": [
         "dragon"
       ],
@@ -53,6 +55,7 @@
     {
       "id": "DRG003",
       "name": "ドラゴン幼体",
+      "attackType": "melee",
       "raceTags": [
         "dragon"
       ],
@@ -78,6 +81,7 @@
     {
       "id": "B_FLAME_DRAGON",
       "name": "紅蓮竜",
+      "attackType": "melee",
       "raceTags": [
         "dragon"
       ],

@@ -3,6 +3,7 @@
     {
       "id": "DWF001",
       "name": "ドワーフ坑夫",
+      "attackType": "melee",
       "raceTags": [
         "dwarf"
       ],
@@ -28,6 +29,7 @@
     {
       "id": "DWF002",
       "name": "ドワーフ戦士",
+      "attackType": "melee",
       "raceTags": [
         "dwarf"
       ],
@@ -53,6 +55,7 @@
     {
       "id": "DWF003",
       "name": "ルーン鍛冶師",
+      "attackType": "melee",
       "raceTags": [
         "dwarf"
       ],
@@ -78,6 +81,7 @@
     {
       "id": "DWF004",
       "name": "坑道守護者",
+      "attackType": "melee",
       "raceTags": [
         "dwarf"
       ],
@@ -103,6 +107,7 @@
     {
       "id": "DWF005",
       "name": "ドワーフ擲弾兵",
+      "attackType": "melee",
       "raceTags": [
         "dwarf"
       ],

@@ -27,7 +27,7 @@ interface KeyedPool {
   templates: KeyedEntry[]
 }
 
-const ALL_CATEGORIES = ['weapon', 'armor', 'robe', 'shield', 'gauntlet', 'wand', 'rod', 'accessory'] as const
+const ALL_CATEGORIES = ['weapon', 'armor', 'robe', 'shield', 'large_shield', 'gauntlet', 'wand', 'rod', 'accessory'] as const
 
 let keySeed = 0
 const nextKey = () => ++keySeed

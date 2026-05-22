@@ -3,6 +3,7 @@
     {
       "id": "SPF001",
       "name": "巣糸蜘蛛",
+      "attackType": "melee",
       "raceTags": [
         "insect"
       ],
@@ -28,6 +29,7 @@
     {
       "id": "SPF002",
       "name": "毒牙蜘蛛",
+      "attackType": "melee",
       "raceTags": [
         "insect"
       ],
@@ -53,6 +55,7 @@
     {
       "id": "SPF003",
       "name": "アラクネ",
+      "attackType": "melee",
       "raceTags": [
         "spider"
       ],
@@ -79,6 +82,7 @@
     {
       "id": "B_ARACHNE",
       "name": "クイーンアラクネ",
+      "attackType": "melee",
       "raceTags": [
         "spider"
       ],

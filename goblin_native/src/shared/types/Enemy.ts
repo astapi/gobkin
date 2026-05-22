@@ -17,6 +17,7 @@ export interface TierEquipmentDropConfig {
 export interface Enemy {
   id: string
   name: string
+  attackType: 'melee' | 'range'
   raceTags: string[]
   level: number
   hp: number

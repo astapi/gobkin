@@ -3,6 +3,7 @@
     {
       "id": "E001",
       "name": "スライム",
+      "attackType": "melee",
       "raceTags": [
         "beast"
       ],
@@ -28,6 +29,7 @@
     {
       "id": "E002",
       "name": "森ネズミ",
+      "attackType": "melee",
       "raceTags": [
         "beast"
       ],
@@ -53,6 +55,7 @@
     {
       "id": "E003",
       "name": "ウルフ",
+      "attackType": "melee",
       "raceTags": [
         "beast"
       ],
@@ -78,6 +81,7 @@
     {
       "id": "E004",
       "name": "トゲリス",
+      "attackType": "melee",
       "raceTags": [
         "beast"
       ],
@@ -103,6 +107,7 @@
     {
       "id": "B001",
       "name": "グレイウルフ",
+      "attackType": "melee",
       "raceTags": [
         "beast"
       ],

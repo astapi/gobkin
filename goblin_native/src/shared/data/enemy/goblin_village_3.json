@@ -21,6 +21,7 @@
       "level": 7,
       "magicDef": 4,
       "name": "ゴブリン",
+      "attackType": "melee",
       "raceTags": [
         "goblin"
       ]
@@ -46,6 +47,7 @@
       "level": 7,
       "magicDef": 1,
       "name": "ゴブリンシーフ",
+      "attackType": "melee",
       "raceTags": [
         "goblin"
       ]
@@ -71,6 +73,7 @@
       "level": 7,
       "magicDef": 7,
       "name": "ゴブリンウォリアー",
+      "attackType": "melee",
       "raceTags": [
         "goblin"
       ]
@@ -97,6 +100,7 @@
       "magicAtk": 9,
       "magicDef": 4,
       "name": "ゴブリンメイジ",
+      "attackType": "melee",
       "raceTags": [
         "goblin"
       ],
@@ -129,6 +133,7 @@
       "level": 7,
       "magicDef": 36,
       "name": "ゴブリンガード",
+      "attackType": "melee",
       "raceTags": [
         "goblin"
       ]
@@ -161,6 +166,7 @@
       "level": 15,
       "magicDef": 17,
       "name": "ホブゴブリン",
+      "attackType": "melee",
       "raceTags": [
         "goblin",
         "hobgoblin"

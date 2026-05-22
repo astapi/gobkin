@@ -3,6 +3,7 @@
     {
       "id": "ELF001",
       "name": "森の斥候",
+      "attackType": "melee",
       "raceTags": [
         "elf"
       ],
@@ -28,6 +29,7 @@
     {
       "id": "ELF002",
       "name": "森の射手",
+      "attackType": "range",
       "raceTags": [
         "elf"
       ],
@@ -53,6 +55,7 @@
     {
       "id": "ELF003",
       "name": "精霊使い",
+      "attackType": "melee",
       "raceTags": [
         "elf"
       ],
@@ -78,6 +81,7 @@
     {
       "id": "ELF004",
       "name": "月の衛士",
+      "attackType": "melee",
       "raceTags": [
         "elf"
       ],
@@ -103,6 +107,7 @@
     {
       "id": "ELF005",
       "name": "古樹の戦士",
+      "attackType": "melee",
       "raceTags": [
         "elf",
         "treant"

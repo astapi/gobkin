@@ -126,6 +126,14 @@ function createPhysicalDamageSkill(value: number): CharacterSkill {
   }
 }
 
+function createRangedAttackReductionSkill(value: number): CharacterSkill {
+  const id = `ranged_attack_reduction_${value}`
+  return {
+    id,
+    rangedAttackDamageReductionPercent: value,
+  }
+}
+
 function createAdditionalDamageSkill(value: number): CharacterSkill {
   const id = `additional_damage_${value}`
   return {
@@ -649,6 +657,11 @@ export const CHARACTER_SKILL_CATALOG = {
   physical_reduction_22: createPhysicalReductionSkill(22),
   physical_reduction_26: createPhysicalReductionSkill(26),
   physical_reduction_30: createPhysicalReductionSkill(30),
+
+  ranged_attack_reduction_9: createRangedAttackReductionSkill(9),
+  ranged_attack_reduction_13: createRangedAttackReductionSkill(13),
+  ranged_attack_reduction_18: createRangedAttackReductionSkill(18),
+  ranged_attack_reduction_22: createRangedAttackReductionSkill(22),
 
   attack_resistant_1_4: createAttackResistantSkill(1, 4),
   attack_resistant_1_3: createAttackResistantSkill(1, 3),

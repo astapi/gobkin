@@ -3,6 +3,7 @@
     {
       "id": "S001",
       "name": "スライム",
+      "attackType": "melee",
       "raceTags": [
         "slime"
       ],
@@ -43,6 +44,7 @@
     {
       "id": "B_SLIME",
       "name": "ボススライム",
+      "attackType": "melee",
       "raceTags": [
         "slime"
       ],
