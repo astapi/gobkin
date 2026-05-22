@@ -34,7 +34,7 @@ import { useTutorialStore } from '../stores/useTutorialStore'
 import { useExpeditionNotification } from '../hooks/useExpeditionNotification'
 import { getDungeonName } from '../../shared/i18n/entityLocalization'
 import { computeDungeonExplorationTime, getDungeonTierAreaLevel, getDungeonTierDisplayName } from '../../shared/types'
-import { isDungeonCompleted } from '../../shared/utils/expeditionClear'
+import { getMaxClearedFloorFromReplay, isDungeonCompleted } from '../../shared/utils/expeditionClear'
 import { computeCurrentFloor } from '../../shared/utils/expeditionFloor'
 import { getExpeditionTimeMultiplierFromSkills } from '../../shared/data/characterSkills'
 import { EquipmentService } from '../../core/services/EquipmentService'
@@ -102,6 +102,7 @@ export const useExpeditionFlow = ({
   const isBaseLoading = useBaseStore(s => s.isLoading)
   const baseStateRepository = getBaseStateRepository()
   const markDungeonCleared = useDungeonStore((state) => state.markDungeonCleared)
+  const markDungeonFloorCleared = useDungeonStore((state) => state.markDungeonFloorCleared)
   const checkAndUnlockStories = useStoryStore((state) => state.checkAndUnlockStories)
   const expeditionRecords = useExpeditionStore((state) => state.expeditionRecords)
   const getPartyExpeditionHistory = useExpeditionStore((state) => state.getPartyExpeditionHistory)
@@ -149,11 +150,16 @@ export const useExpeditionFlow = ({
     const dungeon = areasData.find(area => area.id === record.dungeonId)
     if (!dungeon) return
 
+    const tier = record.replay.meta.tier as DungeonTier | undefined
+    const maxClearedFloor = getMaxClearedFloorFromReplay(record.replay)
+    if (maxClearedFloor > 0) {
+      await markDungeonFloorCleared(dungeon, maxClearedFloor, tier)
+    }
+
     const cleared = isDungeonCompleted(record.replay) &&
-      record.replay.summary.maxFloorReached >= dungeon.floors
+      maxClearedFloor >= dungeon.floors
     if (!cleared) return
 
-    const tier = record.replay.meta.tier as DungeonTier | undefined
     await markDungeonCleared(dungeon, true, tier)
     await checkAndUnlockStories(dungeon.id)
 
@@ -195,6 +201,7 @@ export const useExpeditionFlow = ({
     isBaseLoading,
     isPendingLoading,
     markDungeonCleared,
+    markDungeonFloorCleared,
     rank,
   ])
 
@@ -211,12 +218,19 @@ export const useExpeditionFlow = ({
     }
 
     const tierCleared = (dungeon.maxClearedTier ?? 0) > tier
-    const baseTime = computeDungeonExplorationTime(
+    const fullFirstTime = computeDungeonExplorationTime(
       dungeon.id,
       dungeon.exploration_time_sec_first,
       dungeon.exploration_time_sec,
       tier,
-      tierCleared,
+      false,
+    )
+    const fullClearedTime = computeDungeonExplorationTime(
+      dungeon.id,
+      dungeon.exploration_time_sec_first,
+      dungeon.exploration_time_sec,
+      tier,
+      true,
     )
     const multiplierMap: Record<ExpeditionRequest['returnPolicy'], number> = {
       never: 1.0,
@@ -228,11 +242,22 @@ export const useExpeditionFlow = ({
     const normalizedTargetFloor = typeof targetFloor === 'number' && Number.isFinite(targetFloor)
       ? Math.max(1, Math.min(dungeon.floors, Math.floor(targetFloor)))
       : dungeon.floors
-    const floorMultiplier = normalizedTargetFloor / dungeon.floors
+    const maxClearedFloor = tierCleared
+      ? dungeon.floors
+      : Math.max(0, Math.min(
+          dungeon.floors,
+          Math.floor(dungeon.maxClearedFloorsByTier?.[tier] ?? 0),
+        ))
+    const clearedTargetFloors = Math.min(normalizedTargetFloor, maxClearedFloor)
+    const unclearedTargetFloors = normalizedTargetFloor - clearedTargetFloors
+    const baseTime = (
+      fullClearedTime * clearedTargetFloors +
+      fullFirstTime * unclearedTargetFloors
+    ) / dungeon.floors
     const speedMultiplier = getSpeedMultiplier()
     const goldenAcornSpeed = goldenAcornUsed ? GOLDEN_ACORN_SPEED_MULTIPLIER : 1
     return Math.floor(
-      baseTime * floorMultiplier * multiplier * speedMultiplier * partyExpeditionTimeMultiplier * goldenAcornSpeed,
+      baseTime * multiplier * speedMultiplier * partyExpeditionTimeMultiplier * goldenAcornSpeed,
     )
   }, [instantDungeonExploration])
 

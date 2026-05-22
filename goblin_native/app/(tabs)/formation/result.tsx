@@ -13,7 +13,7 @@ import type { ExpeditionRecord, Goblin, Story, TimelineEvent, TreasureDrop } fro
 import { getDungeonTierDisplayName } from '@/shared/types'
 import { getDungeonName, getEquipmentDisplayName } from '@/shared/i18n/entityLocalization'
 import { getEquipmentTemplate } from '@/shared/data/equipmentPoolLoader'
-import { isDungeonCompleted } from '@/shared/utils/expeditionClear'
+import { getMaxClearedFloorFromReplay, isDungeonCompleted } from '@/shared/utils/expeditionClear'
 
 function resolveTreasureName(drop: TreasureDrop): string {
   const template = getEquipmentTemplate(drop.templateId)
@@ -30,6 +30,7 @@ export default function ExpeditionResultScreen() {
   const dungeons = useDungeonStore((state) => state.dungeons)
   const progress = useDungeonStore((state) => state.progress)
   const markDungeonCleared = useDungeonStore((state) => state.markDungeonCleared)
+  const markDungeonFloorCleared = useDungeonStore((state) => state.markDungeonFloorCleared)
   const markUnlockNotified = useDungeonStore((state) => state.markUnlockNotified)
   const {
     expeditionRecords,
@@ -133,7 +134,12 @@ export default function ExpeditionResultScreen() {
 
   useEffect(() => {
     if (!replay || !dungeon) return
-    const cleared = isDungeonCompleted(replay) && replay.summary.maxFloorReached >= dungeon.floors
+    const maxClearedFloor = getMaxClearedFloorFromReplay(replay)
+    const currentClearedFloor = progress[dungeon.id]?.maxClearedFloorsByTier?.[replay.meta.tier ?? 0] ?? 0
+    if (maxClearedFloor > currentClearedFloor) {
+      void markDungeonFloorCleared(dungeon, maxClearedFloor, replay.meta.tier)
+    }
+    const cleared = isDungeonCompleted(replay) && maxClearedFloor >= dungeon.floors
     if (cleared && !dungeon.cleared) {
       void (async () => {
         await markDungeonCleared(dungeon, true, replay.meta.tier)
@@ -143,7 +149,7 @@ export default function ExpeditionResultScreen() {
         }
       })()
     }
-  }, [dungeon, markDungeonCleared, checkAndUnlockStories, replay])
+  }, [dungeon, markDungeonCleared, markDungeonFloorCleared, checkAndUnlockStories, progress, replay])
 
   const area = replay ? areasData.find(a => a.id === replay.meta.areaId) : dungeon
   const unlockTargets = useMemo(() => {

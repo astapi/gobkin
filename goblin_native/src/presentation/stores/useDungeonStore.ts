@@ -14,6 +14,7 @@ const buildDefaultProgress = (): DungeonProgressState => {
       cleared: dungeon.cleared ?? false,
       unlockNotified: false,
       maxClearedTier: 0,
+      maxClearedFloorsByTier: dungeon.cleared ? { 0: dungeon.floors } : {},
     }
   })
   return defaults
@@ -25,6 +26,7 @@ const buildDungeons = (progress: DungeonProgressState): Dungeon[] =>
     cleared: progress[dungeon.id]?.cleared ?? dungeon.cleared ?? false,
     unlocked: progress[dungeon.id]?.unlocked ?? dungeon.unlocked ?? false,
     maxClearedTier: progress[dungeon.id]?.maxClearedTier ?? 0,
+    maxClearedFloorsByTier: progress[dungeon.id]?.maxClearedFloorsByTier ?? {},
   }))
 
 interface DungeonStoreState {
@@ -38,6 +40,7 @@ interface DungeonStoreActions {
   refresh: () => Promise<void>
   updateProgress: (updater: (prev: DungeonProgressState) => DungeonProgressState) => Promise<void>
   markDungeonCleared: (dungeon: Dungeon, cleared: boolean, tier?: DungeonTier) => Promise<void>
+  markDungeonFloorCleared: (dungeon: Dungeon, floor: number, tier?: DungeonTier) => Promise<void>
   markUnlockNotified: (dungeonId: string) => Promise<void>
 }
 
@@ -87,18 +90,28 @@ export const useDungeonStore = create<DungeonStoreState & DungeonStoreActions>()
           cleared: false,
           unlockNotified: false,
           maxClearedTier: 0,
+          maxClearedFloorsByTier: {},
         }
 
         const clearedTierValue = tier !== undefined ? tier + 1 : 1
         const newMaxClearedTier = cleared
           ? Math.max(current.maxClearedTier, clearedTierValue)
           : current.maxClearedTier
+        const tierKey = tier ?? 0
+        const currentFloors = current.maxClearedFloorsByTier ?? {}
+        const maxClearedFloorsByTier = cleared
+          ? {
+              ...currentFloors,
+              [tierKey]: Math.max(currentFloors[tierKey] ?? 0, dungeon.floors),
+            }
+          : currentFloors
 
         nextProgress[dungeon.id] = {
           ...current,
           unlocked: true,
           cleared: cleared || current.cleared,
           maxClearedTier: newMaxClearedTier,
+          maxClearedFloorsByTier,
         }
 
         if (cleared) {
@@ -111,13 +124,38 @@ export const useDungeonStore = create<DungeonStoreState & DungeonStoreActions>()
             const target = nextProgress[unlockTarget]
             if (!target || !target.unlocked) {
               nextProgress[unlockTarget] = {
-                ...(target ?? { cleared: false, unlockNotified: false, maxClearedTier: 0 }),
+                ...(target ?? { cleared: false, unlockNotified: false, maxClearedTier: 0, maxClearedFloorsByTier: {} }),
                 unlocked: true,
               }
             }
           }
         }
 
+        return nextProgress
+      })
+    },
+
+    markDungeonFloorCleared: async (dungeon: Dungeon, floor: number, tier?: DungeonTier) => {
+      const normalizedFloor = Math.max(1, Math.min(dungeon.floors, Math.floor(floor)))
+      await updateProgress(prev => {
+        const nextProgress: DungeonProgressState = { ...prev }
+        const current = nextProgress[dungeon.id] ?? {
+          unlocked: dungeon.unlocked ?? false,
+          cleared: false,
+          unlockNotified: false,
+          maxClearedTier: 0,
+          maxClearedFloorsByTier: {},
+        }
+        const tierKey = tier ?? 0
+        const currentFloors = current.maxClearedFloorsByTier ?? {}
+        nextProgress[dungeon.id] = {
+          ...current,
+          unlocked: true,
+          maxClearedFloorsByTier: {
+            ...currentFloors,
+            [tierKey]: Math.max(currentFloors[tierKey] ?? 0, normalizedFloor),
+          },
+        }
         return nextProgress
       })
     },
@@ -130,6 +168,7 @@ export const useDungeonStore = create<DungeonStoreState & DungeonStoreActions>()
           cleared: false,
           unlockNotified: false,
           maxClearedTier: 0,
+          maxClearedFloorsByTier: {},
         }
         nextProgress[dungeonId] = { ...current, unlockNotified: true }
         return nextProgress

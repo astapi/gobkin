@@ -132,6 +132,7 @@ export const SCHEMA = {
       cleared INTEGER NOT NULL DEFAULT 0,
       unlock_notified INTEGER NOT NULL DEFAULT 0,
       max_cleared_tier INTEGER NOT NULL DEFAULT 0,
+      cleared_floors_json TEXT NOT NULL DEFAULT '{}',
       updated_at TEXT NOT NULL DEFAULT (datetime('now'))
     )
   `,
