@@ -3,6 +3,7 @@
     {
       "id": "HBT001",
       "name": "ホビット斥候",
+      "attackType": "melee",
       "raceTags": [
         "hobbit"
       ],
@@ -28,6 +29,7 @@
     {
       "id": "HBT002",
       "name": "ホビット投石手",
+      "attackType": "melee",
       "raceTags": [
         "hobbit"
       ],
@@ -53,6 +55,7 @@
     {
       "id": "HBT003",
       "name": "ホビット村長",
+      "attackType": "melee",
       "raceTags": [
         "hobbit"
       ],

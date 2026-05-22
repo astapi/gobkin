@@ -3,6 +3,7 @@
     {
       "id": "DGR003",
       "name": "嘆きの霊",
+      "attackType": "melee",
       "raceTags": [
         "undead"
       ],
@@ -29,6 +30,7 @@
     {
       "id": "DGR004",
       "name": "墓守の骨弓兵",
+      "attackType": "range",
       "raceTags": [
         "undead"
       ],
@@ -54,6 +56,7 @@
     {
       "id": "DGR005",
       "name": "墓喰らいの屍鬼",
+      "attackType": "melee",
       "raceTags": [
         "undead"
       ],
@@ -79,6 +82,7 @@
     {
       "id": "B_GRAVE_WARDEN",
       "name": "霊廟の墓守将",
+      "attackType": "melee",
       "raceTags": [
         "undead"
       ],

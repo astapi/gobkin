@@ -178,6 +178,10 @@ export function describeCharacterSkill(skill: CharacterSkill): string {
     return i18n.t('battle.physicalReduction', { value: skill.physicalDamageReductionPercent })
   }
 
+  if (skill.rangedAttackDamageReductionPercent !== undefined) {
+    return i18n.t('battle.rangedAttackReduction', { value: skill.rangedAttackDamageReductionPercent })
+  }
+
   if (skill.physicalDamageTakenMultiplier !== undefined) {
     return i18n.t('battle.attackResistant', {
       value: formatMultiplierFraction(skill.physicalDamageTakenMultiplier),
@@ -508,6 +512,13 @@ export function getRowDamageMultiplierFromSkills(skills: CharacterSkill[], row: 
     : RANGED_ROW_DAMAGE_MULTIPLIERS[clampedRow]
 }
 
+export function getRowDamageMultiplierForAttackType(attackType: 'melee' | 'range', row: number): number {
+  const clampedRow = Math.max(0, Math.min(row, MELEE_ROW_DAMAGE_MULTIPLIERS.length - 1))
+  return attackType === 'melee'
+    ? MELEE_ROW_DAMAGE_MULTIPLIERS[clampedRow]
+    : RANGED_ROW_DAMAGE_MULTIPLIERS[clampedRow]
+}
+
 export function getRearProtectionMultiplierFromSkills(skills: CharacterSkill[]): number {
   return getUniqueSkillsById(skills).reduce(
     (product, skill) => product * (skill.protectRearAllyNormalAttackMultiplier ?? 1),
@@ -604,6 +615,13 @@ export function getPhysicalDamageReductionFromSkills(skills: CharacterSkill[]): 
   damageTakenPercent = Math.floor(damageTakenPercent * (1 - reductionPercent / 100))
 
   return 100 - damageTakenPercent
+}
+
+export function getRangedAttackDamageReductionFromSkills(skills: CharacterSkill[]): number {
+  return getUniqueSkillsById(skills).reduce(
+    (sum, skill) => sum + (skill.rangedAttackDamageReductionPercent ?? 0),
+    0,
+  )
 }
 
 export function getMagicDamageReductionFromSkills(skills: CharacterSkill[]): number {

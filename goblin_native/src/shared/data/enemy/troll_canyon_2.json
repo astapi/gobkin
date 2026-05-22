@@ -3,6 +3,7 @@
     {
       "id": "TRL001",
       "name": "トロル",
+      "attackType": "melee",
       "raceTags": [
         "troll"
       ],
@@ -28,6 +29,7 @@
     {
       "id": "TRL002",
       "name": "洞窟トロル",
+      "attackType": "melee",
       "raceTags": [
         "troll"
       ],
@@ -53,6 +55,7 @@
     {
       "id": "TRL003",
       "name": "投石トロル",
+      "attackType": "melee",
       "raceTags": [
         "troll"
       ],
@@ -78,6 +81,7 @@
     {
       "id": "TRL004",
       "name": "巨大トロル",
+      "attackType": "melee",
       "raceTags": [
         "troll"
       ],
@@ -103,6 +107,7 @@
     {
       "id": "TRL005",
       "name": "トロルシャーマン",
+      "attackType": "melee",
       "raceTags": [
         "troll"
       ],

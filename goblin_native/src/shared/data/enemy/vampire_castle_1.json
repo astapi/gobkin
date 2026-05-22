@@ -3,6 +3,7 @@
     {
       "id": "VMP001",
       "name": "吸血鬼の従者",
+      "attackType": "melee",
       "raceTags": [
         "vampire",
         "undead"
@@ -29,6 +30,7 @@
     {
       "id": "VMP002",
       "name": "夜会の魔術師",
+      "attackType": "melee",
       "raceTags": [
         "vampire",
         "undead"
@@ -56,6 +58,7 @@
     {
       "id": "B_VAMPIRE_LORD",
       "name": "ヴァンパイアロード",
+      "attackType": "melee",
       "raceTags": [
         "vampire",
         "undead"

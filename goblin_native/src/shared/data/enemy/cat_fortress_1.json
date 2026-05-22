@@ -3,6 +3,7 @@
     {
       "id": "CAT001",
       "name": "影爪の斥候",
+      "attackType": "melee",
       "raceTags": [
         "cat",
         "beast"
@@ -42,6 +43,7 @@
     {
       "id": "CAT002",
       "name": "月牙の双刃兵",
+      "attackType": "melee",
       "raceTags": [
         "cat",
         "beast"
@@ -75,6 +77,7 @@
     {
       "id": "B_CAT_SHADOWLORD",
       "name": "月影の遺跡主ネコマタ",
+      "attackType": "melee",
       "raceTags": [
         "cat",
         "beast"

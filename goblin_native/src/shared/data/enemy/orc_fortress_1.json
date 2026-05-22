@@ -3,6 +3,7 @@
     {
       "id": "ORF001",
       "name": "オーク重装兵",
+      "attackType": "melee",
       "raceTags": [
         "orc"
       ],
@@ -41,6 +42,7 @@
     {
       "id": "ORF002",
       "name": "オーク弓兵",
+      "attackType": "range",
       "raceTags": [
         "orc"
       ],
@@ -72,6 +74,7 @@
     {
       "id": "ORF003",
       "name": "トロル",
+      "attackType": "melee",
       "raceTags": [
         "troll"
       ],
@@ -107,6 +110,7 @@
     {
       "id": "B_ORC_FORTRESS",
       "name": "オークチャンピオン",
+      "attackType": "melee",
       "raceTags": [
         "orc"
       ],

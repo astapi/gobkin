@@ -35,6 +35,7 @@ export interface CharacterSkill {
   enablesRangedRowDamagePenalty?: boolean
   physicalDamageReductionPercent?: number
   physicalDamageTakenMultiplier?: number
+  rangedAttackDamageReductionPercent?: number
   magicDamageReductionPercent?: number
   magicDamageTakenMultiplier?: number
   breathDamageReductionPercent?: number

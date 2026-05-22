@@ -3,6 +3,7 @@
     {
       "id": "VIL001",
       "name": "民兵",
+      "attackType": "melee",
       "raceTags": [
         "human"
       ],
@@ -28,6 +29,7 @@
     {
       "id": "VIL002",
       "name": "村守備兵",
+      "attackType": "melee",
       "raceTags": [
         "human"
       ],
@@ -53,6 +55,7 @@
     {
       "id": "VIL003",
       "name": "猟師",
+      "attackType": "range",
       "raceTags": [
         "human"
       ],
@@ -85,6 +88,7 @@
     {
       "id": "B_CANNON",
       "name": "防衛砲台",
+      "attackType": "range",
       "raceTags": [
         "construct"
       ],

@@ -482,6 +482,7 @@ describe('ExpeditionEngine combat stats', () => {
     const enemy: Enemy = {
       id: 'dummy',
       name: 'ダミー',
+      attackType: 'melee',
       raceTags: ['beast'],
       level: 1,
       hp: 999,
@@ -510,6 +511,7 @@ describe('ExpeditionEngine dungeon tier scaling', () => {
   const baseEnemy: Enemy = {
     id: 'scale-test',
     name: 'スケール確認',
+    attackType: 'melee',
     raceTags: ['beast'],
     level: 28,
     hp: 100,
@@ -644,6 +646,7 @@ describe('ExpeditionEngine enemy XP rewards', () => {
       {
         id: 'slime-a',
         name: 'スライムA',
+        attackType: 'melee',
         raceTags: ['slime'],
         level: 5,
         hp: 4,
@@ -658,6 +661,7 @@ describe('ExpeditionEngine enemy XP rewards', () => {
       {
         id: 'human-a',
         name: '人間兵士',
+        attackType: 'melee',
         raceTags: ['human'],
         level: 5,
         hp: 4,

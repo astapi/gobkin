@@ -3,6 +3,7 @@
     {
       "id": "LIZ001",
       "name": "リザードマン",
+      "attackType": "melee",
       "raceTags": [
         "lizardman"
       ],
@@ -38,6 +39,7 @@
     {
       "id": "LIZ002",
       "name": "アサシンリザード",
+      "attackType": "melee",
       "raceTags": [
         "lizardman"
       ],
@@ -69,6 +71,7 @@
     {
       "id": "B_SWAMPKING",
       "name": "キングリザードマン",
+      "attackType": "melee",
       "raceTags": [
         "lizardman"
       ],

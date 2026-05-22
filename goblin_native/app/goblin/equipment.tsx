@@ -27,10 +27,11 @@ const CATEGORY_ORDER: Record<EquipmentCategory, number> = {
   armor: 1,
   robe: 2,
   shield: 3,
-  gauntlet: 4,
-  wand: 5,
-  rod: 6,
-  accessory: 7,
+  large_shield: 4,
+  gauntlet: 5,
+  wand: 6,
+  rod: 7,
+  accessory: 8,
 }
 
 const CATEGORY_LABELS: Record<EquipmentCategory, string> = {
@@ -38,6 +39,7 @@ const CATEGORY_LABELS: Record<EquipmentCategory, string> = {
   armor: '鎧',
   robe: 'ローブ',
   shield: '盾',
+  large_shield: '大盾',
   gauntlet: '小手',
   wand: 'ワンド',
   rod: 'ロッド',
@@ -58,6 +60,7 @@ const CATEGORY_FILTER_ORDER: Exclude<EquipmentCategory, 'weapon'>[] = [
   'armor',
   'robe',
   'shield',
+  'large_shield',
   'gauntlet',
   'wand',
   'rod',

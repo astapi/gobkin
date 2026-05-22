@@ -15,6 +15,8 @@ import {
   getLearnedSpellsFromSkills,
   getMagicDamageReductionFromSkills,
   getPhysicalDamageReductionFromSkills,
+  getRangedAttackDamageReductionFromSkills,
+  getRowDamageMultiplierForAttackType,
   getRearMagicProtectionMultiplierFromSkills,
   getRearProtectionMultiplierFromSkills,
   getRowDamageMultiplierFromSkills,
@@ -76,6 +78,7 @@ interface BattleUnit {
   originalIndex: number
   damageReduction: number  // 汎用の被ダメージ軽減率（0〜100）
   physicalDamageReduction: number  // 物理ダメージ軽減率（0〜100）
+  rangedAttackDamageReduction: number // 遠距離通常攻撃ダメージ軽減率（0〜100）
   magicDamageReduction: number  // 魔法ダメージ軽減率（0〜100）
   breathDamageReduction: number // ブレスダメージ軽減率（0〜100）
   shieldBarrierDamageReduction: number // シールドバリアの攻撃ダメージ軽減率（0〜100）
@@ -98,6 +101,7 @@ interface BattleUnit {
   skills: CharacterSkill[]
   battleActionPolicy: BattleActionPolicy
   isDefending: boolean
+  attackType: 'melee' | 'range'
 }
 
 function toCombatBuffsFromSkills(skills: CharacterSkill[]) {
@@ -704,9 +708,12 @@ export class BattleSystem {
         const dmgMod = getDamageModifier(landedHitNumber)
         const additionalDamage = getAdditionalDamageFromSkills(unit.skills)
         const rearDamageMultiplier = this.getRearDamageMultiplier(unit, sourceGroup)
-        const rowDamageMultiplier = getRowDamageMultiplierFromSkills(unit.skills, unit.row)
+        const rowDamageMultiplier = this.getUnitRowDamageMultiplier(unit)
         const reductionFactor = 1 - attackTarget.damageReduction / 100
         const physicalReductionFactor = 1 - attackTarget.physicalDamageReduction / 100
+        const rangedAttackReductionFactor = unit.attackType === 'range'
+          ? 1 - attackTarget.rangedAttackDamageReduction / 100
+          : 1
         const shieldBarrierReductionFactor = 1 - attackTarget.shieldBarrierDamageReduction / 100
         const protectionFactor = this.getRearGuardReductionFactor(attackTarget, allyUnits)
         const defendingFactor = this.getDefendingDamageFactor(attackTarget)
@@ -716,7 +723,7 @@ export class BattleSystem {
           : 1
         const damage = Math.max(
           1,
-          Math.floor((baseDamage * dmgMod * rearDamageMultiplier * rowDamageMultiplier + additionalDamage) * physicalDamageFactor * criticalDamageFactor * unit.physicalDamageDealtMultiplier * reductionFactor * physicalReductionFactor * shieldBarrierReductionFactor * protectionFactor * defendingFactor * damageMultiplier),
+          Math.floor((baseDamage * dmgMod * rearDamageMultiplier * rowDamageMultiplier + additionalDamage) * physicalDamageFactor * criticalDamageFactor * unit.physicalDamageDealtMultiplier * reductionFactor * physicalReductionFactor * rangedAttackReductionFactor * shieldBarrierReductionFactor * protectionFactor * defendingFactor * damageMultiplier),
         )
 
         this.applyDamage(attackTarget, damage)
@@ -735,6 +742,13 @@ export class BattleSystem {
     }
 
     return { targetDetails, totalHitCount, isCritical, damagedTargets }
+  }
+
+  private getUnitRowDamageMultiplier(unit: BattleUnit): number {
+    if (unit.isAlly) {
+      return getRowDamageMultiplierFromSkills(unit.skills, unit.row)
+    }
+    return getRowDamageMultiplierForAttackType(unit.attackType, unit.row)
   }
 
   private selectSecondColumnAttackTarget(
@@ -1597,6 +1611,7 @@ export class BattleSystem {
       : Math.min(initialHP, maxHP)
     const damageReduction = GoblinStatCalculator.getDamageReduction(goblin)
     const physicalDamageReduction = getPhysicalDamageReductionFromSkills(goblin.skills)
+    const rangedAttackDamageReduction = getRangedAttackDamageReductionFromSkills(goblin.skills)
     const magicDamageReduction = getMagicDamageReductionFromSkills(goblin.skills)
     const learnedSpells = this.mergeLearnedSpells(goblin.spells, goblin.skills, goblin.level)
     return {
@@ -1615,6 +1630,7 @@ export class BattleSystem {
       originalIndex,
       damageReduction,
       physicalDamageReduction,
+      rangedAttackDamageReduction,
       magicDamageReduction,
       breathDamageReduction: 0,
       shieldBarrierDamageReduction: 0,
@@ -1637,6 +1653,7 @@ export class BattleSystem {
       skills,
       battleActionPolicy: normalizeBattleActionPolicy(goblin.battleActionPolicy),
       isDefending: false,
+      attackType: 'melee',
     }
   }
 
@@ -1665,6 +1682,7 @@ export class BattleSystem {
         raceResistance.physicalResistancePercent +
         (enemy.physicalResistancePercent ?? 0) +
         getPhysicalDamageReductionFromSkills(skills),
+      rangedAttackDamageReduction: getRangedAttackDamageReductionFromSkills(skills),
       magicDamageReduction:
         raceResistance.magicResistancePercent +
         (enemy.magicResistancePercent ?? 0) +
@@ -1690,6 +1708,7 @@ export class BattleSystem {
       skills,
       battleActionPolicy: normalizeBattleActionPolicy(enemy.battleActionPolicy),
       isDefending: false,
+      attackType: enemy.attackType,
     }
   }
 

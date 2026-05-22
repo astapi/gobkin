@@ -3,6 +3,7 @@
     {
       "id": "MNT001",
       "name": "ミノタウロス若兵",
+      "attackType": "melee",
       "raceTags": [
         "minotaur"
       ],
@@ -28,6 +29,7 @@
     {
       "id": "MNT002",
       "name": "ミノタウロス斧兵",
+      "attackType": "melee",
       "raceTags": [
         "minotaur"
       ],
@@ -54,6 +56,7 @@
     {
       "id": "B_LABYRINTH_KEEPER",
       "name": "迷宮の番人",
+      "attackType": "melee",
       "raceTags": [
         "minotaur"
       ],

@@ -3,6 +3,7 @@
     {
       "id": "ORC002",
       "name": "オーク兵",
+      "attackType": "melee",
       "raceTags": [
         "orc"
       ],
@@ -28,6 +29,7 @@
     {
       "id": "ORC005",
       "name": "オークブルート",
+      "attackType": "melee",
       "raceTags": [
         "orc"
       ],
@@ -54,6 +56,7 @@
     {
       "id": "B_ORC",
       "name": "オーク遠征隊長",
+      "attackType": "melee",
       "raceTags": [
         "orc"
       ],

@@ -46,6 +46,7 @@ export const GOLDEN_ACORN_CLEAR_FACTOR_DROPS = [{
 const GOLDEN_ACORN_CLEAR_ENCOUNTER: Enemy[][] = [[{
   id: GOLDEN_ACORN_CLEAR_ENCOUNTER_ID,
   name: 'ラタトスク',
+  attackType: 'melee',
   raceTags: ['beast'],
   level: 10,
   hp: 10,

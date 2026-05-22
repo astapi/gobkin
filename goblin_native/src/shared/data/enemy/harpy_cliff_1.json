@@ -3,6 +3,7 @@
     {
       "id": "HRP001",
       "name": "ハーピィ",
+      "attackType": "melee",
       "raceTags": [
         "harpy"
       ],
@@ -28,6 +29,7 @@
     {
       "id": "HRP002",
       "name": "風切りハーピィ",
+      "attackType": "melee",
       "raceTags": [
         "harpy"
       ],
@@ -53,6 +55,7 @@
     {
       "id": "B_HARPY_MATRIARCH",
       "name": "クイーンハーピィ",
+      "attackType": "melee",
       "raceTags": [
         "harpy"
       ],

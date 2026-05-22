@@ -126,6 +126,7 @@ export function EnemyEditor({
             <tr>
               <th>id</th>
               <th>name</th>
+              <th>攻撃種別</th>
               <th className="num">Lv</th>
               <th className="num">HP</th>
               <th className="num">ATK</th>
@@ -152,6 +153,7 @@ export function EnemyEditor({
                     {e.name}
                     {bossEnemyIds.has(e.id) && <span className="subtle"> (Boss)</span>}
                   </td>
+                  <td>{e.attackType}</td>
                   <td className="num">{e.level}</td>
                   <td className="num">{e.hp}</td>
                   <td className="num">{e.atk}</td>
@@ -166,7 +168,7 @@ export function EnemyEditor({
             })}
             {filtered.length === 0 && (
               <tr>
-                <td colSpan={11} className="subtle">該当する敵がいません</td>
+                <td colSpan={12} className="subtle">該当する敵がいません</td>
               </tr>
             )}
           </tbody>
@@ -248,6 +250,18 @@ function EnemyForm({
           value={enemy.name}
           onChange={(v) => set('name', v)}
         />
+        <label className="field">
+          <span className="field-label">attackType</span>
+          <span className="field-input">
+            <select
+              value={enemy.attackType}
+              onChange={(e) => set('attackType', e.target.value as Enemy['attackType'])}
+            >
+              <option value="melee">melee</option>
+              <option value="range">range</option>
+            </select>
+          </span>
+        </label>
         <TextField
           label="raceTags (カンマ区切り)"
           value={enemy.raceTags.join(', ')}

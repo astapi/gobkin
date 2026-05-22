@@ -3,6 +3,7 @@
     {
       "id": "GOB001",
       "name": "ゴブリン",
+      "attackType": "melee",
       "raceTags": [
         "goblin"
       ],
@@ -28,6 +29,7 @@
     {
       "id": "GOB002",
       "name": "ゴブリンシーフ",
+      "attackType": "melee",
       "raceTags": [
         "goblin"
       ],
@@ -53,6 +55,7 @@
     {
       "id": "GOB003",
       "name": "ゴブリンウォリアー",
+      "attackType": "melee",
       "raceTags": [
         "goblin"
       ],
@@ -78,6 +81,7 @@
     {
       "id": "GOB004",
       "name": "ゴブリンメイジ",
+      "attackType": "melee",
       "raceTags": [
         "goblin"
       ],
@@ -111,6 +115,7 @@
     {
       "id": "GOB005",
       "name": "ゴブリンガード",
+      "attackType": "melee",
       "raceTags": [
         "goblin"
       ],

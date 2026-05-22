@@ -53,6 +53,7 @@ function createTestEnemy(overrides: Partial<Enemy> & { agility?: number } = {}):
   return {
     id: 'E_TEST',
     name: 'テスト敵',
+    attackType: 'melee',
     raceTags: ['beast'],
     level: 1,
     hp: 30,
@@ -81,6 +82,59 @@ function createTestEnemy(overrides: Partial<Enemy> & { agility?: number } = {}):
 describe('getDamageModifier', () => {
   it('1回目は1.0', () => {
     expect(getDamageModifier(1)).toBe(1.0)
+  })
+
+  it('遠距離攻撃軽減はrange通常攻撃だけを軽減する', () => {
+    const defender = createTestGoblin({
+      id: 1,
+      stats: { hp: 300, atk: 1, agility: 1, def: 10, attackCount: 0, accuracy: 999, evasion: 0 },
+      skills: [{ id: 'ranged_attack_reduction_50', rangedAttackDamageReductionPercent: 50 }],
+    })
+    const rangedAttacker = createTestEnemy({
+      id: 'RANGED',
+      name: '弓兵',
+      attackType: 'range',
+      hp: 300,
+      atk: 90,
+      def: 1,
+      agility: 100,
+      attackCount: 1,
+      accuracy: 999,
+      evasion: 0,
+    })
+    const meleeAttacker = createTestEnemy({
+      id: 'MELEE',
+      name: '兵士',
+      attackType: 'melee' as const,
+      hp: 300,
+      atk: 90,
+      def: 1,
+      agility: 100,
+      attackCount: 1,
+      accuracy: 999,
+      evasion: 0,
+    })
+
+    const rangedResult = new BattleSystem().executeBattle(
+      [defender],
+      [defender.stats.hp],
+      [[], [], [], [], [], [rangedAttacker]],
+      () => 0.5,
+      1,
+    )
+    const meleeResult = new BattleSystem().executeBattle(
+      [defender],
+      [defender.stats.hp],
+      [[meleeAttacker]],
+      () => 0.5,
+      1,
+    )
+
+    const rangedDamage = rangedResult.detailedLog.find(log => log.actorId === 'RANGED' && log.action === '通常攻撃')!.targets[0].totalDamage
+    const meleeDamage = meleeResult.detailedLog.find(log => log.actorId === 'MELEE' && log.action === '通常攻撃')!.targets[0].totalDamage
+
+    expect(rangedDamage).toBeGreaterThanOrEqual(Math.floor(meleeDamage * 0.45))
+    expect(rangedDamage).toBeLessThanOrEqual(Math.ceil(meleeDamage * 0.55))
   })
 
   it('2回目は1.0', () => {
@@ -827,6 +881,7 @@ describe('BattleSystem — 命中判定と複数回攻撃', () => {
       originalIndex: 0,
       damageReduction: 0,
       physicalDamageReduction: 0,
+      rangedAttackDamageReduction: 0,
       magicDamageReduction: 0,
       breathDamageReduction: 0,
       shieldBarrierDamageReduction: 0,
@@ -847,6 +902,7 @@ describe('BattleSystem — 命中判定と複数回攻撃', () => {
       skills: [],
       battleActionPolicy: {},
       isDefending: false,
+      attackType: 'melee' as const,
     }
     const target: any = {
       ...attacker,
@@ -919,6 +975,7 @@ describe('BattleSystem — 命中判定と複数回攻撃', () => {
       originalIndex: 0,
       damageReduction: 0,
       physicalDamageReduction: 0,
+      rangedAttackDamageReduction: 0,
       magicDamageReduction: 0,
       breathDamageReduction: 0,
       shieldBarrierDamageReduction: 0,
@@ -939,6 +996,7 @@ describe('BattleSystem — 命中判定と複数回攻撃', () => {
       skills: [{ id: 'critical_damage_50', criticalDamageBonusPercent: 50 }],
       battleActionPolicy: {},
       isDefending: false,
+      attackType: 'melee',
     }
     const target: any = {
       ...attacker,
@@ -1705,6 +1763,78 @@ describe('BattleSystem — 命中判定と複数回攻撃', () => {
 
     expect(rearDamage).toBe(30)
   })
+
+  it('敵のmelee攻撃は後列ほど通常攻撃ダメージが下がる', () => {
+    const target = createTestGoblin({
+      id: 1,
+      stats: { hp: 999, atk: 1, agility: 1, def: 10, attackCount: 0, accuracy: 0, evasion: 0 },
+    })
+    const frontEnemy = createTestEnemy({
+      id: 'FRONT_MELEE',
+      attackType: 'melee',
+      hp: 999,
+      atk: 100,
+      def: 1,
+      agility: 100,
+      attackCount: 1,
+      accuracy: 999,
+      evasion: 0,
+    })
+    const rearEnemy = createTestEnemy({
+      ...frontEnemy,
+      id: 'REAR_MELEE',
+    })
+
+    const frontResult = new BattleSystem().executeBattle([target], [target.stats.hp], [[frontEnemy]], createSeededRng(24), 1)
+    const rearResult = new BattleSystem().executeBattle(
+      [target],
+      [target.stats.hp],
+      [[], [], [], [], [], [rearEnemy]],
+      createSeededRng(24),
+      1,
+    )
+
+    const frontDamage = frontResult.detailedLog.find((log) => log.actorId === 'FRONT_MELEE' && log.action === '通常攻撃')!.targets[0].totalDamage
+    const rearDamage = rearResult.detailedLog.find((log) => log.actorId === 'REAR_MELEE' && log.action === '通常攻撃')!.targets[0].totalDamage
+
+    expect(rearDamage).toBeLessThan(frontDamage)
+  })
+
+  it('敵のrange攻撃は後列ほど通常攻撃ダメージが上がる', () => {
+    const target = createTestGoblin({
+      id: 1,
+      stats: { hp: 999, atk: 1, agility: 1, def: 10, attackCount: 0, accuracy: 0, evasion: 0 },
+    })
+    const frontEnemy = createTestEnemy({
+      id: 'FRONT_RANGE',
+      attackType: 'range',
+      hp: 999,
+      atk: 100,
+      def: 1,
+      agility: 100,
+      attackCount: 1,
+      accuracy: 999,
+      evasion: 0,
+    })
+    const rearEnemy = createTestEnemy({
+      ...frontEnemy,
+      id: 'REAR_RANGE',
+    })
+
+    const frontResult = new BattleSystem().executeBattle([target], [target.stats.hp], [[frontEnemy]], createSeededRng(25), 1)
+    const rearResult = new BattleSystem().executeBattle(
+      [target],
+      [target.stats.hp],
+      [[], [], [], [], [], [rearEnemy]],
+      createSeededRng(25),
+      1,
+    )
+
+    const frontDamage = frontResult.detailedLog.find((log) => log.actorId === 'FRONT_RANGE' && log.action === '通常攻撃')!.targets[0].totalDamage
+    const rearDamage = rearResult.detailedLog.find((log) => log.actorId === 'REAR_RANGE' && log.action === '通常攻撃')!.targets[0].totalDamage
+
+    expect(rearDamage).toBeGreaterThan(frontDamage)
+  })
 })
 
 // =========================================================================
@@ -1758,6 +1888,7 @@ describe('selectTarget — 隊列ターゲット選択', () => {
       originalIndex: 0,
       damageReduction: 0,
       physicalDamageReduction: 0,
+      rangedAttackDamageReduction: 0,
       magicDamageReduction: 0,
       breathDamageReduction: 0,
       shieldBarrierDamageReduction: 0,
@@ -1778,6 +1909,7 @@ describe('selectTarget — 隊列ターゲット選択', () => {
       skills: [],
       battleActionPolicy: { attackRate: 100, clericMagicRate: 100, mageMagicRate: 100 },
       isDefending: false,
+      attackType: 'melee' as const,
     }
   }
 

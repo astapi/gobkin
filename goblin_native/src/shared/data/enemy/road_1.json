@@ -3,6 +3,7 @@
     {
       "id": "RD001",
       "name": "街道オオカミ",
+      "attackType": "melee",
       "raceTags": [
         "beast"
       ],
@@ -28,6 +29,7 @@
     {
       "id": "RD002",
       "name": "ジャイアントスネーク",
+      "attackType": "melee",
       "raceTags": [
         "beast"
       ],
@@ -53,6 +55,7 @@
     {
       "id": "RD003",
       "name": "ジャイアントスコーピオン",
+      "attackType": "melee",
       "raceTags": [
         "insect"
       ],
@@ -78,6 +81,7 @@
     {
       "id": "B_TRAVELER",
       "name": "護衛付きの商人",
+      "attackType": "melee",
       "raceTags": [
         "human"
       ],
@@ -104,6 +108,7 @@
     {
       "id": "B_HUM_GUARD",
       "name": "護衛ガード",
+      "attackType": "melee",
       "raceTags": [
         "human"
       ],
@@ -137,6 +142,7 @@
     {
       "id": "B_HUM_WARRIOR",
       "name": "護衛ウォリアー",
+      "attackType": "melee",
       "raceTags": [
         "human"
       ],
@@ -163,6 +169,7 @@
     {
       "id": "B_HUM_MAGE",
       "name": "護衛メイジ",
+      "attackType": "melee",
       "raceTags": [
         "human"
       ],
@@ -202,6 +209,7 @@
     {
       "id": "B_HUM_CLERIC",
       "name": "護衛クレリック",
+      "attackType": "melee",
       "raceTags": [
         "human"
       ],
