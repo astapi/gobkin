@@ -5,12 +5,18 @@ import {
   ENTITLEMENT_IDS,
   PURCHASE_PRODUCTS,
   TICKET_TYPES,
+  FACTOR_CORE_TEMPLATE_ID,
+  FACTOR_CORE_PURCHASE_LIMIT,
   SPEED_HALF_MULTIPLIER,
   SPEED_TWO_THIRDS_MULTIPLIER,
   type TicketType,
 } from '@/shared/constants/purchases'
 import { SQLiteTicketRepository } from '@/infrastructure/repositories/SQLiteTicketRepository'
+import { SQLiteEquipmentRepository } from '@/infrastructure/repositories/SQLiteEquipmentRepository'
+import { SQLiteStoryProgressRepository } from '@/infrastructure/repositories/SQLiteStoryProgressRepository'
+import { SQLiteDungeonProgressRepository } from '@/infrastructure/repositories/SQLiteDungeonProgressRepository'
 import type { TicketBalance } from '@/shared/types/Ticket'
+import type { EquipmentInstance } from '@/shared/types'
 
 /**
  * 課金状態管理ストア
@@ -53,6 +59,64 @@ const initialState: PurchaseState = {
 }
 
 const ticketRepository = SQLiteTicketRepository.getInstance()
+const equipmentRepository = SQLiteEquipmentRepository.getInstance()
+const storyProgressRepository = SQLiteStoryProgressRepository.getInstance()
+const dungeonProgressRepository = SQLiteDungeonProgressRepository.getInstance()
+
+function createPurchasedEquipment(templateId: string): EquipmentInstance {
+  return {
+    id: `eq_purchase_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`,
+    templateId,
+    slotIndex: -1,
+    goblinId: null,
+  }
+}
+
+async function countOwnedEquipment(templateId: string): Promise<number> {
+  const allEquipment = await equipmentRepository.getAll()
+  return allEquipment.filter(item => item.templateId === templateId).length
+}
+
+async function syncPurchasedEquipmentEntitlements(entitlements: Set<string>): Promise<void> {
+  const factorCoreEntitlements = [
+    ENTITLEMENT_IDS.FACTOR_CORE_1,
+    ENTITLEMENT_IDS.FACTOR_CORE_2,
+    ENTITLEMENT_IDS.FACTOR_CORE_3,
+  ]
+  const purchasedCount = Math.min(
+    FACTOR_CORE_PURCHASE_LIMIT,
+    factorCoreEntitlements.filter(id => entitlements.has(id)).length,
+  )
+  if (purchasedCount <= 0) return
+
+  const ownedCount = await countOwnedEquipment(FACTOR_CORE_TEMPLATE_ID)
+  const missingCount = Math.max(0, purchasedCount - ownedCount)
+  for (let i = 0; i < missingCount; i++) {
+    await equipmentRepository.save(createPurchasedEquipment(FACTOR_CORE_TEMPLATE_ID))
+  }
+}
+
+async function syncPurchasedStoryEntitlements(entitlements: Set<string>): Promise<void> {
+  const purchasedStoryProducts = PURCHASE_PRODUCTS.filter(product =>
+    product.section === 'story' &&
+    typeof product.entitlementId === 'string' &&
+    entitlements.has(product.entitlementId)
+  )
+
+  for (const product of purchasedStoryProducts) {
+    if (product.storyId) {
+      await storyProgressRepository.unlock(product.storyId)
+    }
+    for (const dungeonId of product.unlockDungeonIds ?? []) {
+      await dungeonProgressRepository.unlock(dungeonId)
+    }
+  }
+}
+
+async function syncPurchasedEntitlements(entitlements: Set<string>): Promise<void> {
+  await syncPurchasedEquipmentEntitlements(entitlements)
+  await syncPurchasedStoryEntitlements(entitlements)
+}
 
 export const usePurchaseStore = create<PurchaseState & PurchaseActions>()((set, get) => ({
   ...initialState,
@@ -124,6 +188,27 @@ export const usePurchaseStore = create<PurchaseState & PurchaseActions>()((set, 
     try {
       set({ isLoading: true })
       console.log('[Purchase] Purchasing package:', pkg.identifier)
+      const productInfo = PURCHASE_PRODUCTS.find(p => p.packageId === pkg.identifier)
+
+      if (productInfo?.section === 'equipment' && productInfo.equipmentTemplateId) {
+        if (
+          typeof productInfo.entitlementId === 'string' &&
+          get().hasEntitlement(productInfo.entitlementId)
+        ) {
+          return { success: false, error: 'limit_reached' }
+        }
+        const purchaseLimit = productInfo.purchaseLimit ?? Number.POSITIVE_INFINITY
+        const ownedCount = await countOwnedEquipment(productInfo.equipmentTemplateId)
+        if (ownedCount >= purchaseLimit) {
+          return { success: false, error: 'limit_reached' }
+        }
+        if (
+          productInfo.requiresEntitlement &&
+          !get().hasEntitlement(productInfo.requiresEntitlement)
+        ) {
+          return { success: false, error: 'locked' }
+        }
+      }
 
       const { customerInfo } = await Purchases.purchasePackage(pkg)
 
@@ -141,7 +226,6 @@ export const usePurchaseStore = create<PurchaseState & PurchaseActions>()((set, 
       })
 
       // Consumable（チケット系）の場合は購入個数を tickets テーブルへ加算
-      const productInfo = PURCHASE_PRODUCTS.find(p => p.packageId === pkg.identifier)
       if (productInfo?.section === 'ticket' && productInfo.consumableQuantity && productInfo.consumableQuantity > 0) {
         try {
           await get().addTickets(
@@ -151,6 +235,24 @@ export const usePurchaseStore = create<PurchaseState & PurchaseActions>()((set, 
           console.log(`[Purchase] Granted ${productInfo.consumableQuantity} ${productInfo.entitlementId}`)
         } catch (grantError) {
           console.error('[Purchase] Failed to grant consumable tickets:', grantError)
+        }
+      }
+
+      if (productInfo?.section === 'equipment' && productInfo.equipmentTemplateId) {
+        try {
+          await syncPurchasedEntitlements(newEntitlements)
+          console.log(`[Purchase] Synced purchased equipment ${productInfo.equipmentTemplateId}`)
+        } catch (grantError) {
+          console.error('[Purchase] Failed to grant purchased equipment:', grantError)
+        }
+      }
+
+      if (productInfo?.section === 'story') {
+        try {
+          await syncPurchasedEntitlements(newEntitlements)
+          console.log(`[Purchase] Synced purchased story ${productInfo.storyId}`)
+        } catch (grantError) {
+          console.error('[Purchase] Failed to unlock purchased story:', grantError)
         }
       }
 
@@ -187,6 +289,8 @@ export const usePurchaseStore = create<PurchaseState & PurchaseActions>()((set, 
         entitlements: newEntitlements,
       })
 
+      await syncPurchasedEntitlements(newEntitlements)
+
       return { success: true }
     } catch (error: any) {
       console.error('[Purchase] Restore failed:', error)
@@ -211,6 +315,7 @@ export const usePurchaseStore = create<PurchaseState & PurchaseActions>()((set, 
         customerInfo,
         entitlements: newEntitlements,
       })
+      await syncPurchasedEntitlements(newEntitlements)
 
       console.log('[Purchase] Active entitlements:', Array.from(newEntitlements))
     } catch (error) {

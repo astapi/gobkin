@@ -627,6 +627,8 @@ const en = {
       royal_capital_1: { name: 'Battle for the Royal Capital: Gate', description: 'Break through the city gate. Royal guards and a grand mage stand in your way.' },
       royal_capital_2: { name: 'Battle for the Royal Capital: Castle Interior', description: 'Advance into the royal castle. Holy knights and the kingdom guard form the final defense line.' },
       dragon_volcano_1: { name: 'Dragon Volcano Nest', description: 'A volcanic nest reached from beneath the royal castle. The throne lies beyond the dragon the kingdom has unleashed as its last resort.' },
+      cat_fortress_1: { name: 'Catfolk Shadow Ruins', description: 'Ruins occupied by catfolk assassins. Fast multi-hit ambushers race through the corridors, and a seasoned ruin lord waits in the depths.' },
+      necromancer_crypt_1: { name: 'Necromancer Crypt', description: 'A sealed crypt beneath an old battlefield. Break through shadow bones and wraiths to seize the forbidden art of binding the dead.' },
       royal_capital_3: { name: 'Battle for the Royal Capital: Throne Room', description: 'The final battle. The hero and the human king stand as the last wall. This is the decisive battle for the completion of the Goblin Kingdom.' },
     },
     factor: {
@@ -644,7 +646,7 @@ const en = {
       minotaur: { name: 'Minotaur Factor', shortName: 'Minotaur', description: 'A factor infused with minotaur traits. Greatly increases attack and HP.' },
       vampire: { name: 'Vampire Factor', shortName: 'Vampire', description: 'A factor infused with vampire traits. Increases magic power and vitality.' },
       dragon: { name: 'Dragon Factor', shortName: 'Dragon', description: 'A factor infused with dragon traits. Greatly increases offense, defense, and vitality.' },
-      shadow: { name: 'Shadowcat Factor', shortName: 'Shadowcat', description: 'A factor infused with catfolk shadow traits. Increases speed, multi-hit power, and evasion.' },
+      shadow: { name: 'Werecat Factor', shortName: 'Werecat', description: 'A factor infused with werecat shadow traits. Increases speed, multi-hit power, and evasion.' },
       ratatoskr: { name: 'Ratatoskr Factor', shortName: 'Ratatoskr', description: 'A factor infused with Ratatoskr traits. Increases accuracy and evasion.' },
     },
     equipment: equipmentEn,
@@ -655,6 +657,7 @@ const en = {
       warrior: { name: 'Goblin Warrior', shortLabel: 'Attack', summary: 'Greatly improves offense for melee combat.', description: 'Improves attack power and hit count for frontline combat.' },
       cleric: { name: 'Goblin Cleric', shortLabel: 'Heal', summary: 'Supports allies with healing and protective spells.', description: 'Trains the goblin as a support unit focused on healing and protection.' },
       rider: { name: 'Goblin Rider', shortLabel: 'Ride', summary: 'Controls a mount and disrupts the battlefield with superior mobility.', description: 'Trains the goblin as a fast skirmisher with high mobility and breakthrough potential.' },
+      necromancer: { name: 'Goblin Necromancer', shortLabel: 'Necro', summary: 'Uses attack magic and necromancy to sustain long battles.', description: 'Trains the goblin in death and shadow rites, creating a caster with strong magic offense and staying power.' },
     },
     stat: {
       hp: 'HP',
@@ -932,16 +935,20 @@ const en = {
     lockedHint: 'Purchase "{{name}}" to unlock',
     sectionOneTime: 'One-Time Purchase',
     sectionSubscription: 'Monthly Pass',
+    sectionStory: 'Side Stories',
+    sectionEquipment: 'Equipment',
     sectionTicket: 'Tickets',
     purchaseSuccess: 'Purchase Complete',
     purchaseSuccessMessage: 'Your purchase was successful!',
     purchaseFailed: 'Purchase Failed',
     purchaseFailedMessage: 'Purchase failed. Please try again.',
+    limitReachedMessage: 'You have reached the purchase limit for this equipment.',
     restoreSuccess: 'Restore Complete',
     restoreSuccessMessage: 'Your purchases have been restored.',
     restoreFailed: 'Restore Failed',
     restoreFailedMessage: 'Failed to restore purchases.',
     ticketCount: '{{count}} tickets',
+    ownedCount: 'Owned {{count}}/{{limit}}',
     goblinCapacityExpansion: {
       name: 'Goblin Capacity Expansion',
       description: 'Expand goblin capacity by +{{count}}',
@@ -978,6 +985,14 @@ const en = {
       name: 'Monthly Pass',
       description: 'Gold {{goldMultiplier}}x, expedition time -{{speedPercent}}%',
     },
+    shadowCatSideStory: {
+      name: 'Moonshadow Pact',
+      description: 'Unlocks the side story "Moonshadow Pact" and Catfolk Shadow Ruins. Clear it to challenge the boss for the Werecat Factor.',
+    },
+    necromancerSideStory: {
+      name: 'Necromancer Grimoire',
+      description: 'Unlocks the side story "Necromancer Grimoire" and Necromancer Crypt. Clear it to unlock Necromancer training.',
+    },
     speedTicket: {
       name: 'Speed Ticket x5',
       description: '5 tickets that reduce expedition time by 50%',
@@ -985,6 +1000,10 @@ const en = {
     boostTicket: {
       name: 'Boost Ticket x5',
       description: '5 tickets that double drop rate and EXP',
+    },
+    factorCore: {
+      name: 'Factor Core',
+      description: 'Equipped goblin gains 1.5x factor acquisition chance. Purchase limit: {{limit}}.',
     },
     goldenAcorn: {
       name50: 'Golden Acorn x50',

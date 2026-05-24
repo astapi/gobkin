@@ -3,6 +3,9 @@ export type StoryCategory = 'main' | 'side'
 export type StoryUnlockCondition = {
   type: 'dungeon_cleared'
   dungeonId: string
+} | {
+  type: 'purchase'
+  entitlementId: string
 }
 
 export type StoryReward = {

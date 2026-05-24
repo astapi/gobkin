@@ -197,6 +197,38 @@ const GOBLIN_JOB_DEFINITION_SEEDS: Record<GoblinJob, GoblinJobDefinitionSeed> = 
       }
     ],
     unlockRequiresReadStory: "story_after_wolf_grassland"
+  },
+  necromancer: {
+    accentColor: "#4C1D95",
+    id: "necromancer",
+    skills: [
+      {
+        skillId: "mage_magic_lv7"
+      },
+      {
+        skillId: "grant_blizzard"
+      },
+      {
+        skillId: "mana_recovery"
+      },
+      {
+        skillId: "undead_trait",
+        unlockLevel: 30
+      },
+      {
+        skillId: "magic_support",
+        unlockLevel: 50
+      }
+    ],
+    unlockRequiresClearedArea: "necromancer_crypt_1",
+    baseAttributes: {
+      power: 8,
+      wisdom: 15,
+      spirit: 12,
+      vitality: 9,
+      agility: 10,
+      luck: 12
+    }
   }
 }
 

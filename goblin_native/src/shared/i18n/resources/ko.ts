@@ -618,6 +618,8 @@ const ko = {
       royal_capital_1: { name: '왕도 결전·성문', description: '왕도의 성문을 돌파합니다. 근위 기사와 대마도사가 가로막습니다.' },
       royal_capital_2: { name: '왕도 결전·왕성 내부', description: '왕성 내부로 진격합니다. 성기사와 왕국 금위대가 마지막 방어선을 형성합니다.' },
       dragon_volcano_1: { name: '드래곤 화산 둥지', description: '왕성 지하에서 이어지는 화산 둥지입니다. 왕국이 마지막으로 풀어 놓은 드래곤을 넘어야 옥좌에 닿을 수 있습니다.' },
+      cat_fortress_1: { name: '묘인족 그림자 유적', description: '묘인족 암살자들이 둥지로 삼은 낡은 유적입니다. 빠른 연격과 기습을 쓰는 병사들이 회랑을 달리고, 깊은 곳에는 노련한 유적의 주인이 기다립니다.' },
+      necromancer_crypt_1: { name: '사령술사의 지하 영묘', description: '오래된 전장 아래에 봉인된 영묘입니다. 그림자 해골병과 원령을 물리치고 죽은 자를 묶는 금술을 빼앗으십시오.' },
       royal_capital_3: { name: '왕도 결전·옥좌의 방', description: '최종 결전입니다. 용사와 인간 왕이 마지막 벽으로 가로막습니다. 고블린 킹덤 완성을 건 결전입니다.' },
     },
     factor: {
@@ -635,7 +637,7 @@ const ko = {
       minotaur: { name: '미노타우로스 인자', shortName: '미노타우로스', description: '미노타우로스의 특성을 지닌 인자. 공격력과 HP가 크게 증가합니다.' },
       vampire: { name: '뱀파이어 인자', shortName: '뱀파이어', description: '뱀파이어의 특성을 지닌 인자. 마력과 생명력이 증가합니다.' },
       dragon: { name: '드래곤 인자', shortName: '드래곤', description: '드래곤의 특성을 지닌 인자. 공격, 방어, 생명력이 크게 증가합니다.' },
-      shadow: { name: '그림자고양이 인자', shortName: '그림자고양이', description: '묘인족의 그림자를 지닌 인자. 속도와 연격 성능, 회피가 증가합니다.' },
+      shadow: { name: '웨어캣 인자', shortName: '웨어캣', description: '웨어캣의 그림자를 지닌 인자. 속도와 연격 성능, 회피가 증가합니다.' },
       ratatoskr: { name: '라타토스크 인자', shortName: '라타토스크', description: '라타토스크의 특성을 지닌 인자. 명중 정확도와 회피가 증가합니다.' },
     },
     equipment: equipmentKo,
@@ -646,6 +648,7 @@ const ko = {
       warrior: { name: '고블린 워리어', shortLabel: '공격', summary: '공격 성능을 크게 높여 근접전에 강해집니다.', description: '무투 훈련으로 공격력과 타수를 강화합니다.' },
       cleric: { name: '고블린 클레릭', shortLabel: '회복', summary: '회복과 보호 주문으로 아군을 지원합니다.', description: '기도 훈련으로 회복과 보호를 맡는 지원 역할로 전환합니다.' },
       rider: { name: '고블린 라이더', shortLabel: '기승', summary: '기수를 다뤄 높은 기동력으로 전장을 흔듭니다.', description: '기승 훈련으로 민첩성과 돌파력이 높은 유격 역할로 전환합니다.' },
+      necromancer: { name: '고블린 네크로맨서', shortLabel: '사령', summary: '공격 마법과 사령술로 장기전을 지원합니다.', description: '죽음과 그림자의 술식을 익혀 마법 공격과 지속전에 강한 술사로 전환합니다.' },
     },
     stat: {
       hp: 'HP',
@@ -923,16 +926,20 @@ const ko = {
     lockedHint: '"{{name}}"을(를) 구매하면 잠금 해제됩니다',
     sectionOneTime: '일회성 구매',
     sectionSubscription: '월간 패스',
+    sectionStory: '사이드 스토리',
+    sectionEquipment: '장비',
     sectionTicket: '티켓',
     purchaseSuccess: '구매 완료',
     purchaseSuccessMessage: '구매가 완료되었습니다!',
     purchaseFailed: '구매 실패',
     purchaseFailedMessage: '구매에 실패했습니다. 다시 시도해 주세요.',
+    limitReachedMessage: '이 장비는 구매 한도에 도달했습니다.',
     restoreSuccess: '복원 완료',
     restoreSuccessMessage: '구매 내역이 복원되었습니다.',
     restoreFailed: '복원 실패',
     restoreFailedMessage: '구매 내역 복원에 실패했습니다.',
     ticketCount: '{{count}}장',
+    ownedCount: '보유 {{count}}/{{limit}}',
     goblinCapacityExpansion: {
       name: '고블린 용량 확장',
       description: '고블린 수용 용량을 +{{count}} 확장합니다',
@@ -969,6 +976,14 @@ const ko = {
       name: '월간 패스',
       description: '골드 {{goldMultiplier}}배, 원정 시간 {{speedPercent}}% 단축',
     },
+    shadowCatSideStory: {
+      name: '월영의 계약',
+      description: '사이드 스토리 "월영의 계약"과 묘인족 그림자 유적을 해금합니다. 클리어하면 웨어캣 인자 획득에 도전할 수 있습니다.',
+    },
+    necromancerSideStory: {
+      name: '사령술사의 금서',
+      description: '사이드 스토리 "사령술사의 금서"와 사령술사의 지하 영묘를 해금합니다. 클리어하면 네크로맨서 훈련이 해금됩니다.',
+    },
     speedTicket: {
       name: '시간 단축 티켓 x5',
       description: '원정 시간을 50% 단축하는 티켓 5장',
@@ -976,6 +991,10 @@ const ko = {
     boostTicket: {
       name: '부스트 티켓 x5',
       description: '드롭률과 경험치가 2배가 되는 티켓 5장',
+    },
+    factorCore: {
+      name: '인자핵',
+      description: '장착한 고블린의 인자 획득률이 1.5배가 됩니다. 최대 {{limit}}개까지 구매할 수 있습니다.',
     },
   },
 } as const

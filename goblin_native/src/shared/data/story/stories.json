@@ -689,6 +689,100 @@
       ]
     },
     {
+      "id": "side_shadow_cat_ruins",
+      "title": "月影の契約",
+      "category": "side",
+      "order": 120,
+      "unlockCondition": {
+        "type": "purchase",
+        "entitlementId": "shadow_cat_side_story"
+      },
+      "rewards": [],
+      "chapters": [
+        {
+          "id": "side_shadow_cat_ruins_1",
+          "text": "夜の森で、マルクは薄い爪痕のついた石板を拾った。\n\n石板には猫獣人の古い紋様が刻まれていた。獣の気配は近いのに、足音はない。見張りのゴブリンたちは、何かに見られていると怯えた。"
+        },
+        {
+          "id": "side_shadow_cat_ruins_2",
+          "text": "石板を追うと、月明かりの下に埋もれた遺跡が現れた。\n\nそこは猫獣人が影を鍛えた場所だという。影を奪えれば、ゴブリンにも夜を走る力が宿るかもしれない。\n\nマルクは斥候を集め、遺跡への道を開いた。"
+        }
+      ]
+    },
+    {
+      "id": "side_shadow_cat_cleared",
+      "title": "月影の血脈",
+      "category": "side",
+      "order": 121,
+      "unlockCondition": {
+        "type": "dungeon_cleared",
+        "dungeonId": "cat_fortress_1"
+      },
+      "rewards": [
+        {
+          "type": "golden_acorn",
+          "value": 5
+        }
+      ],
+      "chapters": [
+        {
+          "id": "side_shadow_cat_cleared_1",
+          "text": "猫獣人の影遺跡を制圧した。\n\n倒れた遺跡主の影は、月明かりに溶けず、マルクの足元へ流れ込んだ。影は爪となり、耳となり、夜を見通す感覚となって残った。"
+        },
+        {
+          "id": "side_shadow_cat_cleared_2",
+          "text": "石板に刻まれた爪痕は、猫獣人が影と血を混ぜて力を継がせた証だった。\n\nこの因子を得たゴブリンは、夜を駆ける獣の影をまとい、シャドウゴブリンへ変わる可能性を持つ。"
+        }
+      ]
+    },
+    {
+      "id": "side_necromancer_crypt",
+      "title": "死霊術師の禁書",
+      "category": "side",
+      "order": 122,
+      "unlockCondition": {
+        "type": "purchase",
+        "entitlementId": "necromancer_side_story"
+      },
+      "rewards": [],
+      "chapters": [
+        {
+          "id": "side_necromancer_crypt_1",
+          "text": "戦場跡の地下から、黒い鎖で封じられた禁書が掘り出された。\n\nページには死者の名を縛る術式がびっしりと記され、触れたゴブリンの影だけが、まるで別の意思を持つように揺れた。"
+        },
+        {
+          "id": "side_necromancer_crypt_2",
+          "text": "禁書は地下霊廟の奥から持ち出されたものだった。\n\n死者を恐れる人間たちは入口を封じたが、マルクにとっては違う。眠る死者も、縛られた影も、王国を築くための兵になり得る。\n\n死霊術を奪うため、地下霊廟への道を開いた。"
+        }
+      ]
+    },
+    {
+      "id": "side_necromancer_cleared",
+      "title": "死者を率いる者",
+      "category": "side",
+      "order": 123,
+      "unlockCondition": {
+        "type": "dungeon_cleared",
+        "dungeonId": "necromancer_crypt_1"
+      },
+      "rewards": [
+        {
+          "type": "golden_acorn",
+          "value": 5
+        }
+      ],
+      "chapters": [
+        {
+          "id": "side_necromancer_cleared_1",
+          "text": "地下霊廟の主を倒し、禁書の封印は砕けた。\n\n死者をただ眠らせず、影で縛り、群れのためにもう一度立たせる術。その危うい知識が、ゴブリンたちの手に渡った。"
+        },
+        {
+          "id": "side_necromancer_cleared_2",
+          "text": "マルクは禁書を訓練所へ運ばせた。\n\nこれからは、死者と影を扱う術を学んだゴブリンを育てられる。ゴブリンネクロマンサーは、倒れた者すら戦力に変える新しい兵科となる。"
+        }
+      ]
+    },
+    {
       "id": "side_harpy_cliff",
       "title": "空の支配者",
       "category": "side",

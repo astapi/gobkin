@@ -24,7 +24,7 @@ import { GoblinStatCalculator } from './GoblinStatCalculator'
 import { EquipmentTitleService } from './EquipmentTitleService'
 import { rollDropRank } from './DropRankRoller'
 import { rollLuckValue } from './LuckRoller'
-import { normalizePartyRewardMultipliers, DUNGEON_TIER_SCALING, getDungeonTierAreaLevel } from '../../shared/types'
+import { normalizePartyRewardMultipliers, getDungeonTierAreaLevel } from '../../shared/types'
 import {
   getGoldBonusPercentFromSkills,
   getPartyRareMultiplierFromSkills,
@@ -126,7 +126,6 @@ export class ExpeditionEngine {
       ? expeditionBoost.expMultiplier
       : 1
     const tier = request.tier ?? 0
-    const tierScaling = DUNGEON_TIER_SCALING[tier] ?? DUNGEON_TIER_SCALING[0]
     // ダンジョンIDからエリアIDにマッピング
     const dungeonToAreaMap: Record<string, string> = {
       "1": "forest_outskirts",
@@ -178,7 +177,7 @@ export class ExpeditionEngine {
       effectiveRewardMultipliers.gold *
       (1 + partyGoldBonusPercent / 100) *
       goldMultiplierBoost
-    const averageBattleGold = this.calculateAverageBattleGold(enemyDatabase.patterns, enemyDatabase.enemies, tierScaling)
+    const averageBattleGold = this.calculateAverageBattleGold(enemyDatabase.patterns, enemyDatabase.enemies, tier)
 
     // 移動開始イベント
     events.push({
@@ -217,8 +216,8 @@ export class ExpeditionEngine {
 
         switch (eventType) {
           case "battle": {
-            const pattern = this.selectEnemyPattern(enemyDatabase.patterns, currentFloor, false, floorEvent.isFloorEnd)
-            const enemies = this.applyTierScaling(this.getEnemiesFromPattern(pattern, enemyDatabase.enemies), tierScaling)
+            const pattern = this.selectEnemyPattern(enemyDatabase.patterns, currentFloor, tier, false, floorEvent.isFloorEnd)
+            const enemies = this.applyTierScaling(this.getEnemiesFromPattern(pattern, enemyDatabase.enemies), tier)
             const combat = this.resolveCombat(partyState, enemies, area)
             const xp = combat.outcome === 'win' ? this.calculateEnemyXp(enemies, expMultiplierBoost) : 0
 
@@ -293,8 +292,8 @@ export class ExpeditionEngine {
             // 未知のイベントタイプの処理
             console.warn(`Unknown event type: ${eventType}, treating as battle`)
             // battleとして処理
-            const pattern = this.selectEnemyPattern(enemyDatabase.patterns, currentFloor, false, floorEvent.isFloorEnd)
-            const enemies = this.applyTierScaling(this.getEnemiesFromPattern(pattern, enemyDatabase.enemies), tierScaling)
+            const pattern = this.selectEnemyPattern(enemyDatabase.patterns, currentFloor, tier, false, floorEvent.isFloorEnd)
+            const enemies = this.applyTierScaling(this.getEnemiesFromPattern(pattern, enemyDatabase.enemies), tier)
             const combat = this.resolveCombat(partyState, enemies, area)
             const xp = combat.outcome === 'win' ? this.calculateEnemyXp(enemies, expMultiplierBoost) : 0
 
@@ -372,8 +371,8 @@ export class ExpeditionEngine {
       const bossPatterns = enemyDatabase.patterns.filter(p => p.isBoss && p.floors.includes(area.floors))
 
       if (bossPatterns.length > 0) {
-        const bossPattern = this.selectEnemyPattern(enemyDatabase.patterns, area.floors, true)
-        const bossEnemies = this.applyTierScaling(this.getEnemiesFromPattern(bossPattern, enemyDatabase.enemies), tierScaling)
+        const bossPattern = this.selectEnemyPattern(enemyDatabase.patterns, area.floors, tier, true)
+        const bossEnemies = this.applyTierScaling(this.getEnemiesFromPattern(bossPattern, enemyDatabase.enemies), tier)
 
         const bossCombat = this.resolveCombat(partyState, bossEnemies, area, true)
         const bossXp = bossCombat.outcome === 'win' ? this.calculateEnemyXp(bossEnemies, expMultiplierBoost) : 0
@@ -568,44 +567,69 @@ export class ExpeditionEngine {
   private selectEnemyPattern(
     patterns: EnemyPattern[],
     floor: number,
+    tier: DungeonTier,
     isBoss: boolean,
     preferFloorBoss = false
   ): EnemyPattern {
     // ボス戦の場合はボスパターンを選択
     if (isBoss) {
-      const bossPatterns = patterns.filter(p => p.isBoss && p.floors.includes(floor))
+      const bossPatterns = patterns.filter(p =>
+        p.isBoss &&
+        p.floors.includes(floor) &&
+        this.isPatternAvailableForTier(p, tier)
+      )
       if (bossPatterns.length === 0) {
-        throw new Error(`No boss pattern found for floor ${floor}`)
+        throw new Error(`No boss pattern found for floor ${floor} tier ${tier}`)
       }
       return bossPatterns[Math.floor(this.rng() * bossPatterns.length)]
     }
 
     if (preferFloorBoss) {
-      const floorBossPatterns = patterns.filter(p => p.isFloorBoss && !p.isBoss && p.floors.includes(floor))
+      const floorBossPatterns = patterns.filter(p =>
+        p.isFloorBoss &&
+        !p.isBoss &&
+        p.floors.includes(floor) &&
+        this.isPatternAvailableForTier(p, tier)
+      )
       if (floorBossPatterns.length > 0) {
         return floorBossPatterns[Math.floor(this.rng() * floorBossPatterns.length)]
       }
     }
 
     // 通常戦闘の場合
-    const availablePatterns = patterns.filter(p => !p.isBoss && !p.isFloorBoss && p.floors.includes(floor))
+    const availablePatterns = patterns.filter(p =>
+      !p.isBoss &&
+      !p.isFloorBoss &&
+      p.floors.includes(floor) &&
+      this.isPatternAvailableForTier(p, tier)
+    )
     if (availablePatterns.length === 0) {
-      const fallbackPatterns = patterns.filter(p => !p.isBoss && p.floors.includes(floor))
+      const fallbackPatterns = patterns.filter(p =>
+        !p.isBoss &&
+        p.floors.includes(floor) &&
+        this.isPatternAvailableForTier(p, tier)
+      )
       if (fallbackPatterns.length > 0) {
         return fallbackPatterns[Math.floor(this.rng() * fallbackPatterns.length)]
       }
-      throw new Error(`No enemy pattern found for floor ${floor}`)
+      throw new Error(`No enemy pattern found for floor ${floor} tier ${tier}`)
     }
     return availablePatterns[Math.floor(this.rng() * availablePatterns.length)]
   }
 
   private applyTierScaling(
     enemies2D: Enemy[][],
-    scaling: (typeof DUNGEON_TIER_SCALING)[number]
+    tier: DungeonTier
   ): Enemy[][] {
-    const tier = DUNGEON_TIER_SCALING.indexOf(scaling) as DungeonTier
     return enemies2D.map(row =>
       row.map(enemy => applyDungeonTierScalingToEnemy(enemy, tier))
+    )
+  }
+
+  private isPatternAvailableForTier(pattern: EnemyPattern, tier: DungeonTier): boolean {
+    return (
+      (pattern.minTier === undefined || tier >= pattern.minTier) &&
+      (pattern.maxTier === undefined || tier <= pattern.maxTier)
     )
   }
 
@@ -624,13 +648,15 @@ export class ExpeditionEngine {
   private calculateAverageBattleGold(
     patterns: EnemyPattern[],
     enemyList: Enemy[],
-    scaling: (typeof DUNGEON_TIER_SCALING)[number]
+    tier: DungeonTier
   ): number {
-    const battlePatterns = patterns.filter(pattern => !pattern.isBoss)
+    const battlePatterns = patterns.filter(pattern =>
+      !pattern.isBoss && this.isPatternAvailableForTier(pattern, tier)
+    )
     if (battlePatterns.length === 0) return 0
 
     const totalGold = battlePatterns.reduce((sum, pattern) => {
-      const enemies = this.applyTierScaling(this.getEnemiesFromPattern(pattern, enemyList), scaling)
+      const enemies = this.applyTierScaling(this.getEnemiesFromPattern(pattern, enemyList), tier)
       return sum + enemies.flat().reduce((enemySum, enemy) => enemySum + enemy.gold, 0)
     }, 0)
 

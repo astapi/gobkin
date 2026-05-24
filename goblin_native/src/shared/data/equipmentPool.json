@@ -1115,7 +1115,7 @@
         "additional_damage_7"
       ],
       "range": "ranged",
-      "price": 25000,
+      "price": 0,
       "isRare": true
     },
     {
@@ -3191,6 +3191,17 @@
         "exp_bonus_50"
       ],
       "price": 12500,
+      "isRare": true
+    },
+    {
+      "id": "accessory_factor_core",
+      "name": "因子核",
+      "category": "accessory",
+      "statBonuses": [],
+      "grantedSkillIds": [
+        "factor_drop_mult_1_5"
+      ],
+      "price": 25000,
       "isRare": true
     },
     {

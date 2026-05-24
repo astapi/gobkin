@@ -630,6 +630,8 @@ const ja = {
       royal_capital_1: { name: '王都決戦・城門', description: '王都の城門を突破する。近衛騎士と大魔導師が立ちはだかる。' },
       royal_capital_2: { name: '王都決戦・王城内部', description: '王城内部へ侵攻。聖騎士や王国禁衛隊が最後の防衛線を張る。' },
       dragon_volcano_1: { name: 'ドラゴンの火山巣', description: '王城地下から通じる火山巣。王国が最後に解き放ったドラゴンを越えなければ玉座には届かない。' },
+      cat_fortress_1: { name: '猫獣人の影遺跡', description: '朽ちた遺跡を住処にした猫系獣人の巣。素早い連撃と奇襲を得意とする暗殺兵が回廊を駆け、最奥では百戦錬磨の遺跡主が待つ。' },
+      necromancer_crypt_1: { name: '死霊術師の地下霊廟', description: '古い戦場の地下に封じられた霊廟。影骨兵と怨霊を退け、死者を軍勢として縛る禁術を奪え。' },
       royal_capital_3: { name: '王都決戦・玉座の間', description: '最終決戦。勇者と人間王が最後の壁として立ちはだかる。ゴブリンキングダムの完成をかけた決戦。' },
     },
     factor: {
@@ -647,7 +649,7 @@ const ja = {
       minotaur: { name: 'ミノタウロス因子', shortName: 'ミノタウロス', description: 'ミノタウロスの特性を宿した因子。攻撃力とHPが大きく増す。' },
       vampire: { name: 'ヴァンパイア因子', shortName: 'ヴァンパイア', description: 'ヴァンパイアの特性を宿した因子。魔力と生命力が増す。' },
       dragon: { name: 'ドラゴン因子', shortName: 'ドラゴン', description: 'ドラゴンの特性を宿した因子。攻防と生命力が大幅に増す。' },
-      shadow: { name: '影猫因子', shortName: '影猫', description: '猫獣人の影を宿した因子。素早さと連撃性能、回避能力が高まる。' },
+      shadow: { name: 'ワーキャット因子', shortName: 'ワーキャット', description: 'ワーキャットの影を宿した因子。素早さと連撃性能、回避能力が高まる。' },
       ratatoskr: { name: 'ラタトスク因子', shortName: 'ラタトスク', description: 'ラタトスクの特性を宿した因子。命中精度と回避能力が増す。' },
     },
     equipment: equipmentJa,
@@ -658,6 +660,7 @@ const ja = {
       warrior: { name: 'ゴブリンウォリアー', shortLabel: '攻撃', summary: '攻撃性能を大きく伸ばし、殴り合いに強くする。', description: '武闘訓練を施し、攻撃力と手数を前線向けに強化します。' },
       cleric: { name: 'ゴブリンクレリック', shortLabel: '回復', summary: '回復呪文と防護呪文で味方を支える。', description: '祈祷訓練を施し、回復と防護を担う支援役にします。' },
       rider: { name: 'ゴブリンライダー', shortLabel: '騎乗', summary: '騎獣を操り、高い機動力で戦場をかき回す。', description: '騎乗訓練を施し、素早さと突破力に優れた遊撃役にします。' },
+      necromancer: { name: 'ゴブリンネクロマンサー', shortLabel: '死霊', summary: '攻撃魔法と死霊術で長期戦を支える。', description: '死者と影を扱う術を学ばせ、魔法攻撃と継戦能力に優れた術師にします。' },
     },
     stat: {
       hp: 'HP',
@@ -975,16 +978,20 @@ const ja = {
     lockedHint: '「{{name}}」を購入すると解放されます',
     sectionOneTime: '買い切り',
     sectionSubscription: '月額パス',
+    sectionStory: 'サイドストーリー',
+    sectionEquipment: '装備',
     sectionTicket: 'チケット',
     purchaseSuccess: '購入完了',
     purchaseSuccessMessage: '購入が完了しました！',
     purchaseFailed: '購入失敗',
     purchaseFailedMessage: '購入処理に失敗しました。もう一度お試しください。',
+    limitReachedMessage: 'この装備は購入上限に達しています。',
     restoreSuccess: '復元完了',
     restoreSuccessMessage: '購入履歴を復元しました。',
     restoreFailed: '復元失敗',
     restoreFailedMessage: '購入履歴の復元に失敗しました。',
     ticketCount: '{{count}}枚',
+    ownedCount: '所持 {{count}}/{{limit}}',
     goblinCapacityExpansion: {
       name: 'ゴブリン容量拡張',
       description: '拠点のゴブリン容量を+{{count}}拡張します',
@@ -1021,6 +1028,14 @@ const ja = {
       name: '月額パス',
       description: 'ゴールド{{goldMultiplier}}倍・遠征時間{{speedPercent}}%短縮',
     },
+    shadowCatSideStory: {
+      name: '月影の契約',
+      description: 'サイドストーリー「月影の契約」と猫獣人の影遺跡を解放します。クリアでワーキャット因子獲得に挑戦できます。',
+    },
+    necromancerSideStory: {
+      name: '死霊術師の禁書',
+      description: 'サイドストーリー「死霊術師の禁書」と死霊術師の地下霊廟を解放します。クリアでネクロマンサー訓練が解放されます。',
+    },
     speedTicket: {
       name: '時短チケット×5',
       description: '遠征時間を50%短縮するチケット5枚',
@@ -1028,6 +1043,10 @@ const ja = {
     boostTicket: {
       name: 'ブーストチケット×5',
       description: 'ドロップ率・経験値が2倍になるチケット5枚',
+    },
+    factorCore: {
+      name: '因子核',
+      description: '装備したゴブリンの因子獲得率が1.5倍になります。最大{{limit}}個まで購入できます。',
     },
     goldenAcorn: {
       name50: '金のドングリ ×50',

@@ -25,7 +25,7 @@ export type GoblinBaseAttributes = {
   luck: number
 }
 
-export type GoblinJob = 'guard' | 'thief' | 'mage' | 'warrior' | 'cleric' | 'rider'
+export type GoblinJob = 'guard' | 'thief' | 'mage' | 'warrior' | 'cleric' | 'rider' | 'necromancer'
 
 export type Goblin = {
   id: number
