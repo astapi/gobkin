@@ -1,11 +1,11 @@
 import { CompleteExpeditionUseCase } from '../CompleteExpeditionUseCase'
 import { GOLDEN_ACORN_CLEAR_ENCOUNTER_ID } from '../../services/ExpeditionEngine'
-import type { IGoblinRepository, IPartyRepository, IBaseStateRepository } from '../../repositories'
+import type { IGoblinRepository, IPartyRepository, IBaseStateRepository, IEquipmentRepository } from '../../repositories'
 import { getCharacterSkill } from '../../../shared/data/skillCatalog'
 import { getDefaultSkillsForRace } from '../../../shared/data/raceSkills'
 import { DEFAULT_PARTY_REWARD_MULTIPLIERS } from '../../../shared/types'
 import { getDungeonTierFactorDropMultiplier } from '../../../shared/types/DungeonTier'
-import type { Goblin, GoblinStats, Party, BaseState, ExpeditionReplay, TimelineEvent } from '../../../shared/types'
+import type { Goblin, GoblinStats, Party, BaseState, ExpeditionReplay, TimelineEvent, EquipmentInstance } from '../../../shared/types'
 
 // --- テストヘルパー ---
 
@@ -153,6 +153,21 @@ function createMockBaseStateRepository(state: BaseState): IBaseStateRepository {
     getBaseState: jest.fn(async () => ({ ...currentState })),
     saveBaseState: jest.fn(async (s: BaseState) => { currentState = { ...s } }),
     getAndIncrementNextGoblinId: jest.fn(async () => 99),
+  }
+}
+
+function createMockEquipmentRepository(equipment: EquipmentInstance[]): IEquipmentRepository {
+  const store = new Map(equipment.map(item => [item.id, { ...item }]))
+  return {
+    getAll: jest.fn(async () => [...store.values()]),
+    getByGoblinId: jest.fn(async (goblinId: number) => (
+      [...store.values()].filter(item => item.goblinId === goblinId)
+    )),
+    getUnequipped: jest.fn(async () => (
+      [...store.values()].filter(item => item.goblinId === null)
+    )),
+    save: jest.fn(async (item: EquipmentInstance) => { store.set(item.id, { ...item }) }),
+    delete: jest.fn(async (id: string) => { store.delete(id) }),
   }
 }
 
@@ -409,6 +424,58 @@ describe('CompleteExpeditionUseCase', () => {
       expect(result.factorAcquisitions.get(1)).toEqual(['human'])
       expect(result.factorAcquisitions.get(2)).toBeUndefined()
       expect(goblinRepo.updateGoblinFactors).toHaveBeenCalledTimes(1)
+      expect(goblinRepo.updateGoblinFactors).toHaveBeenCalledWith(
+        1,
+        ['human'],
+        expect.objectContaining({ hp: expect.any(Number) }),
+      )
+    })
+
+    it('装備の因子獲得倍率は装備しているゴブリンの因子獲得確率だけを上げる', async () => {
+      const goblin = createTestGoblin({ id: 1, skills: [] })
+      const plainGoblin = createTestGoblin({ id: 2, name: '装備なし', skills: [] })
+      const party = createTestParty({ id: 1, memberIds: [1, 2] })
+      const baseState = createTestBaseState({ capturedDungeons: [] })
+      const events: TimelineEvent[] = [
+        { type: 'move_start', at: 0, floor: 1 },
+        createBossEvent('B_CANNON', 5, [-1, -1], 30, 1),
+        { type: 'return', at: 30, reason: 'completed' },
+      ]
+      const replay = createTestReplay({
+        meta: {
+          expeditionId: 'exp-1',
+          areaId: 'human_village',
+          areaName: '人間の村',
+          floors: 1,
+          baseDurationSec: 30,
+          party: ['1', '2'],
+          partyRewardMultipliers: DEFAULT_PARTY_REWARD_MULTIPLIERS,
+          returnPolicy: 'never',
+          seed: 12345,
+        },
+        events,
+        summary: { success: true, maxFloorReached: 1, xpGained: 5, goldGained: 0, casualties: [] },
+      })
+
+      const goblinRepo = createMockGoblinRepository([goblin, plainGoblin])
+      const equipmentRepo = createMockEquipmentRepository([
+        {
+          id: 'eq-factor-core',
+          templateId: 'accessory_factor_core',
+          slotIndex: 0,
+          goblinId: 1,
+        },
+      ])
+      const usecase = new CompleteExpeditionUseCase(
+        goblinRepo,
+        createMockPartyRepository([party]),
+        createMockBaseStateRepository(baseState),
+        equipmentRepo,
+      )
+      const result = await usecase.execute(1, replay)
+
+      expect(result.factorAcquisitions.get(1)).toEqual(['human'])
+      expect(result.factorAcquisitions.get(2)).toBeUndefined()
       expect(goblinRepo.updateGoblinFactors).toHaveBeenCalledWith(
         1,
         ['human'],

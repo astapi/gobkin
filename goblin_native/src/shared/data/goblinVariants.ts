@@ -508,7 +508,7 @@ export const goblinVariantDefinitions: Record<string, GoblinVariantDefinition> =
       "evasion_up_30",
       "critical_rate_up_10"
     ],
-    factorDescription: "猫獣人の影を宿した因子。素早さと連撃性能、回避能力が高まる。",
+    factorDescription: "ワーキャットの影を宿した因子。素早さと連撃性能、回避能力が高まる。",
     factorEffects: [
       {
         target: "atk",
@@ -527,7 +527,7 @@ export const goblinVariantDefinitions: Record<string, GoblinVariantDefinition> =
       }
     ],
     factorId: "shadow",
-    factorName: "影猫因子",
+    factorName: "ワーキャット因子",
     hpCoefficient: 0.85,
     imageKey: "goblin_thief",
     inheritProbability: 0.18,

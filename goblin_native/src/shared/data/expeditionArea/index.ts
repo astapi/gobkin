@@ -23,6 +23,7 @@ import lizardmanSwamp1 from './lizardman_swamp_1.json'
 import lizardmanSwamp2 from './lizardman_swamp_2.json'
 import lizardmanSwamp3 from './lizardman_swamp_3.json'
 import minotaurLabyrinth1 from './minotaur_labyrinth_1.json'
+import necromancerCrypt1 from './necromancer_crypt_1.json'
 import orcCamp1 from './orc_camp_1.json'
 import orcCamp2 from './orc_camp_2.json'
 import orcCamp3 from './orc_camp_3.json'
@@ -78,6 +79,7 @@ const areaDatabases: Record<string, AreaConfig> = {
   lizardman_swamp_2: lizardmanSwamp2 as AreaConfig,
   lizardman_swamp_3: lizardmanSwamp3 as AreaConfig,
   minotaur_labyrinth_1: minotaurLabyrinth1 as AreaConfig,
+  necromancer_crypt_1: necromancerCrypt1 as AreaConfig,
   orc_camp_1: orcCamp1 as AreaConfig,
   orc_camp_2: orcCamp2 as AreaConfig,
   orc_camp_3: orcCamp3 as AreaConfig,

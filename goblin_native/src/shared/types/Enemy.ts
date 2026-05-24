@@ -50,6 +50,8 @@ export interface EnemyPattern {
   id: string
   floors: number[]
   enemies: string[][]  // enemies[row][slotIndex] = enemyId（2D配列で隊列を表現）
+  minTier?: DungeonTier
+  maxTier?: DungeonTier
   isFloorBoss?: boolean
   isBoss?: boolean
 }

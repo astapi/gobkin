@@ -4,6 +4,9 @@ import type { EnemyDatabase } from '../lib/schema'
 import { DRAG_MIME, decodePayload, encodePayload } from './dragPayload'
 
 type Pattern = EnemyDatabase['patterns'][number]
+type PatternTier = NonNullable<Pattern['minTier']>
+
+const TIER_OPTIONS: PatternTier[] = [0, 1, 2, 3, 4, 5]
 
 interface Props {
   pattern: Pattern
@@ -36,6 +39,17 @@ export function PatternCardEditor({
       .map(Number)
       .filter((n) => Number.isFinite(n))
     onChange((prev) => ({ ...prev, floors }))
+  }
+
+  const setTierLimit = (key: 'minTier' | 'maxTier', raw: string) => {
+    const parsed = raw === '' ? undefined : Number(raw)
+    const value: PatternTier | undefined = TIER_OPTIONS.includes(parsed as PatternTier)
+      ? parsed as PatternTier
+      : undefined
+    onChange((prev) => ({
+      ...prev,
+      [key]: value,
+    }))
   }
 
   const insertSlot = (row: number, targetSlot: number, enemyId: string) => {
@@ -128,6 +142,34 @@ export function PatternCardEditor({
             onChange={(e) => setFloorsText(e.target.value)}
             onBlur={() => setFloorsFromText(floorsText)}
           />
+        </label>
+        <label className="subtle">
+          Tier:{' '}
+          <select
+            className="inline-select narrow"
+            value={pattern.minTier ?? ''}
+            onChange={(e) => setTierLimit('minTier', e.target.value)}
+          >
+            <option value="">下限なし</option>
+            {TIER_OPTIONS.map((tier) => (
+              <option key={tier} value={tier}>
+                {tier}+
+              </option>
+            ))}
+          </select>
+          {' - '}
+          <select
+            className="inline-select narrow"
+            value={pattern.maxTier ?? ''}
+            onChange={(e) => setTierLimit('maxTier', e.target.value)}
+          >
+            <option value="">上限なし</option>
+            {TIER_OPTIONS.map((tier) => (
+              <option key={tier} value={tier}>
+                {tier}
+              </option>
+            ))}
+          </select>
         </label>
         <label className="subtle">
           <input

@@ -14,6 +14,7 @@ import type { IEquipmentRepository } from '../repositories/IEquipmentRepository'
 import type { LevelUpResult } from '../services/ExperienceSystem'
 import type { FactorDropConfig } from '../../shared/types/Factor'
 import { FactorService } from '../services/FactorService'
+import { EquipmentService } from '../services/EquipmentService'
 import { captureDungeon } from '../services/BaseRankSystem'
 import { GOLDEN_ACORN_CLEAR_ENCOUNTER_ID, GOLDEN_ACORN_CLEAR_FACTOR_DROPS } from '../services/ExpeditionEngine'
 import { isDungeonCompleted } from '../../shared/utils/expeditionClear'
@@ -207,8 +208,15 @@ export class CompleteExpeditionUseCase {
           }
 
           const latest = latestGoblins.get(goblin.id)!
-          const factorDropBonusPercent = getFactorDropBonusPercentFromSkills(latest.skills)
-          const factorDropMultiplier = getFactorDropMultiplierFromSkills(latest.skills)
+          const equippedItems = this.equipmentRepository
+            ? await this.equipmentRepository.getByGoblinId(goblin.id)
+            : []
+          const factorDropSkills = [
+            ...latest.skills,
+            ...EquipmentService.collectGrantedSkills(equippedItems),
+          ]
+          const factorDropBonusPercent = getFactorDropBonusPercentFromSkills(factorDropSkills)
+          const factorDropMultiplier = getFactorDropMultiplierFromSkills(factorDropSkills)
           const probabilityMultiplier =
             (1 + Math.max(0, factorDropBonusPercent) / 100) * factorDropMultiplier
           const acquired = FactorService.rollFactorDrops(

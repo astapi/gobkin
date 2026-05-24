@@ -21,6 +21,11 @@ export const ENTITLEMENT_IDS = {
   EXP_BOOST: 'exp_boost',
   RARE_BOOST: 'rare_boost',
   TITLE_BOOST: 'title_boost',
+  FACTOR_CORE_1: 'factor_core_1',
+  FACTOR_CORE_2: 'factor_core_2',
+  FACTOR_CORE_3: 'factor_core_3',
+  SHADOW_CAT_SIDE_STORY: 'shadow_cat_side_story',
+  NECROMANCER_SIDE_STORY: 'necromancer_side_story',
   SPEED_HALF: 'speed_half',           // 探索時間1/2
   SPEED_TWO_THIRDS: 'speed_two_thirds', // 探索時間2/3（SPEED_HALF購入後に解放）
   // サブスクリプション
@@ -39,6 +44,13 @@ export const PARTY_SLOT_EXPANSION = 2         // 課金後のボーナス枠
 export const EXP_BOOST_MULTIPLIER = 1.5       // 経験値倍率
 export const RARE_BOOST_MULTIPLIER = 1.5      // レアドロップ倍率
 export const TITLE_BOOST_MULTIPLIER = 1.5     // 称号倍率
+
+export const FACTOR_CORE_TEMPLATE_ID = 'accessory_factor_core'
+export const FACTOR_CORE_PURCHASE_LIMIT = 3
+export const SHADOW_CAT_SIDE_STORY_ID = 'side_shadow_cat_ruins'
+export const SHADOW_CAT_DUNGEON_ID = 'cat_fortress_1'
+export const NECROMANCER_SIDE_STORY_ID = 'side_necromancer_crypt'
+export const NECROMANCER_DUNGEON_ID = 'necromancer_crypt_1'
 
 // 探索時間短縮定数
 export const SPEED_HALF_MULTIPLIER = 0.5          // 探索時間1/2
@@ -75,13 +87,26 @@ export interface PurchaseProduct {
   nameKey: string          // i18nキー
   descriptionKey: string   // i18nキー
   iconName: string         // アイコン名
-  section: 'one_time' | 'subscription' | 'ticket'  // 表示セクション
+  section: 'one_time' | 'subscription' | 'ticket' | 'equipment' | 'story'  // 表示セクション
   requiresEntitlement?: string  // この商品を購入するために必要な前提Entitlement
   /**
    * Consumable 商品で1回購入したときに付与されるチケット数。
    * section='ticket' のときに必須。purchasePackage 成功時、entitlementId をキーに tickets テーブルへ加算される。
    */
   consumableQuantity?: number
+  /**
+   * 課金で付与する装備テンプレートID。
+   * section='equipment' のときに必須。購入成功時、equipment テーブルへ1個付与される。
+   */
+  equipmentTemplateId?: string
+  /** 同一装備テンプレートの購入/所持上限。装備中と未装備を合算する。 */
+  purchaseLimit?: number
+  /** 同一上限付き装備商品の購入順。1始まり。 */
+  purchaseIndex?: number
+  /** 課金で解放するサイドストーリーID。 */
+  storyId?: string
+  /** 課金で解放するダンジョンID一覧。 */
+  unlockDungeonIds?: string[]
 }
 
 export const PURCHASE_PRODUCTS: PurchaseProduct[] = [
@@ -160,6 +185,27 @@ export const PURCHASE_PRODUCTS: PurchaseProduct[] = [
     iconName: 'calendar',
     section: 'subscription',
   },
+  // サイドストーリー/ダンジョン
+  {
+    packageId: 'shadow_cat_side_story',
+    entitlementId: ENTITLEMENT_IDS.SHADOW_CAT_SIDE_STORY,
+    nameKey: 'shop.shadowCatSideStory.name',
+    descriptionKey: 'shop.shadowCatSideStory.description',
+    iconName: 'book',
+    section: 'story',
+    storyId: SHADOW_CAT_SIDE_STORY_ID,
+    unlockDungeonIds: [SHADOW_CAT_DUNGEON_ID],
+  },
+  {
+    packageId: 'necromancer_side_story',
+    entitlementId: ENTITLEMENT_IDS.NECROMANCER_SIDE_STORY,
+    nameKey: 'shop.necromancerSideStory.name',
+    descriptionKey: 'shop.necromancerSideStory.description',
+    iconName: 'book',
+    section: 'story',
+    storyId: NECROMANCER_SIDE_STORY_ID,
+    unlockDungeonIds: [NECROMANCER_DUNGEON_ID],
+  },
   // チケット（Consumable）
   {
     packageId: 'speed_ticket_5',
@@ -178,6 +224,42 @@ export const PURCHASE_PRODUCTS: PurchaseProduct[] = [
     iconName: 'trending-up',
     section: 'ticket',
     consumableQuantity: 5,
+  },
+  // 課金装備
+  {
+    packageId: 'factor_core_1',
+    entitlementId: ENTITLEMENT_IDS.FACTOR_CORE_1,
+    nameKey: 'shop.factorCore.name',
+    descriptionKey: 'shop.factorCore.description',
+    iconName: 'sparkles',
+    section: 'equipment',
+    equipmentTemplateId: FACTOR_CORE_TEMPLATE_ID,
+    purchaseLimit: FACTOR_CORE_PURCHASE_LIMIT,
+    purchaseIndex: 1,
+  },
+  {
+    packageId: 'factor_core_2',
+    entitlementId: ENTITLEMENT_IDS.FACTOR_CORE_2,
+    nameKey: 'shop.factorCore.name',
+    descriptionKey: 'shop.factorCore.description',
+    iconName: 'sparkles',
+    section: 'equipment',
+    equipmentTemplateId: FACTOR_CORE_TEMPLATE_ID,
+    purchaseLimit: FACTOR_CORE_PURCHASE_LIMIT,
+    purchaseIndex: 2,
+    requiresEntitlement: ENTITLEMENT_IDS.FACTOR_CORE_1,
+  },
+  {
+    packageId: 'factor_core_3',
+    entitlementId: ENTITLEMENT_IDS.FACTOR_CORE_3,
+    nameKey: 'shop.factorCore.name',
+    descriptionKey: 'shop.factorCore.description',
+    iconName: 'sparkles',
+    section: 'equipment',
+    equipmentTemplateId: FACTOR_CORE_TEMPLATE_ID,
+    purchaseLimit: FACTOR_CORE_PURCHASE_LIMIT,
+    purchaseIndex: 3,
+    requiresEntitlement: ENTITLEMENT_IDS.FACTOR_CORE_2,
   },
   // 金のドングリ（バンドルが大きいほど割安）
   {

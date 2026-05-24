@@ -18,6 +18,9 @@ import {
   TICKET_TYPES,
   type PurchaseProduct,
 } from '@/shared/constants/purchases'
+import { SQLiteEquipmentRepository } from '@/infrastructure/repositories/SQLiteEquipmentRepository'
+import { useStoryStore } from '@/presentation/stores/useStoryStore'
+import { useDungeonStore } from '@/presentation/stores/useDungeonStore'
 
 /** 商品のロック状態を判定 */
 const isProductLocked = (productInfo: PurchaseProduct | undefined, hasEntitlementFn: (id: string) => boolean): boolean => {
@@ -28,6 +31,9 @@ const isProductLocked = (productInfo: PurchaseProduct | undefined, hasEntitlemen
 export default function ShopScreen() {
   const { t } = useTranslation()
   const [isRestoring, setIsRestoring] = useState(false)
+  const [equipmentCounts, setEquipmentCounts] = useState<Record<string, number>>({})
+  const refreshStories = useStoryStore((state) => state.refresh)
+  const refreshDungeons = useDungeonStore((state) => state.refresh)
 
   const {
     isInitialized,
@@ -42,6 +48,21 @@ export default function ShopScreen() {
     refreshCustomerInfo,
     getTicketCount,
   } = usePurchaseStore()
+
+  const refreshEquipmentCounts = useCallback(async () => {
+    const equipmentProducts = PURCHASE_PRODUCTS.filter(
+      product => product.section === 'equipment' && product.equipmentTemplateId,
+    )
+    if (equipmentProducts.length === 0) return
+
+    const equipment = await SQLiteEquipmentRepository.getInstance().getAll()
+    const counts: Record<string, number> = {}
+    for (const product of equipmentProducts) {
+      const templateId = product.equipmentTemplateId!
+      counts[templateId] = equipment.filter(item => item.templateId === templateId).length
+    }
+    setEquipmentCounts(counts)
+  }, [])
 
   // Entitlementチェック（状態変化を検知するためローカルで定義）
   const hasEntitlement = useCallback(
@@ -66,19 +87,31 @@ export default function ShopScreen() {
     }
   }, [isInitialized, availablePackages.length, fetchOfferings])
 
+  useEffect(() => {
+    if (isInitialized) {
+      void refreshEquipmentCounts()
+    }
+  }, [isInitialized, refreshEquipmentCounts])
+
   useFocusEffect(
     useCallback(() => {
       if (isInitialized) {
         refreshCustomerInfo()
+        void refreshEquipmentCounts()
       }
-    }, [isInitialized, refreshCustomerInfo])
+    }, [isInitialized, refreshCustomerInfo, refreshEquipmentCounts])
   )
 
   const handlePurchase = async (pkg: PurchasesPackage) => {
     const result = await purchasePackage(pkg)
 
     if (result.success) {
+      await refreshEquipmentCounts()
+      await refreshStories()
+      await refreshDungeons()
       Alert.alert(t('shop.purchaseSuccess'), t('shop.purchaseSuccessMessage'))
+    } else if (result.error === 'limit_reached') {
+      Alert.alert(t('shop.purchaseFailed'), t('shop.limitReachedMessage'))
     } else if (result.error !== 'cancelled') {
       Alert.alert(t('shop.purchaseFailed'), t('shop.purchaseFailedMessage'))
     }
@@ -90,6 +123,9 @@ export default function ShopScreen() {
     setIsRestoring(false)
 
     if (result.success) {
+      await refreshEquipmentCounts()
+      await refreshStories()
+      await refreshDungeons()
       Alert.alert(t('shop.restoreSuccess'), t('shop.restoreSuccessMessage'))
     } else {
       Alert.alert(t('shop.restoreFailed'), t('shop.restoreFailedMessage'))
@@ -120,6 +156,8 @@ export default function ShopScreen() {
       case 'shop.goldenAcorn.description':
       case 'shop.goldenAcorn.descriptionDiscount':
         return productInfo?.consumableQuantity ? { count: productInfo.consumableQuantity } : undefined
+      case 'shop.factorCore.description':
+        return productInfo?.purchaseLimit ? { limit: productInfo.purchaseLimit } : undefined
       default:
         return undefined
     }
@@ -150,6 +188,18 @@ export default function ShopScreen() {
   const getPackagesBySection = (section: PurchaseProduct['section']) => {
     return availablePackages.filter(pkg => {
       const productInfo = PURCHASE_PRODUCTS.find(p => p.packageId === pkg.identifier)
+      if (section === 'equipment') {
+        if (productInfo?.section !== 'equipment' || !productInfo.equipmentTemplateId) return false
+        const equipmentProducts = PURCHASE_PRODUCTS
+          .filter(p => p.section === 'equipment' && p.equipmentTemplateId === productInfo.equipmentTemplateId)
+          .sort((a, b) => (a.purchaseIndex ?? 0) - (b.purchaseIndex ?? 0))
+        const purchasedCount = equipmentProducts.filter(p =>
+          typeof p.entitlementId === 'string' && hasEntitlement(p.entitlementId)
+        ).length
+        const limit = productInfo.purchaseLimit ?? equipmentProducts.length
+        const targetIndex = Math.min(purchasedCount + 1, limit)
+        return productInfo.purchaseIndex === targetIndex
+      }
       return productInfo?.section === section
     })
   }
@@ -160,12 +210,20 @@ export default function ShopScreen() {
 
     const isBundleProduct = displayInfo.entitlementId === 'bundle'
     const isTicket = displayInfo.section === 'ticket'
+    const isEquipment = displayInfo.section === 'equipment'
+    const ownedEquipmentCount = isEquipment && productInfo?.equipmentTemplateId
+      ? equipmentCounts[productInfo.equipmentTemplateId] ?? 0
+      : 0
+    const equipmentLimit = productInfo?.purchaseLimit ?? 0
+    const isEquipmentLimitReached = isEquipment && equipmentLimit > 0 && ownedEquipmentCount >= equipmentLimit
     const isPurchased = isBundleProduct
       ? isBundlePurchased()
-      : !isTicket && hasEntitlement(displayInfo.entitlementId)
+      : !isTicket && !isEquipment && hasEntitlement(displayInfo.entitlementId)
+    const isEquipmentEntitlementPurchased = isEquipment && hasEntitlement(displayInfo.entitlementId)
+    const shouldShowPurchasedBadge = isPurchased || isEquipmentEntitlementPurchased || isEquipmentLimitReached
     const isSubscriptionActive = displayInfo.section === 'subscription' && hasEntitlement(displayInfo.entitlementId)
     const isLocked = isProductLocked(productInfo, hasEntitlement)
-    const isDisabled = isPurchased || isSubscriptionActive || isLocked
+    const isDisabled = isPurchased || isEquipmentEntitlementPurchased || isSubscriptionActive || isLocked || isEquipmentLimitReached
     const price = pkg.product.priceString
 
     // チケットの場合は残数を表示
@@ -194,12 +252,12 @@ export default function ShopScreen() {
           <View style={styles.productNameRow}>
             <Text style={[
               styles.productName,
-              isPurchased && styles.productNamePurchased,
+              shouldShowPurchasedBadge && styles.productNamePurchased,
               isLocked && styles.productNameLocked,
             ]}>
               {displayInfo.name}
             </Text>
-            {isPurchased && (
+            {shouldShowPurchasedBadge && (
               <View style={styles.statusBadge}>
                 <Text style={styles.statusText}>{t('shop.purchased')}</Text>
               </View>
@@ -228,9 +286,14 @@ export default function ShopScreen() {
               {t('shop.ticketCount', { count: ticketCount })}
             </Text>
           )}
+          {isEquipment && equipmentLimit > 0 && (
+            <Text style={styles.ticketCount}>
+              {t('shop.ownedCount', { count: ownedEquipmentCount, limit: equipmentLimit })}
+            </Text>
+          )}
         </View>
 
-        {!isPurchased && !isSubscriptionActive && (
+        {!isPurchased && !isEquipmentEntitlementPurchased && !isEquipmentLimitReached && !isSubscriptionActive && (
           <View style={[styles.priceContainer, isLocked && styles.priceContainerLocked]}>
             <Text style={[styles.priceText, isLocked && styles.priceTextLocked]}>{price}</Text>
           </View>
@@ -289,6 +352,8 @@ export default function ShopScreen() {
         <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
           {renderSection(t('shop.sectionSubscription'), 'subscription')}
           {renderSection(t('shop.sectionOneTime'), 'one_time')}
+          {renderSection(t('shop.sectionStory'), 'story')}
+          {renderSection(t('shop.sectionEquipment'), 'equipment')}
           {renderSection(t('shop.sectionTicket'), 'ticket')}
         </ScrollView>
       )}

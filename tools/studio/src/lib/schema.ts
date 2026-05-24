@@ -97,6 +97,23 @@ export const EnemyPatternSchema = z.object({
   id: z.string(),
   floors: z.array(z.number().int().nonnegative()),
   enemies: z.array(z.array(z.string())),
+  minTier: z.union([
+    z.literal(0),
+    z.literal(1),
+    z.literal(2),
+    z.literal(3),
+    z.literal(4),
+    z.literal(5),
+  ]).optional(),
+  maxTier: z.union([
+    z.literal(0),
+    z.literal(1),
+    z.literal(2),
+    z.literal(3),
+    z.literal(4),
+    z.literal(5),
+  ]).optional(),
+  isFloorBoss: z.boolean().optional(),
   isBoss: z.boolean().optional(),
 })
 

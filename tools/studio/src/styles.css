@@ -752,7 +752,8 @@ code {
   white-space: nowrap;
 }
 
-.inline-input {
+.inline-input,
+.inline-select {
   background: var(--surface);
   border: 1px solid var(--border);
   color: var(--text);
@@ -762,12 +763,14 @@ code {
   font-family: inherit;
 }
 
-.inline-input:focus {
+.inline-input:focus,
+.inline-select:focus {
   outline: none;
   border-color: var(--text);
 }
 
-.inline-input.narrow {
+.inline-input.narrow,
+.inline-select.narrow {
   width: 5.5rem;
 }
 
