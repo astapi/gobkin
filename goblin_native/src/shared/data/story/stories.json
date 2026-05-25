@@ -720,6 +720,10 @@
       },
       "rewards": [
         {
+          "type": "goblin",
+          "value": "shadow"
+        },
+        {
           "type": "golden_acorn",
           "value": 5
         }
@@ -766,6 +770,10 @@
         "dungeonId": "necromancer_crypt_1"
       },
       "rewards": [
+        {
+          "type": "job",
+          "value": "necromancer"
+        },
         {
           "type": "golden_acorn",
           "value": 5

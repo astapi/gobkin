@@ -25,7 +25,10 @@ interface StoryRecord {
   title: string
   category: 'main' | 'side'
   order: number
-  unlockCondition: { type: 'dungeon_cleared'; dungeonId: string } | null
+  unlockCondition:
+    | { type: 'dungeon_cleared'; dungeonId: string }
+    | { type: 'purchase'; entitlementId: string }
+    | null
   rewards: unknown[]
   chapters: Array<{ id: string; text: string }>
 }
@@ -538,7 +541,9 @@ async function listStories(storyFile: string): Promise<StorySummary[]> {
       chapterCount: Array.isArray(story.chapters) ? story.chapters.length : 0,
       rewardCount: Array.isArray(story.rewards) ? story.rewards.length : 0,
       unlockLabel: story.unlockCondition
-        ? `dungeon_cleared: ${story.unlockCondition.dungeonId}`
+        ? story.unlockCondition.type === 'dungeon_cleared'
+          ? `dungeon_cleared: ${story.unlockCondition.dungeonId}`
+          : `purchase: ${story.unlockCondition.entitlementId}`
         : '常時解放',
     }))
     .sort((a, b) => a.order - b.order || a.id.localeCompare(b.id))

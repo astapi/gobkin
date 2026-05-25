@@ -116,6 +116,14 @@ describe('goblinJobs', () => {
     ).toBe(true)
   })
 
+  it('死霊術師のクリア後ストーリー読了でネクロマンサー訓練が解放される', () => {
+    expect(getGoblinTrainingJobDefinitions(new Set(['necromancer_crypt_1'])).some((job) => job.id === 'necromancer')).toBe(false)
+    expect(
+      getGoblinTrainingJobDefinitions(new Set(['necromancer_crypt_1']), new Set(['side_necromancer_cleared']))
+        .some((job) => job.id === 'necromancer')
+    ).toBe(true)
+  })
+
   it('クレリックは回復魔法Lv7スキルを持つ', () => {
     const level1 = applyGoblinJob(createGoblin({ level: 1 }), 'cleric')
 

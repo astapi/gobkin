@@ -281,25 +281,54 @@ export function StoryDetailPage() {
               <label className="field field-size-sm">
                 <span className="field-label">type</span>
                 <span className="field-input">
-                  <select value={draft.unlockCondition.type} disabled>
+                  <select
+                    value={draft.unlockCondition.type}
+                    onChange={(e) => {
+                      const nextType = e.target.value
+                      updateDraft((prev) => ({
+                        ...prev,
+                        unlockCondition: nextType === 'dungeon_cleared'
+                          ? { type: 'dungeon_cleared', dungeonId: '' }
+                          : { type: 'purchase', entitlementId: '' },
+                      }))
+                    }}
+                  >
                     <option value="dungeon_cleared">dungeon_cleared</option>
+                    <option value="purchase">purchase</option>
                   </select>
                 </span>
               </label>
-              <TextField
-                size="md"
-                label="dungeonId"
-                value={draft.unlockCondition.dungeonId}
-                onChange={(value) =>
-                  updateDraft((prev) => ({
-                    ...prev,
-                    unlockCondition: {
-                      type: 'dungeon_cleared',
-                      dungeonId: value,
-                    } satisfies StoryUnlockCondition,
-                  }))
-                }
-              />
+              {draft.unlockCondition.type === 'dungeon_cleared' ? (
+                <TextField
+                  size="md"
+                  label="dungeonId"
+                  value={draft.unlockCondition.dungeonId}
+                  onChange={(value) =>
+                    updateDraft((prev) => ({
+                      ...prev,
+                      unlockCondition: {
+                        type: 'dungeon_cleared',
+                        dungeonId: value,
+                      } satisfies StoryUnlockCondition,
+                    }))
+                  }
+                />
+              ) : (
+                <TextField
+                  size="md"
+                  label="entitlementId"
+                  value={draft.unlockCondition.entitlementId}
+                  onChange={(value) =>
+                    updateDraft((prev) => ({
+                      ...prev,
+                      unlockCondition: {
+                        type: 'purchase',
+                        entitlementId: value,
+                      } satisfies StoryUnlockCondition,
+                    }))
+                  }
+                />
+              )}
             </FieldRow>
           ) : (
             <p className="subtle">このストーリーは常時解放です。</p>
@@ -458,6 +487,7 @@ function StoryRewardCard({
               <option value="equipment">equipment</option>
               <option value="golden_acorn">golden_acorn</option>
               <option value="skill">skill</option>
+              <option value="job">job</option>
             </select>
           </span>
         </label>

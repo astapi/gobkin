@@ -525,6 +525,8 @@ const en = {
       rewardTitle: 'Rewards Obtained',
       rewardGoldenAcorn: 'Golden Acorn +{{value}}',
       rewardSkill: 'Marku learned "{{name}}"',
+      rewardJob: '"{{name}}" training unlocked',
+      rewardGoblin: '{{race}} "{{name}}" joined pending goblins',
       noStories: 'No stories unlocked yet.',
     },
     notification: {

@@ -218,14 +218,20 @@ export function isEquipmentTemplate(
 }
 
 export const StoryUnlockConditionSchema = z
-  .object({
-    type: z.literal('dungeon_cleared'),
-    dungeonId: z.string(),
-  })
+  .union([
+    z.object({
+      type: z.literal('dungeon_cleared'),
+      dungeonId: z.string(),
+    }),
+    z.object({
+      type: z.literal('purchase'),
+      entitlementId: z.string(),
+    }),
+  ])
   .nullable()
 
 export const StoryRewardSchema = z.object({
-  type: z.enum(['gold', 'goblin', 'equipment', 'golden_acorn', 'skill']),
+  type: z.enum(['gold', 'goblin', 'equipment', 'golden_acorn', 'skill', 'job']),
   value: z.union([z.number(), z.string()]),
 })
 

@@ -525,6 +525,8 @@ const ja = {
       rewardTitle: '報酬獲得',
       rewardGoldenAcorn: '金のドングリ +{{value}}',
       rewardSkill: 'マルクが「{{name}}」を習得しました',
+      rewardJob: '訓練所で「{{name}}」が解放されました',
+      rewardGoblin: '{{race}}「{{name}}」が待機ゴブリンに加わりました',
       noStories: 'まだ解放されたストーリーはありません。',
     },
     notification: {
