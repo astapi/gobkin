@@ -20,7 +20,7 @@ import { useBaseStore, getBaseStateRepository } from '../stores/useBaseStore'
 import { useDungeonStore } from '../stores/useDungeonStore'
 import { SQLiteEquipmentRepository } from '../../infrastructure/repositories/SQLiteEquipmentRepository'
 import { useDebugSettingsStore } from '../stores/useDebugSettingsStore'
-import { getSpeedMultiplier, usePurchaseStore } from '../stores/usePurchaseStore'
+import { getSpeedMultiplier, hasMonthlyPass, usePurchaseStore } from '../stores/usePurchaseStore'
 import {
   TICKET_TYPES,
   GOLDEN_ACORN_SPEED_MULTIPLIER,
@@ -28,6 +28,8 @@ import {
   GOLDEN_ACORN_GOLD_MULTIPLIER,
   GOLDEN_ACORN_RARE_MULTIPLIER,
   GOLDEN_ACORN_TITLE_MULTIPLIER,
+  MONTHLY_PASS_REWARD_MULTIPLIER,
+  MONTHLY_PASS_SPEED_MULTIPLIER,
 } from '../../shared/constants/purchases'
 import { useStoryStore } from '../stores/useStoryStore'
 import { useTutorialStore } from '../stores/useTutorialStore'
@@ -65,6 +67,35 @@ const GOLDEN_ACORN_BOOST: ExpeditionBoost = {
   goldMultiplier: GOLDEN_ACORN_GOLD_MULTIPLIER,
   rareDropMultiplier: GOLDEN_ACORN_RARE_MULTIPLIER,
   titleMultiplier: GOLDEN_ACORN_TITLE_MULTIPLIER,
+  goldenAcornUsed: true,
+}
+
+const MONTHLY_PASS_BOOST: ExpeditionBoost = {
+  goldMultiplier: MONTHLY_PASS_REWARD_MULTIPLIER,
+  rareDropMultiplier: MONTHLY_PASS_REWARD_MULTIPLIER,
+  titleMultiplier: MONTHLY_PASS_REWARD_MULTIPLIER,
+  factorDropMultiplier: MONTHLY_PASS_REWARD_MULTIPLIER,
+}
+
+function combineExpeditionBoosts(...boosts: Array<ExpeditionBoost | undefined>): ExpeditionBoost | undefined {
+  const enabledBoosts = boosts.filter((boost): boost is ExpeditionBoost => boost !== undefined)
+  if (enabledBoosts.length === 0) return undefined
+
+  return enabledBoosts.reduce<ExpeditionBoost>((combined, boost) => ({
+    expMultiplier: (combined.expMultiplier ?? 1) * (boost.expMultiplier ?? 1),
+    goldMultiplier: (combined.goldMultiplier ?? 1) * (boost.goldMultiplier ?? 1),
+    rareDropMultiplier: (combined.rareDropMultiplier ?? 1) * (boost.rareDropMultiplier ?? 1),
+    titleMultiplier: (combined.titleMultiplier ?? 1) * (boost.titleMultiplier ?? 1),
+    factorDropMultiplier: (combined.factorDropMultiplier ?? 1) * (boost.factorDropMultiplier ?? 1),
+    goldenAcornUsed: combined.goldenAcornUsed === true || boost.goldenAcornUsed === true,
+  }), {})
+}
+
+function getExpeditionBoost(useGoldenAcorn: boolean): ExpeditionBoost | undefined {
+  return combineExpeditionBoosts(
+    hasMonthlyPass() ? MONTHLY_PASS_BOOST : undefined,
+    useGoldenAcorn ? GOLDEN_ACORN_BOOST : undefined,
+  )
 }
 
 export interface ExpeditionHistoryDisplay {
@@ -255,9 +286,10 @@ export const useExpeditionFlow = ({
       fullFirstTime * unclearedTargetFloors
     ) / dungeon.floors
     const speedMultiplier = getSpeedMultiplier()
+    const monthlyPassSpeed = hasMonthlyPass() ? MONTHLY_PASS_SPEED_MULTIPLIER : 1
     const goldenAcornSpeed = goldenAcornUsed ? GOLDEN_ACORN_SPEED_MULTIPLIER : 1
     return Math.floor(
-      baseTime * multiplier * speedMultiplier * partyExpeditionTimeMultiplier * goldenAcornSpeed,
+      baseTime * multiplier * speedMultiplier * partyExpeditionTimeMultiplier * monthlyPassSpeed * goldenAcornSpeed,
     )
   }, [instantDungeonExploration])
 
@@ -338,7 +370,7 @@ export const useExpeditionFlow = ({
           durationSec,
         }
 
-        const boost = useGoldenAcorn ? GOLDEN_ACORN_BOOST : undefined
+        const boost = getExpeditionBoost(useGoldenAcorn)
         const expeditionMeta = await startExpeditionUseCase.execute(request, boost)
         const startTime = new Date()
         const returnTime = new Date(startTime.getTime() + durationSec * 1000)
@@ -445,7 +477,7 @@ export const useExpeditionFlow = ({
           }
 
           try {
-            const boost = acornAppliedForThisInput ? GOLDEN_ACORN_BOOST : undefined
+            const boost = getExpeditionBoost(acornAppliedForThisInput)
             const expeditionMeta = await startExpeditionUseCase.execute(request, boost)
             const startTime = new Date()
             const returnTime = new Date(startTime.getTime() + durationSec * 1000)

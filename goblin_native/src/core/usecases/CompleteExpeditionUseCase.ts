@@ -217,8 +217,11 @@ export class CompleteExpeditionUseCase {
           ]
           const factorDropBonusPercent = getFactorDropBonusPercentFromSkills(factorDropSkills)
           const factorDropMultiplier = getFactorDropMultiplierFromSkills(factorDropSkills)
+          const expeditionFactorDropMultiplier = replay.meta.expeditionBoost?.factorDropMultiplier ?? 1
           const probabilityMultiplier =
-            (1 + Math.max(0, factorDropBonusPercent) / 100) * factorDropMultiplier
+            (1 + Math.max(0, factorDropBonusPercent) / 100) *
+            factorDropMultiplier *
+            Math.max(0, expeditionFactorDropMultiplier)
           const acquired = FactorService.rollFactorDrops(
             latest,
             tierAdjustedFactorDrops,

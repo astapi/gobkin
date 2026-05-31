@@ -985,7 +985,7 @@ const en = {
     },
     monthlyPass: {
       name: 'Monthly Pass',
-      description: 'Gold {{goldMultiplier}}x, expedition time -{{speedPercent}}%',
+      description: 'An additional {{multiplier}}x rare, Gold, title, and factor acquisition multiplier. Expedition time -{{speedPercent}}%. Includes {{count}} Golden Acorns monthly.',
     },
     shadowCatSideStory: {
       name: 'Moonshadow Pact',

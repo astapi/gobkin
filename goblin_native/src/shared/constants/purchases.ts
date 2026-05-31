@@ -57,8 +57,9 @@ export const SPEED_HALF_MULTIPLIER = 0.5          // 探索時間1/2
 export const SPEED_TWO_THIRDS_MULTIPLIER = 2 / 3  // 探索時間2/3
 
 // 月額パス特典
-export const MONTHLY_PASS_GOLD_MULTIPLIER = 1.5     // ゴールド獲得倍率
+export const MONTHLY_PASS_REWARD_MULTIPLIER = 1.5   // レア・Gold・称号・因子獲得倍率
 export const MONTHLY_PASS_SPEED_MULTIPLIER = 0.8    // 遠征時間倍率（0.8 = 20%短縮）
+export const MONTHLY_PASS_GOLDEN_ACORN_QUANTITY = 50
 
 // チケット種別
 export const TICKET_TYPES = {

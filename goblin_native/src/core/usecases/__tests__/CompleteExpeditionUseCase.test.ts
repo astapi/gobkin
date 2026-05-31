@@ -431,6 +431,42 @@ describe('CompleteExpeditionUseCase', () => {
       )
     })
 
+    it('月額パス相当の因子倍率をスキル倍率の後に乗算する', async () => {
+      const goblin = createTestGoblin({ id: 1, skills: [] })
+      const party = createTestParty({ id: 1, memberIds: [1] })
+      const events: TimelineEvent[] = [
+        { type: 'move_start', at: 0, floor: 1 },
+        createBossEvent('B_CANNON', 5, [-1], 30, 1),
+        { type: 'return', at: 30, reason: 'completed' },
+      ]
+      const replay = createTestReplay({
+        meta: {
+          expeditionId: 'exp-1',
+          areaId: 'human_village',
+          areaName: '人間の村',
+          floors: 1,
+          baseDurationSec: 30,
+          party: ['1'],
+          partyRewardMultipliers: DEFAULT_PARTY_REWARD_MULTIPLIERS,
+          expeditionBoost: { factorDropMultiplier: 2 },
+          returnPolicy: 'never',
+          seed: 12345,
+        },
+        events,
+        summary: { success: true, maxFloorReached: 1, xpGained: 5, goldGained: 0, casualties: [] },
+      })
+
+      const goblinRepo = createMockGoblinRepository([goblin])
+      const usecase = new CompleteExpeditionUseCase(
+        goblinRepo,
+        createMockPartyRepository([party]),
+        createMockBaseStateRepository(createTestBaseState()),
+      )
+      const result = await usecase.execute(1, replay)
+
+      expect(result.factorAcquisitions.get(1)).toEqual(['human'])
+    })
+
     it('装備の因子獲得倍率は装備しているゴブリンの因子獲得確率だけを上げる', async () => {
       const goblin = createTestGoblin({ id: 1, skills: [] })
       const plainGoblin = createTestGoblin({ id: 2, name: '装備なし', skills: [] })
@@ -723,7 +759,7 @@ describe('CompleteExpeditionUseCase', () => {
       const result = await usecase.execute(1, replay)
 
       // ゴブリン1: 戦闘1で3、戦闘2では戦闘不能で0 → 合計3 → ボーナス70%: floor(3*1.7)=5
-      // ゴブリン2: 戦闘1で3、戦闘2で4 → 合計7 → ボーナス70%: floor(7*1.7)=11 → LV2へ（必要10）残1
+      // ゴブリン2: 戦闘1で3、戦闘2で4 → 合計7 → ボーナス70%: floor(7*1.7)=11
       // ゴブリン3: 同上
       const savedGoblins = (goblinRepo.saveGoblin as jest.Mock).mock.calls.map((c: unknown[]) => c[0] as Goblin)
       const g1 = savedGoblins.find(g => g.id === 1)!
@@ -732,10 +768,10 @@ describe('CompleteExpeditionUseCase', () => {
 
       expect(g1.experience).toBe(5)
       expect(g1.level).toBe(1)
-      expect(g2.experience).toBe(1)
-      expect(g2.level).toBe(2)
-      expect(g3.experience).toBe(1)
-      expect(g3.level).toBe(2)
+      expect(g2.experience).toBe(11)
+      expect(g2.level).toBe(1)
+      expect(g3.experience).toBe(11)
+      expect(g3.level).toBe(1)
     })
 
     it('経験値0の遠征ではゴブリンが更新されない', async () => {

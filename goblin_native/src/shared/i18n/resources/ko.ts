@@ -976,7 +976,7 @@ const ko = {
     },
     monthlyPass: {
       name: '월간 패스',
-      description: '골드 {{goldMultiplier}}배, 원정 시간 {{speedPercent}}% 단축',
+      description: '레어, Gold, 칭호, 인자 획득률이 추가로 {{multiplier}}배. 원정 시간 {{speedPercent}}% 단축. 매월 금 도토리 {{count}}개 지급.',
     },
     shadowCatSideStory: {
       name: '월영의 계약',

@@ -13,8 +13,9 @@ import {
   EXP_BOOST_MULTIPLIER,
   RARE_BOOST_MULTIPLIER,
   TITLE_BOOST_MULTIPLIER,
-  MONTHLY_PASS_GOLD_MULTIPLIER,
+  MONTHLY_PASS_REWARD_MULTIPLIER,
   MONTHLY_PASS_SPEED_MULTIPLIER,
+  MONTHLY_PASS_GOLDEN_ACORN_QUANTITY,
   TICKET_TYPES,
   type PurchaseProduct,
 } from '@/shared/constants/purchases'
@@ -150,8 +151,9 @@ export default function ShopScreen() {
         return { multiplier: TITLE_BOOST_MULTIPLIER }
       case 'shop.monthlyPass.description':
         return {
-          goldMultiplier: MONTHLY_PASS_GOLD_MULTIPLIER,
+          multiplier: MONTHLY_PASS_REWARD_MULTIPLIER,
           speedPercent: Math.round((1 - MONTHLY_PASS_SPEED_MULTIPLIER) * 100),
+          count: MONTHLY_PASS_GOLDEN_ACORN_QUANTITY,
         }
       case 'shop.goldenAcorn.description':
       case 'shop.goldenAcorn.descriptionDiscount':

@@ -465,6 +465,7 @@ export class ExpeditionEngine {
         party: party.map(g => g.id.toString()),
         partySnapshot: party.map(g => ({ ...g })),
         partyRewardMultipliers: effectiveRewardMultipliers,
+        expeditionBoost,
         returnPolicy: request.returnPolicy,
         tier: tier || undefined,
         seed: this.seed
@@ -679,11 +680,7 @@ export class ExpeditionEngine {
   }
 
   private shouldTriggerGoldenAcornClearEncounter(expeditionBoost?: ExpeditionBoost): boolean {
-    return (
-      (expeditionBoost?.goldMultiplier ?? 1) > 1 &&
-      (expeditionBoost?.rareDropMultiplier ?? 1) > 1 &&
-      (expeditionBoost?.titleMultiplier ?? 1) > 1
-    )
+    return expeditionBoost?.goldenAcornUsed === true
   }
 
   private createEnemySnap(enemies2D: Enemy[][], isBoss = false): EnemySnap {

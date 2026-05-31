@@ -14,6 +14,9 @@ export interface ITicketRepository {
   /** チケットを追加 */
   addTickets(type: TicketType, count: number): Promise<void>
 
+  /** メタデータキー単位で一度だけチケットを追加 */
+  grantTicketsOnce(metadataKey: string, type: TicketType, count: number): Promise<boolean>
+
   /** チケットを1枚消費（残数0ならfalse） */
   useTicket(type: TicketType): Promise<boolean>
 }
