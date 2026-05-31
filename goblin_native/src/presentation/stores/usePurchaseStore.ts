@@ -7,6 +7,7 @@ import {
   TICKET_TYPES,
   FACTOR_CORE_TEMPLATE_ID,
   FACTOR_CORE_PURCHASE_LIMIT,
+  MONTHLY_PASS_GOLDEN_ACORN_QUANTITY,
   SPEED_HALF_MULTIPLIER,
   SPEED_TWO_THIRDS_MULTIPLIER,
   type TicketType,
@@ -62,6 +63,7 @@ const ticketRepository = SQLiteTicketRepository.getInstance()
 const equipmentRepository = SQLiteEquipmentRepository.getInstance()
 const storyProgressRepository = SQLiteStoryProgressRepository.getInstance()
 const dungeonProgressRepository = SQLiteDungeonProgressRepository.getInstance()
+let isCustomerInfoListenerRegistered = false
 
 function createPurchasedEquipment(templateId: string): EquipmentInstance {
   return {
@@ -118,6 +120,42 @@ async function syncPurchasedEntitlements(entitlements: Set<string>): Promise<voi
   await syncPurchasedStoryEntitlements(entitlements)
 }
 
+async function syncMonthlyPassBenefits(customerInfo: CustomerInfo): Promise<boolean> {
+  const monthlyPass = customerInfo.entitlements.active[ENTITLEMENT_IDS.MONTHLY_PASS]
+  if (!monthlyPass?.isActive) return false
+
+  const metadataKey = `monthly_pass_golden_acorns:${monthlyPass.latestPurchaseDate}`
+  try {
+    return await ticketRepository.grantTicketsOnce(
+      metadataKey,
+      TICKET_TYPES.GOLDEN_ACORN,
+      MONTHLY_PASS_GOLDEN_ACORN_QUANTITY,
+    )
+  } catch (error) {
+    console.error('[Purchase] Failed to grant monthly pass golden acorns:', error)
+    return false
+  }
+}
+
+async function syncRevenueCatCustomerInfo(customerInfo: CustomerInfo): Promise<void> {
+  const entitlements = new Set<string>()
+  Object.keys(customerInfo.entitlements.active).forEach((key) => {
+    if (customerInfo.entitlements.active[key].isActive) {
+      entitlements.add(key)
+    }
+  })
+
+  usePurchaseStore.setState({ customerInfo, entitlements })
+  try {
+    await syncPurchasedEntitlements(entitlements)
+  } catch (error) {
+    console.error('[Purchase] Failed to sync purchased entitlements:', error)
+  }
+  if (await syncMonthlyPassBenefits(customerInfo)) {
+    await usePurchaseStore.getState().refreshTickets()
+  }
+}
+
 export const usePurchaseStore = create<PurchaseState & PurchaseActions>()((set, get) => ({
   ...initialState,
 
@@ -135,6 +173,12 @@ export const usePurchaseStore = create<PurchaseState & PurchaseActions>()((set, 
       }
 
       await Purchases.configure({ apiKey: REVENUECAT_API_KEY })
+      if (!isCustomerInfoListenerRegistered) {
+        Purchases.addCustomerInfoUpdateListener((customerInfo) => {
+          void syncRevenueCatCustomerInfo(customerInfo)
+        })
+        isCustomerInfoListenerRegistered = true
+      }
 
       if (__DEV__) {
         await Purchases.setLogLevel(Purchases.LOG_LEVEL.DEBUG)
@@ -211,19 +255,7 @@ export const usePurchaseStore = create<PurchaseState & PurchaseActions>()((set, 
       }
 
       const { customerInfo } = await Purchases.purchasePackage(pkg)
-
-      // Entitlementsを更新
-      const newEntitlements = new Set<string>()
-      Object.keys(customerInfo.entitlements.active).forEach((key) => {
-        if (customerInfo.entitlements.active[key].isActive) {
-          newEntitlements.add(key)
-        }
-      })
-
-      set({
-        customerInfo,
-        entitlements: newEntitlements,
-      })
+      await syncRevenueCatCustomerInfo(customerInfo)
 
       // Consumable（チケット系）の場合は購入個数を tickets テーブルへ加算
       if (productInfo?.section === 'ticket' && productInfo.consumableQuantity && productInfo.consumableQuantity > 0) {
@@ -238,25 +270,7 @@ export const usePurchaseStore = create<PurchaseState & PurchaseActions>()((set, 
         }
       }
 
-      if (productInfo?.section === 'equipment' && productInfo.equipmentTemplateId) {
-        try {
-          await syncPurchasedEntitlements(newEntitlements)
-          console.log(`[Purchase] Synced purchased equipment ${productInfo.equipmentTemplateId}`)
-        } catch (grantError) {
-          console.error('[Purchase] Failed to grant purchased equipment:', grantError)
-        }
-      }
-
-      if (productInfo?.section === 'story') {
-        try {
-          await syncPurchasedEntitlements(newEntitlements)
-          console.log(`[Purchase] Synced purchased story ${productInfo.storyId}`)
-        } catch (grantError) {
-          console.error('[Purchase] Failed to unlock purchased story:', grantError)
-        }
-      }
-
-      console.log('[Purchase] Purchase successful! Active entitlements:', Array.from(newEntitlements))
+      console.log('[Purchase] Purchase successful! Active entitlements:', Array.from(get().entitlements))
 
       return { success: true }
     } catch (error: any) {
@@ -276,20 +290,7 @@ export const usePurchaseStore = create<PurchaseState & PurchaseActions>()((set, 
     try {
       set({ isLoading: true })
       const customerInfo = await Purchases.restorePurchases()
-
-      const newEntitlements = new Set<string>()
-      Object.keys(customerInfo.entitlements.active).forEach((key) => {
-        if (customerInfo.entitlements.active[key].isActive) {
-          newEntitlements.add(key)
-        }
-      })
-
-      set({
-        customerInfo,
-        entitlements: newEntitlements,
-      })
-
-      await syncPurchasedEntitlements(newEntitlements)
+      await syncRevenueCatCustomerInfo(customerInfo)
 
       return { success: true }
     } catch (error: any) {
@@ -303,21 +304,8 @@ export const usePurchaseStore = create<PurchaseState & PurchaseActions>()((set, 
   refreshCustomerInfo: async () => {
     try {
       const customerInfo = await Purchases.getCustomerInfo()
-
-      const newEntitlements = new Set<string>()
-      Object.keys(customerInfo.entitlements.active).forEach((key) => {
-        if (customerInfo.entitlements.active[key].isActive) {
-          newEntitlements.add(key)
-        }
-      })
-
-      set({
-        customerInfo,
-        entitlements: newEntitlements,
-      })
-      await syncPurchasedEntitlements(newEntitlements)
-
-      console.log('[Purchase] Active entitlements:', Array.from(newEntitlements))
+      await syncRevenueCatCustomerInfo(customerInfo)
+      console.log('[Purchase] Active entitlements:', Array.from(get().entitlements))
     } catch (error) {
       console.error('[Purchase] Failed to refresh customer info:', error)
     }

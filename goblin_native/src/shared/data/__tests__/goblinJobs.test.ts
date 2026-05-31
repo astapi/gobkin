@@ -85,7 +85,7 @@ describe('goblinJobs', () => {
   it('ゴブリンガードはレベル15で後列防護を習得する', () => {
     const trained = applyGoblinJob(createGoblin({ level: 15 }), 'guard')
     expect(trained.skills.some((skill) => skill.id === 'rear_guard')).toBe(true)
-    expect(trained.skills.some((skill) => skill.id === 'mana_recovery')).toBe(true)
+    expect(trained.skills.some((skill) => skill.id === 'mana_recovery')).toBe(false)
   })
 
   it('街道クリア後にクレリック訓練が解放される', () => {
@@ -116,6 +116,14 @@ describe('goblinJobs', () => {
     ).toBe(true)
   })
 
+  it('死霊術師のクリア後ストーリー読了でネクロマンサー訓練が解放される', () => {
+    expect(getGoblinTrainingJobDefinitions(new Set(['necromancer_crypt_1'])).some((job) => job.id === 'necromancer')).toBe(false)
+    expect(
+      getGoblinTrainingJobDefinitions(new Set(['necromancer_crypt_1']), new Set(['side_necromancer_cleared']))
+        .some((job) => job.id === 'necromancer')
+    ).toBe(true)
+  })
+
   it('クレリックは回復魔法Lv7スキルを持つ', () => {
     const level1 = applyGoblinJob(createGoblin({ level: 1 }), 'cleric')
 
@@ -140,11 +148,11 @@ describe('goblinJobs', () => {
       },
     })
 
-    expect(applyGoblinJob(goblin, 'guard').stats.hp).toBe(48)
-    expect(applyGoblinJob(goblin, 'warrior').stats.hp).toBe(51)
-    expect(applyGoblinJob(goblin, 'thief').stats.hp).toBe(35)
-    expect(applyGoblinJob(goblin, 'mage').stats.hp).toBe(32)
-    expect(applyGoblinJob(goblin, 'cleric').stats.hp).toBe(38)
+    expect(applyGoblinJob(goblin, 'guard').stats.hp).toBe(56)
+    expect(applyGoblinJob(goblin, 'warrior').stats.hp).toBe(60)
+    expect(applyGoblinJob(goblin, 'thief').stats.hp).toBe(41)
+    expect(applyGoblinJob(goblin, 'mage').stats.hp).toBe(38)
+    expect(applyGoblinJob(goblin, 'cleric').stats.hp).toBe(45)
   })
 
   it('ライダーは指定した基礎能力値を使う', () => {

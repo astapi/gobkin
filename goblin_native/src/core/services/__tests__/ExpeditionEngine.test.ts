@@ -1,5 +1,5 @@
 import { ExpeditionEngine } from '../ExpeditionEngine'
-import { DEFAULT_PARTY_REWARD_MULTIPLIERS, DUNGEON_TIER_SCALING, getDungeonTierAreaLevel } from '../../../shared/types'
+import { DEFAULT_PARTY_REWARD_MULTIPLIERS, DUNGEON_TIER_LIST, getDungeonTierAreaLevel } from '../../../shared/types'
 import type { CharacterSkill, DungeonTier, Enemy, Goblin, TimelineEvent, PartyState } from '../../../shared/types'
 import {
   getMagicDamageReductionFromSkills,
@@ -271,7 +271,7 @@ describe('ExpeditionEngine golden acorn clear encounter', () => {
       },
       party,
       DEFAULT_PARTY_REWARD_MULTIPLIERS,
-      { expMultiplier: 2, goldMultiplier: 2, rareDropMultiplier: 2, titleMultiplier: 2 },
+      { expMultiplier: 2, goldMultiplier: 2, rareDropMultiplier: 2, titleMultiplier: 2, goldenAcornUsed: true },
     )
 
     const ratatoskrEvent = replay.events.find(
@@ -334,6 +334,36 @@ describe('ExpeditionEngine golden acorn clear encounter', () => {
     )).toBe(false)
   })
 
+  it('月額パス相当の倍率だけではラタトスク戦を追加しない', async () => {
+    const battleSystem = {
+      executeBattle: jest.fn(() => ({
+        rounds: 1,
+        outcome: 'win',
+        allyHPDelta: [0],
+        enemyDefeated: 1,
+        detailedLog: [],
+      })),
+    }
+    const engine = new ExpeditionEngine(1, battleSystem as any)
+
+    const replay = await engine.generateExpedition(
+      {
+        partyId: '1',
+        areaId: 'slime_cave',
+        returnPolicy: 'never',
+        clientVersion: 'test',
+        durationSec: 30,
+      },
+      party,
+      DEFAULT_PARTY_REWARD_MULTIPLIERS,
+      { goldMultiplier: 2, rareDropMultiplier: 2, titleMultiplier: 2, factorDropMultiplier: 2 },
+    )
+
+    expect(replay.events.some(
+      (event) => (event.type === 'battle' || event.type === 'boss') && event.enemy.id === 'golden_acorn_ratatoskr',
+    )).toBe(false)
+  })
+
   it('ラタトスク戦が退却でも踏破扱いを維持する', async () => {
     const battleSystem = {
       executeBattle: jest.fn((_allies, _hp, enemies: Enemy[][]) => {
@@ -359,7 +389,7 @@ describe('ExpeditionEngine golden acorn clear encounter', () => {
       },
       party,
       DEFAULT_PARTY_REWARD_MULTIPLIERS,
-      { expMultiplier: 2, goldMultiplier: 2, rareDropMultiplier: 2, titleMultiplier: 2 },
+      { expMultiplier: 2, goldMultiplier: 2, rareDropMultiplier: 2, titleMultiplier: 2, goldenAcornUsed: true },
     )
 
     const ratatoskrEvent = replay.events.find(
@@ -537,8 +567,8 @@ describe('ExpeditionEngine dungeon tier scaling', () => {
       { level: 164, gold: 31304, atk: 1700, accuracy: 1420, attackCount: 15, evasion: 18000, magicDef: 80000 },
     ]
 
-    DUNGEON_TIER_SCALING.forEach((scaling, index) => {
-      const [[scaled]] = (engine as any).applyTierScaling([[baseEnemy]], scaling)
+    DUNGEON_TIER_LIST.forEach((tier, index) => {
+      const [[scaled]] = (engine as any).applyTierScaling([[baseEnemy]], tier)
       expect({
         level: scaled.level,
         gold: scaled.gold,
@@ -584,8 +614,8 @@ describe('ExpeditionEngine dungeon tier scaling', () => {
     ]
 
     cases.forEach(({ enemy, expected }) => {
-      const scaledByTier = DUNGEON_TIER_SCALING.map((scaling) => {
-        const [[scaled]] = (engine as any).applyTierScaling([[{ ...baseEnemy, ...enemy }]], scaling)
+      const scaledByTier = DUNGEON_TIER_LIST.map((tier) => {
+        const [[scaled]] = (engine as any).applyTierScaling([[{ ...baseEnemy, ...enemy }]], tier)
         return scaled
       })
 
@@ -607,8 +637,8 @@ describe('ExpeditionEngine dungeon tier scaling', () => {
       ['physical_damage_400', 'spell_damage_400', 'physical_reduction_30', 'magic_reduction_30'],
     ]
 
-    DUNGEON_TIER_SCALING.forEach((scaling, index) => {
-      const [[scaled]] = (engine as any).applyTierScaling([[baseEnemy]], scaling)
+    DUNGEON_TIER_LIST.forEach((tier, index) => {
+      const [[scaled]] = (engine as any).applyTierScaling([[baseEnemy]], tier)
       expect((scaled.skills ?? []).map((skill: CharacterSkill) => skill.id)).toEqual(expectedSkillIds[index])
     })
   })
@@ -623,7 +653,7 @@ describe('ExpeditionEngine dungeon tier scaling', () => {
       ],
     }
 
-    const [[scaled]] = (engine as any).applyTierScaling([[enemy]], DUNGEON_TIER_SCALING[1])
+    const [[scaled]] = (engine as any).applyTierScaling([[enemy]], 1)
     const skills = scaled.skills ?? []
 
     expect(skills.map((skill: CharacterSkill) => skill.id)).toEqual([

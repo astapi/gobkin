@@ -516,6 +516,8 @@ const ko = {
       rewardTitle: '보상 획득',
       rewardGoldenAcorn: '황금 도토리 +{{value}}',
       rewardSkill: '마르크가 "{{name}}"을 습득했습니다',
+      rewardJob: '훈련소에서 "{{name}}"이 해금되었습니다',
+      rewardGoblin: '{{race}} "{{name}}"이 대기 고블린에 합류했습니다',
       noStories: '아직 해금된 스토리가 없습니다.',
     },
     notification: {
@@ -974,7 +976,7 @@ const ko = {
     },
     monthlyPass: {
       name: '월간 패스',
-      description: '골드 {{goldMultiplier}}배, 원정 시간 {{speedPercent}}% 단축',
+      description: '레어, Gold, 칭호, 인자 획득률이 추가로 {{multiplier}}배. 원정 시간 {{speedPercent}}% 단축. 매월 금 도토리 {{count}}개 지급.',
     },
     shadowCatSideStory: {
       name: '월영의 계약',

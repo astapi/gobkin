@@ -37,6 +37,7 @@ export interface ExpeditionReplay {
     party: string[]
     partySnapshot?: Goblin[]
     partyRewardMultipliers: PartyRewardMultipliers
+    expeditionBoost?: ExpeditionBoost
     returnPolicy: ExpeditionRequest["returnPolicy"]
     tier?: DungeonTier
     seed: number
@@ -71,12 +72,16 @@ export type TimelineEvent =
  * - expMultiplier: 戦闘で得られる経験値の倍率（1 で無効）
  * - goldMultiplier: 戦闘で得られる Gold の倍率（1 で無効）
  * - titleMultiplier: 装備に付与される称号の倍率（1 で無効）
+ * - factorDropMultiplier: 遠征完了時の因子獲得率倍率（1 で無効）
+ * - goldenAcornUsed: 金のドングリ専用の追加イベントを有効化する
  */
 export interface ExpeditionBoost {
   rareDropMultiplier?: number
   expMultiplier?: number
   goldMultiplier?: number
   titleMultiplier?: number
+  factorDropMultiplier?: number
+  goldenAcornUsed?: boolean
 }
 
 /**

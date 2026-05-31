@@ -220,7 +220,7 @@ const GOBLIN_JOB_DEFINITION_SEEDS: Record<GoblinJob, GoblinJobDefinitionSeed> = 
         unlockLevel: 50
       }
     ],
-    unlockRequiresClearedArea: "necromancer_crypt_1",
+    unlockRequiresReadStory: "side_necromancer_cleared",
     baseAttributes: {
       power: 8,
       wisdom: 15,

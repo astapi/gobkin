@@ -44,7 +44,13 @@ export default function StoryReaderScreen() {
           if (grant.type === 'golden_acorn') {
             return t('ui.story.rewardGoldenAcorn', { value: grant.value })
           }
-          return t('ui.story.rewardSkill', { name: grant.label })
+          if (grant.type === 'skill') {
+            return t('ui.story.rewardSkill', { name: grant.label })
+          }
+          if (grant.type === 'job') {
+            return t('ui.story.rewardJob', { name: grant.label })
+          }
+          return t('ui.story.rewardGoblin', { name: grant.name, race: grant.label })
         }).join('\n')
       )
     }

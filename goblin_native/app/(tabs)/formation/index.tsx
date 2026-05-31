@@ -16,11 +16,6 @@ import { useTutorialTarget } from '@/presentation/hooks/useTutorialTarget'
 import { getGoblinDisplayImage } from '@/shared/utils/goblinImages'
 import { getPartyEffectiveStats } from '@/shared/utils/goblinStats'
 import {
-  GOLDEN_ACORN_GOLD_MULTIPLIER,
-  GOLDEN_ACORN_RARE_MULTIPLIER,
-  GOLDEN_ACORN_TITLE_MULTIPLIER,
-} from '@/shared/constants/purchases'
-import {
   getGoldBonusPercentFromSkills,
   getPartyRareMultiplierFromSkills,
   getPartyTitleMultiplierFromSkills,
@@ -35,12 +30,7 @@ function formatMultiplier(value: number): string {
 }
 
 function isGoldenAcornExpedition(record?: ExpeditionRecord): boolean {
-  const boost = record?.expeditionMeta?.expeditionBoost
-  return (
-    boost?.goldMultiplier === GOLDEN_ACORN_GOLD_MULTIPLIER &&
-    boost.rareDropMultiplier === GOLDEN_ACORN_RARE_MULTIPLIER &&
-    boost.titleMultiplier === GOLDEN_ACORN_TITLE_MULTIPLIER
-  )
+  return record?.expeditionMeta?.expeditionBoost?.goldenAcornUsed === true
 }
 
 interface MemberSlotProps {

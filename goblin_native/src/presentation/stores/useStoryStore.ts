@@ -3,9 +3,15 @@ import { SQLiteStoryProgressRepository } from '../../infrastructure/repositories
 import { storiesData } from '../../shared/data/story'
 import { TICKET_TYPES } from '../../shared/constants/purchases'
 import { getCharacterSkill } from '../../shared/data/skillCatalog'
-import { getSkillLabel } from '../../shared/i18n/entityLocalization'
+import { getDefaultSkillsForRace } from '../../shared/data/raceSkills'
+import { getGoblinVariantByFactorId } from '../../shared/data/goblinVariants'
+import { getGoblinJobLabel, getRaceLabel, getSkillLabel } from '../../shared/i18n/entityLocalization'
+import type { Goblin, GoblinJob } from '../../shared/types'
 import type { Story } from '../../shared/types/Story'
 import type { StoryProgressState } from '../../shared/types/StoryProgress'
+import { calculateGoblinEffectiveStats, syncGoblinDerivedStats } from '../../shared/utils/goblinStats'
+import { getLegacyRaceName } from '../../shared/types/Race'
+import { useBaseStore } from './useBaseStore'
 import { usePurchaseStore } from './usePurchaseStore'
 import { useTutorialStore } from './useTutorialStore'
 import { getGoblinRepository, useGoblinStore } from './useGoblinStore'
@@ -18,6 +24,8 @@ type StoryWithProgress = Story & { unlocked: boolean; read: boolean }
 export type StoryRewardGrant =
   | { type: 'golden_acorn'; value: number }
   | { type: 'skill'; skillId: string; label: string }
+  | { type: 'job'; jobId: GoblinJob; label: string }
+  | { type: 'goblin'; goblinId: number; name: string; label: string }
 
 const buildStories = (progress: StoryProgressState): StoryWithProgress[] =>
   storiesData.map(story => ({
@@ -64,6 +72,59 @@ async function grantFounderSkill(skillId: string): Promise<StoryRewardGrant | nu
   }
 }
 
+function createRewardGoblin(id: number, factorId: string): Goblin | null {
+  const variant = getGoblinVariantByFactorId(factorId)
+  if (!variant) return null
+
+  const race = getLegacyRaceName(variant.raceId)
+  const goblin = syncGoblinDerivedStats({
+    id,
+    name: variant.raceName,
+    race,
+    raceId: variant.raceId,
+    level: 1,
+    experience: 0,
+    avatar: variant.avatar,
+    baseAttributes: variant.baseAttributes,
+    stats: {
+      hp: 1,
+      atk: 1,
+      magicAtk: 1,
+      def: 1,
+      magicDef: 1,
+      attackCount: 1,
+      accuracy: 1,
+      evasion: 1,
+      magicHeal: 1,
+      criticalRate: 0,
+    },
+    individualValue: 1,
+    factors: [factorId],
+    variantFactorId: factorId,
+    skills: getDefaultSkillsForRace(variant.raceId),
+  })
+
+  return {
+    ...goblin,
+    effectiveStats: calculateGoblinEffectiveStats(goblin),
+  }
+}
+
+async function grantPendingGoblin(factorId: string): Promise<StoryRewardGrant | null> {
+  const nextId = await useBaseStore.getState().getNextGoblinId()
+  const goblin = createRewardGoblin(nextId, factorId)
+  if (!goblin) return null
+
+  // 読了報酬は遠征産ゴブリンと異なり、待機枠上限を超えても必ず付与する。
+  await useBaseStore.getState().addPendingGoblin(goblin)
+  return {
+    type: 'goblin',
+    goblinId: goblin.id,
+    name: goblin.name,
+    label: getRaceLabel(goblin.raceId ?? goblin.race),
+  }
+}
+
 async function applyStoryRewards(story: Story): Promise<StoryRewardGrant[]> {
   const grants: StoryRewardGrant[] = []
 
@@ -82,6 +143,21 @@ async function applyStoryRewards(story: Story): Promise<StoryRewardGrant[]> {
         if (grant) grants.push(grant)
       } catch (error) {
         console.error('[Story] Failed to grant founder skill reward:', error)
+      }
+    }
+    if (reward.type === 'job' && typeof reward.value === 'string') {
+      grants.push({
+        type: 'job',
+        jobId: reward.value as GoblinJob,
+        label: getGoblinJobLabel(reward.value as GoblinJob),
+      })
+    }
+    if (reward.type === 'goblin' && typeof reward.value === 'string') {
+      try {
+        const grant = await grantPendingGoblin(reward.value)
+        if (grant) grants.push(grant)
+      } catch (error) {
+        console.error('[Story] Failed to grant pending goblin reward:', error)
       }
     }
   }

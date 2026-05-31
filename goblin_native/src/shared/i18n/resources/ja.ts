@@ -525,6 +525,8 @@ const ja = {
       rewardTitle: '報酬獲得',
       rewardGoldenAcorn: '金のドングリ +{{value}}',
       rewardSkill: 'マルクが「{{name}}」を習得しました',
+      rewardJob: '訓練所で「{{name}}」が解放されました',
+      rewardGoblin: '{{race}}「{{name}}」が待機ゴブリンに加わりました',
       noStories: 'まだ解放されたストーリーはありません。',
     },
     notification: {
@@ -1026,7 +1028,7 @@ const ja = {
     },
     monthlyPass: {
       name: '月額パス',
-      description: 'ゴールド{{goldMultiplier}}倍・遠征時間{{speedPercent}}%短縮',
+      description: 'レア・Gold・称号・因子獲得率がさらに{{multiplier}}倍。遠征時間{{speedPercent}}%短縮。毎月、金のドングリ{{count}}個を付与。',
     },
     shadowCatSideStory: {
       name: '月影の契約',

@@ -47,6 +47,31 @@ export class SQLiteTicketRepository implements ITicketRepository {
     )
   }
 
+  async grantTicketsOnce(metadataKey: string, type: TicketType, count: number): Promise<boolean> {
+    if (count <= 0) return false
+    const db = await getDatabase()
+    let granted = false
+    await db.withTransactionAsync(async () => {
+      const existing = await db.getFirstAsync<{ value: string }>(
+        'SELECT value FROM app_metadata WHERE key = ?',
+        [metadataKey]
+      )
+      if (existing) return
+
+      await db.runAsync(
+        `INSERT INTO tickets (ticket_type, quantity) VALUES (?, ?)
+         ON CONFLICT(ticket_type) DO UPDATE SET quantity = quantity + ?`,
+        [type, count, count]
+      )
+      await db.runAsync(
+        'INSERT INTO app_metadata (key, value) VALUES (?, ?)',
+        [metadataKey, new Date().toISOString()]
+      )
+      granted = true
+    })
+    return granted
+  }
+
   async useTicket(type: TicketType): Promise<boolean> {
     const db = await getDatabase()
     const result = await db.runAsync(

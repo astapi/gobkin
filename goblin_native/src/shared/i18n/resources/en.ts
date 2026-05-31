@@ -525,6 +525,8 @@ const en = {
       rewardTitle: 'Rewards Obtained',
       rewardGoldenAcorn: 'Golden Acorn +{{value}}',
       rewardSkill: 'Marku learned "{{name}}"',
+      rewardJob: '"{{name}}" training unlocked',
+      rewardGoblin: '{{race}} "{{name}}" joined pending goblins',
       noStories: 'No stories unlocked yet.',
     },
     notification: {
@@ -983,7 +985,7 @@ const en = {
     },
     monthlyPass: {
       name: 'Monthly Pass',
-      description: 'Gold {{goldMultiplier}}x, expedition time -{{speedPercent}}%',
+      description: 'An additional {{multiplier}}x rare, Gold, title, and factor acquisition multiplier. Expedition time -{{speedPercent}}%. Includes {{count}} Golden Acorns monthly.',
     },
     shadowCatSideStory: {
       name: 'Moonshadow Pact',
