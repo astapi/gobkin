@@ -1,4 +1,5 @@
 import { areasData } from '..'
+import { BASE_RANK_CONFIGS } from '../../../core/services/BaseRankSystem'
 import { getEnemyDatabase } from '../enemy'
 import { getAreaConfig } from '../expeditionArea'
 
@@ -25,6 +26,14 @@ describe('expedition areas', () => {
       for (const targetId of unlockTargets) {
         expect(areaIds.has(targetId)).toBe(true)
       }
+    }
+  })
+
+  it('拠点ランクアップ条件が統合後の制圧対象エリアIDと一致している', () => {
+    for (const area of areasData.filter(area => area.isBaseCapture)) {
+      const rankConfig = BASE_RANK_CONFIGS.find(config => config.rank === area.rankUpTarget)
+
+      expect(rankConfig?.unlockCondition.dungeonId).toBe(area.id)
     }
   })
 
