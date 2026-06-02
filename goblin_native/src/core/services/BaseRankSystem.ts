@@ -19,7 +19,7 @@ export const BASE_RANK_CONFIGS: BaseRankConfig[] = [
     ivBonus: 2,
     upgradeCost: 100,  // ランク2への引っ越し資金
     unlockCondition: {
-      dungeonId: 'goblin_village_3',  // ゴブリン集落・中枢
+      dungeonId: 'goblin_village_1',  // ゴブリン集落
       clearCount: 1,
     },
   },
@@ -52,7 +52,7 @@ export const BASE_RANK_CONFIGS: BaseRankConfig[] = [
     ivBonus: 8,
     upgradeCost: 4000,
     unlockCondition: {
-      dungeonId: 'human_fortress_3',
+      dungeonId: 'human_fortress_1',
       clearCount: 1,
     },
   },
