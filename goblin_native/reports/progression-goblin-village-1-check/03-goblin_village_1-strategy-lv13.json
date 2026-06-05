@@ -1,0 +1,360 @@
+{
+  "createdAt": "2026-06-05T01:38:02.905Z",
+  "scenario": "goblin_village_1",
+  "level": 13,
+  "config": {
+    "generations": 5,
+    "population": 14,
+    "iterations": 4,
+    "validationIterations": 40,
+    "seed": 13009,
+    "cleric": "optional",
+    "jobs": [],
+    "variants": [
+      "slime",
+      "wolf"
+    ],
+    "maxUnlockRank": 1,
+    "maxDropRank": 1,
+    "allowRare": false,
+    "availability": "/Users/astapi/projects/goblinKingdom/goblin_native/reports/progression-goblin-village-1-check/02-forest_outskirts-availability.json"
+  },
+  "insights": {
+    "winningCandidateCount": 3,
+    "frequentJobs": [],
+    "frequentVariants": [
+      [
+        "slime",
+        9
+      ],
+      [
+        "wolf",
+        7
+      ]
+    ],
+    "frequentEquipment": [
+      [
+        "shield_wooden",
+        12
+      ],
+      [
+        "claw_sharp",
+        9
+      ],
+      [
+        "claw_copper",
+        9
+      ],
+      [
+        "rod_rod",
+        7
+      ],
+      [
+        "claw_steel",
+        7
+      ],
+      [
+        "armor_armor",
+        6
+      ],
+      [
+        "armor_leather_vest",
+        6
+      ],
+      [
+        "bow_slingshot",
+        5
+      ],
+      [
+        "sword_broad",
+        4
+      ],
+      [
+        "shield_shield",
+        3
+      ],
+      [
+        "gauntlet_gauntlet",
+        3
+      ],
+      [
+        "bow_long",
+        3
+      ],
+      [
+        "claw_iron",
+        3
+      ],
+      [
+        "robe_robe",
+        2
+      ],
+      [
+        "gauntlet_copper",
+        2
+      ],
+      [
+        "gauntlet_cloth_gloves",
+        2
+      ],
+      [
+        "armor_fur_vest",
+        2
+      ],
+      [
+        "gauntlet_leather",
+        1
+      ],
+      [
+        "wand_twig",
+        1
+      ],
+      [
+        "wand_wand",
+        1
+      ]
+    ]
+  },
+  "candidates": [
+    {
+      "result": {
+        "wins": 40,
+        "iterations": 40,
+        "winRate": 1,
+        "avgRoundsPerBattle": 1,
+        "equipmentCost": 4555,
+        "score": 999998.999995445
+      },
+      "genome": {
+        "members": [
+          {
+            "job": null,
+            "variantFactorId": "wolf",
+            "equipmentTemplateIds": [
+              "rod_rod",
+              "robe_robe",
+              "shield_shield",
+              "gauntlet_gauntlet",
+              "claw_sharp"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "slime",
+            "equipmentTemplateIds": [
+              "shield_wooden",
+              "bow_long",
+              "rod_rod",
+              "claw_iron",
+              "shield_wooden"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "shield_wooden",
+              "claw_sharp",
+              "claw_steel",
+              "claw_copper",
+              "armor_armor"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "slime",
+            "equipmentTemplateIds": [
+              "shield_wooden",
+              "claw_sharp",
+              "sword_broad",
+              "claw_copper",
+              "armor_armor"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "wolf",
+            "equipmentTemplateIds": [
+              "armor_leather_vest",
+              "claw_steel",
+              "gauntlet_copper",
+              "gauntlet_cloth_gloves",
+              "armor_fur_vest"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "slime",
+            "equipmentTemplateIds": [
+              "claw_copper",
+              "bow_slingshot",
+              "bow_slingshot",
+              "armor_leather_vest",
+              "gauntlet_leather"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "result": {
+        "wins": 40,
+        "iterations": 40,
+        "winRate": 1,
+        "avgRoundsPerBattle": 1,
+        "equipmentCost": 4695,
+        "score": 999998.999995305
+      },
+      "genome": {
+        "members": [
+          {
+            "job": null,
+            "variantFactorId": "slime",
+            "equipmentTemplateIds": [
+              "shield_wooden",
+              "bow_long",
+              "rod_rod",
+              "claw_iron",
+              "shield_wooden"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "wolf",
+            "equipmentTemplateIds": [
+              "wand_twig",
+              "claw_steel",
+              "gauntlet_copper",
+              "gauntlet_cloth_gloves",
+              "rod_rod"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "slime",
+            "equipmentTemplateIds": [
+              "claw_copper",
+              "bow_slingshot",
+              "armor_leather_vest",
+              "armor_leather_vest",
+              "wand_wand"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "slime",
+            "equipmentTemplateIds": [
+              "shield_wooden",
+              "claw_sharp",
+              "sword_broad",
+              "claw_copper",
+              "armor_armor"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "wolf",
+            "equipmentTemplateIds": [
+              "rod_rod",
+              "sword_broad",
+              "shield_shield",
+              "gauntlet_gauntlet",
+              "claw_sharp"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "wolf",
+            "equipmentTemplateIds": [
+              "shield_wooden",
+              "claw_sharp",
+              "claw_steel",
+              "claw_copper",
+              "sword_copper"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "result": {
+        "wins": 40,
+        "iterations": 40,
+        "winRate": 1,
+        "avgRoundsPerBattle": 1,
+        "equipmentCost": 4735,
+        "score": 999998.999995265
+      },
+      "genome": {
+        "members": [
+          {
+            "job": null,
+            "variantFactorId": "wolf",
+            "equipmentTemplateIds": [
+              "rod_rod",
+              "robe_robe",
+              "shield_shield",
+              "gauntlet_gauntlet",
+              "claw_sharp"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "wolf",
+            "equipmentTemplateIds": [
+              "claw_steel",
+              "armor_fur_vest",
+              "claw_steel",
+              "armor_armor",
+              "claw_copper"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "slime",
+            "equipmentTemplateIds": [
+              "rod_wooden",
+              "bow_slingshot",
+              "bow_slingshot",
+              "armor_leather_vest",
+              "armor_leather_vest"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "slime",
+            "equipmentTemplateIds": [
+              "shield_wooden",
+              "claw_sharp",
+              "sword_broad",
+              "claw_copper",
+              "armor_armor"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "slime",
+            "equipmentTemplateIds": [
+              "shield_wooden",
+              "bow_long",
+              "rod_rod",
+              "claw_iron",
+              "shield_wooden"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "shield_wooden",
+              "claw_sharp",
+              "claw_steel",
+              "claw_copper",
+              "armor_armor"
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,377 @@
+{
+  "createdAt": "2026-06-04T06:48:16.280Z",
+  "scenario": "orc_camp_1",
+  "level": 15,
+  "config": {
+    "generations": 10,
+    "population": 30,
+    "iterations": 8,
+    "validationIterations": 100,
+    "seed": 15009,
+    "cleric": "required",
+    "jobs": [
+      "guard",
+      "warrior",
+      "thief",
+      "mage",
+      "cleric"
+    ],
+    "variants": [
+      "hobgoblin",
+      "slime",
+      "undead",
+      "wolf"
+    ],
+    "maxUnlockRank": 2,
+    "maxDropRank": 2,
+    "allowRare": false,
+    "availability": "/Users/astapi/projects/goblinKingdom/goblin_native/reports/progression-orc-camp-sweep/08-road_1-availability.json"
+  },
+  "insights": {
+    "winningCandidateCount": 3,
+    "frequentJobs": [
+      [
+        "warrior",
+        8
+      ],
+      [
+        "cleric",
+        3
+      ]
+    ],
+    "frequentVariants": [
+      [
+        "wolf",
+        6
+      ],
+      [
+        "hobgoblin",
+        1
+      ]
+    ],
+    "frequentEquipment": [
+      [
+        "sword_broad",
+        9
+      ],
+      [
+        "claw_mithril",
+        8
+      ],
+      [
+        "armor_armor",
+        8
+      ],
+      [
+        "claw_copper",
+        6
+      ],
+      [
+        "armor_tattered_cloth",
+        6
+      ],
+      [
+        "shield_wooden",
+        6
+      ],
+      [
+        "claw_steel",
+        6
+      ],
+      [
+        "hidden_dagger",
+        6
+      ],
+      [
+        "hidden_royal_dagger",
+        4
+      ],
+      [
+        "claw_royal",
+        3
+      ],
+      [
+        "rod_mithril",
+        3
+      ],
+      [
+        "sword_club",
+        3
+      ],
+      [
+        "sword_long",
+        3
+      ],
+      [
+        "claw_iron",
+        3
+      ],
+      [
+        "sword_mithril",
+        3
+      ],
+      [
+        "gauntlet_cloth_gloves",
+        3
+      ],
+      [
+        "bow_short",
+        3
+      ],
+      [
+        "wand_twig",
+        2
+      ],
+      [
+        "sword_copper",
+        2
+      ],
+      [
+        "rod_wooden",
+        1
+      ]
+    ]
+  },
+  "candidates": [
+    {
+      "result": {
+        "wins": 100,
+        "iterations": 100,
+        "winRate": 1,
+        "avgRoundsPerBattle": 1,
+        "equipmentCost": 9195,
+        "score": 999998.999990805
+      },
+      "genome": {
+        "members": [
+          {
+            "job": "warrior",
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "claw_mithril",
+              "claw_copper",
+              "claw_copper",
+              "armor_tattered_cloth",
+              "armor_armor"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "wolf",
+            "equipmentTemplateIds": [
+              "shield_wooden",
+              "claw_royal",
+              "rod_mithril",
+              "wand_twig",
+              "sword_club"
+            ]
+          },
+          {
+            "job": "warrior",
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "claw_steel",
+              "sword_long",
+              "hidden_royal_dagger",
+              "claw_iron",
+              "sword_broad"
+            ]
+          },
+          {
+            "job": "warrior",
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "sword_copper",
+              "shield_wooden",
+              "armor_armor",
+              "claw_mithril",
+              "armor_tattered_cloth"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "wolf",
+            "equipmentTemplateIds": [
+              "claw_mithril",
+              "sword_broad",
+              "hidden_dagger",
+              "sword_mithril",
+              "gauntlet_cloth_gloves"
+            ]
+          },
+          {
+            "job": "cleric",
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "claw_steel",
+              "hidden_dagger",
+              "sword_broad",
+              "bow_short",
+              "rod_wooden"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "result": {
+        "wins": 100,
+        "iterations": 100,
+        "winRate": 1,
+        "avgRoundsPerBattle": 1,
+        "equipmentCost": 11265,
+        "score": 999998.999988735
+      },
+      "genome": {
+        "members": [
+          {
+            "job": "warrior",
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "claw_mithril",
+              "claw_copper",
+              "claw_copper",
+              "armor_tattered_cloth",
+              "armor_armor"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "wolf",
+            "equipmentTemplateIds": [
+              "shield_wooden",
+              "claw_royal",
+              "rod_mithril",
+              "hidden_royal_dagger",
+              "sword_club"
+            ]
+          },
+          {
+            "job": "warrior",
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "claw_steel",
+              "sword_long",
+              "hidden_royal_dagger",
+              "claw_iron",
+              "sword_broad"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "hobgoblin",
+            "equipmentTemplateIds": [
+              "sword_copper",
+              "shield_wooden",
+              "armor_armor",
+              "claw_mithril",
+              "armor_tattered_cloth"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "wolf",
+            "equipmentTemplateIds": [
+              "sword_cypress_stick",
+              "sword_broad",
+              "hidden_dagger",
+              "sword_mithril",
+              "gauntlet_cloth_gloves"
+            ]
+          },
+          {
+            "job": "cleric",
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "claw_steel",
+              "hidden_dagger",
+              "sword_broad",
+              "bow_short",
+              "armor_armor"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "result": {
+        "wins": 100,
+        "iterations": 100,
+        "winRate": 1,
+        "avgRoundsPerBattle": 1.0021008403361344,
+        "equipmentCost": 9635,
+        "score": 999998.9978895247
+      },
+      "genome": {
+        "members": [
+          {
+            "job": "warrior",
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "claw_mithril",
+              "claw_copper",
+              "claw_copper",
+              "armor_tattered_cloth",
+              "armor_armor"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "wolf",
+            "equipmentTemplateIds": [
+              "shield_wooden",
+              "claw_royal",
+              "rod_mithril",
+              "wand_twig",
+              "sword_club"
+            ]
+          },
+          {
+            "job": "warrior",
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "claw_steel",
+              "sword_long",
+              "hidden_royal_dagger",
+              "claw_iron",
+              "sword_broad"
+            ]
+          },
+          {
+            "job": "warrior",
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "shield_mithril",
+              "shield_wooden",
+              "armor_armor",
+              "claw_mithril",
+              "armor_tattered_cloth"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "wolf",
+            "equipmentTemplateIds": [
+              "claw_mithril",
+              "sword_broad",
+              "hidden_dagger",
+              "sword_mithril",
+              "gauntlet_cloth_gloves"
+            ]
+          },
+          {
+            "job": "cleric",
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "claw_steel",
+              "hidden_dagger",
+              "sword_broad",
+              "bow_short",
+              "armor_armor"
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

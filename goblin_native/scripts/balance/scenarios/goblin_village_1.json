@@ -1,9 +1,9 @@
 {
   "$schema": "balance-reference-scenario-v1",
-  "areaId": "goblin_village_3",
-  "description": "ゴブリン集落 中枢。ホブゴブリン討伐（推奨Lv 8〜10 / ゴリ押しLv 15〜20 想定）。6人PT・ジョブ無し。亜種(スライム1+ウルフ1)+通常ゴブリン4の現実的な構成。",
+  "areaId": "goblin_village_1",
+  "description": "ゴブリン集落。旧1〜3を統合した6階構成。ゴブリン系 Lv7 + ホブゴブリン Lv15 ボス。6人PT・ジョブ無し。亜種(スライム1+ウルフ1)+通常ゴブリン4の現実的な構成。",
   "iterations": 200,
-  "levelRange": { "min": 5, "max": 25, "step": 1 },
+  "levelRange": { "min": 1, "max": 25, "step": 1 },
   "equipmentFilter": {
     "maxUnlockRank": 1,
     "maxDropRank": 1

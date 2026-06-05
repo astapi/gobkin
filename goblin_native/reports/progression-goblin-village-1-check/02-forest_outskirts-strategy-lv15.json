@@ -1,0 +1,351 @@
+{
+  "createdAt": "2026-06-05T01:37:14.822Z",
+  "scenario": "forest_outskirts",
+  "level": 15,
+  "config": {
+    "generations": 5,
+    "population": 14,
+    "iterations": 4,
+    "validationIterations": 40,
+    "seed": 15008,
+    "cleric": "optional",
+    "jobs": [],
+    "variants": [
+      "slime"
+    ],
+    "maxUnlockRank": 1,
+    "maxDropRank": 1,
+    "allowRare": false,
+    "availability": "/Users/astapi/projects/goblinKingdom/goblin_native/reports/progression-goblin-village-1-check/01-slime_cave-availability.json"
+  },
+  "insights": {
+    "winningCandidateCount": 3,
+    "frequentJobs": [],
+    "frequentVariants": [
+      [
+        "slime",
+        12
+      ]
+    ],
+    "frequentEquipment": [
+      [
+        "rod_wooden",
+        13
+      ],
+      [
+        "sword_copper",
+        9
+      ],
+      [
+        "armor_fur_vest",
+        8
+      ],
+      [
+        "armor_tattered_cloth",
+        7
+      ],
+      [
+        "gauntlet_copper",
+        7
+      ],
+      [
+        "shield_pot_lid",
+        6
+      ],
+      [
+        "sword_club",
+        6
+      ],
+      [
+        "wand_twig",
+        5
+      ],
+      [
+        "gauntlet_cloth_gloves",
+        5
+      ],
+      [
+        "claw_iron",
+        4
+      ],
+      [
+        "wand_apprentice",
+        4
+      ],
+      [
+        "rod_acolyte",
+        3
+      ],
+      [
+        "claw_beast",
+        3
+      ],
+      [
+        "shield_wooden",
+        2
+      ],
+      [
+        "shield_shield",
+        2
+      ],
+      [
+        "armor_armor",
+        2
+      ],
+      [
+        "claw_steel",
+        2
+      ],
+      [
+        "sword_cypress_stick",
+        1
+      ],
+      [
+        "bow_slingshot",
+        1
+      ]
+    ]
+  },
+  "candidates": [
+    {
+      "result": {
+        "wins": 40,
+        "iterations": 40,
+        "winRate": 1,
+        "avgRoundsPerBattle": 1,
+        "equipmentCost": 780,
+        "score": 999998.99999922
+      },
+      "genome": {
+        "members": [
+          {
+            "job": null,
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "wand_twig",
+              "rod_acolyte",
+              "armor_fur_vest",
+              "shield_wooden",
+              "shield_shield"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "gauntlet_cloth_gloves",
+              "armor_fur_vest",
+              "armor_tattered_cloth",
+              "rod_wooden",
+              "claw_iron"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "slime",
+            "equipmentTemplateIds": [
+              "wand_apprentice",
+              "rod_wooden",
+              "wand_twig",
+              "armor_tattered_cloth",
+              "shield_pot_lid"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "slime",
+            "equipmentTemplateIds": [
+              "rod_wooden",
+              "wand_apprentice",
+              "sword_copper",
+              "claw_beast",
+              "gauntlet_copper"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "slime",
+            "equipmentTemplateIds": [
+              "sword_copper",
+              "gauntlet_copper",
+              "sword_club",
+              "sword_copper",
+              "rod_wooden"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "slime",
+            "equipmentTemplateIds": [
+              "armor_fur_vest",
+              "shield_pot_lid",
+              "armor_armor",
+              "rod_acolyte",
+              "sword_club"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "result": {
+        "wins": 40,
+        "iterations": 40,
+        "winRate": 1,
+        "avgRoundsPerBattle": 1,
+        "equipmentCost": 790,
+        "score": 999998.99999921
+      },
+      "genome": {
+        "members": [
+          {
+            "job": null,
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "armor_fur_vest",
+              "shield_pot_lid",
+              "gauntlet_copper",
+              "sword_cypress_stick",
+              "bow_slingshot"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "slime",
+            "equipmentTemplateIds": [
+              "wand_apprentice",
+              "rod_wooden",
+              "wand_twig",
+              "armor_tattered_cloth",
+              "shield_pot_lid"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "gauntlet_cloth_gloves",
+              "armor_fur_vest",
+              "armor_tattered_cloth",
+              "rod_wooden",
+              "claw_iron"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "slime",
+            "equipmentTemplateIds": [
+              "sword_copper",
+              "gauntlet_copper",
+              "sword_club",
+              "sword_copper",
+              "rod_wooden"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "slime",
+            "equipmentTemplateIds": [
+              "rod_wooden",
+              "claw_steel",
+              "sword_copper",
+              "claw_beast",
+              "gauntlet_copper"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "armor_fur_vest",
+              "shield_pot_lid",
+              "armor_armor",
+              "sword_club",
+              "sword_club"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "result": {
+        "wins": 40,
+        "iterations": 40,
+        "winRate": 1,
+        "avgRoundsPerBattle": 1,
+        "equipmentCost": 800,
+        "score": 999998.9999992
+      },
+      "genome": {
+        "members": [
+          {
+            "job": null,
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "gauntlet_cloth_gloves",
+              "armor_fur_vest",
+              "armor_tattered_cloth",
+              "rod_wooden",
+              "claw_iron"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "slime",
+            "equipmentTemplateIds": [
+              "wand_twig",
+              "rod_acolyte",
+              "gauntlet_cloth_gloves",
+              "shield_wooden",
+              "shield_shield"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "slime",
+            "equipmentTemplateIds": [
+              "wand_apprentice",
+              "rod_wooden",
+              "wand_twig",
+              "armor_tattered_cloth",
+              "shield_pot_lid"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "slime",
+            "equipmentTemplateIds": [
+              "sword_copper",
+              "gauntlet_copper",
+              "sword_club",
+              "sword_copper",
+              "rod_wooden"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "slime",
+            "equipmentTemplateIds": [
+              "rod_wooden",
+              "claw_steel",
+              "sword_copper",
+              "claw_beast",
+              "gauntlet_copper"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "slime",
+            "equipmentTemplateIds": [
+              "gauntlet_cloth_gloves",
+              "armor_fur_vest",
+              "armor_tattered_cloth",
+              "rod_wooden",
+              "claw_iron"
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

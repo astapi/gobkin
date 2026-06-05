@@ -1,0 +1,93 @@
+{
+  "$schema": "balance-reference-scenario-v1",
+  "areaId": "forest_edge_village",
+  "description": "森外れの廃村。ゴブリン集落クリア後を想定し、guard/warrior/thief/mage と rank2 通常装備を使用可能にしたLv12基準シナリオ。クレリックは未解放。",
+  "iterations": 200,
+  "levelRange": {
+    "min": 8,
+    "max": 18,
+    "step": 1
+  },
+  "equipmentFilter": {
+    "maxUnlockRank": 2,
+    "maxDropRank": 2
+  },
+  "loadouts": [
+    {
+      "name": "A_job_rank2_balanced",
+      "description": "ジョブ解放直後の現実的な6人PT。前衛はガード/ウォリアー、後衛はシーフ弓とメイジ。亜種は集落以前に期待できるslime/wolf/hobgoblinを使用。",
+      "party": [
+        {
+          "name": "スライムガード",
+          "variantFactorId": "slime",
+          "job": "guard",
+          "equipmentTemplateIds": [
+            "armor_mithril",
+            "shield_mithril",
+            "sword_mithril",
+            "gauntlet_mithril",
+            "armor_armor",
+            "shield_shield"
+          ]
+        },
+        {
+          "name": "ホブウォリアー",
+          "variantFactorId": "hobgoblin",
+          "job": "warrior",
+          "equipmentTemplateIds": [
+            "sword_mithril",
+            "armor_mithril",
+            "shield_mithril",
+            "gauntlet_mithril",
+            "sword_long"
+          ]
+        },
+        {
+          "name": "通常ウォリアー",
+          "job": "warrior",
+          "equipmentTemplateIds": [
+            "sword_mithril",
+            "armor_mithril",
+            "shield_mithril",
+            "gauntlet_mithril",
+            "sword_long"
+          ]
+        },
+        {
+          "name": "ウルフシーフ",
+          "variantFactorId": "wolf",
+          "job": "thief",
+          "equipmentTemplateIds": [
+            "bow_mithril",
+            "gauntlet_mithril",
+            "armor_mithril",
+            "hidden_mithril_dagger",
+            "bow_long"
+          ]
+        },
+        {
+          "name": "通常シーフ",
+          "job": "thief",
+          "equipmentTemplateIds": [
+            "bow_mithril",
+            "gauntlet_mithril",
+            "armor_mithril",
+            "hidden_mithril_dagger",
+            "bow_long"
+          ]
+        },
+        {
+          "name": "通常メイジ",
+          "job": "mage",
+          "equipmentTemplateIds": [
+            "wand_mithril",
+            "robe_mithril",
+            "gauntlet_mithril",
+            "armor_mithril",
+            "wand_wand"
+          ]
+        }
+      ]
+    }
+  ]
+}

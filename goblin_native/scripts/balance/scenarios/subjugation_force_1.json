@@ -1,11 +1,11 @@
 {
   "$schema": "balance-reference-scenario-v1",
   "areaId": "subjugation_force_1",
-  "description": "vs討伐隊防衛戦・先遣隊。areaLevel=40。敵: 正規兵Lv30 atk200/騎士Lv30 atk210 def50/弓兵Lv30 atk150 attackCount4/魔術師Lv30(火球)/クレリックLv30(回復)。装備rank≤4(stack=27%)。",
+  "description": "vs討伐隊防衛戦。旧1〜3を統合した8階構成。areaLevel=68。敵: 正規兵/魔術師/弓兵/クレリック Lv68 / 騎士 Lv70 / 辺境城騎士団長 Lv80 ボス。装備rank≤4(stack=27%)。",
   "iterations": 100,
   "levelRange": {
-    "min": 25,
-    "max": 75,
+    "min": 35,
+    "max": 130,
     "step": 2
   },
   "equipmentFilter": {

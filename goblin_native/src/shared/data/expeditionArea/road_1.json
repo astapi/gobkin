@@ -1,7 +1,7 @@
 {
   "id": "road_1",
   "name": "街道",
-  "areaLevel": 14,
+  "areaLevel": 25,
   "floors": 6,
   "baseDurationSec": 4860,
   "description": "辺境の村と辺境の城を結ぶ生活路。森から出てくる獣や、荷を守る人間の護衛が行き交う。ここを押さえれば村は孤立する。",

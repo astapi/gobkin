@@ -7,9 +7,9 @@
  * `ExpeditionEngine` を回して勝率・平均ターン・HP残を集計する。
  *
  * 使い方:
- *   npm run sim:balance:reference -- --scenario goblin_village_3
- *   npm run sim:balance:reference -- --scenario goblin_village_3 --iterations 100
- *   npm run sim:balance:reference -- --scenario goblin_village_3 --report tsv --out reports/gv3.tsv
+ *   npm run sim:balance:reference -- --scenario goblin_village_1
+ *   npm run sim:balance:reference -- --scenario goblin_village_1 --iterations 100
+ *   npm run sim:balance:reference -- --scenario goblin_village_1 --report tsv --out reports/gv1.tsv
  */
 
 const fs = require('fs')

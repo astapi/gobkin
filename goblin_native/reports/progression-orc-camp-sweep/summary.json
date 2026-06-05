@@ -1,0 +1,3079 @@
+{
+  "version": 1,
+  "createdAt": "2026-06-04T06:49:05.219Z",
+  "config": {
+    "through": "orc_camp_1",
+    "outDir": "reports/progression-orc-camp-sweep",
+    "tiers": {
+      "slime_cave": 1,
+      "goblin_village_1": 0
+    },
+    "defaultTier": 0,
+    "level": null,
+    "levelMode": "scenario-max",
+    "levelSweep": {
+      "min": 5,
+      "max": 18,
+      "step": 1
+    },
+    "generations": 10,
+    "population": 30,
+    "iterations": 8,
+    "validationIterations": 100,
+    "elite": 4,
+    "top": 3,
+    "seed": 1,
+    "skipOptimize": false
+  },
+  "through": "orc_camp_1",
+  "outDir": "/Users/astapi/projects/goblinKingdom/goblin_native/reports/progression-orc-camp-sweep",
+  "steps": [
+    {
+      "index": 1,
+      "areaId": "slime_cave",
+      "areaName": "スライムの洞窟",
+      "cleared": [
+        "slime_cave"
+      ],
+      "maxTier": 1,
+      "availabilityPath": "/Users/astapi/projects/goblinKingdom/goblin_native/reports/progression-orc-camp-sweep/01-slime_cave-availability.json",
+      "counts": {
+        "equipment": 34,
+        "rareEquipment": 2,
+        "factors": 1
+      },
+      "baseRank": 1,
+      "maxNormalDropRank": 1,
+      "newRareEquipment": [
+        {
+          "templateId": "accessory_luck_medal",
+          "name": "ラッキーメダル",
+          "sources": [
+            {
+              "type": "rareDrop",
+              "areaId": "slime_cave",
+              "tier": 0,
+              "enemyId": "B_SLIME"
+            },
+            {
+              "type": "tierRareDrop",
+              "areaId": "slime_cave",
+              "tier": 1,
+              "requiredTier": 1,
+              "enemyId": "S001"
+            },
+            {
+              "type": "rareDrop",
+              "areaId": "slime_cave",
+              "tier": 1,
+              "enemyId": "B_SLIME"
+            }
+          ]
+        },
+        {
+          "templateId": "accessory_split_core",
+          "name": "分裂核",
+          "sources": [
+            {
+              "type": "rareDrop",
+              "areaId": "slime_cave",
+              "tier": 0,
+              "enemyId": "S001"
+            },
+            {
+              "type": "rareDrop",
+              "areaId": "slime_cave",
+              "tier": 1,
+              "enemyId": "S001"
+            }
+          ]
+        }
+      ],
+      "scenario": null
+    },
+    {
+      "index": 2,
+      "areaId": "forest_outskirts",
+      "areaName": "周辺の森",
+      "cleared": [
+        "slime_cave",
+        "forest_outskirts"
+      ],
+      "maxTier": 0,
+      "availabilityPath": "/Users/astapi/projects/goblinKingdom/goblin_native/reports/progression-orc-camp-sweep/02-forest_outskirts-availability.json",
+      "counts": {
+        "equipment": 34,
+        "rareEquipment": 2,
+        "factors": 2
+      },
+      "baseRank": 1,
+      "maxNormalDropRank": 1,
+      "newRareEquipment": [],
+      "scenario": null
+    },
+    {
+      "index": 3,
+      "areaId": "goblin_village_1",
+      "areaName": "ゴブリン集落",
+      "cleared": [
+        "slime_cave",
+        "forest_outskirts",
+        "goblin_village_1"
+      ],
+      "maxTier": 0,
+      "availabilityPath": "/Users/astapi/projects/goblinKingdom/goblin_native/reports/progression-orc-camp-sweep/03-goblin_village_1-availability.json",
+      "counts": {
+        "equipment": 53,
+        "rareEquipment": 3,
+        "factors": 3
+      },
+      "baseRank": 2,
+      "maxNormalDropRank": 1,
+      "newRareEquipment": [
+        {
+          "templateId": "accessory_human_slayer",
+          "name": "人間に対する殺意",
+          "sources": [
+            {
+              "type": "rareDrop",
+              "areaId": "goblin_village_1",
+              "tier": 0,
+              "enemyId": "B_HOB"
+            }
+          ]
+        }
+      ],
+      "scenario": {
+        "level": 5,
+        "strategyPath": "/Users/astapi/projects/goblinKingdom/goblin_native/reports/progression-orc-camp-sweep/03-goblin_village_1-strategy-lv5.json",
+        "challengeAvailabilityPath": "/Users/astapi/projects/goblinKingdom/goblin_native/reports/progression-orc-camp-sweep/02-forest_outskirts-availability.json",
+        "jobs": [],
+        "variants": [
+          "slime",
+          "wolf"
+        ],
+        "levelSweep": {
+          "results": [
+            {
+              "level": 5,
+              "strategyPath": "/Users/astapi/projects/goblinKingdom/goblin_native/reports/progression-orc-camp-sweep/03-goblin_village_1-strategy-lv5.json",
+              "best": {
+                "winRate": 1,
+                "avgRoundsPerBattle": 1,
+                "equipmentCost": 310,
+                "frequentJobs": [],
+                "frequentVariants": [
+                  [
+                    "wolf",
+                    18
+                  ]
+                ],
+                "frequentEquipment": [
+                  [
+                    "armor_leather_vest",
+                    7
+                  ],
+                  [
+                    "gauntlet_leather",
+                    6
+                  ],
+                  [
+                    "gauntlet_copper",
+                    4
+                  ],
+                  [
+                    "claw_iron",
+                    4
+                  ],
+                  [
+                    "rod_acolyte",
+                    3
+                  ],
+                  [
+                    "claw_steel",
+                    3
+                  ],
+                  [
+                    "claw_sharp",
+                    3
+                  ],
+                  [
+                    "bow_short",
+                    3
+                  ],
+                  [
+                    "gauntlet_cloth_gloves",
+                    2
+                  ],
+                  [
+                    "sword_copper",
+                    1
+                  ]
+                ]
+              }
+            },
+            {
+              "level": 6,
+              "strategyPath": "/Users/astapi/projects/goblinKingdom/goblin_native/reports/progression-orc-camp-sweep/03-goblin_village_1-strategy-lv6.json",
+              "best": {
+                "winRate": 1,
+                "avgRoundsPerBattle": 1.0007220216606498,
+                "equipmentCost": 580,
+                "frequentJobs": [],
+                "frequentVariants": [
+                  [
+                    "wolf",
+                    15
+                  ],
+                  [
+                    "slime",
+                    2
+                  ]
+                ],
+                "frequentEquipment": [
+                  [
+                    "rod_wooden",
+                    9
+                  ],
+                  [
+                    "gauntlet_cloth_gloves",
+                    7
+                  ],
+                  [
+                    "claw_iron",
+                    6
+                  ],
+                  [
+                    "sword_copper",
+                    6
+                  ],
+                  [
+                    "gauntlet_copper",
+                    5
+                  ],
+                  [
+                    "wand_twig",
+                    4
+                  ],
+                  [
+                    "shield_shield",
+                    3
+                  ],
+                  [
+                    "wand_apprentice",
+                    3
+                  ],
+                  [
+                    "armor_leather_vest",
+                    2
+                  ],
+                  [
+                    "sword_cypress_stick",
+                    2
+                  ],
+                  [
+                    "rod_acolyte",
+                    2
+                  ],
+                  [
+                    "hidden_dagger",
+                    2
+                  ],
+                  [
+                    "armor_fur_vest",
+                    1
+                  ],
+                  [
+                    "shield_wooden",
+                    1
+                  ],
+                  [
+                    "claw_sharp",
+                    1
+                  ]
+                ]
+              }
+            },
+            {
+              "level": 7,
+              "strategyPath": "/Users/astapi/projects/goblinKingdom/goblin_native/reports/progression-orc-camp-sweep/03-goblin_village_1-strategy-lv7.json",
+              "best": {
+                "winRate": 1,
+                "avgRoundsPerBattle": 1,
+                "equipmentCost": 270,
+                "frequentJobs": [],
+                "frequentVariants": [
+                  [
+                    "wolf",
+                    15
+                  ],
+                  [
+                    "slime",
+                    3
+                  ]
+                ],
+                "frequentEquipment": [
+                  [
+                    "claw_sharp",
+                    13
+                  ],
+                  [
+                    "gauntlet_cloth_gloves",
+                    7
+                  ],
+                  [
+                    "gauntlet_copper",
+                    7
+                  ],
+                  [
+                    "gauntlet_leather",
+                    6
+                  ],
+                  [
+                    "wand_twig",
+                    5
+                  ],
+                  [
+                    "armor_fur_vest",
+                    5
+                  ],
+                  [
+                    "claw_copper",
+                    3
+                  ],
+                  [
+                    "armor_leather_vest",
+                    3
+                  ],
+                  [
+                    "sword_copper",
+                    2
+                  ],
+                  [
+                    "rod_acolyte",
+                    1
+                  ],
+                  [
+                    "shield_wooden",
+                    1
+                  ],
+                  [
+                    "sword_club",
+                    1
+                  ]
+                ]
+              }
+            },
+            {
+              "level": 8,
+              "strategyPath": "/Users/astapi/projects/goblinKingdom/goblin_native/reports/progression-orc-camp-sweep/03-goblin_village_1-strategy-lv8.json",
+              "best": {
+                "winRate": 1,
+                "avgRoundsPerBattle": 1,
+                "equipmentCost": 255,
+                "frequentJobs": [],
+                "frequentVariants": [
+                  [
+                    "wolf",
+                    16
+                  ],
+                  [
+                    "slime",
+                    2
+                  ]
+                ],
+                "frequentEquipment": [
+                  [
+                    "wand_twig",
+                    15
+                  ],
+                  [
+                    "gauntlet_leather",
+                    10
+                  ],
+                  [
+                    "gauntlet_copper",
+                    9
+                  ],
+                  [
+                    "sword_cypress_stick",
+                    4
+                  ],
+                  [
+                    "gauntlet_cloth_gloves",
+                    4
+                  ],
+                  [
+                    "claw_sharp",
+                    3
+                  ],
+                  [
+                    "sword_copper",
+                    3
+                  ],
+                  [
+                    "wand_apprentice",
+                    3
+                  ],
+                  [
+                    "sword_club",
+                    2
+                  ],
+                  [
+                    "armor_tattered_cloth",
+                    1
+                  ]
+                ]
+              }
+            },
+            {
+              "level": 9,
+              "strategyPath": "/Users/astapi/projects/goblinKingdom/goblin_native/reports/progression-orc-camp-sweep/03-goblin_village_1-strategy-lv9.json",
+              "best": {
+                "winRate": 1,
+                "avgRoundsPerBattle": 1,
+                "equipmentCost": 475,
+                "frequentJobs": [],
+                "frequentVariants": [
+                  [
+                    "wolf",
+                    14
+                  ],
+                  [
+                    "slime",
+                    4
+                  ]
+                ],
+                "frequentEquipment": [
+                  [
+                    "claw_copper",
+                    21
+                  ],
+                  [
+                    "wand_twig",
+                    17
+                  ],
+                  [
+                    "armor_leather_vest",
+                    10
+                  ],
+                  [
+                    "claw_sharp",
+                    3
+                  ],
+                  [
+                    "sword_copper",
+                    3
+                  ],
+                  [
+                    "rod_wooden",
+                    3
+                  ],
+                  [
+                    "sword_club",
+                    3
+                  ],
+                  [
+                    "armor_tattered_cloth",
+                    3
+                  ],
+                  [
+                    "claw_beast",
+                    2
+                  ],
+                  [
+                    "shield_wooden",
+                    2
+                  ],
+                  [
+                    "claw_steel",
+                    2
+                  ],
+                  [
+                    "sword_cypress_stick",
+                    1
+                  ],
+                  [
+                    "gauntlet_copper",
+                    1
+                  ],
+                  [
+                    "claw_iron",
+                    1
+                  ]
+                ]
+              }
+            },
+            {
+              "level": 10,
+              "strategyPath": "/Users/astapi/projects/goblinKingdom/goblin_native/reports/progression-orc-camp-sweep/03-goblin_village_1-strategy-lv10.json",
+              "best": {
+                "winRate": 1,
+                "avgRoundsPerBattle": 1,
+                "equipmentCost": 345,
+                "frequentJobs": [],
+                "frequentVariants": [
+                  [
+                    "wolf",
+                    14
+                  ],
+                  [
+                    "slime",
+                    2
+                  ]
+                ],
+                "frequentEquipment": [
+                  [
+                    "wand_twig",
+                    13
+                  ],
+                  [
+                    "claw_beast",
+                    8
+                  ],
+                  [
+                    "sword_club",
+                    7
+                  ],
+                  [
+                    "gauntlet_cloth_gloves",
+                    6
+                  ],
+                  [
+                    "armor_tattered_cloth",
+                    5
+                  ],
+                  [
+                    "rod_wooden",
+                    5
+                  ],
+                  [
+                    "gauntlet_copper",
+                    5
+                  ],
+                  [
+                    "claw_sharp",
+                    4
+                  ],
+                  [
+                    "sword_cypress_stick",
+                    4
+                  ],
+                  [
+                    "shield_pot_lid",
+                    3
+                  ],
+                  [
+                    "claw_copper",
+                    3
+                  ],
+                  [
+                    "gauntlet_leather",
+                    3
+                  ],
+                  [
+                    "wand_apprentice",
+                    2
+                  ],
+                  [
+                    "sword_copper",
+                    1
+                  ],
+                  [
+                    "claw_steel",
+                    1
+                  ],
+                  [
+                    "armor_leather_vest",
+                    1
+                  ],
+                  [
+                    "rod_acolyte",
+                    1
+                  ]
+                ]
+              }
+            },
+            {
+              "level": 11,
+              "strategyPath": "/Users/astapi/projects/goblinKingdom/goblin_native/reports/progression-orc-camp-sweep/03-goblin_village_1-strategy-lv11.json",
+              "best": {
+                "winRate": 1,
+                "avgRoundsPerBattle": 1,
+                "equipmentCost": 360,
+                "frequentJobs": [],
+                "frequentVariants": [
+                  [
+                    "wolf",
+                    14
+                  ],
+                  [
+                    "slime",
+                    4
+                  ]
+                ],
+                "frequentEquipment": [
+                  [
+                    "armor_leather_vest",
+                    12
+                  ],
+                  [
+                    "gauntlet_copper",
+                    11
+                  ],
+                  [
+                    "sword_cypress_stick",
+                    10
+                  ],
+                  [
+                    "sword_club",
+                    9
+                  ],
+                  [
+                    "wand_twig",
+                    7
+                  ],
+                  [
+                    "gauntlet_leather",
+                    5
+                  ],
+                  [
+                    "gauntlet_cloth_gloves",
+                    4
+                  ],
+                  [
+                    "rod_acolyte",
+                    4
+                  ],
+                  [
+                    "bow_slingshot",
+                    3
+                  ],
+                  [
+                    "sword_broad",
+                    2
+                  ],
+                  [
+                    "claw_sharp",
+                    2
+                  ],
+                  [
+                    "armor_tattered_cloth",
+                    1
+                  ],
+                  [
+                    "shield_shield",
+                    1
+                  ],
+                  [
+                    "rod_wooden",
+                    1
+                  ]
+                ]
+              }
+            },
+            {
+              "level": 12,
+              "strategyPath": "/Users/astapi/projects/goblinKingdom/goblin_native/reports/progression-orc-camp-sweep/03-goblin_village_1-strategy-lv12.json",
+              "best": {
+                "winRate": 1,
+                "avgRoundsPerBattle": 1,
+                "equipmentCost": 680,
+                "frequentJobs": [],
+                "frequentVariants": [
+                  [
+                    "wolf",
+                    9
+                  ],
+                  [
+                    "slime",
+                    4
+                  ]
+                ],
+                "frequentEquipment": [
+                  [
+                    "armor_tattered_cloth",
+                    15
+                  ],
+                  [
+                    "rod_wooden",
+                    13
+                  ],
+                  [
+                    "shield_wooden",
+                    10
+                  ],
+                  [
+                    "rod_acolyte",
+                    10
+                  ],
+                  [
+                    "wand_apprentice",
+                    9
+                  ],
+                  [
+                    "gauntlet_copper",
+                    8
+                  ],
+                  [
+                    "gauntlet_leather",
+                    7
+                  ],
+                  [
+                    "hidden_dagger",
+                    4
+                  ],
+                  [
+                    "wand_twig",
+                    3
+                  ],
+                  [
+                    "claw_sharp",
+                    3
+                  ],
+                  [
+                    "armor_fur_vest",
+                    1
+                  ],
+                  [
+                    "claw_iron",
+                    1
+                  ],
+                  [
+                    "claw_copper",
+                    1
+                  ],
+                  [
+                    "shield_shield",
+                    1
+                  ],
+                  [
+                    "claw_steel",
+                    1
+                  ],
+                  [
+                    "sword_copper",
+                    1
+                  ],
+                  [
+                    "sword_broad",
+                    1
+                  ],
+                  [
+                    "sword_long",
+                    1
+                  ]
+                ]
+              }
+            },
+            {
+              "level": 13,
+              "strategyPath": "/Users/astapi/projects/goblinKingdom/goblin_native/reports/progression-orc-camp-sweep/03-goblin_village_1-strategy-lv13.json",
+              "best": {
+                "winRate": 1,
+                "avgRoundsPerBattle": 1,
+                "equipmentCost": 510,
+                "frequentJobs": [],
+                "frequentVariants": [
+                  [
+                    "wolf",
+                    11
+                  ],
+                  [
+                    "slime",
+                    7
+                  ]
+                ],
+                "frequentEquipment": [
+                  [
+                    "shield_wooden",
+                    21
+                  ],
+                  [
+                    "gauntlet_cloth_gloves",
+                    18
+                  ],
+                  [
+                    "rod_acolyte",
+                    8
+                  ],
+                  [
+                    "armor_leather_vest",
+                    8
+                  ],
+                  [
+                    "gauntlet_leather",
+                    7
+                  ],
+                  [
+                    "sword_club",
+                    6
+                  ],
+                  [
+                    "bow_short",
+                    4
+                  ],
+                  [
+                    "wand_twig",
+                    3
+                  ],
+                  [
+                    "claw_iron",
+                    3
+                  ],
+                  [
+                    "armor_tattered_cloth",
+                    3
+                  ],
+                  [
+                    "shield_pot_lid",
+                    2
+                  ],
+                  [
+                    "sword_cypress_stick",
+                    2
+                  ],
+                  [
+                    "claw_sharp",
+                    2
+                  ],
+                  [
+                    "armor_fur_vest",
+                    1
+                  ],
+                  [
+                    "gauntlet_copper",
+                    1
+                  ],
+                  [
+                    "bow_slingshot",
+                    1
+                  ]
+                ]
+              }
+            },
+            {
+              "level": 14,
+              "strategyPath": "/Users/astapi/projects/goblinKingdom/goblin_native/reports/progression-orc-camp-sweep/03-goblin_village_1-strategy-lv14.json",
+              "best": {
+                "winRate": 1,
+                "avgRoundsPerBattle": 1,
+                "equipmentCost": 455,
+                "frequentJobs": [],
+                "frequentVariants": [
+                  [
+                    "wolf",
+                    15
+                  ]
+                ],
+                "frequentEquipment": [
+                  [
+                    "bow_slingshot",
+                    17
+                  ],
+                  [
+                    "claw_sharp",
+                    11
+                  ],
+                  [
+                    "wand_twig",
+                    9
+                  ],
+                  [
+                    "wand_apprentice",
+                    7
+                  ],
+                  [
+                    "gauntlet_copper",
+                    6
+                  ],
+                  [
+                    "sword_cypress_stick",
+                    5
+                  ],
+                  [
+                    "rod_wooden",
+                    5
+                  ],
+                  [
+                    "shield_pot_lid",
+                    4
+                  ],
+                  [
+                    "armor_tattered_cloth",
+                    4
+                  ],
+                  [
+                    "shield_wooden",
+                    4
+                  ],
+                  [
+                    "sword_club",
+                    4
+                  ],
+                  [
+                    "gauntlet_cloth_gloves",
+                    3
+                  ],
+                  [
+                    "rod_acolyte",
+                    3
+                  ],
+                  [
+                    "claw_copper",
+                    3
+                  ],
+                  [
+                    "bow_short",
+                    2
+                  ],
+                  [
+                    "armor_armor",
+                    2
+                  ],
+                  [
+                    "sword_copper",
+                    1
+                  ]
+                ]
+              }
+            },
+            {
+              "level": 15,
+              "strategyPath": "/Users/astapi/projects/goblinKingdom/goblin_native/reports/progression-orc-camp-sweep/03-goblin_village_1-strategy-lv15.json",
+              "best": {
+                "winRate": 1,
+                "avgRoundsPerBattle": 1,
+                "equipmentCost": 535,
+                "frequentJobs": [],
+                "frequentVariants": [
+                  [
+                    "wolf",
+                    4
+                  ],
+                  [
+                    "slime",
+                    1
+                  ]
+                ],
+                "frequentEquipment": [
+                  [
+                    "gauntlet_cloth_gloves",
+                    22
+                  ],
+                  [
+                    "gauntlet_leather",
+                    17
+                  ],
+                  [
+                    "bow_short",
+                    11
+                  ],
+                  [
+                    "armor_fur_vest",
+                    10
+                  ],
+                  [
+                    "armor_tattered_cloth",
+                    9
+                  ],
+                  [
+                    "gauntlet_copper",
+                    9
+                  ],
+                  [
+                    "shield_wooden",
+                    4
+                  ],
+                  [
+                    "armor_leather_vest",
+                    3
+                  ],
+                  [
+                    "shield_pot_lid",
+                    2
+                  ],
+                  [
+                    "claw_sharp",
+                    1
+                  ],
+                  [
+                    "wand_twig",
+                    1
+                  ],
+                  [
+                    "bow_slingshot",
+                    1
+                  ]
+                ]
+              }
+            },
+            {
+              "level": 16,
+              "strategyPath": "/Users/astapi/projects/goblinKingdom/goblin_native/reports/progression-orc-camp-sweep/03-goblin_village_1-strategy-lv16.json",
+              "best": {
+                "winRate": 1,
+                "avgRoundsPerBattle": 1,
+                "equipmentCost": 370,
+                "frequentJobs": [],
+                "frequentVariants": [
+                  [
+                    "wolf",
+                    7
+                  ],
+                  [
+                    "slime",
+                    3
+                  ]
+                ],
+                "frequentEquipment": [
+                  [
+                    "gauntlet_cloth_gloves",
+                    18
+                  ],
+                  [
+                    "shield_pot_lid",
+                    16
+                  ],
+                  [
+                    "sword_cypress_stick",
+                    13
+                  ],
+                  [
+                    "armor_tattered_cloth",
+                    13
+                  ],
+                  [
+                    "sword_club",
+                    12
+                  ],
+                  [
+                    "wand_apprentice",
+                    12
+                  ],
+                  [
+                    "wand_twig",
+                    7
+                  ],
+                  [
+                    "gauntlet_leather",
+                    5
+                  ],
+                  [
+                    "bow_slingshot",
+                    3
+                  ],
+                  [
+                    "claw_sharp",
+                    3
+                  ],
+                  [
+                    "claw_beast",
+                    2
+                  ],
+                  [
+                    "bow_short",
+                    1
+                  ],
+                  [
+                    "sword_copper",
+                    1
+                  ],
+                  [
+                    "armor_leather_vest",
+                    1
+                  ],
+                  [
+                    "shield_wooden",
+                    1
+                  ]
+                ]
+              }
+            },
+            {
+              "level": 17,
+              "strategyPath": "/Users/astapi/projects/goblinKingdom/goblin_native/reports/progression-orc-camp-sweep/03-goblin_village_1-strategy-lv17.json",
+              "best": {
+                "winRate": 1,
+                "avgRoundsPerBattle": 1,
+                "equipmentCost": 560,
+                "frequentJobs": [],
+                "frequentVariants": [
+                  [
+                    "wolf",
+                    7
+                  ],
+                  [
+                    "slime",
+                    3
+                  ]
+                ],
+                "frequentEquipment": [
+                  [
+                    "gauntlet_leather",
+                    15
+                  ],
+                  [
+                    "armor_fur_vest",
+                    14
+                  ],
+                  [
+                    "gauntlet_cloth_gloves",
+                    14
+                  ],
+                  [
+                    "wand_twig",
+                    12
+                  ],
+                  [
+                    "bow_slingshot",
+                    11
+                  ],
+                  [
+                    "gauntlet_copper",
+                    10
+                  ],
+                  [
+                    "rod_acolyte",
+                    8
+                  ],
+                  [
+                    "armor_leather_vest",
+                    8
+                  ],
+                  [
+                    "bow_short",
+                    6
+                  ],
+                  [
+                    "claw_beast",
+                    5
+                  ],
+                  [
+                    "shield_pot_lid",
+                    3
+                  ],
+                  [
+                    "sword_club",
+                    2
+                  ]
+                ]
+              }
+            },
+            {
+              "level": 18,
+              "strategyPath": "/Users/astapi/projects/goblinKingdom/goblin_native/reports/progression-orc-camp-sweep/03-goblin_village_1-strategy-lv18.json",
+              "best": {
+                "winRate": 1,
+                "avgRoundsPerBattle": 1,
+                "equipmentCost": 360,
+                "frequentJobs": [],
+                "frequentVariants": [
+                  [
+                    "slime",
+                    6
+                  ],
+                  [
+                    "wolf",
+                    3
+                  ]
+                ],
+                "frequentEquipment": [
+                  [
+                    "gauntlet_cloth_gloves",
+                    26
+                  ],
+                  [
+                    "bow_slingshot",
+                    24
+                  ],
+                  [
+                    "gauntlet_leather",
+                    13
+                  ],
+                  [
+                    "sword_club",
+                    10
+                  ],
+                  [
+                    "wand_twig",
+                    10
+                  ],
+                  [
+                    "shield_pot_lid",
+                    7
+                  ],
+                  [
+                    "sword_cypress_stick",
+                    5
+                  ],
+                  [
+                    "claw_copper",
+                    5
+                  ],
+                  [
+                    "armor_leather_vest",
+                    4
+                  ],
+                  [
+                    "armor_fur_vest",
+                    2
+                  ],
+                  [
+                    "armor_tattered_cloth",
+                    1
+                  ],
+                  [
+                    "rod_acolyte",
+                    1
+                  ]
+                ]
+              }
+            }
+          ],
+          "clearLevel80": 5,
+          "clearLevel95": 5,
+          "lowestWinningLevel": 5
+        },
+        "best": {
+          "winRate": 1,
+          "avgRoundsPerBattle": 1,
+          "equipmentCost": 310,
+          "frequentJobs": [],
+          "frequentVariants": [
+            [
+              "wolf",
+              18
+            ]
+          ],
+          "frequentEquipment": [
+            [
+              "armor_leather_vest",
+              7
+            ],
+            [
+              "gauntlet_leather",
+              6
+            ],
+            [
+              "gauntlet_copper",
+              4
+            ],
+            [
+              "claw_iron",
+              4
+            ],
+            [
+              "rod_acolyte",
+              3
+            ],
+            [
+              "claw_steel",
+              3
+            ],
+            [
+              "claw_sharp",
+              3
+            ],
+            [
+              "bow_short",
+              3
+            ],
+            [
+              "gauntlet_cloth_gloves",
+              2
+            ],
+            [
+              "sword_copper",
+              1
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "index": 4,
+      "areaId": "forest_edge_village",
+      "areaName": "森外れの廃村",
+      "cleared": [
+        "slime_cave",
+        "forest_outskirts",
+        "goblin_village_1",
+        "forest_edge_village"
+      ],
+      "maxTier": 0,
+      "availabilityPath": "/Users/astapi/projects/goblinKingdom/goblin_native/reports/progression-orc-camp-sweep/04-forest_edge_village-availability.json",
+      "counts": {
+        "equipment": 53,
+        "rareEquipment": 3,
+        "factors": 3
+      },
+      "baseRank": 2,
+      "maxNormalDropRank": 1,
+      "newRareEquipment": [],
+      "scenario": null
+    },
+    {
+      "index": 5,
+      "areaId": "old_well_waterway",
+      "areaName": "古井戸の地下水路",
+      "cleared": [
+        "slime_cave",
+        "forest_outskirts",
+        "goblin_village_1",
+        "forest_edge_village",
+        "old_well_waterway"
+      ],
+      "maxTier": 0,
+      "availabilityPath": "/Users/astapi/projects/goblinKingdom/goblin_native/reports/progression-orc-camp-sweep/05-old_well_waterway-availability.json",
+      "counts": {
+        "equipment": 53,
+        "rareEquipment": 3,
+        "factors": 4
+      },
+      "baseRank": 2,
+      "maxNormalDropRank": 1,
+      "newRareEquipment": [],
+      "scenario": null
+    },
+    {
+      "index": 6,
+      "areaId": "undead_ruins_1",
+      "areaName": "忘れられた廃墟",
+      "cleared": [
+        "slime_cave",
+        "forest_outskirts",
+        "goblin_village_1",
+        "forest_edge_village",
+        "old_well_waterway",
+        "undead_ruins_1"
+      ],
+      "maxTier": 0,
+      "availabilityPath": "/Users/astapi/projects/goblinKingdom/goblin_native/reports/progression-orc-camp-sweep/06-undead_ruins_1-availability.json",
+      "counts": {
+        "equipment": 54,
+        "rareEquipment": 3,
+        "factors": 4
+      },
+      "baseRank": 2,
+      "maxNormalDropRank": 2,
+      "newRareEquipment": [],
+      "scenario": null
+    },
+    {
+      "index": 7,
+      "areaId": "bandit_hideout",
+      "areaName": "盗賊のアジト",
+      "cleared": [
+        "slime_cave",
+        "forest_outskirts",
+        "goblin_village_1",
+        "forest_edge_village",
+        "old_well_waterway",
+        "undead_ruins_1",
+        "bandit_hideout"
+      ],
+      "maxTier": 0,
+      "availabilityPath": "/Users/astapi/projects/goblinKingdom/goblin_native/reports/progression-orc-camp-sweep/07-bandit_hideout-availability.json",
+      "counts": {
+        "equipment": 54,
+        "rareEquipment": 3,
+        "factors": 4
+      },
+      "baseRank": 2,
+      "maxNormalDropRank": 2,
+      "newRareEquipment": [],
+      "scenario": null
+    },
+    {
+      "index": 8,
+      "areaId": "road_1",
+      "areaName": "街道",
+      "cleared": [
+        "slime_cave",
+        "forest_outskirts",
+        "goblin_village_1",
+        "forest_edge_village",
+        "old_well_waterway",
+        "undead_ruins_1",
+        "bandit_hideout",
+        "road_1"
+      ],
+      "maxTier": 0,
+      "availabilityPath": "/Users/astapi/projects/goblinKingdom/goblin_native/reports/progression-orc-camp-sweep/08-road_1-availability.json",
+      "counts": {
+        "equipment": 54,
+        "rareEquipment": 3,
+        "factors": 4
+      },
+      "baseRank": 2,
+      "maxNormalDropRank": 2,
+      "newRareEquipment": [],
+      "scenario": null
+    },
+    {
+      "index": 9,
+      "areaId": "orc_camp_1",
+      "areaName": "オークの野営地",
+      "cleared": [
+        "slime_cave",
+        "forest_outskirts",
+        "goblin_village_1",
+        "forest_edge_village",
+        "old_well_waterway",
+        "undead_ruins_1",
+        "bandit_hideout",
+        "road_1",
+        "orc_camp_1"
+      ],
+      "maxTier": 0,
+      "availabilityPath": "/Users/astapi/projects/goblinKingdom/goblin_native/reports/progression-orc-camp-sweep/09-orc_camp_1-availability.json",
+      "counts": {
+        "equipment": 54,
+        "rareEquipment": 3,
+        "factors": 5
+      },
+      "baseRank": 2,
+      "maxNormalDropRank": 2,
+      "newRareEquipment": [],
+      "scenario": {
+        "level": 6,
+        "strategyPath": "/Users/astapi/projects/goblinKingdom/goblin_native/reports/progression-orc-camp-sweep/09-orc_camp_1-strategy-lv6.json",
+        "challengeAvailabilityPath": "/Users/astapi/projects/goblinKingdom/goblin_native/reports/progression-orc-camp-sweep/08-road_1-availability.json",
+        "jobs": [
+          "guard",
+          "warrior",
+          "thief",
+          "mage",
+          "cleric"
+        ],
+        "variants": [
+          "hobgoblin",
+          "slime",
+          "undead",
+          "wolf"
+        ],
+        "levelSweep": {
+          "results": [
+            {
+              "level": 5,
+              "strategyPath": "/Users/astapi/projects/goblinKingdom/goblin_native/reports/progression-orc-camp-sweep/09-orc_camp_1-strategy-lv5.json",
+              "best": {
+                "winRate": 0,
+                "avgRoundsPerBattle": 1.7936708860759494,
+                "equipmentCost": 13075,
+                "frequentJobs": [
+                  [
+                    "cleric",
+                    3
+                  ]
+                ],
+                "frequentVariants": [
+                  [
+                    "wolf",
+                    12
+                  ],
+                  [
+                    "hobgoblin",
+                    3
+                  ]
+                ],
+                "frequentEquipment": [
+                  [
+                    "claw_mithril",
+                    5
+                  ],
+                  [
+                    "hidden_royal_dagger",
+                    4
+                  ],
+                  [
+                    "hidden_dagger",
+                    3
+                  ],
+                  [
+                    "armor_armor",
+                    3
+                  ],
+                  [
+                    "claw_royal",
+                    3
+                  ],
+                  [
+                    "armor_leather_vest",
+                    3
+                  ],
+                  [
+                    "claw_iron",
+                    3
+                  ],
+                  [
+                    "sword_royal",
+                    3
+                  ],
+                  [
+                    "robe_robe",
+                    3
+                  ],
+                  [
+                    "sword_long",
+                    3
+                  ],
+                  [
+                    "gauntlet_gauntlet",
+                    2
+                  ],
+                  [
+                    "gauntlet_royal",
+                    1
+                  ]
+                ]
+              }
+            },
+            {
+              "level": 6,
+              "strategyPath": "/Users/astapi/projects/goblinKingdom/goblin_native/reports/progression-orc-camp-sweep/09-orc_camp_1-strategy-lv6.json",
+              "best": {
+                "winRate": 1,
+                "avgRoundsPerBattle": 1.8600999286224125,
+                "equipmentCost": 80505,
+                "frequentJobs": [
+                  [
+                    "cleric",
+                    3
+                  ]
+                ],
+                "frequentVariants": [
+                  [
+                    "wolf",
+                    9
+                  ],
+                  [
+                    "slime",
+                    3
+                  ],
+                  [
+                    "hobgoblin",
+                    3
+                  ]
+                ],
+                "frequentEquipment": [
+                  [
+                    "gauntlet_gauntlet",
+                    7
+                  ],
+                  [
+                    "armor_armor",
+                    6
+                  ],
+                  [
+                    "claw_royal",
+                    5
+                  ],
+                  [
+                    "gauntlet_copper",
+                    5
+                  ],
+                  [
+                    "accessory_human_slayer",
+                    5
+                  ],
+                  [
+                    "armor_leather_vest",
+                    3
+                  ],
+                  [
+                    "armor_fur_vest",
+                    3
+                  ],
+                  [
+                    "hidden_mithril_dagger",
+                    3
+                  ],
+                  [
+                    "bow_long",
+                    3
+                  ],
+                  [
+                    "claw_copper",
+                    3
+                  ],
+                  [
+                    "accessory_split_core",
+                    2
+                  ],
+                  [
+                    "rod_rod",
+                    2
+                  ],
+                  [
+                    "bow_royal",
+                    2
+                  ],
+                  [
+                    "sword_long",
+                    2
+                  ],
+                  [
+                    "claw_mithril",
+                    1
+                  ],
+                  [
+                    "accessory_luck_medal",
+                    1
+                  ],
+                  [
+                    "hidden_dagger",
+                    1
+                  ]
+                ]
+              }
+            },
+            {
+              "level": 7,
+              "strategyPath": "/Users/astapi/projects/goblinKingdom/goblin_native/reports/progression-orc-camp-sweep/09-orc_camp_1-strategy-lv7.json",
+              "best": {
+                "winRate": 1,
+                "avgRoundsPerBattle": 2.003401360544218,
+                "equipmentCost": 77535,
+                "frequentJobs": [
+                  [
+                    "cleric",
+                    3
+                  ],
+                  [
+                    "mage",
+                    2
+                  ]
+                ],
+                "frequentVariants": [
+                  [
+                    "hobgoblin",
+                    6
+                  ],
+                  [
+                    "slime",
+                    4
+                  ],
+                  [
+                    "wolf",
+                    3
+                  ]
+                ],
+                "frequentEquipment": [
+                  [
+                    "bow_long",
+                    9
+                  ],
+                  [
+                    "gauntlet_gauntlet",
+                    7
+                  ],
+                  [
+                    "armor_armor",
+                    6
+                  ],
+                  [
+                    "gauntlet_copper",
+                    6
+                  ],
+                  [
+                    "sword_broad",
+                    3
+                  ],
+                  [
+                    "hidden_mithril_dagger",
+                    3
+                  ],
+                  [
+                    "accessory_luck_medal",
+                    3
+                  ],
+                  [
+                    "armor_leather_vest",
+                    2
+                  ],
+                  [
+                    "sword_long",
+                    2
+                  ],
+                  [
+                    "gauntlet_royal",
+                    2
+                  ],
+                  [
+                    "rod_royal",
+                    2
+                  ],
+                  [
+                    "claw_steel",
+                    1
+                  ],
+                  [
+                    "armor_fur_vest",
+                    1
+                  ],
+                  [
+                    "robe_robe",
+                    1
+                  ],
+                  [
+                    "armor_tattered_cloth",
+                    1
+                  ],
+                  [
+                    "wand_wand",
+                    1
+                  ],
+                  [
+                    "armor_mithril",
+                    1
+                  ],
+                  [
+                    "shield_mithril",
+                    1
+                  ],
+                  [
+                    "shield_pot_lid",
+                    1
+                  ],
+                  [
+                    "shield_shield",
+                    1
+                  ]
+                ]
+              }
+            },
+            {
+              "level": 8,
+              "strategyPath": "/Users/astapi/projects/goblinKingdom/goblin_native/reports/progression-orc-camp-sweep/09-orc_camp_1-strategy-lv8.json",
+              "best": {
+                "winRate": 1,
+                "avgRoundsPerBattle": 1.6596045197740112,
+                "equipmentCost": 159565,
+                "frequentJobs": [
+                  [
+                    "cleric",
+                    3
+                  ]
+                ],
+                "frequentVariants": [
+                  [
+                    "wolf",
+                    7
+                  ],
+                  [
+                    "hobgoblin",
+                    4
+                  ],
+                  [
+                    "slime",
+                    2
+                  ],
+                  [
+                    "undead",
+                    2
+                  ]
+                ],
+                "frequentEquipment": [
+                  [
+                    "gauntlet_copper",
+                    8
+                  ],
+                  [
+                    "gauntlet_royal",
+                    6
+                  ],
+                  [
+                    "gauntlet_gauntlet",
+                    6
+                  ],
+                  [
+                    "armor_armor",
+                    5
+                  ],
+                  [
+                    "bow_long",
+                    5
+                  ],
+                  [
+                    "hidden_royal_dagger",
+                    5
+                  ],
+                  [
+                    "claw_beast",
+                    3
+                  ],
+                  [
+                    "sword_long",
+                    3
+                  ],
+                  [
+                    "claw_iron",
+                    3
+                  ],
+                  [
+                    "claw_steel",
+                    3
+                  ],
+                  [
+                    "claw_mithril",
+                    2
+                  ],
+                  [
+                    "bow_mithril",
+                    1
+                  ],
+                  [
+                    "claw_royal",
+                    1
+                  ],
+                  [
+                    "wand_royal",
+                    1
+                  ],
+                  [
+                    "bow_slingshot",
+                    1
+                  ],
+                  [
+                    "shield_shield",
+                    1
+                  ],
+                  [
+                    "armor_leather_vest",
+                    1
+                  ],
+                  [
+                    "sword_club",
+                    1
+                  ]
+                ]
+              }
+            },
+            {
+              "level": 9,
+              "strategyPath": "/Users/astapi/projects/goblinKingdom/goblin_native/reports/progression-orc-camp-sweep/09-orc_camp_1-strategy-lv9.json",
+              "best": {
+                "winRate": 1,
+                "avgRoundsPerBattle": 1.3226703755215576,
+                "equipmentCost": 78445,
+                "frequentJobs": [
+                  [
+                    "cleric",
+                    3
+                  ]
+                ],
+                "frequentVariants": [
+                  [
+                    "wolf",
+                    8
+                  ],
+                  [
+                    "hobgoblin",
+                    4
+                  ],
+                  [
+                    "slime",
+                    3
+                  ]
+                ],
+                "frequentEquipment": [
+                  [
+                    "gauntlet_leather",
+                    8
+                  ],
+                  [
+                    "bow_royal",
+                    7
+                  ],
+                  [
+                    "bow_long",
+                    6
+                  ],
+                  [
+                    "gauntlet_gauntlet",
+                    6
+                  ],
+                  [
+                    "gauntlet_mithril",
+                    5
+                  ],
+                  [
+                    "gauntlet_copper",
+                    5
+                  ],
+                  [
+                    "claw_mithril",
+                    3
+                  ],
+                  [
+                    "hidden_mithril_dagger",
+                    3
+                  ],
+                  [
+                    "gauntlet_cloth_gloves",
+                    3
+                  ],
+                  [
+                    "robe_robe",
+                    3
+                  ],
+                  [
+                    "claw_steel",
+                    3
+                  ],
+                  [
+                    "rod_acolyte",
+                    3
+                  ],
+                  [
+                    "sword_mithril",
+                    2
+                  ],
+                  [
+                    "sword_copper",
+                    2
+                  ],
+                  [
+                    "rod_rod",
+                    2
+                  ],
+                  [
+                    "wand_wand",
+                    2
+                  ],
+                  [
+                    "sword_long",
+                    2
+                  ],
+                  [
+                    "armor_fur_vest",
+                    2
+                  ],
+                  [
+                    "wand_mithril",
+                    1
+                  ],
+                  [
+                    "shield_wooden",
+                    1
+                  ]
+                ]
+              }
+            },
+            {
+              "level": 10,
+              "strategyPath": "/Users/astapi/projects/goblinKingdom/goblin_native/reports/progression-orc-camp-sweep/09-orc_camp_1-strategy-lv10.json",
+              "best": {
+                "winRate": 1,
+                "avgRoundsPerBattle": 1.0042402826855124,
+                "equipmentCost": 47925,
+                "frequentJobs": [
+                  [
+                    "mage",
+                    3
+                  ],
+                  [
+                    "cleric",
+                    3
+                  ],
+                  [
+                    "warrior",
+                    2
+                  ]
+                ],
+                "frequentVariants": [
+                  [
+                    "wolf",
+                    6
+                  ],
+                  [
+                    "hobgoblin",
+                    4
+                  ]
+                ],
+                "frequentEquipment": [
+                  [
+                    "gauntlet_gauntlet",
+                    9
+                  ],
+                  [
+                    "gauntlet_copper",
+                    8
+                  ],
+                  [
+                    "hidden_dagger",
+                    7
+                  ],
+                  [
+                    "claw_royal",
+                    7
+                  ],
+                  [
+                    "rod_mithril",
+                    7
+                  ],
+                  [
+                    "sword_royal",
+                    3
+                  ],
+                  [
+                    "hidden_royal_dagger",
+                    3
+                  ],
+                  [
+                    "accessory_human_slayer",
+                    3
+                  ],
+                  [
+                    "claw_mithril",
+                    3
+                  ],
+                  [
+                    "wand_twig",
+                    2
+                  ],
+                  [
+                    "armor_leather_vest",
+                    2
+                  ],
+                  [
+                    "bow_long",
+                    2
+                  ],
+                  [
+                    "gauntlet_leather",
+                    2
+                  ],
+                  [
+                    "hidden_mithril_dagger",
+                    2
+                  ],
+                  [
+                    "wand_apprentice",
+                    2
+                  ],
+                  [
+                    "gauntlet_mithril",
+                    1
+                  ],
+                  [
+                    "rod_acolyte",
+                    1
+                  ],
+                  [
+                    "sword_long",
+                    1
+                  ],
+                  [
+                    "robe_mithril",
+                    1
+                  ],
+                  [
+                    "claw_iron",
+                    1
+                  ]
+                ]
+              }
+            },
+            {
+              "level": 11,
+              "strategyPath": "/Users/astapi/projects/goblinKingdom/goblin_native/reports/progression-orc-camp-sweep/09-orc_camp_1-strategy-lv11.json",
+              "best": {
+                "winRate": 1,
+                "avgRoundsPerBattle": 1,
+                "equipmentCost": 207970,
+                "frequentJobs": [
+                  [
+                    "warrior",
+                    3
+                  ],
+                  [
+                    "cleric",
+                    3
+                  ]
+                ],
+                "frequentVariants": [
+                  [
+                    "hobgoblin",
+                    6
+                  ],
+                  [
+                    "wolf",
+                    6
+                  ]
+                ],
+                "frequentEquipment": [
+                  [
+                    "gauntlet_royal",
+                    9
+                  ],
+                  [
+                    "claw_sharp",
+                    7
+                  ],
+                  [
+                    "hidden_mithril_dagger",
+                    6
+                  ],
+                  [
+                    "bow_royal",
+                    6
+                  ],
+                  [
+                    "bow_short",
+                    6
+                  ],
+                  [
+                    "wand_twig",
+                    5
+                  ],
+                  [
+                    "gauntlet_leather",
+                    4
+                  ],
+                  [
+                    "claw_steel",
+                    3
+                  ],
+                  [
+                    "sword_royal",
+                    3
+                  ],
+                  [
+                    "claw_mithril",
+                    3
+                  ],
+                  [
+                    "robe_mithril",
+                    3
+                  ],
+                  [
+                    "sword_copper",
+                    3
+                  ],
+                  [
+                    "armor_tattered_cloth",
+                    3
+                  ],
+                  [
+                    "hidden_royal_dagger",
+                    3
+                  ],
+                  [
+                    "gauntlet_cloth_gloves",
+                    3
+                  ],
+                  [
+                    "rod_rod",
+                    3
+                  ],
+                  [
+                    "claw_iron",
+                    2
+                  ]
+                ]
+              }
+            },
+            {
+              "level": 12,
+              "strategyPath": "/Users/astapi/projects/goblinKingdom/goblin_native/reports/progression-orc-camp-sweep/09-orc_camp_1-strategy-lv12.json",
+              "best": {
+                "winRate": 1,
+                "avgRoundsPerBattle": 1.000712758374911,
+                "equipmentCost": 52395,
+                "frequentJobs": [
+                  [
+                    "mage",
+                    3
+                  ],
+                  [
+                    "cleric",
+                    3
+                  ]
+                ],
+                "frequentVariants": [
+                  [
+                    "wolf",
+                    8
+                  ],
+                  [
+                    "hobgoblin",
+                    3
+                  ],
+                  [
+                    "undead",
+                    1
+                  ]
+                ],
+                "frequentEquipment": [
+                  [
+                    "hidden_mithril_dagger",
+                    16
+                  ],
+                  [
+                    "robe_robe",
+                    7
+                  ],
+                  [
+                    "claw_royal",
+                    6
+                  ],
+                  [
+                    "gauntlet_mithril",
+                    6
+                  ],
+                  [
+                    "wand_mithril",
+                    6
+                  ],
+                  [
+                    "armor_royal",
+                    4
+                  ],
+                  [
+                    "claw_iron",
+                    4
+                  ],
+                  [
+                    "claw_mithril",
+                    4
+                  ],
+                  [
+                    "armor_leather_vest",
+                    4
+                  ],
+                  [
+                    "shield_pot_lid",
+                    4
+                  ],
+                  [
+                    "sword_royal",
+                    4
+                  ],
+                  [
+                    "wand_twig",
+                    3
+                  ],
+                  [
+                    "accessory_luck_medal",
+                    3
+                  ],
+                  [
+                    "sword_copper",
+                    2
+                  ],
+                  [
+                    "gauntlet_cloth_gloves",
+                    2
+                  ],
+                  [
+                    "robe_mithril",
+                    2
+                  ],
+                  [
+                    "hidden_dagger",
+                    2
+                  ],
+                  [
+                    "rod_rod",
+                    1
+                  ],
+                  [
+                    "wand_wand",
+                    1
+                  ],
+                  [
+                    "sword_broad",
+                    1
+                  ]
+                ]
+              }
+            },
+            {
+              "level": 13,
+              "strategyPath": "/Users/astapi/projects/goblinKingdom/goblin_native/reports/progression-orc-camp-sweep/09-orc_camp_1-strategy-lv13.json",
+              "best": {
+                "winRate": 1,
+                "avgRoundsPerBattle": 1,
+                "equipmentCost": 36340,
+                "frequentJobs": [
+                  [
+                    "cleric",
+                    3
+                  ],
+                  [
+                    "warrior",
+                    1
+                  ],
+                  [
+                    "thief",
+                    1
+                  ]
+                ],
+                "frequentVariants": [
+                  [
+                    "wolf",
+                    11
+                  ],
+                  [
+                    "undead",
+                    2
+                  ]
+                ],
+                "frequentEquipment": [
+                  [
+                    "claw_iron",
+                    12
+                  ],
+                  [
+                    "hidden_mithril_dagger",
+                    10
+                  ],
+                  [
+                    "hidden_royal_dagger",
+                    10
+                  ],
+                  [
+                    "shield_mithril",
+                    8
+                  ],
+                  [
+                    "claw_royal",
+                    8
+                  ],
+                  [
+                    "claw_copper",
+                    5
+                  ],
+                  [
+                    "robe_mithril",
+                    4
+                  ],
+                  [
+                    "shield_pot_lid",
+                    3
+                  ],
+                  [
+                    "claw_steel",
+                    3
+                  ],
+                  [
+                    "sword_cypress_stick",
+                    3
+                  ],
+                  [
+                    "robe_robe",
+                    2
+                  ],
+                  [
+                    "shield_wooden",
+                    2
+                  ],
+                  [
+                    "armor_tattered_cloth",
+                    2
+                  ],
+                  [
+                    "armor_mithril",
+                    2
+                  ],
+                  [
+                    "accessory_luck_medal",
+                    2
+                  ],
+                  [
+                    "sword_broad",
+                    2
+                  ],
+                  [
+                    "bow_slingshot",
+                    2
+                  ],
+                  [
+                    "gauntlet_cloth_gloves",
+                    2
+                  ],
+                  [
+                    "wand_royal",
+                    1
+                  ],
+                  [
+                    "wand_twig",
+                    1
+                  ]
+                ]
+              }
+            },
+            {
+              "level": 14,
+              "strategyPath": "/Users/astapi/projects/goblinKingdom/goblin_native/reports/progression-orc-camp-sweep/09-orc_camp_1-strategy-lv14.json",
+              "best": {
+                "winRate": 1,
+                "avgRoundsPerBattle": 1,
+                "equipmentCost": 64615,
+                "frequentJobs": [
+                  [
+                    "cleric",
+                    3
+                  ],
+                  [
+                    "mage",
+                    2
+                  ],
+                  [
+                    "thief",
+                    1
+                  ]
+                ],
+                "frequentVariants": [
+                  [
+                    "hobgoblin",
+                    12
+                  ]
+                ],
+                "frequentEquipment": [
+                  [
+                    "sword_long",
+                    12
+                  ],
+                  [
+                    "claw_royal",
+                    9
+                  ],
+                  [
+                    "claw_iron",
+                    8
+                  ],
+                  [
+                    "gauntlet_copper",
+                    7
+                  ],
+                  [
+                    "hidden_mithril_dagger",
+                    6
+                  ],
+                  [
+                    "sword_royal",
+                    6
+                  ],
+                  [
+                    "sword_copper",
+                    6
+                  ],
+                  [
+                    "gauntlet_leather",
+                    6
+                  ],
+                  [
+                    "hidden_dagger",
+                    3
+                  ],
+                  [
+                    "sword_broad",
+                    3
+                  ],
+                  [
+                    "shield_shield",
+                    3
+                  ],
+                  [
+                    "rod_wooden",
+                    3
+                  ],
+                  [
+                    "claw_sharp",
+                    3
+                  ],
+                  [
+                    "gauntlet_royal",
+                    3
+                  ],
+                  [
+                    "sword_cypress_stick",
+                    3
+                  ],
+                  [
+                    "wand_apprentice",
+                    3
+                  ],
+                  [
+                    "claw_steel",
+                    3
+                  ],
+                  [
+                    "rod_acolyte",
+                    3
+                  ]
+                ]
+              }
+            },
+            {
+              "level": 15,
+              "strategyPath": "/Users/astapi/projects/goblinKingdom/goblin_native/reports/progression-orc-camp-sweep/09-orc_camp_1-strategy-lv15.json",
+              "best": {
+                "winRate": 1,
+                "avgRoundsPerBattle": 1,
+                "equipmentCost": 9195,
+                "frequentJobs": [
+                  [
+                    "warrior",
+                    8
+                  ],
+                  [
+                    "cleric",
+                    3
+                  ]
+                ],
+                "frequentVariants": [
+                  [
+                    "wolf",
+                    6
+                  ],
+                  [
+                    "hobgoblin",
+                    1
+                  ]
+                ],
+                "frequentEquipment": [
+                  [
+                    "sword_broad",
+                    9
+                  ],
+                  [
+                    "claw_mithril",
+                    8
+                  ],
+                  [
+                    "armor_armor",
+                    8
+                  ],
+                  [
+                    "claw_copper",
+                    6
+                  ],
+                  [
+                    "armor_tattered_cloth",
+                    6
+                  ],
+                  [
+                    "shield_wooden",
+                    6
+                  ],
+                  [
+                    "claw_steel",
+                    6
+                  ],
+                  [
+                    "hidden_dagger",
+                    6
+                  ],
+                  [
+                    "hidden_royal_dagger",
+                    4
+                  ],
+                  [
+                    "claw_royal",
+                    3
+                  ],
+                  [
+                    "rod_mithril",
+                    3
+                  ],
+                  [
+                    "sword_club",
+                    3
+                  ],
+                  [
+                    "sword_long",
+                    3
+                  ],
+                  [
+                    "claw_iron",
+                    3
+                  ],
+                  [
+                    "sword_mithril",
+                    3
+                  ],
+                  [
+                    "gauntlet_cloth_gloves",
+                    3
+                  ],
+                  [
+                    "bow_short",
+                    3
+                  ],
+                  [
+                    "wand_twig",
+                    2
+                  ],
+                  [
+                    "sword_copper",
+                    2
+                  ],
+                  [
+                    "rod_wooden",
+                    1
+                  ]
+                ]
+              }
+            },
+            {
+              "level": 16,
+              "strategyPath": "/Users/astapi/projects/goblinKingdom/goblin_native/reports/progression-orc-camp-sweep/09-orc_camp_1-strategy-lv16.json",
+              "best": {
+                "winRate": 1,
+                "avgRoundsPerBattle": 1,
+                "equipmentCost": 51970,
+                "frequentJobs": [
+                  [
+                    "warrior",
+                    3
+                  ],
+                  [
+                    "cleric",
+                    3
+                  ],
+                  [
+                    "thief",
+                    2
+                  ]
+                ],
+                "frequentVariants": [
+                  [
+                    "undead",
+                    5
+                  ],
+                  [
+                    "hobgoblin",
+                    4
+                  ]
+                ],
+                "frequentEquipment": [
+                  [
+                    "armor_leather_vest",
+                    11
+                  ],
+                  [
+                    "claw_mithril",
+                    9
+                  ],
+                  [
+                    "gauntlet_gauntlet",
+                    9
+                  ],
+                  [
+                    "sword_mithril",
+                    8
+                  ],
+                  [
+                    "gauntlet_cloth_gloves",
+                    8
+                  ],
+                  [
+                    "gauntlet_copper",
+                    7
+                  ],
+                  [
+                    "rod_acolyte",
+                    6
+                  ],
+                  [
+                    "claw_iron",
+                    6
+                  ],
+                  [
+                    "bow_long",
+                    6
+                  ],
+                  [
+                    "wand_apprentice",
+                    5
+                  ],
+                  [
+                    "wand_wand",
+                    3
+                  ],
+                  [
+                    "wand_twig",
+                    3
+                  ],
+                  [
+                    "accessory_human_slayer",
+                    3
+                  ],
+                  [
+                    "hidden_dagger",
+                    3
+                  ],
+                  [
+                    "shield_shield",
+                    3
+                  ],
+                  [
+                    "bow_royal",
+                    3
+                  ],
+                  [
+                    "gauntlet_leather",
+                    3
+                  ],
+                  [
+                    "armor_armor",
+                    3
+                  ],
+                  [
+                    "armor_tattered_cloth",
+                    3
+                  ],
+                  [
+                    "sword_long",
+                    2
+                  ]
+                ]
+              }
+            },
+            {
+              "level": 17,
+              "strategyPath": "/Users/astapi/projects/goblinKingdom/goblin_native/reports/progression-orc-camp-sweep/09-orc_camp_1-strategy-lv17.json",
+              "best": {
+                "winRate": 1,
+                "avgRoundsPerBattle": 1,
+                "equipmentCost": 28190,
+                "frequentJobs": [
+                  [
+                    "cleric",
+                    3
+                  ],
+                  [
+                    "thief",
+                    2
+                  ],
+                  [
+                    "guard",
+                    1
+                  ]
+                ],
+                "frequentVariants": [
+                  [
+                    "hobgoblin",
+                    9
+                  ],
+                  [
+                    "wolf",
+                    2
+                  ],
+                  [
+                    "undead",
+                    1
+                  ]
+                ],
+                "frequentEquipment": [
+                  [
+                    "armor_mithril",
+                    14
+                  ],
+                  [
+                    "gauntlet_gauntlet",
+                    9
+                  ],
+                  [
+                    "claw_royal",
+                    9
+                  ],
+                  [
+                    "sword_cypress_stick",
+                    9
+                  ],
+                  [
+                    "sword_long",
+                    6
+                  ],
+                  [
+                    "armor_leather_vest",
+                    6
+                  ],
+                  [
+                    "claw_steel",
+                    5
+                  ],
+                  [
+                    "claw_iron",
+                    4
+                  ],
+                  [
+                    "shield_royal",
+                    4
+                  ],
+                  [
+                    "wand_mithril",
+                    3
+                  ],
+                  [
+                    "hidden_mithril_dagger",
+                    3
+                  ],
+                  [
+                    "gauntlet_leather",
+                    3
+                  ],
+                  [
+                    "gauntlet_copper",
+                    3
+                  ],
+                  [
+                    "hidden_royal_dagger",
+                    3
+                  ],
+                  [
+                    "shield_wooden",
+                    3
+                  ],
+                  [
+                    "sword_mithril",
+                    3
+                  ],
+                  [
+                    "claw_beast",
+                    3
+                  ],
+                  [
+                    "claw_mithril",
+                    3
+                  ],
+                  [
+                    "armor_royal",
+                    3
+                  ],
+                  [
+                    "armor_fur_vest",
+                    2
+                  ]
+                ]
+              }
+            },
+            {
+              "level": 18,
+              "strategyPath": "/Users/astapi/projects/goblinKingdom/goblin_native/reports/progression-orc-camp-sweep/09-orc_camp_1-strategy-lv18.json",
+              "best": {
+                "winRate": 1,
+                "avgRoundsPerBattle": 1,
+                "equipmentCost": 32070,
+                "frequentJobs": [
+                  [
+                    "warrior",
+                    3
+                  ],
+                  [
+                    "cleric",
+                    3
+                  ],
+                  [
+                    "guard",
+                    2
+                  ]
+                ],
+                "frequentVariants": [
+                  [
+                    "wolf",
+                    6
+                  ],
+                  [
+                    "hobgoblin",
+                    2
+                  ],
+                  [
+                    "slime",
+                    1
+                  ]
+                ],
+                "frequentEquipment": [
+                  [
+                    "sword_royal",
+                    9
+                  ],
+                  [
+                    "claw_royal",
+                    6
+                  ],
+                  [
+                    "wand_twig",
+                    6
+                  ],
+                  [
+                    "shield_wooden",
+                    6
+                  ],
+                  [
+                    "claw_steel",
+                    6
+                  ],
+                  [
+                    "gauntlet_gauntlet",
+                    6
+                  ],
+                  [
+                    "sword_club",
+                    6
+                  ],
+                  [
+                    "rod_royal",
+                    6
+                  ],
+                  [
+                    "bow_slingshot",
+                    6
+                  ],
+                  [
+                    "claw_copper",
+                    5
+                  ],
+                  [
+                    "wand_wand",
+                    5
+                  ],
+                  [
+                    "claw_sharp",
+                    4
+                  ],
+                  [
+                    "rod_wooden",
+                    4
+                  ],
+                  [
+                    "hidden_dagger",
+                    3
+                  ],
+                  [
+                    "armor_leather_vest",
+                    3
+                  ],
+                  [
+                    "shield_royal",
+                    3
+                  ],
+                  [
+                    "shield_mithril",
+                    3
+                  ],
+                  [
+                    "gauntlet_copper",
+                    2
+                  ],
+                  [
+                    "sword_copper",
+                    2
+                  ],
+                  [
+                    "gauntlet_mithril",
+                    2
+                  ]
+                ]
+              }
+            }
+          ],
+          "clearLevel80": 6,
+          "clearLevel95": 6,
+          "lowestWinningLevel": 6
+        },
+        "best": {
+          "winRate": 1,
+          "avgRoundsPerBattle": 1.8600999286224125,
+          "equipmentCost": 80505,
+          "frequentJobs": [
+            [
+              "cleric",
+              3
+            ]
+          ],
+          "frequentVariants": [
+            [
+              "wolf",
+              9
+            ],
+            [
+              "slime",
+              3
+            ],
+            [
+              "hobgoblin",
+              3
+            ]
+          ],
+          "frequentEquipment": [
+            [
+              "gauntlet_gauntlet",
+              7
+            ],
+            [
+              "armor_armor",
+              6
+            ],
+            [
+              "claw_royal",
+              5
+            ],
+            [
+              "gauntlet_copper",
+              5
+            ],
+            [
+              "accessory_human_slayer",
+              5
+            ],
+            [
+              "armor_leather_vest",
+              3
+            ],
+            [
+              "armor_fur_vest",
+              3
+            ],
+            [
+              "hidden_mithril_dagger",
+              3
+            ],
+            [
+              "bow_long",
+              3
+            ],
+            [
+              "claw_copper",
+              3
+            ],
+            [
+              "accessory_split_core",
+              2
+            ],
+            [
+              "rod_rod",
+              2
+            ],
+            [
+              "bow_royal",
+              2
+            ],
+            [
+              "sword_long",
+              2
+            ],
+            [
+              "claw_mithril",
+              1
+            ],
+            [
+              "accessory_luck_medal",
+              1
+            ],
+            [
+              "hidden_dagger",
+              1
+            ]
+          ]
+        }
+      }
+    }
+  ]
+}

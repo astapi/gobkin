@@ -1,0 +1,240 @@
+{
+  "createdAt": "2026-06-05T02:02:33.098Z",
+  "scenario": "goblin_village_1",
+  "level": 7,
+  "config": {
+    "generations": 4,
+    "population": 12,
+    "iterations": 4,
+    "validationIterations": 40,
+    "seed": 217,
+    "cleric": "optional",
+    "jobs": [],
+    "variants": [
+      "slime",
+      "wolf"
+    ],
+    "maxUnlockRank": 1,
+    "maxDropRank": 1,
+    "allowRare": false,
+    "availability": null
+  },
+  "insights": {
+    "winningCandidateCount": 0,
+    "frequentJobs": [],
+    "frequentVariants": [
+      [
+        "wolf",
+        7
+      ]
+    ],
+    "frequentEquipment": [
+      [
+        "gauntlet_cloth_gloves",
+        5
+      ],
+      [
+        "bow_slingshot",
+        4
+      ],
+      [
+        "gauntlet_leather",
+        4
+      ],
+      [
+        "claw_iron",
+        3
+      ],
+      [
+        "armor_tattered_cloth",
+        3
+      ],
+      [
+        "shield_pot_lid",
+        2
+      ],
+      [
+        "gauntlet_copper",
+        2
+      ],
+      [
+        "sword_club",
+        2
+      ],
+      [
+        "sword_copper",
+        2
+      ],
+      [
+        "sword_cypress_stick",
+        2
+      ],
+      [
+        "wand_apprentice",
+        1
+      ],
+      [
+        "robe_robe",
+        1
+      ],
+      [
+        "shield_shield",
+        1
+      ],
+      [
+        "claw_beast",
+        1
+      ],
+      [
+        "shield_wooden",
+        1
+      ],
+      [
+        "bow_long",
+        1
+      ],
+      [
+        "wand_wand",
+        1
+      ]
+    ]
+  },
+  "candidates": [
+    {
+      "result": {
+        "wins": 0,
+        "iterations": 40,
+        "winRate": 0,
+        "avgRoundsPerBattle": 1.6952054794520548,
+        "equipmentCost": 1600,
+        "score": -1.6952070794520548
+      },
+      "genome": {
+        "members": [
+          {
+            "job": null,
+            "variantFactorId": "wolf",
+            "equipmentTemplateIds": [
+              "wand_apprentice",
+              "shield_pot_lid",
+              "robe_robe"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "wolf",
+            "equipmentTemplateIds": [
+              "shield_shield",
+              "claw_beast",
+              "gauntlet_copper"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "wolf",
+            "equipmentTemplateIds": [
+              "shield_wooden",
+              "gauntlet_cloth_gloves",
+              "sword_club"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "claw_iron",
+              "sword_copper",
+              "armor_tattered_cloth"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "wolf",
+            "equipmentTemplateIds": [
+              "bow_slingshot",
+              "gauntlet_cloth_gloves",
+              "gauntlet_leather"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "claw_iron",
+              "bow_long",
+              "armor_tattered_cloth"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "result": {
+        "wins": 0,
+        "iterations": 40,
+        "winRate": 0,
+        "avgRoundsPerBattle": 1.8726415094339623,
+        "equipmentCost": 445,
+        "score": -1.8726419544339623
+      },
+      "genome": {
+        "members": [
+          {
+            "job": null,
+            "variantFactorId": "wolf",
+            "equipmentTemplateIds": [
+              "wand_wand",
+              "sword_cypress_stick",
+              "gauntlet_copper"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "sword_cypress_stick",
+              "shield_pot_lid",
+              "sword_club"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "bow_slingshot",
+              "gauntlet_cloth_gloves",
+              "gauntlet_leather"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "wolf",
+            "equipmentTemplateIds": [
+              "bow_slingshot",
+              "gauntlet_cloth_gloves",
+              "gauntlet_leather"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "wolf",
+            "equipmentTemplateIds": [
+              "bow_slingshot",
+              "gauntlet_cloth_gloves",
+              "gauntlet_leather"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "claw_iron",
+              "sword_copper",
+              "armor_tattered_cloth"
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

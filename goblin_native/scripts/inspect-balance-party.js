@@ -5,7 +5,7 @@
  * デバッグ用: なぜLv2で勝てるのかを調べるためのインスペクタ。
  *
  * 使い方:
- *   node scripts/inspect-balance-party.js --scenario goblin_village_3 --loadout A_optimal --level 2
+ *   node scripts/inspect-balance-party.js --scenario goblin_village_1 --loadout A_optimal --level 2
  */
 
 const fs = require('fs')
@@ -128,7 +128,7 @@ function summarizeSkills(skills) {
 
 function main() {
   const args = process.argv.slice(2)
-  let scenarioId = 'goblin_village_3'
+  let scenarioId = 'goblin_village_1'
   let loadoutName = 'A_optimal'
   let level = 2
   for (let i = 0; i < args.length; i++) {

@@ -1,0 +1,404 @@
+{
+  "createdAt": "2026-06-04T06:48:32.735Z",
+  "scenario": "orc_camp_1",
+  "level": 16,
+  "config": {
+    "generations": 10,
+    "population": 30,
+    "iterations": 8,
+    "validationIterations": 100,
+    "seed": 16009,
+    "cleric": "required",
+    "jobs": [
+      "guard",
+      "warrior",
+      "thief",
+      "mage",
+      "cleric"
+    ],
+    "variants": [
+      "hobgoblin",
+      "slime",
+      "undead",
+      "wolf"
+    ],
+    "maxUnlockRank": 2,
+    "maxDropRank": 2,
+    "allowRare": false,
+    "availability": "/Users/astapi/projects/goblinKingdom/goblin_native/reports/progression-orc-camp-sweep/08-road_1-availability.json"
+  },
+  "insights": {
+    "winningCandidateCount": 3,
+    "frequentJobs": [
+      [
+        "warrior",
+        3
+      ],
+      [
+        "cleric",
+        3
+      ],
+      [
+        "thief",
+        2
+      ]
+    ],
+    "frequentVariants": [
+      [
+        "undead",
+        5
+      ],
+      [
+        "hobgoblin",
+        4
+      ]
+    ],
+    "frequentEquipment": [
+      [
+        "armor_leather_vest",
+        11
+      ],
+      [
+        "claw_mithril",
+        9
+      ],
+      [
+        "gauntlet_gauntlet",
+        9
+      ],
+      [
+        "sword_mithril",
+        8
+      ],
+      [
+        "gauntlet_cloth_gloves",
+        8
+      ],
+      [
+        "gauntlet_copper",
+        7
+      ],
+      [
+        "rod_acolyte",
+        6
+      ],
+      [
+        "claw_iron",
+        6
+      ],
+      [
+        "bow_long",
+        6
+      ],
+      [
+        "wand_apprentice",
+        5
+      ],
+      [
+        "wand_wand",
+        3
+      ],
+      [
+        "wand_twig",
+        3
+      ],
+      [
+        "accessory_human_slayer",
+        3
+      ],
+      [
+        "hidden_dagger",
+        3
+      ],
+      [
+        "shield_shield",
+        3
+      ],
+      [
+        "bow_royal",
+        3
+      ],
+      [
+        "gauntlet_leather",
+        3
+      ],
+      [
+        "armor_armor",
+        3
+      ],
+      [
+        "armor_tattered_cloth",
+        3
+      ],
+      [
+        "sword_long",
+        2
+      ]
+    ]
+  },
+  "candidates": [
+    {
+      "result": {
+        "wins": 100,
+        "iterations": 100,
+        "winRate": 1,
+        "avgRoundsPerBattle": 1,
+        "equipmentCost": 51970,
+        "score": 999998.99994803
+      },
+      "genome": {
+        "members": [
+          {
+            "job": null,
+            "variantFactorId": "hobgoblin",
+            "equipmentTemplateIds": [
+              "wand_wand",
+              "wand_apprentice",
+              "wand_twig",
+              "claw_mithril",
+              "accessory_human_slayer",
+              "rod_acolyte"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "hobgoblin",
+            "equipmentTemplateIds": [
+              "claw_mithril",
+              "claw_iron",
+              "sword_mithril",
+              "armor_leather_vest",
+              "armor_leather_vest",
+              "rod_acolyte"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "undead",
+            "equipmentTemplateIds": [
+              "claw_mithril",
+              "claw_iron",
+              "sword_mithril",
+              "armor_leather_vest",
+              "armor_leather_vest",
+              "hidden_dagger",
+              "gauntlet_cloth_gloves"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "bow_long",
+              "gauntlet_gauntlet",
+              "gauntlet_copper",
+              "shield_shield",
+              "gauntlet_gauntlet",
+              "bow_royal"
+            ]
+          },
+          {
+            "job": "warrior",
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "bow_long",
+              "gauntlet_gauntlet",
+              "gauntlet_copper",
+              "gauntlet_leather",
+              "gauntlet_cloth_gloves",
+              "armor_armor"
+            ]
+          },
+          {
+            "job": "cleric",
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "wand_apprentice",
+              "sword_long",
+              "sword_mithril",
+              "sword_club",
+              "armor_tattered_cloth",
+              "rod_wooden"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "result": {
+        "wins": 100,
+        "iterations": 100,
+        "winRate": 1,
+        "avgRoundsPerBattle": 1,
+        "equipmentCost": 52425,
+        "score": 999998.999947575
+      },
+      "genome": {
+        "members": [
+          {
+            "job": null,
+            "variantFactorId": "hobgoblin",
+            "equipmentTemplateIds": [
+              "wand_wand",
+              "wand_apprentice",
+              "wand_twig",
+              "claw_mithril",
+              "accessory_human_slayer",
+              "rod_acolyte"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "undead",
+            "equipmentTemplateIds": [
+              "claw_mithril",
+              "claw_iron",
+              "sword_mithril",
+              "armor_leather_vest",
+              "armor_leather_vest",
+              "hidden_dagger",
+              "gauntlet_cloth_gloves"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "undead",
+            "equipmentTemplateIds": [
+              "claw_mithril",
+              "claw_iron",
+              "sword_mithril",
+              "armor_leather_vest",
+              "armor_leather_vest",
+              "rod_acolyte",
+              "gauntlet_cloth_gloves"
+            ]
+          },
+          {
+            "job": "thief",
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "bow_long",
+              "gauntlet_gauntlet",
+              "gauntlet_copper",
+              "shield_shield",
+              "gauntlet_gauntlet",
+              "bow_royal"
+            ]
+          },
+          {
+            "job": "warrior",
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "bow_long",
+              "gauntlet_gauntlet",
+              "gauntlet_copper",
+              "gauntlet_leather",
+              "gauntlet_cloth_gloves",
+              "armor_armor"
+            ]
+          },
+          {
+            "job": "cleric",
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "gauntlet_copper",
+              "wand_mithril",
+              "armor_tattered_cloth",
+              "wand_apprentice",
+              "claw_sharp",
+              "sword_broad"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "result": {
+        "wins": 100,
+        "iterations": 100,
+        "winRate": 1,
+        "avgRoundsPerBattle": 1,
+        "equipmentCost": 53130,
+        "score": 999998.99994687
+      },
+      "genome": {
+        "members": [
+          {
+            "job": null,
+            "variantFactorId": "hobgoblin",
+            "equipmentTemplateIds": [
+              "wand_wand",
+              "wand_apprentice",
+              "wand_twig",
+              "claw_mithril",
+              "accessory_human_slayer",
+              "rod_acolyte"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "undead",
+            "equipmentTemplateIds": [
+              "claw_mithril",
+              "claw_iron",
+              "sword_mithril",
+              "armor_leather_vest",
+              "armor_leather_vest",
+              "hidden_dagger",
+              "gauntlet_cloth_gloves"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "undead",
+            "equipmentTemplateIds": [
+              "claw_mithril",
+              "claw_iron",
+              "sword_mithril",
+              "armor_leather_vest",
+              "robe_mithril",
+              "rod_acolyte",
+              "gauntlet_cloth_gloves"
+            ]
+          },
+          {
+            "job": "thief",
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "bow_long",
+              "gauntlet_gauntlet",
+              "gauntlet_copper",
+              "shield_shield",
+              "gauntlet_gauntlet",
+              "bow_royal"
+            ]
+          },
+          {
+            "job": "warrior",
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "bow_long",
+              "gauntlet_gauntlet",
+              "gauntlet_copper",
+              "gauntlet_leather",
+              "gauntlet_cloth_gloves",
+              "armor_armor"
+            ]
+          },
+          {
+            "job": "cleric",
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "robe_robe",
+              "sword_long",
+              "sword_mithril",
+              "sword_club",
+              "armor_tattered_cloth",
+              "rod_wooden"
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

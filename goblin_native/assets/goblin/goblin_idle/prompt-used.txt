@@ -1,0 +1,1 @@
+3x3 idle loop for the same unarmed goblin reference; solid #FF00FF background; subtle breathing and weight shift; stable feet anchor; consistent scale; no weapons, accessories, detached FX, borders, labels, or text.

@@ -1,0 +1,1386 @@
+{
+  "version": 1,
+  "createdAt": "2026-06-05T01:30:01.855Z",
+  "config": {
+    "through": "forest_outskirts",
+    "outDir": "reports/progression-forest-outskirts",
+    "tiers": {},
+    "defaultTier": 0,
+    "level": null,
+    "levelMode": "scenario-max",
+    "levelSweep": {
+      "min": 1,
+      "max": 16,
+      "step": 1
+    },
+    "generations": 5,
+    "population": 14,
+    "iterations": 4,
+    "validationIterations": 40,
+    "elite": 4,
+    "top": 3,
+    "seed": 3,
+    "skipOptimize": false
+  },
+  "through": "forest_outskirts",
+  "outDir": "/Users/astapi/projects/goblinKingdom/goblin_native/reports/progression-forest-outskirts",
+  "steps": [
+    {
+      "index": 1,
+      "areaId": "slime_cave",
+      "areaName": "スライムの洞窟",
+      "cleared": [
+        "slime_cave"
+      ],
+      "maxTier": 0,
+      "availabilityPath": "/Users/astapi/projects/goblinKingdom/goblin_native/reports/progression-forest-outskirts/01-slime_cave-availability.json",
+      "counts": {
+        "equipment": 34,
+        "rareEquipment": 2,
+        "factors": 1
+      },
+      "baseRank": 1,
+      "maxNormalDropRank": 0,
+      "newRareEquipment": [
+        {
+          "templateId": "accessory_luck_medal",
+          "name": "ラッキーメダル",
+          "sources": [
+            {
+              "type": "rareDrop",
+              "areaId": "slime_cave",
+              "tier": 0,
+              "enemyId": "B_SLIME"
+            }
+          ]
+        },
+        {
+          "templateId": "accessory_split_core",
+          "name": "分裂核",
+          "sources": [
+            {
+              "type": "rareDrop",
+              "areaId": "slime_cave",
+              "tier": 0,
+              "enemyId": "S001"
+            }
+          ]
+        }
+      ],
+      "scenario": null
+    },
+    {
+      "index": 2,
+      "areaId": "forest_outskirts",
+      "areaName": "周辺の森",
+      "cleared": [
+        "slime_cave",
+        "forest_outskirts"
+      ],
+      "maxTier": 0,
+      "availabilityPath": "/Users/astapi/projects/goblinKingdom/goblin_native/reports/progression-forest-outskirts/02-forest_outskirts-availability.json",
+      "counts": {
+        "equipment": 34,
+        "rareEquipment": 2,
+        "factors": 2
+      },
+      "baseRank": 1,
+      "maxNormalDropRank": 1,
+      "newRareEquipment": [],
+      "scenario": {
+        "level": 1,
+        "strategyPath": "/Users/astapi/projects/goblinKingdom/goblin_native/reports/progression-forest-outskirts/02-forest_outskirts-strategy-lv1.json",
+        "challengeAvailabilityPath": "/Users/astapi/projects/goblinKingdom/goblin_native/reports/progression-forest-outskirts/01-slime_cave-availability.json",
+        "jobs": [],
+        "variants": [
+          "slime"
+        ],
+        "levelSweep": {
+          "results": [
+            {
+              "level": 1,
+              "strategyPath": "/Users/astapi/projects/goblinKingdom/goblin_native/reports/progression-forest-outskirts/02-forest_outskirts-strategy-lv1.json",
+              "best": {
+                "winRate": 1,
+                "avgRoundsPerBattle": 1.4861111111111112,
+                "equipmentCost": 13860,
+                "frequentJobs": [],
+                "frequentVariants": [
+                  [
+                    "slime",
+                    15
+                  ]
+                ],
+                "frequentEquipment": [
+                  [
+                    "claw_steel",
+                    6
+                  ],
+                  [
+                    "sword_broad",
+                    4
+                  ],
+                  [
+                    "bow_long",
+                    4
+                  ],
+                  [
+                    "accessory_split_core",
+                    2
+                  ],
+                  [
+                    "claw_sharp",
+                    1
+                  ],
+                  [
+                    "hidden_dagger",
+                    1
+                  ]
+                ]
+              }
+            },
+            {
+              "level": 2,
+              "strategyPath": "/Users/astapi/projects/goblinKingdom/goblin_native/reports/progression-forest-outskirts/02-forest_outskirts-strategy-lv2.json",
+              "best": {
+                "winRate": 1,
+                "avgRoundsPerBattle": 1.452930728241563,
+                "equipmentCost": 385,
+                "frequentJobs": [],
+                "frequentVariants": [
+                  [
+                    "slime",
+                    16
+                  ]
+                ],
+                "frequentEquipment": [
+                  [
+                    "hidden_dagger",
+                    6
+                  ],
+                  [
+                    "claw_iron",
+                    6
+                  ],
+                  [
+                    "armor_tattered_cloth",
+                    1
+                  ],
+                  [
+                    "robe_robe",
+                    1
+                  ],
+                  [
+                    "claw_sharp",
+                    1
+                  ],
+                  [
+                    "claw_steel",
+                    1
+                  ],
+                  [
+                    "bow_long",
+                    1
+                  ],
+                  [
+                    "gauntlet_copper",
+                    1
+                  ]
+                ]
+              }
+            },
+            {
+              "level": 3,
+              "strategyPath": "/Users/astapi/projects/goblinKingdom/goblin_native/reports/progression-forest-outskirts/02-forest_outskirts-strategy-lv3.json",
+              "best": {
+                "winRate": 1,
+                "avgRoundsPerBattle": 1.0154109589041096,
+                "equipmentCost": 12305,
+                "frequentJobs": [],
+                "frequentVariants": [
+                  [
+                    "slime",
+                    3
+                  ]
+                ],
+                "frequentEquipment": [
+                  [
+                    "bow_long",
+                    12
+                  ],
+                  [
+                    "gauntlet_gauntlet",
+                    12
+                  ],
+                  [
+                    "armor_armor",
+                    5
+                  ],
+                  [
+                    "sword_long",
+                    3
+                  ],
+                  [
+                    "armor_tattered_cloth",
+                    2
+                  ],
+                  [
+                    "armor_fur_vest",
+                    1
+                  ],
+                  [
+                    "rod_rod",
+                    1
+                  ]
+                ]
+              }
+            },
+            {
+              "level": 4,
+              "strategyPath": "/Users/astapi/projects/goblinKingdom/goblin_native/reports/progression-forest-outskirts/02-forest_outskirts-strategy-lv4.json",
+              "best": {
+                "winRate": 1,
+                "avgRoundsPerBattle": 1,
+                "equipmentCost": 7455,
+                "frequentJobs": [],
+                "frequentVariants": [
+                  [
+                    "slime",
+                    10
+                  ]
+                ],
+                "frequentEquipment": [
+                  [
+                    "gauntlet_gauntlet",
+                    8
+                  ],
+                  [
+                    "bow_long",
+                    7
+                  ],
+                  [
+                    "claw_iron",
+                    5
+                  ],
+                  [
+                    "sword_long",
+                    4
+                  ],
+                  [
+                    "armor_fur_vest",
+                    3
+                  ],
+                  [
+                    "armor_armor",
+                    2
+                  ],
+                  [
+                    "wand_apprentice",
+                    2
+                  ],
+                  [
+                    "claw_steel",
+                    2
+                  ],
+                  [
+                    "sword_broad",
+                    2
+                  ],
+                  [
+                    "gauntlet_cloth_gloves",
+                    1
+                  ]
+                ]
+              }
+            },
+            {
+              "level": 5,
+              "strategyPath": "/Users/astapi/projects/goblinKingdom/goblin_native/reports/progression-forest-outskirts/02-forest_outskirts-strategy-lv5.json",
+              "best": {
+                "winRate": 1,
+                "avgRoundsPerBattle": 1,
+                "equipmentCost": 12245,
+                "frequentJobs": [],
+                "frequentVariants": [
+                  [
+                    "slime",
+                    2
+                  ]
+                ],
+                "frequentEquipment": [
+                  [
+                    "gauntlet_gauntlet",
+                    12
+                  ],
+                  [
+                    "bow_long",
+                    10
+                  ],
+                  [
+                    "armor_armor",
+                    4
+                  ],
+                  [
+                    "sword_long",
+                    3
+                  ],
+                  [
+                    "rod_wooden",
+                    2
+                  ],
+                  [
+                    "armor_fur_vest",
+                    2
+                  ],
+                  [
+                    "claw_beast",
+                    1
+                  ],
+                  [
+                    "sword_cypress_stick",
+                    1
+                  ],
+                  [
+                    "armor_leather_vest",
+                    1
+                  ]
+                ]
+              }
+            },
+            {
+              "level": 6,
+              "strategyPath": "/Users/astapi/projects/goblinKingdom/goblin_native/reports/progression-forest-outskirts/02-forest_outskirts-strategy-lv6.json",
+              "best": {
+                "winRate": 1,
+                "avgRoundsPerBattle": 1.0017825311942958,
+                "equipmentCost": 6800,
+                "frequentJobs": [],
+                "frequentVariants": [
+                  [
+                    "slime",
+                    6
+                  ]
+                ],
+                "frequentEquipment": [
+                  [
+                    "bow_long",
+                    7
+                  ],
+                  [
+                    "sword_long",
+                    6
+                  ],
+                  [
+                    "gauntlet_cloth_gloves",
+                    5
+                  ],
+                  [
+                    "armor_leather_vest",
+                    5
+                  ],
+                  [
+                    "shield_shield",
+                    4
+                  ],
+                  [
+                    "gauntlet_gauntlet",
+                    4
+                  ],
+                  [
+                    "gauntlet_copper",
+                    4
+                  ],
+                  [
+                    "sword_broad",
+                    3
+                  ],
+                  [
+                    "hidden_dagger",
+                    3
+                  ],
+                  [
+                    "claw_copper",
+                    2
+                  ],
+                  [
+                    "armor_armor",
+                    2
+                  ],
+                  [
+                    "claw_iron",
+                    2
+                  ],
+                  [
+                    "wand_wand",
+                    2
+                  ],
+                  [
+                    "robe_robe",
+                    2
+                  ],
+                  [
+                    "wand_apprentice",
+                    1
+                  ],
+                  [
+                    "sword_cypress_stick",
+                    1
+                  ],
+                  [
+                    "claw_sharp",
+                    1
+                  ]
+                ]
+              }
+            },
+            {
+              "level": 7,
+              "strategyPath": "/Users/astapi/projects/goblinKingdom/goblin_native/reports/progression-forest-outskirts/02-forest_outskirts-strategy-lv7.json",
+              "best": {
+                "winRate": 1,
+                "avgRoundsPerBattle": 1,
+                "equipmentCost": 6125,
+                "frequentJobs": [],
+                "frequentVariants": [
+                  [
+                    "slime",
+                    6
+                  ]
+                ],
+                "frequentEquipment": [
+                  [
+                    "armor_armor",
+                    6
+                  ],
+                  [
+                    "gauntlet_gauntlet",
+                    6
+                  ],
+                  [
+                    "gauntlet_copper",
+                    6
+                  ],
+                  [
+                    "armor_leather_vest",
+                    5
+                  ],
+                  [
+                    "gauntlet_leather",
+                    5
+                  ],
+                  [
+                    "bow_long",
+                    5
+                  ],
+                  [
+                    "armor_fur_vest",
+                    4
+                  ],
+                  [
+                    "rod_rod",
+                    3
+                  ],
+                  [
+                    "claw_copper",
+                    3
+                  ],
+                  [
+                    "robe_robe",
+                    2
+                  ],
+                  [
+                    "shield_shield",
+                    2
+                  ],
+                  [
+                    "gauntlet_cloth_gloves",
+                    2
+                  ],
+                  [
+                    "claw_steel",
+                    1
+                  ],
+                  [
+                    "sword_cypress_stick",
+                    1
+                  ],
+                  [
+                    "bow_short",
+                    1
+                  ],
+                  [
+                    "claw_beast",
+                    1
+                  ],
+                  [
+                    "claw_iron",
+                    1
+                  ]
+                ]
+              }
+            },
+            {
+              "level": 8,
+              "strategyPath": "/Users/astapi/projects/goblinKingdom/goblin_native/reports/progression-forest-outskirts/02-forest_outskirts-strategy-lv8.json",
+              "best": {
+                "winRate": 1,
+                "avgRoundsPerBattle": 1.0017921146953406,
+                "equipmentCost": 795,
+                "frequentJobs": [],
+                "frequentVariants": [
+                  [
+                    "slime",
+                    9
+                  ]
+                ],
+                "frequentEquipment": [
+                  [
+                    "gauntlet_cloth_gloves",
+                    9
+                  ],
+                  [
+                    "claw_iron",
+                    6
+                  ],
+                  [
+                    "shield_wooden",
+                    6
+                  ],
+                  [
+                    "wand_apprentice",
+                    4
+                  ],
+                  [
+                    "gauntlet_leather",
+                    3
+                  ],
+                  [
+                    "sword_broad",
+                    3
+                  ],
+                  [
+                    "gauntlet_copper",
+                    3
+                  ],
+                  [
+                    "sword_club",
+                    3
+                  ],
+                  [
+                    "sword_long",
+                    3
+                  ],
+                  [
+                    "rod_acolyte",
+                    3
+                  ],
+                  [
+                    "hidden_dagger",
+                    3
+                  ],
+                  [
+                    "robe_robe",
+                    3
+                  ],
+                  [
+                    "sword_copper",
+                    2
+                  ],
+                  [
+                    "gauntlet_gauntlet",
+                    2
+                  ],
+                  [
+                    "claw_beast",
+                    1
+                  ]
+                ]
+              }
+            },
+            {
+              "level": 9,
+              "strategyPath": "/Users/astapi/projects/goblinKingdom/goblin_native/reports/progression-forest-outskirts/02-forest_outskirts-strategy-lv9.json",
+              "best": {
+                "winRate": 1,
+                "avgRoundsPerBattle": 1.0035087719298246,
+                "equipmentCost": 845,
+                "frequentJobs": [],
+                "frequentVariants": [
+                  [
+                    "slime",
+                    12
+                  ]
+                ],
+                "frequentEquipment": [
+                  [
+                    "claw_beast",
+                    9
+                  ],
+                  [
+                    "gauntlet_copper",
+                    7
+                  ],
+                  [
+                    "wand_twig",
+                    7
+                  ],
+                  [
+                    "shield_wooden",
+                    6
+                  ],
+                  [
+                    "sword_cypress_stick",
+                    6
+                  ],
+                  [
+                    "rod_acolyte",
+                    6
+                  ],
+                  [
+                    "shield_shield",
+                    5
+                  ],
+                  [
+                    "robe_robe",
+                    5
+                  ],
+                  [
+                    "armor_leather_vest",
+                    4
+                  ],
+                  [
+                    "bow_short",
+                    3
+                  ],
+                  [
+                    "claw_sharp",
+                    3
+                  ],
+                  [
+                    "shield_pot_lid",
+                    3
+                  ],
+                  [
+                    "bow_slingshot",
+                    2
+                  ],
+                  [
+                    "sword_copper",
+                    2
+                  ],
+                  [
+                    "armor_tattered_cloth",
+                    2
+                  ],
+                  [
+                    "claw_iron",
+                    1
+                  ],
+                  [
+                    "sword_broad",
+                    1
+                  ]
+                ]
+              }
+            },
+            {
+              "level": 10,
+              "strategyPath": "/Users/astapi/projects/goblinKingdom/goblin_native/reports/progression-forest-outskirts/02-forest_outskirts-strategy-lv10.json",
+              "best": {
+                "winRate": 1,
+                "avgRoundsPerBattle": 1,
+                "equipmentCost": 1065,
+                "frequentJobs": [],
+                "frequentVariants": [
+                  [
+                    "slime",
+                    13
+                  ]
+                ],
+                "frequentEquipment": [
+                  [
+                    "sword_cypress_stick",
+                    9
+                  ],
+                  [
+                    "gauntlet_leather",
+                    9
+                  ],
+                  [
+                    "armor_armor",
+                    6
+                  ],
+                  [
+                    "sword_copper",
+                    5
+                  ],
+                  [
+                    "claw_iron",
+                    4
+                  ],
+                  [
+                    "rod_rod",
+                    3
+                  ],
+                  [
+                    "sword_long",
+                    3
+                  ],
+                  [
+                    "bow_slingshot",
+                    3
+                  ],
+                  [
+                    "claw_beast",
+                    3
+                  ],
+                  [
+                    "wand_twig",
+                    3
+                  ],
+                  [
+                    "claw_steel",
+                    3
+                  ],
+                  [
+                    "rod_wooden",
+                    3
+                  ],
+                  [
+                    "gauntlet_cloth_gloves",
+                    3
+                  ],
+                  [
+                    "claw_copper",
+                    3
+                  ],
+                  [
+                    "rod_acolyte",
+                    3
+                  ],
+                  [
+                    "hidden_dagger",
+                    3
+                  ],
+                  [
+                    "shield_shield",
+                    3
+                  ],
+                  [
+                    "claw_sharp",
+                    2
+                  ],
+                  [
+                    "bow_short",
+                    1
+                  ]
+                ]
+              }
+            },
+            {
+              "level": 11,
+              "strategyPath": "/Users/astapi/projects/goblinKingdom/goblin_native/reports/progression-forest-outskirts/02-forest_outskirts-strategy-lv11.json",
+              "best": {
+                "winRate": 1,
+                "avgRoundsPerBattle": 1,
+                "equipmentCost": 660,
+                "frequentJobs": [],
+                "frequentVariants": [
+                  [
+                    "slime",
+                    16
+                  ]
+                ],
+                "frequentEquipment": [
+                  [
+                    "sword_club",
+                    12
+                  ],
+                  [
+                    "rod_wooden",
+                    7
+                  ],
+                  [
+                    "bow_slingshot",
+                    7
+                  ],
+                  [
+                    "armor_fur_vest",
+                    6
+                  ],
+                  [
+                    "armor_armor",
+                    5
+                  ],
+                  [
+                    "armor_leather_vest",
+                    5
+                  ],
+                  [
+                    "sword_broad",
+                    5
+                  ],
+                  [
+                    "armor_tattered_cloth",
+                    5
+                  ],
+                  [
+                    "bow_short",
+                    4
+                  ],
+                  [
+                    "claw_sharp",
+                    4
+                  ],
+                  [
+                    "rod_acolyte",
+                    3
+                  ],
+                  [
+                    "gauntlet_leather",
+                    3
+                  ],
+                  [
+                    "claw_steel",
+                    2
+                  ],
+                  [
+                    "hidden_dagger",
+                    2
+                  ],
+                  [
+                    "shield_pot_lid",
+                    1
+                  ],
+                  [
+                    "wand_twig",
+                    1
+                  ]
+                ]
+              }
+            },
+            {
+              "level": 12,
+              "strategyPath": "/Users/astapi/projects/goblinKingdom/goblin_native/reports/progression-forest-outskirts/02-forest_outskirts-strategy-lv12.json",
+              "best": {
+                "winRate": 1,
+                "avgRoundsPerBattle": 1,
+                "equipmentCost": 1305,
+                "frequentJobs": [],
+                "frequentVariants": [
+                  [
+                    "slime",
+                    14
+                  ]
+                ],
+                "frequentEquipment": [
+                  [
+                    "armor_armor",
+                    14
+                  ],
+                  [
+                    "claw_sharp",
+                    9
+                  ],
+                  [
+                    "bow_slingshot",
+                    9
+                  ],
+                  [
+                    "sword_cypress_stick",
+                    6
+                  ],
+                  [
+                    "wand_twig",
+                    6
+                  ],
+                  [
+                    "sword_long",
+                    6
+                  ],
+                  [
+                    "armor_leather_vest",
+                    6
+                  ],
+                  [
+                    "armor_fur_vest",
+                    5
+                  ],
+                  [
+                    "shield_pot_lid",
+                    4
+                  ],
+                  [
+                    "wand_apprentice",
+                    4
+                  ],
+                  [
+                    "gauntlet_cloth_gloves",
+                    3
+                  ],
+                  [
+                    "shield_shield",
+                    3
+                  ],
+                  [
+                    "robe_robe",
+                    3
+                  ],
+                  [
+                    "hidden_dagger",
+                    3
+                  ],
+                  [
+                    "sword_broad",
+                    3
+                  ],
+                  [
+                    "gauntlet_copper",
+                    3
+                  ],
+                  [
+                    "claw_steel",
+                    3
+                  ]
+                ]
+              }
+            },
+            {
+              "level": 13,
+              "strategyPath": "/Users/astapi/projects/goblinKingdom/goblin_native/reports/progression-forest-outskirts/02-forest_outskirts-strategy-lv13.json",
+              "best": {
+                "winRate": 1,
+                "avgRoundsPerBattle": 1,
+                "equipmentCost": 1665,
+                "frequentJobs": [],
+                "frequentVariants": [
+                  [
+                    "slime",
+                    13
+                  ]
+                ],
+                "frequentEquipment": [
+                  [
+                    "sword_copper",
+                    11
+                  ],
+                  [
+                    "rod_acolyte",
+                    8
+                  ],
+                  [
+                    "armor_armor",
+                    7
+                  ],
+                  [
+                    "shield_wooden",
+                    6
+                  ],
+                  [
+                    "gauntlet_leather",
+                    6
+                  ],
+                  [
+                    "wand_apprentice",
+                    5
+                  ],
+                  [
+                    "armor_leather_vest",
+                    4
+                  ],
+                  [
+                    "sword_long",
+                    4
+                  ],
+                  [
+                    "bow_short",
+                    4
+                  ],
+                  [
+                    "armor_fur_vest",
+                    4
+                  ],
+                  [
+                    "sword_broad",
+                    3
+                  ],
+                  [
+                    "robe_robe",
+                    3
+                  ],
+                  [
+                    "gauntlet_copper",
+                    3
+                  ],
+                  [
+                    "claw_copper",
+                    3
+                  ],
+                  [
+                    "gauntlet_cloth_gloves",
+                    3
+                  ],
+                  [
+                    "shield_shield",
+                    3
+                  ],
+                  [
+                    "wand_wand",
+                    3
+                  ],
+                  [
+                    "armor_tattered_cloth",
+                    2
+                  ],
+                  [
+                    "bow_long",
+                    2
+                  ],
+                  [
+                    "rod_rod",
+                    2
+                  ]
+                ]
+              }
+            },
+            {
+              "level": 14,
+              "strategyPath": "/Users/astapi/projects/goblinKingdom/goblin_native/reports/progression-forest-outskirts/02-forest_outskirts-strategy-lv14.json",
+              "best": {
+                "winRate": 1,
+                "avgRoundsPerBattle": 1,
+                "equipmentCost": 1605,
+                "frequentJobs": [],
+                "frequentVariants": [
+                  [
+                    "slime",
+                    5
+                  ]
+                ],
+                "frequentEquipment": [
+                  [
+                    "claw_steel",
+                    9
+                  ],
+                  [
+                    "sword_long",
+                    9
+                  ],
+                  [
+                    "hidden_dagger",
+                    9
+                  ],
+                  [
+                    "bow_slingshot",
+                    7
+                  ],
+                  [
+                    "sword_broad",
+                    6
+                  ],
+                  [
+                    "wand_twig",
+                    5
+                  ],
+                  [
+                    "armor_tattered_cloth",
+                    5
+                  ],
+                  [
+                    "claw_copper",
+                    5
+                  ],
+                  [
+                    "wand_apprentice",
+                    4
+                  ],
+                  [
+                    "claw_sharp",
+                    4
+                  ],
+                  [
+                    "sword_copper",
+                    4
+                  ],
+                  [
+                    "bow_short",
+                    3
+                  ],
+                  [
+                    "rod_wooden",
+                    2
+                  ],
+                  [
+                    "sword_club",
+                    2
+                  ],
+                  [
+                    "wand_wand",
+                    2
+                  ],
+                  [
+                    "shield_wooden",
+                    2
+                  ],
+                  [
+                    "gauntlet_leather",
+                    2
+                  ],
+                  [
+                    "claw_beast",
+                    2
+                  ],
+                  [
+                    "rod_rod",
+                    2
+                  ],
+                  [
+                    "armor_fur_vest",
+                    2
+                  ]
+                ]
+              }
+            },
+            {
+              "level": 15,
+              "strategyPath": "/Users/astapi/projects/goblinKingdom/goblin_native/reports/progression-forest-outskirts/02-forest_outskirts-strategy-lv15.json",
+              "best": {
+                "winRate": 1,
+                "avgRoundsPerBattle": 1,
+                "equipmentCost": 1665,
+                "frequentJobs": [],
+                "frequentVariants": [
+                  [
+                    "slime",
+                    6
+                  ]
+                ],
+                "frequentEquipment": [
+                  [
+                    "armor_armor",
+                    10
+                  ],
+                  [
+                    "armor_fur_vest",
+                    10
+                  ],
+                  [
+                    "shield_wooden",
+                    9
+                  ],
+                  [
+                    "shield_shield",
+                    8
+                  ],
+                  [
+                    "rod_rod",
+                    6
+                  ],
+                  [
+                    "armor_tattered_cloth",
+                    5
+                  ],
+                  [
+                    "claw_copper",
+                    4
+                  ],
+                  [
+                    "bow_slingshot",
+                    4
+                  ],
+                  [
+                    "wand_twig",
+                    4
+                  ],
+                  [
+                    "armor_leather_vest",
+                    3
+                  ],
+                  [
+                    "rod_wooden",
+                    3
+                  ],
+                  [
+                    "gauntlet_copper",
+                    3
+                  ],
+                  [
+                    "robe_robe",
+                    3
+                  ],
+                  [
+                    "rod_acolyte",
+                    3
+                  ],
+                  [
+                    "sword_long",
+                    3
+                  ],
+                  [
+                    "bow_short",
+                    3
+                  ],
+                  [
+                    "claw_sharp",
+                    3
+                  ],
+                  [
+                    "shield_pot_lid",
+                    2
+                  ],
+                  [
+                    "sword_copper",
+                    2
+                  ],
+                  [
+                    "sword_broad",
+                    1
+                  ]
+                ]
+              }
+            },
+            {
+              "level": 16,
+              "strategyPath": "/Users/astapi/projects/goblinKingdom/goblin_native/reports/progression-forest-outskirts/02-forest_outskirts-strategy-lv16.json",
+              "best": {
+                "winRate": 1,
+                "avgRoundsPerBattle": 1,
+                "equipmentCost": 1820,
+                "frequentJobs": [],
+                "frequentVariants": [
+                  [
+                    "slime",
+                    8
+                  ]
+                ],
+                "frequentEquipment": [
+                  [
+                    "bow_short",
+                    14
+                  ],
+                  [
+                    "claw_iron",
+                    11
+                  ],
+                  [
+                    "claw_copper",
+                    9
+                  ],
+                  [
+                    "gauntlet_leather",
+                    8
+                  ],
+                  [
+                    "gauntlet_cloth_gloves",
+                    7
+                  ],
+                  [
+                    "shield_pot_lid",
+                    7
+                  ],
+                  [
+                    "claw_steel",
+                    7
+                  ],
+                  [
+                    "claw_sharp",
+                    6
+                  ],
+                  [
+                    "rod_rod",
+                    5
+                  ],
+                  [
+                    "wand_twig",
+                    5
+                  ],
+                  [
+                    "robe_robe",
+                    5
+                  ],
+                  [
+                    "gauntlet_copper",
+                    4
+                  ],
+                  [
+                    "rod_wooden",
+                    4
+                  ],
+                  [
+                    "wand_wand",
+                    3
+                  ],
+                  [
+                    "armor_leather_vest",
+                    2
+                  ],
+                  [
+                    "wand_apprentice",
+                    2
+                  ],
+                  [
+                    "sword_copper",
+                    2
+                  ],
+                  [
+                    "hidden_dagger",
+                    2
+                  ],
+                  [
+                    "sword_club",
+                    2
+                  ],
+                  [
+                    "claw_beast",
+                    1
+                  ]
+                ]
+              }
+            }
+          ],
+          "clearLevel80": 1,
+          "clearLevel95": 1,
+          "lowestWinningLevel": 1
+        },
+        "best": {
+          "winRate": 1,
+          "avgRoundsPerBattle": 1.4861111111111112,
+          "equipmentCost": 13860,
+          "frequentJobs": [],
+          "frequentVariants": [
+            [
+              "slime",
+              15
+            ]
+          ],
+          "frequentEquipment": [
+            [
+              "claw_steel",
+              6
+            ],
+            [
+              "sword_broad",
+              4
+            ],
+            [
+              "bow_long",
+              4
+            ],
+            [
+              "accessory_split_core",
+              2
+            ],
+            [
+              "claw_sharp",
+              1
+            ],
+            [
+              "hidden_dagger",
+              1
+            ]
+          ]
+        }
+      }
+    }
+  ]
+}

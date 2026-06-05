@@ -1,11 +1,11 @@
 {
   "$schema": "balance-reference-scenario-v1",
   "areaId": "lizardman_swamp_1",
-  "description": "リザードマンの沼砦・浅瀬。リザードマン(warrior Lv33)とアサシンリザード(archer Lv33)のみ。装備プールはウルフ草原と同じ rank≤3。",
+  "description": "リザードマンの沼砦。旧1〜3を統合した6階構成。areaLevel=44。敵: リザードマン Lv44 / アサシンリザード Lv44 / キングリザードマン Lv55 ボス。装備プールはウルフ草原と同じ rank≤3。",
   "iterations": 100,
   "levelRange": {
-    "min": 25,
-    "max": 60,
+    "min": 20,
+    "max": 90,
     "step": 2
   },
   "equipmentFilter": {
