@@ -38,7 +38,7 @@ export const founderGoblinSeed: FounderGoblinSeed = {
     evasion: 15
   },
   defaultSkillIds: [
-    "exp_bonus_70",
+    "exp_bonus_40",
     "goblin_pack_tactics",
     "factor_drop_bonus_50"
   ]

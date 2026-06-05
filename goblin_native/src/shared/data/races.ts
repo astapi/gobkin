@@ -83,7 +83,7 @@ export const races: RaceDict = {
       "goblin"
     ],
     skillIds: [
-      "exp_bonus_70"
+      "exp_bonus_40"
     ]
   },
   human: {

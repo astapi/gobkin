@@ -734,6 +734,11 @@ export const CHARACTER_SKILL_CATALOG = {
     expBonusPercent: 30,
   },
 
+  exp_bonus_40: {
+    id: 'exp_bonus_40',
+    expBonusPercent: 40,
+  },
+
   exp_bonus_50: {
     id: 'exp_bonus_50',
     expBonusPercent: 50,

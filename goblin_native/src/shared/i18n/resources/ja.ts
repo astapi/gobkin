@@ -806,6 +806,7 @@ const ja = {
       survive_lethal_hp1: { name: '気合い' },
       exp_bonus_10: { name: '[+10%]獲得経験値' },
       exp_bonus_30: { name: '[+30%]獲得経験値' },
+      exp_bonus_40: { name: '[+40%]獲得経験値' },
       exp_bonus_50: { name: '[+50%]獲得経験値' },
       exp_bonus_60: { name: '[+60%]獲得経験値' },
       exp_bonus_70: { name: '[+70%]獲得経験値' },
