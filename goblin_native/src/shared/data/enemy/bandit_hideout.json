@@ -1,29 +1,55 @@
 {
   "enemies": [
     {
+      "id": "BDT001",
+      "name": "盗賊下っ端",
+      "attackType": "melee",
+      "raceTags": [
+        "human"
+      ],
+      "level": 20,
+      "hp": 781,
+      "atk": 116,
+      "def": 87,
+      "attackCount": 2,
+      "accuracy": 590,
+      "evasion": 24,
+      "exp": 110,
+      "gold": 38,
+      "magicDef": 49,
+      "baseAttributes": {
+        "power": 16,
+        "wisdom": 8,
+        "spirit": 6,
+        "vitality": 15,
+        "agility": 13,
+        "luck": 9
+      }
+    },
+    {
       "id": "BDT002",
       "name": "盗賊",
       "attackType": "melee",
       "raceTags": [
         "human"
       ],
-      "level": 12,
-      "hp": 145,
-      "atk": 32,
-      "def": 22,
+      "level": 20,
+      "hp": 992,
+      "atk": 128,
+      "def": 112,
       "attackCount": 2,
-      "accuracy": 300,
-      "evasion": 21,
-      "exp": 38,
-      "gold": 30,
-      "magicDef": 12,
+      "accuracy": 610,
+      "evasion": 22,
+      "exp": 122,
+      "gold": 48,
+      "magicDef": 59,
       "baseAttributes": {
-        "power": 9,
-        "wisdom": 6,
-        "spirit": 4,
-        "vitality": 10,
-        "agility": 11,
-        "luck": 8
+        "power": 18,
+        "wisdom": 9,
+        "spirit": 7,
+        "vitality": 18,
+        "agility": 12,
+        "luck": 9
       }
     },
     {
@@ -33,23 +59,23 @@
       "raceTags": [
         "human"
       ],
-      "level": 12,
-      "hp": 105,
-      "atk": 28,
-      "def": 16,
+      "level": 20,
+      "hp": 698,
+      "atk": 119,
+      "def": 78,
       "attackCount": 2,
-      "accuracy": 315,
-      "evasion": 23,
-      "exp": 38,
-      "gold": 34,
-      "magicDef": 10,
+      "accuracy": 700,
+      "evasion": 28,
+      "exp": 122,
+      "gold": 52,
+      "magicDef": 53,
       "baseAttributes": {
-        "power": 8,
-        "wisdom": 6,
-        "spirit": 4,
-        "vitality": 7,
-        "agility": 12,
-        "luck": 8
+        "power": 15,
+        "wisdom": 10,
+        "spirit": 6,
+        "vitality": 12,
+        "agility": 16,
+        "luck": 10
       }
     },
     {
@@ -59,23 +85,23 @@
       "raceTags": [
         "human"
       ],
-      "level": 13,
-      "hp": 115,
-      "atk": 30,
-      "def": 17,
+      "level": 21,
+      "hp": 661,
+      "atk": 105,
+      "def": 75,
       "attackCount": 3,
-      "accuracy": 330,
-      "evasion": 30,
-      "exp": 42,
-      "gold": 38,
-      "magicDef": 12,
+      "accuracy": 720,
+      "evasion": 40,
+      "exp": 132,
+      "gold": 58,
+      "magicDef": 55,
       "baseAttributes": {
-        "power": 8,
-        "wisdom": 7,
-        "spirit": 5,
-        "vitality": 7,
-        "agility": 15,
-        "luck": 9
+        "power": 14,
+        "wisdom": 10,
+        "spirit": 7,
+        "vitality": 12,
+        "agility": 19,
+        "luck": 12
       }
     },
     {
@@ -85,24 +111,63 @@
       "raceTags": [
         "human"
       ],
-      "level": 14,
-      "hp": 260,
-      "atk": 42,
-      "def": 34,
+      "level": 22,
+      "hp": 1396,
+      "atk": 154,
+      "def": 157,
       "attackCount": 2,
-      "accuracy": 325,
-      "evasion": 17,
-      "exp": 58,
-      "gold": 50,
-      "magicDef": 24,
+      "accuracy": 650,
+      "evasion": 16,
+      "exp": 155,
+      "gold": 70,
+      "magicDef": 90,
       "baseAttributes": {
-        "power": 13,
-        "wisdom": 8,
-        "spirit": 6,
-        "vitality": 16,
-        "agility": 8,
+        "power": 21,
+        "wisdom": 10,
+        "spirit": 9,
+        "vitality": 24,
+        "agility": 9,
         "luck": 7
       }
+    },
+    {
+      "id": "BDT006",
+      "name": "盗賊術師",
+      "attackType": "melee",
+      "raceTags": [
+        "human"
+      ],
+      "level": 21,
+      "hp": 634,
+      "atk": 51,
+      "magicAtk": 113,
+      "def": 67,
+      "attackCount": 1,
+      "accuracy": 620,
+      "evasion": 24,
+      "exp": 138,
+      "gold": 76,
+      "magicDef": 113,
+      "baseAttributes": {
+        "power": 9,
+        "wisdom": 18,
+        "spirit": 12,
+        "vitality": 11,
+        "agility": 12,
+        "luck": 10
+      },
+      "skills": [
+        {
+          "id": "grant_fireball",
+          "name": "ファイヤーボール",
+          "grantsSpellId": "fireball"
+        },
+        {
+          "id": "grant_magic_arrow",
+          "name": "マジックアロー",
+          "grantsSpellId": "magic_arrow"
+        }
+      ]
     },
     {
       "id": "B_BDT_CHIEF",
@@ -111,23 +176,23 @@
       "raceTags": [
         "human"
       ],
-      "level": 18,
-      "hp": 420,
-      "atk": 58,
-      "def": 36,
+      "level": 38,
+      "hp": 2918,
+      "atk": 183,
+      "def": 161,
       "attackCount": 3,
-      "accuracy": 390,
-      "evasion": 26,
-      "exp": 118,
-      "gold": 160,
-      "magicDef": 30,
+      "accuracy": 760,
+      "evasion": 28,
+      "exp": 360,
+      "gold": 200,
+      "magicDef": 109,
       "baseAttributes": {
-        "power": 16,
-        "wisdom": 10,
-        "spirit": 8,
-        "vitality": 18,
-        "agility": 14,
-        "luck": 10
+        "power": 24,
+        "wisdom": 14,
+        "spirit": 11,
+        "vitality": 28,
+        "agility": 16,
+        "luck": 12
       },
       "isBoss": true,
       "rareEquipmentDrops": [
@@ -145,8 +210,11 @@
       ],
       "enemies": [
         [
-          "BDT002",
-          "BDT002"
+          "BDT001",
+          "BDT001"
+        ],
+        [
+          "BDT003"
         ]
       ]
     },
@@ -158,6 +226,10 @@
       "enemies": [
         [
           "BDT002"
+        ],
+        [
+          "BDT003",
+          "BDT004"
         ]
       ]
     },
@@ -168,7 +240,8 @@
       ],
       "enemies": [
         [
-          "BDT002"
+          "BDT004",
+          "BDT004"
         ],
         [
           "BDT003"
@@ -182,11 +255,12 @@
       ],
       "enemies": [
         [
-          "BDT002"
+          "BDT002",
+          "BDT001"
         ],
         [
-          "BDT002",
-          "BDT002"
+          "BDT003",
+          "BDT004"
         ]
       ],
       "isFloorBoss": true
@@ -200,6 +274,9 @@
         [
           "BDT002",
           "BDT002"
+        ],
+        [
+          "BDT003"
         ]
       ]
     },
@@ -210,7 +287,10 @@
       ],
       "enemies": [
         [
-          "BDT003",
+          "BDT005"
+        ],
+        [
+          "BDT004",
           "BDT003"
         ]
       ]
@@ -222,11 +302,11 @@
       ],
       "enemies": [
         [
-          "BDT002",
-          "BDT002"
+          "BDT001",
+          "BDT004"
         ],
         [
-          "BDT003"
+          "BDT006"
         ]
       ]
     },
@@ -237,7 +317,7 @@
       ],
       "enemies": [
         [
-          "BDT002",
+          "BDT005",
           "BDT002"
         ],
         [
@@ -253,10 +333,11 @@
       ],
       "enemies": [
         [
-          "BDT004"
+          "BDT005",
+          "BDT002"
         ],
         [
-          "BDT002"
+          "BDT003"
         ]
       ]
     },
@@ -267,11 +348,12 @@
       ],
       "enemies": [
         [
-          "BDT003",
-          "BDT003"
+          "BDT004",
+          "BDT004"
         ],
         [
-          "BDT002"
+          "BDT003",
+          "BDT006"
         ]
       ]
     },
@@ -286,7 +368,7 @@
           "BDT002"
         ],
         [
-          "BDT004"
+          "BDT006"
         ]
       ]
     },
@@ -297,13 +379,11 @@
       ],
       "enemies": [
         [
-          "BDT004"
-        ],
-        [
-          "BDT002",
+          "BDT005",
           "BDT002"
         ],
         [
+          "BDT006",
           "BDT003"
         ]
       ],
@@ -316,7 +396,12 @@
       ],
       "enemies": [
         [
-          "BDT005"
+          "BDT005",
+          "BDT004"
+        ],
+        [
+          "BDT003",
+          "BDT006"
         ]
       ]
     },
@@ -327,8 +412,11 @@
       ],
       "enemies": [
         [
-          "BDT004",
-          "BDT004"
+          "BDT005",
+          "BDT005"
+        ],
+        [
+          "BDT003"
         ]
       ]
     },
@@ -339,11 +427,12 @@
       ],
       "enemies": [
         [
-          "BDT005"
+          "BDT002",
+          "BDT004"
         ],
         [
           "BDT003",
-          "BDT003"
+          "BDT006"
         ]
       ]
     },
@@ -354,14 +443,12 @@
       ],
       "enemies": [
         [
-          "BDT005"
+          "BDT005",
+          "BDT005",
+          "BDT002"
         ],
         [
-          "BDT004"
-        ],
-        [
-          "BDT003",
-          "BDT003"
+          "BDT006"
         ]
       ],
       "isFloorBoss": true
@@ -373,11 +460,12 @@
       ],
       "enemies": [
         [
+          "BDT005",
           "BDT005"
         ],
         [
-          "BDT002",
-          "BDT002"
+          "BDT003",
+          "BDT006"
         ]
       ]
     },
@@ -388,11 +476,12 @@
       ],
       "enemies": [
         [
-          "BDT004",
+          "BDT005",
+          "BDT002",
           "BDT004"
         ],
         [
-          "BDT003"
+          "BDT006"
         ]
       ]
     },
@@ -403,8 +492,13 @@
       ],
       "enemies": [
         [
-          "BDT005",
-          "BDT005"
+          "BDT004",
+          "BDT004"
+        ],
+        [
+          "BDT003",
+          "BDT003",
+          "BDT006"
         ]
       ]
     },
@@ -416,10 +510,12 @@
       "enemies": [
         [
           "BDT005",
-          "BDT005"
+          "BDT005",
+          "BDT002"
         ],
         [
-          "BDT004"
+          "BDT003",
+          "BDT006"
         ]
       ],
       "isFloorBoss": true
@@ -431,11 +527,12 @@
       ],
       "enemies": [
         [
+          "BDT005",
+          "BDT002",
           "BDT005"
         ],
         [
-          "BDT004",
-          "BDT004"
+          "BDT006"
         ]
       ]
     },
@@ -447,10 +544,12 @@
       "enemies": [
         [
           "BDT005",
-          "BDT005"
+          "BDT004"
         ],
         [
-          "BDT003"
+          "BDT003",
+          "BDT003",
+          "BDT006"
         ]
       ]
     },
@@ -461,52 +560,31 @@
       ],
       "enemies": [
         [
-          "BDT004",
-          "BDT004"
-        ],
-        [
-          "BDT002",
-          "BDT002"
-        ]
-      ]
-    },
-    {
-      "id": "BDT_F6_BOSS",
-      "floors": [
-        6
-      ],
-      "enemies": [
-        [
           "BDT005",
           "BDT005"
         ],
         [
           "BDT004",
-          "BDT004"
+          "BDT006"
         ]
-      ],
-      "isFloorBoss": true
+      ]
     },
     {
-      "id": "BDT_FINAL_BOSS",
+      "id": "BDT_FINAL",
       "floors": [
         6
       ],
       "enemies": [
         [
-          "B_BDT_CHIEF"
-        ],
-        [
+          "B_BDT_CHIEF",
           "BDT005"
         ],
         [
-          "BDT004"
-        ],
-        [
           "BDT003",
-          "BDT003"
+          "BDT006"
         ]
       ],
+      "isFloorBoss": true,
       "isBoss": true
     }
   ]

@@ -1,0 +1,507 @@
+{
+  "version": 1,
+  "createdAt": "2026-06-04T06:14:01.723Z",
+  "config": {
+    "through": "orc_camp_1",
+    "outDir": "reports/progression-orc-camp",
+    "tiers": {
+      "slime_cave": 1,
+      "goblin_village_1": 0
+    },
+    "defaultTier": 0,
+    "level": null,
+    "levelMode": "scenario-max",
+    "generations": 10,
+    "population": 30,
+    "iterations": 8,
+    "validationIterations": 100,
+    "elite": 4,
+    "top": 3,
+    "seed": 1,
+    "skipOptimize": false
+  },
+  "through": "orc_camp_1",
+  "outDir": "/Users/astapi/projects/goblinKingdom/goblin_native/reports/progression-orc-camp",
+  "steps": [
+    {
+      "index": 1,
+      "areaId": "slime_cave",
+      "areaName": "スライムの洞窟",
+      "cleared": [
+        "slime_cave"
+      ],
+      "maxTier": 1,
+      "availabilityPath": "/Users/astapi/projects/goblinKingdom/goblin_native/reports/progression-orc-camp/01-slime_cave-availability.json",
+      "counts": {
+        "equipment": 34,
+        "rareEquipment": 2,
+        "factors": 1
+      },
+      "baseRank": 1,
+      "maxNormalDropRank": 1,
+      "newRareEquipment": [
+        {
+          "templateId": "accessory_luck_medal",
+          "name": "ラッキーメダル",
+          "sources": [
+            {
+              "type": "rareDrop",
+              "areaId": "slime_cave",
+              "tier": 0,
+              "enemyId": "B_SLIME"
+            },
+            {
+              "type": "tierRareDrop",
+              "areaId": "slime_cave",
+              "tier": 1,
+              "requiredTier": 1,
+              "enemyId": "S001"
+            },
+            {
+              "type": "rareDrop",
+              "areaId": "slime_cave",
+              "tier": 1,
+              "enemyId": "B_SLIME"
+            }
+          ]
+        },
+        {
+          "templateId": "accessory_split_core",
+          "name": "分裂核",
+          "sources": [
+            {
+              "type": "rareDrop",
+              "areaId": "slime_cave",
+              "tier": 0,
+              "enemyId": "S001"
+            },
+            {
+              "type": "rareDrop",
+              "areaId": "slime_cave",
+              "tier": 1,
+              "enemyId": "S001"
+            }
+          ]
+        }
+      ],
+      "scenario": null
+    },
+    {
+      "index": 2,
+      "areaId": "forest_outskirts",
+      "areaName": "周辺の森",
+      "cleared": [
+        "slime_cave",
+        "forest_outskirts"
+      ],
+      "maxTier": 0,
+      "availabilityPath": "/Users/astapi/projects/goblinKingdom/goblin_native/reports/progression-orc-camp/02-forest_outskirts-availability.json",
+      "counts": {
+        "equipment": 34,
+        "rareEquipment": 2,
+        "factors": 2
+      },
+      "baseRank": 1,
+      "maxNormalDropRank": 1,
+      "newRareEquipment": [],
+      "scenario": null
+    },
+    {
+      "index": 3,
+      "areaId": "goblin_village_1",
+      "areaName": "ゴブリン集落",
+      "cleared": [
+        "slime_cave",
+        "forest_outskirts",
+        "goblin_village_1"
+      ],
+      "maxTier": 0,
+      "availabilityPath": "/Users/astapi/projects/goblinKingdom/goblin_native/reports/progression-orc-camp/03-goblin_village_1-availability.json",
+      "counts": {
+        "equipment": 53,
+        "rareEquipment": 3,
+        "factors": 3
+      },
+      "baseRank": 2,
+      "maxNormalDropRank": 1,
+      "newRareEquipment": [
+        {
+          "templateId": "accessory_human_slayer",
+          "name": "人間に対する殺意",
+          "sources": [
+            {
+              "type": "rareDrop",
+              "areaId": "goblin_village_1",
+              "tier": 0,
+              "enemyId": "B_HOB"
+            }
+          ]
+        }
+      ],
+      "scenario": {
+        "level": 25,
+        "strategyPath": "/Users/astapi/projects/goblinKingdom/goblin_native/reports/progression-orc-camp/03-goblin_village_1-strategy.json",
+        "best": {
+          "winRate": 1,
+          "avgRoundsPerBattle": 1,
+          "equipmentCost": 930,
+          "frequentJobs": [
+            [
+              "mage",
+              4
+            ],
+            [
+              "warrior",
+              3
+            ],
+            [
+              "guard",
+              1
+            ],
+            [
+              "cleric",
+              1
+            ],
+            [
+              "thief",
+              1
+            ]
+          ],
+          "frequentVariants": [
+            [
+              "wolf",
+              3
+            ]
+          ],
+          "frequentEquipment": [
+            [
+              "armor_tattered_cloth",
+              18
+            ],
+            [
+              "gauntlet_cloth_gloves",
+              15
+            ],
+            [
+              "armor_leather_vest",
+              15
+            ],
+            [
+              "gauntlet_leather",
+              13
+            ],
+            [
+              "gauntlet_copper",
+              12
+            ],
+            [
+              "armor_fur_vest",
+              12
+            ],
+            [
+              "bow_short",
+              12
+            ],
+            [
+              "shield_wooden",
+              9
+            ],
+            [
+              "shield_pot_lid",
+              9
+            ],
+            [
+              "sword_cypress_stick",
+              6
+            ],
+            [
+              "rod_wooden",
+              6
+            ],
+            [
+              "claw_copper",
+              3
+            ],
+            [
+              "sword_broad",
+              3
+            ],
+            [
+              "bow_slingshot",
+              3
+            ],
+            [
+              "sword_copper",
+              3
+            ],
+            [
+              "wand_apprentice",
+              3
+            ],
+            [
+              "wand_twig",
+              2
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "index": 4,
+      "areaId": "forest_edge_village",
+      "areaName": "森外れの廃村",
+      "cleared": [
+        "slime_cave",
+        "forest_outskirts",
+        "goblin_village_1",
+        "forest_edge_village"
+      ],
+      "maxTier": 0,
+      "availabilityPath": "/Users/astapi/projects/goblinKingdom/goblin_native/reports/progression-orc-camp/04-forest_edge_village-availability.json",
+      "counts": {
+        "equipment": 53,
+        "rareEquipment": 3,
+        "factors": 3
+      },
+      "baseRank": 2,
+      "maxNormalDropRank": 1,
+      "newRareEquipment": [],
+      "scenario": null
+    },
+    {
+      "index": 5,
+      "areaId": "old_well_waterway",
+      "areaName": "古井戸の地下水路",
+      "cleared": [
+        "slime_cave",
+        "forest_outskirts",
+        "goblin_village_1",
+        "forest_edge_village",
+        "old_well_waterway"
+      ],
+      "maxTier": 0,
+      "availabilityPath": "/Users/astapi/projects/goblinKingdom/goblin_native/reports/progression-orc-camp/05-old_well_waterway-availability.json",
+      "counts": {
+        "equipment": 53,
+        "rareEquipment": 3,
+        "factors": 4
+      },
+      "baseRank": 2,
+      "maxNormalDropRank": 1,
+      "newRareEquipment": [],
+      "scenario": null
+    },
+    {
+      "index": 6,
+      "areaId": "undead_ruins_1",
+      "areaName": "忘れられた廃墟",
+      "cleared": [
+        "slime_cave",
+        "forest_outskirts",
+        "goblin_village_1",
+        "forest_edge_village",
+        "old_well_waterway",
+        "undead_ruins_1"
+      ],
+      "maxTier": 0,
+      "availabilityPath": "/Users/astapi/projects/goblinKingdom/goblin_native/reports/progression-orc-camp/06-undead_ruins_1-availability.json",
+      "counts": {
+        "equipment": 54,
+        "rareEquipment": 3,
+        "factors": 4
+      },
+      "baseRank": 2,
+      "maxNormalDropRank": 2,
+      "newRareEquipment": [],
+      "scenario": null
+    },
+    {
+      "index": 7,
+      "areaId": "bandit_hideout",
+      "areaName": "盗賊のアジト",
+      "cleared": [
+        "slime_cave",
+        "forest_outskirts",
+        "goblin_village_1",
+        "forest_edge_village",
+        "old_well_waterway",
+        "undead_ruins_1",
+        "bandit_hideout"
+      ],
+      "maxTier": 0,
+      "availabilityPath": "/Users/astapi/projects/goblinKingdom/goblin_native/reports/progression-orc-camp/07-bandit_hideout-availability.json",
+      "counts": {
+        "equipment": 54,
+        "rareEquipment": 3,
+        "factors": 4
+      },
+      "baseRank": 2,
+      "maxNormalDropRank": 2,
+      "newRareEquipment": [],
+      "scenario": null
+    },
+    {
+      "index": 8,
+      "areaId": "road_1",
+      "areaName": "街道",
+      "cleared": [
+        "slime_cave",
+        "forest_outskirts",
+        "goblin_village_1",
+        "forest_edge_village",
+        "old_well_waterway",
+        "undead_ruins_1",
+        "bandit_hideout",
+        "road_1"
+      ],
+      "maxTier": 0,
+      "availabilityPath": "/Users/astapi/projects/goblinKingdom/goblin_native/reports/progression-orc-camp/08-road_1-availability.json",
+      "counts": {
+        "equipment": 54,
+        "rareEquipment": 3,
+        "factors": 4
+      },
+      "baseRank": 2,
+      "maxNormalDropRank": 2,
+      "newRareEquipment": [],
+      "scenario": null
+    },
+    {
+      "index": 9,
+      "areaId": "orc_camp_1",
+      "areaName": "オークの野営地",
+      "cleared": [
+        "slime_cave",
+        "forest_outskirts",
+        "goblin_village_1",
+        "forest_edge_village",
+        "old_well_waterway",
+        "undead_ruins_1",
+        "bandit_hideout",
+        "road_1",
+        "orc_camp_1"
+      ],
+      "maxTier": 0,
+      "availabilityPath": "/Users/astapi/projects/goblinKingdom/goblin_native/reports/progression-orc-camp/09-orc_camp_1-availability.json",
+      "counts": {
+        "equipment": 54,
+        "rareEquipment": 3,
+        "factors": 5
+      },
+      "baseRank": 2,
+      "maxNormalDropRank": 2,
+      "newRareEquipment": [],
+      "scenario": {
+        "level": 50,
+        "strategyPath": "/Users/astapi/projects/goblinKingdom/goblin_native/reports/progression-orc-camp/09-orc_camp_1-strategy.json",
+        "best": {
+          "winRate": 1,
+          "avgRoundsPerBattle": 1,
+          "equipmentCost": 6705,
+          "frequentJobs": [
+            [
+              "cleric",
+              6
+            ],
+            [
+              "warrior",
+              4
+            ]
+          ],
+          "frequentVariants": [
+            [
+              "hobgoblin",
+              4
+            ],
+            [
+              "wolf",
+              2
+            ]
+          ],
+          "frequentEquipment": [
+            [
+              "claw_steel",
+              21
+            ],
+            [
+              "armor_leather_vest",
+              19
+            ],
+            [
+              "bow_short",
+              16
+            ],
+            [
+              "gauntlet_copper",
+              14
+            ],
+            [
+              "claw_copper",
+              14
+            ],
+            [
+              "armor_tattered_cloth",
+              13
+            ],
+            [
+              "gauntlet_leather",
+              12
+            ],
+            [
+              "armor_armor",
+              12
+            ],
+            [
+              "sword_cypress_stick",
+              12
+            ],
+            [
+              "shield_shield",
+              11
+            ],
+            [
+              "armor_fur_vest",
+              9
+            ],
+            [
+              "rod_acolyte",
+              9
+            ],
+            [
+              "sword_long",
+              8
+            ],
+            [
+              "gauntlet_cloth_gloves",
+              7
+            ],
+            [
+              "bow_long",
+              6
+            ],
+            [
+              "shield_wooden",
+              6
+            ],
+            [
+              "rod_wooden",
+              6
+            ],
+            [
+              "wand_apprentice",
+              4
+            ],
+            [
+              "sword_broad",
+              3
+            ],
+            [
+              "shield_pot_lid",
+              3
+            ]
+          ]
+        }
+      }
+    }
+  ]
+}

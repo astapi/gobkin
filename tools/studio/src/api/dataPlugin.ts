@@ -8,6 +8,7 @@ interface Options {
   appSrc: string
   dataDir: string
   scenariosDir: string
+  reportsDir: string
 }
 
 interface DungeonSummary {
@@ -200,6 +201,7 @@ export function dataApiPlugin(options: Options): Plugin {
   const presetsFile = path.join(options.dataDir, 'party-presets.json')
   const libraryFile = path.join(options.dataDir, 'character-library.json')
   const scenariosDir = options.scenariosDir
+  const reportsDir = options.reportsDir
 
   return {
     name: 'studio-data-api',
@@ -380,6 +382,34 @@ export function dataApiPlugin(options: Options): Plugin {
             const body = await readBody(req)
             await writeBalanceScenario(scenariosDir, scenarioId, body)
             return json(res, 200, { ok: true })
+          }
+          return json(res, 405, { error: 'Method not allowed' })
+        } catch (err) {
+          const message = err instanceof Error ? err.message : 'Unknown error'
+          const status = message.startsWith('NOT_FOUND') ? 404 : 500
+          return json(res, status, { error: message })
+        }
+      })
+
+      server.middlewares.use('/api/progression-reports', async (req, res) => {
+        try {
+          const url = new URL(req.url ?? '/', 'http://localhost')
+          const segments = url.pathname.split('/').filter(Boolean)
+
+          if (segments.length === 0) {
+            if (req.method === 'GET') {
+              return json(res, 200, await listProgressionReports(reportsDir))
+            }
+            return json(res, 405, { error: 'Method not allowed' })
+          }
+
+          const reportId = segments[0]
+          if (!isSafeReportId(reportId)) {
+            return json(res, 400, { error: 'Invalid reportId' })
+          }
+
+          if (req.method === 'GET') {
+            return json(res, 200, await readProgressionReport(reportsDir, reportId))
           }
           return json(res, 405, { error: 'Method not allowed' })
         } catch (err) {
@@ -752,6 +782,156 @@ interface BalanceScenarioSummary {
   loadoutCount: number
 }
 
+interface ProgressionReportSummary {
+  reportId: string
+  through: string
+  createdAt?: string
+  stepCount: number
+  challengeCount: number
+  clearLevel80Count: number
+  fileSizeBytes: number
+}
+
+async function listProgressionReports(reportsDir: string): Promise<ProgressionReportSummary[]> {
+  let entries: string[]
+  try {
+    entries = await fs.readdir(reportsDir)
+  } catch (err) {
+    if ((err as NodeJS.ErrnoException).code === 'ENOENT') return []
+    throw err
+  }
+
+  const reports: ProgressionReportSummary[] = []
+  for (const entry of entries) {
+    if (!entry.startsWith('progression-') || !isSafeReportId(entry)) continue
+    const reportDir = path.join(reportsDir, entry)
+    const compactPath = path.join(reportDir, 'summary.compact.json')
+    const summaryPath = path.join(reportDir, 'summary.json')
+    try {
+      const stat = await fs.stat(compactPath).catch(() => fs.stat(summaryPath))
+      const compact = await readProgressionCompact(reportDir)
+      reports.push({
+        reportId: entry,
+        through: typeof compact.through === 'string' ? compact.through : entry,
+        createdAt: typeof compact.createdAt === 'string' ? compact.createdAt : undefined,
+        stepCount: Array.isArray(compact.steps) ? compact.steps.length : 0,
+        challengeCount: Array.isArray(compact.steps)
+          ? compact.steps.filter((step: any) => step?.challenge).length
+          : 0,
+        clearLevel80Count: Array.isArray(compact.steps)
+          ? compact.steps.filter((step: any) => step?.challenge?.clearLevel80 !== null && step?.challenge?.clearLevel80 !== undefined).length
+          : 0,
+        fileSizeBytes: stat.size,
+      })
+    } catch {
+      // broken reports are ignored
+    }
+  }
+  reports.sort((a, b) => String(b.createdAt ?? '').localeCompare(String(a.createdAt ?? '')) || a.reportId.localeCompare(b.reportId))
+  return reports
+}
+
+async function readProgressionReport(reportsDir: string, reportId: string): Promise<unknown> {
+  const reportDir = path.join(reportsDir, reportId)
+  const compact = await readProgressionCompact(reportDir).catch((err) => {
+    if ((err as NodeJS.ErrnoException).code === 'ENOENT') {
+      throw new Error(`NOT_FOUND: progression report ${reportId}`)
+    }
+    throw err
+  })
+  const reportText = await fs.readFile(path.join(reportDir, 'summary.report.txt'), 'utf8').catch(() => buildProgressionReportText(compact))
+  return { reportId, compact, reportText }
+}
+
+async function readProgressionCompact(reportDir: string): Promise<any> {
+  const compactPath = path.join(reportDir, 'summary.compact.json')
+  try {
+    return await readJson(compactPath)
+  } catch (err) {
+    if ((err as NodeJS.ErrnoException).code !== 'ENOENT') throw err
+  }
+
+  const summary = await readJson(path.join(reportDir, 'summary.json'))
+  return {
+    version: 1,
+    createdAt: summary.createdAt,
+    through: summary.through,
+    config: summary.config ?? {},
+    steps: Array.isArray(summary.steps) ? summary.steps.map((step: any) => ({
+      index: step.index,
+      areaId: step.areaId,
+      areaName: step.areaName,
+      baseRank: step.baseRank,
+      maxNormalDropRank: step.maxNormalDropRank,
+      equipmentCount: step.counts?.equipment ?? 0,
+      rareEquipmentCount: step.counts?.rareEquipment ?? 0,
+      newRareEquipment: Array.isArray(step.newRareEquipment)
+        ? step.newRareEquipment.map((entry: any) => ({
+          templateId: entry.templateId,
+          name: entry.name,
+        }))
+        : [],
+      challenge: step.scenario ? {
+        level: step.scenario.level,
+        clearLevel80: step.scenario.levelSweep?.clearLevel80 ?? null,
+        clearLevel95: step.scenario.levelSweep?.clearLevel95 ?? null,
+        lowestWinningLevel: step.scenario.levelSweep?.lowestWinningLevel ?? null,
+        winRate: step.scenario.best?.winRate ?? null,
+        avgRoundsPerBattle: step.scenario.best?.avgRoundsPerBattle ?? null,
+        usedRareEquipment: [],
+        jobs: step.scenario.jobs ?? [],
+        variants: step.scenario.variants ?? [],
+        frequentJobs: [],
+        frequentVariants: [],
+        frequentEquipment: [],
+        levelSweep: step.scenario.levelSweep?.results?.map((entry: any) => ({
+          level: entry.level,
+          winRate: entry.best?.winRate ?? null,
+          avgRoundsPerBattle: entry.best?.avgRoundsPerBattle ?? null,
+        })) ?? null,
+      } : null,
+    })) : [],
+  }
+}
+
+function buildProgressionReportText(compact: any): string {
+  const lines = [
+    `progression ${compact.through ?? '-'}`,
+    `createdAt ${compact.createdAt ?? '-'}`,
+    `levelMode ${compact.config?.levelMode ?? '-'}`,
+    `levelSweep ${compact.config?.levelSweep ? `${compact.config.levelSweep.min}:${compact.config.levelSweep.max}:${compact.config.levelSweep.step}` : '-'}`,
+    '',
+  ]
+
+  for (const step of compact.steps ?? []) {
+    const challenge = step.challenge
+    lines.push(`step ${step.index ?? '-'} ${step.areaId ?? '-'}`)
+    lines.push(`  equipment ${step.equipmentCount ?? 0} rare ${step.rareEquipmentCount ?? 0}`)
+    lines.push(`  newRare ${formatProgressionList((step.newRareEquipment ?? []).map((entry: any) => entry.templateId))}`)
+    if (challenge) {
+      lines.push(`  challenge level ${challenge.level ?? '-'}`)
+      lines.push(`  clear80 ${challenge.clearLevel80 ?? '-'} clear95 ${challenge.clearLevel95 ?? '-'} winRate ${formatProgressionRate(challenge.winRate)}`)
+      lines.push(`  usedRare ${formatProgressionList(challenge.usedRareEquipment)}`)
+      lines.push(`  jobs ${formatProgressionList(challenge.jobs)}`)
+      lines.push(`  variants ${formatProgressionList(challenge.variants)}`)
+      lines.push(`  topEquipment ${formatProgressionList((challenge.frequentEquipment ?? []).slice(0, 6).map((entry: any) => `${entry.id}:${entry.count}`))}`)
+    } else {
+      lines.push('  challenge -')
+    }
+    lines.push('')
+  }
+
+  return `${lines.join('\n')}\n`
+}
+
+function formatProgressionList(values: unknown): string {
+  return Array.isArray(values) && values.length > 0 ? values.join(',') : '-'
+}
+
+function formatProgressionRate(value: unknown): string {
+  return typeof value === 'number' ? `${(value * 100).toFixed(1)}%` : '-'
+}
+
 async function listBalanceScenarios(scenariosDir: string): Promise<BalanceScenarioSummary[]> {
   let entries: string[]
   try {
@@ -838,6 +1018,10 @@ function json(res: ServerResponse, status: number, body: unknown) {
 
 function isSafeId(id: string): boolean {
   return /^[a-z0-9_]+$/.test(id)
+}
+
+function isSafeReportId(id: string): boolean {
+  return /^[a-z0-9_-]+$/.test(id)
 }
 
 async function readStoryFile(filePath: string): Promise<StoryFile> {

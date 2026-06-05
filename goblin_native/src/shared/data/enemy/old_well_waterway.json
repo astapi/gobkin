@@ -2,28 +2,28 @@
   "enemies": [
     {
       "id": "OWW001",
-      "name": "大ネズミ",
+      "name": "水路の大ネズミ",
       "attackType": "melee",
       "raceTags": [
         "beast"
       ],
-      "level": 9,
-      "hp": 70,
-      "atk": 19,
-      "def": 12,
+      "level": 15,
+      "hp": 579,
+      "atk": 88,
+      "def": 73,
       "attackCount": 2,
-      "accuracy": 245,
-      "evasion": 20,
-      "exp": 20,
-      "gold": 8,
-      "magicDef": 5,
+      "accuracy": 540,
+      "evasion": 28,
+      "exp": 65,
+      "gold": 14,
+      "magicDef": 31,
       "baseAttributes": {
-        "power": 5,
-        "wisdom": 3,
-        "spirit": 2,
-        "vitality": 5,
-        "agility": 11,
-        "luck": 4
+        "power": 12,
+        "wisdom": 6,
+        "spirit": 4,
+        "vitality": 11,
+        "agility": 15,
+        "luck": 6
       }
     },
     {
@@ -33,49 +33,49 @@
       "raceTags": [
         "slime"
       ],
-      "level": 9,
-      "hp": 80,
-      "atk": 16,
-      "def": 16,
+      "level": 15,
+      "hp": 730,
+      "atk": 71,
+      "def": 118,
       "attackCount": 1,
-      "accuracy": 235,
+      "accuracy": 500,
       "evasion": 12,
-      "exp": 21,
-      "gold": 9,
-      "magicDef": 8,
+      "exp": 65,
+      "gold": 15,
+      "magicDef": 103,
       "baseAttributes": {
-        "power": 3,
-        "wisdom": 3,
-        "spirit": 2,
-        "vitality": 8,
-        "agility": 5,
-        "luck": 4
+        "power": 8,
+        "wisdom": 7,
+        "spirit": 8,
+        "vitality": 15,
+        "agility": 6,
+        "luck": 6
       }
     },
     {
       "id": "OWW003",
-      "name": "スケルトン",
+      "name": "錆びたスケルトン",
       "attackType": "melee",
       "raceTags": [
         "undead"
       ],
-      "level": 10,
-      "hp": 105,
-      "atk": 22,
-      "def": 16,
+      "level": 16,
+      "hp": 923,
+      "atk": 112,
+      "def": 130,
       "attackCount": 1,
-      "accuracy": 245,
-      "evasion": 13,
-      "exp": 25,
-      "gold": 15,
-      "magicDef": 6,
+      "accuracy": 540,
+      "evasion": 14,
+      "exp": 74,
+      "gold": 22,
+      "magicDef": 63,
       "baseAttributes": {
-        "power": 6,
-        "wisdom": 4,
-        "spirit": 1,
-        "vitality": 7,
-        "agility": 6,
-        "luck": 3
+        "power": 14,
+        "wisdom": 8,
+        "spirit": 5,
+        "vitality": 16,
+        "agility": 8,
+        "luck": 4
       }
     },
     {
@@ -85,24 +85,85 @@
       "raceTags": [
         "beast"
       ],
-      "level": 11,
-      "hp": 180,
-      "atk": 32,
-      "def": 22,
+      "level": 17,
+      "hp": 1159,
+      "atk": 127,
+      "def": 118,
       "attackCount": 2,
-      "accuracy": 280,
-      "evasion": 17,
-      "exp": 36,
-      "gold": 20,
-      "magicDef": 10,
+      "accuracy": 581,
+      "evasion": 20,
+      "exp": 86,
+      "gold": 28,
+      "magicDef": 55,
       "baseAttributes": {
-        "power": 9,
-        "wisdom": 5,
-        "spirit": 3,
-        "vitality": 13,
-        "agility": 8,
+        "power": 16,
+        "wisdom": 8,
+        "spirit": 6,
+        "vitality": 18,
+        "agility": 10,
+        "luck": 5
+      }
+    },
+    {
+      "id": "OWW005",
+      "name": "溺死者",
+      "attackType": "melee",
+      "raceTags": [
+        "undead",
+        "human"
+      ],
+      "level": 16,
+      "hp": 815,
+      "atk": 97,
+      "def": 97,
+      "attackCount": 1,
+      "accuracy": 527,
+      "evasion": 12,
+      "exp": 76,
+      "gold": 24,
+      "magicDef": 58,
+      "baseAttributes": {
+        "power": 13,
+        "wisdom": 9,
+        "spirit": 5,
+        "vitality": 15,
+        "agility": 7,
         "luck": 4
       }
+    },
+    {
+      "id": "OWW006",
+      "name": "汚泥スライム",
+      "attackType": "melee",
+      "raceTags": [
+        "slime"
+      ],
+      "level": 17,
+      "hp": 1009,
+      "atk": 88,
+      "magicAtk": 72,
+      "def": 143,
+      "attackCount": 1,
+      "accuracy": 527,
+      "evasion": 10,
+      "exp": 86,
+      "gold": 30,
+      "magicDef": 116,
+      "baseAttributes": {
+        "power": 10,
+        "wisdom": 13,
+        "spirit": 10,
+        "vitality": 18,
+        "agility": 6,
+        "luck": 6
+      },
+      "skills": [
+        {
+          "id": "fireball",
+          "name": "ファイヤーボール",
+          "grantsSpellId": "fireball"
+        }
+      ]
     },
     {
       "id": "B_OWW_GATEKEEPER",
@@ -111,23 +172,23 @@
       "raceTags": [
         "undead"
       ],
-      "level": 16,
-      "hp": 270,
-      "atk": 36,
-      "def": 28,
+      "level": 32,
+      "hp": 1819,
+      "atk": 150,
+      "def": 153,
       "attackCount": 2,
-      "accuracy": 320,
+      "accuracy": 650,
       "evasion": 18,
-      "exp": 86,
-      "gold": 78,
-      "magicDef": 18,
+      "exp": 257,
+      "gold": 120,
+      "magicDef": 106,
       "baseAttributes": {
-        "power": 10,
-        "wisdom": 8,
-        "spirit": 4,
-        "vitality": 14,
-        "agility": 9,
-        "luck": 5
+        "power": 18,
+        "wisdom": 12,
+        "spirit": 8,
+        "vitality": 21,
+        "agility": 10,
+        "luck": 6
       },
       "isBoss": true,
       "factorDrops": [
@@ -148,6 +209,9 @@
         [
           "OWW001",
           "OWW001"
+        ],
+        [
+          "OWW002"
         ]
       ]
     },
@@ -158,6 +222,7 @@
       ],
       "enemies": [
         [
+          "OWW002",
           "OWW002"
         ]
       ]
@@ -172,7 +237,7 @@
           "OWW001"
         ],
         [
-          "OWW002"
+          "OWW005"
         ]
       ]
     },
@@ -183,8 +248,7 @@
       ],
       "enemies": [
         [
-          "OWW001",
-          "OWW001",
+          "OWW003",
           "OWW001"
         ],
         [
@@ -200,8 +264,11 @@
       ],
       "enemies": [
         [
-          "OWW002",
-          "OWW002"
+          "OWW003"
+        ],
+        [
+          "OWW001",
+          "OWW001"
         ]
       ]
     },
@@ -212,11 +279,11 @@
       ],
       "enemies": [
         [
-          "OWW001",
-          "OWW001"
+          "OWW005",
+          "OWW002"
         ],
         [
-          "OWW002"
+          "OWW001"
         ]
       ]
     },
@@ -227,7 +294,11 @@
       ],
       "enemies": [
         [
-          "OWW003"
+          "OWW002",
+          "OWW002"
+        ],
+        [
+          "OWW006"
         ]
       ]
     },
@@ -238,11 +309,11 @@
       ],
       "enemies": [
         [
-          "OWW002",
-          "OWW002"
+          "OWW003",
+          "OWW005"
         ],
         [
-          "OWW003"
+          "OWW006"
         ]
       ],
       "isFloorBoss": true
@@ -255,7 +326,10 @@
       "enemies": [
         [
           "OWW003",
-          "OWW003"
+          "OWW002"
+        ],
+        [
+          "OWW006"
         ]
       ]
     },
@@ -266,11 +340,11 @@
       ],
       "enemies": [
         [
-          "OWW001",
-          "OWW001"
+          "OWW004"
         ],
         [
-          "OWW003"
+          "OWW001",
+          "OWW001"
         ]
       ]
     },
@@ -281,10 +355,11 @@
       ],
       "enemies": [
         [
-          "OWW002"
+          "OWW005",
+          "OWW005"
         ],
         [
-          "OWW003"
+          "OWW006"
         ]
       ]
     },
@@ -295,12 +370,11 @@
       ],
       "enemies": [
         [
-          "OWW003",
+          "OWW004",
           "OWW003"
         ],
         [
-          "OWW002",
-          "OWW002"
+          "OWW006"
         ]
       ],
       "isFloorBoss": true
@@ -312,7 +386,11 @@
       ],
       "enemies": [
         [
-          "OWW004"
+          "OWW004",
+          "OWW002"
+        ],
+        [
+          "OWW006"
         ]
       ]
     },
@@ -323,10 +401,12 @@
       ],
       "enemies": [
         [
-          "OWW003"
+          "OWW003",
+          "OWW005"
         ],
         [
-          "OWW004"
+          "OWW001",
+          "OWW006"
         ]
       ]
     },
@@ -337,11 +417,11 @@
       ],
       "enemies": [
         [
-          "OWW001",
-          "OWW001"
+          "OWW004"
         ],
         [
-          "OWW004"
+          "OWW006",
+          "OWW006"
         ]
       ]
     },
@@ -352,11 +432,12 @@
       ],
       "enemies": [
         [
-          "OWW004"
+          "OWW004",
+          "OWW003",
+          "OWW005"
         ],
         [
-          "OWW003",
-          "OWW003"
+          "OWW006"
         ]
       ],
       "isFloorBoss": true
@@ -368,10 +449,11 @@
       ],
       "enemies": [
         [
-          "OWW004"
+          "OWW004",
+          "OWW003"
         ],
         [
-          "OWW002",
+          "OWW006",
           "OWW002"
         ]
       ]
@@ -383,11 +465,12 @@
       ],
       "enemies": [
         [
-          "OWW003",
-          "OWW003"
+          "OWW004",
+          "OWW005"
         ],
         [
-          "OWW004"
+          "OWW006",
+          "OWW006"
         ]
       ]
     },
@@ -398,8 +481,12 @@
       ],
       "enemies": [
         [
-          "OWW004",
-          "OWW004"
+          "OWW003",
+          "OWW003",
+          "OWW005"
+        ],
+        [
+          "OWW001"
         ]
       ]
     },
@@ -414,7 +501,8 @@
           "OWW004"
         ],
         [
-          "OWW003"
+          "OWW006",
+          "OWW006"
         ]
       ],
       "isFloorBoss": true
@@ -427,10 +515,11 @@
       "enemies": [
         [
           "OWW004",
-          "OWW004"
+          "OWW003",
+          "OWW005"
         ],
         [
-          "OWW003"
+          "OWW006"
         ]
       ]
     },
@@ -441,9 +530,12 @@
       ],
       "enemies": [
         [
-          "OWW003",
-          "OWW003",
-          "OWW003"
+          "OWW004",
+          "OWW004"
+        ],
+        [
+          "OWW006",
+          "OWW002"
         ]
       ]
     },
@@ -454,36 +546,18 @@
       ],
       "enemies": [
         [
-          "OWW004"
-        ],
-        [
-          "OWW002",
-          "OWW002"
-        ],
-        [
+          "OWW003",
+          "OWW005",
           "OWW003"
+        ],
+        [
+          "OWW006",
+          "OWW006"
         ]
       ]
     },
     {
-      "id": "OWW_F6_BOSS",
-      "floors": [
-        6
-      ],
-      "enemies": [
-        [
-          "OWW004",
-          "OWW004"
-        ],
-        [
-          "OWW003",
-          "OWW003"
-        ]
-      ],
-      "isFloorBoss": true
-    },
-    {
-      "id": "OWW_FINAL_BOSS",
+      "id": "OWW_FINAL",
       "floors": [
         6
       ],
@@ -492,13 +566,11 @@
           "B_OWW_GATEKEEPER"
         ],
         [
-          "OWW004"
-        ],
-        [
-          "OWW003",
-          "OWW003"
+          "OWW004",
+          "OWW006"
         ]
       ],
+      "isFloorBoss": true,
       "isBoss": true
     }
   ]

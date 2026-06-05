@@ -13,6 +13,12 @@
     "sim:balance:loadout": "node scripts/simulate-dungeon-balance-loadout.js",
     "sim:subjugation:optimized": "node scripts/simulate-subjugation-optimized.js",
     "sim:balance:reference": "node scripts/simulate-balance-reference.js",
+    "sim:availability": "node scripts/analyze-progression-availability.js",
+    "sim:optimize": "node scripts/optimize-balance-strategy.js",
+    "sim:progression": "node scripts/run-progression-simulation.js",
+    "sim:early-balance-report": "node scripts/report-early-dungeon-balance.js",
+    "sim:early-progression-check": "node scripts/check-early-progression.js",
+    "sim:strategy-gates": "node scripts/check-strategy-floor-gates.js",
     "deploy:ios": "./scripts/deploy-ios.sh",
     "deploy:ios:quick": "./scripts/deploy-ios.sh --no-clean"
   },

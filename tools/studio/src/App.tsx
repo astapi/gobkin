@@ -11,6 +11,7 @@ import { SkillCatalogPage } from './pages/SkillCatalogPage'
 import { EquipmentPoolPage } from './pages/EquipmentPoolPage'
 import { DungeonUnlockFlowPage } from './pages/DungeonUnlockFlowPage'
 import { BalanceReferencePage } from './pages/BalanceReferencePage'
+import { ProgressionReportsPage } from './pages/ProgressionReportsPage'
 import { TipsPage } from './pages/TipsPage'
 import { RareDropsPage } from './pages/RareDropsPage'
 import { PartyStoreProvider } from './stores/partyStore'
@@ -35,6 +36,7 @@ export function App() {
             <Link to="/party">PT編成</Link>
             <Link to="/simulate">シミュレーション</Link>
             <Link to="/balance-reference">バランス基準</Link>
+            <Link to="/progression-reports">進行レポート</Link>
           </nav>
         </header>
         <main className="app-main">
@@ -53,6 +55,7 @@ export function App() {
             <Route path="/party" element={<PartyPage />} />
             <Route path="/simulate" element={<SimulatePage />} />
             <Route path="/balance-reference" element={<BalanceReferencePage />} />
+            <Route path="/progression-reports" element={<ProgressionReportsPage />} />
           </Routes>
         </main>
       </div>

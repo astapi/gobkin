@@ -1,7 +1,7 @@
 {
   "id": "undead_ruins_1",
   "name": "忘れられた廃墟",
-  "areaLevel": 10,
+  "areaLevel": 18,
   "floors": 6,
   "baseDurationSec": 3240,
   "description": "地下水路の出口に広がる忘れられた廃墟。スケルトンとゾンビが徘徊する薄暗い回廊から、死霊術師の残骸が眠る最奥へ進む。",

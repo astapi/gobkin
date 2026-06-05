@@ -1,0 +1,344 @@
+{
+  "createdAt": "2026-06-04T06:44:29.082Z",
+  "scenario": "goblin_village_1",
+  "level": 13,
+  "config": {
+    "generations": 10,
+    "population": 30,
+    "iterations": 8,
+    "validationIterations": 100,
+    "seed": 13003,
+    "cleric": "optional",
+    "jobs": [],
+    "variants": [
+      "slime",
+      "wolf"
+    ],
+    "maxUnlockRank": 1,
+    "maxDropRank": 1,
+    "allowRare": false,
+    "availability": "/Users/astapi/projects/goblinKingdom/goblin_native/reports/progression-orc-camp-sweep/02-forest_outskirts-availability.json"
+  },
+  "insights": {
+    "winningCandidateCount": 3,
+    "frequentJobs": [],
+    "frequentVariants": [
+      [
+        "wolf",
+        11
+      ],
+      [
+        "slime",
+        7
+      ]
+    ],
+    "frequentEquipment": [
+      [
+        "shield_wooden",
+        21
+      ],
+      [
+        "gauntlet_cloth_gloves",
+        18
+      ],
+      [
+        "rod_acolyte",
+        8
+      ],
+      [
+        "armor_leather_vest",
+        8
+      ],
+      [
+        "gauntlet_leather",
+        7
+      ],
+      [
+        "sword_club",
+        6
+      ],
+      [
+        "bow_short",
+        4
+      ],
+      [
+        "wand_twig",
+        3
+      ],
+      [
+        "claw_iron",
+        3
+      ],
+      [
+        "armor_tattered_cloth",
+        3
+      ],
+      [
+        "shield_pot_lid",
+        2
+      ],
+      [
+        "sword_cypress_stick",
+        2
+      ],
+      [
+        "claw_sharp",
+        2
+      ],
+      [
+        "armor_fur_vest",
+        1
+      ],
+      [
+        "gauntlet_copper",
+        1
+      ],
+      [
+        "bow_slingshot",
+        1
+      ]
+    ]
+  },
+  "candidates": [
+    {
+      "result": {
+        "wins": 100,
+        "iterations": 100,
+        "winRate": 1,
+        "avgRoundsPerBattle": 1,
+        "equipmentCost": 510,
+        "score": 999998.99999949
+      },
+      "genome": {
+        "members": [
+          {
+            "job": null,
+            "variantFactorId": "wolf",
+            "equipmentTemplateIds": [
+              "shield_pot_lid",
+              "gauntlet_cloth_gloves",
+              "armor_fur_vest",
+              "bow_short",
+              "gauntlet_copper"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "slime",
+            "equipmentTemplateIds": [
+              "gauntlet_cloth_gloves",
+              "sword_club",
+              "gauntlet_cloth_gloves",
+              "gauntlet_cloth_gloves",
+              "shield_wooden"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "slime",
+            "equipmentTemplateIds": [
+              "wand_twig",
+              "claw_iron",
+              "bow_short",
+              "armor_tattered_cloth",
+              "sword_cypress_stick"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "wolf",
+            "equipmentTemplateIds": [
+              "rod_acolyte",
+              "gauntlet_leather",
+              "shield_wooden",
+              "shield_wooden",
+              "armor_leather_vest"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "wolf",
+            "equipmentTemplateIds": [
+              "rod_acolyte",
+              "gauntlet_leather",
+              "shield_wooden",
+              "shield_wooden",
+              "armor_leather_vest"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "slime",
+            "equipmentTemplateIds": [
+              "gauntlet_cloth_gloves",
+              "sword_club",
+              "gauntlet_cloth_gloves",
+              "gauntlet_cloth_gloves",
+              "sword_cypress_stick"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "result": {
+        "wins": 100,
+        "iterations": 100,
+        "winRate": 1,
+        "avgRoundsPerBattle": 1,
+        "equipmentCost": 515,
+        "score": 999998.999999485
+      },
+      "genome": {
+        "members": [
+          {
+            "job": null,
+            "variantFactorId": "wolf",
+            "equipmentTemplateIds": [
+              "rod_acolyte",
+              "gauntlet_leather",
+              "shield_wooden",
+              "shield_wooden",
+              "armor_leather_vest"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "wolf",
+            "equipmentTemplateIds": [
+              "gauntlet_cloth_gloves",
+              "sword_club",
+              "gauntlet_cloth_gloves",
+              "bow_slingshot",
+              "shield_wooden"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "wolf",
+            "equipmentTemplateIds": [
+              "rod_acolyte",
+              "shield_pot_lid",
+              "shield_wooden",
+              "shield_wooden",
+              "armor_leather_vest"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "wolf",
+            "equipmentTemplateIds": [
+              "rod_acolyte",
+              "gauntlet_leather",
+              "shield_wooden",
+              "shield_wooden",
+              "armor_leather_vest"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "slime",
+            "equipmentTemplateIds": [
+              "wand_twig",
+              "claw_iron",
+              "bow_short",
+              "armor_tattered_cloth",
+              "claw_sharp"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "slime",
+            "equipmentTemplateIds": [
+              "gauntlet_cloth_gloves",
+              "sword_club",
+              "gauntlet_cloth_gloves",
+              "gauntlet_cloth_gloves",
+              "shield_wooden"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "result": {
+        "wins": 100,
+        "iterations": 100,
+        "winRate": 1,
+        "avgRoundsPerBattle": 1,
+        "equipmentCost": 520,
+        "score": 999998.99999948
+      },
+      "genome": {
+        "members": [
+          {
+            "job": null,
+            "variantFactorId": "wolf",
+            "equipmentTemplateIds": [
+              "rod_acolyte",
+              "gauntlet_leather",
+              "shield_wooden",
+              "shield_wooden",
+              "armor_leather_vest"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "wolf",
+            "equipmentTemplateIds": [
+              "gauntlet_cloth_gloves",
+              "sword_club",
+              "gauntlet_cloth_gloves",
+              "gauntlet_cloth_gloves",
+              "shield_wooden"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "wolf",
+            "equipmentTemplateIds": [
+              "rod_acolyte",
+              "gauntlet_leather",
+              "shield_wooden",
+              "shield_wooden",
+              "armor_leather_vest"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "wolf",
+            "equipmentTemplateIds": [
+              "rod_acolyte",
+              "gauntlet_leather",
+              "shield_wooden",
+              "shield_wooden",
+              "armor_leather_vest"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "slime",
+            "equipmentTemplateIds": [
+              "wand_twig",
+              "claw_iron",
+              "bow_short",
+              "armor_tattered_cloth",
+              "claw_sharp"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "slime",
+            "equipmentTemplateIds": [
+              "gauntlet_cloth_gloves",
+              "sword_club",
+              "gauntlet_cloth_gloves",
+              "gauntlet_cloth_gloves",
+              "shield_wooden"
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

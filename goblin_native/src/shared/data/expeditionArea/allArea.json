@@ -60,7 +60,7 @@
     {
       "id": "undead_ruins_1",
       "name": "忘れられた廃墟",
-      "areaLevel": 10,
+      "areaLevel": 18,
       "floors": 6,
       "exploration_time_sec_first": 3240,
       "exploration_time_sec": 1080,
@@ -71,7 +71,7 @@
     {
       "id": "bandit_hideout",
       "name": "盗賊のアジト",
-      "areaLevel": 12,
+      "areaLevel": 20,
       "floors": 6,
       "exploration_time_sec_first": 11880,
       "exploration_time_sec": 3960,
@@ -82,7 +82,7 @@
     {
       "id": "road_1",
       "name": "街道",
-      "areaLevel": 14,
+      "areaLevel": 25,
       "floors": 6,
       "exploration_time_sec_first": 4860,
       "exploration_time_sec": 1620,

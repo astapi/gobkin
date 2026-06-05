@@ -1,0 +1,181 @@
+{
+  "version": 1,
+  "createdAt": "2026-06-05T01:30:01.855Z",
+  "through": "forest_outskirts",
+  "config": {
+    "tiers": {},
+    "defaultTier": 0,
+    "levelMode": "scenario-max",
+    "levelSweep": {
+      "min": 1,
+      "max": 16,
+      "step": 1
+    },
+    "generations": 5,
+    "population": 14,
+    "iterations": 4,
+    "validationIterations": 40
+  },
+  "steps": [
+    {
+      "index": 1,
+      "areaId": "slime_cave",
+      "areaName": "スライムの洞窟",
+      "baseRank": 1,
+      "maxNormalDropRank": 0,
+      "equipmentCount": 34,
+      "rareEquipmentCount": 2,
+      "newRareEquipment": [
+        {
+          "templateId": "accessory_luck_medal",
+          "name": "ラッキーメダル"
+        },
+        {
+          "templateId": "accessory_split_core",
+          "name": "分裂核"
+        }
+      ],
+      "challenge": null
+    },
+    {
+      "index": 2,
+      "areaId": "forest_outskirts",
+      "areaName": "周辺の森",
+      "baseRank": 1,
+      "maxNormalDropRank": 1,
+      "equipmentCount": 34,
+      "rareEquipmentCount": 2,
+      "newRareEquipment": [],
+      "challenge": {
+        "level": 1,
+        "clearLevel80": 1,
+        "clearLevel95": 1,
+        "lowestWinningLevel": 1,
+        "winRate": 1,
+        "avgRoundsPerBattle": 1.4861111111111112,
+        "usedRareEquipment": [
+          "accessory_split_core"
+        ],
+        "jobs": [],
+        "variants": [
+          "slime"
+        ],
+        "frequentJobs": [],
+        "frequentVariants": [
+          {
+            "id": "slime",
+            "count": 15
+          }
+        ],
+        "frequentEquipment": [
+          {
+            "id": "claw_steel",
+            "count": 6
+          },
+          {
+            "id": "sword_broad",
+            "count": 4
+          },
+          {
+            "id": "bow_long",
+            "count": 4
+          },
+          {
+            "id": "accessory_split_core",
+            "count": 2
+          },
+          {
+            "id": "claw_sharp",
+            "count": 1
+          },
+          {
+            "id": "hidden_dagger",
+            "count": 1
+          }
+        ],
+        "levelSweep": [
+          {
+            "level": 1,
+            "winRate": 1,
+            "avgRoundsPerBattle": 1.4861111111111112
+          },
+          {
+            "level": 2,
+            "winRate": 1,
+            "avgRoundsPerBattle": 1.452930728241563
+          },
+          {
+            "level": 3,
+            "winRate": 1,
+            "avgRoundsPerBattle": 1.0154109589041096
+          },
+          {
+            "level": 4,
+            "winRate": 1,
+            "avgRoundsPerBattle": 1
+          },
+          {
+            "level": 5,
+            "winRate": 1,
+            "avgRoundsPerBattle": 1
+          },
+          {
+            "level": 6,
+            "winRate": 1,
+            "avgRoundsPerBattle": 1.0017825311942958
+          },
+          {
+            "level": 7,
+            "winRate": 1,
+            "avgRoundsPerBattle": 1
+          },
+          {
+            "level": 8,
+            "winRate": 1,
+            "avgRoundsPerBattle": 1.0017921146953406
+          },
+          {
+            "level": 9,
+            "winRate": 1,
+            "avgRoundsPerBattle": 1.0035087719298246
+          },
+          {
+            "level": 10,
+            "winRate": 1,
+            "avgRoundsPerBattle": 1
+          },
+          {
+            "level": 11,
+            "winRate": 1,
+            "avgRoundsPerBattle": 1
+          },
+          {
+            "level": 12,
+            "winRate": 1,
+            "avgRoundsPerBattle": 1
+          },
+          {
+            "level": 13,
+            "winRate": 1,
+            "avgRoundsPerBattle": 1
+          },
+          {
+            "level": 14,
+            "winRate": 1,
+            "avgRoundsPerBattle": 1
+          },
+          {
+            "level": 15,
+            "winRate": 1,
+            "avgRoundsPerBattle": 1
+          },
+          {
+            "level": 16,
+            "winRate": 1,
+            "avgRoundsPerBattle": 1
+          }
+        ]
+      }
+    }
+  ]
+}

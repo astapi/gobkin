@@ -1,0 +1,287 @@
+{
+  "createdAt": "2026-06-04T06:45:20.453Z",
+  "scenario": "orc_camp_1",
+  "level": 5,
+  "config": {
+    "generations": 10,
+    "population": 30,
+    "iterations": 8,
+    "validationIterations": 100,
+    "seed": 5009,
+    "cleric": "required",
+    "jobs": [
+      "guard",
+      "warrior",
+      "thief",
+      "mage",
+      "cleric"
+    ],
+    "variants": [
+      "hobgoblin",
+      "slime",
+      "undead",
+      "wolf"
+    ],
+    "maxUnlockRank": 2,
+    "maxDropRank": 2,
+    "allowRare": false,
+    "availability": "/Users/astapi/projects/goblinKingdom/goblin_native/reports/progression-orc-camp-sweep/08-road_1-availability.json"
+  },
+  "insights": {
+    "winningCandidateCount": 0,
+    "frequentJobs": [
+      [
+        "cleric",
+        3
+      ]
+    ],
+    "frequentVariants": [
+      [
+        "wolf",
+        12
+      ],
+      [
+        "hobgoblin",
+        3
+      ]
+    ],
+    "frequentEquipment": [
+      [
+        "claw_mithril",
+        5
+      ],
+      [
+        "hidden_royal_dagger",
+        4
+      ],
+      [
+        "hidden_dagger",
+        3
+      ],
+      [
+        "armor_armor",
+        3
+      ],
+      [
+        "claw_royal",
+        3
+      ],
+      [
+        "armor_leather_vest",
+        3
+      ],
+      [
+        "claw_iron",
+        3
+      ],
+      [
+        "sword_royal",
+        3
+      ],
+      [
+        "robe_robe",
+        3
+      ],
+      [
+        "sword_long",
+        3
+      ],
+      [
+        "gauntlet_gauntlet",
+        2
+      ],
+      [
+        "gauntlet_royal",
+        1
+      ]
+    ]
+  },
+  "candidates": [
+    {
+      "result": {
+        "wins": 0,
+        "iterations": 100,
+        "winRate": 0,
+        "avgRoundsPerBattle": 1.7936708860759494,
+        "equipmentCost": 13075,
+        "score": -1.7936839610759494
+      },
+      "genome": {
+        "members": [
+          {
+            "job": null,
+            "variantFactorId": "hobgoblin",
+            "equipmentTemplateIds": [
+              "hidden_dagger",
+              "armor_armor"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "wolf",
+            "equipmentTemplateIds": [
+              "claw_mithril",
+              "hidden_royal_dagger"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "wolf",
+            "equipmentTemplateIds": [
+              "claw_royal",
+              "armor_leather_vest"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "wolf",
+            "equipmentTemplateIds": [
+              "claw_iron",
+              "hidden_royal_dagger"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "wolf",
+            "equipmentTemplateIds": [
+              "sword_royal",
+              "gauntlet_gauntlet"
+            ]
+          },
+          {
+            "job": "cleric",
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "robe_robe",
+              "sword_long"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "result": {
+        "wins": 0,
+        "iterations": 100,
+        "winRate": 0,
+        "avgRoundsPerBattle": 1.8171052631578948,
+        "equipmentCost": 59075,
+        "score": -1.8171643381578948
+      },
+      "genome": {
+        "members": [
+          {
+            "job": null,
+            "variantFactorId": "hobgoblin",
+            "equipmentTemplateIds": [
+              "hidden_dagger",
+              "armor_armor"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "wolf",
+            "equipmentTemplateIds": [
+              "claw_mithril",
+              "hidden_royal_dagger"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "wolf",
+            "equipmentTemplateIds": [
+              "claw_royal",
+              "armor_leather_vest"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "wolf",
+            "equipmentTemplateIds": [
+              "claw_iron",
+              "claw_mithril"
+            ]
+          },
+          {
+            "job": "cleric",
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "robe_robe",
+              "sword_long"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "wolf",
+            "equipmentTemplateIds": [
+              "sword_royal",
+              "gauntlet_royal"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "result": {
+        "wins": 0,
+        "iterations": 100,
+        "winRate": 0,
+        "avgRoundsPerBattle": 1.8186666666666667,
+        "equipmentCost": 11075,
+        "score": -1.8186777416666666
+      },
+      "genome": {
+        "members": [
+          {
+            "job": null,
+            "variantFactorId": "hobgoblin",
+            "equipmentTemplateIds": [
+              "hidden_dagger",
+              "armor_armor"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "wolf",
+            "equipmentTemplateIds": [
+              "claw_mithril",
+              "hidden_royal_dagger"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "wolf",
+            "equipmentTemplateIds": [
+              "claw_royal",
+              "armor_leather_vest"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "wolf",
+            "equipmentTemplateIds": [
+              "claw_iron",
+              "claw_mithril"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "wolf",
+            "equipmentTemplateIds": [
+              "sword_royal",
+              "gauntlet_gauntlet"
+            ]
+          },
+          {
+            "job": "cleric",
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "robe_robe",
+              "sword_long"
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
