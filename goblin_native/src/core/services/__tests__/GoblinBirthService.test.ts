@@ -282,7 +282,6 @@ describe('GoblinBirthService', () => {
       expect(goblin.factors).toEqual(['wolf'])
       expect(goblin.skills.map((skill) => skill.id)).toEqual([
         'goblin_pack_tactics',
-        'exp_bonus_70',
         'talent_accuracy_150',
         'attack_count_up_2',
         'equipment_accuracy_200',

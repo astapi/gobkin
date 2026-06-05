@@ -17,7 +17,6 @@ export const pureGoblinSeed: PureGoblinSeed = {
   },
   hpCoefficient: 0.8,
   defaultSkillIds: [
-    "exp_bonus_70",
     "goblin_pack_tactics"
   ]
 }

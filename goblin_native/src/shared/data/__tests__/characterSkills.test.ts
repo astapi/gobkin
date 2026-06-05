@@ -561,7 +561,7 @@ describe('characterSkills - 物理ダメージ軽減', () => {
   it('純粋なゴブリンのデフォルトスキルに群れを含める', () => {
     expect(getDefaultSkillsForRace('ゴブリン').map((skill) => skill.id)).toContain('goblin_pack_tactics')
     expect(getDefaultSkillsForRace('始祖ゴブリン').map((skill) => skill.id)).toEqual(
-      expect.arrayContaining(['exp_bonus_70', 'goblin_pack_tactics']),
+      expect.arrayContaining(['exp_bonus_40', 'goblin_pack_tactics']),
     )
     expect(getDefaultSkillsForRace('ウルフゴブリン').map((skill) => skill.id)).not.toContain('goblin_pack_tactics')
   })
