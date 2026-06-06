@@ -247,10 +247,10 @@ export const useStoryStore = create<StoryStoreState & StoryStoreActions>()((set,
       await refresh()
 
       // チュートリアル進行: 該当ストーリーの読了でステップを進める
+      // （スライム洞窟クリア後の完了は、一覧画面でのゴブリン追加まで延長したため
+      //   story_after_slime_cave 読了では完了させない）
       if (storyId === 'prologue') {
         await useTutorialStore.getState().advanceTo('see_first_goblin')
-      } else if (storyId === 'story_after_slime_cave') {
-        await useTutorialStore.getState().complete()
       }
       return grants
     },

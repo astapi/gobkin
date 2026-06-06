@@ -20,6 +20,7 @@ import { useStoryStore } from '@/presentation/stores/useStoryStore'
 import { useTutorialStore } from '@/presentation/stores/useTutorialStore'
 import { StartScreen } from '@/presentation/components/StartScreen'
 import { TutorialSpotlight } from '@/presentation/components/TutorialSpotlight'
+import { TutorialFinale } from '@/presentation/components/TutorialFinale'
 import { ExpeditionDropToastHost } from '@/presentation/components/ExpeditionDropToastHost'
 import { initializeI18n } from '@/shared/i18n'
 
@@ -263,6 +264,7 @@ export default function RootLayout() {
             </ResetProvider>
         </AuthProvider>
         <TutorialSpotlight />
+        <TutorialFinale />
       </SafeAreaProvider>
     </GestureHandlerRootView>
   )

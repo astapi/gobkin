@@ -42,12 +42,14 @@ const TAB_INDEX_BY_STEP: Partial<Record<TutorialStep, number>> = {
   see_first_goblin: 1,
   view_first_goblin: 2,
   open_formation: 2,
+  open_goblin_list: 1,
 }
 
 const TAB_MESSAGE_BY_STEP: Partial<Record<TutorialStep, string>> = {
   see_first_goblin: 'ui.tutorial.banner.afterPrologue',
   view_first_goblin: 'ui.tutorial.banner.openFormationTab',
   open_formation: 'ui.tutorial.banner.openFormationTab',
+  open_goblin_list: 'ui.tutorial.banner.openGoblinList',
 }
 
 const FULL_SCREEN_MESSAGE_BY_STEP: Partial<Record<TutorialStep, string>> = {

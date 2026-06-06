@@ -316,11 +316,16 @@ export class CompleteExpeditionUseCase {
       }
     }
 
+    const factorAcquisitionList = Array.from(factorAcquisitions.entries()).map(
+      ([goblinId, factorIds]) => ({ goblinId, factorIds })
+    )
+
     const enrichedReplay: ExpeditionReplay = {
       ...replay,
       summary: {
         ...replay.summary,
         memberLevelUps: memberLevelUps.length > 0 ? memberLevelUps : undefined,
+        factorAcquisitions: factorAcquisitionList.length > 0 ? factorAcquisitionList : undefined,
       },
     }
 

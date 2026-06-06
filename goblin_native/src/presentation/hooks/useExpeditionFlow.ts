@@ -194,9 +194,9 @@ export const useExpeditionFlow = ({
     await markDungeonCleared(dungeon, true, tier)
     await checkAndUnlockStories(dungeon.id)
 
-    // チュートリアル: 初回スライム洞窟クリアで結果画面へ誘導して完了
+    // チュートリアル: 初回スライム洞窟クリアで結果画面へ誘導し、因子の説明ステップへ進める
     if (dungeon.id === 'slime_cave' && useTutorialStore.getState().step === 'wait_clear') {
-      await useTutorialStore.getState().complete()
+      await useTutorialStore.getState().advanceTo('learn_factor')
       router.push({
         pathname: '/formation/result',
         params: { expeditionId: record.id, partyId: record.partyId.toString() },

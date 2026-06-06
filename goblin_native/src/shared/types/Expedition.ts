@@ -120,6 +120,11 @@ export interface MemberLevelUp {
   newLevel: number
 }
 
+export interface FactorAcquisition {
+  goblinId: number
+  factorIds: string[]
+}
+
 export interface RewardSummary {
   success: boolean
   maxFloorReached: number
@@ -129,6 +134,7 @@ export interface RewardSummary {
   casualties: string[]
   treasureDrops?: TreasureDrop[]  // 宝箱から獲得した装備
   memberLevelUps?: MemberLevelUp[]  // 遠征完了時に確定したレベルアップ情報
+  factorAcquisitions?: FactorAcquisition[]  // 遠征完了時に獲得した因子情報
 }
 
 export interface AreaConfig {
