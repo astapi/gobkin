@@ -10,6 +10,12 @@ export type TutorialStep =
   | 'select_dungeon'
   | 'start_expedition'
   | 'wait_clear'
+  | 'learn_factor'
+  | 'learn_unlock'
+  | 'return_to_list'
+  | 'open_goblin_list'
+  | 'add_goblin'
+  | 'finish'
   | 'completed'
 
 export const TUTORIAL_STEPS: readonly TutorialStep[] = [
@@ -24,6 +30,12 @@ export const TUTORIAL_STEPS: readonly TutorialStep[] = [
   'select_dungeon',
   'start_expedition',
   'wait_clear',
+  'learn_factor',
+  'learn_unlock',
+  'return_to_list',
+  'open_goblin_list',
+  'add_goblin',
+  'finish',
   'completed',
 ]
 

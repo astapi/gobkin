@@ -716,10 +716,10 @@ describe('CompleteExpeditionUseCase', () => {
       expect(result.updatedGoblinIds).toEqual(expect.arrayContaining([1, 2, 3]))
       expect(goblinRepo.saveGoblin).toHaveBeenCalledTimes(3)
 
-      // 各ゴブリンが3ずつ取得（9/3=3）→ 経験値ボーナス70%適用: floor(3*1.7)=5
+      // 各ゴブリンが3ずつ取得（9/3=3）→ 純ゴブリンは経験値ボーナスなし: floor(3*1.0)=3
       for (let i = 0; i < 3; i++) {
         const saved = (goblinRepo.saveGoblin as jest.Mock).mock.calls[i][0] as Goblin
-        expect(saved.experience).toBe(5)
+        expect(saved.experience).toBe(3)
         expect(saved.level).toBe(1)
       }
     })
@@ -758,19 +758,19 @@ describe('CompleteExpeditionUseCase', () => {
       const usecase = new CompleteExpeditionUseCase(goblinRepo, createMockPartyRepository([party]), createMockBaseStateRepository(baseState))
       const result = await usecase.execute(1, replay)
 
-      // ゴブリン1: 戦闘1で3、戦闘2では戦闘不能で0 → 合計3 → ボーナス70%: floor(3*1.7)=5
-      // ゴブリン2: 戦闘1で3、戦闘2で4 → 合計7 → ボーナス70%: floor(7*1.7)=11
+      // ゴブリン1: 戦闘1で3、戦闘2では戦闘不能で0 → 合計3（純ゴブリンは経験値ボーナスなし）
+      // ゴブリン2: 戦闘1で3、戦闘2で4 → 合計7
       // ゴブリン3: 同上
       const savedGoblins = (goblinRepo.saveGoblin as jest.Mock).mock.calls.map((c: unknown[]) => c[0] as Goblin)
       const g1 = savedGoblins.find(g => g.id === 1)!
       const g2 = savedGoblins.find(g => g.id === 2)!
       const g3 = savedGoblins.find(g => g.id === 3)!
 
-      expect(g1.experience).toBe(5)
+      expect(g1.experience).toBe(3)
       expect(g1.level).toBe(1)
-      expect(g2.experience).toBe(11)
+      expect(g2.experience).toBe(7)
       expect(g2.level).toBe(1)
-      expect(g3.experience).toBe(11)
+      expect(g3.experience).toBe(7)
       expect(g3.level).toBe(1)
     })
 

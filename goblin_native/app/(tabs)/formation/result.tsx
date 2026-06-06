@@ -11,9 +11,13 @@ import { areasData } from '@/shared/data'
 import { getEffectiveStats } from '@/shared/utils/goblinStats'
 import type { ExpeditionRecord, Goblin, Story, TimelineEvent, TreasureDrop } from '@/shared/types'
 import { getDungeonTierDisplayName } from '@/shared/types'
-import { getDungeonName, getEquipmentDisplayName } from '@/shared/i18n/entityLocalization'
+import { getDungeonName, getEquipmentDisplayName, getFactorName } from '@/shared/i18n/entityLocalization'
 import { getEquipmentTemplate } from '@/shared/data/equipmentPoolLoader'
+import { getFactor } from '@/shared/data/factors'
+import { getFactorImage } from '@/shared/utils/factorImages'
 import { getMaxClearedFloorFromReplay, isDungeonCompleted } from '@/shared/utils/expeditionClear'
+import { useTutorialStore } from '@/presentation/stores/useTutorialStore'
+import { useTutorialTarget } from '@/presentation/hooks/useTutorialTarget'
 
 function resolveTreasureName(drop: TreasureDrop): string {
   const template = getEquipmentTemplate(drop.templateId)
@@ -132,6 +136,55 @@ export default function ExpeditionResultScreen() {
   const goldMultiplier = replay?.summary.goldMultiplier ?? 1
   const treasureDrops = replay?.summary.treasureDrops ?? []
 
+  // 因子を獲得したメンバーごとに「誰が・どの因子を」取得したかをまとめる
+  const acquiredFactors = useMemo(() => {
+    const acquisitions = replay?.summary.factorAcquisitions ?? []
+    return acquisitions
+      .map(acquisition => {
+        const owner = partySnapshot.find(g => g.id === acquisition.goblinId)
+        return {
+          goblinId: acquisition.goblinId,
+          goblinName: owner?.name ?? `#${acquisition.goblinId}`,
+          factorIds: acquisition.factorIds,
+        }
+      })
+      .filter(entry => entry.factorIds.length > 0)
+  }, [replay, partySnapshot])
+
+  // チュートリアル: 結果画面でのスポットライト誘導ターゲット
+  const tutorialStep = useTutorialStore(state => state.step)
+  const isLearnFactorStep = tutorialStep === 'learn_factor'
+  const isLearnUnlockStep = tutorialStep === 'learn_unlock'
+  const factorSectionRef = useTutorialTarget<View>({
+    activeOn: ['learn_factor'],
+    messageKey: 'ui.tutorial.banner.learnFactor',
+    placement: 'above',
+  })
+  const unlockSectionRef = useTutorialTarget<View>({
+    activeOn: ['learn_unlock'],
+    messageKey: 'ui.tutorial.banner.learnUnlock',
+    placement: 'above',
+  })
+  const menuButtonRef = useTutorialTarget<View>({
+    activeOn: ['return_to_list'],
+    messageKey: 'ui.tutorial.banner.returnToList',
+    placement: 'above',
+  })
+
+  // チュートリアル: 因子をタップしたら次（ダンジョン解放の確認）へ進める
+  const handleFactorAck = useCallback(() => {
+    if (useTutorialStore.getState().step === 'learn_factor') {
+      void useTutorialStore.getState().advanceTo('learn_unlock')
+    }
+  }, [])
+
+  // チュートリアル: 解放通知をタップしたら次（一覧へ戻る誘導）へ進める
+  const handleUnlockAck = useCallback(() => {
+    if (useTutorialStore.getState().step === 'learn_unlock') {
+      void useTutorialStore.getState().advanceTo('return_to_list')
+    }
+  }, [])
+
   useEffect(() => {
     if (!replay || !dungeon) return
     const maxClearedFloor = getMaxClearedFloorFromReplay(replay)
@@ -183,6 +236,10 @@ export default function ExpeditionResultScreen() {
   }, [unlockTargets, isSuccess, progress, markUnlockNotified])
 
   const handleBackToList = useCallback(() => {
+    // チュートリアル: 一覧へ戻る誘導中なら、一覧タブを開かせるステップへ進める
+    if (useTutorialStore.getState().step === 'return_to_list') {
+      void useTutorialStore.getState().advanceTo('open_goblin_list')
+    }
     router.dismissAll()
   }, [])
 
@@ -277,9 +334,45 @@ export default function ExpeditionResultScreen() {
           </View>
         )}
 
+        {acquiredFactors.length > 0 && (
+          <View ref={factorSectionRef} style={styles.section}>
+            <TouchableOpacity
+              activeOpacity={isLearnFactorStep ? 0.7 : 1}
+              onPress={handleFactorAck}
+              disabled={!isLearnFactorStep}
+            >
+              <Text style={styles.sectionTitle}>{t('ui.result.factorsAcquired')}</Text>
+              {acquiredFactors.map(entry => (
+                <View key={entry.goblinId} style={styles.factorMemberBlock}>
+                  <Text style={styles.factorOwnerName} numberOfLines={1}>{entry.goblinName}</Text>
+                  <View style={styles.factorChipRow}>
+                    {entry.factorIds.map(factorId => {
+                      const FactorIcon = getFactorImage(factorId)
+                      return (
+                        <View key={factorId} style={styles.factorChip}>
+                          <FactorIcon width={14} height={14} />
+                          <Text style={styles.factorChipText} numberOfLines={1}>
+                            {getFactorName(getFactor(factorId) ?? { id: factorId, name: factorId })}
+                          </Text>
+                        </View>
+                      )
+                    })}
+                  </View>
+                </View>
+              ))}
+            </TouchableOpacity>
+          </View>
+        )}
+
         {nextAreaName && isSuccess && showUnlockNotice && (
-          <View style={styles.section}>
-            <Text style={styles.summaryText}>{t('ui.result.unlockedArea', { name: nextAreaName })}</Text>
+          <View ref={unlockSectionRef} style={styles.section}>
+            <TouchableOpacity
+              activeOpacity={isLearnUnlockStep ? 0.7 : 1}
+              onPress={handleUnlockAck}
+              disabled={!isLearnUnlockStep}
+            >
+              <Text style={styles.summaryText}>{t('ui.result.unlockedArea', { name: nextAreaName })}</Text>
+            </TouchableOpacity>
           </View>
         )}
 
@@ -299,7 +392,7 @@ export default function ExpeditionResultScreen() {
           </View>
         )}
 
-        <View style={styles.bottomSection}>
+        <View ref={menuButtonRef} style={styles.bottomSection}>
           <TouchableOpacity style={styles.menuButton} onPress={handleBackToList}>
             <Text style={styles.menuButtonText}>{t('ui.result.backToMenu')}</Text>
           </TouchableOpacity>
@@ -422,6 +515,37 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#111827',
     marginBottom: 6,
+  },
+  factorMemberBlock: {
+    alignItems: 'flex-start',
+    gap: 4,
+    marginBottom: 10,
+  },
+  factorOwnerName: {
+    fontSize: 13,
+    fontWeight: '800',
+    color: '#111827',
+  },
+  factorChipRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 6,
+  },
+  factorChip: {
+    maxWidth: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 3,
+    backgroundColor: '#EEF2FF',
+    borderRadius: 4,
+    paddingHorizontal: 6,
+    paddingVertical: 3,
+  },
+  factorChipText: {
+    flexShrink: 1,
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#4338CA',
   },
   bottomSection: {
     padding: 16,
