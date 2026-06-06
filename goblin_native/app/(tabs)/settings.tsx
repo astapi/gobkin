@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { router } from 'expo-router'
 import { useTranslation } from 'react-i18next'
 import { useReset } from '@/presentation/contexts/ResetContext'
+import { BOTTOM_INFO_SPACING } from '@/shared/constants/layout'
 import { useDebugSettingsStore } from '@/presentation/stores/useDebugSettingsStore'
 import { useSaveDataBackup } from '@/presentation/hooks/useSaveDataBackup'
 import { SUPPORTED_LANGUAGES, type SupportedLanguage } from '@/shared/i18n/keys'
@@ -243,7 +244,7 @@ const styles = StyleSheet.create({
   content: {
     padding: 16,
     gap: 16,
-    paddingBottom: 32,
+    paddingBottom: BOTTOM_INFO_SPACING,
   },
   section: {
     backgroundColor: '#FFFFFF',

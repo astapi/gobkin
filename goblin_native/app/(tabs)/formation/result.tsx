@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { router, useLocalSearchParams } from 'expo-router'
 import { useTranslation } from 'react-i18next'
 import { useDungeonStore } from '@/presentation/stores/useDungeonStore'
+import { BOTTOM_INFO_SPACING } from '@/shared/constants/layout'
 import { useExpeditionStore } from '@/presentation/stores/useExpeditionStore'
 import { useStoryStore } from '@/presentation/stores/useStoryStore'
 import { getGoblinDisplayImage } from '@/shared/utils/goblinImages'
@@ -274,7 +275,7 @@ export default function ExpeditionResultScreen() {
         <View style={styles.navSpacer} />
       </View>
 
-      <ScrollView style={styles.scrollView}>
+      <ScrollView style={styles.scrollView} contentContainerStyle={{ paddingBottom: BOTTOM_INFO_SPACING }}>
         <View style={styles.headerSection}>
           <Text style={styles.headerTitle}>
             {dungeonDisplayName ?? t('ui.result.expeditionFallback')}: {getHeaderText()}

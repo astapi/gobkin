@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { router, useLocalSearchParams } from 'expo-router'
 import { useTranslation } from 'react-i18next'
 import type { BattleLogEntry, BattleLogMeta, Goblin } from '@/shared/types'
+import { BOTTOM_INFO_SPACING } from '@/shared/constants/layout'
 import { getBattleLog, clearBattleLog } from '@/presentation/contexts/battleLogStore'
 import { getGoblinBattleImage, getGoblinDisplayImageScale } from '@/shared/utils/goblinImages'
 import { getEnemyImage } from '@/shared/utils/enemyImages'
@@ -386,6 +387,7 @@ const styles = StyleSheet.create({
   bodyContent: {
     padding: 12,
     gap: 10,
+    paddingBottom: BOTTOM_INFO_SPACING,
   },
   emptyState: {
     flex: 1,

@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet, ScrollView, ActivityIndicator
 import { router, useLocalSearchParams, Stack, useFocusEffect } from 'expo-router'
 import { useTranslation } from 'react-i18next'
 import { usePartyStore } from '@/presentation/stores/usePartyStore'
+import { BOTTOM_INFO_SPACING } from '@/shared/constants/layout'
 import { useGoblinStore } from '@/presentation/stores/useGoblinStore'
 import { useBaseStore, selectRank } from '@/presentation/stores/useBaseStore'
 import { useDungeonStore } from '@/presentation/stores/useDungeonStore'
@@ -513,7 +514,7 @@ export default function ExpeditionPreparationScreen() {
           title: t('ui.formation.preparation.title'),
         }}
       />
-      <ScrollView style={styles.container}>
+      <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: BOTTOM_INFO_SPACING }}>
         {/* パーティセクション */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>{t('ui.formation.preparation.sectionParty')}</Text>

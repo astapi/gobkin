@@ -4,6 +4,7 @@ import { Stack, router, useLocalSearchParams } from 'expo-router'
 import { useFocusEffect } from '@react-navigation/native'
 import { useTranslation } from 'react-i18next'
 import { usePartyStore } from '@/presentation/stores/usePartyStore'
+import { BOTTOM_INFO_SPACING } from '@/shared/constants/layout'
 import { useGoblinStore } from '@/presentation/stores/useGoblinStore'
 import { SQLiteEquipmentRepository } from '@/infrastructure/repositories/SQLiteEquipmentRepository'
 import { EquipmentService } from '@/core/services/EquipmentService'
@@ -227,6 +228,7 @@ const styles = StyleSheet.create({
   content: {
     padding: 16,
     gap: 12,
+    paddingBottom: BOTTOM_INFO_SPACING,
   },
   loadingContainer: {
     flex: 1,

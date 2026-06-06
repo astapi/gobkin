@@ -3,6 +3,7 @@ import { View, Text, FlatList, TouchableOpacity, StyleSheet, ActivityIndicator, 
 import { router, useLocalSearchParams, Stack } from 'expo-router'
 import { useTranslation } from 'react-i18next'
 import { usePartyStore } from '@/presentation/stores/usePartyStore'
+import { BOTTOM_INFO_SPACING } from '@/shared/constants/layout'
 import { useGoblinStore } from '@/presentation/stores/useGoblinStore'
 import { useTutorialStore } from '@/presentation/stores/useTutorialStore'
 import { useTutorialTarget } from '@/presentation/hooks/useTutorialTarget'
@@ -271,7 +272,7 @@ export default function PartyEditScreen() {
           title: t('ui.formation.edit.title'),
         }}
       />
-      <ScrollView style={styles.container}>
+      <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: BOTTOM_INFO_SPACING }}>
         {/* パーティメンバースロット */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>{t('ui.formation.edit.memberSlotsTitle', { max: MAX_PARTY_SIZE })}</Text>

@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { router, useLocalSearchParams } from 'expo-router'
 import { useTranslation } from 'react-i18next'
 import { useStoryStore } from '@/presentation/stores/useStoryStore'
+import { BOTTOM_INFO_SPACING } from '@/shared/constants/layout'
 
 export default function StoryReaderScreen() {
   const { t } = useTranslation()
@@ -187,7 +188,7 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     padding: 24,
-    paddingBottom: 48,
+    paddingBottom: BOTTOM_INFO_SPACING,
   },
   storyTitle: {
     fontSize: 22,
