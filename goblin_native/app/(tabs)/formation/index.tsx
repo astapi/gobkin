@@ -5,6 +5,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { router, Stack } from 'expo-router'
 import { useTranslation } from 'react-i18next'
 import { usePartyStore } from '@/presentation/stores/usePartyStore'
+import { BOTTOM_INFO_SPACING } from '@/shared/constants/layout'
 import { useGoblinStore } from '@/presentation/stores/useGoblinStore'
 import { useBaseStore, selectRank } from '@/presentation/stores/useBaseStore'
 import { useExpeditionFlow, type ExpeditionHistoryDisplay } from '@/presentation/hooks/useExpeditionFlow'
@@ -549,7 +550,7 @@ const styles = StyleSheet.create({
   contentContainer: {
     paddingHorizontal: 16,
     paddingTop: 8,
-    paddingBottom: 48,
+    paddingBottom: BOTTOM_INFO_SPACING,
   },
   prepTitle: {
     fontSize: 14,

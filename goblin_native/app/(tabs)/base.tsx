@@ -9,6 +9,7 @@ import { useTranslation } from 'react-i18next'
 import { useBaseStore, selectRank, selectMaxParties, selectMaxGoblins, selectCanRankUp } from '@/presentation/stores/useBaseStore'
 import { useGoblinStore } from '@/presentation/stores/useGoblinStore'
 import { GOBLIN_TRAINING_UNLOCK_RANK } from '@/shared/data/goblinJobs'
+import { BOTTOM_INFO_SPACING } from '@/shared/constants/layout'
 import { getBaseLocationName } from '@/shared/i18n/entityLocalization'
 import CapacityIcon from '../../assets/base/icon-capacity.svg'
 import EquipmentShopIcon from '../../assets/base/icon-equipment-shop.svg'
@@ -195,7 +196,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   contentContainer: {
-    paddingBottom: 88,
+    paddingBottom: BOTTOM_INFO_SPACING,
   },
   header: {
     minHeight: 264,

@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { router, useLocalSearchParams } from 'expo-router'
 import { useTranslation } from 'react-i18next'
 import { usePartyStore } from '@/presentation/stores/usePartyStore'
+import { BOTTOM_INFO_SPACING } from '@/shared/constants/layout'
 import { useDungeonStore } from '@/presentation/stores/useDungeonStore'
 import { getDungeonName } from '@/shared/i18n/entityLocalization'
 
@@ -222,6 +223,7 @@ const styles = StyleSheet.create({
   backButton: {
     backgroundColor: '#374151',
     margin: 16,
+    marginBottom: BOTTOM_INFO_SPACING,
     padding: 16,
     borderRadius: 12,
     alignItems: 'center',

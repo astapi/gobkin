@@ -4,6 +4,7 @@ import { Stack, router, useLocalSearchParams } from 'expo-router'
 import { useTranslation } from 'react-i18next'
 import { usePartyStore } from '@/presentation/stores/usePartyStore'
 import { useGoblinStore } from '@/presentation/stores/useGoblinStore'
+import { BOTTOM_INFO_SPACING } from '@/shared/constants/layout'
 import { getGoblinDisplayImage } from '@/shared/utils/goblinImages'
 import { getFactorImage } from '@/shared/utils/factorImages'
 import { calculateGoblinEffectiveStats, getEffectiveStats } from '@/shared/utils/goblinStats'
@@ -440,7 +441,7 @@ const styles = StyleSheet.create({
   content: {
     padding: 16,
     gap: 16,
-    paddingBottom: 88,
+    paddingBottom: BOTTOM_INFO_SPACING,
   },
   loadingContainer: {
     flex: 1,

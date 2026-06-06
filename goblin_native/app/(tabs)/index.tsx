@@ -6,6 +6,7 @@ import { router } from 'expo-router'
 import { useTranslation } from 'react-i18next'
 import Swipeable from 'react-native-gesture-handler/Swipeable'
 import { useGoblinStore } from '@/presentation/stores/useGoblinStore'
+import { BOTTOM_INFO_SPACING } from '@/shared/constants/layout'
 import { useBaseStore, selectMaxGoblins, selectRank } from '@/presentation/stores/useBaseStore'
 import { usePartyStore } from '@/presentation/stores/usePartyStore'
 import { GoblinCard } from '@/presentation/components/GoblinCard'
@@ -868,7 +869,7 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
   },
   scrollContent: {
-    paddingBottom: 32,
+    paddingBottom: BOTTOM_INFO_SPACING,
   },
   cardWrapper: {
     backgroundColor: '#F9FAFB',

@@ -5,6 +5,7 @@ import { router } from 'expo-router'
 import { useTranslation } from 'react-i18next'
 import { useStoryStore } from '@/presentation/stores/useStoryStore'
 import { useTutorialTarget } from '@/presentation/hooks/useTutorialTarget'
+import { BOTTOM_INFO_SPACING } from '@/shared/constants/layout'
 
 export default function StoryTabScreen() {
   const { t } = useTranslation()
@@ -98,7 +99,7 @@ const styles = StyleSheet.create({
   contentContainer: {
     padding: 16,
     paddingTop: 0,
-    paddingBottom: 88,
+    paddingBottom: BOTTOM_INFO_SPACING,
     gap: 4,
   },
   screenTitle: {

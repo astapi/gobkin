@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { router, useLocalSearchParams } from 'expo-router'
 import { useTranslation } from 'react-i18next'
 import { clearLevelUpLog, getLevelUpLog } from '@/presentation/contexts/levelUpLogStore'
+import { BOTTOM_INFO_SPACING } from '@/shared/constants/layout'
 
 export default function LevelUpLogScreen() {
   const { t } = useTranslation()
@@ -116,6 +117,7 @@ const styles = StyleSheet.create({
   bodyContent: {
     padding: 12,
     gap: 10,
+    paddingBottom: BOTTOM_INFO_SPACING,
   },
   card: {
     backgroundColor: '#FFFFFF',

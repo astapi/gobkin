@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { router } from 'expo-router'
 import { useTranslation } from 'react-i18next'
 import { useDungeonStore } from '@/presentation/stores/useDungeonStore'
+import { BOTTOM_INFO_SPACING } from '@/shared/constants/layout'
 import { getDungeonName } from '@/shared/i18n/entityLocalization'
 
 export default function EncyclopediaDungeonListScreen() {
@@ -81,7 +82,7 @@ const styles = StyleSheet.create({
   content: {
     padding: 12,
     gap: 8,
-    paddingBottom: 32,
+    paddingBottom: BOTTOM_INFO_SPACING,
   },
   dungeonCard: {
     backgroundColor: '#FFFFFF',

@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { router, useLocalSearchParams, type Href } from 'expo-router'
 import { useTranslation } from 'react-i18next'
 import { usePartyStore } from '@/presentation/stores/usePartyStore'
+import { BOTTOM_INFO_SPACING } from '@/shared/constants/layout'
 import { useGoblinStore } from '@/presentation/stores/useGoblinStore'
 import { useDungeonStore } from '@/presentation/stores/useDungeonStore'
 import { useExpeditionStore } from '@/presentation/stores/useExpeditionStore'
@@ -605,7 +606,7 @@ export default function ExpeditionPlaybackScreen() {
       </View>
 
       <View style={styles.eventLog}>
-        <ScrollView style={styles.logScroll}>
+        <ScrollView style={styles.logScroll} contentContainerStyle={{ paddingBottom: BOTTOM_INFO_SPACING }}>
           {eventLog.map(entry => {
             const baseText = entry.text.replace('[Detail]', '').replace('[詳細]', '').replace('[상세]', '')
             if (entry.detail) {
