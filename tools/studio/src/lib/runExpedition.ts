@@ -1,4 +1,5 @@
 import { ExpeditionEngine } from '@app/core/services/ExpeditionEngine'
+import { computeDungeonExplorationTime } from '@app/shared/types'
 import type {
   Goblin,
   GoblinStats,
@@ -6,10 +7,19 @@ import type {
   ExpeditionRequest,
   DungeonTier,
 } from '@app/shared/types'
+import allAreaData from '@app/shared/data/expeditionArea/allArea.json'
 
 import type { BackupGoblin, BackupGoblinStats } from './goblinMapper'
 
 export type ReturnPolicy = ExpeditionRequest['returnPolicy']
+
+type AreaDurationMeta = {
+  id: string
+  exploration_time_sec_first?: number
+  exploration_time_sec?: number
+}
+
+const AREA_DURATION_META = (allAreaData as { areas?: AreaDurationMeta[] }).areas ?? []
 
 const DEFAULT_STATS: GoblinStats = {
   hp: 0,
@@ -22,6 +32,18 @@ const DEFAULT_STATS: GoblinStats = {
   evasion: 0,
   magicHeal: 0,
   criticalRate: 0,
+}
+
+function getSimulationDurationSec(areaId: string, tier: DungeonTier | undefined): number | undefined {
+  const area = AREA_DURATION_META.find((entry) => entry.id === areaId)
+  if (!area || area.exploration_time_sec_first === undefined) return undefined
+  return computeDungeonExplorationTime(
+    areaId,
+    area.exploration_time_sec_first,
+    area.exploration_time_sec ?? area.exploration_time_sec_first,
+    tier ?? 0,
+    false,
+  )
 }
 
 function fillStats(partial: BackupGoblinStats | undefined): GoblinStats {
@@ -103,12 +125,15 @@ export async function runSimulationBatch(
   } = opts
 
   const goblinParty = party.map(backupGoblinToGoblin)
+  const durationSec = getSimulationDurationSec(areaId, tier)
   const baseRequest: ExpeditionRequest = {
     partyId: 'studio',
     areaId,
     tier,
     returnPolicy,
     clientVersion: 'studio',
+    durationSec,
+    simulationDurationSec: durationSec,
   }
 
   let successCount = 0
@@ -209,12 +234,15 @@ export async function runSingleExpedition(
   const trialSeed =
     seed !== undefined ? seed : Math.floor(Math.random() * 0x7fffffff)
   const goblinParty = party.map(backupGoblinToGoblin)
+  const durationSec = getSimulationDurationSec(areaId, tier)
   const baseRequest: ExpeditionRequest = {
     partyId: 'studio',
     areaId,
     tier,
     returnPolicy,
     clientVersion: 'studio',
+    durationSec,
+    simulationDurationSec: durationSec,
   }
   const engine = new ExpeditionEngine(trialSeed)
   const replay = await engine.generateExpedition(baseRequest, goblinParty)

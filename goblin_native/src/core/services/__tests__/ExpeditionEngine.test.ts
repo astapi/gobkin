@@ -524,6 +524,42 @@ describe('ExpeditionEngine compressed duration', () => {
     expect(Math.max(...replay.events.map(event => event.at))).toBeLessThanOrEqual(1)
     expect(floorEventCount).toBeGreaterThan(2)
   })
+
+  it('シミュレーション時間がTier相当に伸びてもフロアイベント数を増やさない', async () => {
+    const battleSystem = {
+      executeBattle: jest.fn(() => ({
+        rounds: 1,
+        outcome: 'win',
+        allyHPDelta: [0],
+        enemyDefeated: 1,
+        detailedLog: [],
+      })),
+    }
+
+    const createReplay = (durationSec: number) => new ExpeditionEngine(1, battleSystem as any).generateExpedition(
+      {
+        partyId: '1',
+        areaId: 'slime_cave',
+        returnPolicy: 'never',
+        clientVersion: 'test',
+        durationSec,
+        simulationDurationSec: durationSec,
+      },
+      party,
+      DEFAULT_PARTY_REWARD_MULTIPLIERS,
+    )
+
+    const baseReplay = await createReplay(30)
+    const tierReplay = await createReplay(570)
+
+    const countFloorEvents = (events: TimelineEvent[]) => events.filter(
+      event => event.type === 'battle' || event.type === 'exploring' || event.type === 'gold_treasure',
+    ).length
+
+    expect(tierReplay.durationSec).toBe(570)
+    expect(tierReplay.meta.baseDurationSec).toBe(570)
+    expect(countFloorEvents(tierReplay.events)).toBe(countFloorEvents(baseReplay.events))
+  })
 })
 
 describe('ExpeditionEngine combat stats', () => {
