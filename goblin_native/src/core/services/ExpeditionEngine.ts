@@ -534,7 +534,11 @@ export class ExpeditionEngine {
     const floorDuration = totalDuration / explorationFloors
     const floorStart = (floor - 1) * floorDuration
     const floorEnd = floorStart + floorDuration
-    const eventIntervalSec = Math.max(1, area.encounter.eventIntervalSec ?? floorDuration)
+    const baseDurationForFloors = area.baseDurationSec * (explorationFloors / area.floors)
+    const durationScale = baseDurationForFloors > 0
+      ? Math.max(1, totalDuration / baseDurationForFloors)
+      : 1
+    const eventIntervalSec = Math.max(1, (area.encounter.eventIntervalSec ?? floorDuration) * durationScale)
     const events: Array<{ at: number; isFloorEnd: boolean }> = []
 
     for (let at = floorStart + eventIntervalSec; at < floorEnd; at += eventIntervalSec) {
