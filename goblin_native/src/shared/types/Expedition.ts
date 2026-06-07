@@ -12,7 +12,16 @@ export interface ExpeditionRequest {
   targetFloor?: number | null
   returnPolicy: "if_any_ko" | "if_two_ko" | "last_one" | "never"
   clientVersion: string
+  /**
+   * 実際の帰還・表示に使う時間。
+   * デバッグ短縮時は 1 秒になることがある。
+   */
   durationSec?: number
+  /**
+   * 戦闘・探索イベントの生成に使う時間。
+   * durationSec と分けることで、デバッグ短縮時も通常時間相当のイベント密度を維持する。
+   */
+  simulationDurationSec?: number
 }
 
 /**

@@ -25,7 +25,7 @@
     {
       "id": "goblin_village_1",
       "name": "ゴブリン集落",
-      "areaLevel": 7,
+      "areaLevel": 10,
       "floors": 6,
       "exploration_time_sec_first": 1860,
       "exploration_time_sec": 620,
