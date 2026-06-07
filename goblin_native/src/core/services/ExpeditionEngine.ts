@@ -155,7 +155,7 @@ export class ExpeditionEngine {
     const isDebug = typeof __DEV__ !== 'undefined' ? __DEV__ : false
     const requestedDuration = request.durationSec ?? area.baseDurationSec
     const adjustedDuration = isDebug && request.durationSec == null ? 1 : Math.ceil(requestedDuration)
-    const simulationDuration = Math.ceil(requestedDuration)
+    const simulationDuration = Math.ceil(request.simulationDurationSec ?? requestedDuration)
     const replayTimeScale = simulationDuration > 0 ? adjustedDuration / simulationDuration : 1
 
     const events: TimelineEvent[] = []
@@ -461,7 +461,7 @@ export class ExpeditionEngine {
         areaLevel: area.areaLevel,
         effectiveAreaLevel,
         floors: area.floors,
-        baseDurationSec: adjustedDuration,
+        baseDurationSec: simulationDuration,
         party: party.map(g => g.id.toString()),
         partySnapshot: party.map(g => ({ ...g })),
         partyRewardMultipliers: effectiveRewardMultipliers,

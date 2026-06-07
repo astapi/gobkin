@@ -243,8 +243,9 @@ export const useExpeditionFlow = ({
     partyExpeditionTimeMultiplier: number = 1,
     goldenAcornUsed: boolean = false,
     tier: DungeonTier = 0,
+    ignoreInstantDungeonExploration: boolean = false,
   ): number => {
-    if (instantDungeonExploration) {
+    if (instantDungeonExploration && !ignoreInstantDungeonExploration) {
       return 1
     }
 
@@ -360,6 +361,15 @@ export const useExpeditionFlow = ({
           useGoldenAcorn,
           tier ?? 0,
         )
+        const simulationDurationSec = isTutorialSlimeLaunch ? durationSec : estimateExplorationTime(
+          dungeon,
+          returnPolicy,
+          targetFloor,
+          partyExpeditionTimeMultiplier,
+          useGoldenAcorn,
+          tier ?? 0,
+          true,
+        )
         const request: ExpeditionRequest = {
           partyId: party.id.toString(),
           areaId: dungeon.id,
@@ -368,6 +378,7 @@ export const useExpeditionFlow = ({
           returnPolicy,
           clientVersion: 'native',
           durationSec,
+          simulationDurationSec,
         }
 
         const boost = getExpeditionBoost(useGoldenAcorn)
@@ -466,6 +477,15 @@ export const useExpeditionFlow = ({
             acornAppliedForThisInput,
             tier ?? 0,
           )
+          const simulationDurationSec = estimateExplorationTime(
+            dungeon,
+            returnPolicy,
+            targetFloor,
+            partyExpeditionTimeMultiplier,
+            acornAppliedForThisInput,
+            tier ?? 0,
+            true,
+          )
           const request: ExpeditionRequest = {
             partyId: party.id.toString(),
             areaId: dungeon.id,
@@ -474,6 +494,7 @@ export const useExpeditionFlow = ({
             returnPolicy,
             clientVersion: 'native',
             durationSec,
+            simulationDurationSec,
           }
 
           try {

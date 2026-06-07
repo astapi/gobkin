@@ -467,6 +467,65 @@ describe('ExpeditionEngine normal battle retreat', () => {
   })
 })
 
+describe('ExpeditionEngine compressed duration', () => {
+  const party: Goblin[] = [{
+    id: 1,
+    name: 'テストゴブリン',
+    race: 'ゴブリン',
+    level: 20,
+    experience: 0,
+    avatar: 'test.png',
+    stats: {
+      hp: 999,
+      atk: 999,
+      magicAtk: 999,
+      def: 999,
+      magicDef: 999,
+      attackCount: 1,
+      accuracy: 999,
+      evasion: 999,
+      magicHeal: 0,
+      criticalRate: 0,
+    },
+    skills: [],
+  }]
+
+  it('表示時間を1秒に短縮しても通常時間相当のフロアイベントを生成する', async () => {
+    const battleSystem = {
+      executeBattle: jest.fn(() => ({
+        rounds: 1,
+        outcome: 'win',
+        allyHPDelta: [0],
+        enemyDefeated: 1,
+        detailedLog: [],
+      })),
+    }
+    const engine = new ExpeditionEngine(1, battleSystem as any)
+
+    const replay = await engine.generateExpedition(
+      {
+        partyId: '1',
+        areaId: 'slime_cave',
+        returnPolicy: 'never',
+        clientVersion: 'test',
+        durationSec: 1,
+        simulationDurationSec: 30,
+      },
+      party,
+      DEFAULT_PARTY_REWARD_MULTIPLIERS,
+    )
+
+    const floorEventCount = replay.events.filter(
+      event => event.type === 'battle' || event.type === 'exploring' || event.type === 'gold_treasure',
+    ).length
+
+    expect(replay.durationSec).toBe(1)
+    expect(replay.meta.baseDurationSec).toBe(30)
+    expect(Math.max(...replay.events.map(event => event.at))).toBeLessThanOrEqual(1)
+    expect(floorEventCount).toBeGreaterThan(2)
+  })
+})
+
 describe('ExpeditionEngine combat stats', () => {
   it('遠征中の戦闘再構築で effectiveStats を保持する', () => {
     const engine = new ExpeditionEngine(1)
