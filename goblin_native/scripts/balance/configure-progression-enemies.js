@@ -84,14 +84,14 @@ const ROSTERS = {
     { id: 'LIZ002', name: 'アサシンリザード', archetype: 'archer', level: 36, raceTags: ['lizardman'],
       overrides: { attackCount: 5, accuracy: 620, evasion: 60 } },
   ],
-  'lizardman_swamp_2.json': [
+  'lizardman_swamp_1.json': [
     { id: 'LIZ001', name: 'リザードマン', archetype: 'warrior', level: 42, raceTags: ['lizardman'],
       overrides: { attackCount: 5, accuracy: 630 },
       extraSkills: [{ id: 'two_column_attack', twoColumnAttack: true }] },
     { id: 'LIZ002', name: 'アサシンリザード', archetype: 'archer', level: 42, raceTags: ['lizardman'],
       overrides: { attackCount: 5, accuracy: 650, evasion: 68 } },
   ],
-  'lizardman_swamp_3.json': [
+  'lizardman_swamp_1.json': [
     { id: 'LIZ001', name: 'リザードマン', archetype: 'warrior', level: 44, raceTags: ['lizardman'],
       overrides: { attackCount: 6, accuracy: 640 },
       extraSkills: [{ id: 'two_column_attack', twoColumnAttack: true }] },
@@ -132,21 +132,6 @@ const ROSTERS = {
     { id: 'HUM005', name: '辺境城騎士', archetype: 'heavy', level: 68, raceTags: ['human'],
       overrides: { attackCount: 6 } },
   ],
-  'subjugation_force_2.json': [
-    { id: 'HUM001', name: '辺境城正規兵', archetype: 'warrior', level: 64, raceTags: ['human'] },
-    { id: 'HUM002', name: '辺境城魔術師', archetype: 'mage', level: 64, raceTags: ['human'] },
-    { id: 'HUM003', name: '辺境城弓兵', archetype: 'archer', level: 64, raceTags: ['human'] },
-    { id: 'HUM004', name: '辺境城クレリック', archetype: 'healer', level: 64, raceTags: ['human'] },
-    { id: 'HUM005', name: '辺境城騎士', archetype: 'heavy', level: 66, raceTags: ['human'] },
-  ],
-  'subjugation_force_3.json': [
-    { id: 'HUM001', name: '辺境城正規兵', archetype: 'warrior', level: 68, raceTags: ['human'] },
-    { id: 'HUM002', name: '辺境城魔術師', archetype: 'mage', level: 68, raceTags: ['human'] },
-    { id: 'HUM003', name: '辺境城弓兵', archetype: 'archer', level: 68, raceTags: ['human'] },
-    { id: 'HUM004', name: '辺境城クレリック', archetype: 'healer', level: 68, raceTags: ['human'] },
-    { id: 'HUM005', name: '辺境城騎士', archetype: 'heavy', level: 70, raceTags: ['human'] },
-    { id: 'B_CAPTAIN', name: '辺境城騎士団長', archetype: 'boss', level: 80, raceTags: ['human'] },
-  ],
 }
 
 function buildEnemy(spec) {
@@ -182,8 +167,8 @@ function buildEnemy(spec) {
 
 // パターンを完全置換するためのマップ（オーク砦の敵密度大幅up 等）
 const PATTERN_OVERRIDES = {
-  // lizardman_swamp_2: liz_1 を超える密度に（avg 5.0 → ~6.5）
-  'lizardman_swamp_2.json': [
+  // lizardman_swamp_1: liz_1 を超える密度に（avg 5.0 → ~6.5）
+  'lizardman_swamp_1.json': [
     { id: 'LS2_001', floors: [1], enemies: [['LIZ001', 'LIZ001'], ['LIZ002', 'LIZ002', 'LIZ002'], ['LIZ002']] },
     { id: 'LS2_002', floors: [1], enemies: [['LIZ001', 'LIZ001'], ['LIZ002', 'LIZ002'], ['LIZ002', 'LIZ002']] },
     { id: 'LS2_003', floors: [1], enemies: [['LIZ001', 'LIZ001', 'LIZ001'], ['LIZ002', 'LIZ002'], ['LIZ002', 'LIZ002']] },
@@ -311,12 +296,12 @@ const PATTERN_ID_REMAP = {
     LIZ004: 'LIZ001', // 重装 → リザードマン（前衛 warrior）
     LIZ005: 'LIZ002', // 暗殺者 → アサシンリザード
   },
-  'lizardman_swamp_2.json': {
+  'lizardman_swamp_1.json': {
     LIZ003: 'LIZ002',
     LIZ004: 'LIZ001',
     LIZ005: 'LIZ002',
   },
-  'lizardman_swamp_3.json': {
+  'lizardman_swamp_1.json': {
     LIZ003: 'LIZ002',
     LIZ004: 'LIZ001',
     LIZ005: 'LIZ002',

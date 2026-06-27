@@ -18,7 +18,7 @@
 
 ### 辺境城弓兵 Lv64
 
-`goblin_native/src/shared/data/enemy/subjugation_force_2.json` の辺境城弓兵は以下。
+`goblin_native/src/shared/data/enemy/subjugation_force_1.json` の辺境城弓兵は以下。
 
 - `def = 21`
 - `physicalDamageReductionPercent = 10`
@@ -177,7 +177,7 @@ target.defeated
 対象:
 
 - PT1
-- `lizardman_swamp_3`（リザードマンの沼砦・本拠）
+- `lizardman_swamp_1`（リザードマンの沼砦・本拠）
 - 隊列4: ゴツゴツ（ID 163）
 - 隊列6: ゾロ（ID 175）
 

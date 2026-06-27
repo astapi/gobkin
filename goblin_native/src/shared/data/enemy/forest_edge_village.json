@@ -25,7 +25,30 @@
         "vitality": 10,
         "agility": 14,
         "luck": 5
-      }
+      },
+      "rareEquipmentDrops": [
+        {
+          "templateId": "hidden_rare_006"
+        }
+      ],
+      "tierRareEquipmentDrops": [
+        {
+          "tier": 1,
+          "drops": [
+            {
+              "templateId": "armor_rare_007"
+            }
+          ]
+        },
+        {
+          "tier": 3,
+          "drops": [
+            {
+              "templateId": "accessory_rare_014"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "FEV002",
@@ -52,7 +75,30 @@
         "vitality": 7,
         "agility": 16,
         "luck": 7
-      }
+      },
+      "rareEquipmentDrops": [
+        {
+          "templateId": "hidden_rare_007"
+        }
+      ],
+      "tierRareEquipmentDrops": [
+        {
+          "tier": 1,
+          "drops": [
+            {
+              "templateId": "robe_rare_006"
+            }
+          ]
+        },
+        {
+          "tier": 3,
+          "drops": [
+            {
+              "templateId": "accessory_rare_015"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "FEV003",
@@ -79,7 +125,30 @@
         "vitality": 14,
         "agility": 6,
         "luck": 4
-      }
+      },
+      "rareEquipmentDrops": [
+        {
+          "templateId": "sword_rare_006"
+        }
+      ],
+      "tierRareEquipmentDrops": [
+        {
+          "tier": 1,
+          "drops": [
+            {
+              "templateId": "robe_rare_007"
+            }
+          ]
+        },
+        {
+          "tier": 3,
+          "drops": [
+            {
+              "templateId": "accessory_rare_016"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "FEV004",
@@ -106,7 +175,30 @@
         "vitality": 17,
         "agility": 5,
         "luck": 4
-      }
+      },
+      "rareEquipmentDrops": [
+        {
+          "templateId": "shield_rare_006"
+        }
+      ],
+      "tierRareEquipmentDrops": [
+        {
+          "tier": 1,
+          "drops": [
+            {
+              "templateId": "armor_rare_008"
+            }
+          ]
+        },
+        {
+          "tier": 3,
+          "drops": [
+            {
+              "templateId": "accessory_rare_017"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "FEV005",
@@ -139,6 +231,29 @@
           "id": "fireball",
           "name": "ファイヤーボール",
           "grantsSpellId": "fireball"
+        }
+      ],
+      "rareEquipmentDrops": [
+        {
+          "templateId": "wand_rare_004"
+        }
+      ],
+      "tierRareEquipmentDrops": [
+        {
+          "tier": 1,
+          "drops": [
+            {
+              "templateId": "robe_rare_008"
+            }
+          ]
+        },
+        {
+          "tier": 3,
+          "drops": [
+            {
+              "templateId": "accessory_rare_018"
+            }
+          ]
         }
       ]
     },
@@ -180,6 +295,32 @@
         {
           "factorId": "undead",
           "probability": 0.006
+        }
+      ],
+      "rareEquipmentDrops": [
+        {
+          "templateId": "rod_rare_004"
+        },
+        {
+          "templateId": "robe_rare_009"
+        }
+      ],
+      "tierRareEquipmentDrops": [
+        {
+          "tier": 1,
+          "drops": [
+            {
+              "templateId": "accessory_rare_019"
+            }
+          ]
+        },
+        {
+          "tier": 3,
+          "drops": [
+            {
+              "templateId": "wand_rare_005"
+            }
+          ]
         }
       ]
     }

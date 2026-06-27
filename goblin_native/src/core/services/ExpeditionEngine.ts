@@ -129,8 +129,8 @@ export class ExpeditionEngine {
     // ダンジョンIDからエリアIDにマッピング
     const dungeonToAreaMap: Record<string, string> = {
       "1": "forest_outskirts",
-      "2": "goblin_village_3",
-      "3": "orc_camp_3",
+      "2": "goblin_village_1",
+      "3": "orc_camp_1",
       "4": "slime_cave"
     }
 

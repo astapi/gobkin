@@ -24,7 +24,30 @@
         "vitality": 10,
         "agility": 10,
         "luck": 3
-      }
+      },
+      "rareEquipmentDrops": [
+        {
+          "templateId": "sword_rare_016"
+        }
+      ],
+      "tierRareEquipmentDrops": [
+        {
+          "tier": 1,
+          "drops": [
+            {
+              "templateId": "armor_rare_024"
+            }
+          ]
+        },
+        {
+          "tier": 3,
+          "drops": [
+            {
+              "templateId": "shield_rare_016"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "ORC005",
@@ -51,7 +74,30 @@
         "agility": 10,
         "luck": 3
       },
-      "physicalResistancePercent": 5
+      "physicalResistancePercent": 5,
+      "rareEquipmentDrops": [
+        {
+          "templateId": "sword_rare_017"
+        }
+      ],
+      "tierRareEquipmentDrops": [
+        {
+          "tier": 1,
+          "drops": [
+            {
+              "templateId": "armor_rare_025"
+            }
+          ]
+        },
+        {
+          "tier": 3,
+          "drops": [
+            {
+              "templateId": "accessory_rare_046"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "B_ORC",
@@ -85,7 +131,33 @@
         "agility": 10,
         "luck": 4
       },
-      "physicalResistancePercent": 5
+      "physicalResistancePercent": 5,
+      "rareEquipmentDrops": [
+        {
+          "templateId": "sword_rare_018"
+        },
+        {
+          "templateId": "armor_rare_026"
+        }
+      ],
+      "tierRareEquipmentDrops": [
+        {
+          "tier": 1,
+          "drops": [
+            {
+              "templateId": "accessory_rare_047"
+            }
+          ]
+        },
+        {
+          "tier": 3,
+          "drops": [
+            {
+              "templateId": "sword_rare_019"
+            }
+          ]
+        }
+      ]
     }
   ],
   "patterns": [

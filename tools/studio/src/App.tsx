@@ -14,6 +14,7 @@ import { BalanceReferencePage } from './pages/BalanceReferencePage'
 import { ProgressionReportsPage } from './pages/ProgressionReportsPage'
 import { TipsPage } from './pages/TipsPage'
 import { RareDropsPage } from './pages/RareDropsPage'
+import { RareItemsPage } from './pages/RareItemsPage'
 import { PartyStoreProvider } from './stores/partyStore'
 
 export function App() {
@@ -30,6 +31,7 @@ export function App() {
             <Link to="/stories">ストーリー</Link>
             <Link to="/goblins">ゴブリン</Link>
             <Link to="/equipment">アイテム</Link>
+            <Link to="/rare-items">レアアイテム</Link>
             <Link to="/rare-drops">レアドロップ</Link>
             <Link to="/tips">TIPS</Link>
             <Link to="/skills">Skill</Link>
@@ -49,6 +51,7 @@ export function App() {
             <Route path="/stories/:storyId" element={<StoryDetailPage />} />
             <Route path="/goblins" element={<GoblinDataPage />} />
             <Route path="/equipment" element={<EquipmentPoolPage />} />
+            <Route path="/rare-items" element={<RareItemsPage />} />
             <Route path="/rare-drops" element={<RareDropsPage />} />
             <Route path="/tips" element={<TipsPage />} />
             <Route path="/skills" element={<SkillCatalogPage />} />

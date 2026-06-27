@@ -24,7 +24,30 @@
         "vitality": 10,
         "agility": 10,
         "luck": 10
-      }
+      },
+      "rareEquipmentDrops": [
+        {
+          "templateId": "sword_rare_003"
+        }
+      ],
+      "tierRareEquipmentDrops": [
+        {
+          "tier": 1,
+          "drops": [
+            {
+              "templateId": "shield_rare_003"
+            }
+          ]
+        },
+        {
+          "tier": 3,
+          "drops": [
+            {
+              "templateId": "accessory_rare_008"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "GOB002",
@@ -50,7 +73,30 @@
         "vitality": 8,
         "agility": 12,
         "luck": 12
-      }
+      },
+      "rareEquipmentDrops": [
+        {
+          "templateId": "hidden_rare_004"
+        }
+      ],
+      "tierRareEquipmentDrops": [
+        {
+          "tier": 1,
+          "drops": [
+            {
+              "templateId": "hidden_rare_005"
+            }
+          ]
+        },
+        {
+          "tier": 3,
+          "drops": [
+            {
+              "templateId": "accessory_rare_009"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "GOB003",
@@ -76,7 +122,30 @@
         "vitality": 13,
         "agility": 10,
         "luck": 10
-      }
+      },
+      "rareEquipmentDrops": [
+        {
+          "templateId": "sword_rare_004"
+        }
+      ],
+      "tierRareEquipmentDrops": [
+        {
+          "tier": 1,
+          "drops": [
+            {
+              "templateId": "armor_rare_004"
+            }
+          ]
+        },
+        {
+          "tier": 3,
+          "drops": [
+            {
+              "templateId": "accessory_rare_010"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "GOB004",
@@ -110,6 +179,29 @@
           "name": "ファイヤーボール",
           "grantsSpellId": "fireball"
         }
+      ],
+      "rareEquipmentDrops": [
+        {
+          "templateId": "wand_rare_003"
+        }
+      ],
+      "tierRareEquipmentDrops": [
+        {
+          "tier": 1,
+          "drops": [
+            {
+              "templateId": "robe_rare_004"
+            }
+          ]
+        },
+        {
+          "tier": 3,
+          "drops": [
+            {
+              "templateId": "rod_rare_002"
+            }
+          ]
+        }
       ]
     },
     {
@@ -136,7 +228,30 @@
         "vitality": 15,
         "agility": 8,
         "luck": 8
-      }
+      },
+      "rareEquipmentDrops": [
+        {
+          "templateId": "shield_rare_004"
+        }
+      ],
+      "tierRareEquipmentDrops": [
+        {
+          "tier": 1,
+          "drops": [
+            {
+              "templateId": "armor_rare_005"
+            }
+          ]
+        },
+        {
+          "tier": 3,
+          "drops": [
+            {
+              "templateId": "large_shield_rare_001"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "GOB006",
@@ -162,7 +277,30 @@
         "vitality": 9,
         "agility": 13,
         "luck": 11
-      }
+      },
+      "rareEquipmentDrops": [
+        {
+          "templateId": "bow_rare_001"
+        }
+      ],
+      "tierRareEquipmentDrops": [
+        {
+          "tier": 1,
+          "drops": [
+            {
+              "templateId": "bow_rare_002"
+            }
+          ]
+        },
+        {
+          "tier": 3,
+          "drops": [
+            {
+              "templateId": "accessory_rare_011"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "GOB007",
@@ -195,6 +333,29 @@
           "id": "fireball",
           "name": "ファイヤーボール",
           "grantsSpellId": "fireball"
+        }
+      ],
+      "rareEquipmentDrops": [
+        {
+          "templateId": "rod_rare_003"
+        }
+      ],
+      "tierRareEquipmentDrops": [
+        {
+          "tier": 1,
+          "drops": [
+            {
+              "templateId": "robe_rare_005"
+            }
+          ]
+        },
+        {
+          "tier": 3,
+          "drops": [
+            {
+              "templateId": "accessory_rare_012"
+            }
+          ]
         }
       ]
     },

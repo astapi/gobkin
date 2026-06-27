@@ -158,6 +158,16 @@ function createMagicHealToHpSkill(value: number): CharacterSkill {
   }
 }
 
+function createHpMultiplierSkill(value: number): CharacterSkill {
+  const id = `hp_multiplier_${value}`
+  return {
+    id,
+    statMultipliers: {
+      hp: 1 + value / 100,
+    },
+  }
+}
+
 function createCriticalDamageBonusSkill(value: number): CharacterSkill {
   const id = `critical_damage_bonus_${value}`
   return {
@@ -264,6 +274,62 @@ export const CHARACTER_SKILL_CATALOG = {
     partyTitleMultiplier: 1.1,
   },
 
+  rare_slime_core: {
+    id: 'rare_slime_core',
+    hpRegenAmount: 5,
+  },
+
+  rare_ambush: {
+    id: 'rare_ambush',
+    actionOrderMultiplier: 1.5,
+  },
+
+  rare_guardian: {
+    id: 'rare_guardian',
+    coverLowHpAlly: true,
+  },
+
+  rare_spell_echo: {
+    id: 'rare_spell_echo',
+    magicDamageFollowUp: {
+      attackCountMultiplier: 0.5,
+      criticalRateMultiplier: 0.4,
+    },
+  },
+
+  rare_counter: {
+    id: 'rare_counter',
+    physicalCounterAttack: {
+      attackCountMultiplier: 0.25,
+      criticalRateMultiplier: 0.4,
+    },
+  },
+
+  rare_last_stand: {
+    id: 'rare_last_stand',
+    surviveLethalDamageAtHp1: true,
+  },
+
+  rare_merchant_luck: {
+    id: 'rare_merchant_luck',
+    goldBonusPercent: 50,
+  },
+
+  hp_multiplier_5: createHpMultiplierSkill(5),
+  hp_multiplier_6: createHpMultiplierSkill(6),
+  hp_multiplier_7: createHpMultiplierSkill(7),
+  hp_multiplier_8: createHpMultiplierSkill(8),
+  hp_multiplier_9: createHpMultiplierSkill(9),
+  hp_multiplier_10: createHpMultiplierSkill(10),
+  hp_multiplier_11: createHpMultiplierSkill(11),
+  hp_multiplier_12: createHpMultiplierSkill(12),
+  hp_multiplier_13: createHpMultiplierSkill(13),
+
+  additional_damage_1: createAdditionalDamageSkill(1),
+  additional_damage_2: createAdditionalDamageSkill(2),
+  additional_damage_3: createAdditionalDamageSkill(3),
+  additional_damage_4: createAdditionalDamageSkill(4),
+  additional_damage_5: createAdditionalDamageSkill(5),
   additional_damage_6: createAdditionalDamageSkill(6),
   additional_damage_7: createAdditionalDamageSkill(7),
   additional_damage_8: createAdditionalDamageSkill(8),

@@ -12,8 +12,6 @@ const path = require('node:path')
 // ウルフ草原(推奨Lv35)より一段階上を狙う：subjugation_force_1 推奨Lv38-42
 const TARGETS = {
   'subjugation_force_1.json': { default: 40, HUM005: 42, B_CAPTAIN: null },
-  'subjugation_force_2.json': { default: 44, HUM005: 46, B_CAPTAIN: null },
-  'subjugation_force_3.json': { default: 48, HUM005: 50, B_CAPTAIN: 55 },
 }
 
 function scaleEnemy(enemy, newLevel) {
