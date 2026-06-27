@@ -24,7 +24,30 @@
         "vitality": 13,
         "agility": 26,
         "luck": 12
-      }
+      },
+      "rareEquipmentDrops": [
+        {
+          "templateId": "sword_rare_021"
+        }
+      ],
+      "tierRareEquipmentDrops": [
+        {
+          "tier": 1,
+          "drops": [
+            {
+              "templateId": "armor_rare_029"
+            }
+          ]
+        },
+        {
+          "tier": 3,
+          "drops": [
+            {
+              "templateId": "accessory_rare_051"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "B_WOLF_ALPHA",
@@ -57,7 +80,33 @@
         "vitality": 20,
         "agility": 32,
         "luck": 13
-      }
+      },
+      "rareEquipmentDrops": [
+        {
+          "templateId": "sword_rare_022"
+        },
+        {
+          "templateId": "armor_rare_030"
+        }
+      ],
+      "tierRareEquipmentDrops": [
+        {
+          "tier": 1,
+          "drops": [
+            {
+              "templateId": "accessory_rare_052"
+            }
+          ]
+        },
+        {
+          "tier": 3,
+          "drops": [
+            {
+              "templateId": "accessory_rare_053"
+            }
+          ]
+        }
+      ]
     }
   ],
   "patterns": [

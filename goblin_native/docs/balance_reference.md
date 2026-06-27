@@ -27,9 +27,9 @@
 
 ## 3. 4つの基準シナリオ
 
-### 3.1 ゴブリン集落 1〜3 (`goblin_village_1` 〜 `goblin_village_3`)
+### 3.1 ゴブリン集落 (`goblin_village_1`)
 
-- **areaLevel**: 6〜8（個体値計算用なので難易度指標ではない）
+- **areaLevel**: 10（個体値計算用なので難易度指標ではない）
 - **推奨Lv**: 8〜10（暫定 / シミュレータで確定）
 - **ゴリ押しLv**: 15〜20（暫定 / シミュレータで確定）
 - **特徴**: チュートリアル相当。**対策不要でも勝てる緩さ** を持たせる。亜種があれば低レベルクリア可能。
@@ -38,7 +38,7 @@
   - 標準ジョブで前衛配置
 - **ボス**: ホブゴブリン（Lv15・HP150・Atk30、`survive_lethal_hp1` で1度耐える）
 
-### 3.2 オーク野営地 1〜3 (`orc_camp_1` 〜 `orc_camp_3`)
+### 3.2 オーク野営地 1〜3 (`orc_camp_1` 〜 `orc_camp_1`)
 
 - **areaLevel**: 20〜22
 - **推奨Lv**: 22〜24（暫定）
@@ -60,7 +60,7 @@
   - 高 accuracy で確実に当てる（敵 evasion 46）
   - 隊列で被弾を分散（前列1体に集中させない）
 
-### 3.4 vs討伐軍 1〜3 (`subjugation_force_1` 〜 `subjugation_force_3`)
+### 3.4 vs討伐軍 (`subjugation_force_1`)
 
 - **areaLevel**: 40〜44
 - **推奨Lv**: 42〜44（暫定）
@@ -103,12 +103,11 @@
 
 ## 5. 検証結果
 
-### 5.1 ゴブリン集落 3 (`goblin_village_3`)
+### 5.1 ゴブリン集落 (`goblin_village_1`)
 
-**実行**: `npm run sim:balance:reference -- --scenario goblin_village_3 --iterations 100 --level-min 1 --level-max 25`
+**実行**: `npm run sim:balance:reference -- --scenario goblin_village_1 --iterations 100 --level-min 1 --level-max 25`
 **PT構成**: 6人。ジョブなし（ゴブリン集落帯は未解放）。**現実的な構成として「亜種2体（スライム+ウルフ）+ 通常ゴブリン4体」**。「亜種だけで6体揃える」のは現実不可能なので除外（その時点でクリア後）。
 **装備プール**: unlockRank≤1 かつ dropRank≤1（26件）
-**生レポート**: [`reports/balance_goblin_village_3.tsv`](../reports/balance_goblin_village_3.tsv)
 
 #### 勝率マトリクス（Lv1-25 × iter=100）
 
@@ -702,7 +701,7 @@ threshold zone (Lv31-33) で F が +30〜40pt のリード。クレリックの 
 - attackCount を 4→5 にする
 - HP をさらに上げる（人間は装備でタフ前提）
 - 敵パターン密度を増やす（1パターン内の敵数）
-- B_CAPTAIN（subjugation_force_3 ボス）の atk/attackCount を boss-tier に再調整
+- B_CAPTAIN（subjugation_force_1 ボス）の atk/attackCount を boss-tier に再調整
 
 ### 8.4 変化の構造
 
@@ -729,8 +728,8 @@ threshold zone (Lv31-33) で F が +30〜40pt のリード。クレリックの 
 | ファイル | 敵Lv 変更 | スケール係数 |
 |---|---|---:|
 | subjugation_force_1.json | HUM001-005: Lv30 → **Lv34** | ×1.13 |
-| subjugation_force_2.json | HUM001-005: Lv30 → **Lv38** | ×1.27 |
-| subjugation_force_3.json | HUM001-005: Lv30 → **Lv42** / B_CAPTAIN: Lv40 → **Lv48** | ×1.40 / ×1.20 |
+| subjugation_force_1.json | HUM001-005: Lv30 → **Lv38** | ×1.27 |
+| subjugation_force_1.json | HUM001-005: Lv30 → **Lv42** / B_CAPTAIN: Lv40 → **Lv48** | ×1.40 / ×1.20 |
 
 例（subjugation_force_1）：
 - HUM001 兵: hp 760→861, atk 200→227, def 40→45
@@ -795,8 +794,8 @@ vs討伐軍 を ウルフ草原 と同水準（推奨Lv 35）にするなら：
 | ファイル | HUM (一般) | HUM005 騎士 | B_CAPTAIN |
 |---|---|---|---|
 | subjugation_force_1.json | **Lv48** (hp ×1.6, atk ×1.6) | **Lv50** | — |
-| subjugation_force_2.json | Lv52 | Lv54 | — |
-| subjugation_force_3.json | Lv56 | Lv58 | **Lv65** |
+| subjugation_force_1.json | Lv52 | Lv54 | — |
+| subjugation_force_1.json | Lv56 | Lv58 | **Lv65** |
 
 加えて：
 - 全員 `physical_reduction_10` 装備（10% 物理軽減）
@@ -881,16 +880,16 @@ npm run sim:balance:reference -- --scenario subjugation_force_1 --iterations 100
 |---|---:|---:|---:|
 | ウルフ草原 1 | 30 | — | 40 (グランダイアウルフ) |
 | **lizardman_swamp_1** | **33** | **35**(重装) | — |
-| **lizardman_swamp_2** | **36** | **38** | — |
-| **lizardman_swamp_3** | **40** | **42** | **50**(キングリザードマン) |
+| **lizardman_swamp_1** | **36** | **38** | — |
+| **lizardman_swamp_1** | **40** | **42** | **50**(キングリザードマン) |
 | **orc_fortress_1** | **42-44** | **45**(トロル) | **55**(オーク砦守将) |
 | **subjugation_force_1** | **60** | **62**(騎士) | — |
-| **subjugation_force_2** | **64** | **66**(騎士) | — |
-| **subjugation_force_3** | **68** | **70**(騎士) | **80**(辺境城騎士団長) |
+| **subjugation_force_1** | **64** | **66**(騎士) | — |
+| **subjugation_force_1** | **68** | **70**(騎士) | **80**(辺境城騎士団長) |
 
 **修正前の異常値**：
 - lizardman_swamp_1 の LIZ001 atk1000、LIZ004 atk1200 などの異常値を正常化
-- lizardman_swamp_2/3 の Lv17-20 (atk27-37) という弱すぎる設定を Lv36-42 帯に修正
+- lizardman_swamp_1/3 の Lv17-20 (atk27-37) という弱すぎる設定を Lv36-42 帯に修正
 - orc_fortress_1 (areaLevel 75) の敵 Lv13-18 を Lv42-55 に修正
 - subjugation_force 全体を Lv60+ に大幅引き上げ
 
@@ -917,8 +916,8 @@ npm run sim:balance:reference -- --scenario subjugation_force_1 --iterations 100
 | オーク野営地 1 | 9 | -26 |
 | **ウルフ草原 1** | **35** | 基準 |
 | lizardman_swamp_1 | (推定 37-39) | +2-4 |
-| lizardman_swamp_2 | (推定 40-42) | +5-7 |
-| lizardman_swamp_3 | (推定 43-45) | +8-10 |
+| lizardman_swamp_1 | (推定 40-42) | +5-7 |
+| lizardman_swamp_1 | (推定 43-45) | +8-10 |
 | orc_fortress_1 | (推定 45-48) | +10-13 |
 | **vs討伐軍 1** | **44** | **+9** |
 
@@ -929,7 +928,7 @@ npm run sim:balance:reference -- --scenario subjugation_force_1 --iterations 100
 - [x] lizardman_swamp_1/2/3 の baseline scenario 追加してシム
 - [x] orc_fortress_1 の baseline scenario 追加してシム
 - [x] 各エリアの推奨Lvが実際に進行カーブと整合するか検証 → **逆転発見**（次節）
-- [ ] subjugation_force_2/3 のシム（subjugation_force_2 推奨Lv ~48、subjugation_force_3 推奨Lv ~52 想定）
+- [ ] subjugation_force_1 のシム（subjugation_force_1 推奨Lv ~48、subjugation_force_1 推奨Lv ~52 想定）
 
 ---
 
@@ -941,8 +940,8 @@ npm run sim:balance:reference -- --scenario subjugation_force_1 --iterations 100
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
 | ウルフ草原 1 | **35** | 37 | 37 | 33 | 43 | 41 | 49 | 未達 |
 | lizardman_swamp_1 | **33** ⚠️ | 33 | 35 | 29 | 39 | 39 | 51 | 未達 |
-| lizardman_swamp_2 | **29** ⚠️ | 29 | 31 | 27 | 33 | 35 | 41 | 未達 |
-| lizardman_swamp_3 | **38** | 38 | 40 | 34 | 44 | 44 | 62 | 未達 |
+| lizardman_swamp_1 | **29** ⚠️ | 29 | 31 | 27 | 33 | 35 | 41 | 未達 |
+| lizardman_swamp_1 | **38** | 38 | 40 | 34 | 44 | 44 | 62 | 未達 |
 | orc_fortress_1 | **36** ⚠️ | 36 | 36 | 32 | 44 | 44 | 58 | 未達 |
 | vs討伐軍 1 | **42** | 40 | 44 | 42 | 54 | 54 | 未達 | 未達 |
 
@@ -957,16 +956,16 @@ npm run sim:balance:reference -- --scenario subjugation_force_1 --iterations 100
 
 **逆転3箇所:**
 1. **lizardman_swamp_1 (Lv33) < ウルフ草原 (Lv35)** — リザードマンの方が易しい
-2. **lizardman_swamp_2 (Lv29) << lizardman_swamp_1 (Lv33)** — 進むと逆に easier
-3. **orc_fortress_1 (Lv36) < lizardman_swamp_3 (Lv38)** — オーク砦の方が易しい
+2. **lizardman_swamp_1 (Lv29) << lizardman_swamp_1 (Lv33)** — 進むと逆に easier
+3. **orc_fortress_1 (Lv36) < lizardman_swamp_1 (Lv38)** — オーク砦の方が易しい
 
 ### 12.3 原因：パターン密度の差
 
 | エリア | パターン数 | 平均敵数 | ボス | 体感難易度 |
 |---|---:|---:|---|---|
 | lizardman_swamp_1 | 4 | **6.0** | なし | 中 |
-| lizardman_swamp_2 | 10 | 5.0 | なし | 低（密度低） |
-| lizardman_swamp_3 | 11 | **6.3** | ✓ | 高（密度+ボス） |
+| lizardman_swamp_1 | 10 | 5.0 | なし | 低（密度低） |
+| lizardman_swamp_1 | 11 | **6.3** | ✓ | 高（密度+ボス） |
 | **orc_fortress_1** | **6** | **3.5** | ✓ | **低密度＋ボス→中** |
 
 **orc_fortress_1 の平均敵数 3.5 体は他エリア (5-6体) の半分**。これが推奨Lv 36 の主因。
@@ -975,8 +974,8 @@ npm run sim:balance:reference -- --scenario subjugation_force_1 --iterations 100
 
 **A. 敵レベルとパターン密度を併せて調整**
 - lizardman_swamp_1 敵Lv 33→**36**（ウルフ+1）
-- lizardman_swamp_2 敵Lv 36→**38**
-- lizardman_swamp_3 敵Lv 40→**42**
+- lizardman_swamp_1 敵Lv 36→**38**
+- lizardman_swamp_1 敵Lv 40→**42**
 - orc_fortress_1 敵Lv 44→**48** + パターン密度を 3.5→5.5体に増やす
 
 **B. パターン密度のみ調整**（敵Lvは現状維持）
@@ -1048,8 +1047,8 @@ npm run sim:balance:reference -- --scenario subjugation_force_1 --iterations 100
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
 | ウルフ草原 1 | **33** | 37 | 37 | **31** | 41 | 41 | 45 | 75 |
 | lizardman_swamp_1 | **39** | 39 | 39 | 37 | 45 | 43 | 57 | 未達 |
-| lizardman_swamp_2 | **39** | 39 | 41 | 37 | 47 | 43 | 未達(Lv59で71%) | 未達 |
-| lizardman_swamp_3 | **44** | 46 | 46 | 42 | 52 | 52 | 未達(Lv64で45%) | 未達 |
+| lizardman_swamp_1 | **39** | 39 | 41 | 37 | 47 | 43 | 未達(Lv59で71%) | 未達 |
+| lizardman_swamp_1 | **44** | 46 | 46 | 42 | 52 | 52 | 未達(Lv64で45%) | 未達 |
 | **orc_fortress_1** | **66** | 66 | 66 | **58** | 70 | 70 | 未達(Lv84で38%) | 未達 |
 
 ### 13.3 強化前後の差分（A_optimal 推奨Lv）
@@ -1058,8 +1057,8 @@ npm run sim:balance:reference -- --scenario subjugation_force_1 --iterations 100
 |---|---:|---:|---:|
 | ウルフ草原 1 | 35 | **33** | **-2**（味方強化が勝った） |
 | lizardman_swamp_1 | 37 | 39 | +2 |
-| lizardman_swamp_2 | 37 | 39 | +2 |
-| lizardman_swamp_3 | 44 | 44 | ±0 |
+| lizardman_swamp_1 | 37 | 39 | +2 |
+| lizardman_swamp_1 | 44 | 44 | ±0 |
 | **orc_fortress_1** | **54** | **66** | **+12** |
 
 ### 13.4 観察
@@ -1086,8 +1085,8 @@ npm run sim:balance:reference -- --scenario subjugation_force_1 --iterations 100
 |---|---:|---:|---:|
 | ウルフ草原 1 | 34 | **33** | -2 |
 | lizardman_swamp_1 | 36 | 39 | +2 |
-| lizardman_swamp_2 | 38 | 39 | +2 |
-| lizardman_swamp_3 | 42 | 44 | ±0 |
+| lizardman_swamp_1 | 38 | 39 | +2 |
+| lizardman_swamp_1 | 42 | 44 | ±0 |
 | **orc_fortress_1** | 55 | **66** | **+12** |
 | vs討伐軍 1 (§12.5) | 60 | 55 | (未再シム) |
 
@@ -1178,8 +1177,8 @@ A_optimal の進行：
 |---|---:|---:|---:|
 | ウルフ草原 1 | 34 | 33 | 基準 |
 | lizardman_swamp_1 | 36 | 39 | +6 |
-| lizardman_swamp_2 | 38 | 39 | +6 |
-| lizardman_swamp_3 | 42 | 44 | +11 |
+| lizardman_swamp_1 | 38 | 39 | +6 |
+| lizardman_swamp_1 | 42 | 44 | +11 |
 | **orc_fortress_1（新）** | 55 | **58** | **+25** |
 | vs討伐軍 1 (§12.5・要再シム) | 60 | 55 | (+22) |
 

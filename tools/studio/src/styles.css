@@ -1492,6 +1492,123 @@ code {
   padding-left: 1rem;
 }
 
+.rare-items-page {
+  max-width: none;
+}
+
+.app-main:has(.rare-items-page) {
+  max-width: none;
+}
+
+.rare-items-toolbar {
+  margin-top: 1rem;
+}
+
+.rare-items-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  white-space: nowrap;
+}
+
+.rare-items-table-wrap {
+  width: 100%;
+  overflow: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  background: var(--surface);
+}
+
+.rare-items-table {
+  min-width: 184rem;
+  background: var(--surface);
+}
+
+.rare-items-table th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.rare-items-table tbody tr {
+  cursor: default;
+}
+
+.rare-items-table td {
+  vertical-align: top;
+}
+
+.rare-items-table input,
+.rare-items-table select {
+  width: 100%;
+  min-width: 0;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  padding: 0.35rem 0.45rem;
+}
+
+.rare-items-table input:focus,
+.rare-items-table select:focus {
+  border-color: var(--border-strong);
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.04);
+}
+
+.rare-items-name-col {
+  width: 17rem;
+}
+
+.rare-items-drop-col {
+  width: 31rem;
+}
+
+.rare-items-stat-col {
+  width: 6rem;
+}
+
+.rare-items-skill-col {
+  width: 15rem;
+}
+
+.rare-items-name-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.rare-items-number-input {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.rare-items-drop-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.rare-items-drop-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 7rem 2rem;
+  gap: 0.35rem;
+  align-items: center;
+}
+
+.rare-items-tier-select {
+  min-width: 0;
+}
+
+.rare-items-empty-drop {
+  margin: 0;
+}
+
+.rare-items-add-drop {
+  align-self: flex-start;
+}
+
 @media (max-width: 1024px) {
   .rare-drops-layout {
     grid-template-columns: 1fr;

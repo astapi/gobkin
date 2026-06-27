@@ -12,15 +12,15 @@
 |--------|------|------|------------------|
 | slime | スライム因子 | 耐久性が増す | スライムの洞窟 (slime_cave) |
 | wolf | ウルフ因子 | 敏捷性が増す | 森の外れ (forest_outskirts) |
-| orc | オーク因子 | 攻撃力と防御力が増す | オークの野営地 (orc_camp_3) |
-| undead | アンデッド因子 | 生命力と耐毒性が増す | アンデッド遺跡 (undead_ruins_3) |
-| hobgoblin | ホブゴブリン因子 | 全能力が底上げされる | ゴブリンの村 (goblin_village_3) |
-| dwarf | ドワーフ因子 | 防御力と耐久性が大幅に増す | ドワーフの鉱山 (dwarf_mine_3) |
-| elf | エルフ因子 | 敏捷性と精神力が増す | エルフの森 (elf_forest_3) |
-| lizardman | リザードマン因子 | 全体的な耐性とHPが増す | リザードマンの沼地 (lizardman_swamp_3) |
-| troll | トロル因子 | HPが大幅に増し、防御力も上がる | トロルの峡谷 (troll_canyon_3) |
+| orc | オーク因子 | 攻撃力と防御力が増す | オークの野営地 (orc_camp_1) |
+| undead | アンデッド因子 | 生命力と耐毒性が増す | アンデッド遺跡 (undead_ruins_1) |
+| hobgoblin | ホブゴブリン因子 | 全能力が底上げされる | ゴブリン集落 (goblin_village_1) |
+| dwarf | ドワーフ因子 | 防御力と耐久性が大幅に増す | ドワーフの鉱山 (dwarf_mine_1) |
+| elf | エルフ因子 | 敏捷性と精神力が増す | エルフの森 (elf_forest_1) |
+| lizardman | リザードマン因子 | 全体的な耐性とHPが増す | リザードマンの沼地 (lizardman_swamp_1) |
+| troll | トロル因子 | HPが大幅に増し、防御力も上がる | トロルの峡谷 (troll_canyon_1) |
 
-※ 討伐隊 (subjugation_force_3) のボスは因子をドロップしない。
+※ 討伐隊 (subjugation_force_1) のボスは因子をドロップしない。
 
 ## 因子の獲得
 

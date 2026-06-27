@@ -587,11 +587,19 @@ describe('GoblinStatCalculator — 戦闘ステータス計算', () => {
     })
     const result = GoblinStatCalculator.calculate(goblin, [
       { stat: 'magic_def_flat', value: 10, sourceCategory: 'robe' },
-      { stat: 'hp_percent', value: 10, sourceCategory: 'robe' },
     ])
 
     expect(result.magicDef).toBe(31)
-    expect(result.hp).toBe(72)
+    expect(result.hp).toBe(60)
+  })
+
+  it('最大HP上昇スキルはHPを倍率強化する', () => {
+    const goblin = createTestGoblin({
+      skills: [{ id: 'hp_multiplier_10', statMultipliers: { hp: 1.1 } }],
+    })
+    const result = GoblinStatCalculator.calculate(goblin)
+
+    expect(result.hp).toBe(66)
   })
 
   it('EquipmentServiceは装備カテゴリをボーナスへ保持する', () => {
@@ -711,7 +719,7 @@ describe('GoblinStatCalculator — 戦闘ステータス計算', () => {
     expect(goblin.skills.some((skill) => skill.physicalDamageReductionPercent === 6)).toBe(false)
   })
 
-  it('ローブ装備は魔法防御・HP%・魔法耐性スキルを持つ', () => {
+  it('ローブ装備は魔法防御・最大HP上昇・魔法耐性スキルを持つ', () => {
     const bonuses = EquipmentService.calculateEquipmentBonuses([
       { id: 'eq1', templateId: 'robe_robe', slotIndex: 0, goblinId: 1 },
     ])
@@ -721,11 +729,12 @@ describe('GoblinStatCalculator — 戦闘ステータス計算', () => {
 
     expect(bonuses).toEqual(expect.arrayContaining([
       expect.objectContaining({ stat: 'magic_def_flat', value: 16, sourceCategory: 'robe' }),
-      expect.objectContaining({ stat: 'hp_percent', value: 6, sourceCategory: 'robe' }),
     ]))
+    expect(bonuses.some((bonus) => bonus.stat === 'hp_percent')).toBe(false)
     expect(skills).toEqual(expect.arrayContaining([
       expect.objectContaining({ id: 'magic_resistant_4_5', magicDamageTakenMultiplier: 0.8 }),
       expect.objectContaining({ id: 'magic_reduction_6', magicDamageReductionPercent: 6 }),
+      expect.objectContaining({ id: 'hp_multiplier_6', statMultipliers: { hp: 1.06 } }),
     ]))
   })
 

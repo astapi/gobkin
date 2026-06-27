@@ -302,9 +302,11 @@ describe('characterSkills - 物理ダメージ軽減', () => {
     const skills: CharacterSkill[] = [
       { id: 'initiative', actionOrderMultiplier: 1.5 },
       { id: 'evasion_up', statMultipliers: { evasion: 1.5 } },
+      { id: 'hp_multiplier_10', statMultipliers: { hp: 1.1 } },
     ]
 
     expect(getSkillStatMultipliers(skills).evasion).toBeCloseTo(1.5)
+    expect(getSkillStatMultipliers(skills).hp).toBeCloseTo(1.1)
     expect(getActionOrderMultiplierFromSkills(skills)).toBeCloseTo(1.5)
   })
 
@@ -771,6 +773,10 @@ describe('characterSkills - 物理ダメージ軽減', () => {
 
   it('魔法支援スキルの説明文を返す', () => {
     expect(describeCharacterSkill(getCharacterSkill('magic_support'))).toContain('追撃')
+  })
+
+  it('最大HP上昇スキルの説明文を表記ルールどおり返す', () => {
+    expect(describeCharacterSkill(getCharacterSkill('hp_multiplier_10'))).toBe('[+10%] 最大HP上昇(%)')
   })
 
   it('打ち合いスキルの説明文を返す', () => {

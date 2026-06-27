@@ -164,25 +164,15 @@ const DUNGEON_TIER_CLASS_MAP: Record<string, DungeonTierClass> = {
   slime_cave: 'A',
   forest_outskirts: 'A',
   goblin_village_1: 'A',
-  goblin_village_2: 'A',
-  goblin_village_3: 'A',
   undead_ruins_1: 'A',
-  undead_ruins_2: 'A',
-  undead_ruins_3: 'A',
   // Class C: 街道, 辺境の村, オークの野営地, ウルフ草原, リザードマンの沼砦, オークの砦, vs討伐軍
   road_1: 'C',
   human_village: 'C',
   orc_camp_1: 'C',
-  orc_camp_2: 'C',
-  orc_camp_3: 'C',
   wolf_grassland_1: 'C',
   lizardman_swamp_1: 'C',
-  lizardman_swamp_2: 'C',
-  lizardman_swamp_3: 'C',
   orc_fortress_1: 'C',
   subjugation_force_1: 'C',
-  subjugation_force_2: 'C',
-  subjugation_force_3: 'C',
 }
 
 /** ダンジョン ID から探索時間クラスを取得（未指定は B） */

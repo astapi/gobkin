@@ -94,25 +94,23 @@ console.info = (...args) => {
 
 const DUNGEON_ROUTE = [
   'undead_ruins_1',
-  'undead_ruins_2',
-  'undead_ruins_3',
+  'undead_ruins_1',
+  'undead_ruins_1',
   'road_1',
   'orc_camp_1',
-  'orc_camp_2',
-  'orc_camp_3',
+  'orc_camp_1',
+  'orc_camp_1',
   'human_village',
   'wolf_grassland_1',
   'lizardman_swamp_1',
-  'lizardman_swamp_2',
-  'lizardman_swamp_3',
+  'lizardman_swamp_1',
+  'lizardman_swamp_1',
   'orc_fortress_1',
   'subjugation_force_1',
-  'subjugation_force_2',
-  'subjugation_force_3',
   'spider_forest_1',
   'dead_grave_1',
-  'dead_grave_2',
-  'dead_grave_3',
+  'dead_grave_1',
+  'dead_grave_1',
   'harpy_cliff_1',
 ]
 
@@ -121,14 +119,14 @@ const DEFAULT_OPTIONS = {
   trials: 1,
   maxRuns: 10000,
   partySize: 6,
-  target: 'subjugation_force_3',
+  target: 'subjugation_force_1',
   report: 'text',
   out: null,
 }
 
 const AREA_META_BY_ID = new Map((allAreaData.areas ?? []).map(area => [area.id, area]))
 const START_LEVEL = 12
-const START_CLEARED_AREA_ID = 'goblin_village_3'
+const START_CLEARED_AREA_ID = 'goblin_village_1'
 const PARTY_BLUEPRINT = [
   { name: 'ガード', job: 'guard', role: 'guard' },
   { name: 'ウォリアー', job: 'warrior', role: 'warrior' },

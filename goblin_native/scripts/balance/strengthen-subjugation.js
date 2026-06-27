@@ -14,8 +14,6 @@ const path = require('node:path')
 
 const FILES = [
   'src/shared/data/enemy/subjugation_force_1.json',
-  'src/shared/data/enemy/subjugation_force_2.json',
-  'src/shared/data/enemy/subjugation_force_3.json',
 ]
 
 // ID -> { 役割定義, 新ステータス }
@@ -139,7 +137,7 @@ const HUMAN_OVERRIDES = {
       luck: 5,
     },
   },
-  // 辺境城騎士団長（boss）: subjugation_force_3 のみ
+  // 辺境城騎士団長（boss）
   B_CAPTAIN: {
     name: '辺境城騎士団長',
     hp: 1370,

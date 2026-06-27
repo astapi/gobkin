@@ -102,12 +102,6 @@ const TARGETS = {
   'subjugation_force_1.json': {
     HUM001: 48, HUM002: 48, HUM003: 48, HUM004: 48, HUM005: 50,
   },
-  'subjugation_force_2.json': {
-    HUM001: 52, HUM002: 52, HUM003: 52, HUM004: 52, HUM005: 54,
-  },
-  'subjugation_force_3.json': {
-    HUM001: 56, HUM002: 56, HUM003: 56, HUM004: 56, HUM005: 58, B_CAPTAIN: 65,
-  },
 }
 
 function buildEnemy(id, newLevel) {

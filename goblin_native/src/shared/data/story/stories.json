@@ -103,11 +103,11 @@
           "text": "ゴブリン集落への奇襲は、夜明け前に終わった。\n\n見張りが騒ぐ前に外縁を抜き、内部へ雪崩れ込み、中枢にいたホブゴブリンを打ち倒した。荷を運ばされていた弱い群れは、ついに命令する声を黙らせた。"
         },
         {
-          "id": "story_after_goblin_village_2",
+          "id": "story_after_goblin_village_base",
           "text": "マルクたちは集落を奪い取り、初めて自分たちの拠点を得た。\n\nだが、勝っただけでは生きられない。食料も道具も、周囲の地形も足りない。支配していたゴブリンたちが隠していた古い道筋を辿り、森の外れに捨てられた人間の村を探ることになった。"
         },
         {
-          "id": "story_after_goblin_village_3",
+          "id": "story_after_goblin_village_training",
           "text": "集落には訓練所が残っていた。敵のゴブリンたちにはガード、シーフ、ウォリアー、メイジなど、特定の能力に秀でた者がいた。\n\n我々も訓練すれば出来るはずだ。マルクは仲間を集め、奪った場所をただの巣穴ではなく、群れの拠点へ変え始めた。"
         }
       ]
@@ -249,7 +249,7 @@
       "order": 9,
       "unlockCondition": {
         "type": "dungeon_cleared",
-        "dungeonId": "orc_camp_3"
+        "dungeonId": "orc_camp_1"
       },
       "rewards": [
         {
@@ -263,7 +263,7 @@
           "text": "オークの野営地を制圧した。\n\nゴブリンたちは、オークの大きな武器を引きずり、肉を奪い、壊れた柵の中で眠った。洞窟でも集落でもない、外に作られた拠点だった。\n\nマルクはそこで、群れがもう隠れて生きる大きさではなくなったことを知った。"
         },
         {
-          "id": "story_after_orc_camp_2",
+          "id": "story_after_orc_camp_1",
           "text": "野営地の外で、人間の斥候を捕らえた。\n\n斥候はゴブリンの数を見て、オークの死体を見て、顔色を変えた。マルクには人間の言葉は分からない。それでも、相手が恐れていることは分かった。\n\n逃げた斥候は、きっと村へ戻る。ならば報告される前に、こちらから村を襲う。"
         }
       ]
@@ -331,7 +331,7 @@
       "order": 12,
       "unlockCondition": {
         "type": "dungeon_cleared",
-        "dungeonId": "lizardman_swamp_3"
+        "dungeonId": "lizardman_swamp_1"
       },
       "rewards": [
         {
@@ -345,7 +345,7 @@
           "text": "リザードマンの沼砦を制圧した。\n\n毒を塗った刃。泥に身を沈めて待つ伏兵。夜の水音に紛れて近づく足取り。ゴブリンたちは、正面から殴る以外の戦い方を覚えた。\n\nマルクの群れは、もうただの群れではない。狼で走り、毒で削り、夜に襲う軍になり始めていた。"
         },
         {
-          "id": "story_after_lizardman_swamp_2",
+          "id": "story_after_lizardman_swamp_1",
           "text": "それでも、辺境の城はまだ遠い。\n\n人間に本気で動かれる前に、こちらから大きな戦果を見せる必要がある。村を落としただけでは、城はまだ様子を見る。だが、オークの砦まで奪えば話は変わる。\n\nマルクは進路を変えた。次はオークの本拠地を落とす。人間たちに、ゴブリンがただの魔物ではないと知らせるために。"
         }
       ]
@@ -357,7 +357,7 @@
       "order": 13,
       "unlockCondition": {
         "type": "dungeon_cleared",
-        "dungeonId": "subjugation_force_3"
+        "dungeonId": "subjugation_force_1"
       },
       "rewards": [
         {
@@ -401,7 +401,7 @@
       "order": 15,
       "unlockCondition": {
         "type": "dungeon_cleared",
-        "dungeonId": "dead_grave_3"
+        "dungeonId": "dead_grave_1"
       },
       "rewards": [
         {
@@ -445,7 +445,7 @@
       "order": 17,
       "unlockCondition": {
         "type": "dungeon_cleared",
-        "dungeonId": "human_fortress_3"
+        "dungeonId": "human_fortress_1"
       },
       "rewards": [
         {
@@ -585,7 +585,7 @@
       "order": 105,
       "unlockCondition": {
         "type": "dungeon_cleared",
-        "dungeonId": "dwarf_mine_3"
+        "dungeonId": "dwarf_mine_1"
       },
       "rewards": [
         {
@@ -607,7 +607,7 @@
       "order": 106,
       "unlockCondition": {
         "type": "dungeon_cleared",
-        "dungeonId": "elf_forest_3"
+        "dungeonId": "elf_forest_1"
       },
       "rewards": [
         {
@@ -629,7 +629,7 @@
       "order": 107,
       "unlockCondition": {
         "type": "dungeon_cleared",
-        "dungeonId": "lizardman_swamp_3"
+        "dungeonId": "lizardman_swamp_1"
       },
       "rewards": [
         {
@@ -651,7 +651,7 @@
       "order": 108,
       "unlockCondition": {
         "type": "dungeon_cleared",
-        "dungeonId": "troll_canyon_3"
+        "dungeonId": "troll_canyon_1"
       },
       "rewards": [
         {

@@ -355,6 +355,11 @@ export function describeCharacterSkill(skill: CharacterSkill): string {
     return i18n.t('battle.evasionMultiplier', { value: skill.statMultipliers.evasion.toFixed(1) })
   }
 
+  if (skill.statMultipliers?.hp !== undefined) {
+    const value = Math.round((skill.statMultipliers.hp - 1) * 100)
+    return i18n.t('battle.hpMultiplier', { value })
+  }
+
   if (skill.equipmentStatMultipliers?.accuracy_flat !== undefined) {
     return i18n.t('battle.accuracyMultiplier', { value: skill.equipmentStatMultipliers.accuracy_flat.toFixed(1) })
   }
