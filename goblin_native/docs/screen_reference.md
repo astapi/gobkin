@@ -1,222 +1,162 @@
 # 画面リファレンス
 
 ## 目的
-- Expo Router 配下の画面と責務、主要なデータ/フック依存を把握するための一覧です。
+- Expo Router 配下の画面と責務、主要なデータ層（Zustand store / hook）依存を把握するための一覧です。
+- ゲーム仕様そのものは [game_design_overview.md](./game_design_overview.md)、ディレクトリ全体像は [project_structure.md](./project_structure.md) を参照してください。
 
 ## ルーティングとレイアウト
 - `app/_layout.tsx`
-  - ルートスタック。`AuthProvider` と `ExpeditionStateProvider` を全体に適用。
+  - ルートスタック。`AuthProvider` / `ResetProvider` を全体に適用。
+  - 起動時に各 Zustand ストアと SQLite を初期化し、完了まではローディング／スプラッシュを表示。
 - `app/(tabs)/_layout.tsx`
-  - 3タブ構成（List / Formation / Base）。ヘッダ非表示。
+  - 6タブ構成。定義順（タブ index）は次の通り。
+    - 0: `story`（ストーリー、未読バッジあり）
+    - 1: `index`（ゴブリン一覧）
+    - 2: `formation`（遠征）
+    - 3: `base`（拠点、ランクアップ可能時に `!` バッジ）
+    - 4: `encyclopedia`（図鑑）
+    - 5: `settings`（設定）
+  - 画面下部に TipsBar / 現在時刻バッジ / ゴールドバッジ / 金のドングリバッジを重畳表示。
 - `app/(tabs)/formation/_layout.tsx`
-  - Formation 内のスタック遷移（preparation/edit/playback/result/log/battle-log）。
+  - Formation 内のスタック。`index` / `preparation` / `edit` / `equipment-list` / `party-info` / `equipment`（formSheet）/ `playback` / `result` / `log` / `battle-log` / `level-up-log`。
+- `app/goblin/_layout.tsx`
+  - ゴブリン個別画面のスタック（`detail` / `equipment` / `avatar`）。
+
+## データ層の前提
+- 画面の状態取得・更新は **Zustand store** が中心です。
+  - `useGoblinStore` / `usePartyStore` / `useBaseStore` / `useDungeonStore` / `useExpeditionStore`
+  - `useStoryStore` / `usePurchaseStore` / `useTutorialStore` / `useTutorialOverlayStore` / `useDebugSettingsStore`
+- 遠征フローは `useExpeditionFlow`（hook）が中核。装備操作は `useEquipmentService`。
+- 戦闘・レベルアップの詳細ログは `battleLogStore` / `levelUpLogStore`（contexts 配下の軽量ストア）で画面間受け渡し。
 
 ## 画面遷移フロー（簡易）
+
 ### タブ間
-- `List` ⇄ `Formation` ⇄ `Base`（タブ切替で相互遷移）
+- `story` / `goblin一覧` / `formation` / `base` / `encyclopedia` / `settings` をタブで相互遷移。
 
-### List（ゴブリン一覧）
-- 一覧 → ゴブリン詳細モーダル（閉じるで一覧へ）
+### ゴブリン一覧（`(tabs)/index`）
+- 一覧 → `goblin/detail`（ゴブリン詳細）
+- 詳細 → `goblin/equipment`（装備変更）/ `goblin/avatar`（アバター）
+- 「産まれたゴブリン」の受け入れ/解雇はこの画面で実行。
 
-### Base（拠点管理）
-- 拠点管理（単一画面、モーダルなし）
+### 拠点（`(tabs)/base`）
+- 拠点トップ → 各施設（解放ランク条件あり）
+  - `base/healing`（治療所, Rank1）
+  - `base/upgrade`（拠点拡張, Rank1）
+  - `base/training`（訓練所, Rank2）
+  - `base/shop`（装備商店, Rank2）
+  - `shop`（特別商店, Rank1）
 
-### Formation（編成/遠征）
-- `formation/index` → `formation/preparation`（待機パーティを選択）
-- `formation/index` → `formation/playback`（遠征中パーティを選択）
-- `formation/index` → `formation/result`（履歴の完了分を選択）
-- `formation/index` → `formation/playback`（履歴の進行中分を選択）
+### 遠征（`(tabs)/formation`）
+- `formation/index` → `formation/preparation`（待機パーティ選択時）
+- `formation/index` → `formation/playback`（遠征中パーティ選択時）
+- `formation/index` → `formation/result`（履歴の完了分を選択時）
+- `formation/index` → `formation/party-info`（パーティ詳細）
 - `formation/preparation` → `formation/edit`（メンバー編集）
-- `formation/preparation` → `formation`（出撃完了後に戻る）
-- `formation/playback` → `formation/battle-log`（戦闘詳細ログ）
-- `formation/playback` → `formation`（戻る）
-- `formation/result` → `formation`（メニューに戻る）
+- `formation/preparation` → `formation/equipment-list` → `formation/equipment`（装備変更）
+- `formation/preparation` → 出撃後 `formation/index` へ戻る
+- `formation/playback` → `formation/battle-log`（戦闘詳細）/ `formation/level-up-log`（レベルアップ詳細）
+- `formation/playback` → 自動完了後 `formation/result`
+- `formation/result` → `formation/index`（メニューへ戻る）
+
+### ストーリー（`(tabs)/story`）
+- `story/index`（一覧）→ `story/reader`（本文）
+
+### 図鑑（`(tabs)/encyclopedia`）
+- 図鑑 → `encyclopedia-detail/[dungeonId]`（ダンジョン詳細）→ `encyclopedia-detail/[dungeonId]/[enemyId]`（敵詳細）
 
 ## 画面遷移の詳細条件（補足）
+
 ### Formation 一覧からの分岐
-- `formation/index` → `formation/preparation`
-  - 条件: パーティが `idle`（待機中）または未設定のとき。
-  - 空スロット選択時は新規パーティ作成後に遷移。
-- `formation/index` → `formation/playback`
-  - 条件: パーティが `expedition`（遠征中）のとき。
-  - 直近の履歴があれば `expeditionId` を付与して遷移。
-- `formation/index` → `formation/result`
-  - 条件: 遠征履歴が完了状態（ongoing ではない）ときの履歴行タップ。
+- → `preparation`: パーティが `idle`（待機中）/未設定のとき。空スロット選択時は新規作成後に遷移。
+- → `playback`: パーティが `expedition`（遠征中）のとき。`expeditionId` を付与して遷移。
+- → `result`: 遠征履歴が完了状態の行をタップしたとき。
 
 ### Preparation 画面の分岐
-- `formation/preparation` → `formation/edit`
-  - 条件: 「メンバーを変更する」ボタン押下。
-- `formation/preparation` → `formation`
-  - 条件: 出撃成功時に `router.replace('/formation')` で戻る。
-  - 出撃不可条件: ダンジョン未選択 or メンバー0人。
+- → `edit`: メンバー変更ボタン押下。
+- → `equipment-list` / `equipment`: 装備変更の導線。
+- 出撃成功時に `formation/index` へ戻る。出撃不可条件はダンジョン未選択またはメンバー0人。
+- 金のドングリ使用時は `usePurchaseStore` でチケット消費。
 
 ### Playback 画面の分岐
-- `formation/playback` → `formation/battle-log`
-  - 条件: イベントログの「詳細」タップ時。
-- `formation/playback` → `formation`
-  - 条件: 戻る操作（再生終了時も結果画面へは自動遷移しない）。
+- → `battle-log`: イベントログの戦闘詳細タップ時（`battleLogStore` 経由）。
+- → `level-up-log`: レベルアップ詳細タップ時（`levelUpLogStore` 経由）。
+- 規定時間経過で `useExpeditionFlow` が自動完了し、`result` へ遷移。
 
-### Result / Log / Battle-log の戻り
-- `formation/result` → `formation`（「メニューに戻る」）
-- `formation/log` → `formation`（戻る）
-- `formation/battle-log` → `formation/playback`（戻る）
-  - `canGoBack()` が false の場合は `formation/playback` に `replace`。
+## タブ別の画面詳細
 
-### List / Base
-- List: 一覧 → 詳細モーダル（閉じるで一覧へ）
-- Base: 単一画面（モーダルなし）
+### ストーリー（`(tabs)/story/`）
+- `index.tsx`: ストーリー一覧。`useStoryStore`（未読数/読了管理）。
+- `reader.tsx`: 本文表示。読了で報酬付与（特定ゴブリン等）。
 
-## タブ: List
-### ゴブリン一覧
-- ルート: `/(tabs)/index` → `app/(tabs)/index.tsx`
-- 役割: ゴブリン一覧表示と詳細モーダル。
-- 主な依存:
-  - `useGoblinService`（取得/削除）
-  - `GoblinStatCalculator`、`ExperienceSystem`（詳細表示）
-  - `factorImages` / `goblinImages`
-- UI概要:
-  - `FlatList` で一覧。
-  - タップで詳細モーダル（ステータス・因子・経験値）。
-  - 追放ボタンで削除。
-- 補足: 空状態表示あり。
+### ゴブリン一覧（`(tabs)/index.tsx`）
+- 役割: ゴブリン一覧と産まれたゴブリンの受け入れ/解雇。
+- 主な依存: `useGoblinStore` / `usePartyStore` / `useBaseStore` / `useTutorialStore`。
+- 詳細表示は `GoblinStatCalculator` / `ExperienceSystem`、画像は `goblinImages` / `factorImages`。
 
-## タブ: Base
-### 拠点管理
-- ルート: `/(tabs)/base` → `app/(tabs)/base.tsx`
-- 役割: 拠点ステータスと保留ゴブリンの受け入れ/追放。
-- 主な依存:
-  - `useBaseState`（拠点ランク/収容数）
-  - `usePendingGoblins`（保留ゴブリン）
-  - `useGoblinService`（受け入れ保存）
-  - `GoblinStatCalculator`（実効ステータス）
-- UI概要:
-  - 拠点ステータスカード。
-  - 保留ゴブリンの選択、追加・追放アクション。
+### 遠征（`(tabs)/formation/`）
+- `index.tsx`: パーティ一覧・遠征履歴の入口。依存: `usePartyStore` / `useGoblinStore` / `useBaseStore` / `useDungeonStore` / `useExpeditionFlow` / `usePurchaseStore` / `useTutorialStore`。
+- `preparation.tsx`: ダンジョン・帰還ポリシー・目標階層の選択と出撃。依存: 上記とほぼ同じ。
+- `edit.tsx`: メンバー入れ替え（6スロット、他パーティ所属は選択不可）。
+- `equipment-list.tsx` / `equipment.tsx`: 装備一覧と装備変更（`useEquipmentService`）。
+- `party-info.tsx`: PTスキル/ステータス比較/因子一覧。
+- `playback.tsx`: リプレイ再生（進行バー・HP・イベントログ）。依存: `useExpeditionFlow` / `useExpeditionStore` / `battleLogStore` / `levelUpLogStore`。
+- `result.tsx`: 結果サマリ（到達階層・経験値・ゴールド・宝箱・因子獲得・ダンジョン解放）。
+- `log.tsx`: 遠征ログ。
+- `battle-log.tsx`: 戦闘ログ（`battleLogStore` の内容を表示）。
+- `level-up-log.tsx`: レベルアップログ（`levelUpLogStore`）。
 
-## タブ: Formation
-### パーティ一覧/遠征履歴
-- ルート: `/(tabs)/formation` → `app/(tabs)/formation/index.tsx`
-- 役割: パーティ一覧、遠征履歴の入口。
-- 主な依存:
-  - `usePartyService`（作成/取得/更新）
-  - `useGoblinService`（メンバー表示）
-  - `useBaseState`（パーティ枠数）
-  - `useExpeditionFlow`（履歴/自動完了）
-- UI概要:
-  - パーティカードにメンバー6枠。
-  - 遠征中なら playback へ、待機なら preparation へ遷移。
-  - 履歴一覧から結果 or 再生へ遷移。
+### 拠点（`(tabs)/base.tsx` と `app/base/`）
+- `base.tsx`: 拠点トップ。ランク/収容数/パーティ数/施設メニュー。依存: `useBaseStore` / `useGoblinStore`。
+- `base/healing.tsx`: HP0ゴブリンの治療（Lv依存、亜種1.2倍）。依存: `useBaseStore` / `useGoblinStore`。
+- `base/upgrade.tsx`: ダンジョン制圧後にゴールドでランクアップ。依存: `useBaseStore`。
+- `base/training.tsx`: 純ゴブリンへのジョブ付与（変更不可）。依存: `useBaseStore` / `useDungeonStore` / `useGoblinStore` / `usePartyStore` / `useStoryStore`。
+- `base/shop.tsx`: 装備の購入/売却。依存: `useBaseStore`。
+- `app/shop.tsx`: 特別商店（課金アイテム）。
 
-### 遠征準備
-- ルート: `/(tabs)/formation/preparation` → `app/(tabs)/formation/preparation.tsx`
-- 役割: ダンジョン選択/帰還条件/出撃。
-- 主な依存:
-  - `usePartyService`（パーティ/設定保存）
-  - `useGoblinService`（メンバー表示）
-  - `useDungeonProgress`（解放ダンジョン）
-  - `useExpeditionFlow`（開始/推定時間）
-- UI概要:
-  - パーティ編集への導線。
-  - ダンジョン選択モーダル。
-  - 帰還条件モーダル。
-  - 推定探索時間表示。
+### ゴブリン個別（`app/goblin/`）
+- `detail.tsx`: ステータス・スキル・因子の詳細。依存: `useGoblinStore` / `usePartyStore` / `useBaseStore`。
+- `equipment.tsx`: 装備の装着/取り外し（カテゴリ/サブカテゴリフィルタ、重複ペナルティ可視化）。依存: `useEquipmentService` / `useGoblinStore`。
+- `avatar.tsx`: アバター設定。
 
-### パーティ編集
-- ルート: `/(tabs)/formation/edit` → `app/(tabs)/formation/edit.tsx`
-- 役割: パーティメンバーの入れ替え。
-- 主な依存:
-  - `usePartyService`（メンバー更新）
-  - `useGoblinService`（候補一覧）
-- UI概要:
-  - 6スロット。
-  - 他パーティ所属は選択不可表示。
+### 図鑑（`(tabs)/encyclopedia.tsx` と `app/encyclopedia-detail/`）
+- `encyclopedia.tsx`: ダンジョン/モンスター図鑑。依存: `useDungeonStore`、整形は `presentation/encyclopedia/encyclopediaData.ts`。
+- `encyclopedia-detail/[dungeonId].tsx`: ダンジョン詳細。
+- `encyclopedia-detail/[dungeonId]/[enemyId].tsx`: 敵詳細（ステータス/因子欄あり）。
 
-### 遠征再生
-- ルート: `/(tabs)/formation/playback` → `app/(tabs)/formation/playback.tsx`
-- 役割: リプレイの時間進行とログ表示。
-- 主な依存:
-  - `useExpeditionService`（遠征記録/完了更新）
-  - `usePartyService` / `useGoblinService`
-  - `usePendingGoblins` / `useBaseState`
-  - `CompleteExpeditionUseCase` / `GoblinBirthService`
-  - `battleLogStore`（詳細ログ連携）
-- UI概要:
-  - 進行バー/タイマー。
-  - メンバーHPの簡易表示。
-  - ログタップで戦闘詳細ログへ遷移。
-
-### 遠征ログ（簡易）
-- ルート: `/(tabs)/formation/log` → `app/(tabs)/formation/log.tsx`
-- 役割: サンプルの遠征ログ表示。
-- 主な依存:
-  - `usePartyService` / `useDungeonProgress`
-- UI概要:
-  - ダンジョン階層に応じた疑似ログを生成表示。
-- 補足: 実ログは未接続（ExpeditionRepository連携予定）。
-- 補足: 現在は `formation/index` からの導線は未接続（必要時に直接遷移で利用）。
-
-### 戦闘ログ
-- ルート: `/(tabs)/formation/battle-log` → `app/(tabs)/formation/battle-log.tsx`
-- 役割: battleLogStore に保存した戦闘ログ表示。
-- 主な依存:
-  - `battleLogStore`（取得/破棄）
-- UI概要:
-  - ターン開始情報と各アクションログ。
-  - 戻る操作でログを破棄。
-
-### 遠征結果
-- ルート: `/(tabs)/formation/result` → `app/(tabs)/formation/result.tsx`
-- 役割: 遠征結果のサマリ表示。
-- 主な依存:
-  - `useExpeditionService`（遠征記録）
-  - `usePartyService` / `useGoblinService`
-  - `useDungeonProgress`（踏破/解放更新）
-  - `shared/data`（エリア解放）
-- UI概要:
-  - メンバーHP/生死。
-  - 経験値・ゴールド。
-  - 次エリア解放メッセージ。
-
-## メモ
-- 画面の主実装は `app/` 直下です。`src/presentation/components/` には `GoblinCard.tsx` があります。
-- 画面側のロジックは `presentation/hooks` に分散しています。
+### 設定（`(tabs)/settings.tsx`）
+- デバッグ設定など。依存: `useDebugSettingsStore`。セーブデータの入出力は `useSaveDataBackup`。
 
 ## 主要イベントとデータ更新対応表（概要）
+
 ### ゴブリン関連
-- 受け入れ: `base.tsx` で `saveGoblin()` 実行後、`removePendingGoblin()`。
-- 追放: `index.tsx` の詳細モーダルから `deleteGoblin()`。
+- 受け入れ: `index.tsx` で `saveGoblin()` 実行後 `removePendingGoblin()`。
+- 解雇: `index.tsx` / `goblin/detail.tsx` から削除。
 
 ### パーティ関連
-- 新規作成: `formation/index.tsx` の空スロット選択で `createParty()`。
-- メンバー更新: `formation/edit.tsx` で `updateMembers()`。
+- 新規作成: `formation/index.tsx` の空スロット選択で作成。
+- メンバー更新: `formation/edit.tsx` で更新。
+- 設定変更（ダンジョン/帰還ポリシー/目標階層）: `formation/preparation.tsx`。
 
 ### 遠征関連（開始/進行/完了）
-- 出撃開始: `formation/preparation.tsx` で `startExpedition()`。
-- 進行/再生: `formation/playback.tsx` で `replay` を読み込み、イベントログとHPを更新。
-- 遠征完了:
-  - `CompleteExpeditionUseCase.execute()` でパーティ/ゴブリン更新。
-  - `completeExpeditionRecord()` で遠征記録を完了状態に更新。
-- クリア報酬（仮の流れ）:
-  - `formation/playback.tsx` の `addPendingGoblinOnClear()` が条件一致時に保留ゴブリンを追加。
+- 出撃開始: `formation/preparation.tsx` → `useExpeditionFlow.startExpedition()`（内部で `StartExpeditionUseCase`）。
+- 進行/再生: `formation/playback.tsx` が `ExpeditionReplay` を読み込み、イベントログとHPを更新。
+- 完了: `useExpeditionFlow` が `returnTime` 到達時に自動完了し、`CompleteExpeditionUseCase.execute()` で経験値・因子・装備・制圧を反映。
+- 新ゴブリン誕生: 完全制圧時に `GoblinBirthService.createNewGoblin()` で保留ゴブリンを追加。
 
 ### ダンジョン進行
-- 踏破更新: `formation/result.tsx` で `markDungeonCleared()`。
-- 解放メッセージ: `shared/data` の `unlockNext` を参照して表示。
+- 踏破/制圧更新: 遠征完了処理（`useExpeditionFlow` / `CompleteExpeditionUseCase`）で `useDungeonStore` を更新。
+- 解放: `unlockNext` および拠点ランクアップに応じて新ダンジョンを解放。
 
 ## 遠征の状態遷移（簡易図）
 ```
 idle
   └─(startExpedition)→ expedition
-        ├─(playback完了/completeExpedition)→ completed
-        └─(緊急帰還/途中帰還)→ completed
+        ├─(returnTime到達/自動完了)→ completed
+        └─(帰還ポリシー/全滅)→ completed
 ```
 
-### 状態の主な更新箇所
-- 開始: `formation/preparation.tsx` の `startExpedition()` で `expedition` へ。
-- 完了: `formation/playback.tsx` の `completeExpeditionUseCase.execute()` と
-  `completeExpeditionRecord()` で `completed` へ。
-
-### 表示上の分岐
-- `formation/index.tsx`
-  - `status === 'expedition'` のパーティは再生へ遷移。
-  - それ以外は準備画面へ遷移。
+### 表示上の分岐（`formation/index.tsx`）
+- `status === 'expedition'` のパーティ → 再生（playback）へ。
+- それ以外 → 準備（preparation）へ。
+- 完了済み履歴 → 結果（result）へ。

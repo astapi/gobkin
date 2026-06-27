@@ -348,4 +348,4 @@ interface BaseDefense {
 
 - [dungen_idea.md](./dungen_idea.md): 遠征先のアイデアとランクアップ候補
 - [project_structure.md](./project_structure.md): プロジェクト構成
-- [implementation_guide.md](./implementation_guide.md): 実装ガイド
+- [game_design_overview.md](./game_design_overview.md): ゲーム仕様総合ドキュメント

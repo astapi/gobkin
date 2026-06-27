@@ -1,177 +1,107 @@
-# SQLite移行設計書
+# SQLite データ永続化設計書
 
 ## 関連ドキュメント
 
 | ドキュメント | 内容 |
 |-------------|------|
-| **[implementation_guide.md](./implementation_guide.md)** | 実装順序ガイド（推奨） |
-| [migration_tasks.md](./migration_tasks.md) | 移行タスク一覧・UI実装詳細 |
 | [project_structure.md](./project_structure.md) | ディレクトリ構成・責務一覧 |
 | [screen_reference.md](./screen_reference.md) | 画面リファレンス |
+| [game_design_overview.md](./game_design_overview.md) | ゲーム仕様総合ドキュメント |
 
 ## 概要
 
-React Native版（goblin_native）では、Web版（goblin_web）で使用していたFirestoreをSQLiteに置き換えます。
-これにより、オフライン優先のローカルデータ永続化を実現します。
+goblin_native はローカルデータ永続化に **SQLite（expo-sqlite）** を採用しています。オフライン優先で動作し、Firebase は認証（Firebase Auth）と将来のクラウド同期向けに設定のみ残しています。
 
-> **注意**: Firestoreは将来的な機能（マルチプレイヤー、クラウド同期など）で使用予定のため、SDKの設定は残しておきます。
+- スキーマ定義: [`src/infrastructure/database/schema.ts`](/Users/astapi/projects/goblinKingdom/goblin_native/src/infrastructure/database/schema.ts)
+- 初期化・マイグレーション: [`src/infrastructure/database/index.ts`](/Users/astapi/projects/goblinKingdom/goblin_native/src/infrastructure/database/index.ts)
+- マイグレーション: `src/infrastructure/database/migrations/v1.ts` 〜 `v16.ts`
+- リポジトリ実装: `src/infrastructure/repositories/SQLite*.ts`
 
-## Web版（Firestore）のデータ構造
-
-### コレクション構成
-
-```
-users/
-├── {userId}/
-│   ├── baseState: { capacity, rank }           // ユーザードキュメント内フィールド
-│   ├── dungeonProgress: { [id]: {...} }        // ユーザードキュメント内フィールド
-│   ├── goblins/                                // サブコレクション
-│   │   └── {goblinId}/ → Goblin
-│   ├── parties/                                // サブコレクション
-│   │   └── {partyId}/ → Party
-│   ├── expeditions/                            // サブコレクション
-│   │   └── {expeditionId}/ → ExpeditionRecord
-│   └── pendingGoblins/                         // サブコレクション
-│       └── {goblinId}/ → Goblin
-```
-
-### エンティティ定義
-
-#### Goblin
-```typescript
-type Goblin = {
-  id: number
-  name: string
-  race: string
-  level: number
-  experience: number
-  avatar: string
-  stats: GoblinStats      // { hp, atk, def, attackCount, accuracy, evasion }
-  effectiveStats?: GoblinStats
-  factors?: string[]
-  variantFactorId?: string
-  individualValue?: number
-}
-```
-
-#### Party
-```typescript
-type Party = {
-  id: number
-  name: string
-  memberIds: number[]
-  status?: "idle" | "expedition"
-  dungeonId?: string
-  targetFloor?: number | null
-  returnPolicy?: string
-}
-```
-
-#### ExpeditionRecord
-```typescript
-type ExpeditionRecord = {
-  id: string
-  userId: string
-  partyId: number
-  partyName: string
-  dungeonId: string
-  dungeonName: string
-  startTime: Date
-  returnTime: Date
-  status: 'ongoing' | 'completed' | 'failed'
-  returnPolicy: string
-  replay?: ExpeditionReplay  // 大きなJSONオブジェクト
-  createdAt: Date
-  updatedAt: Date
-}
-```
-
-#### BaseState
-```typescript
-type BaseState = {
-  capacity: number
-  rank: number
-}
-```
-
-#### DungeonProgress
-```typescript
-type DungeonProgressState = Record<string, {
-  unlocked: boolean
-  cleared: boolean
-  unlockNotified: boolean  // アンロック通知済みフラグ
-}>
-```
+> **現行スキーマバージョン: 16**（`CURRENT_SCHEMA_VERSION = 16`）。新規インストールは `schema.ts` で最新形を作成し、既存DBは差分マイグレーションで追従します。
 
 ---
 
-## SQLiteスキーマ設計
+## テーブル一覧
 
-### テーブル定義
+| テーブル | 主キー | 役割 | 定義元 |
+|---------|--------|------|--------|
+| `goblins` | `id` | 拠点所属ゴブリン | schema.ts |
+| `pending_goblins` | `id` | 産まれた（受け入れ待ち）ゴブリン | schema.ts |
+| `parties` | `id` | パーティ編成・遠征設定 | schema.ts |
+| `expeditions` | `id`(TEXT) | 遠征記録（メタ/リプレイ） | schema.ts + v9 |
+| `base_state` | `id`(=1) | 拠点状態（シングルトン行） | schema.ts |
+| `dungeon_progress` | `dungeon_id` | ダンジョン解放/踏破/Tier進捗 | schema.ts |
+| `equipment` | `id`(TEXT) | 装備インスタンス | schema.ts |
+| `tickets` | `ticket_type` | 課金/特殊チケット在庫 | v11 |
+| `story_progress` | `story_id` | ストーリー解放/既読 | v12 |
+| `app_metadata` | `key` | スキーマVer・チュートリアル進捗など | schema.ts |
 
-#### 1. goblins テーブル
+> チュートリアル進捗は専用テーブルではなく `app_metadata`（`key = 'tutorial_step'`）に保存されます（`SQLiteTutorialStateRepository`）。
+
+---
+
+## スキーマ詳細
+
+`CREATE TABLE IF NOT EXISTS` を前提に、現行カラムを記載します（実体は `schema.ts` 参照）。
+
+### 1. goblins / pending_goblins
+
+両テーブルはほぼ同形（`pending_goblins` は `updated_at` を持たない）。
+
 ```sql
-CREATE TABLE goblins (
+CREATE TABLE IF NOT EXISTS goblins (
   id INTEGER PRIMARY KEY,
   name TEXT NOT NULL,
   race TEXT NOT NULL,
+  race_id TEXT,                                   -- 種族ID（goblin / slime / wolf ... 亜種判定）
+  job_id TEXT,                                    -- ジョブ（guard / mage ...）
   level INTEGER NOT NULL DEFAULT 1,
   experience INTEGER NOT NULL DEFAULT 0,
   avatar TEXT NOT NULL,
-  -- stats（正規化せずJSON格納）
-  stats_json TEXT NOT NULL,
-  -- オプショナルフィールド
-  effective_stats_json TEXT,
-  factors_json TEXT,           -- string[] をJSON格納
-  variant_factor_id TEXT,
-  individual_value INTEGER DEFAULT 1,
-  -- メタデータ
+  stats_json TEXT NOT NULL,                       -- 基礎ステータス
+  current_hp INTEGER,                             -- 負傷管理（現在HP）
+  effective_stats_json TEXT,                      -- 因子/装備/スキル適用後の実効ステータス
+  factors_json TEXT,                              -- string[]（獲得因子）
+  variant_factor_id TEXT,                         -- 亜種化の元因子
+  individual_value INTEGER DEFAULT 1,             -- 個体値（1〜64）
+  skills_json TEXT NOT NULL DEFAULT '[]',         -- CharacterSkill[]
+  battle_action_policy_json TEXT,                 -- 戦闘行動方針
   created_at TEXT NOT NULL DEFAULT (datetime('now')),
   updated_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
 
-CREATE INDEX idx_goblins_level ON goblins(level);
-CREATE INDEX idx_goblins_race ON goblins(race);
+CREATE INDEX IF NOT EXISTS idx_goblins_level ON goblins(level);
+CREATE INDEX IF NOT EXISTS idx_goblins_race  ON goblins(race);
 ```
 
-#### 2. pending_goblins テーブル
-```sql
-CREATE TABLE pending_goblins (
-  id INTEGER PRIMARY KEY,
-  name TEXT NOT NULL,
-  race TEXT NOT NULL,
-  level INTEGER NOT NULL DEFAULT 1,
-  experience INTEGER NOT NULL DEFAULT 0,
-  avatar TEXT NOT NULL,
-  stats_json TEXT NOT NULL,
-  effective_stats_json TEXT,
-  factors_json TEXT,
-  variant_factor_id TEXT,
-  individual_value INTEGER DEFAULT 1,
-  created_at TEXT NOT NULL DEFAULT (datetime('now'))
-);
-```
+初期データとして founder（始祖）ゴブリンを `INSERT OR IGNORE` で投入します。
 
-#### 3. parties テーブル
+### 2. parties
+
 ```sql
-CREATE TABLE parties (
+CREATE TABLE IF NOT EXISTS parties (
   id INTEGER PRIMARY KEY,
   name TEXT NOT NULL,
-  member_ids_json TEXT NOT NULL,  -- number[] をJSON格納
-  status TEXT DEFAULT 'idle',
+  member_ids_json TEXT NOT NULL,                  -- number[]
+  status TEXT DEFAULT 'idle',                     -- 'idle' | 'expedition'
   dungeon_id TEXT,
+  dungeon_tier INTEGER NOT NULL DEFAULT 0,        -- 選択中Tier（0〜5）
   target_floor INTEGER,
-  return_policy TEXT,
+  return_policy TEXT,                             -- never / if_any_ko / if_two_ko / last_one
+  gold_multiplier  REAL NOT NULL DEFAULT 1.0,     -- パーティ報酬倍率
+  rare_multiplier  REAL NOT NULL DEFAULT 1.0,
+  title_multiplier REAL NOT NULL DEFAULT 1.0,
   created_at TEXT NOT NULL DEFAULT (datetime('now')),
   updated_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
 
-CREATE INDEX idx_parties_status ON parties(status);
+CREATE INDEX IF NOT EXISTS idx_parties_status ON parties(status);
 ```
 
-#### 4. expeditions テーブル
+### 3. expeditions
+
 ```sql
-CREATE TABLE expeditions (
+CREATE TABLE IF NOT EXISTS expeditions (
   id TEXT PRIMARY KEY,
   party_id INTEGER NOT NULL,
   party_name TEXT NOT NULL,
@@ -179,365 +109,193 @@ CREATE TABLE expeditions (
   dungeon_name TEXT NOT NULL,
   start_time TEXT NOT NULL,
   return_time TEXT,
-  status TEXT NOT NULL DEFAULT 'ongoing',
+  status TEXT NOT NULL DEFAULT 'ongoing',         -- ongoing / completed / failed
   return_policy TEXT NOT NULL,
-  replay_json TEXT,              -- ExpeditionReplay をJSON格納
+  replay_json TEXT,                               -- ExpeditionReplay（再計算結果）
+  expedition_meta_json TEXT,                      -- ExpeditionMeta（遅延計算用 seed 等, v9 で追加）
   created_at TEXT NOT NULL DEFAULT (datetime('now')),
   updated_at TEXT NOT NULL DEFAULT (datetime('now')),
   FOREIGN KEY (party_id) REFERENCES parties(id)
 );
 
-CREATE INDEX idx_expeditions_party_id ON expeditions(party_id);
-CREATE INDEX idx_expeditions_status ON expeditions(status);
-CREATE INDEX idx_expeditions_created_at ON expeditions(created_at);
+CREATE INDEX IF NOT EXISTS idx_expeditions_party_id   ON expeditions(party_id);
+CREATE INDEX IF NOT EXISTS idx_expeditions_status     ON expeditions(status);
+CREATE INDEX IF NOT EXISTS idx_expeditions_created_at ON expeditions(created_at);
 ```
 
-#### 5. base_state テーブル
+> `expedition_meta_json` に seed と遠征リクエストを保持し、`LazyExpeditionComputer` が後から `replay` を確定計算します（決定論シミュレーション）。
+
+### 4. base_state（シングルトン）
+
 ```sql
-CREATE TABLE base_state (
-  id INTEGER PRIMARY KEY CHECK (id = 1),  -- シングルトン
-  capacity INTEGER NOT NULL DEFAULT 8,
+CREATE TABLE IF NOT EXISTS base_state (
+  id INTEGER PRIMARY KEY CHECK (id = 1),
+  capacity INTEGER NOT NULL DEFAULT 10,
   rank INTEGER NOT NULL DEFAULT 1,
+  captured_dungeons_json TEXT NOT NULL DEFAULT '[]',  -- 制圧済みダンジョンID[]
+  current_max_parties INTEGER NOT NULL DEFAULT 1,
+  current_max_goblins INTEGER NOT NULL DEFAULT 10,
+  current_iv_bonus INTEGER NOT NULL DEFAULT 0,        -- 個体値ボーナス
+  gold INTEGER NOT NULL DEFAULT 0,
+  next_goblin_id INTEGER NOT NULL DEFAULT 1,
   updated_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
 
--- 初期データ挿入
-INSERT OR IGNORE INTO base_state (id, capacity, rank) VALUES (1, 8, 1);
+-- 初期行（gold は 500 で開始）
+INSERT OR IGNORE INTO base_state (
+  id, capacity, rank, captured_dungeons_json,
+  current_max_parties, current_max_goblins, current_iv_bonus, gold
+) VALUES (1, 10, 1, '[]', 1, 10, 0, 500);
 ```
 
-#### 6. dungeon_progress テーブル
+### 5. dungeon_progress
+
 ```sql
-CREATE TABLE dungeon_progress (
+CREATE TABLE IF NOT EXISTS dungeon_progress (
   dungeon_id TEXT PRIMARY KEY,
-  unlocked INTEGER NOT NULL DEFAULT 0,        -- BOOLEAN
-  cleared INTEGER NOT NULL DEFAULT 0,         -- BOOLEAN
-  unlock_notified INTEGER NOT NULL DEFAULT 0, -- BOOLEAN（アンロック通知済みフラグ）
+  unlocked INTEGER NOT NULL DEFAULT 0,            -- BOOLEAN
+  cleared INTEGER NOT NULL DEFAULT 0,             -- BOOLEAN
+  unlock_notified INTEGER NOT NULL DEFAULT 0,     -- 解放通知済み
+  max_cleared_tier INTEGER NOT NULL DEFAULT 0,    -- 制圧済み最高Tier（v8 で追加）
+  cleared_floors_json TEXT NOT NULL DEFAULT '{}', -- Tier別の到達フロア（v10 で追加）
   updated_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
 ```
 
-#### 7. app_metadata テーブル（マイグレーション管理用）
+### 6. equipment
+
 ```sql
-CREATE TABLE app_metadata (
+CREATE TABLE IF NOT EXISTS equipment (
+  id TEXT PRIMARY KEY,
+  template_id TEXT NOT NULL,                      -- equipmentPool.json のテンプレID
+  slot_index INTEGER NOT NULL DEFAULT -1,         -- 装着スロット（-1 = 在庫）
+  goblin_id INTEGER,                              -- 装着先（NULL = 在庫）
+  title_id TEXT,                                  -- 称号ID
+  title_name TEXT,
+  created_at TEXT NOT NULL DEFAULT (datetime('now')),
+  FOREIGN KEY (goblin_id) REFERENCES goblins(id) ON DELETE SET NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_equipment_goblin_id ON equipment(goblin_id);
+```
+
+### 7. tickets（v11）
+
+```sql
+CREATE TABLE IF NOT EXISTS tickets (
+  ticket_type TEXT PRIMARY KEY,                   -- 例: golden_acorn
+  quantity INTEGER NOT NULL DEFAULT 0
+);
+```
+
+### 8. story_progress（v12）
+
+```sql
+CREATE TABLE IF NOT EXISTS story_progress (
+  story_id TEXT PRIMARY KEY,
+  unlocked INTEGER NOT NULL DEFAULT 0,
+  read INTEGER NOT NULL DEFAULT 0,
+  updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+```
+
+### 9. app_metadata
+
+```sql
+CREATE TABLE IF NOT EXISTS app_metadata (
   key TEXT PRIMARY KEY,
   value TEXT NOT NULL
 );
 
--- スキーマバージョン管理
 INSERT OR IGNORE INTO app_metadata (key, value) VALUES ('schema_version', '1');
 ```
 
+用途: `schema_version`（マイグレーション管理）、`tutorial_step`（チュートリアル進捗）など。
+
 ---
 
-## リポジトリ実装設計
+## マイグレーション
 
-### ファイル構成
+`src/infrastructure/database/index.ts` がスキーマバージョンを比較し、`migrations/v{n}.ts` を順次適用します。各マイグレーションは「既に列がある場合は何もしない」など冪等性に配慮しています。
 
-```
-src/infrastructure/
-├── database/
-│   ├── index.ts                    # DB初期化・マイグレーション
-│   ├── schema.ts                   # スキーマ定義
-│   └── migrations/
-│       └── v1.ts                   # 初期スキーマ
-└── repositories/
-    ├── SQLiteGoblinRepository.ts
-    ├── SQLitePartyRepository.ts
-    ├── SQLiteExpeditionRepository.ts
-    ├── SQLitePendingGoblinRepository.ts
-    ├── SQLiteBaseStateRepository.ts
-    └── SQLiteDungeonProgressRepository.ts
-```
+主な変更履歴（抜粋）:
 
-### 依存パッケージ
+| バージョン | 主な内容 |
+|-----------|---------|
+| v1 | 初期スキーマ |
+| v8 | `dungeon_progress.max_cleared_tier` 追加 |
+| v9 | `expeditions.expedition_meta_json` 追加（遅延計算メタ） |
+| v10 | `dungeon_progress.cleared_floors_json` 追加 |
+| v11 | `tickets` テーブル追加 |
+| v12 | `story_progress` テーブル追加 |
+| v13 | goblins/pending_goblins に `job_id` / `skills_json` 追加 |
+| v14 | `battle_action_policy_json` 追加 |
+| v15 | テーブル再構築（temp テーブル経由のスキーマ変更） |
+| v16 | goblins/pending_goblins に `current_hp` / `race_id` 追加 |
 
-```bash
-npx expo install expo-sqlite
-```
+> 正確な内容は各 `migrations/v{n}.ts` を参照してください。`parties` の報酬倍率カラムや `dungeon_tier` なども段階的に追加されています。
 
-### データベース初期化
+---
+
+## リポジトリ実装パターン
+
+全 SQLite リポジトリは共通の設計原則に従います。
+
+1. **シングルトン**: `getInstance()` で単一インスタンスを取得。
+2. **内部キャッシュ**: 起動時 `initialize()` で DB から全件ロードし `Map` に保持。
+3. **同期的読み取り**: 画面からはキャッシュを同期 API で参照（`getGoblins()` 等）。
+4. **非同期書き込み**: 書き込みはキャッシュを即時更新し、DB へは非同期反映。
+5. **変更通知**: `setOnDataChange()` のコールバックで store / 画面へ再描画を通知。
+
+### データベース初期化（`database/index.ts`）
 
 ```typescript
-// src/infrastructure/database/index.ts
-import * as SQLite from 'expo-sqlite'
-
 const DB_NAME = 'goblin_kingdom.db'
-const CURRENT_SCHEMA_VERSION = 2
+export const CURRENT_SCHEMA_VERSION = 16
 
 let db: SQLite.SQLiteDatabase | null = null
 let initializationPromise: Promise<SQLite.SQLiteDatabase> | null = null
 
-/**
- * データベース接続を取得
- * シングルトンパターンで同一インスタンスを返す
- */
 export const getDatabase = async (): Promise<SQLite.SQLiteDatabase> => {
   if (db) return db
-
-  // 初期化中の場合は同じPromiseを返す（重複初期化防止）
-  if (initializationPromise) {
-    return initializationPromise
-  }
-
+  if (initializationPromise) return initializationPromise   // 重複初期化防止
   initializationPromise = initializeDatabase()
   return initializationPromise
 }
-
-const initializeDatabase = async (): Promise<SQLite.SQLiteDatabase> => {
-  const database = await SQLite.openDatabaseAsync(DB_NAME)
-  await runMigrations(database)
-  db = database
-  return database
-}
-
-const runMigrations = async (database: SQLite.SQLiteDatabase) => {
-  // マイグレーション実行ロジック
-}
+// initializeDatabase 内で openDatabaseAsync → スキーマ作成 → runMigrations を実行
 ```
 
-### アプリ起動時の初期化
+### アプリ起動時の初期化（`app/_layout.tsx`）
 
-```typescript
-// app/_layout.tsx
-import { getDatabase } from '@/infrastructure/database'
-import { SQLiteGoblinRepository } from '@/infrastructure/repositories/SQLiteGoblinRepository'
-import { SQLitePartyRepository } from '@/infrastructure/repositories/SQLitePartyRepository'
-// ... 他のリポジトリ
+1. `getDatabase()` で DB を開きスキーマ生成＋マイグレーション。
+2. 各 SQLite リポジトリの `initialize()` を並列実行しキャッシュを温める。
+3. 各 Zustand ストアがリポジトリからメモリ状態を構築。
+4. 完了までローディング／スプラッシュ表示。
 
-export default function RootLayout() {
-  const [isInitialized, setIsInitialized] = useState(false)
+### 主なリポジトリ
 
-  useEffect(() => {
-    const initializeApp = async () => {
-      try {
-        // 第1段階: DBインスタンスの初期化（マイグレーション実行）
-        await getDatabase()
-
-        // 第2段階: 全リポジトリの初期化（キャッシュの初期化）
-        await Promise.all([
-          SQLiteGoblinRepository.getInstance().initialize(),
-          SQLitePartyRepository.getInstance().initialize(),
-          // ... 他のリポジトリ
-        ])
-
-        setIsInitialized(true)
-      } catch (error) {
-        console.error('Failed to initialize app:', error)
-      }
-    }
-    initializeApp()
-  }, [])
-
-  if (!isInitialized) {
-    return <LoadingScreen />
-  }
-
-  return <MainContent />
-}
-```
-
-### リポジトリ実装例
-
-全てのリポジトリは以下の設計原則に従います：
-
-1. **シングルトンパターン**: `getInstance()` メソッドでインスタンスを取得
-2. **内部キャッシュ**: `initialize()` でDBからデータをロードし、キャッシュに保持
-3. **同期的インターフェース**: キャッシュを使用して同期的にデータを取得
-4. **非同期保存**: 書き込みは非同期でDBに保存し、即座にキャッシュを更新
-
-```typescript
-// src/infrastructure/repositories/SQLiteGoblinRepository.ts
-import type { Goblin } from '@/shared/types'
-import type { IGoblinRepository } from '@/core/repositories/IGoblinRepository'
-import { getDatabase } from '../database'
-
-export class SQLiteGoblinRepository implements IGoblinRepository {
-  private static instance: SQLiteGoblinRepository | null = null
-  private cache: Map<number, Goblin> = new Map()
-  private initialized = false
-  private onDataChangeCallback: (() => void) | null = null
-
-  /**
-   * シングルトンインスタンスを取得
-   */
-  static getInstance(): SQLiteGoblinRepository {
-    if (!SQLiteGoblinRepository.instance) {
-      SQLiteGoblinRepository.instance = new SQLiteGoblinRepository()
-    }
-    return SQLiteGoblinRepository.instance
-  }
-
-  /**
-   * リポジトリを初期化し、DBからデータをロード
-   * アプリ起動時に1回だけ実行される
-   */
-  async initialize(): Promise<void> {
-    if (this.initialized) return
-
-    const db = await getDatabase()
-    const rows = await db.getAllAsync<GoblinRow>('SELECT * FROM goblins ORDER BY id')
-
-    this.cache.clear()
-    for (const row of rows) {
-      const goblin = this.rowToGoblin(row)
-      this.cache.set(goblin.id, goblin)
-    }
-
-    this.initialized = true
-  }
-
-  /**
-   * データ変更時のコールバックを設定
-   */
-  setOnDataChange(callback: () => void): void {
-    this.onDataChangeCallback = callback
-  }
-
-  /**
-   * 全ゴブリンを取得（同期的）
-   */
-  getGoblins(): Goblin[] {
-    return Array.from(this.cache.values())
-  }
-
-  /**
-   * 指定IDのゴブリンを取得（同期的）
-   */
-  getGoblin(id: number): Goblin | null {
-    return this.cache.get(id) ?? null
-  }
-
-  /**
-   * ゴブリンを保存
-   * キャッシュを即座に更新し、DBへは非同期で保存
-   */
-  saveGoblin(goblin: Goblin): void {
-    this.cache.set(goblin.id, goblin)
-
-    this.saveAsync(goblin).catch(err => {
-      console.error('[SQLiteGoblinRepository] Failed to save:', err)
-    })
-
-    this.notifyDataChange()
-  }
-
-  /**
-   * ゴブリンを削除
-   */
-  deleteGoblin(id: number): void {
-    this.cache.delete(id)
-
-    this.deleteAsync(id).catch(err => {
-      console.error('[SQLiteGoblinRepository] Failed to delete:', err)
-    })
-
-    this.notifyDataChange()
-  }
-
-  // --- Private methods ---
-
-  private async saveAsync(goblin: Goblin): Promise<void> {
-    const db = await getDatabase()
-    await db.runAsync(
-      `INSERT OR REPLACE INTO goblins
-       (id, name, race, level, experience, avatar, stats_json,
-        effective_stats_json, factors_json, variant_factor_id,
-        individual_value, updated_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))`,
-      [
-        goblin.id,
-        goblin.name,
-        goblin.race,
-        goblin.level,
-        goblin.experience,
-        goblin.avatar,
-        JSON.stringify(goblin.stats),
-        goblin.effectiveStats ? JSON.stringify(goblin.effectiveStats) : null,
-        goblin.factors ? JSON.stringify(goblin.factors) : null,
-        goblin.variantFactorId ?? null,
-        goblin.individualValue ?? 1,
-      ]
-    )
-  }
-
-  private async deleteAsync(id: number): Promise<void> {
-    const db = await getDatabase()
-    await db.runAsync('DELETE FROM goblins WHERE id = ?', [id])
-  }
-
-  private rowToGoblin(row: GoblinRow): Goblin {
-    return {
-      id: row.id,
-      name: row.name,
-      race: row.race,
-      level: row.level,
-      experience: row.experience,
-      avatar: row.avatar,
-      stats: JSON.parse(row.stats_json),
-      effectiveStats: row.effective_stats_json
-        ? JSON.parse(row.effective_stats_json)
-        : undefined,
-      factors: row.factors_json ? JSON.parse(row.factors_json) : undefined,
-      variantFactorId: row.variant_factor_id ?? undefined,
-      individualValue: row.individual_value ?? undefined,
-    }
-  }
-
-  private notifyDataChange(): void {
-    if (this.onDataChangeCallback) {
-      this.onDataChangeCallback()
-    }
-  }
-}
-
-interface GoblinRow {
-  id: number
-  name: string
-  race: string
-  level: number
-  experience: number
-  avatar: string
-  stats_json: string
-  effective_stats_json: string | null
-  factors_json: string | null
-  variant_factor_id: string | null
-  individual_value: number | null
-  created_at: string
-  updated_at: string
-}
-```
+`SQLiteGoblinRepository` / `SQLitePartyRepository` / `SQLiteBaseStateRepository` /
+`SQLiteExpeditionRepository` / `SQLitePendingGoblinRepository` / `SQLiteDungeonProgressRepository` /
+`SQLiteEquipmentRepository` / `SQLiteStoryProgressRepository` / `SQLiteTutorialStateRepository` / `SQLiteTicketRepository`
 
 ---
 
-## Firestore から SQLite への移行パス
+## セーブデータの入出力
 
-### 新規インストール
-SQLiteを直接使用。Firestoreからのデータ移行は不要。
+`src/infrastructure/backup/` がセーブデータのエクスポート／インポートを担います。
 
-### 既存Webユーザーのデータ移行（将来対応）
-1. Firebase Auth でログイン
-2. Firestore からデータをダウンロード
-3. SQLite にインポート
-4. ローカルデータとして継続使用
-
-```typescript
-// 将来実装予定: データインポート機能
-export const importFromFirestore = async (userId: string) => {
-  // 1. Firestoreからデータ取得
-  // 2. SQLiteに保存
-  // 3. インポート完了フラグを立てる
-}
-```
+- `SaveDataExporter.ts` / `SaveDataImporter.ts`: 各テーブルを集約した JSON の生成と取り込み。
+- `BackupFileService.ts`: ファイル入出力。
+- `BackupSignature.ts`: 改ざん検出用の署名。
+- 画面側は `useSaveDataBackup`（hook）から利用（設定画面）。
 
 ---
 
 ## 設計上の考慮事項
 
-### JSON格納を選択した理由
-
-1. **stats, factors**: ネストしたオブジェクトや配列であり、正規化するとJOINが複雑化
-2. **replay_json**: 大きなイベントログであり、そのまま格納が効率的
-3. **SQLiteのJSON関数**: SQLite 3.38.0以降でJSON関数がサポートされており、必要に応じてクエリ可能
+### JSON 格納を選択した理由
+- `stats` / `factors` / `skills` / `replay` などネストした構造や配列は正規化すると JOIN が複雑化するため、JSON 文字列で格納。
+- SQLite 3.38+ の JSON 関数で必要に応じてクエリ可能。
 
 ### トレードオフ
 
@@ -548,56 +306,13 @@ export const importFromFirestore = async (userId: string) => {
 | スキーマ変更 | 容易 | 困難 |
 | データ整合性 | アプリ依存 | DB保証 |
 
-現時点ではJSON格納で実装し、パフォーマンス問題が発生した場合に正規化を検討します。
+現状は JSON 格納で運用し、パフォーマンス問題が出た場合に部分的な正規化を検討します。
 
-### 将来のFirestore連携
-
-```
-[ローカルSQLite] ←→ [同期レイヤー] ←→ [Firestore]
-```
-
-将来的にクラウド同期機能を追加する場合:
-1. 同期レイヤーを実装
-2. SQLiteを「ローカルキャッシュ」として使用
-3. Firestoreを「マスターデータ」として使用
-4. オフライン時はSQLiteから読み取り、オンライン復帰時に同期
-
----
-
-## 実装優先順位
-
-1. **Phase 1**: データベース基盤
-   - expo-sqlite インストール
-   - スキーマ定義・マイグレーション
-   - DB初期化ロジック
-
-2. **Phase 2**: 基本リポジトリ
-   - SQLiteGoblinRepository
-   - SQLitePartyRepository
-   - SQLiteBaseStateRepository
-   - SQLiteDungeonProgressRepository
-
-3. **Phase 3**: 遠征関連
-   - SQLiteExpeditionRepository
-   - SQLitePendingGoblinRepository
-
-4. **Phase 4**: コンテキスト統合
-   - 既存のhooks/contextをSQLiteリポジトリに接続
-   - AsyncStorage実装の削除
-
----
-
-## 削除対象ファイル
-
-以下のAsyncStorage関連ファイルは不要となるため削除:
-
-- `src/infrastructure/repositories/AsyncStorageGoblinRepository.ts`
-- `src/infrastructure/repositories/AsyncStoragePartyRepository.ts`
-- `src/presentation/hooks/useDungeonProgress.ts`（AsyncStorage使用版）
+### 将来のクラウド同期
+Firebase は認証用途に加え、将来のクラウド同期を見据えて設定を残しています。同期を導入する場合は「ローカル SQLite ＝ キャッシュ」「クラウド ＝ マスター」「オフライン時はローカル読み取り、復帰時に同期」という構成を想定します。
 
 ---
 
 ## 参考資料
-
 - [Expo SQLite Documentation](https://docs.expo.dev/versions/latest/sdk/sqlite/)
 - [SQLite JSON Functions](https://www.sqlite.org/json1.html)

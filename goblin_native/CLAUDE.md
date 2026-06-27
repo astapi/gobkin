@@ -90,8 +90,7 @@ ios/                    Expo prebuild 済み iOS ネイティブプロジェク�
 
 - 画面仕様: [`docs/screen_reference.md`](/Users/astapi/projects/goblinKingdom/goblin_native/docs/screen_reference.md)
 - 全体構成: [`docs/project_structure.md`](/Users/astapi/projects/goblinKingdom/goblin_native/docs/project_structure.md)
-- 実装ガイド: [`docs/implementation_guide.md`](/Users/astapi/projects/goblinKingdom/goblin_native/docs/implementation_guide.md)
-- 残タスク: [`docs/remaining_tasks.md`](/Users/astapi/projects/goblinKingdom/goblin_native/docs/remaining_tasks.md)
+- ゲーム仕様総合: [`docs/game_design_overview.md`](/Users/astapi/projects/goblinKingdom/goblin_native/docs/game_design_overview.md)
 - SQLite 関連: [`docs/sqlite_migration.md`](/Users/astapi/projects/goblinKingdom/goblin_native/docs/sqlite_migration.md)
 
 ## 作業時の注意
