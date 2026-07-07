@@ -17,7 +17,7 @@ import {
 import { getDefaultSkillsForRace } from '@/shared/data/raceSkills'
 import { getFactor } from '@/shared/data/factors'
 import { getFactorName, getSkillLabel, getStatLabel } from '@/shared/i18n/entityLocalization'
-import { SQLiteEquipmentRepository } from '@/infrastructure/repositories/SQLiteEquipmentRepository'
+import { equipmentRepository } from '@/presentation/di/repositories'
 import { EquipmentService } from '@/core/services/EquipmentService'
 import type { CharacterSkill, Goblin, GoblinStats, Party } from '@/shared/types'
 
@@ -197,7 +197,7 @@ export default function PartyInfoScreen() {
         return
       }
 
-      const repository = SQLiteEquipmentRepository.getInstance()
+      const repository = equipmentRepository
       const entries = await Promise.all(
         partyMembers.map(async (goblin) => {
           const equippedItems = await repository.getByGoblinId(goblin.id)

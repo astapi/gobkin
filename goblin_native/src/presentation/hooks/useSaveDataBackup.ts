@@ -8,15 +8,13 @@ import {
   pickBackupJson,
   shareBackupJson,
   BackupSharingUnavailableError,
-} from '@/infrastructure/backup/BackupFileService'
-import { buildBackupDocument } from '@/infrastructure/backup/SaveDataExporter'
-import {
+  buildBackupDocument,
   BackupImportError,
   importBackup,
   type ImportErrorKind,
   type ImportResult,
-} from '@/infrastructure/backup/SaveDataImporter'
-import { CURRENT_SCHEMA_VERSION } from '@/infrastructure/database'
+} from '@/presentation/di/backup'
+import { CURRENT_SCHEMA_VERSION } from '@/presentation/di/database'
 import { useDebugSettingsStore } from '@/presentation/stores/useDebugSettingsStore'
 import { useReset } from '@/presentation/contexts/ResetContext'
 import { getCurrentLanguage, setAppLanguage } from '@/shared/i18n'

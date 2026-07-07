@@ -1,6 +1,6 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useState } from 'react'
 import type { EquipmentInstance } from '../../shared/types'
-import { SQLiteEquipmentRepository } from '../../infrastructure/repositories/SQLiteEquipmentRepository'
+import { equipmentRepository } from '../di/repositories'
 import { EquipmentService } from '../../core/services/EquipmentService'
 import type { Goblin } from '../../shared/types'
 import { useGoblinStore } from '../stores/useGoblinStore'
@@ -10,7 +10,7 @@ export const useEquipmentService = () => {
   const [equippedItems, setEquippedItems] = useState<EquipmentInstance[]>([])
   const [inventoryItems, setInventoryItems] = useState<EquipmentInstance[]>([])
 
-  const repository = useMemo(() => SQLiteEquipmentRepository.getInstance(), [])
+  const repository = equipmentRepository
   const saveGoblin = useGoblinStore((state) => state.saveGoblin)
 
   const refreshEquipment = useCallback(

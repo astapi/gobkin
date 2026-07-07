@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react'
-import { View, Text, TouchableOpacity, StyleSheet, FlatList, Modal, Alert, ScrollView } from 'react-native'
+import { View, Text, TouchableOpacity, StyleSheet, FlatList, Modal, Alert, ScrollView, ActivityIndicator } from 'react-native'
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
-import { useLocalSearchParams } from 'expo-router'
+import { router, useLocalSearchParams } from 'expo-router'
 import type {
   EquipmentInstance,
   EquipmentTemplate,
@@ -481,17 +481,36 @@ export default function EquipmentScreenPage() {
   const { equippedItems, inventoryItems, refreshEquipment, equipItem, unequipItem } =
     useEquipmentService()
   const [goblin, setGoblin] = useState<Goblin | null>(null)
+  const [isLoadingGoblin, setIsLoadingGoblin] = useState(true)
   const [selectedDetail, setSelectedDetail] = useState<EquipmentInstance | null>(null)
+  const isEquippingRef = useRef(false)
   const [selectedInventoryFilter, setSelectedInventoryFilter] = useState<InventoryFilter>(
     ALL_INVENTORY_FILTER,
   )
   const [isFilterSheetVisible, setIsFilterSheetVisible] = useState(false)
 
   useEffect(() => {
-    if (!goblinId) return
+    if (!goblinId) {
+      setGoblin(null)
+      setIsLoadingGoblin(false)
+      return
+    }
+    let active = true
+    setIsLoadingGoblin(true)
     void getGoblinById(parseInt(goblinId, 10))
-      .then(setGoblin)
-      .catch(() => setGoblin(null))
+      .then((fetched) => {
+        if (!active) return
+        setGoblin(fetched)
+        setIsLoadingGoblin(false)
+      })
+      .catch(() => {
+        if (!active) return
+        setGoblin(null)
+        setIsLoadingGoblin(false)
+      })
+    return () => {
+      active = false
+    }
   }, [goblinId, getGoblinById])
 
   const maxSlots = useMemo(
@@ -565,24 +584,31 @@ export default function EquipmentScreenPage() {
   const handleEquip = useCallback(
     async (equipment: EquipmentInstance) => {
       if (!goblin) return
-      const usedSlots = new Set(equippedItems.map(e => e.slotIndex))
-      let targetSlot = -1
-      for (let i = 0; i < maxSlots; i++) {
-        if (!usedSlots.has(i)) {
-          targetSlot = i
-          break
+      // 連打で同一スロットへ二重装備要求が飛ぶのを防ぐ
+      if (isEquippingRef.current) return
+      isEquippingRef.current = true
+      try {
+        const usedSlots = new Set(equippedItems.map(e => e.slotIndex))
+        let targetSlot = -1
+        for (let i = 0; i < maxSlots; i++) {
+          if (!usedSlots.has(i)) {
+            targetSlot = i
+            break
+          }
         }
-      }
-      if (targetSlot < 0) {
-        Alert.alert('空きスロットなし', '先に装備を外してください')
-        return
-      }
-      pendingScrollRestoreRef.current = true
-      const result = await equipItem(goblin, equipment, targetSlot)
-      if (!result.success) {
-        pendingScrollRestoreRef.current = false
-        Alert.alert('装備エラー', result.error ?? '装備できませんでした')
-        return
+        if (targetSlot < 0) {
+          Alert.alert('空きスロットなし', '先に装備を外してください')
+          return
+        }
+        pendingScrollRestoreRef.current = true
+        const result = await equipItem(goblin, equipment, targetSlot)
+        if (!result.success) {
+          pendingScrollRestoreRef.current = false
+          Alert.alert('装備エラー', result.error ?? '装備できませんでした')
+          return
+        }
+      } finally {
+        isEquippingRef.current = false
       }
     },
     [equippedItems, maxSlots, goblin, equipItem],
@@ -595,7 +621,29 @@ export default function EquipmentScreenPage() {
     setSelectedDetail(null)
   }, [goblin, unequipItem])
 
-  if (!goblin) return null
+  if (isLoadingGoblin) {
+    return (
+      <SafeAreaView style={styles.container} edges={['left', 'right', 'bottom']}>
+        <View style={styles.stateContainer}>
+          <ActivityIndicator size="large" color="#3B82F6" />
+          <Text style={styles.stateText}>読み込み中...</Text>
+        </View>
+      </SafeAreaView>
+    )
+  }
+
+  if (!goblin) {
+    return (
+      <SafeAreaView style={styles.container} edges={['left', 'right', 'bottom']}>
+        <View style={styles.stateContainer}>
+          <Text style={styles.stateText}>ゴブリンが見つかりません</Text>
+          <TouchableOpacity style={styles.stateBackButton} onPress={() => router.back()}>
+            <Text style={styles.stateBackButtonText}>戻る</Text>
+          </TouchableOpacity>
+        </View>
+      </SafeAreaView>
+    )
+  }
 
   return (
     <SafeAreaView style={styles.container} edges={['left', 'right', 'bottom']}>
@@ -796,6 +844,28 @@ const styles = StyleSheet.create({
     padding: 16,
     paddingBottom: 32,
     flexGrow: 1,
+  },
+  stateContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 24,
+    gap: 16,
+  },
+  stateText: {
+    fontSize: 14,
+    color: '#6B7280',
+  },
+  stateBackButton: {
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    backgroundColor: '#374151',
+    borderRadius: 8,
+  },
+  stateBackButtonText: {
+    color: '#FFFFFF',
+    fontWeight: '700',
+    fontSize: 14,
   },
   section: {
     backgroundColor: '#FFFFFF',

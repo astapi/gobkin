@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { getDatabase, resetDatabase } from '@/infrastructure/database'
-import { SQLiteDungeonProgressRepository } from '@/infrastructure/repositories/SQLiteDungeonProgressRepository'
-import { SQLiteBaseStateRepository } from '@/infrastructure/repositories/SQLiteBaseStateRepository'
+import { getDatabase, resetDatabase } from '@/presentation/di/database'
+import { dungeonProgressRepository, ensureBaseStateInitialized } from '@/presentation/di/repositories'
 import { areasData } from '@/shared/data'
 import { useTutorialStore } from '@/presentation/stores/useTutorialStore'
 import { useTutorialOverlayStore } from '@/presentation/stores/useTutorialOverlayStore'
@@ -10,10 +9,10 @@ async function ensureDefaults(): Promise<void> {
   await getDatabase()
 
   // 拠点状態がなければデフォルト値を作成
-  await SQLiteBaseStateRepository.getInstance().ensureInitialized()
+  await ensureBaseStateInitialized()
 
   // ダンジョンプログレス初期値設定
-  const dungeonProgressRepo = SQLiteDungeonProgressRepository.getInstance()
+  const dungeonProgressRepo = dungeonProgressRepository
   const storedProgress = await dungeonProgressRepo.getAll()
   for (let index = 0; index < areasData.length; index++) {
     const dungeon = areasData[index]

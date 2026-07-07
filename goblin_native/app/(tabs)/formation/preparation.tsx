@@ -99,9 +99,10 @@ export default function ExpeditionPreparationScreen() {
   const rank = useBaseStore(selectRank)
   const dungeons = useDungeonStore((state) => state.dungeons)
   const dungeonsLoading = useDungeonStore((state) => state.isLoading)
-  const { startExpedition, estimateExplorationTime } = useExpeditionFlow()
+  const { startExpedition, estimateExplorationTime, getPartyExpeditionTimeMultiplier, isProcessing } = useExpeditionFlow()
   const [retryCount, setRetryCount] = useState(0)
   const [party, setParty] = useState<Party | null>(null)
+  const [partyTimeMultiplier, setPartyTimeMultiplier] = useState(1)
 
   useEffect(() => {
     if (!partyId) {
@@ -230,10 +231,29 @@ export default function ExpeditionPreparationScreen() {
     return dungeons.find(d => d.id === selectedDungeonId)
   }, [dungeons, selectedDungeonId])
 
+  // 実際の出撃と同じパーティのスキル由来時間倍率を推定時間へ反映する
+  useEffect(() => {
+    if (!party) {
+      setPartyTimeMultiplier(1)
+      return
+    }
+    let active = true
+    void getPartyExpeditionTimeMultiplier(party)
+      .then((multiplier) => {
+        if (active) setPartyTimeMultiplier(multiplier)
+      })
+      .catch(() => {
+        if (active) setPartyTimeMultiplier(1)
+      })
+    return () => {
+      active = false
+    }
+  }, [party, getPartyExpeditionTimeMultiplier])
+
   const estimatedExplorationTime = useMemo(() => {
     if (!selectedDungeon) return null
-    return estimateExplorationTime(selectedDungeon, selectedReturnPolicy, selectedTargetFloor, 1, false, selectedTier)
-  }, [estimateExplorationTime, selectedDungeon, selectedReturnPolicy, selectedTargetFloor, selectedTier])
+    return estimateExplorationTime(selectedDungeon, selectedReturnPolicy, selectedTargetFloor, partyTimeMultiplier, false, selectedTier)
+  }, [estimateExplorationTime, selectedDungeon, selectedReturnPolicy, selectedTargetFloor, partyTimeMultiplier, selectedTier])
 
   const handleEditParty = useCallback(() => {
     void advanceTutorial('select_party_member')
@@ -341,6 +361,8 @@ export default function ExpeditionPreparationScreen() {
   }, [partyId, setTargetFloor])
 
   const handleStartExpedition = useCallback(() => {
+    // 出撃処理中の二重タップで遠征レコードが二重生成されるのを防ぐ
+    if (isProcessing) return
     if (!selectedDungeonId) {
       Alert.alert(t('ui.formation.preparation.dungeonRequiredTitle'), t('ui.formation.preparation.dungeonRequiredBody'))
       return
@@ -441,6 +463,7 @@ export default function ExpeditionPreparationScreen() {
     showLaunchConfirmation()
   }, [
     estimatedExplorationTime,
+    isProcessing,
     pendingGoblins.length,
     party,
     rank,
@@ -454,7 +477,7 @@ export default function ExpeditionPreparationScreen() {
     t,
   ])
 
-  const canStartExpedition = selectedDungeonId && partyMembers.length > 0
+  const canStartExpedition = Boolean(selectedDungeonId) && partyMembers.length > 0 && !isProcessing
   const { slotSize, avatarSize } = useMemo(() => {
     const slotGap = 8
     const maxSlotWidth = 50

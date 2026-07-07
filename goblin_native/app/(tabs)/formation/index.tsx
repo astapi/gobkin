@@ -1,4 +1,4 @@
-import { memo, useMemo, useCallback, useState } from 'react'
+import { memo, useMemo, useCallback, useRef, useState } from 'react'
 import { useFocusEffect } from 'expo-router'
 import { View, Text, FlatList, TouchableOpacity, StyleSheet, ActivityIndicator, Image, useWindowDimensions, Alert } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -75,9 +75,10 @@ const MemberSlot = memo(function MemberSlot({ goblin, partyMembers, isEmpty, slo
 
 interface PartyCardProps {
   party: Party
+  index: number
   goblins: Goblin[]
-  onPress: () => void
-  onAbort: () => void
+  onPress: (party: Party, index: number) => void
+  onAbort: (party: Party) => void
   historyDisplays: ExpeditionHistoryDisplay[]
   onHistoryPress: (record: ExpeditionRecord, ongoing: boolean) => void
   onLogPress: (record: ExpeditionRecord) => void
@@ -88,6 +89,7 @@ interface PartyCardProps {
 
 const PartyCard = memo(function PartyCard({
   party,
+  index,
   goblins,
   onPress,
   onAbort,
@@ -140,7 +142,7 @@ const PartyCard = memo(function PartyCard({
   const status = party.status ?? 'idle'
   return (
     <View style={[styles.partyCard, status === 'expedition' && usedGoldenAcorn && styles.partyCardGoldenAcorn]}>
-      <TouchableOpacity onPress={onPress} activeOpacity={0.7}>
+      <TouchableOpacity onPress={() => onPress(party, index)} activeOpacity={0.7}>
         <View style={styles.partyHeader}>
           <Text style={styles.partyName}>{party.name}</Text>
           {status === 'expedition' && (
@@ -148,7 +150,7 @@ const PartyCard = memo(function PartyCard({
               style={styles.expeditionBadge}
               onPress={(e) => {
                 e.stopPropagation()
-                onAbort()
+                onAbort(party)
               }}
               activeOpacity={0.7}
             >
@@ -258,18 +260,27 @@ export default function FormationScreen() {
   }, [maxPartyCount, parties])
 
 
+  const isCreatingPartyRef = useRef(false)
+
   const handlePartyPress = useCallback(async (party: Party | null, index: number) => {
     void advanceTutorial('edit_party')
     if (!party) {
-      // パーティがない場合は新規作成して遷移
-      const newParty = await createParty({
-        name: t('ui.formation.index.partyDefaultName', { index: index + 1 }),
-        memberIds: [],
-      })
-      router.push({
-        pathname: '/formation/preparation',
-        params: { partyId: newParty.id.toString() },
-      })
+      // 連打で空パーティが二重生成されるのを防ぐ
+      if (isCreatingPartyRef.current) return
+      isCreatingPartyRef.current = true
+      try {
+        // パーティがない場合は新規作成して遷移
+        const newParty = await createParty({
+          name: t('ui.formation.index.partyDefaultName', { index: index + 1 }),
+          memberIds: [],
+        })
+        router.push({
+          pathname: '/formation/preparation',
+          params: { partyId: newParty.id.toString() },
+        })
+      } finally {
+        isCreatingPartyRef.current = false
+      }
       return
     }
 
@@ -455,15 +466,7 @@ export default function FormationScreen() {
 
   const showSinglePartyTutorial = maxPartyCount === 1
 
-  if (partiesLoading || goblinsLoading || dungeonsLoading || baseLoading) {
-    return (
-      <SafeAreaView style={styles.loadingContainer} edges={['left', 'right', 'bottom']}>
-        <ActivityIndicator size="large" color="#3B82F6" />
-        <Text style={styles.loadingText}>{t('ui.common.loading')}</Text>
-      </SafeAreaView>
-    )
-  }
-
+  // Rules of Hooks 遵守のため、フック定義はローディングによる early return より前に置く
   const renderPartyItem = useCallback(({ item, index }: { item: Party | null; index: number }) => {
     const wrapperRef = index === 0 ? pt1Ref : undefined
     if (item) {
@@ -473,9 +476,10 @@ export default function FormationScreen() {
         <View ref={wrapperRef} collapsable={false}>
           <PartyCard
             party={item}
+            index={index}
             goblins={goblins}
-            onPress={() => handlePartyPress(item, index)}
-            onAbort={() => handleAbort(item)}
+            onPress={handlePartyPress}
+            onAbort={handleAbort}
             historyDisplays={partyHistoryDisplays[item.id] ?? []}
             onHistoryPress={handleHistoryPress}
             onLogPress={handleLogPress}
@@ -506,6 +510,15 @@ export default function FormationScreen() {
       </View>
     )
   }, [avatarSize, goblins, handleAbort, handleHistoryPress, handleLogPress, handlePartyPress, partyHistories, partyHistoryDisplays, pt1Ref, slotSize, t])
+
+  if (partiesLoading || goblinsLoading || dungeonsLoading || baseLoading) {
+    return (
+      <SafeAreaView style={styles.loadingContainer} edges={['left', 'right', 'bottom']}>
+        <ActivityIndicator size="large" color="#3B82F6" />
+        <Text style={styles.loadingText}>{t('ui.common.loading')}</Text>
+      </SafeAreaView>
+    )
+  }
 
   return (
     <SafeAreaView style={styles.container} edges={['left', 'right', 'bottom']}>

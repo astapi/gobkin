@@ -1,5 +1,5 @@
-import { useState, useEffect, useRef, useMemo, useCallback } from 'react'
-import { View, Text, StyleSheet, Animated, TouchableOpacity, ScrollView, ActivityIndicator, Image } from 'react-native'
+import { memo, useState, useEffect, useRef, useMemo, useCallback } from 'react'
+import { View, Text, StyleSheet, Animated, TouchableOpacity, FlatList, ActivityIndicator, Image } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { router, useLocalSearchParams, type Href } from 'expo-router'
 import { useTranslation } from 'react-i18next'
@@ -58,31 +58,34 @@ export default function ExpeditionPlaybackScreen() {
   const isPartyLoading = usePartyStore((state) => state.isLoading)
   const isGoblinLoading = useGoblinStore((state) => state.isLoading)
   const dungeons = useDungeonStore((state) => state.dungeons)
-  const {
-    expeditionRecords,
-    getExpeditionById,
-    getPartyExpeditionHistory,
-    isLoading: isExpeditionLoading,
-  } = useExpeditionStore()
+  const getExpeditionById = useExpeditionStore((state) => state.getExpeditionById)
+  const getPartyExpeditionHistory = useExpeditionStore((state) => state.getPartyExpeditionHistory)
+  const isExpeditionLoading = useExpeditionStore((state) => state.isLoading)
 
   const [expeditionRecord, setExpeditionRecord] = useState<ExpeditionRecord | null>(null)
 
+  // 対象recordのid（またはpartyId）が変わったときだけ取得する。
+  // ストア全体の expeditionRecords を購読すると他遠征の完了で再取得→再生が中断されるため含めない。
   useEffect(() => {
+    let active = true
     void (async () => {
       if (expeditionId) {
         const record = await getExpeditionById(expeditionId)
-        setExpeditionRecord(record)
+        if (active) setExpeditionRecord(record)
         return
       }
       const numericPartyId = partyId ? Number.parseInt(partyId, 10) : NaN
       if (Number.isNaN(numericPartyId)) {
-        setExpeditionRecord(null)
+        if (active) setExpeditionRecord(null)
         return
       }
       const history = await getPartyExpeditionHistory(numericPartyId, 1)
-      setExpeditionRecord(history[0] ?? null)
+      if (active) setExpeditionRecord(history[0] ?? null)
     })()
-  }, [expeditionId, partyId, getExpeditionById, getPartyExpeditionHistory, expeditionRecords])
+    return () => {
+      active = false
+    }
+  }, [expeditionId, partyId, getExpeditionById, getPartyExpeditionHistory])
 
   const resolvedPartyId = useMemo(() => {
     if (expeditionRecord) return expeditionRecord.partyId
@@ -122,6 +125,12 @@ export default function ExpeditionPlaybackScreen() {
     return replay.meta.partySnapshot
   }, [replay])
 
+  // 毎tickの再レンダーで getEffectiveStats を再評価しないよう、メンバー最大HPは一度だけ計算する
+  const memberMaxHps = useMemo(
+    () => partyGoblins.map(goblin => (goblin ? getEffectiveStats(goblin).hp : 100)),
+    [partyGoblins],
+  )
+
   const progressAnim = useRef(new Animated.Value(0)).current
   const playbackTimerRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const startTimestampRef = useRef<number>(0)
@@ -131,6 +140,7 @@ export default function ExpeditionPlaybackScreen() {
   const logIdRef = useRef(0)
   const partyHpRef = useRef<number[]>([])
   const partyExpRef = useRef<Array<{ level: number; experience: number }>>([])
+  const logListRef = useRef<FlatList<LogEntry>>(null)
 
   const formatTime = useCallback((seconds: number): string => {
     const minutes = Math.floor(seconds / 60)
@@ -147,6 +157,16 @@ export default function ExpeditionPlaybackScreen() {
     const logId = storeLevelUpLog(levelUps)
     router.push(`/formation/level-up-log?logId=${encodeURIComponent(logId)}` as Href)
   }, [])
+
+  const detailLabel = t('ui.formation.playback.detail')
+  const renderLogItem = useCallback(({ item }: { item: LogEntry }) => (
+    <PlaybackLogRow
+      entry={item}
+      detailLabel={detailLabel}
+      onOpenBattleLog={openBattleLog}
+      onOpenLevelUpLog={openLevelUpLog}
+    />
+  ), [detailLabel, openBattleLog, openLevelUpLog])
 
   const getReturnReasonText = useCallback((reason: ExpeditionEndReason) => {
     if (reason === 'completed') return t('ui.formation.playback.completed')
@@ -577,7 +597,7 @@ export default function ExpeditionPlaybackScreen() {
       <View style={styles.partyGrid}>
         {replay.meta.party.map((memberId, index) => {
           const goblin = partyGoblins[index]
-          const maxHp = goblin ? getEffectiveStats(goblin).hp : 100
+          const maxHp = memberMaxHps[index] ?? 100
           const currentHp = partyHp[index] ?? maxHp
           return (
             <View key={memberId} style={styles.partyCard}>
@@ -606,52 +626,72 @@ export default function ExpeditionPlaybackScreen() {
       </View>
 
       <View style={styles.eventLog}>
-        <ScrollView style={styles.logScroll} contentContainerStyle={{ paddingBottom: BOTTOM_INFO_SPACING }}>
-          {eventLog.map(entry => {
-            const baseText = entry.text.replace('[Detail]', '').replace('[詳細]', '').replace('[상세]', '')
-            if (entry.detail) {
-              return (
-                <TouchableOpacity
-                  key={entry.id}
-                  style={styles.logRow}
-                  activeOpacity={0.7}
-                  accessibilityRole="button"
-                  hitSlop={{ top: 6, bottom: 6, left: 8, right: 8 }}
-                  onPress={() => openBattleLog(entry.detail!, entry.meta)}
-                >
-                  <Text style={styles.logText}>{baseText}</Text>
-                  <Text style={styles.logDetail}>{t('ui.formation.playback.detail')}</Text>
-                </TouchableOpacity>
-              )
-            }
-
-            if (entry.levelUps) {
-              return (
-                <TouchableOpacity
-                  key={entry.id}
-                  style={styles.logRow}
-                  activeOpacity={0.7}
-                  accessibilityRole="button"
-                  hitSlop={{ top: 6, bottom: 6, left: 8, right: 8 }}
-                  onPress={() => openLevelUpLog(entry.levelUps!)}
-                >
-                  <Text style={styles.logText}>{baseText}</Text>
-                  <Text style={styles.logDetail}>{t('ui.formation.playback.detail')}</Text>
-                </TouchableOpacity>
-              )
-            }
-
-            return (
-              <View key={entry.id} style={styles.logRow}>
-                <Text style={styles.logText}>{baseText}</Text>
-              </View>
-            )
-          })}
-        </ScrollView>
+        <FlatList
+          ref={logListRef}
+          style={styles.logScroll}
+          data={eventLog}
+          keyExtractor={entry => entry.id}
+          renderItem={renderLogItem}
+          contentContainerStyle={{ paddingBottom: BOTTOM_INFO_SPACING }}
+          initialNumToRender={20}
+          windowSize={11}
+          removeClippedSubviews
+          onContentSizeChange={() => logListRef.current?.scrollToEnd({ animated: true })}
+        />
       </View>
     </SafeAreaView>
   )
 }
+
+const PlaybackLogRow = memo(function PlaybackLogRow({
+  entry,
+  detailLabel,
+  onOpenBattleLog,
+  onOpenLevelUpLog,
+}: {
+  entry: LogEntry
+  detailLabel: string
+  onOpenBattleLog: (detail: BattleLogEntry[], meta?: BattleLogMeta) => void
+  onOpenLevelUpLog: (levelUps: LevelUpLogDetail[]) => void
+}) {
+  const baseText = entry.text.replace('[Detail]', '').replace('[詳細]', '').replace('[상세]', '')
+
+  if (entry.detail) {
+    return (
+      <TouchableOpacity
+        style={styles.logRow}
+        activeOpacity={0.7}
+        accessibilityRole="button"
+        hitSlop={{ top: 6, bottom: 6, left: 8, right: 8 }}
+        onPress={() => onOpenBattleLog(entry.detail!, entry.meta)}
+      >
+        <Text style={styles.logText}>{baseText}</Text>
+        <Text style={styles.logDetail}>{detailLabel}</Text>
+      </TouchableOpacity>
+    )
+  }
+
+  if (entry.levelUps) {
+    return (
+      <TouchableOpacity
+        style={styles.logRow}
+        activeOpacity={0.7}
+        accessibilityRole="button"
+        hitSlop={{ top: 6, bottom: 6, left: 8, right: 8 }}
+        onPress={() => onOpenLevelUpLog(entry.levelUps!)}
+      >
+        <Text style={styles.logText}>{baseText}</Text>
+        <Text style={styles.logDetail}>{detailLabel}</Text>
+      </TouchableOpacity>
+    )
+  }
+
+  return (
+    <View style={styles.logRow}>
+      <Text style={styles.logText}>{baseText}</Text>
+    </View>
+  )
+})
 
 const styles = StyleSheet.create({
   container: {

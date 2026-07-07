@@ -1,8 +1,9 @@
-import { useMemo, useEffect, useRef, useCallback } from 'react'
-import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity, type ImageSourcePropType } from 'react-native'
+import { memo, useMemo, useEffect, useRef, useCallback } from 'react'
+import { View, Text, Image, StyleSheet, ScrollView, FlatList, TouchableOpacity, type ImageSourcePropType } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { router, useLocalSearchParams } from 'expo-router'
 import { useTranslation } from 'react-i18next'
+import type { TFunction } from 'i18next'
 import type { BattleLogEntry, BattleLogMeta, Goblin } from '@/shared/types'
 import { BOTTOM_INFO_SPACING } from '@/shared/constants/layout'
 import { getBattleLog, clearBattleLog } from '@/presentation/contexts/battleLogStore'
@@ -12,8 +13,7 @@ import { getEnemyImage } from '@/shared/utils/enemyImages'
 export default function BattleLogScreen() {
   const { t } = useTranslation()
   const { logId } = useLocalSearchParams<{ logId?: string }>()
-  const scrollViewRef = useRef<ScrollView>(null)
-  const turnOffsetRef = useRef<Record<number, number>>({})
+  const listRef = useRef<FlatList<BattleLogEntry>>(null)
 
   const stored = useMemo(() => {
     if (!logId) return null
@@ -26,22 +26,21 @@ export default function BattleLogScreen() {
   const meta = stored?.meta ?? null
   const partySnapshot = stored?.partySnapshot ?? []
 
-  const turnIndexes = useMemo(() => {
+  // ターン番号 → 先頭エントリのindex を対応付け、サイドバーからのジャンプに使う
+  const turnIndexEntries = useMemo(() => {
     if (!battleLog) return []
-    const turns: number[] = []
+    const entries: { turn: number; index: number }[] = []
     const seen = new Set<number>()
-    for (const entry of battleLog) {
-      if (entry.action !== 'turn_start' || seen.has(entry.turn)) continue
+    battleLog.forEach((entry, index) => {
+      if (entry.action !== 'turn_start' || seen.has(entry.turn)) return
       seen.add(entry.turn)
-      turns.push(entry.turn)
-    }
-    return turns
+      entries.push({ turn: entry.turn, index })
+    })
+    return entries
   }, [battleLog])
 
-  const scrollToTurn = useCallback((turn: number) => {
-    const y = turnOffsetRef.current[turn]
-    if (y === undefined) return
-    scrollViewRef.current?.scrollTo({ y: Math.max(y - 8, 0), animated: true })
+  const scrollToTurn = useCallback((index: number) => {
+    listRef.current?.scrollToIndex({ index, viewPosition: 0, viewOffset: 8, animated: true })
   }, [])
 
   const goblinMap = useMemo(() => {
@@ -51,6 +50,13 @@ export default function BattleLogScreen() {
     }
     return map
   }, [partySnapshot])
+
+  const renderItem = useCallback(
+    ({ item, index }: { item: BattleLogEntry; index: number }) => (
+      <BattleLogRow entry={item} index={index} goblinMap={goblinMap} t={t} />
+    ),
+    [goblinMap, t],
+  )
 
   useEffect(() => {
     const raw = Array.isArray(logId) ? logId[0] : logId
@@ -81,204 +87,50 @@ export default function BattleLogScreen() {
       {!battleLog && (
         <View style={styles.emptyState}>
           <Text style={styles.emptyText}>{t('ui.formation.battleLog.loadFailed')}</Text>
+          <TouchableOpacity
+            style={styles.emptyBackButton}
+            onPress={() => {
+              if (router.canGoBack()) {
+                router.back()
+                return
+              }
+              router.replace('/formation/playback')
+            }}
+          >
+            <Text style={styles.emptyBackButtonText}>{t('ui.formation.common.back')}</Text>
+          </TouchableOpacity>
         </View>
       )}
 
       {battleLog && (
         <View style={styles.logShell}>
-          <ScrollView ref={scrollViewRef} style={styles.body} contentContainerStyle={styles.bodyContent}>
-            {battleLog.map((entry, index) => {
-              if (entry.action === 'turn_start' && entry.turnState) {
-                const allyPartyEffects = entry.turnState.allyPartyEffects ?? []
-                const enemyPartyEffects = entry.turnState.enemyPartyEffects ?? []
-                return (
-                  <View
-                    key={`turn-${entry.turn}-${index}`}
-                    style={styles.sectionCard}
-                    onLayout={(event) => {
-                      turnOffsetRef.current[entry.turn] = event.nativeEvent.layout.y
-                    }}
-                  >
-                    <Text style={styles.sectionTitle}>{t('ui.formation.battleLog.turnStart', { turn: entry.turn })}</Text>
-                    <Text style={styles.sectionLabel}>{t('ui.formation.battleLog.allies')}</Text>
-                    {allyPartyEffects.length > 0 && (
-                      <Text style={styles.sectionText}>
-                        {t('ui.formation.battleLog.partyEffects', {
-                          effects: allyPartyEffects.map(effect => t(`ui.formation.battleLog.partyEffect.${effect}`)).join(' / '),
-                        })}
-                      </Text>
-                    )}
-                    {entry.turnState.allies.map(ally => (
-                      <Text key={ally.id} style={styles.sectionText}>
-                        {ally.name} {ally.currentHP}/{ally.maxHP} HP
-                      </Text>
-                    ))}
-                    <Text style={styles.sectionLabel}>{t('ui.formation.battleLog.enemies')}</Text>
-                    {enemyPartyEffects.length > 0 && (
-                      <Text style={styles.sectionText}>
-                        {t('ui.formation.battleLog.partyEffects', {
-                          effects: enemyPartyEffects.map(effect => t(`ui.formation.battleLog.partyEffect.${effect}`)).join(' / '),
-                        })}
-                      </Text>
-                    )}
-                    {entry.turnState.enemies.map((enemy, enemyIndex) => (
-                      <Text key={`${enemy.id}-${enemyIndex}`} style={styles.sectionText}>
-                        {enemy.name} {enemy.currentHP}/{enemy.maxHP} HP
-                      </Text>
-                    ))}
-                  </View>
-                )
-              }
+          <FlatList
+            ref={listRef}
+            data={battleLog}
+            style={styles.body}
+            contentContainerStyle={styles.bodyContent}
+            keyExtractor={(item, index) => `${item.action}-${item.turn}-${index}`}
+            renderItem={renderItem}
+            ListFooterComponent={meta ? <BattleResultSection meta={meta} /> : null}
+            initialNumToRender={16}
+            windowSize={11}
+            removeClippedSubviews
+            onScrollToIndexFailed={({ index, averageItemLength }) => {
+              listRef.current?.scrollToOffset({ offset: averageItemLength * index, animated: true })
+              setTimeout(() => {
+                listRef.current?.scrollToIndex({ index, viewOffset: 8, animated: true })
+              }, 60)
+            }}
+          />
 
-              if (entry.action === 'turn_start') {
-                return null
-              }
-
-              const isSpell = entry.action !== t('battle.normalAttack') && entry.action !== 'turn_start'
-              const isHealingAction = entry.targets?.some(target => target.totalDamage < 0) ?? false
-              const isBarrierAction = entry.actionEffect === 'barrier' || entry.action === t('entities.spell.shield_barrier')
-              const isAttackUpAction = entry.actionEffect === 'attack_up' || entry.action === t('entities.spell.attack_up')
-              const isMagicFieldAction = entry.actionEffect === 'magic_field'
-
-              const allyGoblin = entry.isAlly ? goblinMap.get(entry.actorId) : undefined
-              const actorImage = allyGoblin
-                ? getGoblinBattleImage(allyGoblin)
-                : getEnemyImage({ id: entry.actorId, name: entry.actorName }) ?? undefined
-              const actorImageScale = allyGoblin
-                ? getGoblinDisplayImageScale(allyGoblin)
-                : getEnemyBattleLogImageScale(entry.actorId)
-
-              if (entry.actionEffect === 'regen') {
-                const healed = Math.abs(entry.targets?.[0]?.totalDamage ?? 0)
-                return (
-                  <View key={`log-${index}`} style={styles.logCard}>
-                    <View style={styles.logHeader}>
-                      {actorImage && <BattleActorImage source={actorImage} scale={actorImageScale} />}
-                      <Text style={[styles.logText, styles.logHeaderText]}>
-                        {t('ui.formation.battleLog.regenSummary', { actor: entry.actorName, heal: healed })}
-                      </Text>
-                    </View>
-                  </View>
-                )
-              }
-
-              if (entry.actionEffect === 'defend') {
-                return (
-                  <View key={`log-${index}`} style={styles.logCard}>
-                    <View style={styles.logHeader}>
-                      {actorImage && <BattleActorImage source={actorImage} scale={actorImageScale} />}
-                      <View style={styles.logHeaderText}>
-                        <Text style={styles.logTitle}>
-                          {t('ui.formation.battleLog.defendTitle', { actor: entry.actorName, hp: entry.actorHP, maxHp: entry.actorMaxHP })}
-                        </Text>
-                      </View>
-                    </View>
-                  </View>
-                )
-              }
-
-              if (isBarrierAction) {
-                return (
-                  <View key={`log-${index}`} style={styles.logCard}>
-                    <View style={styles.logHeader}>
-                      {actorImage && <BattleActorImage source={actorImage} scale={actorImageScale} />}
-                      <View style={styles.logHeaderText}>
-                        <Text style={styles.logTitle}>
-                          {t('ui.formation.battleLog.spellTitle', { actor: entry.actorName, action: entry.action, hp: entry.actorHP, maxHp: entry.actorMaxHP })}
-                        </Text>
-                        <Text style={styles.logText}>
-                          {t('ui.formation.battleLog.shieldBarrierSummary')}
-                        </Text>
-                      </View>
-                    </View>
-                  </View>
-                )
-              }
-
-              if (isAttackUpAction) {
-                return (
-                  <View key={`log-${index}`} style={styles.logCard}>
-                    <View style={styles.logHeader}>
-                      {actorImage && <BattleActorImage source={actorImage} scale={actorImageScale} />}
-                      <View style={styles.logHeaderText}>
-                        <Text style={styles.logTitle}>
-                          {t('ui.formation.battleLog.attackUpTitle', { actor: entry.actorName, action: entry.action })}
-                        </Text>
-                        <Text style={styles.logText}>
-                          {t('ui.formation.battleLog.attackUpSummary')}
-                        </Text>
-                      </View>
-                    </View>
-                  </View>
-                )
-              }
-
-              if (isMagicFieldAction) {
-                return (
-                  <View key={`log-${index}`} style={styles.logCard}>
-                    <View style={styles.logHeader}>
-                      {actorImage && <BattleActorImage source={actorImage} scale={actorImageScale} />}
-                      <View style={styles.logHeaderText}>
-                        <Text style={styles.logTitle}>
-                          {t('ui.formation.battleLog.magicFieldTitle', { actor: entry.actorName, action: entry.action })}
-                        </Text>
-                      </View>
-                    </View>
-                  </View>
-                )
-              }
-
-              return (
-                <View key={`log-${index}`} style={styles.logCard}>
-                  <View style={styles.logHeader}>
-                    {actorImage && <BattleActorImage source={actorImage} scale={actorImageScale} />}
-                    <View style={styles.logHeaderText}>
-                      <Text style={styles.logTitle}>
-                        {isSpell
-                          ? t('ui.formation.battleLog.spellTitle', { actor: entry.actorName, action: entry.action, hp: entry.actorHP, maxHp: entry.actorMaxHP })
-                          : t('ui.formation.battleLog.attackTitle', { actor: entry.actorName, count: entry.attackCount, hp: entry.actorHP, maxHp: entry.actorMaxHP })
-                        }
-                      </Text>
-                      <Text style={styles.logText}>
-                        {isHealingAction
-                          ? t('ui.formation.battleLog.healSummary', { row: entry.actorRow, actor: entry.actorName, action: entry.action, count: entry.hitCount })
-                          : isSpell
-                          ? t('ui.formation.battleLog.spellSummary', { row: entry.actorRow, actor: entry.actorName, action: entry.action, count: entry.hitCount })
-                          : entry.isCritical
-                          ? t('ui.formation.battleLog.attackCriticalSummary', { row: entry.actorRow, actor: entry.actorName, count: entry.hitCount })
-                          : t('ui.formation.battleLog.attackSummary', { row: entry.actorRow, actor: entry.actorName, count: entry.hitCount })
-                        }
-                      </Text>
-                    </View>
-                  </View>
-                  {entry.targets?.map((target, targetIndex) => (
-                    <Text key={`target-${targetIndex}`} style={[styles.logText, actorImage ? styles.logTargetIndented : undefined]}>
-                      {target.totalDamage < 0
-                        ? t('ui.formation.battleLog.targetHealed', { row: target.targetRow, name: target.targetName, heal: Math.abs(target.totalDamage) })
-                        : target.piercingHitCount && target.defeated
-                        ? t('ui.formation.battleLog.targetPiercedDefeated', { row: target.targetRow, name: target.targetName, damage: target.totalDamage })
-                        : target.piercingHitCount
-                        ? t('ui.formation.battleLog.targetPierced', { row: target.targetRow, name: target.targetName, damage: target.totalDamage, count: target.hitCount })
-                        : target.defeated
-                        ? t('ui.formation.battleLog.targetDefeated', { row: target.targetRow, name: target.targetName, damage: target.totalDamage })
-                        : t('ui.formation.battleLog.targetHits', { row: target.targetRow, name: target.targetName, damage: target.totalDamage, count: target.hitCount })}
-                    </Text>
-                  ))}
-                </View>
-              )
-            })}
-
-            {meta && <BattleResultSection meta={meta} />}
-          </ScrollView>
-
-          {turnIndexes.length > 0 && (
+          {turnIndexEntries.length > 0 && (
             <View style={styles.turnIndexContainer}>
               <ScrollView contentContainerStyle={styles.turnIndexContent} showsVerticalScrollIndicator={false}>
-                {turnIndexes.map(turn => (
+                {turnIndexEntries.map(({ turn, index }) => (
                   <TouchableOpacity
                     key={`turn-index-${turn}`}
                     style={styles.turnIndexButton}
-                    onPress={() => scrollToTurn(turn)}
+                    onPress={() => scrollToTurn(index)}
                     accessibilityRole="button"
                     accessibilityLabel={t('ui.formation.battleLog.turnStart', { turn })}
                   >
@@ -293,6 +145,191 @@ export default function BattleLogScreen() {
     </SafeAreaView>
   )
 }
+
+const BattleLogRow = memo(function BattleLogRow({
+  entry,
+  index,
+  goblinMap,
+  t,
+}: {
+  entry: BattleLogEntry
+  index: number
+  goblinMap: Map<string, Goblin>
+  t: TFunction
+}) {
+  if (entry.action === 'turn_start' && entry.turnState) {
+    const allyPartyEffects = entry.turnState.allyPartyEffects ?? []
+    const enemyPartyEffects = entry.turnState.enemyPartyEffects ?? []
+    return (
+      <View style={styles.sectionCard}>
+        <Text style={styles.sectionTitle}>{t('ui.formation.battleLog.turnStart', { turn: entry.turn })}</Text>
+        <Text style={styles.sectionLabel}>{t('ui.formation.battleLog.allies')}</Text>
+        {allyPartyEffects.length > 0 && (
+          <Text style={styles.sectionText}>
+            {t('ui.formation.battleLog.partyEffects', {
+              effects: allyPartyEffects.map(effect => t(`ui.formation.battleLog.partyEffect.${effect}`)).join(' / '),
+            })}
+          </Text>
+        )}
+        {entry.turnState.allies.map(ally => (
+          <Text key={ally.id} style={styles.sectionText}>
+            {ally.name} {ally.currentHP}/{ally.maxHP} HP
+          </Text>
+        ))}
+        <Text style={styles.sectionLabel}>{t('ui.formation.battleLog.enemies')}</Text>
+        {enemyPartyEffects.length > 0 && (
+          <Text style={styles.sectionText}>
+            {t('ui.formation.battleLog.partyEffects', {
+              effects: enemyPartyEffects.map(effect => t(`ui.formation.battleLog.partyEffect.${effect}`)).join(' / '),
+            })}
+          </Text>
+        )}
+        {entry.turnState.enemies.map((enemy, enemyIndex) => (
+          <Text key={`${enemy.id}-${enemyIndex}`} style={styles.sectionText}>
+            {enemy.name} {enemy.currentHP}/{enemy.maxHP} HP
+          </Text>
+        ))}
+      </View>
+    )
+  }
+
+  if (entry.action === 'turn_start') {
+    return null
+  }
+
+  const isSpell = entry.action !== t('battle.normalAttack') && entry.action !== 'turn_start'
+  const isHealingAction = entry.targets?.some(target => target.totalDamage < 0) ?? false
+  const isBarrierAction = entry.actionEffect === 'barrier' || entry.action === t('entities.spell.shield_barrier')
+  const isAttackUpAction = entry.actionEffect === 'attack_up' || entry.action === t('entities.spell.attack_up')
+  const isMagicFieldAction = entry.actionEffect === 'magic_field'
+
+  const allyGoblin = entry.isAlly ? goblinMap.get(entry.actorId) : undefined
+  const actorImage = allyGoblin
+    ? getGoblinBattleImage(allyGoblin)
+    : getEnemyImage({ id: entry.actorId, name: entry.actorName }) ?? undefined
+  const actorImageScale = allyGoblin
+    ? getGoblinDisplayImageScale(allyGoblin)
+    : getEnemyBattleLogImageScale(entry.actorId)
+
+  if (entry.actionEffect === 'regen') {
+    const healed = Math.abs(entry.targets?.[0]?.totalDamage ?? 0)
+    return (
+      <View style={styles.logCard}>
+        <View style={styles.logHeader}>
+          {actorImage && <BattleActorImage source={actorImage} scale={actorImageScale} />}
+          <Text style={[styles.logText, styles.logHeaderText]}>
+            {t('ui.formation.battleLog.regenSummary', { actor: entry.actorName, heal: healed })}
+          </Text>
+        </View>
+      </View>
+    )
+  }
+
+  if (entry.actionEffect === 'defend') {
+    return (
+      <View style={styles.logCard}>
+        <View style={styles.logHeader}>
+          {actorImage && <BattleActorImage source={actorImage} scale={actorImageScale} />}
+          <View style={styles.logHeaderText}>
+            <Text style={styles.logTitle}>
+              {t('ui.formation.battleLog.defendTitle', { actor: entry.actorName, hp: entry.actorHP, maxHp: entry.actorMaxHP })}
+            </Text>
+          </View>
+        </View>
+      </View>
+    )
+  }
+
+  if (isBarrierAction) {
+    return (
+      <View style={styles.logCard}>
+        <View style={styles.logHeader}>
+          {actorImage && <BattleActorImage source={actorImage} scale={actorImageScale} />}
+          <View style={styles.logHeaderText}>
+            <Text style={styles.logTitle}>
+              {t('ui.formation.battleLog.spellTitle', { actor: entry.actorName, action: entry.action, hp: entry.actorHP, maxHp: entry.actorMaxHP })}
+            </Text>
+            <Text style={styles.logText}>
+              {t('ui.formation.battleLog.shieldBarrierSummary')}
+            </Text>
+          </View>
+        </View>
+      </View>
+    )
+  }
+
+  if (isAttackUpAction) {
+    return (
+      <View style={styles.logCard}>
+        <View style={styles.logHeader}>
+          {actorImage && <BattleActorImage source={actorImage} scale={actorImageScale} />}
+          <View style={styles.logHeaderText}>
+            <Text style={styles.logTitle}>
+              {t('ui.formation.battleLog.attackUpTitle', { actor: entry.actorName, action: entry.action })}
+            </Text>
+            <Text style={styles.logText}>
+              {t('ui.formation.battleLog.attackUpSummary')}
+            </Text>
+          </View>
+        </View>
+      </View>
+    )
+  }
+
+  if (isMagicFieldAction) {
+    return (
+      <View style={styles.logCard}>
+        <View style={styles.logHeader}>
+          {actorImage && <BattleActorImage source={actorImage} scale={actorImageScale} />}
+          <View style={styles.logHeaderText}>
+            <Text style={styles.logTitle}>
+              {t('ui.formation.battleLog.magicFieldTitle', { actor: entry.actorName, action: entry.action })}
+            </Text>
+          </View>
+        </View>
+      </View>
+    )
+  }
+
+  return (
+    <View style={styles.logCard}>
+      <View style={styles.logHeader}>
+        {actorImage && <BattleActorImage source={actorImage} scale={actorImageScale} />}
+        <View style={styles.logHeaderText}>
+          <Text style={styles.logTitle}>
+            {isSpell
+              ? t('ui.formation.battleLog.spellTitle', { actor: entry.actorName, action: entry.action, hp: entry.actorHP, maxHp: entry.actorMaxHP })
+              : t('ui.formation.battleLog.attackTitle', { actor: entry.actorName, count: entry.attackCount, hp: entry.actorHP, maxHp: entry.actorMaxHP })
+            }
+          </Text>
+          <Text style={styles.logText}>
+            {isHealingAction
+              ? t('ui.formation.battleLog.healSummary', { row: entry.actorRow, actor: entry.actorName, action: entry.action, count: entry.hitCount })
+              : isSpell
+              ? t('ui.formation.battleLog.spellSummary', { row: entry.actorRow, actor: entry.actorName, action: entry.action, count: entry.hitCount })
+              : entry.isCritical
+              ? t('ui.formation.battleLog.attackCriticalSummary', { row: entry.actorRow, actor: entry.actorName, count: entry.hitCount })
+              : t('ui.formation.battleLog.attackSummary', { row: entry.actorRow, actor: entry.actorName, count: entry.hitCount })
+            }
+          </Text>
+        </View>
+      </View>
+      {entry.targets?.map((target, targetIndex) => (
+        <Text key={`target-${index}-${targetIndex}`} style={[styles.logText, actorImage ? styles.logTargetIndented : undefined]}>
+          {target.totalDamage < 0
+            ? t('ui.formation.battleLog.targetHealed', { row: target.targetRow, name: target.targetName, heal: Math.abs(target.totalDamage) })
+            : target.piercingHitCount && target.defeated
+            ? t('ui.formation.battleLog.targetPiercedDefeated', { row: target.targetRow, name: target.targetName, damage: target.totalDamage })
+            : target.piercingHitCount
+            ? t('ui.formation.battleLog.targetPierced', { row: target.targetRow, name: target.targetName, damage: target.totalDamage, count: target.hitCount })
+            : target.defeated
+            ? t('ui.formation.battleLog.targetDefeated', { row: target.targetRow, name: target.targetName, damage: target.totalDamage })
+            : t('ui.formation.battleLog.targetHits', { row: target.targetRow, name: target.targetName, damage: target.totalDamage, count: target.hitCount })}
+        </Text>
+      ))}
+    </View>
+  )
+})
 
 function BattleResultSection({ meta }: { meta: BattleLogMeta }) {
   const { t } = useTranslation()
@@ -394,10 +431,22 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     padding: 24,
+    gap: 16,
   },
   emptyText: {
     fontSize: 14,
     color: '#6B7280',
+  },
+  emptyBackButton: {
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    backgroundColor: '#374151',
+    borderRadius: 8,
+  },
+  emptyBackButtonText: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#FFFFFF',
   },
   logShell: {
     flex: 1,

@@ -1,9 +1,7 @@
 import { create } from 'zustand'
 import type { ExpeditionRecord, ExpeditionReplay } from '../../shared/types'
-import { SQLiteExpeditionRepository } from '../../infrastructure/repositories'
-import { MAX_EXPEDITION_HISTORY } from '../../infrastructure/repositories/SQLiteExpeditionRepository'
-
-const repository = SQLiteExpeditionRepository.getInstance()
+import { MAX_EXPEDITION_HISTORY } from '../../core/repositories'
+import { expeditionRepository as repository } from '../di/repositories'
 
 interface ExpeditionStoreState {
   expeditionRecords: ExpeditionRecord[]
@@ -18,7 +16,11 @@ interface ExpeditionStoreActions {
   saveExpeditionRecord: (record: ExpeditionRecord) => Promise<void>
   saveBulkExpeditionRecords: (records: ExpeditionRecord[]) => Promise<void>
   updateExpeditionReplay: (id: string, replay: ExpeditionReplay) => Promise<void>
-  completeExpeditionRecord: (id: string, replay: ExpeditionReplay) => Promise<boolean>
+  /**
+   * 遠征完了処理（status 確定・報酬付与）は CompleteExpeditionUseCase 側で
+   * トランザクション内アトミックに実施済み。ここでは履歴の剪定とストア再取得のみ行う。
+   */
+  finalizeCompletion: () => Promise<void>
 }
 
 export const useExpeditionStore = create<ExpeditionStoreState & ExpeditionStoreActions>()((set) => {
@@ -42,8 +44,13 @@ export const useExpeditionStore = create<ExpeditionStoreState & ExpeditionStoreA
     getExpeditionById: (id: string) => repository.getById(id),
 
     getPartyExpeditionHistory: async (partyId: number, limit = 2) => {
-      const records = await repository.getByPartyId(partyId)
-      return records.slice(0, limit)
+      // まず replay_json / meta を含まない軽量サマリで対象を絞り込み、
+      // 表示に必要な直近 limit 件だけ replay を含むフル取得を行う。
+      // これにより全履歴の巨大な replay_json をパースするコストを避ける。
+      const summaries = await repository.getSummariesByPartyId(partyId)
+      const targets = summaries.slice(0, limit)
+      const records = await Promise.all(targets.map(summary => repository.getById(summary.id)))
+      return records.filter((record): record is ExpeditionRecord => record !== null)
     },
 
     saveExpeditionRecord: async (record: ExpeditionRecord) => {
@@ -69,11 +76,9 @@ export const useExpeditionStore = create<ExpeditionStoreState & ExpeditionStoreA
       await refresh()
     },
 
-    completeExpeditionRecord: async (id: string, replay: ExpeditionReplay) => {
-      const updated = await repository.complete(id, replay)
+    finalizeCompletion: async () => {
       await repository.pruneOldCompleted(MAX_EXPEDITION_HISTORY)
       await refresh()
-      return updated
     },
   }
 })

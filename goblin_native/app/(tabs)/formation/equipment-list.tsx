@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next'
 import { usePartyStore } from '@/presentation/stores/usePartyStore'
 import { BOTTOM_INFO_SPACING } from '@/shared/constants/layout'
 import { useGoblinStore } from '@/presentation/stores/useGoblinStore'
-import { SQLiteEquipmentRepository } from '@/infrastructure/repositories/SQLiteEquipmentRepository'
+import { equipmentRepository } from '@/presentation/di/repositories'
 import { EquipmentService } from '@/core/services/EquipmentService'
 import { getEquipmentTemplate } from '@/shared/data/equipmentPoolLoader'
 import { applySkillBonusesToEquipmentBonuses } from '@/shared/data/characterSkills'
@@ -85,7 +85,7 @@ export default function PartyEquipmentListScreen() {
     }
 
     setIsLoadingEquipment(true)
-    const repository = SQLiteEquipmentRepository.getInstance()
+    const repository = equipmentRepository
     const entries = await Promise.all(
       partyMembers.map(async member => {
         const items = await repository.getByGoblinId(member.id)

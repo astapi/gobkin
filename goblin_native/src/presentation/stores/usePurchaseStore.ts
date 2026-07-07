@@ -12,10 +12,12 @@ import {
   SPEED_TWO_THIRDS_MULTIPLIER,
   type TicketType,
 } from '@/shared/constants/purchases'
-import { SQLiteTicketRepository } from '@/infrastructure/repositories/SQLiteTicketRepository'
-import { SQLiteEquipmentRepository } from '@/infrastructure/repositories/SQLiteEquipmentRepository'
-import { SQLiteStoryProgressRepository } from '@/infrastructure/repositories/SQLiteStoryProgressRepository'
-import { SQLiteDungeonProgressRepository } from '@/infrastructure/repositories/SQLiteDungeonProgressRepository'
+import {
+  ticketRepository,
+  equipmentRepository,
+  storyProgressRepository,
+  dungeonProgressRepository,
+} from '@/presentation/di/repositories'
 import type { TicketBalance } from '@/shared/types/Ticket'
 import type { EquipmentInstance } from '@/shared/types'
 
@@ -59,10 +61,6 @@ const initialState: PurchaseState = {
   tickets: [],
 }
 
-const ticketRepository = SQLiteTicketRepository.getInstance()
-const equipmentRepository = SQLiteEquipmentRepository.getInstance()
-const storyProgressRepository = SQLiteStoryProgressRepository.getInstance()
-const dungeonProgressRepository = SQLiteDungeonProgressRepository.getInstance()
 let isCustomerInfoListenerRegistered = false
 
 function createPurchasedEquipment(templateId: string): EquipmentInstance {
