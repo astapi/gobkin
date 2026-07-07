@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ゴブリンキングダム 戦略バランス診断</title>
+<style>
+  :root {
+    --bg: #14170f; --panel: #1c2015; --panel-2: #232819;
+    --ink: #e8e6d9; --ink-dim: #a7a892; --ink-faint: #74765f;
+    --line: #33372a; --torch: #e0a43b; --torch-soft: #7a5c22;
+    --brute: #d1534a;   /* 裸(レベル暴力) */
+    --smart: #6bbf7a;   /* 戦略ビルド */
+    --gap: #4a5340;     /* 差分の帯 */
+    --warn: #d98a2b; --cold: #5a86a6;
+    --mono: ui-monospace, "SF Mono", "Menlo", "Cascadia Mono", monospace;
+    --sans: "Hiragino Sans", "Hiragino Kaku Gothic ProN", system-ui, -apple-system, sans-serif;
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg: #efece0; --panel: #f7f5ec; --panel-2: #fffdf5;
+      --ink: #26281c; --ink-dim: #5c5e49; --ink-faint: #8a8b73;
+      --line: #d9d6c4; --torch: #b47a12; --torch-soft: #e0c07a;
+      --brute: #b83c33; --smart: #3f8a4f; --gap: #cdd0bd; --warn: #b96f16; --cold: #416b8a;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #14170f; --panel: #1c2015; --panel-2: #232819;
+    --ink: #e8e6d9; --ink-dim: #a7a892; --ink-faint: #74765f;
+    --line: #33372a; --torch: #e0a43b; --brute: #d1534a; --smart: #6bbf7a; --gap: #4a5340; --warn: #d98a2b; --cold: #5a86a6;
+  }
+  :root[data-theme="light"] {
+    --bg: #efece0; --panel: #f7f5ec; --panel-2: #fffdf5;
+    --ink: #26281c; --ink-dim: #5c5e49; --ink-faint: #8a8b73;
+    --line: #d9d6c4; --torch: #b47a12; --brute: #b83c33; --smart: #3f8a4f; --gap: #cdd0bd; --warn: #b96f16; --cold: #416b8a;
+  }
+
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--sans); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+  .wrap { max-width: 1000px; margin: 0 auto; padding: 48px 24px 80px; }
+
+  header { border-bottom: 1px solid var(--line); padding-bottom: 28px; }
+  .eyebrow { font-family: var(--mono); font-size: 12px; letter-spacing: .18em; text-transform: uppercase; color: var(--torch); margin: 0 0 12px; }
+  h1 { font-size: clamp(27px, 4.6vw, 42px); line-height: 1.12; margin: 0 0 14px; font-weight: 800; letter-spacing: -.01em; text-wrap: balance; }
+  .lede { font-size: 17px; color: var(--ink-dim); max-width: 64ch; margin: 0; }
+  .lede b { color: var(--ink); font-weight: 700; }
+  .meta { font-family: var(--mono); font-size: 12px; color: var(--ink-faint); margin-top: 18px; display: flex; flex-wrap: wrap; gap: 6px 20px; }
+  .correction { margin-top: 20px; font-size: 13px; color: var(--ink-dim); background: var(--panel); border: 1px solid var(--line); border-left: 3px solid var(--warn); border-radius: 8px; padding: 12px 15px; max-width: 68ch; }
+  .correction b { color: var(--ink); }
+
+  h2 { font-size: 13px; font-family: var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--ink-dim); font-weight: 600; margin: 52px 0 18px; padding-bottom: 8px; border-bottom: 1px solid var(--line); }
+
+  .verdict { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 32px; }
+  @media (max-width: 640px) { .verdict { grid-template-columns: 1fr; } }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 18px; position: relative; overflow: hidden; }
+  .card::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--c); }
+  .card .n { font-family: var(--mono); font-size: 29px; font-weight: 700; color: var(--c); font-variant-numeric: tabular-nums; line-height: 1; }
+  .card .k { font-size: 13px; color: var(--ink); margin-top: 8px; font-weight: 700; }
+  .card .d { font-size: 12.5px; color: var(--ink-dim); margin-top: 4px; line-height: 1.5; }
+
+  .chart { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 10px 4px 4px; }
+  .drow { display: grid; grid-template-columns: 168px 1fr; align-items: center; gap: 12px; padding: 2px 16px; min-height: 27px; }
+  .drow.head { font-family: var(--mono); font-size: 10px; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-faint); border-bottom: 1px solid var(--line); margin-bottom: 4px; min-height: 24px; }
+  .dname { font-size: 12.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: baseline; gap: 7px; }
+  .dname .dep { font-family: var(--mono); font-size: 9.5px; color: var(--ink-faint); min-width: 15px; }
+  .track { position: relative; height: 18px; }
+  .track .axis { position: absolute; left: 0; right: 0; top: 50%; height: 1px; background: var(--line); }
+  .seg { position: absolute; top: 50%; height: 3px; transform: translateY(-50%); background: var(--gap); border-radius: 2px; }
+  .dot { position: absolute; top: 50%; width: 11px; height: 11px; border-radius: 50%; transform: translate(-50%,-50%); border: 2px solid var(--panel); }
+  .dot.smart { background: var(--smart); z-index: 2; }
+  .dot.brute { background: var(--brute); }
+  .dot.brute.none { background: transparent; border: 2px dashed var(--brute); }
+  .lvtag { position: absolute; top: 50%; transform: translateY(-50%); font-family: var(--mono); font-size: 10px; font-variant-numeric: tabular-nums; }
+  .axislabels { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 10px; color: var(--ink-faint); padding: 8px 16px 6px; margin-left: 180px; }
+  .legend { display: flex; flex-wrap: wrap; gap: 8px 20px; margin: 14px 2px 0; font-size: 12px; color: var(--ink-dim); align-items: center; }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .dotk { width: 11px; height: 11px; border-radius: 50%; display: inline-block; }
+
+  .prose { max-width: 66ch; }
+  .prose p { margin: 0 0 15px; }
+  .prose strong { color: var(--ink); font-weight: 700; }
+  .finding { display: grid; grid-template-columns: 26px 1fr; gap: 14px; padding: 16px 0; border-bottom: 1px solid var(--line); }
+  .finding:last-child { border-bottom: none; }
+  .finding .fn { font-family: var(--mono); font-size: 13px; color: var(--torch); font-weight: 700; padding-top: 1px; }
+  .finding h3 { margin: 0 0 5px; font-size: 15px; font-weight: 700; }
+  .finding p { margin: 0; font-size: 13.5px; color: var(--ink-dim); line-height: 1.6; }
+  .finding .verdict-tag { font-family: var(--mono); font-size: 10.5px; padding: 1px 7px; border-radius: 4px; border: 1px solid var(--c); color: var(--c); margin-left: 8px; white-space: nowrap; vertical-align: middle; }
+
+  .comp { background: var(--panel-2); border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; font-family: var(--mono); font-size: 12px; color: var(--ink-dim); margin-top: 8px; line-height: 1.7; }
+  .comp .front { color: var(--brute); } .comp .back { color: var(--cold); }
+  .note { font-size: 12.5px; color: var(--ink-faint); margin-top: 14px; max-width: 68ch; line-height: 1.55; }
+  .note code { font-family: var(--mono); font-size: 11.5px; color: var(--ink-dim); background: var(--panel-2); padding: 1px 5px; border-radius: 3px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <p class="eyebrow">Balance Telemetry · 戦略ペルソナ実測</p>
+    <h1>壁は「難易度」ではなく<br>「知識」にある</h1>
+    <p class="lede">
+      ジョブ編成・種族(亜種)・隊列・装備シナジーを山登り探索する<b>戦略ペルソナ</b>で本編23エリアを測り直した結果、
+      過剰調整の「レベルの壁」は<b>1つも無く</b>、全エリアが最適編成なら<b>Lv40以下</b>で攻略可能でした。
+      真の関門は難易度ではなく、システムを理解しているかどうかです。
+    </p>
+    <div class="meta">
+      <span>手法: ExpeditionEngine ヘッドレス + 編成山登り</span>
+      <span>制約: ジョブ⊕亜種(訓練は純ゴブリンのみ)</span>
+      <span>指標: 戦略プレミアム / 必要レベル</span>
+    </div>
+    <div class="correction">
+      <b>方法論(2度の訂正済み):</b> 最初は裸・ジョブなしで測り、次はジョブを入れたが<b>解放前のライダー/ネクロマンサーを序盤で使う</b>誤りがあった。
+      現在は<b>各エリアで実際に解放済みのジョブ・亜種のみ</b>(ゴブリン集落=訓練解放、街道=クレリック、ウルフ草原=ライダー、ネクロマンサーは課金)で測定。
+      補正後も結論の骨子は不変=<b>戦略プレミアムは基本職+隊列シナジー自体で成立</b>しており、測定の正当性が担保された。
+    </div>
+  </header>
+
+  <div class="verdict">
+    <div class="card" style="--c:var(--smart)">
+      <div class="n">0</div>
+      <div class="k">レベルの壁</div>
+      <div class="d">最適編成でどのエリアも Lv40以下で80%クリア。「レベル上げを強制する過剰調整」は存在しない。設計目標どおり。</div>
+    </div>
+    <div class="card" style="--c:var(--brute)">
+      <div class="n">~100%</div>
+      <div class="k">戦略プレミアム</div>
+      <div class="d">装備は揃えてもジョブ・隊列・亜種を理解しない中級プレイヤーは、ほぼ全エリアで成功率0%。知識が唯一の関門。</div>
+    </div>
+    <div class="card" style="--c:var(--warn)">
+      <div class="n">±0</div>
+      <div class="k">エリア別の戦略差</div>
+      <div class="d">解放を正しく制限しても「前列に壁役+後列に術者/回復」の単一の型が全域で最良。エリアごとに違う型を要求する差別化が薄い。</div>
+    </div>
+  </div>
+
+  <h2>裸 vs 戦略 / クリア必要レベルの差</h2>
+  <div class="chart" id="chart"></div>
+  <div class="legend">
+    <span><i class="dotk" style="background:var(--smart)"></i>戦略ビルド必要Lv(最適編成)</span>
+    <span><i class="dotk" style="background:var(--brute)"></i>裸ビルド必要Lv(システム無視)</span>
+    <span><i class="dotk" style="background:transparent;border:2px dashed var(--brute)"></i>裸ではLv180でも不可</span>
+    <span>—— 帯の長さ=戦略で節約できるレベル</span>
+  </div>
+  <p class="note">
+    左(緑)ほど「賢く組めば低レベルで勝てる」。帯が長い=戦略知識の価値が大きい。中盤のオークの砦(裸Lv150→戦略Lv30)や
+    討伐隊防衛戦(裸ではLv180でも不可→戦略Lv40)は、過剰調整ではなく<b>編成を要求する「戦略の壁」</b>だった。
+  </p>
+
+  <h2>設計の診断</h2>
+  <div>
+    <div class="finding">
+      <div class="fn">01</div>
+      <div>
+        <h3>目標は達成されている<span class="verdict-tag" style="--c:var(--smart)">GOOD</span></h3>
+        <p>「レベルを上げて殴るだけでは勝てない/種族・隊列・ジョブ・シナジーの理解でクリアする」という狙いは、数値上ちゃんと機能しています。
+        全エリアで戦略プレミアムが90〜100%=装備だけでは勝てず、編成理解が勝敗を分けています。レベリング強制のエリアはゼロ。</p>
+      </div>
+    </div>
+    <div class="finding">
+      <div class="fn">02</div>
+      <div>
+        <h3>ただし「正解の型」が1つに収束している<span class="verdict-tag" style="--c:var(--warn)">要検討</span></h3>
+        <p>解放を正しく制限しても、ほぼ全エリアで同じ<strong>「前列に壁役+後列に術者/回復」</strong>という単一の型が最良でした
+        (使える職がその時々で変わるだけで、配置の考え方は不変)。エリアごとに求められる戦略が変わらないため、
+        一度この型を知ると以降すべてが低レベルで無力化され、戦略が<strong>一度きりの知識チェック</strong>になっています。
+        エリア別に弱点(魔法偏重・単体高火力・状態異常等)を持たせ、別々の型が刺さるようにすると、繰り返し戦略を要求できます。</p>
+        <div class="comp">支配型(例, 街道以降): <span class="front">前列 ガード / ウォリアー / シーフ</span> + <span class="back">後列 メイジ / クレリック</span>（frontCount=3）</div>
+      </div>
+    </div>
+    <div class="finding">
+      <div class="fn">03</div>
+      <div>
+        <h3>オークの砦は「寄り道で強化してから挑む壁」<span class="verdict-tag" style="--c:var(--smart)">設計意図</span></h3>
+        <p>ライダーが本線の祖先に入らないのは<strong>意図的な設計</strong>でした。オークの砦は解放直後はクリア不可能に設定されており、
+        分岐ルート(ウルフ草原→リザードマンの沼砦)で<strong>ライダーやリザードマン因子を取得して戦力を上げてから</strong>挑む想定です。
+        つまり分岐は「本線の壁を越えるための強化フェーズ」。この診断が使う<strong>「祖先=保証される最小解放」モデルは、この意図的な寄り道の戦力を数え落とします</strong>
+        (=寄り道なしの下限を測っている)。オークの砦を正しく評価するには、寄り道で得る rider・因子を与えて測り直す必要があります(下記シミュレータの改善余地)。</p>
+      </div>
+    </div>
+    <div class="finding">
+      <div class="fn">04</div>
+      <div>
+        <h3>亜種・繁殖システムの存在意義が薄い<span class="verdict-tag" style="--c:var(--warn)">要検討</span></h3>
+        <p>ジョブと亜種は排他(訓練は純ゴブリンのみ)ですが、探索ではジョブが亜種を上回り、亜種は
+        ジョブ未解放の最序盤2エリアでしか選ばれませんでした。亜種にジョブへ勝てる専用役割(特定耐性・高HP壁・専用シナジー)を与えないと、
+        繁殖という主要システムが報われません。上記の寄り道設計(リザードマン因子)を活かすなら、その因子が刺さる相手を作るのが自然です。</p>
+      </div>
+    </div>
+    <div class="finding">
+      <div class="fn">05</div>
+      <div>
+        <h3>areaLevel ラベルが実難易度と乖離<span class="verdict-tag" style="--c:var(--warn)">要修正</span></h3>
+        <p>王都決戦・城門は表示 areaLevel 160 ですが、戦略ビルドなら Lv8、裸でも Lv25 で踏破できます。
+        個体値計算(BaseRankSystem)もこのラベルを参照しているため、表示・報酬・出産個体値の全てに歪みが波及します。
+        ラベルを実難易度に合わせて振り直すのが前提整備として必要です。</p>
+      </div>
+    </div>
+  </div>
+
+  <h2>次の一手(案)</h2>
+  <div class="prose">
+    <p>
+      <strong>1. エリアに「編成の得手不得手」を持たせる(最優先)。</strong>
+      現状は1編成が万能。敵の攻撃属性・耐性・行動パターンをエリアごとに差別化し、
+      「ここは魔法パーティ有利/ここは物理単体が要る」といった相性を作ると、戦略プレミアムを保ったまま<em>多様な</em>戦略を要求できます。
+      このシミュレータは編成別の勝率を出せるので、相性が生まれたかを直接検証できます。
+    </p>
+    <p>
+      <strong>2. 寄り道設計をシミュレータでも測れるようにする。</strong> オークの砦のような「分岐で強化してから挑む壁」は、
+      現状の下限モデルでは過小評価される。エリアごとに「意図された前提クリア(寄り道)」を宣言し、寄り道あり/なしの両方で測れば、
+      「寄り道なしでは無理・寄り道ありなら越えられる」という設計が意図どおり効いているか検証できる。あわせて亜種に専用役割を与える。
+    </p>
+    <p>
+      <strong>3. 中級者への導線。</strong> プレミアムが広範に~100%=「知らないと0%」の断崖。
+      ジョブ・隊列・亜種の役割を段階的に教えるチュートリアル/推奨編成の提示で、崖をスロープにする。
+    </p>
+    <p>
+      <strong>4. areaLevel の振り直しと空洞の底上げ。</strong> ラベルを実難易度に合わせ、
+      裸低レベルで抜ける終盤エリア(王都系)の敵を進行に沿って強化する。
+    </p>
+  </div>
+  <p class="note">
+    測定: 戦略ペルソナは入手可能なジョブ・亜種(繁殖容易度で制限)・装備・隊列を山登り探索し progressScore を最大化。
+    戦略プレミアム = 最適必要Lv における「戦略ビルド成功率 − 中位装備のみ(システム無理解)成功率」。全23エリア約6.7分・決定論。
+    <br>注: 探索予算は実用重視で小さめ。個々のエリアで<em>さらに</em>良い編成が存在する可能性はあるが、「1つの汎用編成が全域を無力化する」という結論は変わらない。
+    詳細な検証方法・前提は <code>docs/balance_simulation.md</code> を参照。
+  </p>
+</div>
+
+<script>
+  const data = [
+    {name:"スライムの洞窟",dep:0,smart:3,brute:3},
+    {name:"周辺の森",dep:1,smart:8,brute:8},
+    {name:"ゴブリン集落",dep:2,smart:10,brute:16},
+    {name:"森外れの廃村",dep:3,smart:30,brute:50},
+    {name:"古井戸の地下水路",dep:4,smart:20,brute:60},
+    {name:"忘れられた廃墟",dep:5,smart:40,brute:70},
+    {name:"盗賊のアジト",dep:6,smart:25,brute:70},
+    {name:"街道",dep:7,smart:30,brute:70},
+    {name:"オークの野営地",dep:8,smart:10,brute:40},
+    {name:"辺境の村",dep:9,smart:10,brute:50},
+    {name:"オークの砦",dep:9,smart:25,brute:150},
+    {name:"ウルフ草原",dep:10,smart:16,brute:100},
+    {name:"討伐隊防衛戦",dep:10,smart:30,brute:null},
+    {name:"リザードマンの沼砦",dep:11,smart:30,brute:null},
+    {name:"蜘蛛影の森",dep:11,smart:10,brute:25},
+    {name:"死霊の墓原",dep:12,smart:8,brute:16},
+    {name:"風切りの断崖",dep:13,smart:10,brute:30},
+    {name:"辺境の城",dep:14,smart:8,brute:25},
+    {name:"ヴァンパイアの古城",dep:15,smart:10,brute:25},
+    {name:"王都・城門",dep:16,smart:8,brute:25},
+    {name:"王都・王城内部",dep:17,smart:8,brute:40},
+    {name:"ドラゴンの火山巣",dep:18,smart:13,brute:40},
+    {name:"王都・玉座の間",dep:19,smart:10,brute:40},
+  ];
+  const CAP = 180;
+  const pos = v => Math.log(v) / Math.log(CAP); // 0..1
+  const chart = document.getElementById("chart");
+  let html = '<div class="drow head"><div>エリア(進行順)</div><div>必要レベル(対数目盛 Lv1→Lv180)</div></div>';
+  for (const d of data) {
+    const bruteEff = d.brute == null ? CAP : d.brute;
+    const xs = pos(d.smart) * 100, xb = pos(bruteEff) * 100;
+    const lo = Math.min(xs, xb), hi = Math.max(xs, xb);
+    const noneCls = d.brute == null ? " none" : "";
+    // ラベルの左右配置(端で見切れない様に)
+    const smartLabel = `<span class="lvtag" style="left:${xs}%;transform:translate(-50%,-50%);margin-top:-13px;color:var(--smart)">${d.smart}</span>`;
+    const bruteTxt = d.brute == null ? "180+" : d.brute;
+    const bruteLabel = `<span class="lvtag" style="left:${xb}%;transform:translate(-50%,-50%);margin-top:13px;color:var(--brute)">${bruteTxt}</span>`;
+    html += `<div class="drow">
+      <div class="dname" title="${d.name}"><span class="dep">${d.dep}</span>${d.name}</div>
+      <div class="track">
+        <div class="axis"></div>
+        <div class="seg" style="left:${lo}%;width:${hi-lo}%"></div>
+        <div class="dot brute${noneCls}" style="left:${xb}%"></div>
+        <div class="dot smart" style="left:${xs}%"></div>
+        ${smartLabel}${bruteLabel}
+      </div>
+    </div>`;
+  }
+  html += '<div class="axislabels"><span>Lv1</span><span>Lv10</span><span>Lv40</span><span>Lv180</span></div>';
+  chart.innerHTML = html;
+</script>
+</body>
+</html>
