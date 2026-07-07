@@ -2,26 +2,17 @@
  * SQLiteを使用したストーリー進行状況リポジトリ実装
  */
 import type { StoryProgressState } from '../../shared/types/StoryProgress'
+import type { IStoryProgressRepository, StoryProgress } from '../../core/repositories/IStoryProgressRepository'
 import { getDatabase } from '../database'
+
+// インターフェース／進行状況型は core/repositories へ移動。後方互換のため再エクスポート
+export type { IStoryProgressRepository, StoryProgress }
 
 interface StoryProgressRow {
   story_id: string
   unlocked: number
   read: number
   updated_at: string
-}
-
-interface StoryProgress {
-  unlocked: boolean
-  read: boolean
-}
-
-export interface IStoryProgressRepository {
-  getAll(): Promise<StoryProgressState>
-  get(storyId: string): Promise<StoryProgress | null>
-  save(storyId: string, progress: StoryProgress): Promise<void>
-  unlock(storyId: string): Promise<void>
-  markRead(storyId: string): Promise<void>
 }
 
 export class SQLiteStoryProgressRepository implements IStoryProgressRepository {
@@ -78,12 +69,24 @@ export class SQLiteStoryProgressRepository implements IStoryProgressRepository {
   }
 
   async unlock(storyId: string): Promise<void> {
-    const current = await this.get(storyId) ?? { unlocked: false, read: false }
-    await this.save(storyId, { ...current, unlocked: true })
+    // get→save の lost update を避けるため単文の UPSERT で更新する
+    const db = await getDatabase()
+    await db.runAsync(
+      `INSERT INTO story_progress (story_id, unlocked, read, updated_at)
+       VALUES (?, 1, 0, datetime('now'))
+       ON CONFLICT(story_id) DO UPDATE SET unlocked = 1, updated_at = datetime('now')`,
+      [storyId]
+    )
   }
 
   async markRead(storyId: string): Promise<void> {
-    const current = await this.get(storyId) ?? { unlocked: true, read: false }
-    await this.save(storyId, { ...current, unlocked: true, read: true })
+    // get→save の lost update を避けるため単文の UPSERT で更新する
+    const db = await getDatabase()
+    await db.runAsync(
+      `INSERT INTO story_progress (story_id, unlocked, read, updated_at)
+       VALUES (?, 1, 1, datetime('now'))
+       ON CONFLICT(story_id) DO UPDATE SET unlocked = 1, read = 1, updated_at = datetime('now')`,
+      [storyId]
+    )
   }
 }

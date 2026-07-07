@@ -3,7 +3,8 @@
  */
 
 export const BACKUP_APP_ID = 'goblin_kingdom'
-export const BACKUP_FORMAT_VERSION = 1
+// v2: tickets テーブルを追加（旧 v1 バックアップは tickets 無しでも読み込み可能）
+export const BACKUP_FORMAT_VERSION = 2
 export const BACKUP_SIGNATURE_ALGORITHM = 'HMAC-SHA256'
 
 export const EXPORTABLE_TABLES = [
@@ -15,6 +16,7 @@ export const EXPORTABLE_TABLES = [
   'dungeon_progress',
   'equipment',
   'story_progress',
+  'tickets',
   'app_metadata',
 ] as const
 

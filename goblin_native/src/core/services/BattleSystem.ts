@@ -1,287 +1,85 @@
-import type { AttackTargetDetail, BattleActionPolicy, BattleLogEntry, CharacterSkill, Enemy, Goblin, LearnedSpell } from '../../shared/types'
-import { SPELL_DEFS } from '../../shared/data/spells'
-import { RECOVERY_MAGIC_SPELL_TABLE } from '../../shared/data/recoveryMagic'
+import type { AttackTargetDetail, BattleLogEntry, Enemy, Goblin } from '../../shared/types'
 import {
   getActionOrderMultiplierFromSkills,
   getAdditionalDamageFromSkills,
   getMagicDamageFollowUpFromSkills,
   getCriticalAttackFollowUpFromSkills,
-  getCriticalDamageBonusFromSkills,
   getPhysicalCounterAttackFromSkills,
   getCounterAttackAvoidanceRateFromSkills,
-  getPhysicalDamagePercentFromSkills,
-  getPureGoblinPartyStatBonusPercentFromSkills,
-  getRearAllyDamageMultiplierFromSkills,
-  getLearnedSpellsFromSkills,
-  getMagicDamageReductionFromSkills,
-  getPhysicalDamageReductionFromSkills,
-  getRangedAttackDamageReductionFromSkills,
-  getRowDamageMultiplierForAttackType,
-  getRearMagicProtectionMultiplierFromSkills,
-  getRearProtectionMultiplierFromSkills,
-  getRowDamageMultiplierFromSkills,
   getSpellTakenMultiplierFromSkills,
   getSpellDamageMultiplierFromSkills,
-  getSpellDamagePercentFromSkills,
   getPartyMagicDamageMultiplierFromSkills,
-  hasCoverLowHpAllySkill,
-  hasTwoColumnAttackSkill,
-  hasActTwicePerTurnSkill,
-  hasImmediateReviveSkill,
-  hasRecoverRandomUsedSpellOnDefendSkill,
-  hasSurviveLethalDamageAtHp1Skill,
   getHpRegenPercentFromSkills,
   getHpRegenAmountFromSkills,
 } from '../../shared/data/characterSkills'
 import type { SpellDef } from '../../shared/types/Spell'
 import { CombatantManager } from './CombatantManager'
 import { DamageCalculator } from './DamageCalculator'
-import { GoblinStatCalculator } from './GoblinStatCalculator'
-import { getGoblinBaseAttributesAtLevel } from '../../shared/utils/goblinHp'
-import { getEffectiveStats, isPureGoblin } from '../../shared/utils/goblinStats'
+import { isPureGoblin } from '../../shared/utils/goblinStats'
 import i18n from '../../shared/i18n'
 import { getSkillLabel, getSpellLabel } from '../../shared/i18n/entityLocalization'
-import { normalizeBattleActionPolicy, shouldRunRate } from '../../shared/utils/battleActionPolicy'
+import { shouldRunRate } from '../../shared/utils/battleActionPolicy'
 import { races as RACE_DICT } from '../../shared/data/races'
-import { getRaceResistanceTotals, getRaceSkills } from '../../shared/data/races'
-import { getUniqueSkillsById } from '../../shared/data/characterSkills'
-import type {
-  Combatant,
-  DamageOptions,
-  RaceDict,
-  Skill,
-} from './DamageCalculator'
+import type { Skill } from './DamageCalculator'
+import type { BattleResult, BattleUnit } from './battle/types'
+import {
+  ATTACK_UP_PHYSICAL_DAMAGE_MULTIPLIER,
+  BASIC_ATTACK_SKILL,
+  DEFAULT_DAMAGE_OPTIONS,
+  MAX_COUNTER_ATTACK_DEPTH,
+  SPELL_DAMAGE_OPTIONS,
+  TWO_COLUMN_ATTACK_DAMAGE_MULTIPLIER,
+} from './battle/constants'
+import {
+  calculateHitRate,
+  getActionOrderRandomFactor,
+  getActionOrderValue,
+  getDamageModifier,
+  getSpellBonusDamage,
+} from './battle/combatMath'
+import { getActionsPerTurn, selectTarget } from './battle/targeting'
+import {
+  accumulateTargetDetail,
+  assignEnemyLogNames,
+  createBattleResult,
+  createTurnStartLog,
+  getLogName,
+  getSortedTargetDetails,
+  getUnitKey,
+} from './battle/logHelpers'
+import { createAllyUnit, createEnemyUnit } from './battle/unitFactory'
+import {
+  decideSpellAction,
+  getSpellHitCount,
+  recoverRandomUsedSpellOnDefend,
+  selectBelowHalfHpAlly,
+  selectLowestHpRatioAlly,
+} from './battle/spellAi'
+import {
+  applyDamage,
+  applyHealing,
+  tryImmediateReviveForFallenAllies,
+  tryImmediateReviveForFallenAlly,
+} from './battle/effects'
+import {
+  getDefendingDamageFactor,
+  getRearDamageMultiplier,
+  getRearGuardReductionFactor,
+  getRearMagicGuardReductionFactor,
+  getUnitRowDamageMultiplier,
+  resolveCoverTarget,
+  selectSecondColumnAttackTarget,
+} from './battle/positioning'
 
-interface SpellCharge {
-  spellId: string
-  remaining: number   // 残りチャージ
-  maxCharges: number  // 最大チャージ
-  category: SpellCategory
-}
-
-type SpellCategory = 'cleric' | 'mage'
-
-interface BattleUnit {
-  instanceId?: string
-  combatant: Combatant
-  logName?: string
-  currentHP: number
-  maxHP: number
-  initialHP: number
-  power?: number
-  agility: number
-  luck: number
-  attackCount: number
-  accuracy: number
-  evasion: number
-  isAlly: boolean
-  originalIndex: number
-  damageReduction: number  // 汎用の被ダメージ軽減率（0〜100）
-  physicalDamageReduction: number  // 物理ダメージ軽減率（0〜100）
-  rangedAttackDamageReduction: number // 遠距離通常攻撃ダメージ軽減率（0〜100）
-  magicDamageReduction: number  // 魔法ダメージ軽減率（0〜100）
-  breathDamageReduction: number // ブレスダメージ軽減率（0〜100）
-  shieldBarrierDamageReduction: number // シールドバリアの攻撃ダメージ軽減率（0〜100）
-  shieldBarrierBreathDamageReduction: number // シールドバリアのブレスダメージ軽減率（0〜100）
-  magicBarrierDamageReduction: number // マジックバリアの魔法ダメージ軽減率（0〜100）
-  physicalDamageDealtMultiplier: number // 物理与ダメージ倍率
-  physicalDamagePercent: number   // 物理威力の増減（%）
-  magicAtk: number              // 魔法攻撃力
-  magicHeal: number             // 魔法回復量
-  criticalRate: number          // 必殺率（%）
-  criticalDamageBonusPercent: number // 会心威力上昇（%）
-  spellDamagePercent: number    // 魔法威力の増減（%）
-  magicFieldDamageMultiplier: number // PT効果による魔法与ダメージ倍率
-  shieldBarrierActive?: boolean  // シールドバリア状態
-  magicBarrierActive?: boolean   // マジックバリア状態
-  row: number              // 隊列の列番号（0-based）
-  rowSlot: number          // 列内のスロット番号（0-based）
-  level: number            // 呪文のターゲット数計算用
-  spellCharges: SpellCharge[]  // 戦闘中の呪文チャージ状態
-  skills: CharacterSkill[]
-  battleActionPolicy: BattleActionPolicy
-  isDefending: boolean
-  attackType: 'melee' | 'range'
-}
-
-function toCombatBuffsFromSkills(skills: CharacterSkill[]) {
-  return getUniqueSkillsById(skills)
-    .filter((skill) => skill.raceBonus || skill.raceTakenBonus)
-    .map((skill) => ({
-      id: skill.id,
-      name: skill.id,
-      raceBonus: skill.raceBonus,
-      raceTakenBonus: skill.raceTakenBonus,
-    }))
-}
-
-export interface BattleResult {
-  rounds: number
-  outcome: 'win' | 'lose' | 'retreat'
-  allyHPDelta: number[]
-  enemyDefeated: number
-  detailedLog: BattleLogEntry[]
-}
-
-const BASIC_ATTACK_SKILL: Skill = {
-  id: 'basic_attack',
-  name: i18n.t('battle.normalAttack'),
-  power: 1.0,
-}
-
-const DEFAULT_DAMAGE_OPTIONS: DamageOptions = {
-  defConstant: 100,
-  randomMin: 0.6,
-  randomMax: 1.05,
-}
-
-const SPELL_DAMAGE_OPTIONS: DamageOptions = {
-  ...DEFAULT_DAMAGE_OPTIONS,
-  isMagic: true,
-}
-
-const CLERIC_MAGIC_SPELL_IDS = new Set(RECOVERY_MAGIC_SPELL_TABLE.map(entry => entry.spellId))
-const ATTACK_UP_PHYSICAL_DAMAGE_MULTIPLIER = 1.6
-const TWO_COLUMN_ATTACK_DAMAGE_MULTIPLIER = 0.5
-const HEALTHY_HP_RATIO_THRESHOLD = 0.8
-const LOW_HP_RATIO_THRESHOLD = 0.79
-const CLERIC_BARRIER_SPELL_PRIORITY = ['shield_barrier', 'magic_barrier'] as const
-const CLERIC_SINGLE_HEAL_SPELL_PRIORITY = ['full_heal', 'heal_plus', 'heal'] as const
-const PARTY_HEAL_SPELL_ID = 'party_heal'
-
-interface UsableSpellCharge {
-  charge: SpellCharge
-  def: SpellDef
-}
-
-/** レベル帯ごとの魔法追加ダメージ制限倍率 */
-const SPELL_BONUS_LEVEL_LIMIT_BY_LEVEL: { maxLevel: number; multiplier: number }[] = [
-  { maxLevel: 5, multiplier: 0.282 },
-  { maxLevel: 10, multiplier: 0.422 },
-  { maxLevel: 15, multiplier: 0.630 },
-  { maxLevel: 20, multiplier: 0.758 },
-  { maxLevel: 25, multiplier: 0.910 },
-  { maxLevel: 99, multiplier: 1.000 },
-]
-
-function getSpellCoefficient(level: number, spellDef: SpellDef): number {
-  return (spellDef.spellCoefficient ?? 0) + level * (spellDef.spellCoefficientPerLevel ?? 0)
-}
-
-function getSpellBonusDamage(level: number, magicAtk: number, spellDef: SpellDef): number {
-  const entry = SPELL_BONUS_LEVEL_LIMIT_BY_LEVEL.find(e => level <= e.maxLevel)
-  const spellBase = getSpellCoefficient(level, spellDef)
-  if (!entry || spellBase === 0) return 0
-  return entry.multiplier * (magicAtk * 0.1 + spellBase * (1 + level / 20) * 0.2)
-}
-
-// 差5程度なら低敏捷側にも約10%の先行余地を持たせるため、広めの乗算乱数を使う
-const ACTION_ORDER_RANDOM_MIN = 0.21
-const ACTION_ORDER_RANDOM_MAX = 1.0
-
-function getActionOrderRandomFactor(rng: () => number): number {
-  return ACTION_ORDER_RANDOM_MIN + rng() * (ACTION_ORDER_RANDOM_MAX - ACTION_ORDER_RANDOM_MIN)
-}
-
-export function getActionOrderValue(agility: number, actionOrderMultiplier: number, randomB: number): number {
-  const normalizedAgility = Math.max(1, agility)
-  return normalizedAgility * normalizedAgility * actionOrderMultiplier * randomB
-}
-
-/**
- * 攻撃回数に応じたダメージ補正
- * n<=2 → 1.0, n>=3 → 0.9^(n-2)
- */
-export function getDamageModifier(attackNumber: number): number {
-  if (attackNumber <= 2) return 1.0
-  return Math.pow(0.9, attackNumber - 2)
-}
-
-/**
- * 攻撃回数に応じた命中精度補正
- * n=1 → 1.0, n>=2 → 0.6 × 0.9^(n-2)
- */
-export function getAccuracyModifier(attackNumber: number): number {
-  if (attackNumber <= 1) return 1.0
-  return 0.6 * Math.pow(0.9, attackNumber - 2)
-}
-
-/**
- * 命中率計算に使う乱数係数
- * 0.95 <= rand < 1.05 に収め、式全体を過度に変動させないようにする
- */
-export function getHitRateRandomModifier(rng: () => number): number {
-  return 0.95 + rng() * 0.1
-}
-
-/**
- * 隊列の狙われ率の重みを取得
- * 列1(タンク)=13/12, 列2=1/3, 列3以降=0.5^(n+1), 最後2列は同率
- * 6列フル時の比率: 65% / 20% / 7.5% / 3.75% / 1.875% / 1.875%
- * totalRows: 生存列数
- */
-export function getRowWeight(row: number, totalRows: number): number {
-  if (totalRows <= 1) return 1
-  if (row === 0) return 13 / 12
-  if (row === 1) return 1 / 3
-  // 最後の2列は同率
-  const effectiveRow = Math.min(row, totalRows - 2)
-  return Math.pow(0.5, effectiveRow + 1)
-}
-
-/**
- * 隊列に基づくターゲット選択
- * 生存ユニットを列グループ化し、前詰めした列番号で重み付き抽選
- */
-export function selectTarget(aliveUnits: BattleUnit[], rng: () => number): BattleUnit {
-  if (aliveUnits.length === 1) return aliveUnits[0]
-
-  // 列でグループ化（列番号順にソート済みの前提）
-  const rowGroups: Map<number, BattleUnit[]> = new Map()
-  for (const unit of aliveUnits) {
-    const group = rowGroups.get(unit.row) ?? []
-    group.push(unit)
-    rowGroups.set(unit.row, group)
-  }
-
-  // 列を前詰めして連番にする（生存列のみ、元のrow順でソート）
-  const sortedRows = [...rowGroups.keys()].sort((a, b) => a - b)
-  const totalRows = sortedRows.length
-
-  // 列の重み付き抽選
-  const rowWeights = sortedRows.map((_, idx) => getRowWeight(idx, totalRows))
-  const totalWeight = rowWeights.reduce((sum, w) => sum + w, 0)
-  let roll = rng() * totalWeight
-  let selectedRowIdx = 0
-  for (let i = 0; i < rowWeights.length; i++) {
-    roll -= rowWeights[i]
-    if (roll <= 0) {
-      selectedRowIdx = i
-      break
-    }
-  }
-
-  const selectedRow = sortedRows[selectedRowIdx]
-  const candidates = rowGroups.get(selectedRow)!
-
-  // 列内が1体ならそのまま返す
-  if (candidates.length === 1) return candidates[0]
-
-  // 列内の複数ユニットも同じ重み方式で抽選（rowSlot順で前ほど狙われやすい）
-  const sorted = [...candidates].sort((a, b) => a.rowSlot - b.rowSlot)
-  const slotWeights = sorted.map((_, idx) => getRowWeight(idx, sorted.length))
-  const slotTotalWeight = slotWeights.reduce((sum, w) => sum + w, 0)
-  let slotRoll = rng() * slotTotalWeight
-  for (let i = 0; i < sorted.length; i++) {
-    slotRoll -= slotWeights[i]
-    if (slotRoll <= 0) return sorted[i]
-  }
-  return sorted[sorted.length - 1]
-}
-
-function getActionsPerTurn(unit: Pick<BattleUnit, 'skills'>): number {
-  return hasActTwicePerTurnSkill(unit.skills) ? 2 : 1
-}
+// 公開APIとして分割前と同じシンボルを再エクスポート（index.ts の `export *` と既存テスト向け）
+export type { BattleResult, BattleUnit, SpellCharge, SpellCategory, UsableSpellCharge } from './battle/types'
+export {
+  getAccuracyModifier,
+  getActionOrderValue,
+  getDamageModifier,
+  getHitRateRandomModifier,
+} from './battle/combatMath'
+export { getRowWeight, selectTarget } from './battle/targeting'
 
 export class BattleSystem {
   private readonly combatantManager: CombatantManager
@@ -293,30 +91,6 @@ export class BattleSystem {
   ) {
     this.combatantManager = combatantManager
     this.damageCalculator = damageCalculator
-  }
-
-  private mergeLearnedSpells(
-    explicitSpells: LearnedSpell[] | undefined,
-    skills: CharacterSkill[],
-    level: number,
-  ): LearnedSpell[] | undefined {
-    const merged = new Map<string, LearnedSpell>()
-
-    for (const spell of explicitSpells ?? []) {
-      merged.set(spell.spellId, { ...spell })
-    }
-
-    for (const spell of getLearnedSpellsFromSkills(skills, level)) {
-      const existing = merged.get(spell.spellId)
-      if (!existing) {
-        merged.set(spell.spellId, { ...spell })
-        continue
-      }
-
-      existing.extraCharges = Math.max(existing.extraCharges ?? 0, spell.extraCharges ?? 0)
-    }
-
-    return merged.size > 0 ? [...merged.values()] : undefined
   }
 
   private applyBattleStartPartyEffects(
@@ -343,7 +117,7 @@ export class BattleSystem {
     detailedLog.push({
       turn: 0,
       actorId: strongestMagicField.unit.combatant.id,
-      actorName: this.getLogName(strongestMagicField.unit),
+      actorName: getLogName(strongestMagicField.unit),
       actorRow: strongestMagicField.unit.row + 1,
       action: getSkillLabel({ id: 'magic_field', partyMagicDamageMultiplier: strongestMagicField.multiplier }),
       attackCount: 0,
@@ -365,18 +139,18 @@ export class BattleSystem {
   ): BattleResult {
     const pureGoblinCount = allies.filter((goblin) => isPureGoblin(goblin)).length
     const allyUnits = allies.map((goblin, index) =>
-      this.createAllyUnit(goblin, initialAllyHP[index], index, pureGoblinCount),
+      createAllyUnit(this.combatantManager, goblin, initialAllyHP[index], index, pureGoblinCount),
     )
     // 2D敵配列をフラット化してBattleUnit生成（row/rowSlot付き）
     const enemyUnits: BattleUnit[] = []
     let enemyIdx = 0
     for (let row = 0; row < enemies.length; row++) {
       for (let slot = 0; slot < enemies[row].length; slot++) {
-        enemyUnits.push(this.createEnemyUnit(enemies[row][slot], enemyIdx, row, slot))
+        enemyUnits.push(createEnemyUnit(this.combatantManager, enemies[row][slot], enemyIdx, row, slot))
         enemyIdx++
       }
     }
-    this.assignEnemyLogNames(enemyUnits)
+    assignEnemyLogNames(enemyUnits)
 
     const detailedLog: BattleLogEntry[] = []
     this.applyBattleStartPartyEffects(allyUnits, detailedLog)
@@ -390,7 +164,7 @@ export class BattleSystem {
         unit.isDefending = false
       }
 
-      // ターン10で呪文チャージリセット
+      // ターン10で呪文チャージを1回復（最大チャージまで）
       if (currentTurn === 10) {
         for (const unit of [...allyUnits, ...enemyUnits]) {
           if (unit.currentHP <= 0) continue
@@ -400,7 +174,7 @@ export class BattleSystem {
         }
       }
 
-      detailedLog.push(this.createTurnStartLog(currentTurn, allyUnits, enemyUnits))
+      detailedLog.push(createTurnStartLog(currentTurn, allyUnits, enemyUnits))
 
       const turnActedUnitKeys = new Set<string>()
       const turnConsumedUnitKeys = new Set<string>()
@@ -428,14 +202,14 @@ export class BattleSystem {
 
       for (const unit of actingUnits) {
         if (unit.currentHP <= 0) continue
-        const unitKey = this.getUnitKey(unit)
+        const unitKey = getUnitKey(unit)
         if (turnConsumedUnitKeys.has(unitKey)) continue
 
         const targetGroup = unit.isAlly ? enemyUnits : allyUnits
         const sourceGroup = unit.isAlly ? allyUnits : enemyUnits
 
         // 行動決定: 有効に使える呪文チャージがあれば呪文優先
-        const spellAction = this.decideSpellAction(unit, targetGroup, sourceGroup, rng)
+        const spellAction = decideSpellAction(unit, targetGroup, sourceGroup, rng)
 
         if (spellAction) {
           // 呪文実行
@@ -458,7 +232,7 @@ export class BattleSystem {
           detailedLog.push({
             turn: currentTurn,
             actorId: unit.combatant.id,
-            actorName: this.getLogName(unit),
+            actorName: getLogName(unit),
             actorRow: unit.row + 1,
             action: spellAction.name,
             attackCount: totalHitCount,
@@ -467,7 +241,7 @@ export class BattleSystem {
             actorMaxHP: unit.maxHP,
             isAlly: unit.isAlly,
             actionEffect: spellAction.effect ?? 'damage',
-            targets: this.getSortedTargetDetails(targetDetails),
+            targets: getSortedTargetDetails(targetDetails),
           })
           this.tryMagicSupportFollowUps(
             unit,
@@ -500,7 +274,7 @@ export class BattleSystem {
           detailedLog.push({
             turn: currentTurn,
             actorId: unit.combatant.id,
-            actorName: this.getLogName(unit),
+            actorName: getLogName(unit),
             actorRow: unit.row + 1,
             action: BASIC_ATTACK_SKILL.name,
             attackCount: unit.attackCount,
@@ -509,7 +283,7 @@ export class BattleSystem {
             actorMaxHP: unit.maxHP,
             isAlly: unit.isAlly,
             isCritical,
-            targets: this.getSortedTargetDetails(targetDetails),
+            targets: getSortedTargetDetails(targetDetails),
           })
           if (isCritical) {
             this.tryCriticalAttackFollowUps(
@@ -538,11 +312,11 @@ export class BattleSystem {
           turnActedUnitKeys.add(unitKey)
         } else {
           unit.isDefending = true
-          this.recoverRandomUsedSpellOnDefend(unit, rng)
+          recoverRandomUsedSpellOnDefend(unit, rng)
           detailedLog.push({
             turn: currentTurn,
             actorId: unit.combatant.id,
-            actorName: this.getLogName(unit),
+            actorName: getLogName(unit),
             actorRow: unit.row + 1,
             action: i18n.t('battle.defendAction'),
             attackCount: 0,
@@ -575,7 +349,7 @@ export class BattleSystem {
           detailedLog.push({
             turn: currentTurn,
             actorId: unit.combatant.id,
-            actorName: this.getLogName(unit),
+            actorName: getLogName(unit),
             actorRow: unit.row + 1,
             action: i18n.t('battle.hpRegenAction'),
             attackCount: 0,
@@ -586,7 +360,7 @@ export class BattleSystem {
             actionEffect: 'regen',
             targets: [{
               targetId: unit.combatant.id,
-              targetName: this.getLogName(unit),
+              targetName: getLogName(unit),
               targetRow: unit.row + 1,
               totalDamage: -(unit.currentHP - before),
               hitCount: 0,
@@ -601,40 +375,15 @@ export class BattleSystem {
       const enemyAlive = enemyUnits.some(unit => unit.currentHP > 0)
 
       if (!allyAlive) {
-        return this.createBattleResult(currentTurn, 'lose', allyUnits, enemyUnits, detailedLog)
+        return createBattleResult(currentTurn, 'lose', allyUnits, enemyUnits, detailedLog)
       }
 
       if (!enemyAlive) {
-        return this.createBattleResult(currentTurn, 'win', allyUnits, enemyUnits, detailedLog)
+        return createBattleResult(currentTurn, 'win', allyUnits, enemyUnits, detailedLog)
       }
     }
 
-    return this.createBattleResult(currentTurn, 'retreat', allyUnits, enemyUnits, detailedLog)
-  }
-
-  /**
-   * 命中率を計算
-   * 命中率 = 乱数A × (命中精度 × 攻撃回数補正 − 回避能力 × 残りHP補正)
-   * 乱数A は 0.95 以上 1.05 未満
-   * clamp(5, 95)
-   */
-  private calculateHitRate(
-    attacker: BattleUnit,
-    defender: BattleUnit,
-    attackNumber: number,
-    rng: () => number,
-  ): number {
-    const accMod = getAccuracyModifier(attackNumber)
-    const rand = getHitRateRandomModifier(rng)
-
-    // 残りHP補正 = 0.5 * (1 + 残りHP / 最大HP)
-    const hpRatio = defender.maxHP > 0 ? defender.currentHP / defender.maxHP : 0
-    const hpMod = 0.5 * (1 + hpRatio)
-
-    const hitRate = rand * (attacker.accuracy * accMod - defender.evasion * hpMod)
-
-    // 限界値補正: 5% 〜 95%
-    return Math.max(5, Math.min(95, hitRate))
+    return createBattleResult(currentTurn, 'retreat', allyUnits, enemyUnits, detailedLog)
   }
 
   private executeBasicAttack(
@@ -670,9 +419,9 @@ export class BattleSystem {
       if (aliveTargets.length === 0) break
 
       const initialTarget = fixedTarget ?? selectTarget(aliveTargets, rng)
-      const target = fixedTarget ?? this.resolveCoverTarget(initialTarget, targetGroup)
+      const target = fixedTarget ?? resolveCoverTarget(initialTarget, targetGroup)
       const attackTargets = [{ target, damageMultiplier: 1, isPiercing: false }]
-      const secondColumnTarget = this.selectSecondColumnAttackTarget(unit, target, targetGroup, rng)
+      const secondColumnTarget = selectSecondColumnAttackTarget(unit, target, targetGroup, rng)
       if (secondColumnTarget) {
         attackTargets.push({
           target: secondColumnTarget,
@@ -684,7 +433,7 @@ export class BattleSystem {
       for (const { target: attackTarget, damageMultiplier, isPiercing } of attackTargets) {
         if (unit.currentHP <= 0 || attackTarget.currentHP <= 0) continue
 
-        const hitRate = this.calculateHitRate(unit, attackTarget, atkIdx + 1, rng)
+        const hitRate = calculateHitRate(unit, attackTarget, atkIdx + 1, rng)
         const isHit = rng() * 100 < hitRate
 
         if (!isHit) {
@@ -707,16 +456,16 @@ export class BattleSystem {
         )
         const dmgMod = getDamageModifier(landedHitNumber)
         const additionalDamage = getAdditionalDamageFromSkills(unit.skills)
-        const rearDamageMultiplier = this.getRearDamageMultiplier(unit, sourceGroup)
-        const rowDamageMultiplier = this.getUnitRowDamageMultiplier(unit)
+        const rearDamageMultiplier = getRearDamageMultiplier(unit, sourceGroup)
+        const rowDamageMultiplier = getUnitRowDamageMultiplier(unit)
         const reductionFactor = 1 - attackTarget.damageReduction / 100
         const physicalReductionFactor = 1 - attackTarget.physicalDamageReduction / 100
         const rangedAttackReductionFactor = unit.attackType === 'range'
           ? 1 - attackTarget.rangedAttackDamageReduction / 100
           : 1
         const shieldBarrierReductionFactor = 1 - attackTarget.shieldBarrierDamageReduction / 100
-        const protectionFactor = this.getRearGuardReductionFactor(attackTarget, allyUnits)
-        const defendingFactor = this.getDefendingDamageFactor(attackTarget)
+        const protectionFactor = getRearGuardReductionFactor(attackTarget, allyUnits)
+        const defendingFactor = getDefendingDamageFactor(attackTarget)
         const physicalDamageFactor = 1 + unit.physicalDamagePercent / 100
         const criticalDamageFactor = isCritical
           ? 1 + (unit.criticalDamageBonusPercent ?? 0) / 100
@@ -726,9 +475,9 @@ export class BattleSystem {
           Math.floor((baseDamage * dmgMod * rearDamageMultiplier * rowDamageMultiplier + additionalDamage) * physicalDamageFactor * criticalDamageFactor * unit.physicalDamageDealtMultiplier * reductionFactor * physicalReductionFactor * rangedAttackReductionFactor * shieldBarrierReductionFactor * protectionFactor * defendingFactor * damageMultiplier),
         )
 
-        this.applyDamage(attackTarget, damage)
-        damagedTargets.set(this.getUnitKey(attackTarget), attackTarget)
-        this.tryImmediateReviveForFallenAlly(
+        applyDamage(attackTarget, damage)
+        damagedTargets.set(getUnitKey(attackTarget), attackTarget)
+        tryImmediateReviveForFallenAlly(
           attackTarget,
           attackTarget.isAlly ? allyUnits : targetGroup,
           currentTurn,
@@ -737,35 +486,11 @@ export class BattleSystem {
           turnConsumedUnitKeys,
         )
 
-        this.accumulateTargetDetail(targetDetails, attackTarget, damage, isPiercing)
+        accumulateTargetDetail(targetDetails, attackTarget, damage, isPiercing)
       }
     }
 
     return { targetDetails, totalHitCount, isCritical, damagedTargets }
-  }
-
-  private getUnitRowDamageMultiplier(unit: BattleUnit): number {
-    if (unit.isAlly) {
-      return getRowDamageMultiplierFromSkills(unit.skills, unit.row)
-    }
-    return getRowDamageMultiplierForAttackType(unit.attackType, unit.row)
-  }
-
-  private selectSecondColumnAttackTarget(
-    attacker: BattleUnit,
-    primaryTarget: BattleUnit,
-    targetGroup: BattleUnit[],
-    rng: () => number,
-  ): BattleUnit | undefined {
-    if (!hasTwoColumnAttackSkill(attacker.skills)) return undefined
-    if (primaryTarget.row >= 5) return undefined
-
-    const backRowTargets = targetGroup.filter(
-      target => target.currentHP > 0 && target.row === primaryTarget.row + 1,
-    )
-    if (backRowTargets.length === 0) return undefined
-
-    return selectTarget(backRowTargets, rng)
   }
 
   private tryPhysicalCounterAttacks(
@@ -778,8 +503,10 @@ export class BattleSystem {
     turnActedUnitKeys: Set<string>,
     turnConsumedUnitKeys: Set<string>,
     rng: () => number,
+    depth: number = 0,
   ): void {
     if (attacker.currentHP <= 0) return
+    if (depth >= MAX_COUNTER_ATTACK_DEPTH) return
 
     for (const defender of damagedTargets.values()) {
       if (defender.currentHP <= 0 || attacker.currentHP <= 0) continue
@@ -812,7 +539,7 @@ export class BattleSystem {
       detailedLog.push({
         turn: currentTurn,
         actorId: defender.combatant.id,
-        actorName: this.getLogName(defender),
+        actorName: getLogName(defender),
         actorRow: defender.row + 1,
         action: i18n.t('battle.physicalCounterAttackAction'),
         attackCount: followUpAttackCount,
@@ -822,7 +549,7 @@ export class BattleSystem {
         isAlly: defender.isAlly,
         isCritical,
         actionEffect: 'damage',
-        targets: this.getSortedTargetDetails(targetDetails),
+        targets: getSortedTargetDetails(targetDetails),
       })
 
       this.tryPhysicalCounterAttacks(
@@ -835,6 +562,7 @@ export class BattleSystem {
         turnActedUnitKeys,
         turnConsumedUnitKeys,
         rng,
+        depth + 1,
       )
     }
   }
@@ -878,7 +606,7 @@ export class BattleSystem {
       detailedLog.push({
         turn: currentTurn,
         actorId: supporter.combatant.id,
-        actorName: this.getLogName(supporter),
+        actorName: getLogName(supporter),
         actorRow: supporter.row + 1,
         action: i18n.t('battle.criticalSupportFollowUpAction'),
         attackCount: followUpAttackCount,
@@ -888,7 +616,7 @@ export class BattleSystem {
         isAlly: supporter.isAlly,
         isCritical,
         actionEffect: 'damage',
-        targets: this.getSortedTargetDetails(targetDetails),
+        targets: getSortedTargetDetails(targetDetails),
       })
       this.tryPhysicalCounterAttacks(
         supporter,
@@ -947,7 +675,7 @@ export class BattleSystem {
       detailedLog.push({
         turn: currentTurn,
         actorId: supporter.combatant.id,
-        actorName: this.getLogName(supporter),
+        actorName: getLogName(supporter),
         actorRow: supporter.row + 1,
         action: i18n.t('battle.magicSupportFollowUpAction'),
         attackCount: followUpAttackCount,
@@ -957,7 +685,7 @@ export class BattleSystem {
         isAlly: supporter.isAlly,
         isCritical,
         actionEffect: 'damage',
-        targets: this.getSortedTargetDetails(targetDetails),
+        targets: getSortedTargetDetails(targetDetails),
       })
       this.tryPhysicalCounterAttacks(
         supporter,
@@ -973,187 +701,6 @@ export class BattleSystem {
 
       if (!targetGroup.some(target => target.currentHP > 0)) return
     }
-  }
-
-  private initSpellCharges(spells: LearnedSpell[] | undefined): SpellCharge[] {
-    if (!spells) return []
-    return spells
-      .map(ls => {
-        const def = SPELL_DEFS[ls.spellId]
-        if (!def) return null
-        const extra = ls.extraCharges ?? 0
-        return {
-          spellId: ls.spellId,
-          remaining: def.defaultCharges + extra,
-          maxCharges: def.defaultCharges + extra,
-          category: this.getSpellCategory(ls.spellId),
-        }
-      })
-      .filter((sc): sc is SpellCharge => sc !== null)
-  }
-
-  private getSpellCategory(spellId: string): SpellCategory {
-    if (CLERIC_MAGIC_SPELL_IDS.has(spellId)) {
-      return 'cleric'
-    }
-    return 'mage'
-  }
-
-  /**
-   * 使用可能な呪文があれば返す（呪文優先AI）
-   */
-  private decideSpellAction(
-    unit: BattleUnit,
-    targetGroup: BattleUnit[],
-    sourceGroup: BattleUnit[],
-    rng: () => number,
-  ): SpellDef | null {
-    const usableCharges = this.getUsableSpellCharges(unit, targetGroup, sourceGroup)
-    const clericCandidates = usableCharges.filter(({ charge }) => charge.category === 'cleric')
-    if (clericCandidates.length > 0 && shouldRunRate(unit.battleActionPolicy.clericMagicRate, rng)) {
-      const spell = this.decideClericSpellAction(clericCandidates, sourceGroup)
-      if (spell) return spell
-    }
-
-    const mageCandidates = usableCharges.filter(({ charge }) => charge.category === 'mage')
-    if (mageCandidates.length > 0 && shouldRunRate(unit.battleActionPolicy.mageMagicRate, rng)) {
-      return this.decideMageSpellAction(mageCandidates, rng)
-    }
-
-    return null
-  }
-
-  private getUsableSpellCharges(
-    unit: BattleUnit,
-    targetGroup: BattleUnit[],
-    sourceGroup: BattleUnit[],
-  ): UsableSpellCharge[] {
-    return unit.spellCharges
-      .filter(charge => charge.remaining > 0)
-      .map(charge => ({ charge, def: SPELL_DEFS[charge.spellId] }))
-      .filter((entry): entry is UsableSpellCharge => Boolean(entry.def) && this.canUseSpell(entry.def, targetGroup, sourceGroup))
-  }
-
-  private decideMageSpellAction(
-    candidates: UsableSpellCharge[],
-    rng: () => number,
-  ): SpellDef | null {
-    if (candidates.length === 0) return null
-    return candidates[Math.floor(rng() * candidates.length)].def
-  }
-
-  private decideClericSpellAction(
-    candidates: UsableSpellCharge[],
-    sourceGroup: BattleUnit[],
-  ): SpellDef | null {
-    if (candidates.length === 0) return null
-
-    const aliveAllies = sourceGroup.filter(unit => unit.currentHP > 0 && unit.maxHP > 0)
-    if (aliveAllies.length === 0) return null
-
-    const allAlliesHealthy = aliveAllies.every(unit => unit.currentHP / unit.maxHP > HEALTHY_HP_RATIO_THRESHOLD)
-    if (allAlliesHealthy) {
-      return this.findUsableSpellByPriority(candidates, CLERIC_BARRIER_SPELL_PRIORITY)
-    }
-
-    const lowHpAllies = aliveAllies.filter(unit => unit.currentHP / unit.maxHP <= LOW_HP_RATIO_THRESHOLD)
-    if (lowHpAllies.length >= 2) {
-      const partyHeal = candidates.find(({ def }) => def.id === 'party_heal')
-      if (partyHeal) return partyHeal.def
-    }
-
-    const healTarget = this.selectLowestHpRatioAlly(sourceGroup)[0]
-    if (!healTarget) return null
-
-    return this.findUsableSpellByPriority(candidates, CLERIC_SINGLE_HEAL_SPELL_PRIORITY)
-      ?? candidates.find(({ def }) => def.id === 'party_heal')?.def
-      ?? null
-  }
-
-  private findUsableSpellByPriority(
-    candidates: UsableSpellCharge[],
-    priority: readonly string[],
-  ): SpellDef | null {
-    for (const spellId of priority) {
-      const found = candidates.find(({ def }) => def.id === spellId)
-      if (found) return found.def
-    }
-    return null
-  }
-
-  private canUseSpell(
-    spellDef: SpellDef,
-    targetGroup: BattleUnit[],
-    sourceGroup: BattleUnit[],
-  ): boolean {
-    const effect = spellDef.effect ?? 'damage'
-
-    if (effect === 'damage') {
-      return targetGroup.some(unit => unit.currentHP > 0)
-    }
-
-    if (effect === 'heal') {
-      if (spellDef.targeting.type === 'single_ally_below_half_hp') {
-        return sourceGroup.some(unit => unit.currentHP > 0 && unit.maxHP > 0 && unit.currentHP <= unit.maxHP / 2)
-      }
-      return sourceGroup.some(unit => unit.currentHP > 0 && unit.currentHP < unit.maxHP)
-    }
-
-    if (effect === 'barrier') {
-      const reduction = spellDef.damageReductionPercent ?? 0
-      const breathReduction = spellDef.breathDamageReductionPercent ?? 0
-      const magicReduction = spellDef.magicDamageReductionPercent ?? 0
-      return sourceGroup.some(unit => (
-        unit.currentHP > 0 &&
-        (
-          (reduction > 0 && unit.shieldBarrierDamageReduction < reduction) ||
-          (breathReduction > 0 && unit.shieldBarrierBreathDamageReduction < breathReduction) ||
-          (magicReduction > 0 && unit.magicBarrierDamageReduction < magicReduction)
-        )
-      ))
-    }
-
-    if (effect === 'attack_up') {
-      return sourceGroup.some(unit => (
-        unit.currentHP > 0 &&
-        unit.physicalDamageDealtMultiplier < ATTACK_UP_PHYSICAL_DAMAGE_MULTIPLIER
-      ))
-    }
-
-    // cure: 現在は状態異常システム未実装のため常にfalse
-    if (effect === 'cure') {
-      return false
-    }
-
-    return false
-  }
-
-  private recoverRandomUsedSpellOnDefend(unit: BattleUnit, rng: () => number): void {
-    if (!hasRecoverRandomUsedSpellOnDefendSkill(unit.skills)) {
-      return
-    }
-
-    const usedSpellCharges = unit.spellCharges.filter((charge) => charge.remaining < charge.maxCharges)
-    if (usedSpellCharges.length === 0) {
-      return
-    }
-
-    const selectedCharge = usedSpellCharges[Math.floor(rng() * usedSpellCharges.length)]
-    selectedCharge.remaining = Math.min(selectedCharge.remaining + 1, selectedCharge.maxCharges)
-  }
-
-  /**
-   * 呪文のターゲット数を計算
-   */
-  private getSpellHitCount(spellDef: SpellDef, level: number): number {
-    const t = spellDef.targeting
-    if (t.type === 'random_hits') return t.hitCount
-    if (t.type === 'single_ally_lowest_hp') return 1
-    if (t.type === 'single_ally_below_half_hp') return 1
-    if (t.type === 'all_allies') return 0
-    // multi_target
-    const bonus = Math.floor(level / t.scaleLevelInterval) * t.scalePerLevel
-    return t.baseTargets + bonus
   }
 
   /**
@@ -1172,7 +719,7 @@ export class BattleSystem {
   ): { targetDetails: Map<string, AttackTargetDetail>; totalHitCount: number } {
     const targetDetails: Map<string, AttackTargetDetail> = new Map()
     let totalHitCount = 0
-    const hitCount = this.getSpellHitCount(spellDef, unit.level)
+    const hitCount = getSpellHitCount(spellDef, unit.level)
     const effect = spellDef.effect ?? 'damage'
 
     if (effect === 'heal') {
@@ -1180,19 +727,19 @@ export class BattleSystem {
       if (spellDef.targeting.type === 'all_allies') {
         targets = sourceGroup.filter(target => target.currentHP > 0 && target.currentHP < target.maxHP)
       } else if (spellDef.targeting.type === 'single_ally_below_half_hp') {
-        targets = this.selectBelowHalfHpAlly(sourceGroup)
+        targets = selectBelowHalfHpAlly(sourceGroup)
       } else {
-        targets = this.selectLowestHpRatioAlly(sourceGroup)
+        targets = selectLowestHpRatioAlly(sourceGroup)
       }
 
       for (const target of targets) {
         const healAmount = spellDef.fullHeal
           ? target.maxHP - target.currentHP
           : Math.max(0, Math.floor(unit.magicHeal + (spellDef.healBonus ?? 0)))
-        const healed = this.applyHealing(target, healAmount)
+        const healed = applyHealing(target, healAmount)
         if (healed <= 0) continue
         totalHitCount++
-        this.accumulateTargetDetail(targetDetails, target, -healed)
+        accumulateTargetDetail(targetDetails, target, -healed)
       }
 
       return { targetDetails, totalHitCount }
@@ -1261,7 +808,7 @@ export class BattleSystem {
           RACE_DICT, unit.combatant, target.combatant,
           spellSkill, SPELL_DAMAGE_OPTIONS, rng,
         ) + spellBonusDamage
-        const rearDamageMultiplier = this.getRearDamageMultiplier(unit, sourceGroup)
+        const rearDamageMultiplier = getRearDamageMultiplier(unit, sourceGroup)
         const spellDamageFactor = (1 + unit.spellDamagePercent / 100)
           * getSpellDamageMultiplierFromSkills(unit.skills, spellDef.id)
           * unit.magicFieldDamageMultiplier
@@ -1269,16 +816,16 @@ export class BattleSystem {
         const reductionFactor = 1 - target.damageReduction / 100
         const magicReductionFactor = 1 - target.magicDamageReduction / 100
         const magicBarrierFactor = 1 - target.magicBarrierDamageReduction / 100
-        const magicProtectionFactor = this.getRearMagicGuardReductionFactor(target, targetGroup)
-        const defendingFactor = this.getDefendingDamageFactor(target)
+        const magicProtectionFactor = getRearMagicGuardReductionFactor(target, targetGroup)
+        const defendingFactor = getDefendingDamageFactor(target)
         const damage = Math.max(1, Math.floor(baseDamage * rearDamageMultiplier * spellDamageFactor * spellTakenMultiplier * reductionFactor * magicReductionFactor * magicBarrierFactor * magicProtectionFactor * defendingFactor))
 
-        this.applyDamage(target, damage)
+        applyDamage(target, damage)
         totalHitCount++
 
-        this.accumulateTargetDetail(targetDetails, target, damage)
+        accumulateTargetDetail(targetDetails, target, damage)
       }
-      this.tryImmediateReviveForFallenAllies(
+      tryImmediateReviveForFallenAllies(
         targetGroup,
         currentTurn,
         detailedLog,
@@ -1303,7 +850,7 @@ export class BattleSystem {
           RACE_DICT, unit.combatant, target.combatant,
           spellSkill, SPELL_DAMAGE_OPTIONS, rng,
         ) + spellBonusDamage
-        const rearDamageMultiplier = this.getRearDamageMultiplier(unit, sourceGroup)
+        const rearDamageMultiplier = getRearDamageMultiplier(unit, sourceGroup)
         const spellDamageFactor = (1 + unit.spellDamagePercent / 100)
           * getSpellDamageMultiplierFromSkills(unit.skills, spellDef.id)
           * unit.magicFieldDamageMultiplier
@@ -1311,16 +858,16 @@ export class BattleSystem {
         const reductionFactor = 1 - target.damageReduction / 100
         const magicReductionFactor = 1 - target.magicDamageReduction / 100
         const magicBarrierFactor = 1 - target.magicBarrierDamageReduction / 100
-        const magicProtectionFactor = this.getRearMagicGuardReductionFactor(target, targetGroup)
-        const defendingFactor = this.getDefendingDamageFactor(target)
+        const magicProtectionFactor = getRearMagicGuardReductionFactor(target, targetGroup)
+        const defendingFactor = getDefendingDamageFactor(target)
         const damage = Math.max(1, Math.floor(baseDamage * rearDamageMultiplier * spellDamageFactor * spellTakenMultiplier * reductionFactor * magicReductionFactor * magicBarrierFactor * magicProtectionFactor * defendingFactor))
 
-        this.applyDamage(target, damage)
+        applyDamage(target, damage)
         totalHitCount++
 
-        this.accumulateTargetDetail(targetDetails, target, damage)
+        accumulateTargetDetail(targetDetails, target, damage)
       }
-      this.tryImmediateReviveForFallenAllies(
+      tryImmediateReviveForFallenAllies(
         targetGroup,
         currentTurn,
         detailedLog,
@@ -1332,578 +879,10 @@ export class BattleSystem {
     return { targetDetails, totalHitCount }
   }
 
-  private selectLowestHpRatioAlly(sourceGroup: BattleUnit[]): BattleUnit[] {
-    const target = sourceGroup
-      .filter(unit => unit.currentHP > 0 && unit.currentHP < unit.maxHP)
-      .sort((a, b) => {
-        const aRatio = a.maxHP > 0 ? a.currentHP / a.maxHP : 1
-        const bRatio = b.maxHP > 0 ? b.currentHP / b.maxHP : 1
-        if (aRatio !== bRatio) return aRatio - bRatio
-        return a.row - b.row
-      })[0]
-
-    return target ? [target] : []
-  }
-
-  /**
-   * HPが半分以下の味方の中で最もHP割合が低い1体を選択（フルヒール用）
-   */
-  private selectBelowHalfHpAlly(sourceGroup: BattleUnit[]): BattleUnit[] {
-    const target = sourceGroup
-      .filter(unit => unit.currentHP > 0 && unit.maxHP > 0 && unit.currentHP <= unit.maxHP / 2)
-      .sort((a, b) => {
-        const aRatio = a.currentHP / a.maxHP
-        const bRatio = b.currentHP / b.maxHP
-        if (aRatio !== bRatio) return aRatio - bRatio
-        return a.row - b.row
-      })[0]
-
-    return target ? [target] : []
-  }
-
-  private accumulateTargetDetail(
-    details: Map<string, AttackTargetDetail>,
-    target: BattleUnit,
-    damage: number,
-    isPiercing = false,
-  ): void {
-    const targetKey = this.getUnitKey(target)
-    const existing = details.get(targetKey)
-    if (existing) {
-      existing.totalDamage += damage
-      existing.hitCount++
-      if (isPiercing) {
-        existing.piercingHitCount = (existing.piercingHitCount ?? 0) + 1
-      }
-      existing.defeated = target.currentHP <= 0
-      existing.targetHP = target.currentHP
-    } else {
-      details.set(targetKey, {
-        targetId: target.combatant.id,
-        targetName: this.getLogName(target),
-        targetRow: target.row + 1,
-        totalDamage: damage,
-        hitCount: 1,
-        piercingHitCount: isPiercing ? 1 : undefined,
-        defeated: target.currentHP <= 0,
-        targetHP: target.currentHP,
-      })
-    }
-  }
-
+  // 既存テストが private メソッド経由でアクセスするため薄いラッパーを維持
   private getSortedTargetDetails(
     details: Map<string, AttackTargetDetail>,
   ): AttackTargetDetail[] {
-    return [...details.values()]
-      .map((detail, index) => ({ detail, index }))
-      .sort((a, b) => {
-        if (a.detail.targetRow !== b.detail.targetRow) {
-          return a.detail.targetRow - b.detail.targetRow
-        }
-        return a.index - b.index
-      })
-      .map(({ detail }) => detail)
-  }
-
-  private applyDamage(target: BattleUnit, damage: number): void {
-    const nextHP = target.currentHP - damage
-
-    if (nextHP <= 0 && target.currentHP > 1 && hasSurviveLethalDamageAtHp1Skill(target.skills)) {
-      target.currentHP = 1
-      return
-    }
-
-    target.currentHP = Math.max(0, nextHP)
-  }
-
-  private tryImmediateReviveForFallenAlly(
-    target: BattleUnit,
-    alliedUnits: BattleUnit[],
-    currentTurn: number,
-    detailedLog: BattleLogEntry[],
-    turnActedUnitKeys: Set<string>,
-    turnConsumedUnitKeys: Set<string>,
-  ): void {
-    if (target.currentHP > 0) {
-      return
-    }
-
-    this.tryImmediateReviveForFallenAllies(
-      alliedUnits,
-      currentTurn,
-      detailedLog,
-      turnActedUnitKeys,
-      turnConsumedUnitKeys,
-    )
-  }
-
-  private tryImmediateReviveForFallenAllies(
-    alliedUnits: BattleUnit[],
-    currentTurn: number,
-    detailedLog: BattleLogEntry[],
-    turnActedUnitKeys: Set<string>,
-    turnConsumedUnitKeys: Set<string>,
-  ): void {
-    if (!alliedUnits.some(unit => unit.currentHP <= 0)) {
-      return
-    }
-
-    const reviver = [...alliedUnits]
-      .filter((unit) => {
-        if (unit.currentHP <= 0) return false
-        if (turnActedUnitKeys.has(this.getUnitKey(unit))) return false
-        return hasImmediateReviveSkill(unit.skills) && this.getImmediateReviveSpell(unit, alliedUnits) !== null
-      })
-      .sort((a, b) => {
-        if (a.row !== b.row) return a.row - b.row
-        if (a.rowSlot !== b.rowSlot) return a.rowSlot - b.rowSlot
-        return a.originalIndex - b.originalIndex
-      })[0]
-
-    if (!reviver) {
-      return
-    }
-
-    const revival = this.getImmediateReviveSpell(reviver, alliedUnits)
-    if (!revival) {
-      return
-    }
-
-    const targetDetails: Map<string, AttackTargetDetail> = new Map()
-    const targets = this.getImmediateReviveTargets(reviver, alliedUnits, revival.spellDef)
-    for (const healTarget of targets) {
-      const healAmount = this.getImmediateReviveHealAmount(reviver, healTarget, revival.spellDef)
-      const healed = this.applyHealing(healTarget, healAmount)
-      if (healed <= 0) continue
-      this.accumulateTargetDetail(targetDetails, healTarget, -healed)
-    }
-
-    if (targetDetails.size === 0) {
-      return
-    }
-
-    revival.charge.remaining--
-    const reviverKey = this.getUnitKey(reviver)
-    turnActedUnitKeys.add(reviverKey)
-    turnConsumedUnitKeys.add(reviverKey)
-
-    detailedLog.push({
-      turn: currentTurn,
-      actorId: reviver.combatant.id,
-      actorName: this.getLogName(reviver),
-      actorRow: reviver.row + 1,
-      action: revival.spellDef.name,
-      actorHP: reviver.currentHP,
-      actorMaxHP: reviver.maxHP,
-      isAlly: reviver.isAlly,
-      actionEffect: 'heal',
-      attackCount: targetDetails.size,
-      hitCount: targetDetails.size,
-      targets: this.getSortedTargetDetails(targetDetails),
-    })
-  }
-
-  private getImmediateReviveSpell(
-    unit: BattleUnit,
-    alliedUnits: BattleUnit[],
-  ): { charge: SpellCharge; spellDef: SpellDef } | null {
-    const fallenAllies = alliedUnits.filter(ally => ally.currentHP <= 0)
-    if (fallenAllies.length === 0) return null
-
-    const healCharges = unit.spellCharges
-      .filter(charge => charge.remaining > 0 && charge.category === 'cleric')
-      .map(charge => ({ charge, spellDef: SPELL_DEFS[charge.spellId] }))
-      .filter((entry): entry is { charge: SpellCharge; spellDef: SpellDef } => (
-        Boolean(entry.spellDef) && (entry.spellDef.effect ?? 'damage') === 'heal'
-      ))
-
-    const partyHeal = healCharges.find(({ spellDef }) => spellDef.id === PARTY_HEAL_SPELL_ID)
-    if (partyHeal && fallenAllies.length >= 2) {
-      return partyHeal
-    }
-
-    const reviveTarget = this.selectImmediateReviveTarget(alliedUnits)
-    if (!reviveTarget) return null
-
-    let best: { charge: SpellCharge; spellDef: SpellDef; healAmount: number } | null = null
-
-    for (const { charge, spellDef } of healCharges) {
-      if (spellDef.id === PARTY_HEAL_SPELL_ID) continue
-      const healAmount = this.getImmediateReviveHealAmount(unit, reviveTarget, spellDef)
-      if (healAmount <= 0) continue
-      if (!best || healAmount > best.healAmount) {
-        best = { charge, spellDef, healAmount }
-      }
-    }
-
-    if (best) {
-      return { charge: best.charge, spellDef: best.spellDef }
-    }
-
-    return partyHeal ?? null
-  }
-
-  private getImmediateReviveTargets(
-    unit: BattleUnit,
-    alliedUnits: BattleUnit[],
-    spellDef: SpellDef,
-  ): BattleUnit[] {
-    if (spellDef.id === PARTY_HEAL_SPELL_ID) {
-      return alliedUnits.filter(ally => ally.currentHP < ally.maxHP)
-    }
-
-    const reviveTarget = this.selectImmediateReviveTarget(alliedUnits)
-    if (!reviveTarget || this.getUnitKey(reviveTarget) === this.getUnitKey(unit)) {
-      return []
-    }
-    return [reviveTarget]
-  }
-
-  private selectImmediateReviveTarget(alliedUnits: BattleUnit[]): BattleUnit | null {
-    return alliedUnits
-      .filter(unit => unit.currentHP <= 0)
-      .sort((a, b) => {
-        if (a.row !== b.row) return a.row - b.row
-        if (a.rowSlot !== b.rowSlot) return a.rowSlot - b.rowSlot
-        return a.originalIndex - b.originalIndex
-      })[0] ?? null
-  }
-
-  private getImmediateReviveHealAmount(unit: BattleUnit, target: BattleUnit, spellDef: SpellDef): number {
-    if (spellDef.fullHeal) {
-      return target.maxHP
-    }
-
-    return Math.max(0, Math.floor(unit.magicHeal + (spellDef.healBonus ?? 0)))
-  }
-
-  private applyHealing(target: BattleUnit, amount: number): number {
-    const before = target.currentHP
-    target.currentHP = Math.min(target.maxHP, target.currentHP + amount)
-    return target.currentHP - before
-  }
-
-  private getDefendingDamageFactor(target: BattleUnit): number {
-    return target.isDefending ? 0.5 : 1
-  }
-
-  private createAllyUnit(
-    goblin: Goblin,
-    initialHP: number | undefined,
-    originalIndex: number,
-    pureGoblinCount: number,
-  ): BattleUnit {
-    const skills = getUniqueSkillsById(goblin.skills)
-    const combatant = this.combatantManager.fromGoblin(goblin)
-    combatant.buffs = toCombatBuffsFromSkills(skills)
-    const actionOrderAgility = (goblin as Goblin & { agility?: number }).agility
-    const baseAttributes = getGoblinBaseAttributesAtLevel(goblin, goblin.level)
-    // 実効ステータスを使用
-    const effectiveStats = getEffectiveStats(goblin)
-    const packBonusPercent =
-      getPureGoblinPartyStatBonusPercentFromSkills(skills, goblin.level) * pureGoblinCount
-    const packStatMultiplier = 1 + packBonusPercent / 100
-    const maxHP = Math.floor(effectiveStats.hp * packStatMultiplier)
-    const atk = Math.floor(combatant.atk * packStatMultiplier)
-    combatant.atk = atk
-    const hp = initialHP === undefined || initialHP >= effectiveStats.hp
-      ? maxHP
-      : Math.min(initialHP, maxHP)
-    const damageReduction = GoblinStatCalculator.getDamageReduction(goblin)
-    const physicalDamageReduction = getPhysicalDamageReductionFromSkills(goblin.skills)
-    const rangedAttackDamageReduction = getRangedAttackDamageReductionFromSkills(goblin.skills)
-    const magicDamageReduction = getMagicDamageReductionFromSkills(goblin.skills)
-    const learnedSpells = this.mergeLearnedSpells(goblin.spells, goblin.skills, goblin.level)
-    return {
-      instanceId: `ally:${combatant.id}`,
-      combatant,
-      currentHP: hp,
-      maxHP,
-      initialHP: hp,
-      power: baseAttributes.power,
-      agility: actionOrderAgility ?? baseAttributes.agility,
-      luck: baseAttributes.luck,
-      attackCount: effectiveStats.attackCount,
-      accuracy: effectiveStats.accuracy,
-      evasion: effectiveStats.evasion,
-      isAlly: true,
-      originalIndex,
-      damageReduction,
-      physicalDamageReduction,
-      rangedAttackDamageReduction,
-      magicDamageReduction,
-      breathDamageReduction: 0,
-      shieldBarrierDamageReduction: 0,
-      shieldBarrierBreathDamageReduction: 0,
-      magicBarrierDamageReduction: 0,
-      physicalDamageDealtMultiplier: 1,
-      physicalDamagePercent: getPhysicalDamagePercentFromSkills(goblin.skills),
-      magicAtk: effectiveStats.magicAtk,
-      magicHeal: effectiveStats.magicHeal,
-      criticalRate: effectiveStats.criticalRate,
-      criticalDamageBonusPercent: getCriticalDamageBonusFromSkills(goblin.skills),
-      spellDamagePercent: getSpellDamagePercentFromSkills(goblin.skills),
-      magicFieldDamageMultiplier: 1,
-      shieldBarrierActive: false,
-      magicBarrierActive: false,
-      row: originalIndex,  // 味方は1列1体（配列順 = 列番号）
-      rowSlot: 0,
-      level: goblin.level,
-      spellCharges: this.initSpellCharges(learnedSpells),
-      skills,
-      battleActionPolicy: normalizeBattleActionPolicy(goblin.battleActionPolicy),
-      isDefending: false,
-      attackType: 'melee',
-    }
-  }
-
-  private createEnemyUnit(enemy: Enemy, originalIndex: number, row: number, rowSlot: number): BattleUnit {
-    const skills = getUniqueSkillsById([...(enemy.skills ?? []), ...getRaceSkills(enemy.raceTags)])
-    const combatant = this.combatantManager.fromEnemy(enemy)
-    combatant.buffs = toCombatBuffsFromSkills(skills)
-    const learnedSpells = this.mergeLearnedSpells(enemy.spells, skills, enemy.level)
-    const raceResistance = getRaceResistanceTotals(enemy.raceTags)
-    return {
-      instanceId: `enemy:${combatant.id}:${originalIndex}`,
-      combatant,
-      currentHP: enemy.hp,
-      maxHP: enemy.hp,
-      initialHP: enemy.hp,
-      power: enemy.baseAttributes.power,
-      agility: enemy.baseAttributes.agility,
-      luck: enemy.baseAttributes.luck,
-      attackCount: enemy.attackCount,
-      accuracy: enemy.accuracy,
-      evasion: enemy.evasion,
-      isAlly: false,
-      originalIndex,
-      damageReduction: 0,  // 敵は被ダメージ軽減なし
-      physicalDamageReduction:
-        raceResistance.physicalResistancePercent +
-        (enemy.physicalResistancePercent ?? 0) +
-        getPhysicalDamageReductionFromSkills(skills),
-      rangedAttackDamageReduction: getRangedAttackDamageReductionFromSkills(skills),
-      magicDamageReduction:
-        raceResistance.magicResistancePercent +
-        (enemy.magicResistancePercent ?? 0) +
-        getMagicDamageReductionFromSkills(skills),
-      breathDamageReduction: 0,
-      shieldBarrierDamageReduction: 0,
-      shieldBarrierBreathDamageReduction: 0,
-      magicBarrierDamageReduction: 0,
-      physicalDamageDealtMultiplier: 1,
-      physicalDamagePercent: getPhysicalDamagePercentFromSkills(skills),
-      magicAtk: enemy.magicAtk ?? enemy.atk,
-      magicHeal: enemy.magicHeal ?? 0,
-      criticalRate: enemy.criticalRate ?? 0,
-      criticalDamageBonusPercent: getCriticalDamageBonusFromSkills(skills),
-      spellDamagePercent: getSpellDamagePercentFromSkills(skills),
-      magicFieldDamageMultiplier: 1,
-      shieldBarrierActive: false,
-      magicBarrierActive: false,
-      row,
-      rowSlot,
-      level: enemy.level,
-      spellCharges: this.initSpellCharges(learnedSpells),
-      skills,
-      battleActionPolicy: normalizeBattleActionPolicy(enemy.battleActionPolicy),
-      isDefending: false,
-      attackType: enemy.attackType,
-    }
-  }
-
-  private getRearGuardReductionFactor(target: BattleUnit, allyUnits: BattleUnit[]): number {
-    if (!target.isAlly || target.currentHP <= 0) return 1
-
-    const frontmostRearGuardUnit = allyUnits
-      .filter((ally) => (
-        ally.currentHP > 0 &&
-        ally.row < target.row &&
-        getRearProtectionMultiplierFromSkills(ally.skills) !== 1
-      ))
-      .sort((a, b) => {
-        if (a.row !== b.row) return a.row - b.row
-        return a.rowSlot - b.rowSlot
-      })[0]
-
-    if (!frontmostRearGuardUnit) {
-      return 1
-    }
-
-    return getRearProtectionMultiplierFromSkills(frontmostRearGuardUnit.skills)
-  }
-
-  private getRearMagicGuardReductionFactor(target: BattleUnit, allyUnits: BattleUnit[]): number {
-    if (!target.isAlly || target.currentHP <= 0) return 1
-
-    const frontmostRearGuardUnit = allyUnits
-      .filter((ally) => (
-        ally.currentHP > 0 &&
-        ally.row < target.row &&
-        getRearMagicProtectionMultiplierFromSkills(ally.skills) !== 1
-      ))
-      .sort((a, b) => {
-        if (a.row !== b.row) return a.row - b.row
-        return a.rowSlot - b.rowSlot
-      })[0]
-
-    if (!frontmostRearGuardUnit) {
-      return 1
-    }
-
-    return getRearMagicProtectionMultiplierFromSkills(frontmostRearGuardUnit.skills)
-  }
-
-  private getRearDamageMultiplier(unit: BattleUnit, groupUnits: BattleUnit[]): number {
-    const frontmostInspireUnit = groupUnits
-      .filter((ally) => (
-        ally.currentHP > 0 &&
-        ally.row < unit.row &&
-        getRearAllyDamageMultiplierFromSkills(ally.skills) !== 1
-      ))
-      .sort((a, b) => {
-        if (a.row !== b.row) return a.row - b.row
-        return a.rowSlot - b.rowSlot
-      })[0]
-
-    if (!frontmostInspireUnit) {
-      return 1
-    }
-
-    return getRearAllyDamageMultiplierFromSkills(frontmostInspireUnit.skills)
-  }
-
-  private resolveCoverTarget(target: BattleUnit, defendingGroup: BattleUnit[]): BattleUnit {
-    if (target.currentHP <= 0 || target.currentHP > Math.floor(target.maxHP / 2)) {
-      return target
-    }
-
-    const candidates = defendingGroup
-      .filter((unit) => (
-        unit.currentHP > 0 &&
-        this.getUnitKey(unit) !== this.getUnitKey(target) &&
-        unit.row < target.row &&
-        hasCoverLowHpAllySkill(unit.skills)
-      ))
-      .sort((a, b) => b.row - a.row)
-
-    return candidates[0] ?? target
-  }
-
-  private createTurnStartLog(
-    currentTurn: number,
-    allyUnits: BattleUnit[],
-    enemyUnits: BattleUnit[],
-  ): BattleLogEntry {
-    return {
-      turn: currentTurn,
-      actorId: 'system',
-      actorName: 'ターン開始',
-      actorRow: -1,
-      action: 'turn_start',
-      attackCount: 0,
-      hitCount: 0,
-      actorHP: 0,
-      actorMaxHP: 0,
-      isAlly: true,
-      targets: [],
-      turnState: {
-        allies: allyUnits.map(unit => ({
-          id: unit.combatant.id,
-          name: this.getLogName(unit),
-          currentHP: unit.currentHP,
-          maxHP: unit.maxHP,
-          shieldBarrierActive: unit.shieldBarrierActive,
-          magicBarrierActive: unit.magicBarrierActive,
-          isDefending: unit.isDefending,
-        })),
-        enemies: enemyUnits.map(unit => ({
-          id: unit.combatant.id,
-          name: this.getLogName(unit),
-          currentHP: unit.currentHP,
-          maxHP: unit.maxHP,
-          shieldBarrierActive: unit.shieldBarrierActive,
-          magicBarrierActive: unit.magicBarrierActive,
-          isDefending: unit.isDefending,
-        })),
-        allyPartyEffects: this.getPartyEffectIds(allyUnits),
-        enemyPartyEffects: this.getPartyEffectIds(enemyUnits),
-      },
-    }
-  }
-
-  private getPartyEffectIds(units: BattleUnit[]): string[] {
-    const effects: string[] = []
-    if (units.some(unit => unit.currentHP > 0 && unit.shieldBarrierActive)) {
-      effects.push('shield_barrier')
-    }
-    if (units.some(unit => unit.currentHP > 0 && unit.magicBarrierActive)) {
-      effects.push('magic_barrier')
-    }
-    if (units.some(unit => unit.currentHP > 0 && unit.magicFieldDamageMultiplier > 1)) {
-      effects.push('magic_field')
-    }
-    return effects
-  }
-
-  private createBattleResult(
-    rounds: number,
-    outcome: 'win' | 'lose' | 'retreat',
-    allyUnits: BattleUnit[],
-    enemyUnits: BattleUnit[],
-    detailedLog: BattleLogEntry[],
-  ): BattleResult {
-    const allyHPDelta = allyUnits.map(unit => unit.currentHP - unit.initialHP)
-    const enemyDefeated = enemyUnits.filter(unit => unit.currentHP <= 0).length
-
-    return {
-      rounds,
-      outcome,
-      allyHPDelta,
-      enemyDefeated,
-      detailedLog,
-    }
-  }
-
-  private getUnitKey(unit: BattleUnit): string {
-    return unit.instanceId ?? unit.combatant.id
-  }
-
-  private getLogName(unit: BattleUnit): string {
-    const name = unit.logName ?? unit.combatant.name
-    return `Lv${unit.level} ${name}`
-  }
-
-  private assignEnemyLogNames(enemyUnits: BattleUnit[]): void {
-    const groups = new Map<string, BattleUnit[]>()
-
-    for (const unit of enemyUnits) {
-      const group = groups.get(unit.combatant.id) ?? []
-      group.push(unit)
-      groups.set(unit.combatant.id, group)
-    }
-
-    for (const group of groups.values()) {
-      if (group.length === 1) {
-        group[0].logName = group[0].combatant.name
-        continue
-      }
-
-      group.forEach((unit, index) => {
-        unit.logName = `${unit.combatant.name}${this.toAlphabetLabel(index)}`
-      })
-    }
-  }
-
-  private toAlphabetLabel(index: number): string {
-    let n = index
-    let label = ''
-
-    do {
-      label = String.fromCharCode(65 + (n % 26)) + label
-      n = Math.floor(n / 26) - 1
-    } while (n >= 0)
-
-    return label
+    return getSortedTargetDetails(details)
   }
 }

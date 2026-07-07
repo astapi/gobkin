@@ -53,7 +53,7 @@ export class SQLitePartyRepository implements IPartyRepository {
   async getParties(): Promise<Party[]> {
     const db = await getDatabase()
     const rows = await db.getAllAsync<PartyRow>('SELECT * FROM parties ORDER BY id')
-    return rows.map(row => this.rowToParty(row))
+    return this.mapRowsToParties(rows)
   }
 
   async getParty(id: number): Promise<Party | null> {
@@ -102,7 +102,22 @@ export class SQLitePartyRepository implements IPartyRepository {
   async getPartiesByStatus(status: PartyStatus): Promise<Party[]> {
     const db = await getDatabase()
     const rows = await db.getAllAsync<PartyRow>('SELECT * FROM parties WHERE status = ? ORDER BY id', [status])
-    return rows.map(row => this.rowToParty(row))
+    return this.mapRowsToParties(rows)
+  }
+
+  /**
+   * 1 行の JSON 破損で一覧取得全体が落ちないよう、破損行はスキップする
+   */
+  private mapRowsToParties(rows: PartyRow[]): Party[] {
+    const parties: Party[] = []
+    for (const row of rows) {
+      try {
+        parties.push(this.rowToParty(row))
+      } catch (error) {
+        console.warn(`[SQLitePartyRepository] skipping broken party row id=${row.id}`, error)
+      }
+    }
+    return parties
   }
 
   async updateDungeonSettings(id: number, dungeonId: string): Promise<void> {

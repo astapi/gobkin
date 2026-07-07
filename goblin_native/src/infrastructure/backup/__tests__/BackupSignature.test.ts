@@ -24,6 +24,7 @@ const buildDoc = (override?: Partial<BackupDocument>): BackupDocument => {
     dungeon_progress: [],
     equipment: [],
     story_progress: [],
+    tickets: [],
     app_metadata: [{ key: 'schema_version', value: '14' }],
   }
   const metaWithoutSig = {
@@ -95,6 +96,7 @@ describe('BackupSignature', () => {
       dungeon_progress: [],
       equipment: [],
       story_progress: [],
+      tickets: [],
       app_metadata: [],
     }
     const meta = {

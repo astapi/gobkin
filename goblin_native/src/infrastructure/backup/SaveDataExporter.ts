@@ -16,6 +16,9 @@ import {
 } from '../../core/usecases/backup/BackupSchema'
 import { buildSignablePayload, signBackup } from './BackupSignature'
 
+// TODO: ネイティブアプリバージョンを動的取得する。
+// expo-application / expo-constants は現状 package.json の直接依存ではないため、
+// 依存に追加した上で expo-application の nativeApplicationVersion 等へ差し替える。
 const APP_VERSION = '1.0.0'
 
 export interface ExportInput {

@@ -1,7 +1,7 @@
 /**
  * バックアップ JSON を検証し、SQLite を置き換えるインポーター
  */
-import { getDatabase } from '../database'
+import { ensureMigrations, getDatabase } from '../database'
 import {
   BACKUP_APP_ID,
   BACKUP_FORMAT_VERSION,
@@ -52,6 +52,21 @@ export const importBackup = async (
   verifySignatureOrThrow(document)
   await replaceAllTables(document.tables)
 
+  // 旧 schemaVersion のバックアップを復元した場合、app_metadata の schema_version も
+  // 旧値で上書きされる。現行スキーマ列は既にテーブルに存在するため、
+  // 既存のマイグレーション（バックフィルロジック）で現行バージョンまで引き上げる
+  if (document.meta.schemaVersion < expectedSchemaVersion) {
+    const db = await getDatabase()
+    try {
+      await ensureMigrations(db)
+    } catch (error) {
+      throw new BackupImportError(
+        'restoreFailed',
+        error instanceof Error ? error.message : 'DB migration after restore failed',
+      )
+    }
+  }
+
   return {
     schemaVersion: document.meta.schemaVersion,
     exportedAt: document.meta.exportedAt,
@@ -78,24 +93,30 @@ const validateCompatibility = (document: BackupDocument, expectedSchemaVersion: 
   if (meta.app !== BACKUP_APP_ID) {
     throw new BackupImportError('unsupportedApp', `Unsupported app id: ${String(meta.app)}`)
   }
-  if (meta.formatVersion !== BACKUP_FORMAT_VERSION) {
+  // 現行より新しいフォーマットは非対応。旧フォーマット（<= 現行）は後方互換で受け入れる
+  if (meta.formatVersion > BACKUP_FORMAT_VERSION) {
     throw new BackupImportError(
       'unsupportedFormat',
       `Unsupported format version: ${meta.formatVersion}`,
     )
   }
-  if (meta.schemaVersion !== expectedSchemaVersion) {
+  // 現行より新しい schemaVersion は非対応。旧バージョン（<= 現行）は復元後に
+  // マイグレーションで現行スキーマへ引き上げる（下記 importBackup 参照）
+  if (meta.schemaVersion > expectedSchemaVersion) {
     throw new BackupImportError(
       'unsupportedSchema',
-      `Schema version mismatch: file=${meta.schemaVersion}, current=${expectedSchemaVersion}`,
+      `Backup schema is newer than app: file=${meta.schemaVersion}, current=${expectedSchemaVersion}`,
     )
   }
 
+  // 旧フォーマットには存在しないテーブル（例: v1 の tickets）があり得るため、
+  // 「存在するが配列でない」場合のみ不正とみなす（欠損は復元時に空配列として扱う）
   for (const table of EXPORTABLE_TABLES) {
-    if (!Array.isArray(tables[table])) {
+    const value = tables[table]
+    if (value !== undefined && !Array.isArray(value)) {
       throw new BackupImportError(
         'invalidStructure',
-        `Backup is missing table data: ${table}`,
+        `Backup has invalid table data: ${table}`,
       )
     }
   }
@@ -115,11 +136,14 @@ const verifySignatureOrThrow = (document: BackupDocument): void => {
  * - INSERT 列はテーブルの現行スキーマと突き合わせ、未知列は無視する
  */
 const replaceAllTables = async (
-  tables: Record<ExportableTableName, TableRow[]>,
+  tables: Partial<Record<ExportableTableName, TableRow[]>>,
 ): Promise<void> => {
   const db = await getDatabase()
   const tableColumns = await loadTableColumns()
 
+  // バルク復元中は FK 制約を一時的に OFF にする。
+  // PRAGMA はトランザクション内では効かないため、トランザクションの外で切り替える
+  await db.execAsync('PRAGMA foreign_keys = OFF')
   try {
     await db.withTransactionAsync(async () => {
       for (const table of [...EXPORTABLE_TABLES].reverse()) {
@@ -127,7 +151,8 @@ const replaceAllTables = async (
       }
       for (const table of EXPORTABLE_TABLES) {
         const allowedColumns = tableColumns[table]
-        for (const row of tables[table]) {
+        // 旧フォーマットで欠損しているテーブルは空配列として扱う
+        for (const row of tables[table] ?? []) {
           await insertRow(table, row, allowedColumns)
         }
       }
@@ -137,6 +162,8 @@ const replaceAllTables = async (
       'restoreFailed',
       error instanceof Error ? error.message : 'DB restore failed',
     )
+  } finally {
+    await db.execAsync('PRAGMA foreign_keys = ON')
   }
 }
 

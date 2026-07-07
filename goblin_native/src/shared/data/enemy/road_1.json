@@ -14,7 +14,6 @@
       "attackCount": 2,
       "accuracy": 665,
       "evasion": 30,
-      "exp": 170,
       "gold": 38,
       "magicDef": 49,
       "baseAttributes": {
@@ -63,7 +62,6 @@
       "attackCount": 2,
       "accuracy": 685,
       "evasion": 20,
-      "exp": 178,
       "gold": 45,
       "magicDef": 58,
       "baseAttributes": {
@@ -112,7 +110,6 @@
       "attackCount": 2,
       "accuracy": 665,
       "evasion": 12,
-      "exp": 185,
       "gold": 52,
       "magicDef": 88,
       "baseAttributes": {
@@ -161,7 +158,6 @@
       "attackCount": 2,
       "accuracy": 695,
       "evasion": 20,
-      "exp": 190,
       "gold": 62,
       "magicDef": 77,
       "baseAttributes": {
@@ -210,7 +206,6 @@
       "attackCount": 2,
       "accuracy": 763,
       "evasion": 25,
-      "exp": 190,
       "gold": 66,
       "magicDef": 58,
       "baseAttributes": {
@@ -260,7 +255,6 @@
       "attackCount": 1,
       "accuracy": 676,
       "evasion": 22,
-      "exp": 195,
       "gold": 72,
       "magicDef": 102,
       "baseAttributes": {
@@ -321,7 +315,6 @@
       "attackCount": 0,
       "accuracy": 1,
       "evasion": 30,
-      "exp": 260,
       "isBoss": true,
       "gold": 260,
       "magicDef": 120,
@@ -374,7 +367,6 @@
       "attackCount": 1,
       "accuracy": 744,
       "evasion": 18,
-      "exp": 260,
       "isBoss": true,
       "gold": 120,
       "skills": [
@@ -434,7 +426,6 @@
       "attackCount": 3,
       "accuracy": 783,
       "evasion": 24,
-      "exp": 260,
       "isBoss": true,
       "gold": 125,
       "magicDef": 77,
@@ -488,7 +479,6 @@
       "attackCount": 1,
       "accuracy": 744,
       "evasion": 24,
-      "exp": 245,
       "isBoss": true,
       "gold": 130,
       "skills": [
@@ -554,7 +544,6 @@
       "attackCount": 1,
       "accuracy": 724,
       "evasion": 22,
-      "exp": 245,
       "isBoss": true,
       "gold": 135,
       "skills": [

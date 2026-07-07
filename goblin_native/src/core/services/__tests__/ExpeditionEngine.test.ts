@@ -223,6 +223,67 @@ describe('ExpeditionEngine reward multipliers', () => {
     const summary = (engine as any).calculateRewardSummary(events, partyState)
 
     expect(summary.xpGained).toBe(0)
+    // 敗北時はゴールドも加算しない
+    expect(summary.goldGained).toBe(0)
+  })
+})
+
+describe('ExpeditionEngine applyBattleResults', () => {
+  const makeMember = (overrides: Partial<PartyState> = {}): PartyState => ({
+    id: '1',
+    name: 'テスト',
+    race: 'ゴブリン',
+    currentHP: 100,
+    maxHP: 100,
+    baseHP: 100,
+    atk: 5,
+    magicAtk: 0,
+    def: 5,
+    magicDef: 0,
+    agility: 5,
+    luck: 5,
+    attackCount: 1,
+    accuracy: 10,
+    evasion: 5,
+    magicHeal: 5,
+    isKO: false,
+    isDead: false,
+    skills: [],
+    factors: [],
+    level: 1,
+    avatar: 'test.png',
+    effectiveStats: {
+      hp: 100, atk: 5, magicAtk: 0, def: 5, magicDef: 0,
+      attackCount: 1, accuracy: 10, evasion: 5, magicHeal: 5, criticalRate: 0,
+    },
+    ...overrides,
+  })
+
+  it('HP回復デルタは本来の最大HPで上限クランプする', () => {
+    const engine = new ExpeditionEngine(1)
+    const member = makeMember({ currentHP: 100, maxHP: 100 })
+    // 群れボーナスで戦闘中maxHPが膨らみ、+50の回復デルタが来ても最大100で止める
+    ;(engine as any).applyBattleResults([member], { rounds: 1, outcome: 'win', allyHPDelta: [50], enemyDefeated: 1 })
+    expect(member.currentHP).toBe(100)
+  })
+
+  it('蘇生でHPが正に戻ったらKO/死亡フラグを解除する', () => {
+    const engine = new ExpeditionEngine(1)
+    const member = makeMember({ currentHP: 0, isKO: true, isDead: true })
+    // 蘇生により +40 のHPが戻る
+    ;(engine as any).applyBattleResults([member], { rounds: 1, outcome: 'win', allyHPDelta: [40], enemyDefeated: 1 })
+    expect(member.currentHP).toBe(40)
+    expect(member.isKO).toBe(false)
+    expect(member.isDead).toBe(false)
+  })
+
+  it('HPが0以下ならKO/死亡フラグを立てる', () => {
+    const engine = new ExpeditionEngine(1)
+    const member = makeMember({ currentHP: 30 })
+    ;(engine as any).applyBattleResults([member], { rounds: 1, outcome: 'lose', allyHPDelta: [-50], enemyDefeated: 0 })
+    expect(member.currentHP).toBe(0)
+    expect(member.isKO).toBe(true)
+    expect(member.isDead).toBe(true)
   })
 })
 

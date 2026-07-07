@@ -45,7 +45,16 @@ export class SQLiteGoblinRepository implements IGoblinRepository {
   async getGoblins(): Promise<Goblin[]> {
     const db = await getDatabase()
     const rows = await db.getAllAsync<GoblinRow>('SELECT * FROM goblins ORDER BY id')
-    return rows.map(row => this.rowToGoblin(row))
+    // 1 行の JSON 破損で一覧取得全体が落ちないよう、破損行はスキップする
+    const goblins: Goblin[] = []
+    for (const row of rows) {
+      try {
+        goblins.push(this.rowToGoblin(row))
+      } catch (error) {
+        console.warn(`[SQLiteGoblinRepository] skipping broken goblin row id=${row.id}`, error)
+      }
+    }
+    return goblins
   }
 
   async getGoblin(id: number): Promise<Goblin | null> {

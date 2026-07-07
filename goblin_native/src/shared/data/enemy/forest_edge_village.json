@@ -15,7 +15,6 @@
       "attackCount": 2,
       "accuracy": 520,
       "evasion": 24,
-      "exp": 47,
       "gold": 12,
       "magicDef": 27,
       "baseAttributes": {
@@ -65,7 +64,6 @@
       "attackCount": 2,
       "accuracy": 562,
       "evasion": 32,
-      "exp": 46,
       "gold": 11,
       "magicDef": 22,
       "baseAttributes": {
@@ -115,7 +113,6 @@
       "attackCount": 1,
       "accuracy": 505,
       "evasion": 12,
-      "exp": 53,
       "gold": 16,
       "magicDef": 42,
       "baseAttributes": {
@@ -165,7 +162,6 @@
       "attackCount": 1,
       "accuracy": 534,
       "evasion": 10,
-      "exp": 61,
       "gold": 22,
       "magicDef": 63,
       "baseAttributes": {
@@ -215,7 +211,6 @@
       "attackCount": 1,
       "accuracy": 548,
       "evasion": 22,
-      "exp": 61,
       "gold": 24,
       "magicDef": 100,
       "baseAttributes": {
@@ -272,7 +267,6 @@
       "attackCount": 2,
       "accuracy": 630,
       "evasion": 18,
-      "exp": 194,
       "gold": 95,
       "magicDef": 111,
       "baseAttributes": {

@@ -303,7 +303,6 @@ const en = {
         equipment: 'Change Equipment',
         playback: 'Expedition Replay',
         result: 'Expedition Result',
-        log: 'Expedition Log',
         battleLog: 'Battle Log',
         levelUpLog: 'Level Up Details',
       },
@@ -864,6 +863,7 @@ const en = {
   battle: {
     normalAttack: 'Normal Attack',
     defendAction: 'Defend',
+    turnStartAction: 'Turn Start',
     actionOrderFast2: 'Action order speed increases by 2.0x',
     actionOrderFast15: 'Action order speed increases by 1.5x',
     actionOrderSlow23: 'Action order speed decreases to 2/3',

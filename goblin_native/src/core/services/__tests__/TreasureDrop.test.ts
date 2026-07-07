@@ -1,18 +1,22 @@
-import { ExpeditionEngine } from '../ExpeditionEngine'
+import { rollTreasureDrops } from '../TreasureDropRoller'
 import { getEquipmentByRank, getEquipmentTemplate, getShopEquipment } from '../../../shared/data/equipmentPoolLoader'
-import type { Enemy, PartyRewardMultipliers } from '../../../shared/types'
+import type { DungeonTier, Enemy, PartyRewardMultipliers } from '../../../shared/types'
 
-/**
- * ExpeditionEngine の private メソッド rollTreasureDrops をテストするため、
- * 固定シードでインスタンスを生成し、内部の rng を利用する。
- */
-function createEngine(seed: number): ExpeditionEngine {
-  return new ExpeditionEngine(seed)
+/** シード付き乱数（ExpeditionEngineと同じ実装） */
+function createSeededRandom(seed: number): () => number {
+  let state = seed
+  return () => {
+    state = (state * 1664525 + 1013904223) % 0x100000000
+    return (state >>> 0) / 0x100000000
+  }
 }
 
-/** privateメソッドにアクセスするヘルパー */
+/**
+ * rollTreasureDrops の公開APIを呼び出すヘルパー。
+ * ExpeditionEngine が内部で使う乱数生成器と同じ実装のシード付きrngを渡す。
+ */
 function callRollTreasureDrops(
-  engine: ExpeditionEngine,
+  seed: number,
   enemies: Enemy[],
   droppedIds: Set<string>,
   partyLuckAverage: number = 10,
@@ -21,14 +25,16 @@ function callRollTreasureDrops(
   titleMultiplierBoost: number = 1,
   tier: number = 0,
 ) {
-  return (engine as any).rollTreasureDrops(
+  const rng = createSeededRandom(seed)
+  return rollTreasureDrops(
     enemies,
     droppedIds,
     partyLuckAverage,
-    rewardMultipliers,
+    rewardMultipliers as PartyRewardMultipliers | undefined,
     rareDropMultiplierBoost,
     titleMultiplierBoost,
-    tier,
+    tier as DungeonTier,
+    rng,
   )
 }
 
@@ -203,7 +209,7 @@ describe('rollTreasureDrops', () => {
       const iterations = 4000
       let dropCount = 0
       for (let i = 0; i < iterations; i++) {
-        const eng = createEngine(i * 1000)
+        const eng = i * 1000
         const result = callRollTreasureDrops(eng, [createDummyEnemy()], new Set(), 10, { rare: 1 })
         if (result.length > 0) dropCount++
       }
@@ -217,7 +223,7 @@ describe('rollTreasureDrops', () => {
       const measure = (luck: number) => {
         let drops = 0
         for (let seed = 0; seed < iterations; seed++) {
-          const eng = createEngine(seed * 11 + luck)
+          const eng = seed * 11 + luck
           const result = callRollTreasureDrops(eng, [createDummyEnemy()], new Set(), luck, { rare: 1 })
           if (result.length > 0) drops++
         }
@@ -233,7 +239,7 @@ describe('rollTreasureDrops', () => {
       const measure = (rare: number) => {
         let drops = 0
         for (let seed = 0; seed < iterations; seed++) {
-          const eng = createEngine(seed * 13 + rare * 100)
+          const eng = seed * 13 + rare * 100
           const result = callRollTreasureDrops(eng, [createDummyEnemy()], new Set(), 10, { rare })
           if (result.length > 0) drops++
         }
@@ -248,7 +254,7 @@ describe('rollTreasureDrops', () => {
       const enemies = Array.from({ length: 5 }, (_, i) => createDummyEnemy({ id: `enemy_${i}` }))
 
       for (let seed = 0; seed < 4000; seed++) {
-        const engine = createEngine(seed)
+        const engine = seed
         const result = callRollTreasureDrops(engine, enemies, new Set(), 10, { rare: 1 })
         if (result.length >= 2) {
           expect(result.length).toBeGreaterThanOrEqual(2)
@@ -266,7 +272,7 @@ describe('rollTreasureDrops', () => {
       let totalDrops = 0
 
       for (let seed = 0; seed < 5000; seed++) {
-        const engine = createEngine(seed * 13)
+        const engine = seed * 13
         const result = callRollTreasureDrops(engine, [createDummyEnemy({ level: 1 })], new Set(), 35, { rare: 1 })
         for (const drop of result) {
           totalDrops++
@@ -287,7 +293,7 @@ describe('rollTreasureDrops', () => {
       const rank4Ids = new Set(getEquipmentByRank(4).map((t) => t.id))
 
       for (let seed = 0; seed < 5000; seed++) {
-        const engine = createEngine(seed * 17)
+        const engine = seed * 17
         const result = callRollTreasureDrops(engine, [createDummyEnemy({ level: 58 })], new Set(), 35, { rare: 1 })
         for (const drop of result) {
           totalDrops++
@@ -306,7 +312,7 @@ describe('rollTreasureDrops', () => {
         let sum = 0
         let count = 0
         for (let seed = 0; seed < iterations; seed++) {
-          const engine = createEngine(seed * 23 + level)
+          const engine = seed * 23 + level
           const result = callRollTreasureDrops(engine, [createDummyEnemy({ level })], new Set(), 35, { rare: 1 })
           for (const drop of result) {
             const template = getEquipmentTemplate(drop.templateId)
@@ -329,7 +335,7 @@ describe('rollTreasureDrops', () => {
     it('ドロップにtemplateId が含まれる', () => {
       let result: any[] = []
       for (let seed = 0; seed < 2000; seed++) {
-        const engine = createEngine(seed * 1000)
+        const engine = seed * 1000
         result = callRollTreasureDrops(engine, [createDummyEnemy()], new Set(), 35, { rare: 1 })
         if (result.length > 0) break
       }
@@ -342,7 +348,7 @@ describe('rollTreasureDrops', () => {
     it('称号なしの場合、titleIdはundefined', () => {
       let foundNone = false
       for (let seed = 0; seed < 5000; seed++) {
-        const engine = createEngine(seed * 1000)
+        const engine = seed * 1000
         const result = callRollTreasureDrops(engine, [createDummyEnemy()], new Set(), 35, { rare: 1 })
         if (result.length > 0 && result[0].titleId === undefined) {
           foundNone = true
@@ -355,7 +361,7 @@ describe('rollTreasureDrops', () => {
     it('称号ありの場合、titleIdが設定される', () => {
       let foundTitle = false
       for (let seed = 0; seed < 5000; seed++) {
-        const engine = createEngine(seed * 1000)
+        const engine = seed * 1000
         const result = callRollTreasureDrops(engine, [createDummyEnemy()], new Set(), 35, { rare: 1, title: 99 })
         if (result.length > 0 && result[0].titleId !== undefined) {
           expect(typeof result[0].titleId).toBe('string')
@@ -373,7 +379,7 @@ describe('rollTreasureDrops', () => {
       const droppedIds = new Set(getEquipmentByRank(0).map((t) => t.id))
 
       for (let seed = 0; seed < 200; seed++) {
-        const engine = createEngine(seed)
+        const engine = seed
         const result = callRollTreasureDrops(engine, [createDummyEnemy({ level: 1 })], droppedIds, 35, { rare: 1 })
         // プールからのドロップは全て除外されるため空
         expect(result).toEqual([])
@@ -384,7 +390,7 @@ describe('rollTreasureDrops', () => {
       const droppedIds = new Set<string>()
 
       for (let seed = 0; seed < 200; seed++) {
-        const engine = createEngine(seed)
+        const engine = seed
         const result = callRollTreasureDrops(engine, [createDummyEnemy()], droppedIds, 35, { rare: 1 })
         if (result.length > 0) {
           expect(droppedIds.has(result[0].templateId)).toBe(true)
@@ -398,7 +404,7 @@ describe('rollTreasureDrops', () => {
       const allDroppedTemplates: string[] = []
 
       for (let i = 0; i < 100; i++) {
-        const engine = createEngine(i * 100)
+        const engine = i * 100
         const result = callRollTreasureDrops(engine, [createDummyEnemy()], droppedIds, 35, { rare: 1 })
         for (const drop of result) {
           allDroppedTemplates.push(drop.templateId)
@@ -418,7 +424,7 @@ describe('rollTreasureDrops', () => {
       const iterations = 1500
 
       for (let seed = 0; seed < iterations; seed++) {
-        const engine = createEngine(seed)
+        const engine = seed
         const result = callRollTreasureDrops(engine, [createDummyEnemy()], new Set(), 35, { rare: 1, title: 1 })
         for (const drop of result) {
           totalDrops++
@@ -440,7 +446,7 @@ describe('rollTreasureDrops', () => {
       const iterations = 1500
 
       for (let seed = 0; seed < iterations; seed++) {
-        const engine = createEngine(seed)
+        const engine = seed
         const result = callRollTreasureDrops(engine, [createDummyEnemy()], new Set(), 35, { rare: 1, title: 99 })
         for (const drop of result) {
           totalDrops++
@@ -460,7 +466,7 @@ describe('rollTreasureDrops', () => {
         let totalDrops = 0
         const iterations = 800
         for (let seed = 0; seed < iterations; seed++) {
-          const engine = createEngine(seed * 17 + tier * 3)
+          const engine = seed * 17 + tier * 3
           const result = callRollTreasureDrops(
             engine,
             [createDummyEnemy()],
@@ -498,7 +504,7 @@ describe('rollTreasureDrops', () => {
       // rare を極端に上げてもレアドロップは発生しない（ノーマルのみ）
       // ただしノーマルが落ちることはあるので「sword_royal が出ない」で確認する
       for (let seed = 0; seed < 200; seed++) {
-        const engine = createEngine(seed)
+        const engine = seed
         const result = callRollTreasureDrops(engine, [enemy], new Set(), 35, { rare: 99 })
         for (const drop of result) {
           expect(drop.templateId).not.toBe('sword_royal')
@@ -514,7 +520,7 @@ describe('rollTreasureDrops', () => {
       let found = false
       // rare=99 で閾値 100 - 99*0.1 = 90.1 → ほぼ毎回当選する
       for (let seed = 0; seed < 500; seed++) {
-        const engine = createEngine(seed)
+        const engine = seed
         const result = callRollTreasureDrops(engine, [enemy], new Set(), 35, { rare: 99 })
         if (result.some((d: any) => d.templateId === 'sword_royal')) {
           found = true
@@ -534,7 +540,7 @@ describe('rollTreasureDrops', () => {
       let rareDrops = 0
       const iterations = 5000
       for (let seed = 0; seed < iterations; seed++) {
-        const engine = createEngine(seed * 7)
+        const engine = seed * 7
         const result = callRollTreasureDrops(engine, [enemy], new Set(), 10, { rare: 1 })
         if (result.some((d: any) => d.templateId === 'sword_kaiser')) rareDrops++
       }
@@ -554,7 +560,7 @@ describe('rollTreasureDrops', () => {
         let rareDrops = 0
         let normalDrops = 0
         for (let seed = 0; seed < iterations; seed++) {
-          const engine = createEngine(seed * 31 + boost * 7)
+          const engine = seed * 31 + boost * 7
           const result = callRollTreasureDrops(engine, [enemy], new Set(), 35, { rare: 50 }, boost)
           for (const d of result) {
             if (d.templateId === 'sword_kaiser') rareDrops++
@@ -581,7 +587,7 @@ describe('rollTreasureDrops', () => {
 
       let foundTitle = false
       for (let seed = 0; seed < 500; seed++) {
-        const engine = createEngine(seed)
+        const engine = seed
         const result = callRollTreasureDrops(engine, [enemy], new Set(), 35, { rare: 99, title: 99 })
         const rareDrop = result.find((d: any) => d.templateId === 'sword_royal')
         if (rareDrop && rareDrop.titleId !== undefined) {
@@ -601,7 +607,7 @@ describe('rollTreasureDrops', () => {
       // rare=99 で第1戦でほぼ確実にドロップ
       let firstDrops: any[] = []
       for (let seed = 0; seed < 200; seed++) {
-        const engine = createEngine(seed)
+        const engine = seed
         firstDrops = callRollTreasureDrops(engine, [enemy], droppedIds, 35, { rare: 99 })
         if (firstDrops.some((d) => d.templateId === 'sword_royal')) break
       }
@@ -610,7 +616,7 @@ describe('rollTreasureDrops', () => {
 
       // 第2戦では同じレアは出ないこと
       for (let seed = 1000; seed < 1100; seed++) {
-        const engine = createEngine(seed)
+        const engine = seed
         const result = callRollTreasureDrops(engine, [enemy], droppedIds, 35, { rare: 99 })
         for (const drop of result) {
           expect(drop.templateId).not.toBe('sword_royal')
@@ -630,7 +636,7 @@ describe('rollTreasureDrops', () => {
 
       const hasDrop = (tier: number, templateId: string) => {
         for (let seed = 0; seed < 500; seed++) {
-          const engine = createEngine(seed)
+          const engine = seed
           const result = callRollTreasureDrops(engine, [enemy], new Set(), 35, { rare: 99 }, 1, 1, tier)
           if (result.some((drop: any) => drop.templateId === templateId)) return true
         }

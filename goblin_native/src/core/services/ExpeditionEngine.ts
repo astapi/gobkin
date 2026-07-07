@@ -18,12 +18,9 @@ import type {
 } from '../../shared/types'
 import { getAreaConfig } from '../../shared/data/expeditionArea'
 import { getEnemyDatabase } from '../../shared/data/enemy'
-import { getEquipmentTemplate, getEquipmentByRank } from '../../shared/data/equipmentPoolLoader'
 import { BattleSystem } from './BattleSystem'
 import { GoblinStatCalculator } from './GoblinStatCalculator'
-import { EquipmentTitleService } from './EquipmentTitleService'
-import { rollDropRank } from './DropRankRoller'
-import { rollLuckValue } from './LuckRoller'
+import { rollTreasureDrops } from './TreasureDropRoller'
 import { normalizePartyRewardMultipliers, getDungeonTierAreaLevel } from '../../shared/types'
 import {
   getGoldBonusPercentFromSkills,
@@ -81,7 +78,7 @@ export class ExpeditionEngine {
   private readonly battleSystem: BattleSystem
 
   constructor(seed?: number, battleSystem?: BattleSystem) {
-    this.seed = seed || this.generateSeed()
+    this.seed = seed ?? this.generateSeed()
     this.rng = this.createSeededRandom(this.seed)
     this.battleSystem = battleSystem ?? new BattleSystem()
   }
@@ -105,7 +102,6 @@ export class ExpeditionEngine {
     rewardMultipliers?: PartyRewardMultipliers,
     expeditionBoost?: ExpeditionBoost
   ): Promise<ExpeditionReplay> {
-    console.log('ExpeditionEngine: Starting generateExpedition', { request, partySize: party.length })
     const normalizedRewardMultipliers = normalizePartyRewardMultipliers(rewardMultipliers)
     const partySkillRewardMultipliers = this.getPartySkillRewardMultipliers(party)
     const effectiveRewardMultipliers = normalizePartyRewardMultipliers({
@@ -126,20 +122,12 @@ export class ExpeditionEngine {
       ? expeditionBoost.expMultiplier
       : 1
     const tier = request.tier ?? 0
-    // ダンジョンIDからエリアIDにマッピング
-    const dungeonToAreaMap: Record<string, string> = {
-      "1": "forest_outskirts",
-      "2": "goblin_village_1",
-      "3": "orc_camp_1",
-      "4": "slime_cave"
-    }
-
-    const areaId = dungeonToAreaMap[request.areaId] || request.areaId
+    const areaId = request.areaId
 
     // エリアデータを取得
     const area = getAreaConfig(areaId)
     if (!area) {
-      throw new Error(`Area not found: ${request.areaId} (mapped to: ${areaId})`)
+      throw new Error(`Area not found: ${areaId}`)
     }
     const effectiveAreaLevel = getDungeonTierAreaLevel(area.areaLevel, tier)
     const targetFloor = this.normalizeTargetFloor(request.targetFloor, area.floors)
@@ -186,7 +174,6 @@ export class ExpeditionEngine {
       floor: currentFloor
     })
 
-    console.log('ExpeditionEngine: Starting main loop', { floors: area.floors, adjustedDuration })
     let loopCount = 0
     const MAX_LOOPS = 1000 // 安全装置
 
@@ -196,10 +183,8 @@ export class ExpeditionEngine {
         console.error('ExpeditionEngine: Loop safety limit reached!')
         break
       }
-      console.log(`Loop ${loopCount}: Floor ${currentFloor}/${area.floors}, shouldReturn: ${shouldReturn}`)
       const floorEvents = this.generateFloorEvents(area, currentFloor, simulationDuration, targetFloor)
 
-      console.log(`Floor ${currentFloor} events:`, floorEvents)
       for (const floorEvent of floorEvents) {
         if (shouldReturn) break
 
@@ -212,59 +197,29 @@ export class ExpeditionEngine {
           })
         }
         const eventType = floorEvent.isFloorEnd ? "battle" : this.selectEventType(area.encounter.eventWeights)
-        console.log(`Event type selected: ${eventType} at time ${floorEvent.at}`)
 
         switch (eventType) {
           case "battle": {
-            const pattern = this.selectEnemyPattern(enemyDatabase.patterns, currentFloor, tier, false, floorEvent.isFloorEnd)
-            const enemies = this.applyTierScaling(this.getEnemiesFromPattern(pattern, enemyDatabase.enemies), tier)
-            const combat = this.resolveCombat(partyState, enemies, area)
-            const xp = combat.outcome === 'win' ? this.calculateEnemyXp(enemies, expMultiplierBoost) : 0
-
-            events.push({
-              type: "battle",
-              at: currentTime,
-              floor: currentFloor,
-              enemy: this.createEnemySnap(enemies),
-              combat,
-              xp
+            const battleOutcome = this.processBattleEvent({
+              partyState,
+              enemyDatabase,
+              area,
+              currentFloor,
+              currentTime,
+              tier,
+              isFloorEnd: floorEvent.isFloorEnd,
+              droppedTemplateIds,
+              partyLuckAverage,
+              effectiveRewardMultipliers,
+              rareDropMultiplierBoost,
+              titleMultiplierBoost,
+              expMultiplierBoost,
+              returnPolicy: request.returnPolicy,
+              events,
             })
-
-            // パーティ状態を更新
-            this.applyBattleResults(partyState, combat)
-
-            // 戦闘敗北時は即座に帰還
-            if (combat.outcome === 'lose') {
+            if (battleOutcome.shouldReturn) {
               shouldReturn = true
-              returnReason = 'defeated'
-              break
-            }
-
-            if (combat.outcome === 'win') {
-              const treasureDrops = this.rollTreasureDrops(
-                enemies.flat(),
-                droppedTemplateIds,
-                partyLuckAverage,
-                effectiveRewardMultipliers,
-                rareDropMultiplierBoost,
-                titleMultiplierBoost,
-                tier
-              )
-              if (treasureDrops.length > 0) {
-                events.push({
-                  type: "treasure",
-                  at: currentTime,
-                  floor: currentFloor,
-                  items: treasureDrops
-                })
-              }
-            }
-
-            // 帰還条件をチェック
-            const returnCheck = this.checkReturnConditions(partyState, request.returnPolicy, currentFloor)
-            if (returnCheck.shouldReturn && returnCheck.reason) {
-              shouldReturn = true
-              returnReason = returnCheck.reason
+              returnReason = battleOutcome.returnReason
             }
             break
           }
@@ -289,56 +244,28 @@ export class ExpeditionEngine {
           }
 
           default: {
-            // 未知のイベントタイプの処理
+            // 未知のイベントタイプはbattleとして処理
             console.warn(`Unknown event type: ${eventType}, treating as battle`)
-            // battleとして処理
-            const pattern = this.selectEnemyPattern(enemyDatabase.patterns, currentFloor, tier, false, floorEvent.isFloorEnd)
-            const enemies = this.applyTierScaling(this.getEnemiesFromPattern(pattern, enemyDatabase.enemies), tier)
-            const combat = this.resolveCombat(partyState, enemies, area)
-            const xp = combat.outcome === 'win' ? this.calculateEnemyXp(enemies, expMultiplierBoost) : 0
-
-            events.push({
-              type: "battle",
-              at: currentTime,
-              floor: currentFloor,
-              enemy: this.createEnemySnap(enemies),
-              combat,
-              xp
+            const battleOutcome = this.processBattleEvent({
+              partyState,
+              enemyDatabase,
+              area,
+              currentFloor,
+              currentTime,
+              tier,
+              isFloorEnd: floorEvent.isFloorEnd,
+              droppedTemplateIds,
+              partyLuckAverage,
+              effectiveRewardMultipliers,
+              rareDropMultiplierBoost,
+              titleMultiplierBoost,
+              expMultiplierBoost,
+              returnPolicy: request.returnPolicy,
+              events,
             })
-
-            this.applyBattleResults(partyState, combat)
-
-            // 戦闘敗北時は即座に帰還
-            if (combat.outcome === 'lose') {
+            if (battleOutcome.shouldReturn) {
               shouldReturn = true
-              returnReason = 'defeated'
-              break
-            }
-
-            if (combat.outcome === 'win') {
-              const defaultTreasure = this.rollTreasureDrops(
-                enemies.flat(),
-                droppedTemplateIds,
-                partyLuckAverage,
-                effectiveRewardMultipliers,
-                rareDropMultiplierBoost,
-                titleMultiplierBoost,
-                tier
-              )
-              if (defaultTreasure.length > 0) {
-                events.push({
-                  type: "treasure",
-                  at: currentTime,
-                  floor: currentFloor,
-                  items: defaultTreasure
-                })
-              }
-            }
-
-            const returnCheck = this.checkReturnConditions(partyState, request.returnPolicy, currentFloor)
-            if (returnCheck.shouldReturn) {
-              shouldReturn = true
-              returnReason = returnCheck.reason
+              returnReason = battleOutcome.returnReason
             }
             break
           }
@@ -394,14 +321,15 @@ export class ExpeditionEngine {
 
         // ボス戦勝利時の宝箱ドロップ判定
         if (bossCombat.outcome === 'win') {
-          const bossTreasure = this.rollTreasureDrops(
+          const bossTreasure = rollTreasureDrops(
             bossEnemies.flat(),
             droppedTemplateIds,
             partyLuckAverage,
             effectiveRewardMultipliers,
             rareDropMultiplierBoost,
             titleMultiplierBoost,
-            tier
+            tier,
+            this.rng
           )
           if (bossTreasure.length > 0) {
             events.push({
@@ -435,7 +363,9 @@ export class ExpeditionEngine {
         })
 
         this.applyBattleResults(partyState, encounterCombat)
-        returnReason = 'completed'
+        // 金のドングリ遭遇戦で全滅（敗北）した場合のみ敗北扱いにする。
+        // 退却（時間切れ）は踏破済み扱いを維持する。
+        returnReason = encounterCombat.outcome === 'lose' ? 'defeated' : 'completed'
       }
       shouldReturn = true
     }
@@ -449,9 +379,7 @@ export class ExpeditionEngine {
       })
     }
 
-    console.log('ExpeditionEngine: Generated events:', events.length)
     const summary = this.calculateRewardSummary(events, partyState, effectiveRewardMultipliers, partyGoldBonusPercent, goldMultiplierBoost)
-    console.log('ExpeditionEngine: Expedition complete', summary)
 
     return {
       meta: {
@@ -757,14 +685,99 @@ export class ExpeditionEngine {
     }
   }
 
+  /**
+   * 通常/不明イベントの戦闘処理（battleイベントとdefaultイベントで共通化）
+   * 戦闘結果の反映・宝箱ドロップ・帰還判定までを行い、帰還要否を返す。
+   */
+  private processBattleEvent(params: {
+    partyState: PartyState[]
+    enemyDatabase: ReturnType<typeof getEnemyDatabase>
+    area: AreaConfig
+    currentFloor: number
+    currentTime: number
+    tier: DungeonTier
+    isFloorEnd: boolean
+    droppedTemplateIds: Set<string>
+    partyLuckAverage: number
+    effectiveRewardMultipliers: PartyRewardMultipliers
+    rareDropMultiplierBoost: number
+    titleMultiplierBoost: number
+    expMultiplierBoost: number
+    returnPolicy: ExpeditionRequest['returnPolicy']
+    events: TimelineEvent[]
+  }): { shouldReturn: boolean; returnReason: ExpeditionEndReason | null } {
+    const {
+      partyState, enemyDatabase, area, currentFloor, currentTime, tier, isFloorEnd,
+      droppedTemplateIds, partyLuckAverage, effectiveRewardMultipliers,
+      rareDropMultiplierBoost, titleMultiplierBoost, expMultiplierBoost, returnPolicy, events,
+    } = params
+
+    const pattern = this.selectEnemyPattern(enemyDatabase!.patterns, currentFloor, tier, false, isFloorEnd)
+    const enemies = this.applyTierScaling(this.getEnemiesFromPattern(pattern, enemyDatabase!.enemies), tier)
+    const combat = this.resolveCombat(partyState, enemies, area)
+    const xp = combat.outcome === 'win' ? this.calculateEnemyXp(enemies, expMultiplierBoost) : 0
+
+    events.push({
+      type: "battle",
+      at: currentTime,
+      floor: currentFloor,
+      enemy: this.createEnemySnap(enemies),
+      combat,
+      xp
+    })
+
+    // パーティ状態を更新
+    this.applyBattleResults(partyState, combat)
+
+    // 戦闘敗北時は即座に帰還
+    if (combat.outcome === 'lose') {
+      return { shouldReturn: true, returnReason: 'defeated' }
+    }
+
+    if (combat.outcome === 'win') {
+      const treasureDrops = rollTreasureDrops(
+        enemies.flat(),
+        droppedTemplateIds,
+        partyLuckAverage,
+        effectiveRewardMultipliers,
+        rareDropMultiplierBoost,
+        titleMultiplierBoost,
+        tier,
+        this.rng
+      )
+      if (treasureDrops.length > 0) {
+        events.push({
+          type: "treasure",
+          at: currentTime,
+          floor: currentFloor,
+          items: treasureDrops
+        })
+      }
+    }
+
+    // 帰還条件をチェック
+    const returnCheck = this.checkReturnConditions(partyState, returnPolicy, currentFloor)
+    if (returnCheck.shouldReturn && returnCheck.reason) {
+      return { shouldReturn: true, returnReason: returnCheck.reason }
+    }
+
+    return { shouldReturn: false, returnReason: null }
+  }
+
   private applyBattleResults(partyState: PartyState[], combat: CombatReplay): void {
     combat.allyHPDelta.forEach((delta, index) => {
-      if (partyState[index]) {
-        partyState[index].currentHP = Math.max(0, partyState[index].currentHP + delta)
-        if (partyState[index].currentHP <= 0) {
-          partyState[index].isKO = true
-          partyState[index].isDead = true
-        }
+      const member = partyState[index]
+      if (!member) return
+      // 純ゴブリンの群れボーナス等で戦闘中maxHPが膨らむため、本来の最大HPで上限クランプする
+      const maxHP = member.effectiveStats?.hp ?? member.maxHP
+      member.currentHP = Math.max(0, Math.min(maxHP, member.currentHP + delta))
+      if (member.currentHP <= 0) {
+        member.isKO = true
+        member.isDead = true
+      } else {
+        // 蘇生（immediate_revive）等でHPが正に戻った場合はKO/死亡フラグを解除する
+        member.isKO = false
+        member.isDead = false
       }
     })
   }
@@ -803,105 +816,6 @@ export class ExpeditionEngine {
     return Math.max(1, Math.min(areaFloors, Math.floor(targetFloor)))
   }
 
-  /**
-   * 宝箱ドロップを判定（同一遠征中に同じアイテムは1個まで）
-   *
-   * ノーマルドロップ:
-   *  - 敵1体ごとに `100 - rare * 10 < 運乱数` で当落判定。
-   *  - 当選時は敵レベルから DROP_RANK_TABLE で装備ランクを抽選し、
-   *    そのランクの装備プールから1点を均等抽選する。
-   *
-   * レアドロップ:
-   *  - 敵に `rareEquipmentDrops` / `tierRareEquipmentDrops` が設定されているときのみ判定する。
-   *  - Tier 追加分は `tier <= 現在Tier` の候補を `rareEquipmentDrops` に足して判定する。
-   *  - レア候補の **アイテム1つごとに** `100 - effectiveRare * 0.1 < 運乱数` で当落判定。
-   *  - effectiveRare = `rare * rareDropMultiplierBoost`（boost は課金アイテム等で 2 倍化）。
-   *  - 当選したアイテムをそれぞれドロップに追加する（同じ敵から複数種ドロップ可能）。
-   *
-   * 共通:
-   *  - 運乱数は PT平均運値から `rollLuckValue` で算出する（敵ごとに振り直し）。
-   *  - 戦闘終了後、ドロップした templateId を遠征全体の重複防止に登録する。
-   *  - ドロップ時は称号倍率に応じて称号を抽選する（付与判定 + Tier 別の判定回数で最高位採用）。
-   */
-  private rollTreasureDrops(
-    enemies: Enemy[],
-    droppedIds: Set<string>,
-    partyLuckAverage: number,
-    rewardMultipliers?: PartyRewardMultipliers,
-    rareDropMultiplierBoost: number = 1,
-    titleMultiplierBoost: number = 1,
-    tier: DungeonTier = 0
-  ): TreasureDrop[] {
-    const { title: titleMultiplier, rare: rareMultiplier } = normalizePartyRewardMultipliers(rewardMultipliers)
-    const effectiveTitleMultiplier = titleMultiplier * (titleMultiplierBoost > 0 ? titleMultiplierBoost : 1)
-    const drops: TreasureDrop[] = []
-    const expeditionDroppedIds = new Set(droppedIds)
-    const pendingDroppedIds = new Set<string>()
-
-    const normalThreshold = 100 - rareMultiplier * 10
-    const effectiveRareMultiplier = rareMultiplier * (rareDropMultiplierBoost > 0 ? rareDropMultiplierBoost : 1)
-    const rareThreshold = 100 - effectiveRareMultiplier * 0.1
-
-    // ノーマルドロップ判定（敵1体ごと）
-    for (const enemy of enemies) {
-      const luckRoll = rollLuckValue(partyLuckAverage, this.rng)
-      if (!(normalThreshold < luckRoll)) continue
-
-      const rank = rollDropRank(enemy.level, this.rng)
-      const candidates = getEquipmentByRank(rank).filter(
-        (t) => !expeditionDroppedIds.has(t.id) && !pendingDroppedIds.has(t.id)
-      )
-      if (candidates.length === 0) continue
-
-      const index = Math.floor(this.rng() * candidates.length)
-      const selected = candidates[index]
-
-      const titleLuckRoll = rollLuckValue(partyLuckAverage, this.rng)
-      const title = EquipmentTitleService.rollTitle(effectiveTitleMultiplier, titleLuckRoll, tier, this.rng)
-      drops.push({
-        templateId: selected.id,
-        titleId: title.titleId !== 'none' ? title.titleId : undefined,
-      })
-      pendingDroppedIds.add(selected.id)
-    }
-
-    // レアドロップ判定（通常候補 + Tier 追加候補のアイテム1つごとに当落判定）
-    for (const enemy of enemies) {
-      const rareEquipmentDrops = [
-        ...(enemy.rareEquipmentDrops ?? []),
-        ...(enemy.tierRareEquipmentDrops ?? [])
-          .filter(tierDrops => tierDrops.tier <= tier)
-          .flatMap(tierDrops => tierDrops.drops),
-      ]
-      if (rareEquipmentDrops.length === 0) continue
-
-      for (const drop of rareEquipmentDrops) {
-        if (
-          expeditionDroppedIds.has(drop.templateId) ||
-          pendingDroppedIds.has(drop.templateId) ||
-          getEquipmentTemplate(drop.templateId) === undefined
-        ) continue
-
-        const luckRoll = rollLuckValue(partyLuckAverage, this.rng)
-        if (!(rareThreshold < luckRoll)) continue
-
-        const titleLuckRoll = rollLuckValue(partyLuckAverage, this.rng)
-        const title = EquipmentTitleService.rollTitle(effectiveTitleMultiplier, titleLuckRoll, tier, this.rng)
-        drops.push({
-          templateId: drop.templateId,
-          titleId: title.titleId !== 'none' ? title.titleId : undefined,
-        })
-        pendingDroppedIds.add(drop.templateId)
-      }
-    }
-
-    for (const templateId of pendingDroppedIds) {
-      droppedIds.add(templateId)
-    }
-
-    return drops
-  }
-
   private calculateRewardSummary(
     events: TimelineEvent[],
     partyState: PartyState[],
@@ -922,8 +836,8 @@ export class ExpeditionEngine {
       if (event.type === "battle" || event.type === "boss") {
         if (event.combat.outcome === "win") {
           xpGained += event.xp
+          baseGoldGained += event.enemy.gold
         }
-        baseGoldGained += event.enemy.gold
         maxFloorReached = Math.max(maxFloorReached, event.floor)
       } else if (event.type === "floor_up") {
         maxFloorReached = Math.max(maxFloorReached, event.to)

@@ -110,19 +110,14 @@ export class SQLiteBaseStateRepository implements IBaseStateRepository {
 
   /**
    * 次のゴブリンIDをアトミックにインクリメントして返す
-   * UPDATE で +1 した後、更新後の値-1 を返す（採番された値）
+   * UPDATE ... RETURNING により +1 と採番値の取得を 1 文で行い、
+   * 並行実行時の同一IDの二重採番を防ぐ（採番されたIDは更新後の値-1）
    */
   async getAndIncrementNextGoblinId(): Promise<number> {
     const db = await getDatabase()
 
-    // アトミックにインクリメント
-    await db.runAsync(
-      'UPDATE base_state SET next_goblin_id = next_goblin_id + 1 WHERE id = 1'
-    )
-
-    // インクリメント後の値を取得（採番されたIDは -1 した値）
     const row = await db.getFirstAsync<{ next_goblin_id: number }>(
-      'SELECT next_goblin_id FROM base_state WHERE id = 1'
+      'UPDATE base_state SET next_goblin_id = next_goblin_id + 1 WHERE id = 1 RETURNING next_goblin_id'
     )
 
     return (row?.next_goblin_id ?? 2) - 1

@@ -3,7 +3,11 @@
  * DBから直接読み書きする設計
  */
 import type { DungeonProgressState } from '../../shared/types'
+import type { IDungeonProgressRepository, DungeonProgress } from '../../core/repositories/IDungeonProgressRepository'
 import { getDatabase } from '../database'
+
+// インターフェース／進行状況型は core/repositories へ移動。後方互換のため再エクスポート
+export type { IDungeonProgressRepository, DungeonProgress }
 
 interface DungeonProgressRow {
   dungeon_id: string
@@ -13,22 +17,6 @@ interface DungeonProgressRow {
   max_cleared_tier: number
   cleared_floors_json: string | null
   updated_at: string
-}
-
-interface DungeonProgress {
-  unlocked: boolean
-  cleared: boolean
-  unlockNotified: boolean
-  maxClearedTier: number
-  maxClearedFloorsByTier: Record<number, number>
-}
-
-export interface IDungeonProgressRepository {
-  getAll(): Promise<DungeonProgressState>
-  get(dungeonId: string): Promise<DungeonProgress | null>
-  save(dungeonId: string, progress: DungeonProgress): Promise<void>
-  unlock(dungeonId: string): Promise<void>
-  markCleared(dungeonId: string, tier?: number): Promise<void>
 }
 
 const parseClearedFloors = (value: string | null | undefined): Record<number, number> => {
@@ -44,14 +32,6 @@ const parseClearedFloors = (value: string | null | undefined): Record<number, nu
     return {}
   }
 }
-
-const defaultProgress = (): DungeonProgress => ({
-  unlocked: false,
-  cleared: false,
-  unlockNotified: false,
-  maxClearedTier: 0,
-  maxClearedFloorsByTier: {},
-})
 
 export class SQLiteDungeonProgressRepository implements IDungeonProgressRepository {
   private static instance: SQLiteDungeonProgressRepository | null = null
@@ -116,19 +96,34 @@ export class SQLiteDungeonProgressRepository implements IDungeonProgressReposito
   }
 
   async unlock(dungeonId: string): Promise<void> {
-    const current = await this.get(dungeonId) ?? defaultProgress()
-    await this.save(dungeonId, { ...current, unlocked: true })
+    // get→save の lost update を避けるため単文の UPSERT で更新する
+    const db = await getDatabase()
+    await db.runAsync(
+      `INSERT INTO dungeon_progress
+       (dungeon_id, unlocked, cleared, unlock_notified, max_cleared_tier, cleared_floors_json, updated_at)
+       VALUES (?, 1, 0, 0, 0, '{}', datetime('now'))
+       ON CONFLICT(dungeon_id) DO UPDATE SET
+         unlocked = 1,
+         updated_at = datetime('now')`,
+      [dungeonId]
+    )
   }
 
   async markCleared(dungeonId: string, tier?: number): Promise<void> {
-    const current = await this.get(dungeonId) ?? { ...defaultProgress(), unlocked: true }
     const clearedTierValue = tier !== undefined ? tier + 1 : 1
-    const newMaxClearedTier = Math.max(current.maxClearedTier, clearedTierValue)
-    await this.save(dungeonId, {
-      ...current,
-      unlocked: true,
-      cleared: true,
-      maxClearedTier: newMaxClearedTier,
-    })
+    // get→save の lost update を避けるため単文の UPSERT で更新する。
+    // max_cleared_tier は MAX で退行しないようにする
+    const db = await getDatabase()
+    await db.runAsync(
+      `INSERT INTO dungeon_progress
+       (dungeon_id, unlocked, cleared, unlock_notified, max_cleared_tier, cleared_floors_json, updated_at)
+       VALUES (?, 1, 1, 0, ?, '{}', datetime('now'))
+       ON CONFLICT(dungeon_id) DO UPDATE SET
+         unlocked = 1,
+         cleared = 1,
+         max_cleared_tier = MAX(max_cleared_tier, excluded.max_cleared_tier),
+         updated_at = datetime('now')`,
+      [dungeonId, clearedTierValue]
+    )
   }
 }

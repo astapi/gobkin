@@ -302,7 +302,6 @@ const ko = {
         equipment: '장비 변경',
         playback: '원정 재생',
         result: '원정 결과',
-        log: '원정 로그',
         battleLog: '전투 로그',
         levelUpLog: '레벨 업 상세',
       },
@@ -855,6 +854,7 @@ const ko = {
   battle: {
     normalAttack: '일반 공격',
     defendAction: '방어',
+    turnStartAction: '턴 시작',
     actionOrderFast2: '행동 순서 속도가 2.0배 증가한다',
     actionOrderFast15: '행동 순서 속도가 1.5배 증가한다',
     actionOrderSlow23: '행동 순서 속도가 2/3로 감소한다',
