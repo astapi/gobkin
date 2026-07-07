@@ -15,7 +15,6 @@
       "attackCount": 1,
       "accuracy": 340,
       "evasion": 20,
-      "exp": 68,
       "gold": 60,
       "baseAttributes": {
         "power": 10,
@@ -64,7 +63,6 @@
       "attackCount": 2,
       "accuracy": 330,
       "evasion": 18,
-      "exp": 78,
       "gold": 68,
       "baseAttributes": {
         "power": 9,
@@ -113,7 +111,6 @@
       "attackCount": 5,
       "accuracy": 420,
       "evasion": 26,
-      "exp": 82,
       "gold": 72,
       "skills": [
         {
@@ -169,15 +166,8 @@
       "attackCount": 1,
       "accuracy": 600,
       "evasion": 5,
-      "exp": 200,
       "isBoss": true,
       "gold": 160,
-      "factorDrops": [
-        {
-          "factorId": "human",
-          "probability": 0.015
-        }
-      ],
       "baseAttributes": {
         "power": 63,
         "wisdom": 63,

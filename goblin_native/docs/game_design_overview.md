@@ -194,7 +194,7 @@ Tier により敵ステータス・報酬・探索時間がスケールします
 ### 3.7 報酬の仕組み
 
 - **経験値**: 通常戦闘 `round(敵Lv * 1.8 * 種族係数)`、ボス `round(敵Lv * 9.6 * 種族係数)`。種族係数は human=1.15, construct=1.2 など（`src/shared/utils/enemyExp.ts`）。勝利戦闘ごとに生存メンバー数で分配。
-- **ゴールド**: 敵の `gold` 合計 × 各種倍率（パーティ報酬倍率・スキル・課金ブースト）+ 宝箱ゴールド。
+- **ゴールド**: **勝利した戦闘の敵のみ** `gold` を加算（`outcome === "win"` の場合のみ）。その合計 × 各種倍率（パーティ報酬倍率・スキル・課金ブースト）+ 宝箱ゴールド。
 - **宝箱ドロップ** (`ExpeditionEngine.rollTreasureDrops`):
   - **ノーマルドロップ**: 敵ごとに運判定（`100 - rare*10 < 運乱数`）→ 敵Lvから `DropRankRoller` でランク抽選 → 該当ランク装備プールから抽選。同一遠征で同一テンプレートは1個まで。
   - **レアドロップ**: 敵の `rareEquipmentDrops` / `tierRareEquipmentDrops` から、アイテムごとに判定（`100 - rare*0.1 < 運乱数`）。
@@ -561,6 +561,8 @@ finalIV = clamp(floor(min + (max-min)*rand) + BASE_RANK_BONUS[baseRank], 1, 64)
 
 - エリアレベル別ベース範囲 `AREA_LEVEL_IV_RANGES`: Area1 [1,8] 〜 Area8 [50,60]
 - 拠点ランクボーナス `BASE_RANK_BONUS`: Rank1=0 〜 Rank7=+12
+
+> **現在仕様見直し中**: `AREA_LEVEL_IV_RANGES` はキー1〜8の旧エリア番号を前提としたテーブルですが、`BaseRankSystem.getAreaLevelIvRange()` に渡る実際の `areaLevel` は現行データでは1〜180程度まで幅広く分布しており（例: slime_cave=1, forest_outskirts=2 だが、forest_edge_village=9, goblin_village_1=10, orc_camp_1=14 …と多くのダンジョンでキー1〜8の範囲を超える）、テーブルに一致するキーがない場合は `areaLevel > 8` の分岐で Area8 の範囲 `[50,60]` に一律フォールバックしています。旧エリア番号前提のマッピングと現行データの `areaLevel` の間に不整合がある既知の問題として、仕様の見直しを保留中です。
 
 例: Rank3拠点でArea3遠征 → IV = (12-20) + 4 = 16〜24。
 

@@ -68,16 +68,8 @@ export class FactorInheritanceService {
       isVariant: false,
     }
 
-    console.log('[FactorInheritance] evaluateInheritance called', {
-      parent1: parents.parent1?.name,
-      parent1Factors: parents.parent1?.factors,
-      parent2: parents.parent2?.name,
-      parent2Factors: parents.parent2?.factors,
-    })
-
     // 親がいない場合は引き継ぎなし
     if (!parents.parent1 && !parents.parent2) {
-      console.log('[FactorInheritance] No parents, returning empty')
       return emptyResult
     }
 
@@ -90,11 +82,8 @@ export class FactorInheritanceService {
       parents.parent2.factors.forEach(f => parentFactorIds.add(f))
     }
 
-    console.log('[FactorInheritance] Collected parent factors:', [...parentFactorIds])
-
     // 親が因子を持っていない場合
     if (parentFactorIds.size === 0) {
-      console.log('[FactorInheritance] Parents have no factors, returning empty')
       return emptyResult
     }
 

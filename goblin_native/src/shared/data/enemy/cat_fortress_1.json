@@ -17,7 +17,6 @@
       "accuracy": 980,
       "evasion": 88,
       "criticalRate": 0.12,
-      "exp": 620,
       "gold": 520,
       "skills": [
         {
@@ -57,7 +56,6 @@
       "accuracy": 1030,
       "evasion": 82,
       "criticalRate": 0.15,
-      "exp": 760,
       "gold": 610,
       "skills": [
         {
@@ -92,7 +90,6 @@
       "accuracy": 1320,
       "evasion": 96,
       "criticalRate": 0.2,
-      "exp": 3600,
       "isBoss": true,
       "gold": 2800,
       "factorDrops": [

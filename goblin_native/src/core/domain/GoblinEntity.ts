@@ -2,13 +2,7 @@ import type { Goblin, GoblinStats } from '../../shared/types'
 import { addExperience, type LevelUpResult } from '../services/ExperienceSystem'
 import { GoblinStatCalculator } from '../services/GoblinStatCalculator'
 import {
-  calculateGoblinBaseAccuracy,
-  calculateGoblinBaseAtk,
-  calculateGoblinBaseAttackCount,
-  calculateGoblinBaseDef,
-  calculateGoblinBaseEvasion,
-  calculateGoblinBaseHp,
-  calculateGoblinBaseMagicHeal,
+  calculateGoblinDerivedStats,
   getGoblinBaseAttributes,
   getGoblinBaseAttributesAtLevel,
 } from '../../shared/utils/goblinHp'
@@ -110,22 +104,20 @@ export class GoblinEntity {
   /**
    * レベルアップ時のステータス上昇処理
    */
-  private applyLevelUpBonus(levelsGained: number): void {
+  private applyLevelUpBonus(_levelsGained: number): void {
+    // GoblinStatCalculator.calculate と同じ基礎ステータス計算を再利用し、
+    // magicAtk / magicDef / criticalRate を含む全派生ステータスを再計算する
     const statContext = {
       race: this.base.race,
+      raceId: this.base.raceId,
       job: this.base.job,
       baseAttributes: this.base.baseAttributes,
+      skills: this.base.skills,
     }
 
     this.stats = {
       ...this.stats,
-      hp: calculateGoblinBaseHp(this.level, statContext),
-      atk: calculateGoblinBaseAtk(this.level, statContext),
-      def: calculateGoblinBaseDef(this.level, statContext),
-      attackCount: calculateGoblinBaseAttackCount(this.level, statContext),
-      accuracy: calculateGoblinBaseAccuracy(this.level, statContext),
-      evasion: calculateGoblinBaseEvasion(this.level, statContext),
-      magicHeal: calculateGoblinBaseMagicHeal(this.level, statContext),
+      ...calculateGoblinDerivedStats(this.level, statContext),
     }
   }
 }

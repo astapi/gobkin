@@ -14,7 +14,6 @@
       "attackCount": 4,
       "accuracy": 560,
       "evasion": 46,
-      "exp": 120,
       "gold": 96,
       "magicDef": 24,
       "baseAttributes": {
@@ -63,7 +62,6 @@
       "attackCount": 7,
       "accuracy": 640,
       "evasion": 52,
-      "exp": 360,
       "isBoss": true,
       "gold": 320,
       "factorDrops": [

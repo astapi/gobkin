@@ -23,8 +23,36 @@ import { migrateV16 } from './migrations/v16'
 const DB_NAME = 'goblin_kingdom.db'
 export const CURRENT_SCHEMA_VERSION = 16
 
+/**
+ * マイグレーション一覧（バージョン昇順）
+ * 各エントリは対象バージョンと適用関数を持つ
+ */
+const MIGRATIONS: ReadonlyArray<{
+  version: number
+  migrate: (database: SQLite.SQLiteDatabase) => Promise<void>
+}> = [
+  { version: 1, migrate: migrateV1 },
+  { version: 2, migrate: migrateV2 },
+  { version: 3, migrate: migrateV3 },
+  { version: 4, migrate: migrateV4 },
+  { version: 5, migrate: migrateV5 },
+  { version: 6, migrate: migrateV6 },
+  { version: 7, migrate: migrateV7 },
+  { version: 8, migrate: migrateV8 },
+  { version: 9, migrate: migrateV9 },
+  { version: 10, migrate: migrateV10 },
+  { version: 11, migrate: migrateV11 },
+  { version: 12, migrate: migrateV12 },
+  { version: 13, migrate: migrateV13 },
+  { version: 14, migrate: migrateV14 },
+  { version: 15, migrate: migrateV15 },
+  { version: 16, migrate: migrateV16 },
+]
+
 let db: SQLite.SQLiteDatabase | null = null
 let initializationPromise: Promise<SQLite.SQLiteDatabase> | null = null
+// 進行中のマイグレーションを直列化するための in-flight Promise
+let migrationPromise: Promise<void> | null = null
 
 /**
  * データベース接続を取得
@@ -58,14 +86,19 @@ export const getDatabase = async (): Promise<SQLite.SQLiteDatabase> => {
 /**
  * マイグレーションが必要かチェックし、必要なら実行
  * アプリアップデート後にプロセスが生き続けている場合でも対応
+ *
+ * 進行中のマイグレーションがある場合は同じ Promise を待ち、
+ * 並行呼び出しによる二重実行を防ぐ
  */
 export const ensureMigrations = async (database: SQLite.SQLiteDatabase): Promise<void> => {
-  const currentVersion = await getSchemaVersion(database)
-
-  if (currentVersion < CURRENT_SCHEMA_VERSION) {
-    console.log(`[DB] Schema outdated (v${currentVersion}), running migrations to v${CURRENT_SCHEMA_VERSION}...`)
-    await runMigrations(database)
+  if (migrationPromise) {
+    await migrationPromise
+    return
   }
+  migrationPromise = runMigrations(database).finally(() => {
+    migrationPromise = null
+  })
+  await migrationPromise
 }
 
 /**
@@ -73,152 +106,68 @@ export const ensureMigrations = async (database: SQLite.SQLiteDatabase): Promise
  */
 const initializeDatabase = async (): Promise<SQLite.SQLiteDatabase> => {
   const database = await SQLite.openDatabaseAsync(DB_NAME)
-  db = database
   await runMigrations(database)
+  // FK 制約を有効化（equipment の ON DELETE SET NULL を機能させる）
+  await database.execAsync('PRAGMA foreign_keys = ON')
+  // マイグレーション完了後に公開し、並行 getDatabase() による二重初期化を防ぐ
+  db = database
   return database
 }
 
 /**
  * マイグレーション実行
+ * 各マイグレーションと schema_version 更新を 1 つのトランザクションで
+ * 原子的に適用し、途中クラッシュによるテーブル消失を防ぐ
  */
 const runMigrations = async (database: SQLite.SQLiteDatabase): Promise<void> => {
   const currentVersion = await getSchemaVersion(database)
+  if (currentVersion >= CURRENT_SCHEMA_VERSION) return
 
-  if (currentVersion < 1) {
-    console.log('[DB] Running migration v1...')
-    await migrateV1(database)
-    await setSchemaVersion(database, 1)
-    console.log('[DB] Migration v1 completed')
-  }
+  console.log(`[DB] Schema outdated (v${currentVersion}), running migrations to v${CURRENT_SCHEMA_VERSION}...`)
 
-  if (currentVersion < 2) {
-    console.log('[DB] Running migration v2...')
-    await migrateV2(database)
-    await setSchemaVersion(database, 2)
-    console.log('[DB] Migration v2 completed')
-  }
-
-  if (currentVersion < 3) {
-    console.log('[DB] Running migration v3...')
-    await migrateV3(database)
-    await setSchemaVersion(database, 3)
-    console.log('[DB] Migration v3 completed')
-  }
-
-  if (currentVersion < 4) {
-    console.log('[DB] Running migration v4...')
-    await migrateV4(database)
-    await setSchemaVersion(database, 4)
-    console.log('[DB] Migration v4 completed')
-  }
-
-  if (currentVersion < 5) {
-    console.log('[DB] Running migration v5...')
-    await migrateV5(database)
-    await setSchemaVersion(database, 5)
-    console.log('[DB] Migration v5 completed')
-  }
-
-  if (currentVersion < 6) {
-    console.log('[DB] Running migration v6...')
-    await migrateV6(database)
-    await setSchemaVersion(database, 6)
-    console.log('[DB] Migration v6 completed')
-  }
-
-  if (currentVersion < 7) {
-    console.log('[DB] Running migration v7...')
-    await migrateV7(database)
-    await setSchemaVersion(database, 7)
-    console.log('[DB] Migration v7 completed')
-  }
-
-  if (currentVersion < 8) {
-    console.log('[DB] Running migration v8...')
-    await migrateV8(database)
-    await setSchemaVersion(database, 8)
-    console.log('[DB] Migration v8 completed')
-  }
-
-  if (currentVersion < 9) {
-    console.log('[DB] Running migration v9...')
-    await migrateV9(database)
-    await setSchemaVersion(database, 9)
-    console.log('[DB] Migration v9 completed')
-  }
-
-  if (currentVersion < 10) {
-    console.log('[DB] Running migration v10...')
-    await migrateV10(database)
-    await setSchemaVersion(database, 10)
-    console.log('[DB] Migration v10 completed')
-  }
-
-  if (currentVersion < 11) {
-    console.log('[DB] Running migration v11...')
-    await migrateV11(database)
-    await setSchemaVersion(database, 11)
-    console.log('[DB] Migration v11 completed')
-  }
-
-  if (currentVersion < 12) {
-    console.log('[DB] Running migration v12...')
-    await migrateV12(database)
-    await setSchemaVersion(database, 12)
-    console.log('[DB] Migration v12 completed')
-  }
-
-  if (currentVersion < 13) {
-    console.log('[DB] Running migration v13...')
-    await migrateV13(database)
-    await setSchemaVersion(database, 13)
-    console.log('[DB] Migration v13 completed')
-  }
-
-  if (currentVersion < 14) {
-    console.log('[DB] Running migration v14...')
-    await migrateV14(database)
-    await setSchemaVersion(database, 14)
-    console.log('[DB] Migration v14 completed')
-  }
-
-  if (currentVersion < 15) {
-    console.log('[DB] Running migration v15...')
-    await migrateV15(database)
-    await setSchemaVersion(database, 15)
-    console.log('[DB] Migration v15 completed')
-  }
-
-  if (currentVersion < 16) {
-    console.log('[DB] Running migration v16...')
-    await migrateV16(database)
-    await setSchemaVersion(database, 16)
-    console.log('[DB] Migration v16 completed')
+  // マイグレーション中は FK 制約を無効化し、意図しない連鎖削除を防ぐ。
+  // （FK ON のまま v15 の DROP TABLE goblins を行うと暗黙 DELETE により
+  //   equipment.goblin_id が ON DELETE SET NULL で NULL 化してしまう）
+  // withExclusiveTransactionAsync は別コネクションで実行され、そちらは既定で FK OFF だが、
+  // メインコネクション側も明示的に OFF にしておき、FK は全マイグレーション完了後に有効化する。
+  await database.execAsync('PRAGMA foreign_keys = OFF')
+  try {
+    for (const { version, migrate } of MIGRATIONS) {
+      if (currentVersion < version) {
+        console.log(`[DB] Running migration v${version}...`)
+        await database.withExclusiveTransactionAsync(async (txn) => {
+          await migrate(txn)
+          await setSchemaVersion(txn, version)
+        })
+        console.log(`[DB] Migration v${version} completed`)
+      }
+    }
+  } finally {
+    // マイグレーション完了後に FK 制約を有効化する
+    await database.execAsync('PRAGMA foreign_keys = ON')
   }
 }
 
 /**
  * 現在のスキーマバージョンを取得
+ * テーブル/行が存在しない場合のみ 0 を返し、それ以外の DB エラーはそのまま伝播させる
+ * （一時的なエラーで 0 を返すと全マイグレーションが再実行されてしまうため）
  */
 const getSchemaVersion = async (database: SQLite.SQLiteDatabase): Promise<number> => {
-  try {
-    // app_metadata テーブルが存在するか確認
-    const tableExists = await database.getFirstAsync<{ name: string }>(
-      "SELECT name FROM sqlite_master WHERE type='table' AND name='app_metadata'"
-    )
+  // app_metadata テーブルが存在するか確認
+  const tableExists = await database.getFirstAsync<{ name: string }>(
+    "SELECT name FROM sqlite_master WHERE type='table' AND name='app_metadata'"
+  )
 
-    if (!tableExists) {
-      return 0
-    }
-
-    const result = await database.getFirstAsync<{ value: string }>(
-      "SELECT value FROM app_metadata WHERE key = 'schema_version'"
-    )
-
-    return result ? parseInt(result.value, 10) : 0
-  } catch {
+  if (!tableExists) {
     return 0
   }
+
+  const result = await database.getFirstAsync<{ value: string }>(
+    "SELECT value FROM app_metadata WHERE key = 'schema_version'"
+  )
+
+  return result ? parseInt(result.value, 10) : 0
 }
 
 /**
@@ -251,6 +200,7 @@ export const closeDatabase = async (): Promise<void> => {
     db = null
   }
   initializationPromise = null
+  migrationPromise = null
 }
 
 /**
@@ -269,6 +219,7 @@ export const resetDatabase = async (): Promise<void> => {
   }
   db = null
   initializationPromise = null
+  migrationPromise = null
   await SQLite.deleteDatabaseAsync(DB_NAME)
   await initializeDatabase()
 }

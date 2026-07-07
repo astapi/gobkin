@@ -1,0 +1,293 @@
+area_id,area_level,tier,effective_area_level,party_level,seeds,floor_success_rate,floor_progress_score,median_success_rate,median_progress_score,ceiling_success_rate,ceiling_progress_score,ceiling_minus_floor
+slime_cave,1,0,1,1,100,100.0,1.500,100.0,1.500,100.0,1.500,0.000
+slime_cave,1,1,4,1,100,100.0,1.500,100.0,1.500,100.0,1.500,0.000
+slime_cave,1,2,6,1,100,15.0,0.700,98.0,1.549,98.0,1.549,0.850
+slime_cave,1,3,8,1,100,0.0,0.372,0.0,0.483,0.0,0.483,0.111
+forest_outskirts,2,0,2,2,100,0.0,0.414,0.0,0.450,20.0,0.715,0.300
+forest_outskirts,2,1,6,2,100,0.0,0.262,0.0,0.299,0.0,0.337,0.075
+forest_outskirts,2,2,8,2,100,0.0,0.235,0.0,0.243,0.0,0.261,0.025
+forest_outskirts,2,3,11,2,100,0.0,0.157,0.0,0.190,0.0,0.241,0.085
+goblin_village_1,10,0,10,10,100,0.0,0.360,0.0,0.472,100.0,1.500,1.140
+goblin_village_1,10,1,19,10,100,0.0,0.109,0.0,0.155,0.0,0.298,0.189
+goblin_village_1,10,2,25,10,100,0.0,0.079,0.0,0.095,0.0,0.129,0.050
+goblin_village_1,10,3,33,10,100,0.0,0.064,0.0,0.074,0.0,0.067,0.003
+forest_edge_village,9,0,9,9,100,0.0,0.133,0.0,0.214,0.0,0.266,0.134
+forest_edge_village,9,1,17,9,100,0.0,0.086,0.0,0.098,0.0,0.146,0.060
+forest_edge_village,9,2,23,9,100,0.0,0.074,0.0,0.083,0.0,0.109,0.035
+forest_edge_village,9,3,30,9,100,0.0,0.064,0.0,0.070,0.0,0.082,0.018
+old_well_waterway,10,0,10,10,100,0.0,0.153,0.0,0.170,0.0,0.315,0.161
+old_well_waterway,10,1,19,10,100,0.0,0.092,0.0,0.104,0.0,0.151,0.059
+old_well_waterway,10,2,25,10,100,0.0,0.077,0.0,0.088,0.0,0.100,0.023
+old_well_waterway,10,3,33,10,100,0.0,0.071,0.0,0.072,0.0,0.082,0.012
+undead_ruins_1,18,0,18,18,100,0.0,0.221,0.0,0.233,0.0,0.422,0.201
+undead_ruins_1,18,1,31,18,100,0.0,0.116,0.0,0.123,0.0,0.235,0.119
+undead_ruins_1,18,2,42,18,100,0.0,0.091,0.0,0.096,0.0,0.146,0.055
+undead_ruins_1,18,3,55,18,100,0.0,0.071,0.0,0.075,0.0,0.094,0.023
+bandit_hideout,20,0,20,20,100,0.0,0.177,0.0,0.259,0.0,0.350,0.174
+bandit_hideout,20,1,34,20,100,0.0,0.088,0.0,0.094,0.0,0.167,0.079
+bandit_hideout,20,2,46,20,100,0.0,0.073,0.0,0.075,0.0,0.087,0.014
+bandit_hideout,20,3,60,20,100,0.0,0.065,0.0,0.067,0.0,0.071,0.006
+road_1,25,0,25,25,100,0.0,0.255,0.0,0.327,100.0,1.500,1.245
+road_1,25,1,42,25,100,0.0,0.109,0.0,0.127,0.0,0.264,0.155
+road_1,25,2,56,25,100,0.0,0.087,0.0,0.094,0.0,0.131,0.044
+road_1,25,3,74,25,100,0.0,0.072,0.0,0.072,0.0,0.074,0.002
+orc_camp_1,14,0,14,14,100,0.0,0.244,0.0,0.371,100.0,1.500,1.256
+orc_camp_1,14,1,25,14,100,0.0,0.098,0.0,0.151,54.0,1.119,1.021
+orc_camp_1,14,2,33,14,100,0.0,0.082,0.0,0.124,0.0,0.247,0.165
+orc_camp_1,14,3,44,14,100,0.0,0.073,0.0,0.098,0.0,0.130,0.057
+human_village,21,0,21,21,100,0.0,0.305,0.0,0.508,100.0,1.500,1.195
+human_village,21,1,36,21,100,0.0,0.113,0.0,0.238,95.0,1.549,1.436
+human_village,21,2,48,21,100,0.0,0.075,0.0,0.139,0.0,0.274,0.198
+human_village,21,3,63,21,100,0.0,0.066,0.0,0.101,0.0,0.126,0.060
+wolf_grassland_1,30,0,30,30,100,0.0,0.103,0.0,0.260,100.0,1.500,1.397
+wolf_grassland_1,30,1,50,30,100,0.0,0.062,0.0,0.091,0.0,0.146,0.084
+wolf_grassland_1,30,2,67,30,100,0.0,0.060,0.0,0.078,0.0,0.081,0.021
+wolf_grassland_1,30,3,88,30,100,0.0,0.060,0.0,0.069,0.0,0.064,0.004
+subjugation_force_1,68,0,68,68,100,0.0,0.157,0.0,0.256,0.0,0.401,0.244
+subjugation_force_1,68,1,110,68,100,0.0,0.058,0.0,0.089,0.0,0.119,0.061
+subjugation_force_1,68,2,147,68,100,0.0,0.051,0.0,0.067,0.0,0.079,0.027
+subjugation_force_1,68,3,192,68,100,0.0,0.048,0.0,0.057,0.0,0.058,0.011
+spider_forest_1,46,0,46,46,100,100.0,1.500,100.0,1.500,100.0,1.500,0.000
+spider_forest_1,46,1,75,46,100,0.0,0.504,100.0,1.500,100.0,1.500,0.996
+spider_forest_1,46,2,101,46,100,0.0,0.295,0.0,0.497,1.0,0.525,0.230
+spider_forest_1,46,3,132,46,100,0.0,0.155,0.0,0.283,0.0,0.296,0.141
+dead_grave_1,46,0,46,46,100,100.0,1.500,100.0,1.500,100.0,1.500,0.000
+dead_grave_1,46,1,75,46,100,100.0,1.500,100.0,1.500,100.0,1.500,0.000
+dead_grave_1,46,2,101,46,100,0.0,0.415,85.0,1.415,97.0,1.533,1.118
+dead_grave_1,46,3,132,46,100,0.0,0.255,0.0,0.401,0.0,0.414,0.158
+hobbit_hills_1,50,0,50,50,100,100.0,1.500,100.0,1.500,100.0,1.500,0.000
+hobbit_hills_1,50,1,82,50,100,100.0,1.500,100.0,1.500,100.0,1.500,0.000
+hobbit_hills_1,50,2,109,50,100,97.0,1.567,100.0,1.500,100.0,1.500,-0.067
+hobbit_hills_1,50,3,143,50,100,0.0,0.415,0.0,0.483,0.0,0.525,0.110
+dwarf_mine_1,50,0,50,50,100,100.0,1.500,100.0,1.500,100.0,1.500,0.000
+dwarf_mine_1,50,1,82,50,100,100.0,1.500,100.0,1.500,100.0,1.500,0.000
+dwarf_mine_1,50,2,109,50,100,0.0,0.481,0.0,0.507,0.0,0.544,0.062
+dwarf_mine_1,50,3,143,50,100,0.0,0.321,0.0,0.350,0.0,0.383,0.062
+elf_forest_1,45,0,45,45,100,100.0,1.500,100.0,1.500,100.0,1.500,0.000
+elf_forest_1,45,1,74,45,100,100.0,1.500,100.0,1.500,100.0,1.500,0.000
+elf_forest_1,45,2,98,45,100,0.0,0.460,0.0,0.500,0.0,0.531,0.071
+elf_forest_1,45,3,129,45,100,0.0,0.332,0.0,0.365,0.0,0.395,0.063
+lizardman_swamp_1,44,0,44,44,100,0.0,0.074,0.0,0.113,0.0,0.261,0.187
+lizardman_swamp_1,44,1,72,44,100,0.0,0.060,0.0,0.074,0.0,0.083,0.023
+lizardman_swamp_1,44,2,96,44,100,0.0,0.060,0.0,0.064,0.0,0.064,0.004
+lizardman_swamp_1,44,3,126,44,100,0.0,0.060,0.0,0.060,0.0,0.060,0.000
+orc_fortress_1,45,0,45,45,100,0.0,0.088,0.0,0.191,0.0,0.425,0.338
+orc_fortress_1,45,1,74,45,100,0.0,0.056,0.0,0.082,0.0,0.088,0.032
+orc_fortress_1,45,2,98,45,100,0.0,0.048,0.0,0.062,0.0,0.065,0.017
+orc_fortress_1,45,3,129,45,100,0.0,0.048,0.0,0.054,0.0,0.056,0.009
+harpy_cliff_1,46,0,46,46,100,100.0,1.500,100.0,1.500,100.0,1.500,0.000
+harpy_cliff_1,46,1,75,46,100,0.0,0.499,100.0,1.500,100.0,1.500,1.001
+harpy_cliff_1,46,2,101,46,100,0.0,0.287,0.0,0.484,1.0,0.500,0.213
+harpy_cliff_1,46,3,132,46,100,0.0,0.145,0.0,0.275,0.0,0.288,0.143
+troll_canyon_1,46,0,46,46,100,100.0,1.500,100.0,1.500,100.0,1.500,0.000
+troll_canyon_1,46,1,75,46,100,100.0,1.500,100.0,1.500,100.0,1.500,0.000
+troll_canyon_1,46,2,101,46,100,0.0,0.489,100.0,1.500,100.0,1.500,1.011
+troll_canyon_1,46,3,132,46,100,0.0,0.311,0.0,0.538,0.0,0.529,0.218
+minotaur_labyrinth_1,47,0,47,47,100,100.0,1.500,100.0,1.500,100.0,1.500,0.000
+minotaur_labyrinth_1,47,1,77,47,100,100.0,1.500,100.0,1.500,100.0,1.500,0.000
+minotaur_labyrinth_1,47,2,103,47,100,0.0,0.450,100.0,1.500,100.0,1.500,1.050
+minotaur_labyrinth_1,47,3,135,47,100,0.0,0.275,0.0,0.453,0.0,0.472,0.197
+human_fortress_1,47,0,47,47,100,100.0,1.500,100.0,1.500,100.0,1.500,0.000
+human_fortress_1,47,1,77,47,100,0.0,0.501,100.0,1.500,100.0,1.500,0.999
+human_fortress_1,47,2,103,47,100,0.0,0.283,0.0,0.528,0.0,0.508,0.226
+human_fortress_1,47,3,135,47,100,0.0,0.209,0.0,0.307,0.0,0.331,0.123
+vampire_castle_1,55,0,55,55,100,100.0,1.500,100.0,1.500,100.0,1.500,0.000
+vampire_castle_1,55,1,90,55,100,50.0,1.066,100.0,1.500,100.0,1.500,0.434
+vampire_castle_1,55,2,119,55,100,0.0,0.340,27.0,0.829,81.0,1.399,1.059
+vampire_castle_1,55,3,157,55,100,0.0,0.193,0.0,0.325,0.0,0.365,0.172
+royal_capital_1,160,0,160,160,100,100.0,1.500,100.0,1.500,100.0,1.500,0.000
+royal_capital_1,160,1,256,160,100,100.0,1.500,100.0,1.500,100.0,1.500,0.000
+royal_capital_1,160,2,340,160,100,100.0,1.500,100.0,1.500,100.0,1.500,0.000
+royal_capital_1,160,3,445,160,100,100.0,1.500,100.0,1.500,100.0,1.500,0.000
+royal_capital_2,170,0,170,170,100,100.0,1.500,100.0,1.500,100.0,1.500,0.000
+royal_capital_2,170,1,271,170,100,100.0,1.500,100.0,1.500,100.0,1.500,0.000
+royal_capital_2,170,2,361,170,100,100.0,1.500,100.0,1.500,100.0,1.500,0.000
+royal_capital_2,170,3,473,170,100,3.0,0.551,100.0,1.500,100.0,1.500,0.949
+dragon_volcano_1,48,0,48,48,100,100.0,1.500,100.0,1.500,100.0,1.500,0.000
+dragon_volcano_1,48,1,79,48,100,0.0,0.335,0.0,0.519,97.0,1.570,1.235
+dragon_volcano_1,48,2,105,48,100,0.0,0.240,0.0,0.328,0.0,0.429,0.189
+dragon_volcano_1,48,3,137,48,100,0.0,0.123,0.0,0.168,0.0,0.278,0.155
+cat_fortress_1,70,0,70,70,100,0.0,0.302,0.0,0.339,0.0,0.375,0.073
+cat_fortress_1,70,1,113,70,100,0.0,0.100,0.0,0.145,0.0,0.195,0.095
+cat_fortress_1,70,2,151,70,100,0.0,0.080,0.0,0.088,0.0,0.081,0.001
+cat_fortress_1,70,3,198,70,100,0.0,0.070,0.0,0.070,0.0,0.070,0.000
+necromancer_crypt_1,70,0,70,70,100,100.0,1.500,100.0,1.500,100.0,1.500,0.000
+necromancer_crypt_1,70,1,113,70,100,0.0,0.515,5.0,0.624,91.0,1.499,0.984
+necromancer_crypt_1,70,2,151,70,100,0.0,0.373,0.0,0.398,0.0,0.419,0.046
+necromancer_crypt_1,70,3,198,70,100,0.0,0.150,0.0,0.217,0.0,0.278,0.128
+royal_capital_3,180,0,180,180,100,100.0,1.500,100.0,1.500,100.0,1.500,0.000
+royal_capital_3,180,1,287,180,100,100.0,1.500,100.0,1.500,100.0,1.500,0.000
+royal_capital_3,180,2,382,180,100,100.0,1.500,100.0,1.500,100.0,1.500,0.000
+royal_capital_3,180,3,500,180,100,0.0,0.384,70.0,1.296,100.0,1.500,1.116
+
+===== 天井ビルド詳細 =====
+# slime_cave 天井ビルド (代表Tier=1, score=1.500)
+  前衛数(frontCount): 3
+  前衛(最適化スロット): どうのツメ(claw_copper)
+  後衛(最適化スロット): どうのツメ(claw_copper)
+  因子: (なし)
+# forest_outskirts 天井ビルド (代表Tier=1, score=0.346)
+  前衛数(frontCount): 3
+  前衛(最適化スロット): ダガー(hidden_dagger)
+  後衛(最適化スロット): ガントレット(gauntlet_gauntlet)
+  因子: スライム因子
+# goblin_village_1 天井ビルド (代表Tier=1, score=0.304)
+  前衛数(frontCount): 3
+  前衛(最適化スロット): スティレット(hidden_rare_001), ファングサーベル(sword_rare_001), グレイファング(sword_rare_002), ぬのの手袋(gauntlet_cloth_gloves)
+  後衛(最適化スロット): スティレット(hidden_rare_001), トゲ手裏剣(hidden_rare_003), グレイファング(sword_rare_002), ぬのの手袋(gauntlet_cloth_gloves)
+  因子: スライム因子
+# forest_edge_village 天井ビルド (代表Tier=1, score=0.137)
+  前衛数(frontCount): 3
+  前衛(最適化スロット): タワーシールド(large_shield_rare_001), タワーシールド(large_shield_rare_001), ミスリルアーマー(armor_mithril), タワーシールド(large_shield_rare_001)
+  後衛(最適化スロット): タワーシールド(large_shield_rare_001), タワーシールド(large_shield_rare_001), ミスリルアーマー(armor_mithril), タワーシールド(large_shield_rare_001)
+  因子: スライム因子
+# old_well_waterway 天井ビルド (代表Tier=1, score=0.162)
+  前衛数(frontCount): 3
+  前衛(最適化スロット): タワーシールド(large_shield_rare_001), ミスリルアーマー(armor_mithril), タワーシールド(large_shield_rare_001), 滅び村のワンド(wand_rare_005)
+  後衛(最適化スロット): タワーシールド(large_shield_rare_001), ロイヤルダガー(hidden_royal_dagger), タワーシールド(large_shield_rare_001), チャクラム(hidden_rare_005)
+  因子: スライム因子
+# undead_ruins_1 天井ビルド (代表Tier=1, score=0.232)
+  前衛数(frontCount): 3
+  前衛(最適化スロット): 水門兵の剣(sword_rare_008), チャクラム(hidden_rare_005), タワーシールド(large_shield_rare_001), 水門兵の鎧(armor_rare_012), チャクラム(hidden_rare_005), ロイヤルソード(sword_royal)
+  後衛(最適化スロット): タワーシールド(large_shield_rare_001), チャクラム(hidden_rare_005), タワーシールド(large_shield_rare_001), 水門兵の鎧(armor_rare_012), ロイヤルボウ(bow_royal), ロイヤルソード(sword_royal)
+  因子: ホブゴブリン因子
+# bandit_hideout 天井ビルド (代表Tier=1, score=0.195)
+  前衛数(frontCount): 3
+  前衛(最適化スロット): 墓守の剣(sword_rare_010), カイザーソード(sword_kaiser), カイザーボウ(bow_kaiser), カイザーダガー(hidden_kaiser_dagger), 墓守の剣(sword_rare_010), カイザーダガー(hidden_kaiser_dagger), タワーシールド(large_shield_rare_001)
+  後衛(最適化スロット): 墓守の剣(sword_rare_010), カイザーソード(sword_kaiser), カイザーボウ(bow_kaiser), カイザーソード(sword_kaiser), カイザーダガー(hidden_kaiser_dagger), カイザーダガー(hidden_kaiser_dagger), タワーシールド(large_shield_rare_001)
+  因子: ホブゴブリン因子
+# road_1 天井ビルド (代表Tier=1, score=0.283)
+  前衛数(frontCount): 3
+  前衛(最適化スロット): ロイヤルガントレット(gauntlet_royal), ミスリルシールド(shield_mithril), 墓守の剣(sword_rare_010), 影針(hidden_rare_012), カイザーソード(sword_kaiser), ロイヤルローブ(robe_royal), 墓守の剣(sword_rare_010), カイザーソード(sword_kaiser)
+  後衛(最適化スロット): ロイヤルガントレット(gauntlet_royal), ミスリルシールド(shield_mithril), カイザーボウ(bow_kaiser), カイザーボウ(bow_kaiser), ミスリルガントレット(gauntlet_mithril), カイザーボウ(bow_kaiser), かわの小手(gauntlet_leather)
+  因子: アンデッド因子
+# orc_camp_1 天井ビルド (代表Tier=1, score=1.414)
+  前衛数(frontCount): 5
+  前衛(最適化スロット): 聖杯ロッド(rod_rare_011), 墓守の剣(sword_rare_010), 戦商隊のファルシオン(sword_rare_015), 戦商隊のファルシオン(sword_rare_015), 灰狼の毛皮鎧(armor_rare_003)
+  後衛(最適化スロット): 聖杯ロッド(rod_rare_011), カイザーボウ(bow_kaiser), ラットベスト(armor_rare_001), ウルフベスト(armor_rare_002), 聖杯ロッド(rod_rare_011)
+  因子: ホブゴブリン因子
+# human_village 天井ビルド (代表Tier=1, score=1.516)
+  前衛数(frontCount): 3
+  前衛(最適化スロット): 戦商隊のファルシオン(sword_rare_015), 聖杯ロッド(rod_rare_011), 戦商隊のファルシオン(sword_rare_015), カイザーソード(sword_kaiser), 腐犬のベスト(armor_rare_007), 腐敗の鎧(armor_rare_008), 水蛇の鱗鎧(armor_rare_011)
+  後衛(最適化スロット): 聖杯ロッド(rod_rare_011), ウルフベスト(armor_rare_002), 灰狼の毛皮鎧(armor_rare_003), ガードキュイラス(armor_rare_005), 腐犬のベスト(armor_rare_007), 腐敗の鎧(armor_rare_008), 水蛇の鱗鎧(armor_rare_011)
+  因子: オーク因子
+# wolf_grassland_1 天井ビルド (代表Tier=1, score=0.156)
+  前衛数(frontCount): 3
+  前衛(最適化スロット): 戦商隊のファルシオン(sword_rare_015), 戦商隊のファルシオン(sword_rare_015), 墓守の剣(sword_rare_010), 墓守の剣(sword_rare_010), 腐敗の鎧(armor_rare_008), 水蛇の鱗鎧(armor_rare_011), 墓喰いの鎧(armor_rare_014), オークメイル(armor_rare_024)
+  後衛(最適化スロット): 聖杯ロッド(rod_rare_011), 戦商隊のファルシオン(sword_rare_015), 聖杯ロッド(rod_rare_011), 聖杯ロッド(rod_rare_011), 腐敗の鎧(armor_rare_008), 水蛇の鱗鎧(armor_rare_011), 墓喰いの鎧(armor_rare_014), オークメイル(armor_rare_024)
+  残スロット(greedy充填/前後衛共通): チャクラム(hidden_rare_005)
+  因子: オーク因子
+# subjugation_force_1 天井ビルド (代表Tier=1, score=0.127)
+  前衛数(frontCount): 3
+  前衛(最適化スロット): 聖杯ロッド(rod_rare_011), 戦商隊のファルシオン(sword_rare_015), 戦商隊のファルシオン(sword_rare_015), 水蛇の鱗鎧(armor_rare_011), 墓喰いの鎧(armor_rare_014), オークメイル(armor_rare_024), 暴れ鎧(armor_rare_025), 隊長のラメラー(armor_rare_026)
+  後衛(最適化スロット): 聖杯ロッド(rod_rare_011), 戦商隊のファルシオン(sword_rare_015), 戦商隊のファルシオン(sword_rare_015), 水蛇の鱗鎧(armor_rare_011), 聖杯ロッド(rod_rare_011), オークメイル(armor_rare_024), 暴れ鎧(armor_rare_025), 隊長のラメラー(armor_rare_026)
+  残スロット(greedy充填/前後衛共通): カイザーソード(sword_kaiser), カイザーボウ(bow_kaiser), 水門兵の剣(sword_rare_008), 護衛のサーベル(sword_rare_014), チャクラム(hidden_rare_005), 影針(hidden_rare_012)
+  因子: オーク因子
+# spider_forest_1 天井ビルド (代表Tier=1, score=1.500)
+  前衛数(frontCount): 3
+  前衛(最適化スロット): 隊長のラメラー(armor_rare_026), ガントレット(gauntlet_gauntlet), ミスリルクロー(claw_mithril), ダガー(hidden_dagger), グリーンワンド(wand_rare_002), ファントムワンド(wand_rare_008), 隠し火のワンド(wand_rare_010), 護衛術師のワンド(wand_rare_011)
+  後衛(最適化スロット): 隊長のラメラー(armor_rare_026), ガントレット(gauntlet_gauntlet), ミスリルクロー(claw_mithril), ダガー(hidden_dagger), グリーンワンド(wand_rare_002), ファントムワンド(wand_rare_008), 隠し火のワンド(wand_rare_010), 護衛術師のワンド(wand_rare_011)
+  残スロット(greedy充填/前後衛共通): 騎士団長の剣(sword_rare_025), エンシェントソード(sword_ancient), 王国兵の鎧(armor_rare_031)
+  因子: (なし)
+# dead_grave_1 天井ビルド (代表Tier=1, score=1.500)
+  前衛数(frontCount): 3
+  前衛(最適化スロット): 隊長のラメラー(armor_rare_026), ガントレット(gauntlet_gauntlet), ミスリルクロー(claw_mithril), ダガー(hidden_dagger), グリーンワンド(wand_rare_002), ファントムワンド(wand_rare_008), 隠し火のワンド(wand_rare_010), 護衛術師のワンド(wand_rare_011)
+  後衛(最適化スロット): 隊長のラメラー(armor_rare_026), ガントレット(gauntlet_gauntlet), ミスリルクロー(claw_mithril), ダガー(hidden_dagger), グリーンワンド(wand_rare_002), ファントムワンド(wand_rare_008), 隠し火のワンド(wand_rare_010), 護衛術師のワンド(wand_rare_011)
+  残スロット(greedy充填/前後衛共通): 騎士団長の剣(sword_rare_025), エンシェントソード(sword_ancient), 王国兵の鎧(armor_rare_031)
+  因子: (なし)
+# hobbit_hills_1 天井ビルド (代表Tier=1, score=1.500)
+  前衛数(frontCount): 3
+  前衛(最適化スロット): 木の盾(shield_wooden), ショートボウ(bow_short), 銅の剣(sword_copper), 毛皮のベスト(armor_fur_vest), どうのツメ(claw_copper), ローブ(robe_robe), ロングボウ(bow_long), アーマー(armor_armor)
+  後衛(最適化スロット): 木の盾(shield_wooden), ショートボウ(bow_short), 銅の剣(sword_copper), 毛皮のベスト(armor_fur_vest), どうのツメ(claw_copper), ローブ(robe_robe), ロングボウ(bow_long), アーマー(armor_armor)
+  残スロット(greedy充填/前後衛共通): シールド(shield_shield), てつのツメ(claw_iron), ワンド(wand_wand), アーマー(armor_armor)
+  因子: (なし)
+# dwarf_mine_1 天井ビルド (代表Tier=1, score=1.500)
+  前衛数(frontCount): 3
+  前衛(最適化スロット): 木の盾(shield_wooden), ショートボウ(bow_short), 銅の剣(sword_copper), 毛皮のベスト(armor_fur_vest), どうのツメ(claw_copper), ローブ(robe_robe), ロングボウ(bow_long), アーマー(armor_armor)
+  後衛(最適化スロット): 木の盾(shield_wooden), ショートボウ(bow_short), 銅の剣(sword_copper), 毛皮のベスト(armor_fur_vest), どうのツメ(claw_copper), ローブ(robe_robe), ロングボウ(bow_long), アーマー(armor_armor)
+  残スロット(greedy充填/前後衛共通): シールド(shield_shield), てつのツメ(claw_iron), ワンド(wand_wand), アーマー(armor_armor)
+  因子: (なし)
+# elf_forest_1 天井ビルド (代表Tier=1, score=1.500)
+  前衛数(frontCount): 3
+  前衛(最適化スロット): 木の盾(shield_wooden), ショートボウ(bow_short), 銅の剣(sword_copper), 毛皮のベスト(armor_fur_vest), どうのツメ(claw_copper), ローブ(robe_robe), ロングボウ(bow_long), アーマー(armor_armor)
+  後衛(最適化スロット): 木の盾(shield_wooden), ショートボウ(bow_short), 銅の剣(sword_copper), 毛皮のベスト(armor_fur_vest), どうのツメ(claw_copper), ローブ(robe_robe), ロングボウ(bow_long), アーマー(armor_armor)
+  残スロット(greedy充填/前後衛共通): シールド(shield_shield), てつのツメ(claw_iron), ワンド(wand_wand)
+  因子: (なし)
+# lizardman_swamp_1 天井ビルド (代表Tier=1, score=0.084)
+  前衛数(frontCount): 3
+  前衛(最適化スロット): 聖杯ロッド(rod_rare_011), 水蛇の鱗鎧(armor_rare_011), 墓喰いの鎧(armor_rare_014), オークメイル(armor_rare_024), 暴れ鎧(armor_rare_025), 隊長のラメラー(armor_rare_026), ガントレット(gauntlet_gauntlet), ミスリルクロー(claw_mithril)
+  後衛(最適化スロット): 聖杯ロッド(rod_rare_011), 水蛇の鱗鎧(armor_rare_011), 墓喰いの鎧(armor_rare_014), オークメイル(armor_rare_024), 暴れ鎧(armor_rare_025), 隊長のラメラー(armor_rare_026), ガントレット(gauntlet_gauntlet), 聖杯ロッド(rod_rare_011)
+  残スロット(greedy充填/前後衛共通): カイザーソード(sword_kaiser), カイザーボウ(bow_kaiser), 水門兵の剣(sword_rare_008)
+  因子: (なし)
+# orc_fortress_1 天井ビルド (代表Tier=1, score=0.094)
+  前衛数(frontCount): 3
+  前衛(最適化スロット): 聖杯ロッド(rod_rare_011), ラットベスト(armor_rare_001), ウルフベスト(armor_rare_002), 灰狼の毛皮鎧(armor_rare_003), ガードキュイラス(armor_rare_005), 腐犬のベスト(armor_rare_007), 腐敗の鎧(armor_rare_008), 水蛇の鱗鎧(armor_rare_011)
+  後衛(最適化スロット): 聖杯ロッド(rod_rare_011), 戦商隊のファルシオン(sword_rare_015), ウルフベスト(armor_rare_002), 灰狼の毛皮鎧(armor_rare_003), ガードキュイラス(armor_rare_005), 腐犬のベスト(armor_rare_007), 腐敗の鎧(armor_rare_008), 水蛇の鱗鎧(armor_rare_011)
+  残スロット(greedy充填/前後衛共通): チャクラム(hidden_rare_005), 影針(hidden_rare_012), カイザーダガー(hidden_kaiser_dagger)
+  因子: (なし)
+# harpy_cliff_1 天井ビルド (代表Tier=1, score=1.500)
+  前衛数(frontCount): 3
+  前衛(最適化スロット): 隊長のラメラー(armor_rare_026), ガントレット(gauntlet_gauntlet), ミスリルクロー(claw_mithril), ダガー(hidden_dagger), グリーンワンド(wand_rare_002), ファントムワンド(wand_rare_008), 隠し火のワンド(wand_rare_010), 護衛術師のワンド(wand_rare_011)
+  後衛(最適化スロット): 隊長のラメラー(armor_rare_026), ガントレット(gauntlet_gauntlet), ミスリルクロー(claw_mithril), ダガー(hidden_dagger), グリーンワンド(wand_rare_002), ファントムワンド(wand_rare_008), 隠し火のワンド(wand_rare_010), 護衛術師のワンド(wand_rare_011)
+  残スロット(greedy充填/前後衛共通): 騎士団長の剣(sword_rare_025), エンシェントソード(sword_ancient), 王国兵の鎧(armor_rare_031)
+  因子: (なし)
+# troll_canyon_1 天井ビルド (代表Tier=1, score=1.500)
+  前衛数(frontCount): 3
+  前衛(最適化スロット): 隊長のラメラー(armor_rare_026), ガントレット(gauntlet_gauntlet), ミスリルクロー(claw_mithril), ダガー(hidden_dagger), グリーンワンド(wand_rare_002), ファントムワンド(wand_rare_008), 隠し火のワンド(wand_rare_010), 護衛術師のワンド(wand_rare_011)
+  後衛(最適化スロット): 隊長のラメラー(armor_rare_026), ガントレット(gauntlet_gauntlet), ミスリルクロー(claw_mithril), ダガー(hidden_dagger), グリーンワンド(wand_rare_002), ファントムワンド(wand_rare_008), 隠し火のワンド(wand_rare_010), 護衛術師のワンド(wand_rare_011)
+  残スロット(greedy充填/前後衛共通): 騎士団長の剣(sword_rare_025), エンシェントソード(sword_ancient), 王国兵の鎧(armor_rare_031)
+  因子: (なし)
+# minotaur_labyrinth_1 天井ビルド (代表Tier=1, score=1.500)
+  前衛数(frontCount): 3
+  前衛(最適化スロット): 隊長のラメラー(armor_rare_026), ガントレット(gauntlet_gauntlet), ミスリルクロー(claw_mithril), ダガー(hidden_dagger), グリーンワンド(wand_rare_002), ファントムワンド(wand_rare_008), 隠し火のワンド(wand_rare_010), 護衛術師のワンド(wand_rare_011)
+  後衛(最適化スロット): 隊長のラメラー(armor_rare_026), ガントレット(gauntlet_gauntlet), ミスリルクロー(claw_mithril), ダガー(hidden_dagger), グリーンワンド(wand_rare_002), ファントムワンド(wand_rare_008), 隠し火のワンド(wand_rare_010), 護衛術師のワンド(wand_rare_011)
+  残スロット(greedy充填/前後衛共通): 騎士団長の剣(sword_rare_025), エンシェントソード(sword_ancient), 王国兵の鎧(armor_rare_031)
+  因子: (なし)
+# human_fortress_1 天井ビルド (代表Tier=1, score=1.500)
+  前衛数(frontCount): 3
+  前衛(最適化スロット): 隊長のラメラー(armor_rare_026), ガントレット(gauntlet_gauntlet), ミスリルクロー(claw_mithril), ダガー(hidden_dagger), グリーンワンド(wand_rare_002), ファントムワンド(wand_rare_008), 隠し火のワンド(wand_rare_010), 護衛術師のワンド(wand_rare_011)
+  後衛(最適化スロット): 隊長のラメラー(armor_rare_026), ガントレット(gauntlet_gauntlet), ミスリルクロー(claw_mithril), ダガー(hidden_dagger), グリーンワンド(wand_rare_002), ファントムワンド(wand_rare_008), 隠し火のワンド(wand_rare_010), 護衛術師のワンド(wand_rare_011)
+  残スロット(greedy充填/前後衛共通): 騎士団長の剣(sword_rare_025), エンシェントソード(sword_ancient), 王国兵の鎧(armor_rare_031)
+  因子: (なし)
+# vampire_castle_1 天井ビルド (代表Tier=1, score=1.500)
+  前衛数(frontCount): 3
+  前衛(最適化スロット): 隊長のラメラー(armor_rare_026), ガントレット(gauntlet_gauntlet), ミスリルクロー(claw_mithril), ダガー(hidden_dagger), グリーンワンド(wand_rare_002), ファントムワンド(wand_rare_008), 隠し火のワンド(wand_rare_010), 護衛術師のワンド(wand_rare_011)
+  後衛(最適化スロット): 隊長のラメラー(armor_rare_026), ガントレット(gauntlet_gauntlet), ミスリルクロー(claw_mithril), ダガー(hidden_dagger), グリーンワンド(wand_rare_002), ファントムワンド(wand_rare_008), 隠し火のワンド(wand_rare_010), 護衛術師のワンド(wand_rare_011)
+  残スロット(greedy充填/前後衛共通): 騎士団長の剣(sword_rare_025), エンシェントソード(sword_ancient), 王国兵の鎧(armor_rare_031), 騎士のキュイラス(armor_rare_033)
+  因子: (なし)
+# royal_capital_1 天井ビルド (代表Tier=1, score=1.500)
+  前衛数(frontCount): 3
+  前衛(最適化スロット): 隊長のラメラー(armor_rare_026), ガントレット(gauntlet_gauntlet), ミスリルクロー(claw_mithril), ダガー(hidden_dagger), グリーンワンド(wand_rare_002), ファントムワンド(wand_rare_008), 隠し火のワンド(wand_rare_010), 護衛術師のワンド(wand_rare_011)
+  後衛(最適化スロット): 隊長のラメラー(armor_rare_026), ガントレット(gauntlet_gauntlet), ミスリルクロー(claw_mithril), ダガー(hidden_dagger), グリーンワンド(wand_rare_002), ファントムワンド(wand_rare_008), 隠し火のワンド(wand_rare_010), 護衛術師のワンド(wand_rare_011)
+  残スロット(greedy充填/前後衛共通): 騎士団長の剣(sword_rare_025), エンシェントソード(sword_ancient), 王国兵の鎧(armor_rare_031), 騎士のキュイラス(armor_rare_033), 制圧の戦弓(bow_rare_009), 聖杯ロッド(rod_rare_011), エンシェントダガー(hidden_ancient_dagger), エンシェントロッド(rod_ancient), カイザーソード(sword_kaiser), カイザーボウ(bow_kaiser), 水門兵の剣(sword_rare_008), 護衛のサーベル(sword_rare_014)
+  因子: (なし)
+# royal_capital_2 天井ビルド (代表Tier=1, score=1.500)
+  前衛数(frontCount): 3
+  前衛(最適化スロット): 隊長のラメラー(armor_rare_026), ガントレット(gauntlet_gauntlet), ミスリルクロー(claw_mithril), ダガー(hidden_dagger), グリーンワンド(wand_rare_002), ファントムワンド(wand_rare_008), 隠し火のワンド(wand_rare_010), 護衛術師のワンド(wand_rare_011)
+  後衛(最適化スロット): 隊長のラメラー(armor_rare_026), ガントレット(gauntlet_gauntlet), ミスリルクロー(claw_mithril), ダガー(hidden_dagger), グリーンワンド(wand_rare_002), ファントムワンド(wand_rare_008), 隠し火のワンド(wand_rare_010), 護衛術師のワンド(wand_rare_011)
+  残スロット(greedy充填/前後衛共通): 騎士団長の剣(sword_rare_025), エンシェントソード(sword_ancient), 王国兵の鎧(armor_rare_031), 騎士のキュイラス(armor_rare_033), 制圧の戦弓(bow_rare_009), 聖杯ロッド(rod_rare_011), エンシェントダガー(hidden_ancient_dagger), エンシェントロッド(rod_ancient), カイザーソード(sword_kaiser), カイザーボウ(bow_kaiser), 水門兵の剣(sword_rare_008), 護衛のサーベル(sword_rare_014), チャクラム(hidden_rare_005)
+  因子: (なし)
+# dragon_volcano_1 天井ビルド (代表Tier=1, score=1.516)
+  前衛数(frontCount): 3
+  前衛(最適化スロット): 隊長のラメラー(armor_rare_026), 戦商隊のファルシオン(sword_rare_015), ミスリルクロー(claw_mithril), ダガー(hidden_dagger), 火線ロッド(rod_rare_013), ファントムワンド(wand_rare_008), 火線ロッド(rod_rare_013), 護衛術師のワンド(wand_rare_011)
+  後衛(最適化スロット): 辺境守護のレイピア(sword_rare_026), ガントレット(gauntlet_gauntlet), ミスリルクロー(claw_mithril), ダガー(hidden_dagger), エンシェントボウ(bow_ancient), ファントムワンド(wand_rare_008), 隠し火のワンド(wand_rare_010), 護衛術師のワンド(wand_rare_011)
+  残スロット(greedy充填/前後衛共通): 騎士団長の剣(sword_rare_025), エンシェントソード(sword_ancient), 王国兵の鎧(armor_rare_031)
+  因子: スライム因子
+# cat_fortress_1 天井ビルド (代表Tier=1, score=0.202)
+  前衛数(frontCount): 3
+  前衛(最適化スロット): ロングソード(sword_long), ダガー(hidden_dagger), ガントレット(gauntlet_gauntlet), ロングソード(sword_long), かわの小手(gauntlet_leather), ロングソード(sword_long), はがねのツメ(claw_steel), ブロードソード(sword_broad)
+  後衛(最適化スロット): ぬのの手袋(gauntlet_cloth_gloves), ダガー(hidden_dagger), ロングソード(sword_long), どうの小手(gauntlet_copper), ロングソード(sword_long), ロングソード(sword_long), はがねのツメ(claw_steel), ブロードソード(sword_broad)
+  残スロット(greedy充填/前後衛共通): シールド(shield_shield), てつのツメ(claw_iron), ワンド(wand_wand), アーマー(armor_armor), ロッド(rod_rod), ロングボウ(bow_long)
+  因子: (なし)
+# necromancer_crypt_1 天井ビルド (代表Tier=1, score=1.516)
+  前衛数(frontCount): 3
+  前衛(最適化スロット): ぬのの手袋(gauntlet_cloth_gloves), ダガー(hidden_dagger), ガントレット(gauntlet_gauntlet), どうの小手(gauntlet_copper), かわの小手(gauntlet_leather), ロングソード(sword_long), ダガー(hidden_dagger), ブロードソード(sword_broad)
+  後衛(最適化スロット): ぬのの手袋(gauntlet_cloth_gloves), ダガー(hidden_dagger), ガントレット(gauntlet_gauntlet), どうの小手(gauntlet_copper), かわの小手(gauntlet_leather), ロングソード(sword_long), はがねのツメ(claw_steel), ブロードソード(sword_broad)
+  残スロット(greedy充填/前後衛共通): シールド(shield_shield), てつのツメ(claw_iron), ワンド(wand_wand), アーマー(armor_armor), ロッド(rod_rod), ロングボウ(bow_long)
+  因子: (なし)
+# royal_capital_3 天井ビルド (代表Tier=1, score=1.500)
+  前衛数(frontCount): 3
+  前衛(最適化スロット): 隊長のラメラー(armor_rare_026), ガントレット(gauntlet_gauntlet), ミスリルクロー(claw_mithril), ダガー(hidden_dagger), グリーンワンド(wand_rare_002), ファントムワンド(wand_rare_008), 隠し火のワンド(wand_rare_010), 護衛術師のワンド(wand_rare_011)
+  後衛(最適化スロット): 隊長のラメラー(armor_rare_026), ガントレット(gauntlet_gauntlet), ミスリルクロー(claw_mithril), ダガー(hidden_dagger), グリーンワンド(wand_rare_002), ファントムワンド(wand_rare_008), 隠し火のワンド(wand_rare_010), 護衛術師のワンド(wand_rare_011)
+  残スロット(greedy充填/前後衛共通): 騎士団長の剣(sword_rare_025), エンシェントソード(sword_ancient), 王国兵の鎧(armor_rare_031), 騎士のキュイラス(armor_rare_033), 制圧の戦弓(bow_rare_009), 聖杯ロッド(rod_rare_011), エンシェントダガー(hidden_ancient_dagger), エンシェントロッド(rod_ancient), カイザーソード(sword_kaiser), カイザーボウ(bow_kaiser), 水門兵の剣(sword_rare_008), 護衛のサーベル(sword_rare_014), チャクラム(hidden_rare_005)
+  因子: (なし)

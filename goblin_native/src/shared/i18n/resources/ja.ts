@@ -304,7 +304,6 @@ const ja = {
         equipment: '装備変更',
         playback: '遠征再生',
         result: '遠征結果',
-        log: '遠征ログ',
         battleLog: '戦闘ログ',
         levelUpLog: 'レベルアップ詳細',
       },
@@ -909,6 +908,7 @@ const ja = {
   battle: {
     normalAttack: '通常攻撃',
     defendAction: '防御',
+    turnStartAction: 'ターン開始',
     actionOrderFast2: '行動順を決める速さが2.0倍に上昇する',
     actionOrderFast15: '行動順を決める速さが1.5倍に上昇する',
     actionOrderSlow23: '行動順を決める速さが2/3に減少する',

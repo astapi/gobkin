@@ -15,7 +15,6 @@
       "attackCount": 6,
       "accuracy": 640,
       "evasion": 300,
-      "exp": 132,
       "gold": 38,
       "skills": [
         {
@@ -51,7 +50,6 @@
       "attackCount": 6,
       "accuracy": 660,
       "evasion": 800,
-      "exp": 132,
       "gold": 41,
       "skills": [
         {
@@ -83,7 +81,6 @@
       "attackCount": 8,
       "accuracy": 680,
       "evasion": 250,
-      "exp": 248,
       "isBoss": true,
       "gold": 220,
       "skills": [

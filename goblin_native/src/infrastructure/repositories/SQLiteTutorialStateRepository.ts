@@ -1,13 +1,12 @@
 import { getDatabase } from '../database'
 import type { TutorialStep } from '../../shared/types/Tutorial'
 import { isTutorialStep } from '../../shared/types/Tutorial'
+import type { ITutorialStateRepository } from '../../core/repositories/ITutorialStateRepository'
+
+// インターフェースは core/repositories へ移動。後方互換のため再エクスポート
+export type { ITutorialStateRepository }
 
 const TUTORIAL_STEP_KEY = 'tutorial_step'
-
-export interface ITutorialStateRepository {
-  getStep(): Promise<TutorialStep>
-  setStep(step: TutorialStep): Promise<void>
-}
 
 export class SQLiteTutorialStateRepository implements ITutorialStateRepository {
   private static instance: SQLiteTutorialStateRepository | null = null

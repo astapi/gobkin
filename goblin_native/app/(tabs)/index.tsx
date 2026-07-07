@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useFocusEffect } from 'expo-router'
 import { View, Text, TouchableOpacity, Pressable, StyleSheet, FlatList, ScrollView, ActivityIndicator, Image, Alert, Modal } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -100,6 +100,19 @@ export default function GoblinListScreen() {
   const swipeableRefs = useRef<Record<number, Swipeable | null>>({})
   const [openSwipeableId, setOpenSwipeableId] = useState<number | null>(null)
   const [isBulkDismissingPending, setIsBulkDismissingPending] = useState(false)
+  const addingPendingIdsRef = useRef<Set<number>>(new Set())
+
+  // 一覧から消えたゴブリンの Swipeable 参照を破棄してリークを防ぐ
+  useEffect(() => {
+    const validIds = new Set(goblins.map((g) => g.id))
+    for (const key of Object.keys(swipeableRefs.current)) {
+      const id = Number(key)
+      if (!validIds.has(id)) {
+        delete swipeableRefs.current[id]
+      }
+    }
+    setOpenSwipeableId((currentId) => (currentId !== null && !validIds.has(currentId) ? null : currentId))
+  }, [goblins])
 
   const hasCapacity = goblins.length < maxGoblins
   const maxPendingGoblins = rank * 5
@@ -151,9 +164,11 @@ export default function GoblinListScreen() {
 
   const sortedGoblins = useMemo(() => {
     if (sortKey === 'hp') {
-      return [...filteredGoblins].sort((a, b) => (
-        getEffectiveStats(b).hp - getEffectiveStats(a).hp
-      ))
+      // 比較関数内で getEffectiveStats を O(n log n) 回呼ばないよう、事前にHPを一度だけ抽出する
+      return filteredGoblins
+        .map((goblin) => ({ goblin, hp: getEffectiveStats(goblin).hp }))
+        .sort((a, b) => b.hp - a.hp)
+        .map((entry) => entry.goblin)
     }
     const partyMemberIds: number[] = []
     const seen = new Set<number>()
@@ -283,12 +298,29 @@ export default function GoblinListScreen() {
   }, [closeOpenSwipeable])
 
   const handleAddPending = useCallback(async (goblin: Goblin) => {
+    // 連打で maxGoblins を超過して追加されるのを防ぐ
+    if (addingPendingIdsRef.current.has(goblin.id)) return
+    addingPendingIdsRef.current.add(goblin.id)
     closeOpenSwipeable()
-    await saveGoblin(goblin)
-    await removePendingGoblin(goblin.id)
-    // チュートリアル: ゴブリンを拠点に追加したら締めの演出（finish）へ進める
-    if (useTutorialStore.getState().step === 'add_goblin') {
-      void useTutorialStore.getState().advanceTo('finish')
+    try {
+      // 保存直前に最新の容量を再チェック（連打・遠征完了による変動を考慮）
+      const currentCount = useGoblinStore.getState().goblins.length
+      const currentMax = selectMaxGoblins(useBaseStore.getState())
+      if (currentCount >= currentMax) {
+        Alert.alert('追加できません', '拠点のゴブリンが上限に達しています。')
+        return
+      }
+      await saveGoblin(goblin)
+      await removePendingGoblin(goblin.id)
+      // チュートリアル: ゴブリンを拠点に追加したら締めの演出（finish）へ進める
+      if (useTutorialStore.getState().step === 'add_goblin') {
+        void useTutorialStore.getState().advanceTo('finish')
+      }
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'ゴブリンの追加に失敗しました。'
+      Alert.alert('追加エラー', message)
+    } finally {
+      addingPendingIdsRef.current.delete(goblin.id)
     }
   }, [closeOpenSwipeable, saveGoblin, removePendingGoblin])
 

@@ -1,11 +1,7 @@
 import { create } from 'zustand'
 import type { BaseState, Goblin } from '../../shared/types'
-import { SQLiteBaseStateRepository } from '../../infrastructure/repositories'
-import { SQLitePendingGoblinRepository } from '../../infrastructure/repositories'
+import { baseStateRepository, pendingGoblinRepository } from '../di/repositories'
 import { performRankUp as executeRankUp, checkRankUpAvailable } from '../../core/services/BaseRankSystem'
-
-const baseStateRepository = SQLiteBaseStateRepository.getInstance()
-const pendingGoblinRepository = SQLitePendingGoblinRepository.getInstance()
 
 interface BaseStoreState {
   baseState: BaseState | null
@@ -19,6 +15,8 @@ interface BaseStoreActions {
   performRankUp: () => Promise<{ success: true; state: BaseState } | { success: false; error: string }>
   getNextGoblinId: () => Promise<number>
   updateBaseState: (updates: Partial<BaseState>) => Promise<void>
+  /** 最新残高を基準にGoldを差分更新する。負残高になる場合は false を返す。 */
+  addGold: (delta: number) => Promise<boolean>
   addPendingGoblin: (goblin: Goblin) => Promise<void>
   removePendingGoblin: (id: number) => Promise<void>
   clearPendingGoblins: () => Promise<void>
@@ -76,6 +74,18 @@ export const useBaseStore = create<BaseStoreState & BaseStoreActions>()((set, ge
       const newState: BaseState = { ...baseState, ...updates }
       await baseStateRepository.saveBaseState(newState)
       set({ baseState: newState })
+    },
+
+    addGold: async (delta: number) => {
+      // クロージャの古い値ではなく最新stateを読んで加算する
+      const { baseState } = get()
+      if (!baseState) return false
+      const newGold = baseState.gold + delta
+      if (newGold < 0) return false
+      const newState: BaseState = { ...baseState, gold: newGold }
+      await baseStateRepository.saveBaseState(newState)
+      set({ baseState: newState })
+      return true
     },
 
     addPendingGoblin: async (goblin: Goblin) => {

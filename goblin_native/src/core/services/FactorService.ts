@@ -14,6 +14,27 @@ function createSeededRandom(seed: number): () => number {
 }
 
 /**
+ * 32bitアバランシェミキサー（splitmix32系のfinalizer）
+ * 入力の1bitの変化が出力全体に波及するため、連番の入力からでも
+ * 無相関に近いハッシュ値を得られる。
+ */
+function mix32(x: number): number {
+  x = Math.imul(x ^ (x >>> 16), 0x45d9f3b)
+  x = Math.imul(x ^ (x >>> 16), 0x45d9f3b)
+  return (x ^ (x >>> 16)) >>> 0
+}
+
+/**
+ * シード値とゴブリンIDからLCGの初期状態を導出する。
+ * `seed + goblin.id` のような単純な合算では、初期状態が近い値同士が
+ * LCG1ステップ後もほぼ同じ乱数を返してしまう（連番IDでの相関）ため、
+ * ミキサーを通してから合成することで両者の1bit差分を全体に拡散させる。
+ */
+function deriveRandomSeed(seed: number, goblinId: number): number {
+  return mix32(mix32(seed) ^ Math.imul(goblinId, 0x9e3779b9))
+}
+
+/**
  * 因子獲得に関するサービス
  */
 export class FactorService {
@@ -31,7 +52,7 @@ export class FactorService {
     probabilityMultiplier = 1
   ): string[] {
     const acquired: string[] = []
-    const rng = createSeededRandom(seed + goblin.id)
+    const rng = createSeededRandom(deriveRandomSeed(seed, goblin.id))
     const clampedMultiplier = Math.max(0, probabilityMultiplier)
 
     for (const drop of factorDrops) {

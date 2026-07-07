@@ -15,7 +15,7 @@ import { GoblinStatCalculator } from '@/core/services/GoblinStatCalculator'
 import { EquipmentService } from '@/core/services/EquipmentService'
 import { getExpForNextLevel, getExpProgress } from '@/core/services/ExperienceSystem'
 import { getCharacterSkillEffectDescriptions, getUniqueSkillsById } from '@/shared/data/characterSkills'
-import { SQLiteEquipmentRepository } from '@/infrastructure/repositories/SQLiteEquipmentRepository'
+import { equipmentRepository } from '@/presentation/di/repositories'
 import { getDefaultSkillsForRace } from '@/shared/data/raceSkills'
 import { getGoblinJobDefinition } from '@/shared/data/goblinJobs'
 import { MAGE_MAGIC_SPELL_TABLE } from '@/shared/data/mageMagic'
@@ -181,7 +181,6 @@ export default function GoblinDetailScreen() {
   const deleteGoblin = useGoblinStore((state) => state.deleteGoblin)
   const pendingGoblins = useBaseStore((state) => state.pendingGoblins)
   const parties = usePartyStore((state) => state.parties)
-  const equipmentRepository = useMemo(() => SQLiteEquipmentRepository.getInstance(), [])
   const [goblin, setGoblin] = useState<Goblin | null>(null)
   const [equippedItems, setEquippedItems] = useState<EquipmentInstance[]>([])
   const [battleActionPolicyDraft, setBattleActionPolicyDraft] = useState<BattleActionPolicy>(
@@ -218,9 +217,19 @@ export default function GoblinDetailScreen() {
       return
     }
 
+    // 古いfetchが新しい表示を上書きしたり、unmount後にsetStateしないようキャンセルガード
+    let active = true
     void getGoblinById(parsedGoblinId)
-      .then(setGoblin)
-      .catch(() => setGoblin(null))
+      .then((fetched) => {
+        if (active) setGoblin(fetched)
+      })
+      .catch(() => {
+        if (active) setGoblin(null)
+      })
+
+    return () => {
+      active = false
+    }
   }, [parsedGoblinId, getGoblinById, goblins, isPendingGoblin, pendingGoblins])
 
   useEffect(() => {

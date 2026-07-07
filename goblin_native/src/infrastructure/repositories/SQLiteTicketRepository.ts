@@ -1,7 +1,6 @@
 import { getDatabase } from '../database'
 import type { ITicketRepository } from '../../core/repositories/ITicketRepository'
-import type { TicketType } from '../../shared/constants/purchases'
-import type { TicketBalance } from '../../shared/types/Ticket'
+import type { TicketType, TicketBalance } from '../../shared/types/Ticket'
 
 /**
  * チケット残数管理のSQLiteリポジトリ実装

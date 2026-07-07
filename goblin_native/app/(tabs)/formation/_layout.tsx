@@ -64,13 +64,6 @@ export default function FormationLayout() {
         }}
       />
       <Stack.Screen
-        name="log"
-        options={{
-          title: t('ui.formation.layout.log'),
-          presentation: 'card',
-        }}
-      />
-      <Stack.Screen
         name="battle-log"
         options={{
           title: t('ui.formation.layout.battleLog'),

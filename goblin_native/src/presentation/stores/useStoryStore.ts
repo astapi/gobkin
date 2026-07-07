@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { SQLiteStoryProgressRepository } from '../../infrastructure/repositories/SQLiteStoryProgressRepository'
+import { storyProgressRepository as repository } from '../di/repositories'
 import { storiesData } from '../../shared/data/story'
 import { TICKET_TYPES } from '../../shared/constants/purchases'
 import { getCharacterSkill } from '../../shared/data/skillCatalog'
@@ -16,7 +16,6 @@ import { usePurchaseStore } from './usePurchaseStore'
 import { useTutorialStore } from './useTutorialStore'
 import { getGoblinRepository, useGoblinStore } from './useGoblinStore'
 
-const repository = SQLiteStoryProgressRepository.getInstance()
 const goblinRepository = getGoblinRepository()
 
 type StoryWithProgress = Story & { unlocked: boolean; read: boolean }

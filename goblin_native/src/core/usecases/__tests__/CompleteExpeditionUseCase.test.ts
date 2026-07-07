@@ -1,6 +1,6 @@
 import { CompleteExpeditionUseCase } from '../CompleteExpeditionUseCase'
 import { GOLDEN_ACORN_CLEAR_ENCOUNTER_ID } from '../../services/ExpeditionEngine'
-import type { IGoblinRepository, IPartyRepository, IBaseStateRepository, IEquipmentRepository } from '../../repositories'
+import type { IGoblinRepository, IPartyRepository, IBaseStateRepository, IEquipmentRepository, ITransactionRunner, IExpeditionCompletionGateway } from '../../repositories'
 import { getCharacterSkill } from '../../../shared/data/skillCatalog'
 import { getDefaultSkillsForRace } from '../../../shared/data/raceSkills'
 import { DEFAULT_PARTY_REWARD_MULTIPLIERS } from '../../../shared/types'
@@ -394,20 +394,21 @@ describe('CompleteExpeditionUseCase', () => {
       const baseState = createTestBaseState({ capturedDungeons: [] })
       const events: TimelineEvent[] = [
         { type: 'move_start', at: 0, floor: 1 },
-        createBossEvent('B_CANNON', 5, [-1, -1], 30, 1),
+        createBossEvent('B001', 5, [-1, -1], 30, 1),
         { type: 'return', at: 30, reason: 'completed' },
       ]
       const replay = createTestReplay({
         meta: {
           expeditionId: 'exp-1',
-          areaId: 'human_village',
-          areaName: '人間の村',
+          areaId: 'forest_outskirts',
+          areaName: '森のはずれ',
           floors: 1,
           baseDurationSec: 30,
           party: ['1', '2'],
           partyRewardMultipliers: DEFAULT_PARTY_REWARD_MULTIPLIERS,
           returnPolicy: 'never',
-          seed: 12345,
+          // seed=142: id=1の初回乱数0.0211(1.5%<r<2.25%: 倍率ありのみ獲得)、id=2は0.565(非獲得)
+          seed: 142,
         },
         events,
         summary: { success: true, maxFloorReached: 1, xpGained: 5, goldGained: 0, casualties: [] },
@@ -421,12 +422,12 @@ describe('CompleteExpeditionUseCase', () => {
       )
       const result = await usecase.execute(1, replay)
 
-      expect(result.factorAcquisitions.get(1)).toEqual(['human'])
+      expect(result.factorAcquisitions.get(1)).toEqual(['wolf'])
       expect(result.factorAcquisitions.get(2)).toBeUndefined()
       expect(goblinRepo.updateGoblinFactors).toHaveBeenCalledTimes(1)
       expect(goblinRepo.updateGoblinFactors).toHaveBeenCalledWith(
         1,
-        ['human'],
+        ['wolf'],
         expect.objectContaining({ hp: expect.any(Number) }),
       )
     })
@@ -436,21 +437,22 @@ describe('CompleteExpeditionUseCase', () => {
       const party = createTestParty({ id: 1, memberIds: [1] })
       const events: TimelineEvent[] = [
         { type: 'move_start', at: 0, floor: 1 },
-        createBossEvent('B_CANNON', 5, [-1], 30, 1),
+        createBossEvent('B001', 5, [-1], 30, 1),
         { type: 'return', at: 30, reason: 'completed' },
       ]
       const replay = createTestReplay({
         meta: {
           expeditionId: 'exp-1',
-          areaId: 'human_village',
-          areaName: '人間の村',
+          areaId: 'forest_outskirts',
+          areaName: '森のはずれ',
           floors: 1,
           baseDurationSec: 30,
           party: ['1'],
           partyRewardMultipliers: DEFAULT_PARTY_REWARD_MULTIPLIERS,
           expeditionBoost: { factorDropMultiplier: 2 },
           returnPolicy: 'never',
-          seed: 12345,
+          // seed=142: id=1の初回乱数0.0211(1.5%<r<3%: 遠征ブーストありのみ獲得)
+          seed: 142,
         },
         events,
         summary: { success: true, maxFloorReached: 1, xpGained: 5, goldGained: 0, casualties: [] },
@@ -464,7 +466,7 @@ describe('CompleteExpeditionUseCase', () => {
       )
       const result = await usecase.execute(1, replay)
 
-      expect(result.factorAcquisitions.get(1)).toEqual(['human'])
+      expect(result.factorAcquisitions.get(1)).toEqual(['wolf'])
     })
 
     it('装備の因子獲得倍率は装備しているゴブリンの因子獲得確率だけを上げる', async () => {
@@ -474,20 +476,21 @@ describe('CompleteExpeditionUseCase', () => {
       const baseState = createTestBaseState({ capturedDungeons: [] })
       const events: TimelineEvent[] = [
         { type: 'move_start', at: 0, floor: 1 },
-        createBossEvent('B_CANNON', 5, [-1, -1], 30, 1),
+        createBossEvent('B001', 5, [-1, -1], 30, 1),
         { type: 'return', at: 30, reason: 'completed' },
       ]
       const replay = createTestReplay({
         meta: {
           expeditionId: 'exp-1',
-          areaId: 'human_village',
-          areaName: '人間の村',
+          areaId: 'forest_outskirts',
+          areaName: '森のはずれ',
           floors: 1,
           baseDurationSec: 30,
           party: ['1', '2'],
           partyRewardMultipliers: DEFAULT_PARTY_REWARD_MULTIPLIERS,
           returnPolicy: 'never',
-          seed: 12345,
+          // seed=142: id=1の初回乱数0.0211(1.5%<r<2.25%: 装備倍率ありのみ獲得)、id=2は0.565(非獲得)
+          seed: 142,
         },
         events,
         summary: { success: true, maxFloorReached: 1, xpGained: 5, goldGained: 0, casualties: [] },
@@ -510,11 +513,11 @@ describe('CompleteExpeditionUseCase', () => {
       )
       const result = await usecase.execute(1, replay)
 
-      expect(result.factorAcquisitions.get(1)).toEqual(['human'])
+      expect(result.factorAcquisitions.get(1)).toEqual(['wolf'])
       expect(result.factorAcquisitions.get(2)).toBeUndefined()
       expect(goblinRepo.updateGoblinFactors).toHaveBeenCalledWith(
         1,
-        ['human'],
+        ['wolf'],
         expect.objectContaining({ hp: expect.any(Number) }),
       )
     })
@@ -550,7 +553,8 @@ describe('CompleteExpeditionUseCase', () => {
           party: ['1'],
           partyRewardMultipliers: DEFAULT_PARTY_REWARD_MULTIPLIERS,
           returnPolicy: 'never' as const,
-          seed: 1971,
+          // seed=36: id=1の乱数列[0.0034, 0.513](ラタトスク獲得・スライム非獲得)
+          seed: 36,
         },
         events,
         summary: { success: true, maxFloorReached: 3, xpGained: 5, goldGained: 0, casualties: [] },
@@ -793,6 +797,64 @@ describe('CompleteExpeditionUseCase', () => {
       expect(result.updatedGoblinIds).toEqual([1])
       expect(goblinRepo.saveGoblin).not.toHaveBeenCalled()
       expect(goblinRepo.updateGoblinCurrentHp).toHaveBeenCalledWith(1, 60)
+    })
+  })
+
+  describe('冪等性ゲート / トランザクション', () => {
+    const createMockRunner = (): ITransactionRunner => ({
+      runInTransaction: jest.fn(<T,>(fn: () => Promise<T>) => fn()),
+    })
+
+    it('complete が false（処理済み）を返すと報酬処理をスキップして早期returnする', async () => {
+      const goblin = createTestGoblin({ id: 1, level: 1, experience: 0 })
+      const party = createTestParty()
+      const baseState = createTestBaseState({ gold: 0 })
+      const replay = createTestReplay()
+
+      const goblinRepo = createMockGoblinRepository([goblin])
+      const partyRepo = createMockPartyRepository([party])
+      const baseRepo = createMockBaseStateRepository(baseState)
+      const gateway: IExpeditionCompletionGateway = {
+        complete: jest.fn(async () => false),
+        updateReplay: jest.fn(async () => {}),
+      }
+      const runner = createMockRunner()
+
+      const usecase = new CompleteExpeditionUseCase(goblinRepo, partyRepo, baseRepo, undefined, gateway, runner)
+      const result = await usecase.execute(1, replay, { expeditionId: 'exp-1' })
+
+      expect(result.alreadyProcessed).toBe(true)
+      expect(gateway.complete).toHaveBeenCalledWith('exp-1', replay)
+      expect(gateway.updateReplay).not.toHaveBeenCalled()
+      expect(goblinRepo.saveGoblin).not.toHaveBeenCalled()
+      expect(baseRepo.saveBaseState).not.toHaveBeenCalled()
+      expect(partyRepo.updatePartyStatus).not.toHaveBeenCalled()
+      expect(runner.runInTransaction).toHaveBeenCalledTimes(1)
+    })
+
+    it('complete が true を返すと報酬処理を行い enrichedReplay を updateReplay で保存する', async () => {
+      const goblin = createTestGoblin({ id: 1, level: 1, experience: 0 })
+      const party = createTestParty()
+      const baseState = createTestBaseState({ gold: 0 })
+      const replay = createTestReplay({ summary: { success: true, maxFloorReached: 3, xpGained: 100, goldGained: 50, casualties: [] } })
+
+      const goblinRepo = createMockGoblinRepository([goblin])
+      const partyRepo = createMockPartyRepository([party])
+      const baseRepo = createMockBaseStateRepository(baseState)
+      const gateway: IExpeditionCompletionGateway = {
+        complete: jest.fn(async () => true),
+        updateReplay: jest.fn(async () => {}),
+      }
+      const runner = createMockRunner()
+
+      const usecase = new CompleteExpeditionUseCase(goblinRepo, partyRepo, baseRepo, undefined, gateway, runner)
+      const result = await usecase.execute(1, replay, { expeditionId: 'exp-1' })
+
+      expect(result.alreadyProcessed).toBe(false)
+      expect(gateway.complete).toHaveBeenCalledWith('exp-1', replay)
+      expect(goblinRepo.saveGoblin).toHaveBeenCalled()
+      expect(gateway.updateReplay).toHaveBeenCalledWith('exp-1', result.enrichedReplay)
+      expect(runner.runInTransaction).toHaveBeenCalledTimes(1)
     })
   })
 })

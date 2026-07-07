@@ -18,7 +18,11 @@ import { useGoblinStore, getGoblinRepository } from '../stores/useGoblinStore'
 import { useExpeditionStore } from '../stores/useExpeditionStore'
 import { useBaseStore, getBaseStateRepository } from '../stores/useBaseStore'
 import { useDungeonStore } from '../stores/useDungeonStore'
-import { SQLiteEquipmentRepository } from '../../infrastructure/repositories/SQLiteEquipmentRepository'
+import {
+  equipmentRepository,
+  expeditionRepository,
+  transactionRunner,
+} from '../di/repositories'
 import { useDebugSettingsStore } from '../stores/useDebugSettingsStore'
 import { getSpeedMultiplier, hasMonthlyPass, usePurchaseStore } from '../stores/usePurchaseStore'
 import {
@@ -34,6 +38,7 @@ import {
 import { useStoryStore } from '../stores/useStoryStore'
 import { useTutorialStore } from '../stores/useTutorialStore'
 import { useExpeditionNotification } from '../hooks/useExpeditionNotification'
+import { useCurrentTime } from './useCurrentTime'
 import { getDungeonName } from '../../shared/i18n/entityLocalization'
 import { computeDungeonExplorationTime, getDungeonTierAreaLevel, getDungeonTierDisplayName } from '../../shared/types'
 import { getMaxClearedFloorFromReplay, isDungeonCompleted } from '../../shared/utils/expeditionClear'
@@ -121,7 +126,12 @@ export const useExpeditionFlow = ({
 }: UseExpeditionFlowParams = {}) => {
   const [isProcessing, setIsProcessing] = useState(false)
   const processedExpeditionsRef = useRef<Set<string>>(new Set())
-  const currentTime = externalCurrentTime ?? new Date()
+  // externalCurrentTime 未指定時に毎レンダー new Date() を生成すると useMemo が総崩れになるため、
+  // 内部の安定した時刻state（必要時のみ1秒周期で更新）にフォールバックする。
+  const internalCurrentTime = useCurrentTime({
+    enabled: externalCurrentTime === undefined && enableAutoCompletion,
+  })
+  const currentTime = externalCurrentTime ?? internalCurrentTime
 
   const partyRepository = getPartyRepository()
   const goblinRepository = getGoblinRepository()
@@ -139,10 +149,9 @@ export const useExpeditionFlow = ({
   const getPartyExpeditionHistory = useExpeditionStore((state) => state.getPartyExpeditionHistory)
   const saveExpeditionRecord = useExpeditionStore((state) => state.saveExpeditionRecord)
   const saveBulkExpeditionRecords = useExpeditionStore((state) => state.saveBulkExpeditionRecords)
-  const completeExpeditionRecord = useExpeditionStore((state) => state.completeExpeditionRecord)
+  const finalizeCompletion = useExpeditionStore((state) => state.finalizeCompletion)
   const instantDungeonExploration = useDebugSettingsStore((state) => state.instantDungeonExploration)
 
-  const equipmentRepository = useMemo(() => SQLiteEquipmentRepository.getInstance(), [])
   const { scheduleExpeditionNotification, cancelExpeditionNotification } = useExpeditionNotification()
 
   const startExpeditionUseCase = useMemo(() => {
@@ -151,10 +160,18 @@ export const useExpeditionFlow = ({
       goblinRepository,
       equipmentRepository,
     )
-  }, [partyRepository, goblinRepository, equipmentRepository])
+  }, [partyRepository, goblinRepository])
 
   const completeExpeditionUseCase = useMemo(() => {
-    return new CompleteExpeditionUseCase(goblinRepository, partyRepository, baseStateRepository, SQLiteEquipmentRepository.getInstance())
+    return new CompleteExpeditionUseCase(
+      goblinRepository,
+      partyRepository,
+      baseStateRepository,
+      equipmentRepository,
+      // 冪等性ゲート（complete）と enrichedReplay 保存を同一トランザクションで実施
+      expeditionRepository,
+      transactionRunner,
+    )
   }, [goblinRepository, partyRepository, baseStateRepository])
 
   const getPartyExpeditionTimeMultiplier = useCallback(async (party: Party): Promise<number> => {
@@ -636,14 +653,20 @@ export const useExpeditionFlow = ({
         },
       }
 
-      // abort モードで完了処理（Gold・アイテム・因子・制圧をスキップ）
-      const result = await completeExpeditionUseCase.execute(record.partyId, truncatedReplay, { isAbort: true })
+      // abort モードで完了処理（Gold・アイテム・因子・制圧をスキップ）。
+      // status 確定・enrichedReplay 保存・報酬付与を UseCase 内で 1 トランザクション実行。
+      const result = await completeExpeditionUseCase.execute(record.partyId, truncatedReplay, {
+        isAbort: true,
+        expeditionId: record.id,
+      })
+      // 既に完了済み（自動完了等）ならストア再取得も不要
+      if (result.alreadyProcessed) return
 
       // スケジュール済み通知をキャンセル
       await cancelExpeditionNotification(record.id)
 
-      // DBをアトミックに更新
-      await completeExpeditionRecord(record.id, result.enrichedReplay)
+      // 履歴の剪定とストア再取得
+      await finalizeCompletion()
 
       // ストアを同期
       await usePartyStore.getState().refresh()
@@ -651,7 +674,7 @@ export const useExpeditionFlow = ({
     } finally {
       setIsProcessing(false)
     }
-  }, [completeExpeditionUseCase, completeExpeditionRecord, updateExpeditionReplay, cancelExpeditionNotification])
+  }, [completeExpeditionUseCase, finalizeCompletion, updateExpeditionReplay, cancelExpeditionNotification])
 
   const completeDueExpeditions = useCallback(async (): Promise<void> => {
     const now = new Date()
@@ -672,19 +695,25 @@ export const useExpeditionFlow = ({
           replay = await computeExpeditionReplay(record.expeditionMeta)
           await updateExpeditionReplay(record.id, replay)
         }
-        if (!replay) continue
+        if (!replay) {
+          // 完了処理できなかったため次周期で再試行できるよう解放
+          processedExpeditionsRef.current.delete(record.id)
+          continue
+        }
 
-        // ゲームロジックを先に実行し、レベルアップ情報を含む enrichedReplay を取得
-        const result = await completeExpeditionUseCase.execute(record.partyId, replay)
+        // status 確定（WHERE status='ongoing' の冪等性ゲート）・報酬付与・
+        // enrichedReplay 保存を UseCase 内で 1 トランザクションにまとめて実行する。
+        // 既に完了処理済みなら alreadyProcessed=true が返るのでスキップ。
+        const result = await completeExpeditionUseCase.execute(record.partyId, replay, {
+          expeditionId: record.id,
+        })
+        if (result.alreadyProcessed) continue
 
-        // フォアグラウンドで完了処理するため、スケジュール済み通知をキャンセル
+        // フォアグラウンドで完了処理したため、スケジュール済み通知をキャンセル
         await cancelExpeditionNotification(record.id)
 
-        // DBレベルで WHERE status='ongoing' を条件にアトミックに更新。
-        // enrichedReplay（memberLevelUps含む）を一括保存。
-        // 既に完了済み（playback側で処理済み等）なら false が返り、スキップ。
-        const updated = await completeExpeditionRecord(record.id, result.enrichedReplay)
-        if (!updated) continue
+        // 履歴の剪定とストア再取得
+        await finalizeCompletion()
 
         if (result.newDungeonCaptured) {
           const dungeon = areasData.find(d => d.id === result.newDungeonCaptured)
@@ -706,12 +735,14 @@ export const useExpeditionFlow = ({
         await useGoblinStore.getState().refresh()
       } catch (error) {
         console.warn('[useExpeditionFlow] Failed to complete expedition', error)
+        // 一時エラーで固まらないよう、次周期で再試行できるよう解放する
+        processedExpeditionsRef.current.delete(record.id)
       }
     }
   }, [
     expeditionRecords,
     completeExpeditionUseCase,
-    completeExpeditionRecord,
+    finalizeCompletion,
     handleDungeonClear,
     updateExpeditionReplay,
     cancelExpeditionNotification,
@@ -803,6 +834,7 @@ export const useExpeditionFlow = ({
     startBulkExpedition,
     abortExpedition,
     estimateExplorationTime,
+    getPartyExpeditionTimeMultiplier,
     completeDueExpeditions,
     currentTime,
     partyHistories,

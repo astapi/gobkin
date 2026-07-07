@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet, ActivityIndicator, Alert, Modal, FlatList } from 'react-native'
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useTranslation } from 'react-i18next'
-import { SQLiteEquipmentRepository } from '@/infrastructure/repositories/SQLiteEquipmentRepository'
+import { equipmentRepository } from '@/presentation/di/repositories'
 import { selectGold, selectRank, useBaseStore } from '@/presentation/stores/useBaseStore'
 import { CurrentTimeBadge } from '@/presentation/components/CurrentTimeBadge'
 import { GoldBadge } from '@/presentation/components/GoldBadge'
@@ -15,7 +15,6 @@ import type { EquipmentCategory, EquipmentInstance, EquipmentTemplate, WeaponSub
 
 const SHOP_UNLOCK_RANK = 2
 const SELL_PRICE_RATE = 0.5
-const equipmentRepository = SQLiteEquipmentRepository.getInstance()
 
 const CATEGORY_ORDER: Record<EquipmentCategory, number> = {
   weapon: 0,
@@ -433,7 +432,7 @@ export default function EquipmentShopScreen() {
   const rank = useBaseStore(selectRank)
   const gold = useBaseStore(selectGold)
   const baseLoading = useBaseStore((state) => state.isLoading)
-  const updateBaseState = useBaseStore((state) => state.updateBaseState)
+  const addGold = useBaseStore((state) => state.addGold)
   const [mode, setMode] = useState<ShopMode>('buy')
   const [inventory, setInventory] = useState<EquipmentInstance[]>([])
   const [loading, setLoading] = useState(true)
@@ -516,8 +515,19 @@ export default function EquipmentShopScreen() {
 
     try {
       setProcessingId(template.id)
-      await equipmentRepository.save(createPurchasedEquipment(template.id))
-      await updateBaseState({ gold: gold - template.price })
+      // 先にGoldを最新残高から減算（遠征完了などによる残高変動の取りこぼしを防ぐ）
+      const paid = await addGold(-template.price)
+      if (!paid) {
+        Alert.alert(t('ui.shop.insufficientGoldTitle'), t('ui.shop.insufficientGoldBody', { price: template.price, gold }))
+        return
+      }
+      try {
+        await equipmentRepository.save(createPurchasedEquipment(template.id))
+      } catch (saveError) {
+        // 装備保存に失敗したら減算したGoldを戻す
+        await addGold(template.price)
+        throw saveError
+      }
       await refreshInventory()
       setSelectedItem(null)
       Alert.alert(t('ui.shop.buySuccessTitle'), t('ui.shop.buySuccessBody', { name: getEquipmentLabel(template) }))
@@ -527,7 +537,7 @@ export default function EquipmentShopScreen() {
     } finally {
       setProcessingId(null)
     }
-  }, [gold, refreshInventory, t, updateBaseState])
+  }, [gold, refreshInventory, t, addGold])
 
   const sellItem = useCallback(async (item: EquipmentInstance) => {
     const template = getEquipmentTemplate(item.templateId)
@@ -548,7 +558,8 @@ export default function EquipmentShopScreen() {
               try {
                 setProcessingId(item.id)
                 await equipmentRepository.delete(item.id)
-                await updateBaseState({ gold: gold + price })
+                // 最新残高に売却額を加算（確認中の残高変動を取りこぼさない）
+                await addGold(price)
                 await refreshInventory()
                 setSelectedItem(null)
               } catch (error) {
@@ -562,7 +573,7 @@ export default function EquipmentShopScreen() {
         },
       ],
     )
-  }, [gold, refreshInventory, t, updateBaseState])
+  }, [refreshInventory, t, addGold])
 
   if (baseLoading || loading) {
     return (

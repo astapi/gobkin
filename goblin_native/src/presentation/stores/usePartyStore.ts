@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import type { Party, ExpeditionRequest, DungeonTier } from '../../shared/types'
-import { SQLitePartyRepository } from '../../infrastructure/repositories/SQLitePartyRepository'
 import type { IPartyRepository } from '../../core/repositories'
+import { partyRepository as repository } from '../di/repositories'
 import {
   ConfigurePartyUseCase,
   CreatePartyUseCase,
@@ -12,7 +12,6 @@ import {
 } from '../../core/usecases'
 import type { CreatePartyInput } from '../../core/usecases/CreatePartyUseCase'
 
-const repository: IPartyRepository = SQLitePartyRepository.getInstance()
 const getPartyListUseCase = new GetPartyListUseCase(repository)
 const getPartyByIdUseCase = new GetPartyByIdUseCase(repository)
 const managePartyUseCase = new ManagePartyUseCase(repository)

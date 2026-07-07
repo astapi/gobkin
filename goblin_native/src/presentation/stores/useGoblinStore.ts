@@ -1,8 +1,7 @@
 import { create } from 'zustand'
 import type { Goblin } from '../../shared/types'
-import { SQLiteGoblinRepository } from '../../infrastructure/repositories/SQLiteGoblinRepository'
-import { SQLiteEquipmentRepository } from '../../infrastructure/repositories/SQLiteEquipmentRepository'
-import type { IGoblinRepository, IEquipmentRepository } from '../../core/repositories'
+import type { IGoblinRepository } from '../../core/repositories'
+import { goblinRepository as repository, equipmentRepository } from '../di/repositories'
 import { DeleteGoblinUseCase, GetGoblinListUseCase } from '../../core/usecases'
 import { usePartyStore } from './usePartyStore'
 import { calculateGoblinEffectiveStats } from '../../shared/utils/goblinStats'
@@ -23,8 +22,6 @@ interface GoblinActions {
   updateGoblinCurrentHp: (goblinId: number, currentHp: number | null) => Promise<void>
 }
 
-const repository: IGoblinRepository = SQLiteGoblinRepository.getInstance()
-const equipmentRepository: IEquipmentRepository = SQLiteEquipmentRepository.getInstance()
 const getGoblinListUseCase = new GetGoblinListUseCase(repository)
 const deleteGoblinUseCase = new DeleteGoblinUseCase(repository, equipmentRepository)
 

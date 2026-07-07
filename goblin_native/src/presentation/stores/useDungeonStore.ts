@@ -1,10 +1,8 @@
 import { create } from 'zustand'
-import { SQLiteDungeonProgressRepository } from '../../infrastructure/repositories/SQLiteDungeonProgressRepository'
+import { dungeonProgressRepository as repository } from '../di/repositories'
 import { areasData } from '../../shared/data'
 import type { Dungeon, DungeonTier } from '../../shared/types'
 import type { DungeonProgressState } from '../../shared/types/DungeonProgress'
-
-const repository = SQLiteDungeonProgressRepository.getInstance()
 
 const buildDefaultProgress = (): DungeonProgressState => {
   const defaults: DungeonProgressState = {}

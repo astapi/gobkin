@@ -1,14 +1,13 @@
 import { create } from 'zustand'
-import { SQLiteTutorialStateRepository } from '../../infrastructure/repositories/SQLiteTutorialStateRepository'
-import { SQLiteDungeonProgressRepository } from '../../infrastructure/repositories/SQLiteDungeonProgressRepository'
+import {
+  tutorialStateRepository as repository,
+  dungeonProgressRepository as dungeonRepository,
+} from '../di/repositories'
 import {
   isAtOrAfter,
   tutorialStepIndex,
   type TutorialStep,
 } from '../../shared/types/Tutorial'
-
-const repository = SQLiteTutorialStateRepository.getInstance()
-const dungeonRepository = SQLiteDungeonProgressRepository.getInstance()
 
 interface TutorialStoreState {
   step: TutorialStep

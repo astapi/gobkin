@@ -3,6 +3,7 @@
  */
 
 import { Platform } from 'react-native'
+import { TICKET_TYPES, type TicketType } from '../types/Ticket'
 
 // RevenueCat API Keys
 // __DEV__ は開発ビルドでtrue、リリースビルドでfalse
@@ -61,14 +62,9 @@ export const MONTHLY_PASS_REWARD_MULTIPLIER = 1.5   // レア・Gold・称号・
 export const MONTHLY_PASS_SPEED_MULTIPLIER = 0.8    // 遠征時間倍率（0.8 = 20%短縮）
 export const MONTHLY_PASS_GOLDEN_ACORN_QUANTITY = 50
 
-// チケット種別
-export const TICKET_TYPES = {
-  SPEED: 'speed_ticket',
-  BOOST: 'boost_ticket',
-  GOLDEN_ACORN: 'golden_acorn',
-} as const
-
-export type TicketType = typeof TICKET_TYPES[keyof typeof TICKET_TYPES]
+// チケット種別（定義は shared/types/Ticket.ts に移動。後方互換のため再エクスポート）
+export { TICKET_TYPES }
+export type { TicketType }
 
 // チケット効果
 export const SPEED_TICKET_MULTIPLIER = 0.5    // 遠征時間倍率（0.5 = 50%短縮）

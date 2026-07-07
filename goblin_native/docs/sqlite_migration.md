@@ -28,7 +28,7 @@ goblin_native はローカルデータ永続化に **SQLite（expo-sqlite）** �
 | `goblins` | `id` | 拠点所属ゴブリン | schema.ts |
 | `pending_goblins` | `id` | 産まれた（受け入れ待ち）ゴブリン | schema.ts |
 | `parties` | `id` | パーティ編成・遠征設定 | schema.ts |
-| `expeditions` | `id`(TEXT) | 遠征記録（メタ/リプレイ） | schema.ts + v9 |
+| `expeditions` | `id`(TEXT) | 遠征記録（メタ/リプレイ） | schema.ts + v10 |
 | `base_state` | `id`(=1) | 拠点状態（シングルトン行） | schema.ts |
 | `dungeon_progress` | `dungeon_id` | ダンジョン解放/踏破/Tier進捗 | schema.ts |
 | `equipment` | `id`(TEXT) | 装備インスタンス | schema.ts |
@@ -112,7 +112,7 @@ CREATE TABLE IF NOT EXISTS expeditions (
   status TEXT NOT NULL DEFAULT 'ongoing',         -- ongoing / completed / failed
   return_policy TEXT NOT NULL,
   replay_json TEXT,                               -- ExpeditionReplay（再計算結果）
-  expedition_meta_json TEXT,                      -- ExpeditionMeta（遅延計算用 seed 等, v9 で追加）
+  expedition_meta_json TEXT,                      -- ExpeditionMeta（遅延計算用 seed 等, v10 で追加）
   created_at TEXT NOT NULL DEFAULT (datetime('now')),
   updated_at TEXT NOT NULL DEFAULT (datetime('now')),
   FOREIGN KEY (party_id) REFERENCES parties(id)
@@ -157,7 +157,7 @@ CREATE TABLE IF NOT EXISTS dungeon_progress (
   cleared INTEGER NOT NULL DEFAULT 0,             -- BOOLEAN
   unlock_notified INTEGER NOT NULL DEFAULT 0,     -- 解放通知済み
   max_cleared_tier INTEGER NOT NULL DEFAULT 0,    -- 制圧済み最高Tier（v8 で追加）
-  cleared_floors_json TEXT NOT NULL DEFAULT '{}', -- Tier別の到達フロア（v10 で追加）
+  cleared_floors_json TEXT NOT NULL DEFAULT '{}', -- Tier別の到達フロア（v16 で追加）
   updated_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
 ```
@@ -218,22 +218,28 @@ INSERT OR IGNORE INTO app_metadata (key, value) VALUES ('schema_version', '1');
 
 `src/infrastructure/database/index.ts` がスキーマバージョンを比較し、`migrations/v{n}.ts` を順次適用します。各マイグレーションは「既に列がある場合は何もしない」など冪等性に配慮しています。
 
-主な変更履歴（抜粋）:
+変更履歴:
 
 | バージョン | 主な内容 |
 |-----------|---------|
-| v1 | 初期スキーマ |
-| v8 | `dungeon_progress.max_cleared_tier` 追加 |
-| v9 | `expeditions.expedition_meta_json` 追加（遅延計算メタ） |
-| v10 | `dungeon_progress.cleared_floors_json` 追加 |
+| v1 | 初期スキーマ（全テーブル作成＋始祖ゴブリンの初期投入） |
+| v2 | goblins/pending_goblins に `skills_json` 追加し、種族デフォルトスキルで backfill |
+| v3 | goblins/pending_goblins に `job_id` 追加 |
+| v4 | `parties` に `gold_multiplier` / `rare_multiplier` / `title_multiplier` 追加 |
+| v5 | `stats_json` / `effective_stats_json` / `replay_json` から廃止済み `sp` フィールドを除去（JSONサニタイズ） |
+| v6 | `skills_json` 内のスキルIDを旧ID→新IDへ一括リネーム |
+| v7 | goblins/pending_goblins に `race_id` 追加し、旧日本語種族名から `race_id` を backfill |
+| v8 | `dungeon_progress.max_cleared_tier` 追加、`parties.dungeon_tier` 追加 |
+| v9 | goblins/pending_goblins に `current_hp` 追加 |
+| v10 | `expeditions.expedition_meta_json` 追加（遅延計算メタ） |
 | v11 | `tickets` テーブル追加 |
-| v12 | `story_progress` テーブル追加 |
-| v13 | goblins/pending_goblins に `job_id` / `skills_json` 追加 |
-| v14 | `battle_action_policy_json` 追加 |
-| v15 | テーブル再構築（temp テーブル経由のスキーマ変更） |
-| v16 | goblins/pending_goblins に `current_hp` / `race_id` 追加 |
+| v12 | `story_progress` テーブル追加（既存のクリア済みダンジョンに対応するストーリーを解放） |
+| v13 | goblins/pending_goblins に `battle_action_policy_json` 追加 |
+| v14 | 最初のゴブリン（founder）を始祖ゴブリン「マルク」の固定データへ上書き |
+| v15 | MODシステム廃止に伴い、goblins/pending_goblins から `mods_json` を撤去（temp テーブル経由の再構築） |
+| v16 | `dungeon_progress.cleared_floors_json` 追加（既存クリア済みダンジョンのフロア到達状況を backfill） |
 
-> 正確な内容は各 `migrations/v{n}.ts` を参照してください。`parties` の報酬倍率カラムや `dungeon_tier` なども段階的に追加されています。
+> 正確な内容は各 `migrations/v{n}.ts` を参照してください。`schema.ts` は常に最新スキーマを保持しており、新規インストールでは v1 適用時点で最新カラムが揃うため、v2 以降のマイグレーションは新規インストールでは実質的に無処理（カラム存在チェックでスキップ）になります。
 
 ---
 
@@ -242,35 +248,28 @@ INSERT OR IGNORE INTO app_metadata (key, value) VALUES ('schema_version', '1');
 全 SQLite リポジトリは共通の設計原則に従います。
 
 1. **シングルトン**: `getInstance()` で単一インスタンスを取得。
-2. **内部キャッシュ**: 起動時 `initialize()` で DB から全件ロードし `Map` に保持。
-3. **同期的読み取り**: 画面からはキャッシュを同期 API で参照（`getGoblins()` 等）。
-4. **非同期書き込み**: 書き込みはキャッシュを即時更新し、DB へは非同期反映。
-5. **変更通知**: `setOnDataChange()` のコールバックで store / 画面へ再描画を通知。
+2. **DB 直読み書き**: リポジトリ自体は内部キャッシュを持たず、`getGoblins()` / `saveGoblin()` 等は毎回 `getDatabase()` 経由で SQLite に非同期アクセスします。
+3. **キャッシュはストア側の責務**: 画面から使うメモリキャッシュ・同期的な状態参照は Zustand ストア（`useGoblinStore` 等）が担い、起動時に各ストアの `initialize()` がリポジトリから全件ロードして state に保持します。
+4. **書き込み**: ストアの更新系アクションがリポジトリの非同期書き込みを呼び、成功後に state を更新して再描画します。
+
+> 以前は「リポジトリが内部キャッシュを持ち `setOnDataChange()` で通知する」設計でしたが、現行実装ではリポジトリは薄い DB アクセス層に徹し、キャッシュ・変更通知の責務は各 Zustand ストアに集約されています。
 
 ### データベース初期化（`database/index.ts`）
 
-```typescript
-const DB_NAME = 'goblin_kingdom.db'
-export const CURRENT_SCHEMA_VERSION = 16
-
-let db: SQLite.SQLiteDatabase | null = null
-let initializationPromise: Promise<SQLite.SQLiteDatabase> | null = null
-
-export const getDatabase = async (): Promise<SQLite.SQLiteDatabase> => {
-  if (db) return db
-  if (initializationPromise) return initializationPromise   // 重複初期化防止
-  initializationPromise = initializeDatabase()
-  return initializationPromise
-}
-// initializeDatabase 内で openDatabaseAsync → スキーマ作成 → runMigrations を実行
-```
+- `CURRENT_SCHEMA_VERSION = 16`。
+- `getDatabase()` は既に接続済みの場合でも `ensureMigrations()` を呼び、アプリアップデート後も未適用マイグレーションがあれば追従します（初回接続時は `initializeDatabase()` が `openDatabaseAsync` → `runMigrations` を実行）。
+- `initializationPromise` で重複初期化を防止し、初期化失敗時は Promise をリセットして再試行可能にします。
+- `ensureMigrations()` は `migrationPromise`（in-flight Promise）で並行呼び出しを直列化し、二重実行を防ぎます。
+- `runMigrations()` は現在の `schema_version` から `CURRENT_SCHEMA_VERSION` までの未適用マイグレーションについて、**各マイグレーション本体と `schema_version` の更新を `database.withExclusiveTransactionAsync` で1トランザクションに束ね**、原子的に適用します（途中クラッシュによるテーブル消失や中途半端なバージョン更新を防止）。
+- マイグレーション実行中は `PRAGMA foreign_keys = OFF` にし（v15 のテーブル再構築で意図しない `ON DELETE SET NULL` の連鎖が起きないため）、全マイグレーション完了後に `PRAGMA foreign_keys = ON` を有効化します。
+- `db`（公開用のシングルトン参照）は **マイグレーション完了後に初めて代入**され、並行する `getDatabase()` 呼び出しによる二重初期化を防ぎます。
+- `resetDatabase()` / `closeDatabase()`（主にテスト用）も用意されています。
 
 ### アプリ起動時の初期化（`app/_layout.tsx`）
 
-1. `getDatabase()` で DB を開きスキーマ生成＋マイグレーション。
-2. 各 SQLite リポジトリの `initialize()` を並列実行しキャッシュを温める。
-3. 各 Zustand ストアがリポジトリからメモリ状態を構築。
-4. 完了までローディング／スプラッシュ表示。
+1. `useDatabaseInit`（`src/presentation/hooks/useDatabaseInit.ts`）が `getDatabase()` で DB を開きスキーマ生成＋マイグレーションを実行し、`base_state` / `dungeon_progress` の初期値も補完します（`ensureDefaults()`）。
+2. DB 準備完了後、`useGoblinStore` / `usePartyStore` / `useBaseStore` / `useDungeonStore` / `useExpeditionStore` / `useDebugSettingsStore` / `usePurchaseStore` / `useStoryStore` / `useTutorialStore` の各 `initialize()` を `Promise.all` で並列実行し、リポジトリからロードしたデータをストアの state に格納します。
+3. 完了までローディング／スプラッシュ表示。
 
 ### 主なリポジトリ
 
@@ -288,6 +287,12 @@ export const getDatabase = async (): Promise<SQLite.SQLiteDatabase> => {
 - `BackupFileService.ts`: ファイル入出力。
 - `BackupSignature.ts`: 改ざん検出用の署名。
 - 画面側は `useSaveDataBackup`（hook）から利用（設定画面）。
+
+### バックアップフォーマット
+
+- 対象テーブルは `BackupSchema.ts` の `EXPORTABLE_TABLES` で定義: `goblins` / `pending_goblins` / `parties` / `expeditions` / `base_state` / `dungeon_progress` / `equipment` / `story_progress` / `tickets` / `app_metadata`。
+- `BACKUP_FORMAT_VERSION = 2`。v2 で `tickets` テーブルがバックアップ対象に追加されました。旧 v1 形式のバックアップ（`tickets` を含まない）も後方互換で読み込み可能です（欠損テーブルは空配列として復元）。
+- インポート時、バックアップの `meta.schemaVersion` が現在の `CURRENT_SCHEMA_VERSION` より小さい場合は、全テーブルの置き換え後に `ensureMigrations()` を実行し、既存のマイグレーション（バックフィルロジックを含む）で現行スキーマまで引き上げます。`meta.schemaVersion` が現行より新しい場合はインポートを拒否します（`unsupportedSchema`）。
 
 ---
 

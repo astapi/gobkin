@@ -1,4 +1,4 @@
-import type { ExpeditionReplay, Goblin, MemberLevelUp, TimelineEvent, TreasureDrop } from '../../shared/types'
+import type { CharacterSkill, ExpeditionReplay, Goblin, MemberLevelUp, TimelineEvent, TreasureDrop } from '../../shared/types'
 import { getEnemyDatabase } from '../../shared/data/enemy'
 import { getEffectiveStats } from '../../shared/utils/goblinStats'
 import {
@@ -11,6 +11,8 @@ import {
 import { GoblinEntity } from '../domain'
 import type { IGoblinRepository, IPartyRepository, IBaseStateRepository } from '../repositories'
 import type { IEquipmentRepository } from '../repositories/IEquipmentRepository'
+import type { ITransactionRunner } from '../repositories/ITransactionRunner'
+import type { IExpeditionCompletionGateway } from '../repositories/IExpeditionCompletionGateway'
 import type { LevelUpResult } from '../services/ExperienceSystem'
 import type { FactorDropConfig } from '../../shared/types/Factor'
 import { FactorService } from '../services/FactorService'
@@ -21,6 +23,8 @@ import { isDungeonCompleted } from '../../shared/utils/expeditionClear'
 import { getDungeonTierFactorDropMultiplier } from '../../shared/types/DungeonTier'
 
 export interface ExpeditionCompletionResult {
+  /** 既に完了処理済み（冪等性ゲートで弾かれた）ため報酬処理をスキップしたか */
+  alreadyProcessed: boolean
   levelUps: Map<number, LevelUpResult>
   updatedGoblinIds: number[]
   factorAcquisitions: Map<number, string[]>
@@ -30,30 +34,75 @@ export interface ExpeditionCompletionResult {
   enrichedReplay: ExpeditionReplay
 }
 
+// transactionRunner 未注入時（単体テスト等）のパススルー実装
+const passthroughTransactionRunner: ITransactionRunner = {
+  runInTransaction: (fn) => fn(),
+}
+
 export class CompleteExpeditionUseCase {
   private readonly goblinRepository: IGoblinRepository
   private readonly partyRepository: IPartyRepository
   private readonly baseStateRepository: IBaseStateRepository
   private readonly equipmentRepository?: IEquipmentRepository
+  private readonly expeditionGateway?: IExpeditionCompletionGateway
+  private readonly transactionRunner: ITransactionRunner
 
   constructor(
     goblinRepository: IGoblinRepository,
     partyRepository: IPartyRepository,
     baseStateRepository: IBaseStateRepository,
-    equipmentRepository?: IEquipmentRepository
+    equipmentRepository?: IEquipmentRepository,
+    expeditionGateway?: IExpeditionCompletionGateway,
+    transactionRunner?: ITransactionRunner
   ) {
     this.goblinRepository = goblinRepository
     this.partyRepository = partyRepository
     this.baseStateRepository = baseStateRepository
     this.equipmentRepository = equipmentRepository
+    this.expeditionGateway = expeditionGateway
+    this.transactionRunner = transactionRunner ?? passthroughTransactionRunner
   }
 
+  /**
+   * 遠征完了処理を 1 トランザクションでアトミックに実行する。
+   *
+   * expeditionId と expeditionGateway が与えられた場合、トランザクションの先頭で
+   * status='ongoing'→(completed/failed) の確定を行い、0 行更新（=処理済み）なら
+   * 報酬処理をスキップして早期 return する（冪等性ゲート = exactly-once）。
+   */
   public async execute(
     partyId: number,
     replay: ExpeditionReplay,
-    options?: { isAbort?: boolean }
+    options?: { isAbort?: boolean; expeditionId?: string }
+  ): Promise<ExpeditionCompletionResult> {
+    return this.transactionRunner.runInTransaction(() =>
+      this.executeInTransaction(partyId, replay, options)
+    )
+  }
+
+  private async executeInTransaction(
+    partyId: number,
+    replay: ExpeditionReplay,
+    options?: { isAbort?: boolean; expeditionId?: string }
   ): Promise<ExpeditionCompletionResult> {
     const isAbort = options?.isAbort ?? false
+    const expeditionId = options?.expeditionId
+
+    // 冪等性ゲート: トランザクション先頭で status を確定。既に完了済みなら報酬処理を行わない。
+    if (this.expeditionGateway && expeditionId) {
+      const claimed = await this.expeditionGateway.complete(expeditionId, replay)
+      if (!claimed) {
+        return {
+          alreadyProcessed: true,
+          levelUps: new Map(),
+          updatedGoblinIds: [],
+          factorAcquisitions: new Map(),
+          goldGained: 0,
+          enrichedReplay: replay,
+        }
+      }
+    }
+
     const party = await this.partyRepository.getParty(partyId)
     if (!party) {
       throw new Error('パーティが見つかりません')
@@ -67,6 +116,19 @@ export class CompleteExpeditionUseCase {
     if (goblins.length === 0) {
       throw new Error('遠征メンバーが見つかりません')
     }
+
+    // 装備付与スキルを事前に収集（経験値ボーナス・アンデッド判定・因子ドロップ判定で共通利用）
+    const equippedSkillsByGoblinId = new Map<number, CharacterSkill[]>()
+    for (const goblin of goblins) {
+      const equippedItems = this.equipmentRepository
+        ? await this.equipmentRepository.getByGoblinId(goblin.id)
+        : []
+      equippedSkillsByGoblinId.set(goblin.id, EquipmentService.collectGrantedSkills(equippedItems))
+    }
+    const getMergedSkills = (goblin: Goblin): CharacterSkill[] => [
+      ...goblin.skills,
+      ...(equippedSkillsByGoblinId.get(goblin.id) ?? []),
+    ]
 
     const levelUps = new Map<number, LevelUpResult>()
     const updatedGoblinIds: number[] = []
@@ -82,12 +144,21 @@ export class CompleteExpeditionUseCase {
     const snapshotById = new Map<number, Goblin>(
       (replay.meta.partySnapshot ?? []).map(goblin => [goblin.id, goblin])
     )
-    const currentHP: number[] = partyIds.map((id) => {
+    // 各メンバーの本来の最大HP（純ゴブリン群れボーナス等で膨らんだ戦闘中HPをクランプする上限）
+    const maxHPByIndex: number[] = partyIds.map((id) => {
+      const goblin = goblins.find(g => g.id === Number.parseInt(id, 10))
+      if (!goblin) return 0
+      const snapshot = snapshotById.get(goblin.id)
+      return snapshot?.effectiveStats?.hp ?? getEffectiveStats(goblin).hp
+    })
+    const currentHP: number[] = partyIds.map((id, index) => {
       const goblin = goblins.find(g => g.id === Number.parseInt(id, 10))
       if (!goblin) return 0
       const snapshot = snapshotById.get(goblin.id)
       if (snapshot?.currentHp === 0 || goblin.currentHp === 0) return 0
-      return snapshot?.currentHp ?? getEffectiveStats(goblin).hp
+      const startHP = snapshot?.currentHp ?? getEffectiveStats(goblin).hp
+      const cap = maxHPByIndex[index]
+      return cap > 0 ? Math.min(cap, startHP) : startHP
     })
 
     for (const event of replay.events) {
@@ -109,10 +180,11 @@ export class CompleteExpeditionUseCase {
         }
       }
 
-      // 戦闘後のHP更新
+      // 戦闘後のHP更新（本来の最大HPで上限クランプ）
       event.combat.allyHPDelta.forEach((delta, index) => {
         if (index < currentHP.length) {
-          currentHP[index] = Math.max(0, currentHP[index] + delta)
+          const cap = maxHPByIndex[index] > 0 ? maxHPByIndex[index] : Infinity
+          currentHP[index] = Math.max(0, Math.min(cap, currentHP[index] + delta))
         }
       })
     }
@@ -121,9 +193,10 @@ export class CompleteExpeditionUseCase {
     const latestGoblins = new Map(goblins.map(g => [g.id, g]))
 
     for (const goblin of goblins) {
-      // 獲得経験値スキルによるボーナス適用
-      const expBonusPercent = getExpBonusPercentFromSkills(goblin.skills)
-      const expMultiplier = getExpMultiplierFromSkills(goblin.skills)
+      // 獲得経験値スキルによるボーナス適用（装備付与スキルを含む）
+      const mergedSkills = getMergedSkills(goblin)
+      const expBonusPercent = getExpBonusPercentFromSkills(mergedSkills)
+      const expMultiplier = getExpMultiplierFromSkills(mergedSkills)
       const baseExp = perGoblinExp.get(goblin.id) ?? 0
       const totalMultiplier = (1 + Math.max(0, expBonusPercent) / 100) * expMultiplier
       const expToGain = Math.max(0, Math.floor(baseExp * totalMultiplier))
@@ -208,12 +281,9 @@ export class CompleteExpeditionUseCase {
           }
 
           const latest = latestGoblins.get(goblin.id)!
-          const equippedItems = this.equipmentRepository
-            ? await this.equipmentRepository.getByGoblinId(goblin.id)
-            : []
           const factorDropSkills = [
             ...latest.skills,
-            ...EquipmentService.collectGrantedSkills(equippedItems),
+            ...(equippedSkillsByGoblinId.get(goblin.id) ?? []),
           ]
           const factorDropBonusPercent = getFactorDropBonusPercentFromSkills(factorDropSkills)
           const factorDropMultiplier = getFactorDropMultiplierFromSkills(factorDropSkills)
@@ -251,7 +321,7 @@ export class CompleteExpeditionUseCase {
       const hp = currentHP[index] ?? 0
       if (hp <= 0) {
         const goblin = goblins.find(g => g.id === goblinId)
-        if (goblin && hasUndeadSkill(goblin.skills)) {
+        if (goblin && hasUndeadSkill(getMergedSkills(goblin))) {
           await this.goblinRepository.updateGoblinCurrentHp(goblinId, null)
         } else {
           await this.goblinRepository.updateGoblinCurrentHp(goblinId, hp)
@@ -329,7 +399,13 @@ export class CompleteExpeditionUseCase {
       },
     }
 
+    // レベルアップ等を反映した enrichedReplay を、同一トランザクション内で永続化する。
+    if (this.expeditionGateway && expeditionId) {
+      await this.expeditionGateway.updateReplay(expeditionId, enrichedReplay)
+    }
+
     return {
+      alreadyProcessed: false,
       levelUps,
       updatedGoblinIds,
       factorAcquisitions,

@@ -3,7 +3,13 @@
  * DBから直接読み書きする設計
  */
 import type { ExpeditionRecord, ExpeditionMeta, ExpeditionReplay, ExpeditionRequest } from '../../shared/types'
+import type { IExpeditionRepository, ExpeditionSummaryRecord } from '../../core/repositories/IExpeditionRepository'
+import { MAX_EXPEDITION_HISTORY } from '../../core/repositories/IExpeditionRepository'
 import { getDatabase } from '../database'
+
+// インターフェース／サマリ型／履歴上限は core/repositories へ移動。後方互換のため再エクスポート
+export type { IExpeditionRepository, ExpeditionSummaryRecord }
+export { MAX_EXPEDITION_HISTORY }
 
 interface ExpeditionRow {
   id: string
@@ -21,19 +27,11 @@ interface ExpeditionRow {
   updated_at: string
 }
 
-export interface IExpeditionRepository {
-  getAll(): Promise<ExpeditionRecord[]>
-  getById(id: string): Promise<ExpeditionRecord | null>
-  getByPartyId(partyId: number): Promise<ExpeditionRecord[]>
-  getOngoing(): Promise<ExpeditionRecord[]>
-  save(record: ExpeditionRecord): Promise<void>
-  updateReplay(id: string, replay: ExpeditionReplay): Promise<void>
-  delete(id: string): Promise<void>
-  complete(id: string, replay: ExpeditionReplay): Promise<boolean>
-  pruneOldCompleted(max: number): Promise<number>
-}
+// 一覧表示用に replay_json / expedition_meta_json を除いた行
+type ExpeditionSummaryRow = Omit<ExpeditionRow, 'replay_json' | 'expedition_meta_json'>
 
-export const MAX_EXPEDITION_HISTORY = 50
+const SUMMARY_COLUMNS =
+  'id, party_id, party_name, dungeon_id, dungeon_name, start_time, return_time, status, return_policy, created_at, updated_at'
 
 export class SQLiteExpeditionRepository implements IExpeditionRepository {
   private static instance: SQLiteExpeditionRepository | null = null
@@ -50,7 +48,18 @@ export class SQLiteExpeditionRepository implements IExpeditionRepository {
     const rows = await db.getAllAsync<ExpeditionRow>(
       'SELECT * FROM expeditions ORDER BY created_at DESC'
     )
-    return rows.map(row => this.rowToRecord(row))
+    return this.mapRowsToRecords(rows)
+  }
+
+  /**
+   * 一覧表示用の軽量サマリ取得（replay_json / expedition_meta_json を SELECT しない）
+   */
+  async getAllSummaries(): Promise<ExpeditionSummaryRecord[]> {
+    const db = await getDatabase()
+    const rows = await db.getAllAsync<ExpeditionSummaryRow>(
+      `SELECT ${SUMMARY_COLUMNS} FROM expeditions ORDER BY created_at DESC`
+    )
+    return rows.map(row => this.rowToSummary(row))
   }
 
   async getById(id: string): Promise<ExpeditionRecord | null> {
@@ -68,7 +77,19 @@ export class SQLiteExpeditionRepository implements IExpeditionRepository {
       'SELECT * FROM expeditions WHERE party_id = ? ORDER BY created_at DESC',
       [partyId]
     )
-    return rows.map(row => this.rowToRecord(row))
+    return this.mapRowsToRecords(rows)
+  }
+
+  /**
+   * パーティ別の一覧表示用の軽量サマリ取得（replay_json / expedition_meta_json を SELECT しない）
+   */
+  async getSummariesByPartyId(partyId: number): Promise<ExpeditionSummaryRecord[]> {
+    const db = await getDatabase()
+    const rows = await db.getAllAsync<ExpeditionSummaryRow>(
+      `SELECT ${SUMMARY_COLUMNS} FROM expeditions WHERE party_id = ? ORDER BY created_at DESC`,
+      [partyId]
+    )
+    return rows.map(row => this.rowToSummary(row))
   }
 
   async getOngoing(): Promise<ExpeditionRecord[]> {
@@ -76,7 +97,22 @@ export class SQLiteExpeditionRepository implements IExpeditionRepository {
     const rows = await db.getAllAsync<ExpeditionRow>(
       "SELECT * FROM expeditions WHERE status = 'ongoing' ORDER BY created_at DESC"
     )
-    return rows.map(row => this.rowToRecord(row))
+    return this.mapRowsToRecords(rows)
+  }
+
+  /**
+   * 1 行の JSON 破損で一覧取得全体が落ちないよう、破損行はスキップする
+   */
+  private mapRowsToRecords(rows: ExpeditionRow[]): ExpeditionRecord[] {
+    const records: ExpeditionRecord[] = []
+    for (const row of rows) {
+      try {
+        records.push(this.rowToRecord(row))
+      } catch (error) {
+        console.warn(`[SQLiteExpeditionRepository] skipping broken expedition row id=${row.id}`, error)
+      }
+    }
+    return records
   }
 
   async save(record: ExpeditionRecord): Promise<void> {
@@ -175,6 +211,22 @@ export class SQLiteExpeditionRepository implements IExpeditionRepository {
       returnPolicy: row.return_policy as ExpeditionRequest['returnPolicy'],
       replay: row.replay_json ? JSON.parse(row.replay_json) : undefined,
       expeditionMeta: row.expedition_meta_json ? JSON.parse(row.expedition_meta_json) as ExpeditionMeta : undefined,
+      createdAt: new Date(row.created_at),
+      updatedAt: new Date(row.updated_at),
+    }
+  }
+
+  private rowToSummary(row: ExpeditionSummaryRow): ExpeditionSummaryRecord {
+    return {
+      id: row.id,
+      partyId: row.party_id,
+      partyName: row.party_name,
+      dungeonId: row.dungeon_id,
+      dungeonName: row.dungeon_name,
+      startTime: new Date(row.start_time),
+      returnTime: row.return_time ? new Date(row.return_time) : null,
+      status: row.status as ExpeditionRecord['status'],
+      returnPolicy: row.return_policy as ExpeditionRequest['returnPolicy'],
       createdAt: new Date(row.created_at),
       updatedAt: new Date(row.updated_at),
     }

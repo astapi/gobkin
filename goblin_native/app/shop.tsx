@@ -19,7 +19,7 @@ import {
   TICKET_TYPES,
   type PurchaseProduct,
 } from '@/shared/constants/purchases'
-import { SQLiteEquipmentRepository } from '@/infrastructure/repositories/SQLiteEquipmentRepository'
+import { equipmentRepository } from '@/presentation/di/repositories'
 import { useStoryStore } from '@/presentation/stores/useStoryStore'
 import { useDungeonStore } from '@/presentation/stores/useDungeonStore'
 
@@ -56,7 +56,7 @@ export default function ShopScreen() {
     )
     if (equipmentProducts.length === 0) return
 
-    const equipment = await SQLiteEquipmentRepository.getInstance().getAll()
+    const equipment = await equipmentRepository.getAll()
     const counts: Record<string, number> = {}
     for (const product of equipmentProducts) {
       const templateId = product.equipmentTemplateId!
