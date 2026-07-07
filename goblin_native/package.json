@@ -8,6 +8,7 @@
     "ios": "expo run:ios",
     "web": "expo start --web",
     "test": "jest",
+    "balance:sim": "node scripts/balance/headless/index.js",
     "sim:balance": "node scripts/simulate-dungeon-balance.js",
     "sim:balance:club": "node scripts/simulate-dungeon-balance-club.js",
     "sim:balance:loadout": "node scripts/simulate-dungeon-balance-loadout.js",
