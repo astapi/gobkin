@@ -96,7 +96,7 @@ describe('rollTreasureDrops', () => {
       expect(getEquipmentTemplate('sword_dragon_killer')?.rank).toBeUndefined()
       expect(getEquipmentTemplate('sword_aegis_blade')?.isRare).toBe(true)
       expect(getEquipmentTemplate('sword_aegis_blade')?.grantedSkills?.some((skill) => skill.id === 'talent_def_150')).toBe(true)
-      expect(getEquipmentTemplate('sword_dragon_killer')?.grantedSkills?.some((skill) => skill.id === 'dragon_slayer_1_5')).toBe(true)
+      expect(getEquipmentTemplate('sword_dragon_killer')?.grantedSkills?.some((skill) => skill.id === 'dragon_slayer_2_0')).toBe(true)
 
       // 鎧（10アイテム: 下位3つがrank 0）
       expect(getEquipmentTemplate('armor_tattered_cloth')?.rank).toBe(0)

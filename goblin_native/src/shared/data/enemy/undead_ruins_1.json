@@ -27,6 +27,9 @@
       "rareEquipmentDrops": [
         {
           "templateId": "sword_rare_009"
+        },
+        {
+          "templateId": "sword_undead_killer"
         }
       ],
       "tierRareEquipmentDrops": [
@@ -180,6 +183,9 @@
       "rareEquipmentDrops": [
         {
           "templateId": "bow_rare_003"
+        },
+        {
+          "templateId": "bow_undead_killer"
         }
       ],
       "tierRareEquipmentDrops": [
@@ -276,6 +282,9 @@
       "rareEquipmentDrops": [
         {
           "templateId": "shield_rare_010"
+        },
+        {
+          "templateId": "large_shield_iron_wall"
         }
       ],
       "tierRareEquipmentDrops": [
