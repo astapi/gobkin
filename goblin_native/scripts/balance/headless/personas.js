@@ -256,7 +256,9 @@ function cloneBuild(b) {
 const _ceilingCache = new Map()
 async function searchCeilingBuild(ctx) {
   const { areaId, level, size, tier, simulate, options = {} } = ctx
-  const cacheKey = areaId
+  // ビルドは代表Tierで探索して全レベルへ流用するが、Tierをまたぐと敵が別物になるため
+  // areaId だけでキャッシュすると別Tierの探索結果を誤って使い回す。tier もキーに含める。
+  const cacheKey = `${areaId}|${tier}`
   if (_ceilingCache.has(cacheKey)) return _ceilingCache.get(cacheKey)
 
   const cfg = { ...CEILING_DEFAULTS, ...(options.ceiling || {}) }
@@ -479,7 +481,10 @@ const _strategistCache = new Map()
 
 async function searchStrategistBuild(ctx) {
   const { areaId, level, size, tier, simulate, options = {} } = ctx
-  if (_strategistCache.has(areaId)) return _strategistCache.get(areaId)
+  // areaId だけでキャッシュすると、同一プロセスで複数Tierを測るとき最初のTierで探索した
+  // ビルドが別Tierに流用される(敵が別物なのに)。tier もキーに含める。
+  const cacheKey = `${areaId}|${tier}`
+  if (_strategistCache.has(cacheKey)) return _strategistCache.get(cacheKey)
 
   const cfg = { ...STRATEGIST_DEFAULTS, ...(options.strategist || {}) }
   const seeds = []
@@ -719,7 +724,7 @@ async function searchStrategistBuild(ctx) {
     buildComp: b => buildCompFromBuild(b, level),
   }
   detail.comp = buildCompFromBuild(best.build, level)
-  _strategistCache.set(areaId, detail)
+  _strategistCache.set(cacheKey, detail)
   return detail
 }
 
