@@ -1,6 +1,6 @@
 # レアアイテム設計 進捗ログ
 
-参考ゲーム「冒険者ギルド物語2」の設計思想(複合効果＋トレードオフ／同一効果の段階ID差し替えでレア度スケール)を参考に、レアアイテムのステータス・スキルを **ドロップ元ダンジョンの Tier と floor難易度に応じて** 設計する作業の記録。方法論の土台は [`balance_simulation.md`](./balance_simulation.md)、エリア難易度は `scripts/balance/out/tierSweep.csv`。
+参考ゲームの設計思想(複合効果＋トレードオフ／同一効果の段階ID差し替えでレア度スケール)を参考に、レアアイテムのステータス・スキルを **ドロップ元ダンジョンの Tier と floor難易度に応じて** 設計する作業の記録。方法論の土台は [`balance_simulation.md`](./balance_simulation.md)、エリア難易度は `scripts/balance/out/tierSweep.csv`。
 
 ---
 
@@ -67,7 +67,66 @@
 
 ### 最終状態
 - レア総数 **242** / 設計済み(配線済み)**216** / 未配線26(店売り18＋ボス保留8)。
-- 残り1ペア(shield_rare_012/018)完全一致、`physical_damage`序盤強度は後日バランス調整。
+- 完全一致は `armor_rare_006/018`(ボス固定・保留)のみ(§3.5 の第2次再設計で 7組→1組に削減)。
+- `physical_damage`序盤強度は後日バランス調整。
+- 参考ゲーム由来の新スキル群を band ゲート付きで配線済み(§3.5)。**戦闘ロジックも全実装済み**(§4)。残タスクは敵専用スキル3種の敵JSON配線。
+
+## 3.5 参考ゲーム由来スキルの導入(2026-07-10 第2次再設計)
+
+初回再設計(#318)が既存カタログスキルのみで構成されていた反省から、参考ゲームの実データ
+(ローカル参照のスキルデータ 1,895件 / 装備データ 998件)を再分析し、
+**流用可能なスキル概念を翻案**(名称・数値は変更、コピーはしない)してレアに配線した。
+
+**仕分け方法**: 参考の全スキルを573ファミリーに正規化し、items.json の付与状況で
+「一般装備(店売り/汎用)」「NPC/私物専用(固有キャラ・ボス級)」「アイテム付与なし(職業/敵専用)」に分類。
+一般装備で入手できた概念はプレイヤー側レアに、NPC専用級・ボス級の概念は敵専用スキルとして翻案した。
+
+### 導入したプレイヤー側スキル(band解禁ゲート付き)
+
+| 新ID | 名称 | 効果(翻案) | 参考元 | 解禁band |
+|---|---|---|---|---|
+| `lifesteal_5/8/12` | 吸血 | 与ダメのN%回復(上限:最大HP25%/回) | 吸収能力Lv1-3 | C/D/E |
+| `hp_degen_5/10` | 血の代償 | ターン終了時HP N%減少(トレードオフ用) | HPダメージLvN | E(強スキルの対価) |
+| `party_heal_regen_10/20` | 癒しの霊気 | ターン終了時、味方全員を魔法回復量のN%回復 | 全体回復LvN | B/D |
+| `battle_fervor_4/6` | 闘志 | 攻撃行動ごとに与ダメ+N%(上限40/60%) | 激闘 | C/D |
+| `mana_surge_4/6` | 魔力高揚 | ターン経過ごとに魔法攻撃力+N%(上限40/60%) | トランス(速度上昇は削除) | C/D |
+| `mighty_blow_180` | 渾身の一撃 | 攻撃回数1のとき攻撃力1.8倍 | 一撃必殺(2.0→1.8に調整) | C |
+| `deadeye_200` | 精密照準 | 攻撃回数1のとき命中2倍 | 精密射撃 | B |
+| `ward_physical_2/3` | 物理障壁 | 敵の攻撃をN回1/3に軽減(PT保護) | 物理結界LvN | B/D |
+| `ward_magic_2/3` | 魔法障壁 | 敵の魔法をN回1/3に軽減(PT保護) | 魔法結界LvN | C/D |
+| `war_cry_1_2/1_3` | 鬨の声 | PT全員の攻撃ダメージ1.2/1.3倍(重複無効) | 単騎突撃/指揮 | D/E |
+| `pursuit_30` | 追い打ち | 敵撃破時30%で再攻撃 | 殺意/闘争心 | C |
+| `crit_guard_30/50` | 急所守り | 必殺被ダメN%軽減 | クリティカル・ガード | B/D |
+| `pierce_guard_30/50` | 対貫通装甲 | 追加ダメージ被ダメN%軽減 | 貫通防御 | B/D |
+| `action_order_200` | [戦術]神速 | 行動順速さ2.0倍 | 高速行動 | D |
+| `bulwark_stance_30` | 城塞の構え | 攻撃回数半減→半減回数×30防御力 | 攻撃回数→防御力 | D |
+| `mystic_stance_30` | 魔導の構え | 攻撃回数半減→半減回数×30魔法攻撃力 | 攻撃回数→魔法攻撃力 | D |
+| `spell_siphon_30` | 魔力簒奪 | 通常攻撃時30%で使用済み魔法1回復 | 魔力吸収(NPC級→E/T3限定で許可) | E/T3 |
+| `frost_nova_t4` | 氷霧の大渦 | 4ターン目開始時、敵全体に魔攻150%魔法 | フロストノヴァ(Lv99級→T3限定) | E/T3 |
+
+- **配線結果**: 83箇所(77件の一括注入＋重複解消・テーマ整合の個別調整6件)。
+  既存の汎用フィラー枠(`base_*_up_*`)を差し替える方式でスキル総数は維持
+  (トレードオフ2件のみ `battle_fervor_6`+`hp_degen_5` で+1)。
+- **条件スキルの配線先**は攻撃回数マイナスの一撃型装備(狩猟弓/アサシンボウ/鍬槍 等)に限定し、シナジーを保証。
+- **テーマ整合の個別調整**: 再生肉→`hp_regen_10`、遠見の矢羽→`deadeye_200`、裏道の鍵→`action_order_200`、
+  奪魔のロッド→`spell_siphon_30`、怨声の指輪→`pursuit_30`。
+- **コピペ解消**: HEAD時点で残っていた完全一致7組(進捗ログの「残り1ペア」は過小計上)を1組まで削減。
+  残る `armor_rare_006/018` はボス固定装備(保留8件)のため次回対応。
+- **検証**: `tsc` clean / 全32スイート536テスト合格 / round-trip差分ゼロ / 完全一致 7→1組。
+
+### 敵専用スキル(装備には付与しない)
+
+参考ゲームのボス/敵専用級の概念はカタログに敵専用として翻案登録済み(戦闘ロジック実装済み。**敵JSONへの配線は未着手**、`enemy/*.json` の `skills` にIDを追加すれば有効):
+
+| 新ID | 名称 | 効果 | 参考元 |
+|---|---|---|---|
+| `enemy_royal_pressure_30` | 王の威圧 | 自分よりLvが低い相手からの被ダメ30%軽減 | 君臨 |
+| `enemy_chain_reattack_30` | 連撃衝動 | 攻撃後30%で再攻撃を繰り返す | 無双連撃 |
+| `enemy_thunder_call` | 招雷の角 | 毎ターン開始時、敵全体に魔攻60%の雷撃 | 招雷 |
+
+**将来の敵スキル候補(アイデアのみ、未登録)**: 生贄の儀(1体に攻撃集中)、闇の契約/神の試練(1ターン全体の魔防/防御半減)、
+天威降臨(1ターン全員必殺100%)、アシッドブレス(全体ブレス+防御劣化)、覚醒(1ターン与ダメ2倍)、突然変異(HP2倍エリート個体)。
+状態異常系(毒/麻痺/眠り/混乱/石化/即死)は状態異常システム自体が未実装のため見送り。
 
 ## 4. 未実装スキルの記録
 
@@ -75,11 +134,32 @@
 
 **判定基準**: `CharacterSkill` の効果フィールドが実行時(`BattleSystem` / `battle/unitFactory` / `GoblinStatCalculator` / `ExpeditionEngine` / `CompleteExpeditionUseCase` 等)で消費されているか。集約層 `src/shared/data/characterSkills.ts` の `getXxxFromSkills` / `hasXxxSkill` の呼び出し元で確認できる。
 
-**現状の確認結果(2026-07)**: カタログ `CHARACTER_SKILL_CATALOG` の全効果フィールドは実行時に消費されており、**未実装は無し**。
+**2026-07-10 第2次再設計で追加した新スキル群(§3.5)は、同日中に戦闘ロジックを一括実装済み**。
+現在、カタログ `CHARACTER_SKILL_CATALOG` の全効果フィールドは実行時に消費されており、**未実装は無し**。
 
-| band | 付与した未実装スキル | 備考 |
+実装箇所の要約(後から挙動を追う際のガイド):
+
+| フィールド | 対象スキルID | 実装箇所 |
 |---|---|---|
-| A〜E | **なし**(全て実装済みカタログスキルのみ使用) | 使用ID132種すべてカタログ実在＋実行時消費を確認 |
+| `lifestealPercent` | lifesteal_5/8/12 | `BattleSystem.executeBasicAttack` ダメージ適用後(回復上限=最大HP25%/回) |
+| `hpRegenPercent`の負値 | hp_degen_5/10 | ターン終了時に負値対応済み(**HP下限1**、actionEffect='damage'でログ) |
+| `partyHpRegenFromMagicHealPercent` | party_heal_regen_10/20 | ターン終了時、自分の魔法回復量×%で味方全員回復 |
+| `damageRampPerAttackPercent/Max` | battle_fervor_4/6 | 通常攻撃行動の後にスタック加算→次の攻撃から与ダメ係数 |
+| `magicAtkRampPerTurnPercent/Max` | mana_surge_4/6 | ターン開始時に基準値から magicAtk を再計算(unit/combatant両方) |
+| `singleStrikeAttackMultiplier` | mighty_blow_180 | `unitFactory`(味方/敵とも)。最終攻撃回数==1のとき atk へ乗算 |
+| `singleStrikeAccuracyMultiplier` | deadeye_200 | 同上。accuracy へ乗算 |
+| `physicalBarrierCharges` / `magicBarrierCharges` | ward_physical/magic_2/3 | 戦闘開始時にPT共有 `barrierState` 生成(重複無効=最大値)。被弾ごとに1消費で1/3軽減 |
+| `partyPhysicalDamageMultiplier` | war_cry_1_2/1_3 | 戦闘開始時PT効果(magic_field と同型、最大値のみ) |
+| `reattackOnKillChancePercent` | pursuit_30 | `tryReattacks`: 撃破時1回のみ再攻撃(追撃/反撃からは発動しない) |
+| `chainReattackChancePercent` | enemy_chain_reattack_30 | `tryReattacks`: 確率連鎖、安全上限5回 |
+| `criticalDamageTakenReductionPercent` | crit_guard_30/50 | 必殺時の criticalDamageFactor に乗算 |
+| `additionalDamageTakenReductionPercent` | pierce_guard_30/50 | 追加ダメージへ乗算(切り捨て) |
+| `halveAttackCountToDefRate` / `...MagicAtkRate` | bulwark/mystic_stance_30 | `GoblinStatCalculator.applyPassiveSkillEffects`(defToHp等より先に適用) |
+| `recoverUsedSpellOnAttackChancePercent` | spell_siphon_30 | 通常攻撃行動の後に確率で使用済みチャージ+1 |
+| `turnStartAoeMagic` | frost_nova_t4, enemy_thunder_call | ターン開始時(魔力高揚の更新後)。魔防系軽減・障壁・王の威圧を適用 |
+| `lowerLevelDamageTakenReductionPercent` | enemy_royal_pressure_30 | 物理/魔法/ターン開始AoEの被ダメ計算(攻撃側Lv<自Lvで軽減) |
+
+**検証(2026-07-10)**: 全16ケースの一時スモークテスト(吸血/血の代償HP下限/癒しの霊気/障壁/鬨の声/闘志/魔力高揚+AoE/連撃上限5/追い打ち1回/渾身/精密/急所守り/対貫通/王の威圧/魔力簒奪/構え×2)で挙動確認後、方針(新規テストは追加しない)に従い削除。`tsc` clean / 既存536テスト合格。
 
 > 今後 floor未確定99件を設計する際に新規/未実装スキルを付けたら、ここに追記する。
 

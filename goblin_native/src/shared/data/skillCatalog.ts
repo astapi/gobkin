@@ -978,6 +978,195 @@ export const CHARACTER_SKILL_CATALOG = {
   mage_magic_lv6: createMageMagicSkill(6),
   mage_magic_lv7: createMageMagicSkill(7),
 
+  // --- 参考ゲーム由来の新スキル群(2026-07 レア再設計) ---
+  // 戦闘ロジック未実装のものは docs/rare_item_design.md §4 に記録。
+
+  lifesteal_5: {
+    id: 'lifesteal_5',
+    descriptionKey: 'entities.skill.lifesteal_5.description',
+    lifestealPercent: 5,
+  },
+  lifesteal_8: {
+    id: 'lifesteal_8',
+    descriptionKey: 'entities.skill.lifesteal_8.description',
+    lifestealPercent: 8,
+  },
+  lifesteal_12: {
+    id: 'lifesteal_12',
+    descriptionKey: 'entities.skill.lifesteal_12.description',
+    lifestealPercent: 12,
+  },
+
+  hp_degen_5: {
+    id: 'hp_degen_5',
+    descriptionKey: 'entities.skill.hp_degen_5.description',
+    hpRegenPercent: -5,
+  },
+  hp_degen_10: {
+    id: 'hp_degen_10',
+    descriptionKey: 'entities.skill.hp_degen_10.description',
+    hpRegenPercent: -10,
+  },
+
+  party_heal_regen_10: {
+    id: 'party_heal_regen_10',
+    descriptionKey: 'entities.skill.party_heal_regen_10.description',
+    partyHpRegenFromMagicHealPercent: 10,
+  },
+  party_heal_regen_20: {
+    id: 'party_heal_regen_20',
+    descriptionKey: 'entities.skill.party_heal_regen_20.description',
+    partyHpRegenFromMagicHealPercent: 20,
+  },
+
+  battle_fervor_4: {
+    id: 'battle_fervor_4',
+    descriptionKey: 'entities.skill.battle_fervor_4.description',
+    damageRampPerAttackPercent: 4,
+    damageRampMaxPercent: 40,
+  },
+  battle_fervor_6: {
+    id: 'battle_fervor_6',
+    descriptionKey: 'entities.skill.battle_fervor_6.description',
+    damageRampPerAttackPercent: 6,
+    damageRampMaxPercent: 60,
+  },
+
+  mana_surge_4: {
+    id: 'mana_surge_4',
+    descriptionKey: 'entities.skill.mana_surge_4.description',
+    magicAtkRampPerTurnPercent: 4,
+    magicAtkRampMaxPercent: 40,
+  },
+  mana_surge_6: {
+    id: 'mana_surge_6',
+    descriptionKey: 'entities.skill.mana_surge_6.description',
+    magicAtkRampPerTurnPercent: 6,
+    magicAtkRampMaxPercent: 60,
+  },
+
+  mighty_blow_180: {
+    id: 'mighty_blow_180',
+    descriptionKey: 'entities.skill.mighty_blow_180.description',
+    singleStrikeAttackMultiplier: 1.8,
+  },
+  deadeye_200: {
+    id: 'deadeye_200',
+    descriptionKey: 'entities.skill.deadeye_200.description',
+    singleStrikeAccuracyMultiplier: 2.0,
+  },
+
+  ward_physical_2: {
+    id: 'ward_physical_2',
+    descriptionKey: 'entities.skill.ward_physical_2.description',
+    physicalBarrierCharges: 2,
+  },
+  ward_physical_3: {
+    id: 'ward_physical_3',
+    descriptionKey: 'entities.skill.ward_physical_3.description',
+    physicalBarrierCharges: 3,
+  },
+  ward_magic_2: {
+    id: 'ward_magic_2',
+    descriptionKey: 'entities.skill.ward_magic_2.description',
+    magicBarrierCharges: 2,
+  },
+  ward_magic_3: {
+    id: 'ward_magic_3',
+    descriptionKey: 'entities.skill.ward_magic_3.description',
+    magicBarrierCharges: 3,
+  },
+
+  war_cry_1_2: {
+    id: 'war_cry_1_2',
+    descriptionKey: 'entities.skill.war_cry_1_2.description',
+    partyPhysicalDamageMultiplier: 1.2,
+  },
+  war_cry_1_3: {
+    id: 'war_cry_1_3',
+    descriptionKey: 'entities.skill.war_cry_1_3.description',
+    partyPhysicalDamageMultiplier: 1.3,
+  },
+
+  pursuit_30: {
+    id: 'pursuit_30',
+    descriptionKey: 'entities.skill.pursuit_30.description',
+    reattackOnKillChancePercent: 30,
+  },
+
+  crit_guard_30: {
+    id: 'crit_guard_30',
+    descriptionKey: 'entities.skill.crit_guard_30.description',
+    criticalDamageTakenReductionPercent: 30,
+  },
+  crit_guard_50: {
+    id: 'crit_guard_50',
+    descriptionKey: 'entities.skill.crit_guard_50.description',
+    criticalDamageTakenReductionPercent: 50,
+  },
+
+  pierce_guard_30: {
+    id: 'pierce_guard_30',
+    descriptionKey: 'entities.skill.pierce_guard_30.description',
+    additionalDamageTakenReductionPercent: 30,
+  },
+  pierce_guard_50: {
+    id: 'pierce_guard_50',
+    descriptionKey: 'entities.skill.pierce_guard_50.description',
+    additionalDamageTakenReductionPercent: 50,
+  },
+
+  action_order_200: {
+    id: 'action_order_200',
+    actionOrderMultiplier: 2.0,
+  },
+
+  bulwark_stance_30: {
+    id: 'bulwark_stance_30',
+    descriptionKey: 'entities.skill.bulwark_stance_30.description',
+    halveAttackCountToDefRate: 30,
+  },
+  mystic_stance_30: {
+    id: 'mystic_stance_30',
+    descriptionKey: 'entities.skill.mystic_stance_30.description',
+    halveAttackCountToMagicAtkRate: 30,
+  },
+
+  spell_siphon_30: {
+    id: 'spell_siphon_30',
+    descriptionKey: 'entities.skill.spell_siphon_30.description',
+    recoverUsedSpellOnAttackChancePercent: 30,
+  },
+
+  frost_nova_t4: {
+    id: 'frost_nova_t4',
+    descriptionKey: 'entities.skill.frost_nova_t4.description',
+    turnStartAoeMagic: {
+      turn: 4,
+      powerPercent: 150,
+    },
+  },
+
+  // --- 敵専用スキル(参考ゲームの敵/ボス級能力の翻案。装備には付与しない) ---
+  enemy_royal_pressure_30: {
+    id: 'enemy_royal_pressure_30',
+    descriptionKey: 'entities.skill.enemy_royal_pressure_30.description',
+    lowerLevelDamageTakenReductionPercent: 30,
+  },
+  enemy_chain_reattack_30: {
+    id: 'enemy_chain_reattack_30',
+    descriptionKey: 'entities.skill.enemy_chain_reattack_30.description',
+    chainReattackChancePercent: 30,
+  },
+  enemy_thunder_call: {
+    id: 'enemy_thunder_call',
+    descriptionKey: 'entities.skill.enemy_thunder_call.description',
+    turnStartAoeMagic: {
+      everyTurn: true,
+      powerPercent: 60,
+    },
+  },
+
   weapon_melee_attack: {
     id: 'weapon_melee_attack',
     descriptionKey: 'entities.skill.weapon_melee_attack.description',

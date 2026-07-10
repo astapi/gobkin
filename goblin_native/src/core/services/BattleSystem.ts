@@ -2,15 +2,29 @@ import type { AttackTargetDetail, BattleLogEntry, Enemy, Goblin } from '../../sh
 import {
   getActionOrderMultiplierFromSkills,
   getAdditionalDamageFromSkills,
+  getAdditionalDamageTakenReductionFromSkills,
+  getChainReattackChancePercentFromSkills,
+  getCriticalDamageTakenReductionFromSkills,
   getMagicDamageFollowUpFromSkills,
   getCriticalAttackFollowUpFromSkills,
+  getDamageRampFromSkills,
+  getLifestealPercentFromSkills,
+  getLowerLevelDamageTakenReductionFromSkills,
+  getMagicAtkRampFromSkills,
+  getMagicBarrierChargesFromSkills,
+  getPartyHpRegenFromMagicHealPercentFromSkills,
+  getPartyPhysicalDamageMultiplierFromSkills,
+  getPhysicalBarrierChargesFromSkills,
   getPhysicalCounterAttackFromSkills,
   getCounterAttackAvoidanceRateFromSkills,
+  getReattackOnKillChancePercentFromSkills,
+  getRecoverUsedSpellOnAttackChanceFromSkills,
   getSpellTakenMultiplierFromSkills,
   getSpellDamageMultiplierFromSkills,
   getPartyMagicDamageMultiplierFromSkills,
   getHpRegenPercentFromSkills,
   getHpRegenAmountFromSkills,
+  getTurnStartAoeMagicSkillFromSkills,
 } from '../../shared/data/characterSkills'
 import type { SpellDef } from '../../shared/types/Spell'
 import { CombatantManager } from './CombatantManager'
@@ -100,6 +114,27 @@ export class BattleSystem {
     const livingUnits = units.filter(unit => unit.currentHP > 0)
     if (livingUnits.length === 0) return
 
+    const pushPartyEffectLog = (
+      provider: BattleUnit,
+      action: string,
+      actionEffect: BattleLogEntry['actionEffect'],
+    ) => {
+      detailedLog.push({
+        turn: 0,
+        actorId: provider.combatant.id,
+        actorName: getLogName(provider),
+        actorRow: provider.row + 1,
+        action,
+        attackCount: 0,
+        hitCount: 0,
+        actorHP: provider.currentHP,
+        actorMaxHP: provider.maxHP,
+        isAlly: provider.isAlly,
+        actionEffect,
+        targets: [],
+      })
+    }
+
     const strongestMagicField = livingUnits
       .map(unit => ({
         unit,
@@ -108,26 +143,70 @@ export class BattleSystem {
       .filter(entry => entry.multiplier > 1)
       .sort((a, b) => b.multiplier - a.multiplier)[0]
 
-    if (!strongestMagicField) return
-
-    for (const unit of livingUnits) {
-      unit.magicFieldDamageMultiplier = Math.max(unit.magicFieldDamageMultiplier, strongestMagicField.multiplier)
+    if (strongestMagicField) {
+      for (const unit of livingUnits) {
+        unit.magicFieldDamageMultiplier = Math.max(unit.magicFieldDamageMultiplier, strongestMagicField.multiplier)
+      }
+      pushPartyEffectLog(
+        strongestMagicField.unit,
+        getSkillLabel({ id: 'magic_field', partyMagicDamageMultiplier: strongestMagicField.multiplier }),
+        'magic_field',
+      )
     }
 
-    detailedLog.push({
-      turn: 0,
-      actorId: strongestMagicField.unit.combatant.id,
-      actorName: getLogName(strongestMagicField.unit),
-      actorRow: strongestMagicField.unit.row + 1,
-      action: getSkillLabel({ id: 'magic_field', partyMagicDamageMultiplier: strongestMagicField.multiplier }),
-      attackCount: 0,
-      hitCount: 0,
-      actorHP: strongestMagicField.unit.currentHP,
-      actorMaxHP: strongestMagicField.unit.maxHP,
-      isAlly: strongestMagicField.unit.isAlly,
-      actionEffect: 'magic_field',
-      targets: [],
-    })
+    // 鬨の声: PT全員の物理与ダメージ倍率(重複無効=最大値のみ)
+    const strongestWarCry = livingUnits
+      .map(unit => ({
+        unit,
+        multiplier: getPartyPhysicalDamageMultiplierFromSkills(unit.skills),
+      }))
+      .filter(entry => entry.multiplier > 1)
+      .sort((a, b) => b.multiplier - a.multiplier)[0]
+
+    if (strongestWarCry) {
+      for (const unit of livingUnits) {
+        unit.warCryDamageMultiplier = Math.max(unit.warCryDamageMultiplier ?? 1, strongestWarCry.multiplier)
+      }
+      pushPartyEffectLog(
+        strongestWarCry.unit,
+        getSkillLabel({ id: strongestWarCry.multiplier >= 1.3 ? 'war_cry_1_3' : 'war_cry_1_2' }),
+        'attack_up',
+      )
+    }
+
+    // 物理/魔法障壁: パーティ共有チャージ(重複無効=最大値のみ)
+    const strongestPhysicalWard = livingUnits
+      .map(unit => ({ unit, charges: getPhysicalBarrierChargesFromSkills(unit.skills) }))
+      .filter(entry => entry.charges > 0)
+      .sort((a, b) => b.charges - a.charges)[0]
+    const strongestMagicWard = livingUnits
+      .map(unit => ({ unit, charges: getMagicBarrierChargesFromSkills(unit.skills) }))
+      .filter(entry => entry.charges > 0)
+      .sort((a, b) => b.charges - a.charges)[0]
+
+    if (strongestPhysicalWard || strongestMagicWard) {
+      const barrierState = {
+        physicalCharges: strongestPhysicalWard?.charges ?? 0,
+        magicCharges: strongestMagicWard?.charges ?? 0,
+      }
+      for (const unit of units) {
+        unit.barrierState = barrierState
+      }
+      if (strongestPhysicalWard) {
+        pushPartyEffectLog(
+          strongestPhysicalWard.unit,
+          getSkillLabel({ id: `ward_physical_${strongestPhysicalWard.charges}` }),
+          'barrier',
+        )
+      }
+      if (strongestMagicWard) {
+        pushPartyEffectLog(
+          strongestMagicWard.unit,
+          getSkillLabel({ id: `ward_magic_${strongestMagicWard.charges}` }),
+          'barrier',
+        )
+      }
+    }
   }
 
   public executeBattle(
@@ -178,6 +257,33 @@ export class BattleSystem {
 
       const turnActedUnitKeys = new Set<string>()
       const turnConsumedUnitKeys = new Set<string>()
+
+      // 魔力高揚: ターン経過ごとに魔法攻撃力を上昇(上限あり)
+      for (const unit of [...allyUnits, ...enemyUnits]) {
+        if (unit.currentHP <= 0) continue
+        const ramp = getMagicAtkRampFromSkills(unit.skills)
+        if (!ramp) continue
+        if (unit.rampBaseMagicAtk === undefined) {
+          unit.rampBaseMagicAtk = unit.magicAtk
+          unit.rampBaseCombatantMagicAtk = unit.combatant.magicAtk
+        }
+        const rampPercent = Math.min(ramp.maxPercent, (currentTurn - 1) * ramp.perAttackPercent)
+        const rampFactor = 1 + rampPercent / 100
+        unit.magicAtk = Math.floor(unit.rampBaseMagicAtk * rampFactor)
+        if (unit.rampBaseCombatantMagicAtk !== undefined) {
+          unit.combatant.magicAtk = Math.floor(unit.rampBaseCombatantMagicAtk * rampFactor)
+        }
+      }
+
+      // ターン開始時全体魔法(氷霧の大渦/招雷の角)
+      this.executeTurnStartAoeMagic(
+        allyUnits,
+        enemyUnits,
+        currentTurn,
+        detailedLog,
+        turnActedUnitKeys,
+        turnConsumedUnitKeys,
+      )
 
       const actingUnits = [...allyUnits, ...enemyUnits]
         .filter(unit => unit.currentHP > 0)
@@ -309,6 +415,30 @@ export class BattleSystem {
             turnConsumedUnitKeys,
             rng,
           )
+          // 闘志: 攻撃行動を行うたびにスタック蓄積(次の攻撃行動から有効)
+          const fervorRamp = getDamageRampFromSkills(unit.skills)
+          if (fervorRamp) {
+            unit.fervorStackPercent = Math.min(
+              fervorRamp.maxPercent,
+              (unit.fervorStackPercent ?? 0) + fervorRamp.perAttackPercent,
+            )
+          }
+          // 魔力簒奪: 通常攻撃時、確率で使用済み魔法を回復
+          this.tryRecoverUsedSpellOnAttack(unit, rng)
+          // 追い打ち/連撃衝動: 再攻撃判定
+          this.tryReattacks(
+            unit,
+            damagedTargets,
+            targetGroup,
+            sourceGroup,
+            allyUnits,
+            enemyUnits,
+            currentTurn,
+            detailedLog,
+            turnActedUnitKeys,
+            turnConsumedUnitKeys,
+            rng,
+          )
           turnActedUnitKeys.add(unitKey)
         } else {
           unit.isDefending = true
@@ -336,28 +466,66 @@ export class BattleSystem {
         if (allEnemiesDefeated || allAlliesDefeated) break
       }
 
-      // ターン終了時：HP回復能力を持つ生存ユニットのHP回復
+      // ターン終了時：癒しの霊気(味方全員を自分の魔法回復量の一定割合で回復)
+      for (const unit of [...allyUnits, ...enemyUnits]) {
+        if (unit.currentHP <= 0) continue
+        const partyHealPercent = getPartyHpRegenFromMagicHealPercentFromSkills(unit.skills)
+        if (partyHealPercent <= 0) continue
+        const healAmount = Math.floor(unit.magicHeal * partyHealPercent / 100)
+        if (healAmount <= 0) continue
+
+        const partyUnits = unit.isAlly ? allyUnits : enemyUnits
+        const targetDetails: Map<string, AttackTargetDetail> = new Map()
+        for (const target of partyUnits) {
+          if (target.currentHP <= 0) continue
+          const healed = applyHealing(target, healAmount)
+          if (healed <= 0) continue
+          accumulateTargetDetail(targetDetails, target, -healed)
+        }
+        if (targetDetails.size === 0) continue
+
+        detailedLog.push({
+          turn: currentTurn,
+          actorId: unit.combatant.id,
+          actorName: getLogName(unit),
+          actorRow: unit.row + 1,
+          action: i18n.t('battle.partyHealRegenAction'),
+          attackCount: 0,
+          hitCount: targetDetails.size,
+          actorHP: unit.currentHP,
+          actorMaxHP: unit.maxHP,
+          isAlly: unit.isAlly,
+          actionEffect: 'regen',
+          targets: getSortedTargetDetails(targetDetails),
+        })
+      }
+
+      // ターン終了時：HP回復能力(正)と血の代償(負)の合算適用。減少時もHPは1で止まる
       for (const unit of [...allyUnits, ...enemyUnits]) {
         if (unit.currentHP <= 0) continue
         const regenPercent = getHpRegenPercentFromSkills(unit.skills)
         const regenFlat = getHpRegenAmountFromSkills(unit.skills)
         const regenAmount = Math.floor(unit.maxHP * regenPercent / 100) + regenFlat
-        if (regenAmount <= 0) continue
+        if (regenAmount === 0) continue
         const before = unit.currentHP
-        unit.currentHP = Math.min(unit.maxHP, unit.currentHP + regenAmount)
-        if (unit.currentHP > before) {
+        if (regenAmount > 0) {
+          unit.currentHP = Math.min(unit.maxHP, unit.currentHP + regenAmount)
+        } else {
+          unit.currentHP = Math.max(1, unit.currentHP + regenAmount)
+        }
+        if (unit.currentHP !== before) {
           detailedLog.push({
             turn: currentTurn,
             actorId: unit.combatant.id,
             actorName: getLogName(unit),
             actorRow: unit.row + 1,
-            action: i18n.t('battle.hpRegenAction'),
+            action: regenAmount > 0 ? i18n.t('battle.hpRegenAction') : i18n.t('battle.hpDegenAction'),
             attackCount: 0,
             hitCount: 0,
             actorHP: unit.currentHP,
             actorMaxHP: unit.maxHP,
             isAlly: unit.isAlly,
-            actionEffect: 'regen',
+            actionEffect: regenAmount > 0 ? 'regen' : 'damage',
             targets: [{
               targetId: unit.combatant.id,
               targetName: getLogName(unit),
@@ -384,6 +552,96 @@ export class BattleSystem {
     }
 
     return createBattleResult(currentTurn, 'retreat', allyUnits, enemyUnits, detailedLog)
+  }
+
+  /**
+   * ターン開始時全体魔法(turnStartAoeMagic)を発動する
+   */
+  private executeTurnStartAoeMagic(
+    allyUnits: BattleUnit[],
+    enemyUnits: BattleUnit[],
+    currentTurn: number,
+    detailedLog: BattleLogEntry[],
+    turnActedUnitKeys: Set<string>,
+    turnConsumedUnitKeys: Set<string>,
+  ): void {
+    for (const unit of [...allyUnits, ...enemyUnits]) {
+      if (unit.currentHP <= 0) continue
+      const aoeSkill = getTurnStartAoeMagicSkillFromSkills(unit.skills)
+      const aoe = aoeSkill?.turnStartAoeMagic
+      if (!aoeSkill || !aoe) continue
+      if (!aoe.everyTurn && aoe.turn !== currentTurn) continue
+
+      const targetGroup = unit.isAlly ? enemyUnits : allyUnits
+      const aliveTargets = targetGroup.filter(target => target.currentHP > 0)
+      if (aliveTargets.length === 0) continue
+
+      const targetDetails: Map<string, AttackTargetDetail> = new Map()
+      let totalHitCount = 0
+
+      for (const target of aliveTargets) {
+        const baseDamage = unit.magicAtk * aoe.powerPercent / 100
+        const reductionFactor = 1 - target.damageReduction / 100
+        const magicReductionFactor = 1 - target.magicDamageReduction / 100
+        const magicBarrierFactor = 1 - target.magicBarrierDamageReduction / 100
+        const magicProtectionFactor = getRearMagicGuardReductionFactor(target, targetGroup)
+        const royalPressureFactor = this.getRoyalPressureFactor(unit, target)
+        let damage = Math.max(1, Math.floor(
+          baseDamage * reductionFactor * magicReductionFactor * magicBarrierFactor * magicProtectionFactor * royalPressureFactor,
+        ))
+        damage = this.applyMagicWard(target, damage)
+
+        applyDamage(target, damage)
+        totalHitCount++
+        accumulateTargetDetail(targetDetails, target, damage)
+      }
+
+      detailedLog.push({
+        turn: currentTurn,
+        actorId: unit.combatant.id,
+        actorName: getLogName(unit),
+        actorRow: unit.row + 1,
+        action: getSkillLabel(aoeSkill),
+        attackCount: totalHitCount,
+        hitCount: totalHitCount,
+        actorHP: unit.currentHP,
+        actorMaxHP: unit.maxHP,
+        isAlly: unit.isAlly,
+        actionEffect: 'damage',
+        targets: getSortedTargetDetails(targetDetails),
+      })
+
+      tryImmediateReviveForFallenAllies(
+        targetGroup,
+        currentTurn,
+        detailedLog,
+        turnActedUnitKeys,
+        turnConsumedUnitKeys,
+      )
+    }
+  }
+
+  /** 王の威圧: 自分よりLvが低い相手からの被ダメージを軽減する係数 */
+  private getRoyalPressureFactor(attacker: BattleUnit, target: BattleUnit): number {
+    if (attacker.level >= target.level) return 1
+    const reduction = getLowerLevelDamageTakenReductionFromSkills(target.skills)
+    return 1 - reduction / 100
+  }
+
+  /** 物理障壁: チャージが残っていればダメージを1/3に軽減して1消費 */
+  private applyPhysicalWard(target: BattleUnit, damage: number): number {
+    const barrier = target.barrierState
+    if (!barrier || barrier.physicalCharges <= 0) return damage
+    barrier.physicalCharges--
+    return Math.max(1, Math.floor(damage / 3))
+  }
+
+  /** 魔法障壁: チャージが残っていればダメージを1/3に軽減して1消費 */
+  private applyMagicWard(target: BattleUnit, damage: number): number {
+    const barrier = target.barrierState
+    if (!barrier || barrier.magicCharges <= 0) return damage
+    barrier.magicCharges--
+    return Math.max(1, Math.floor(damage / 3))
   }
 
   private executeBasicAttack(
@@ -455,7 +713,9 @@ export class BattleSystem {
           rng,
         )
         const dmgMod = getDamageModifier(landedHitNumber)
-        const additionalDamage = getAdditionalDamageFromSkills(unit.skills)
+        // 対貫通装甲: 受ける追加ダメージを軽減
+        const additionalDamageTakenFactor = 1 - getAdditionalDamageTakenReductionFromSkills(attackTarget.skills) / 100
+        const additionalDamage = Math.floor(getAdditionalDamageFromSkills(unit.skills) * additionalDamageTakenFactor)
         const rearDamageMultiplier = getRearDamageMultiplier(unit, sourceGroup)
         const rowDamageMultiplier = getUnitRowDamageMultiplier(unit)
         const reductionFactor = 1 - attackTarget.damageReduction / 100
@@ -467,15 +727,33 @@ export class BattleSystem {
         const protectionFactor = getRearGuardReductionFactor(attackTarget, allyUnits)
         const defendingFactor = getDefendingDamageFactor(attackTarget)
         const physicalDamageFactor = 1 + unit.physicalDamagePercent / 100
+        // 闘志: 攻撃行動で蓄積した与ダメ増加
+        const fervorFactor = 1 + (unit.fervorStackPercent ?? 0) / 100
+        // 鬨の声: PT物理与ダメージ倍率
+        const warCryFactor = unit.warCryDamageMultiplier ?? 1
+        // 急所守り: 必殺攻撃の被ダメージ軽減
         const criticalDamageFactor = isCritical
-          ? 1 + (unit.criticalDamageBonusPercent ?? 0) / 100
+          ? (1 + (unit.criticalDamageBonusPercent ?? 0) / 100)
+            * (1 - getCriticalDamageTakenReductionFromSkills(attackTarget.skills) / 100)
           : 1
-        const damage = Math.max(
+        const royalPressureFactor = this.getRoyalPressureFactor(unit, attackTarget)
+        let damage = Math.max(
           1,
-          Math.floor((baseDamage * dmgMod * rearDamageMultiplier * rowDamageMultiplier + additionalDamage) * physicalDamageFactor * criticalDamageFactor * unit.physicalDamageDealtMultiplier * reductionFactor * physicalReductionFactor * rangedAttackReductionFactor * shieldBarrierReductionFactor * protectionFactor * defendingFactor * damageMultiplier),
+          Math.floor((baseDamage * dmgMod * rearDamageMultiplier * rowDamageMultiplier + additionalDamage) * physicalDamageFactor * criticalDamageFactor * fervorFactor * warCryFactor * unit.physicalDamageDealtMultiplier * reductionFactor * physicalReductionFactor * rangedAttackReductionFactor * shieldBarrierReductionFactor * protectionFactor * defendingFactor * royalPressureFactor * damageMultiplier),
         )
+        // 物理障壁: チャージ消費で1/3に軽減
+        damage = this.applyPhysicalWard(attackTarget, damage)
 
         applyDamage(attackTarget, damage)
+        // 吸血: 与ダメージの一部を回復(1回の回復上限は最大HPの25%)
+        const lifestealPercent = getLifestealPercentFromSkills(unit.skills)
+        if (lifestealPercent > 0 && unit.currentHP > 0) {
+          const lifestealAmount = Math.min(
+            Math.floor(damage * lifestealPercent / 100),
+            Math.floor(unit.maxHP * 0.25),
+          )
+          if (lifestealAmount > 0) applyHealing(unit, lifestealAmount)
+        }
         damagedTargets.set(getUnitKey(attackTarget), attackTarget)
         tryImmediateReviveForFallenAlly(
           attackTarget,
@@ -491,6 +769,103 @@ export class BattleSystem {
     }
 
     return { targetDetails, totalHitCount, isCritical, damagedTargets }
+  }
+
+  /** 魔力簒奪: 通常攻撃時、確率で使用済み魔法チャージを1回復する */
+  private tryRecoverUsedSpellOnAttack(unit: BattleUnit, rng: () => number): void {
+    const chance = getRecoverUsedSpellOnAttackChanceFromSkills(unit.skills)
+    if (chance <= 0) return
+    if (rng() * 100 >= chance) return
+
+    const usedCharges = unit.spellCharges.filter(charge => charge.remaining < charge.maxCharges)
+    if (usedCharges.length === 0) return
+
+    const selected = usedCharges[Math.floor(rng() * usedCharges.length)]
+    selected.remaining = Math.min(selected.remaining + 1, selected.maxCharges)
+  }
+
+  /**
+   * 追い打ち(敵撃破時に1回)/連撃衝動(確率で連鎖)による再攻撃。
+   * 参考ゲーム同様、再攻撃は追撃・反撃からは発動しない(通常攻撃行動の直後のみ)。
+   */
+  private tryReattacks(
+    unit: BattleUnit,
+    initialDamagedTargets: Map<string, BattleUnit>,
+    targetGroup: BattleUnit[],
+    sourceGroup: BattleUnit[],
+    allyUnits: BattleUnit[],
+    enemyUnits: BattleUnit[],
+    currentTurn: number,
+    detailedLog: BattleLogEntry[],
+    turnActedUnitKeys: Set<string>,
+    turnConsumedUnitKeys: Set<string>,
+    rng: () => number,
+  ): void {
+    const pursuitChance = getReattackOnKillChancePercentFromSkills(unit.skills)
+    const chainChance = getChainReattackChancePercentFromSkills(unit.skills)
+    if (pursuitChance <= 0 && chainChance <= 0) return
+
+    const MAX_REATTACKS = 5
+    let defeatedInLastAttack = [...initialDamagedTargets.values()].some(target => target.currentHP <= 0)
+    let pursuitUsed = false
+
+    for (let i = 0; i < MAX_REATTACKS; i++) {
+      if (unit.currentHP <= 0) return
+      if (!targetGroup.some(target => target.currentHP > 0)) return
+
+      const pursuitTrigger = !pursuitUsed
+        && pursuitChance > 0
+        && defeatedInLastAttack
+        && rng() * 100 < pursuitChance
+      const chainTrigger = chainChance > 0 && rng() * 100 < chainChance
+      if (!pursuitTrigger && !chainTrigger) return
+      if (pursuitTrigger) pursuitUsed = true // 追い打ちは1行動につき1回のみ
+
+      const { targetDetails, totalHitCount, isCritical, damagedTargets } = this.executeBasicAttack(
+        unit,
+        targetGroup,
+        sourceGroup,
+        allyUnits,
+        currentTurn,
+        detailedLog,
+        turnActedUnitKeys,
+        turnConsumedUnitKeys,
+        rng,
+        unit.attackCount,
+        unit.criticalRate,
+      )
+
+      detailedLog.push({
+        turn: currentTurn,
+        actorId: unit.combatant.id,
+        actorName: getLogName(unit),
+        actorRow: unit.row + 1,
+        action: i18n.t('battle.reattackAction'),
+        attackCount: unit.attackCount,
+        hitCount: totalHitCount,
+        actorHP: unit.currentHP,
+        actorMaxHP: unit.maxHP,
+        isAlly: unit.isAlly,
+        isCritical,
+        actionEffect: 'damage',
+        targets: getSortedTargetDetails(targetDetails),
+      })
+
+      this.tryPhysicalCounterAttacks(
+        unit,
+        damagedTargets,
+        allyUnits,
+        enemyUnits,
+        currentTurn,
+        detailedLog,
+        turnActedUnitKeys,
+        turnConsumedUnitKeys,
+        rng,
+      )
+
+      defeatedInLastAttack = [...damagedTargets.values()].some(target => target.currentHP <= 0)
+      if (chainChance <= 0) return // 追い打ちのみの場合は連鎖しない
+    }
   }
 
   private tryPhysicalCounterAttacks(
@@ -818,7 +1193,9 @@ export class BattleSystem {
         const magicBarrierFactor = 1 - target.magicBarrierDamageReduction / 100
         const magicProtectionFactor = getRearMagicGuardReductionFactor(target, targetGroup)
         const defendingFactor = getDefendingDamageFactor(target)
-        const damage = Math.max(1, Math.floor(baseDamage * rearDamageMultiplier * spellDamageFactor * spellTakenMultiplier * reductionFactor * magicReductionFactor * magicBarrierFactor * magicProtectionFactor * defendingFactor))
+        const royalPressureFactor = this.getRoyalPressureFactor(unit, target)
+        let damage = Math.max(1, Math.floor(baseDamage * rearDamageMultiplier * spellDamageFactor * spellTakenMultiplier * reductionFactor * magicReductionFactor * magicBarrierFactor * magicProtectionFactor * defendingFactor * royalPressureFactor))
+        damage = this.applyMagicWard(target, damage)
 
         applyDamage(target, damage)
         totalHitCount++
@@ -860,7 +1237,9 @@ export class BattleSystem {
         const magicBarrierFactor = 1 - target.magicBarrierDamageReduction / 100
         const magicProtectionFactor = getRearMagicGuardReductionFactor(target, targetGroup)
         const defendingFactor = getDefendingDamageFactor(target)
-        const damage = Math.max(1, Math.floor(baseDamage * rearDamageMultiplier * spellDamageFactor * spellTakenMultiplier * reductionFactor * magicReductionFactor * magicBarrierFactor * magicProtectionFactor * defendingFactor))
+        const royalPressureFactor = this.getRoyalPressureFactor(unit, target)
+        let damage = Math.max(1, Math.floor(baseDamage * rearDamageMultiplier * spellDamageFactor * spellTakenMultiplier * reductionFactor * magicReductionFactor * magicBarrierFactor * magicProtectionFactor * defendingFactor * royalPressureFactor))
+        damage = this.applyMagicWard(target, damage)
 
         applyDamage(target, damage)
         totalHitCount++

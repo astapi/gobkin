@@ -799,6 +799,128 @@ export function getHpRegenAmountFromSkills(skills: CharacterSkill[]): number {
   )
 }
 
+export function getLifestealPercentFromSkills(skills: CharacterSkill[]): number {
+  return getUniqueSkillsById(skills).reduce(
+    (sum, skill) => sum + (skill.lifestealPercent ?? 0),
+    0,
+  )
+}
+
+export function getPartyHpRegenFromMagicHealPercentFromSkills(skills: CharacterSkill[]): number {
+  return getUniqueSkillsById(skills).reduce(
+    (sum, skill) => sum + (skill.partyHpRegenFromMagicHealPercent ?? 0),
+    0,
+  )
+}
+
+export type DamageRamp = {
+  perAttackPercent: number
+  maxPercent: number
+}
+
+export function getDamageRampFromSkills(skills: CharacterSkill[]): DamageRamp | undefined {
+  const ramps = getUniqueSkillsById(skills).filter(
+    (skill) => skill.damageRampPerAttackPercent !== undefined,
+  )
+  if (ramps.length === 0) return undefined
+  return {
+    perAttackPercent: ramps.reduce((sum, skill) => sum + (skill.damageRampPerAttackPercent ?? 0), 0),
+    maxPercent: ramps.reduce((max, skill) => Math.max(max, skill.damageRampMaxPercent ?? 0), 0),
+  }
+}
+
+export function getMagicAtkRampFromSkills(skills: CharacterSkill[]): DamageRamp | undefined {
+  const ramps = getUniqueSkillsById(skills).filter(
+    (skill) => skill.magicAtkRampPerTurnPercent !== undefined,
+  )
+  if (ramps.length === 0) return undefined
+  return {
+    perAttackPercent: ramps.reduce((sum, skill) => sum + (skill.magicAtkRampPerTurnPercent ?? 0), 0),
+    maxPercent: ramps.reduce((max, skill) => Math.max(max, skill.magicAtkRampMaxPercent ?? 0), 0),
+  }
+}
+
+export function getSingleStrikeAttackMultiplierFromSkills(skills: CharacterSkill[]): number {
+  return getUniqueSkillsById(skills).reduce(
+    (max, skill) => Math.max(max, skill.singleStrikeAttackMultiplier ?? 1),
+    1,
+  )
+}
+
+export function getSingleStrikeAccuracyMultiplierFromSkills(skills: CharacterSkill[]): number {
+  return getUniqueSkillsById(skills).reduce(
+    (max, skill) => Math.max(max, skill.singleStrikeAccuracyMultiplier ?? 1),
+    1,
+  )
+}
+
+export function getPhysicalBarrierChargesFromSkills(skills: CharacterSkill[]): number {
+  return getUniqueSkillsById(skills).reduce(
+    (max, skill) => Math.max(max, skill.physicalBarrierCharges ?? 0),
+    0,
+  )
+}
+
+export function getMagicBarrierChargesFromSkills(skills: CharacterSkill[]): number {
+  return getUniqueSkillsById(skills).reduce(
+    (max, skill) => Math.max(max, skill.magicBarrierCharges ?? 0),
+    0,
+  )
+}
+
+export function getPartyPhysicalDamageMultiplierFromSkills(skills: CharacterSkill[]): number {
+  return getUniqueSkillsById(skills).reduce(
+    (max, skill) => Math.max(max, skill.partyPhysicalDamageMultiplier ?? 1),
+    1,
+  )
+}
+
+export function getReattackOnKillChancePercentFromSkills(skills: CharacterSkill[]): number {
+  return getUniqueSkillsById(skills).reduce(
+    (max, skill) => Math.max(max, skill.reattackOnKillChancePercent ?? 0),
+    0,
+  )
+}
+
+export function getChainReattackChancePercentFromSkills(skills: CharacterSkill[]): number {
+  return getUniqueSkillsById(skills).reduce(
+    (max, skill) => Math.max(max, skill.chainReattackChancePercent ?? 0),
+    0,
+  )
+}
+
+export function getCriticalDamageTakenReductionFromSkills(skills: CharacterSkill[]): number {
+  return Math.min(100, getUniqueSkillsById(skills).reduce(
+    (sum, skill) => sum + (skill.criticalDamageTakenReductionPercent ?? 0),
+    0,
+  ))
+}
+
+export function getAdditionalDamageTakenReductionFromSkills(skills: CharacterSkill[]): number {
+  return Math.min(100, getUniqueSkillsById(skills).reduce(
+    (sum, skill) => sum + (skill.additionalDamageTakenReductionPercent ?? 0),
+    0,
+  ))
+}
+
+export function getRecoverUsedSpellOnAttackChanceFromSkills(skills: CharacterSkill[]): number {
+  return getUniqueSkillsById(skills).reduce(
+    (max, skill) => Math.max(max, skill.recoverUsedSpellOnAttackChancePercent ?? 0),
+    0,
+  )
+}
+
+export function getTurnStartAoeMagicSkillFromSkills(skills: CharacterSkill[]): CharacterSkill | undefined {
+  return getUniqueSkillsById(skills).find((skill) => skill.turnStartAoeMagic !== undefined)
+}
+
+export function getLowerLevelDamageTakenReductionFromSkills(skills: CharacterSkill[]): number {
+  return getUniqueSkillsById(skills).reduce(
+    (max, skill) => Math.max(max, skill.lowerLevelDamageTakenReductionPercent ?? 0),
+    0,
+  )
+}
+
 function getEquipmentValueMultiplier(
   skills: CharacterSkill[],
   category: EquipmentCategory | undefined,

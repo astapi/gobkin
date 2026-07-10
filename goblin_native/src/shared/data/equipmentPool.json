@@ -1951,7 +1951,7 @@
       "grantedSkillIds": [
         "ranged_attack_reduction_18",
         "rare_guardian",
-        "base_vitality_up_3"
+        "ward_physical_2"
       ],
       "price": 25000,
       "isRare": true
@@ -1977,7 +1977,7 @@
       "grantedSkillIds": [
         "ranged_attack_reduction_18",
         "rare_guardian",
-        "base_vitality_up_4"
+        "ward_physical_2"
       ],
       "price": 50000,
       "isRare": true
@@ -2029,7 +2029,7 @@
       "grantedSkillIds": [
         "ranged_attack_reduction_22",
         "rare_guardian",
-        "base_power_up_5"
+        "bulwark_stance_30"
       ],
       "price": 600000,
       "isRare": true
@@ -2916,7 +2916,7 @@
       "grantedSkillIds": [
         "def_to_hp_6",
         "beast_slayer_1_5",
-        "base_power_up_4"
+        "lifesteal_5"
       ],
       "range": "melee",
       "price": 25000,
@@ -2988,7 +2988,7 @@
       "grantedSkillIds": [
         "def_to_hp_7",
         "dragon_slayer_2_0",
-        "base_power_up_5"
+        "action_order_200"
       ],
       "range": "melee",
       "price": 50000,
@@ -3055,7 +3055,7 @@
       ],
       "grantedSkillIds": [
         "critical_damage_bonus_9",
-        "base_agility_up_4",
+        "pursuit_30",
         "beast_slayer_1_5"
       ],
       "range": "ranged",
@@ -3119,7 +3119,7 @@
       ],
       "grantedSkillIds": [
         "critical_damage_bonus_11",
-        "base_agility_up_5",
+        "lifesteal_8",
         "dragon_slayer_2_0"
       ],
       "range": "ranged",
@@ -3151,7 +3151,7 @@
       ],
       "grantedSkillIds": [
         "critical_damage_bonus_7",
-        "base_luck_up_3",
+        "deadeye_200",
         "human_slayer_1_5"
       ],
       "range": "ranged",
@@ -3225,7 +3225,7 @@
       "grantedSkillIds": [
         "def_to_hp_6",
         "beast_slayer_1_5",
-        "base_power_up_4"
+        "battle_fervor_4"
       ],
       "range": "melee",
       "price": 12500,
@@ -3371,7 +3371,7 @@
       "isRare": true,
       "grantedSkillIds": [
         "physical_reduction_9",
-        "base_vitality_up_3",
+        "pierce_guard_30",
         "attack_resistant_4_5"
       ]
     },
@@ -3742,7 +3742,7 @@
       "grantedSkillIds": [
         "evasion_up_30",
         "breath_reduction_9",
-        "base_vitality_up_3"
+        "ward_physical_2"
       ]
     },
     {
@@ -3759,7 +3759,7 @@
       "isRare": true,
       "grantedSkillIds": [
         "party_rare_mult_1_1",
-        "base_luck_up_5"
+        "action_order_200"
       ]
     },
     {
@@ -3903,7 +3903,7 @@
       "isRare": true,
       "grantedSkillIds": [
         "physical_reduction_9",
-        "base_power_up_3"
+        "crit_guard_30"
       ]
     },
     {
@@ -3982,7 +3982,7 @@
       "grantedSkillIds": [
         "magic_heal_to_hp_11",
         "grant_magic_barrier",
-        "base_spirit_up_5"
+        "party_heal_regen_20"
       ]
     },
     {
@@ -4037,7 +4037,7 @@
       "isRare": true,
       "grantedSkillIds": [
         "physical_reduction_9",
-        "base_spirit_up_3"
+        "pierce_guard_30"
       ]
     },
     {
@@ -4063,7 +4063,7 @@
       "grantedSkillIds": [
         "ranged_attack_reduction_22",
         "rare_guardian",
-        "base_spirit_up_5"
+        "ward_physical_3"
       ]
     },
     {
@@ -4125,7 +4125,7 @@
       "isRare": true,
       "grantedSkillIds": [
         "critical_damage_bonus_7",
-        "base_power_up_3",
+        "deadeye_200",
         "human_slayer_1_5"
       ]
     },
@@ -4183,7 +4183,7 @@
         "magic_resistant_4_5",
         "magic_reduction_14",
         "hp_multiplier_8",
-        "base_spirit_up_3"
+        "party_heal_regen_10"
       ]
     },
     {
@@ -4364,7 +4364,7 @@
       "isRare": true,
       "grantedSkillIds": [
         "physical_reduction_11",
-        "base_vitality_up_4",
+        "crit_guard_30",
         "attack_resistant_4_5"
       ]
     },
@@ -4383,7 +4383,7 @@
       "grantedSkillIds": [
         "undead_slayer_2_0",
         "physical_damage_50",
-        "base_luck_up_6"
+        "spell_siphon_30"
       ]
     },
     {
@@ -4436,7 +4436,7 @@
         "magic_resistant_4_5",
         "magic_reduction_18",
         "hp_multiplier_10",
-        "base_wisdom_up_4",
+        "ward_magic_2",
         "rare_spell_echo"
       ]
     },
@@ -4455,7 +4455,7 @@
       "grantedSkillIds": [
         "undead_slayer_2_0",
         "physical_damage_50",
-        "base_power_up_6"
+        "action_order_200"
       ]
     },
     {
@@ -4510,7 +4510,7 @@
         "magic_resistant_4_5",
         "magic_reduction_18",
         "hp_multiplier_10",
-        "base_spirit_up_4",
+        "mana_surge_4",
         "rare_spell_echo"
       ]
     },
@@ -4529,7 +4529,7 @@
       "grantedSkillIds": [
         "undead_slayer_2_0",
         "physical_damage_50",
-        "base_agility_up_6"
+        "war_cry_1_3"
       ]
     },
     {
@@ -4559,7 +4559,7 @@
       "grantedSkillIds": [
         "evasion_up_30",
         "breath_reduction_9",
-        "base_spirit_up_3"
+        "ward_physical_2"
       ]
     },
     {
@@ -4602,7 +4602,7 @@
       "grantedSkillIds": [
         "undead_slayer_2_0",
         "physical_damage_50",
-        "base_wisdom_up_6"
+        "lifesteal_12"
       ]
     },
     {
@@ -4662,7 +4662,7 @@
       "grantedSkillIds": [
         "undead_slayer_2_0",
         "physical_damage_50",
-        "base_spirit_up_6"
+        "pursuit_30"
       ]
     },
     {
@@ -4684,7 +4684,7 @@
       "grantedSkillIds": [
         "magic_heal_to_hp_9",
         "grant_magic_barrier",
-        "base_spirit_up_3",
+        "party_heal_regen_10",
         "rare_spell_echo"
       ]
     },
@@ -4744,7 +4744,7 @@
       "grantedSkillIds": [
         "spell_damage_20",
         "grant_magic_arrow",
-        "base_wisdom_up_6",
+        "frost_nova_t4",
         "rare_spell_echo"
       ]
     },
@@ -4797,7 +4797,7 @@
       "grantedSkillIds": [
         "beast_slayer_2_0",
         "physical_damage_40",
-        "base_vitality_up_5"
+        "war_cry_1_2"
       ]
     },
     {
@@ -4822,7 +4822,7 @@
       "isRare": true,
       "grantedSkillIds": [
         "physical_reduction_14",
-        "base_vitality_up_6",
+        "crit_guard_50",
         "attack_resistant_4_5"
       ]
     },
@@ -4859,7 +4859,7 @@
         "magic_resistant_4_5",
         "magic_reduction_22",
         "hp_multiplier_12",
-        "base_wisdom_up_5"
+        "ward_magic_3"
       ]
     },
     {
@@ -4881,7 +4881,7 @@
       "grantedSkillIds": [
         "spell_damage_20",
         "grant_magic_arrow",
-        "base_luck_up_6"
+        "mana_surge_6"
       ]
     },
     {
@@ -4947,7 +4947,7 @@
       "grantedSkillIds": [
         "evasion_up_50",
         "breath_reduction_11",
-        "base_vitality_up_5"
+        "ward_physical_3"
       ]
     },
     {
@@ -4972,7 +4972,7 @@
       "isRare": true,
       "grantedSkillIds": [
         "physical_reduction_14",
-        "base_power_up_6"
+        "bulwark_stance_30"
       ]
     },
     {
@@ -5031,7 +5031,7 @@
       "isRare": true,
       "grantedSkillIds": [
         "physical_reduction_12",
-        "base_vitality_up_5",
+        "pierce_guard_50",
         "attack_resistant_4_5"
       ]
     },
@@ -5050,7 +5050,7 @@
       "grantedSkillIds": [
         "beast_slayer_2_0",
         "physical_damage_50",
-        "base_vitality_up_6"
+        "pursuit_30"
       ]
     },
     {
@@ -5088,7 +5088,7 @@
       "grantedSkillIds": [
         "undead_slayer_2_0",
         "physical_damage_40",
-        "base_agility_up_5"
+        "lifesteal_8"
       ]
     },
     {
@@ -5110,7 +5110,7 @@
       "grantedSkillIds": [
         "magic_heal_to_hp_12",
         "grant_heal",
-        "base_spirit_up_6"
+        "spell_siphon_30"
       ]
     },
     {
@@ -5146,7 +5146,7 @@
         "magic_resistant_4_5",
         "magic_reduction_22",
         "hp_multiplier_12",
-        "base_spirit_up_5"
+        "mystic_stance_30"
       ]
     },
     {
@@ -5168,7 +5168,7 @@
       "grantedSkillIds": [
         "spell_damage_20",
         "grant_fireball",
-        "base_spirit_up_6"
+        "mystic_stance_30"
       ]
     },
     {
@@ -5261,7 +5261,7 @@
       "isRare": true,
       "grantedSkillIds": [
         "physical_reduction_12",
-        "base_power_up_5",
+        "crit_guard_50",
         "rare_guardian"
       ]
     },
@@ -5280,7 +5280,8 @@
       "grantedSkillIds": [
         "undead_slayer_2_0",
         "physical_damage_50",
-        "base_agility_up_6"
+        "battle_fervor_6",
+        "hp_degen_5"
       ]
     },
     {
@@ -5346,7 +5347,7 @@
       "grantedSkillIds": [
         "evasion_up_50",
         "breath_reduction_11",
-        "base_spirit_up_5"
+        "crit_guard_50"
       ]
     },
     {
@@ -5364,7 +5365,8 @@
       "grantedSkillIds": [
         "undead_slayer_2_0",
         "physical_damage_50",
-        "base_wisdom_up_6"
+        "battle_fervor_6",
+        "hp_degen_5"
       ]
     },
     {
@@ -5389,7 +5391,7 @@
       "isRare": true,
       "grantedSkillIds": [
         "physical_reduction_9",
-        "base_luck_up_3"
+        "crit_guard_30"
       ]
     },
     {
@@ -5424,7 +5426,7 @@
       "grantedSkillIds": [
         "undead_slayer_2_0",
         "physical_damage_50",
-        "base_spirit_up_6"
+        "hp_regen_10"
       ]
     },
     {
@@ -5466,7 +5468,7 @@
       "grantedSkillIds": [
         "spell_damage_16",
         "grant_magic_arrow",
-        "base_wisdom_up_5"
+        "mana_surge_6"
       ]
     },
     {
@@ -5515,7 +5517,7 @@
       "isRare": true,
       "grantedSkillIds": [
         "critical_damage_bonus_7",
-        "base_wisdom_up_3",
+        "deadeye_200",
         "undead_slayer_1_5"
       ]
     },
@@ -5547,7 +5549,7 @@
       "isRare": true,
       "grantedSkillIds": [
         "critical_damage_bonus_10",
-        "base_luck_up_5",
+        "battle_fervor_6",
         "undead_slayer_2_0"
       ]
     },
@@ -5625,7 +5627,7 @@
       "isRare": true,
       "grantedSkillIds": [
         "physical_reduction_12",
-        "base_spirit_up_5"
+        "bulwark_stance_30"
       ]
     },
     {
@@ -5698,7 +5700,7 @@
       "isRare": true,
       "grantedSkillIds": [
         "physical_reduction_12",
-        "base_luck_up_5"
+        "pierce_guard_50"
       ]
     },
     {
@@ -5734,7 +5736,7 @@
       "grantedSkillIds": [
         "def_to_hp_8",
         "undead_slayer_2_0",
-        "base_power_up_6"
+        "battle_fervor_6"
       ]
     },
     {
@@ -5799,7 +5801,7 @@
       "grantedSkillIds": [
         "spell_damage_16",
         "grant_magic_arrow",
-        "base_luck_up_5",
+        "mana_surge_6",
         "rare_spell_echo"
       ]
     },
@@ -5876,7 +5878,7 @@
       "isRare": true,
       "grantedSkillIds": [
         "physical_reduction_12",
-        "base_agility_up_5"
+        "crit_guard_50"
       ]
     },
     {
@@ -5894,7 +5896,7 @@
       "grantedSkillIds": [
         "human_slayer_2_0",
         "physical_damage_50",
-        "base_spirit_up_6"
+        "action_order_200"
       ]
     },
     {
@@ -5957,7 +5959,7 @@
       "isRare": true,
       "grantedSkillIds": [
         "critical_damage_bonus_10",
-        "base_power_up_5",
+        "pursuit_30",
         "human_slayer_2_0"
       ]
     },
@@ -6027,7 +6029,7 @@
         "additional_damage_3",
         "additional_damage_12",
         "rare_ambush",
-        "base_agility_up_6",
+        "lifesteal_12",
         "human_slayer_2_0"
       ]
     },
@@ -6119,7 +6121,7 @@
       "grantedSkillIds": [
         "evasion_up_60",
         "breath_reduction_12",
-        "base_vitality_up_6"
+        "ward_physical_3"
       ]
     },
     {
@@ -6160,7 +6162,7 @@
         "magic_resistant_4_5",
         "magic_reduction_22",
         "hp_multiplier_12",
-        "base_luck_up_5",
+        "ward_magic_3",
         "rare_spell_echo"
       ]
     },
@@ -6183,7 +6185,7 @@
       "grantedSkillIds": [
         "magic_heal_to_hp_12",
         "grant_magic_barrier",
-        "base_wisdom_up_6"
+        "spell_siphon_30"
       ]
     },
     {
@@ -6514,7 +6516,7 @@
       "grantedSkillIds": [
         "evasion_up_50",
         "breath_reduction_11",
-        "base_power_up_5"
+        "ward_physical_3"
       ]
     },
     {
@@ -6624,7 +6626,7 @@
       "isRare": true,
       "grantedSkillIds": [
         "physical_reduction_14",
-        "base_spirit_up_6"
+        "pierce_guard_50"
       ]
     },
     {
@@ -6687,7 +6689,7 @@
       "isRare": true,
       "grantedSkillIds": [
         "critical_damage_bonus_10",
-        "base_wisdom_up_5",
+        "battle_fervor_6",
         "human_slayer_2_0"
       ]
     },
@@ -6706,7 +6708,7 @@
       "grantedSkillIds": [
         "human_slayer_2_0",
         "physical_damage_50",
-        "base_spirit_up_6"
+        "deadeye_200"
       ]
     },
     {
@@ -6768,7 +6770,7 @@
       "grantedSkillIds": [
         "magic_heal_to_hp_12",
         "grant_magic_barrier",
-        "base_luck_up_6"
+        "party_heal_regen_20"
       ]
     },
     {
@@ -6938,7 +6940,7 @@
       "grantedSkillIds": [
         "evasion_up_60",
         "breath_reduction_12",
-        "base_spirit_up_6",
+        "ward_physical_3",
         "rare_guardian"
       ]
     },
@@ -7032,7 +7034,7 @@
       "grantedSkillIds": [
         "def_to_hp_8",
         "human_slayer_2_0",
-        "base_vitality_up_6",
+        "lifesteal_12",
         "rare_guardian"
       ]
     },
@@ -7098,7 +7100,7 @@
       "grantedSkillIds": [
         "magic_heal_to_hp_11",
         "grant_magic_barrier",
-        "base_wisdom_up_5",
+        "party_heal_regen_20",
         "rare_spell_echo"
       ]
     },
@@ -7527,7 +7529,7 @@
       "grantedSkillIds": [
         "def_to_hp_6",
         "human_slayer_1_5",
-        "base_power_up_4"
+        "mighty_blow_180"
       ]
     },
     {
@@ -7582,7 +7584,7 @@
       "isRare": true,
       "grantedSkillIds": [
         "physical_reduction_14",
-        "base_luck_up_6"
+        "crit_guard_50"
       ]
     },
     {
@@ -7618,7 +7620,7 @@
       "grantedSkillIds": [
         "def_to_hp_6",
         "human_slayer_1_5",
-        "base_vitality_up_4"
+        "battle_fervor_4"
       ]
     },
     {
@@ -7706,7 +7708,7 @@
         "additional_damage_3",
         "additional_damage_10",
         "rare_ambush",
-        "base_agility_up_5",
+        "pursuit_30",
         "human_slayer_2_0"
       ]
     },
@@ -7772,7 +7774,7 @@
       "grantedSkillIds": [
         "evasion_up_40",
         "breath_reduction_10",
-        "base_vitality_up_4",
+        "ward_physical_2",
         "rare_guardian"
       ]
     },
@@ -7874,7 +7876,7 @@
       "isRare": true,
       "grantedSkillIds": [
         "physical_reduction_14",
-        "base_wisdom_up_6",
+        "pierce_guard_50",
         "attack_resistant_4_5"
       ]
     },
@@ -7893,7 +7895,7 @@
       "grantedSkillIds": [
         "beast_slayer_2_0",
         "physical_damage_50",
-        "base_agility_up_6"
+        "war_cry_1_3"
       ]
     },
     {
@@ -7975,7 +7977,7 @@
       "grantedSkillIds": [
         "beast_slayer_2_0",
         "physical_damage_50",
-        "base_wisdom_up_6"
+        "lifesteal_12"
       ]
     },
     {
@@ -8125,7 +8127,7 @@
         "magic_resistant_4_5",
         "magic_reduction_26",
         "hp_multiplier_13",
-        "base_wisdom_up_6",
+        "ward_magic_3",
         "rare_spell_echo"
       ]
     },
@@ -8179,7 +8181,7 @@
       "isRare": true,
       "grantedSkillIds": [
         "critical_damage_bonus_10",
-        "base_vitality_up_5",
+        "lifesteal_8",
         "human_slayer_2_0"
       ]
     },

@@ -183,6 +183,23 @@ export class GoblinStatCalculator {
     stats: GoblinStats,
     skills: CharacterSkill[],
   ): void {
+    // 構え系(攻撃回数半減→ステータス変換)を先に適用し、変換後の値を他の変換の入力にする
+    for (const skill of getUniqueSkillsById(skills)) {
+      if (skill.halveAttackCountToDefRate === undefined && skill.halveAttackCountToMagicAtkRate === undefined) {
+        continue
+      }
+      const halvedCount = Math.max(1, Math.ceil(stats.attackCount / 2))
+      const lostCount = stats.attackCount - halvedCount
+      if (lostCount <= 0) continue
+      if (skill.halveAttackCountToDefRate !== undefined) {
+        stats.def += lostCount * skill.halveAttackCountToDefRate
+      }
+      if (skill.halveAttackCountToMagicAtkRate !== undefined) {
+        stats.magicAtk += lostCount * skill.halveAttackCountToMagicAtkRate
+      }
+      stats.attackCount = halvedCount
+    }
+
     for (const skill of getUniqueSkillsById(skills)) {
       if (skill.defToHpPercent !== undefined) {
         stats.hp += Math.floor(stats.def * skill.defToHpPercent / 100)

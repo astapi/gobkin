@@ -11,6 +11,12 @@ export interface SpellCharge {
   category: SpellCategory
 }
 
+/** 片側パーティで共有する障壁チャージ(参照共有で消費を同期する) */
+export interface SideBarrierState {
+  physicalCharges: number
+  magicCharges: number
+}
+
 export interface BattleUnit {
   instanceId?: string
   combatant: Combatant
@@ -52,6 +58,11 @@ export interface BattleUnit {
   battleActionPolicy: BattleActionPolicy
   isDefending: boolean
   attackType: 'melee' | 'range'
+  fervorStackPercent?: number       // 闘志: 攻撃行動で蓄積した与ダメ増加(%)
+  rampBaseMagicAtk?: number         // 魔力高揚: 上昇前の魔法攻撃力(unit側)
+  rampBaseCombatantMagicAtk?: number // 魔力高揚: 上昇前の魔法攻撃力(combatant側)
+  warCryDamageMultiplier?: number   // 鬨の声: PT物理与ダメージ倍率
+  barrierState?: SideBarrierState   // 物理/魔法障壁の残チャージ(パーティ共有)
 }
 
 export interface BattleResult {
