@@ -869,6 +869,131 @@ const ja = {
       hp_regen_20: { name: '[20%]回復能力' },
       hp_regen_10: { name: '[10%]回復能力' },
       hp_regen_flat_10: { name: '[10]回復能力' },
+      lifesteal_5: {
+        name: '[5%]吸血',
+        description: '攻撃で与えたダメージの5%の量、HPが回復します。（一度に回復できる最大値は最大HPの25%）',
+      },
+      lifesteal_8: {
+        name: '[8%]吸血',
+        description: '攻撃で与えたダメージの8%の量、HPが回復します。（一度に回復できる最大値は最大HPの25%）',
+      },
+      lifesteal_12: {
+        name: '[12%]吸血',
+        description: '攻撃で与えたダメージの12%の量、HPが回復します。（一度に回復できる最大値は最大HPの25%）',
+      },
+      hp_degen_5: {
+        name: '[-5%]血の代償',
+        description: '戦闘中、ターン終了時にHPが5%減少します。',
+      },
+      hp_degen_10: {
+        name: '[-10%]血の代償',
+        description: '戦闘中、ターン終了時にHPが10%減少します。',
+      },
+      party_heal_regen_10: {
+        name: '[10%]癒しの霊気',
+        description: 'ターン終了時に味方全員のHPを自分の魔法回復量の10%分回復します。',
+      },
+      party_heal_regen_20: {
+        name: '[20%]癒しの霊気',
+        description: 'ターン終了時に味方全員のHPを自分の魔法回復量の20%分回復します。',
+      },
+      battle_fervor_4: {
+        name: '[+4%]闘志',
+        description: '攻撃行動を行うたびに攻撃ダメージが4%増大します（最大40%）。効果は戦闘の間持続します。',
+      },
+      battle_fervor_6: {
+        name: '[+6%]闘志',
+        description: '攻撃行動を行うたびに攻撃ダメージが6%増大します（最大60%）。効果は戦闘の間持続します。',
+      },
+      mana_surge_4: {
+        name: '[+4%]魔力高揚',
+        description: 'ターンを経過するごとに魔法攻撃力が4%上昇します（最大40%）。効果は戦闘の間持続します。',
+      },
+      mana_surge_6: {
+        name: '[+6%]魔力高揚',
+        description: 'ターンを経過するごとに魔法攻撃力が6%上昇します（最大60%）。効果は戦闘の間持続します。',
+      },
+      mighty_blow_180: {
+        name: '渾身の一撃',
+        description: '攻撃回数が1回のとき、攻撃力が1.8倍になります。',
+      },
+      deadeye_200: {
+        name: '精密照準',
+        description: '攻撃回数が1回のとき、命中精度が2倍になります。',
+      },
+      ward_physical_2: {
+        name: '[Lv2]物理障壁',
+        description: '敵の攻撃を2回、1/3に軽減する障壁で味方全員を保護します。',
+      },
+      ward_physical_3: {
+        name: '[Lv3]物理障壁',
+        description: '敵の攻撃を3回、1/3に軽減する障壁で味方全員を保護します。',
+      },
+      ward_magic_2: {
+        name: '[Lv2]魔法障壁',
+        description: '敵の魔法攻撃を2回、1/3に軽減する障壁で味方全員を保護します。',
+      },
+      ward_magic_3: {
+        name: '[Lv3]魔法障壁',
+        description: '敵の魔法攻撃を3回、1/3に軽減する障壁で味方全員を保護します。',
+      },
+      war_cry_1_2: {
+        name: '[1.2倍]鬨の声',
+        description: '味方全員の攻撃ダメージが1.2倍になります。（重複無効）',
+      },
+      war_cry_1_3: {
+        name: '[1.3倍]鬨の声',
+        description: '味方全員の攻撃ダメージが1.3倍になります。（重複無効）',
+      },
+      pursuit_30: {
+        name: '追い打ち',
+        description: '攻撃で敵を倒したとき、30%の確率で再攻撃を行います。',
+      },
+      crit_guard_30: {
+        name: '[30%]急所守り',
+        description: '必殺攻撃で受けるダメージを30%軽減します。',
+      },
+      crit_guard_50: {
+        name: '[50%]急所守り',
+        description: '必殺攻撃で受けるダメージを50%軽減します。',
+      },
+      pierce_guard_30: {
+        name: '[30%]対貫通装甲',
+        description: '攻撃で受ける追加ダメージを30%軽減します。',
+      },
+      pierce_guard_50: {
+        name: '[50%]対貫通装甲',
+        description: '攻撃で受ける追加ダメージを50%軽減します。',
+      },
+      action_order_200: { name: '[戦術] 神速' },
+      bulwark_stance_30: {
+        name: '城塞の構え',
+        description: '攻撃回数が半減する代わりに、半減した回数×30の数値だけ防御力が上昇します。',
+      },
+      mystic_stance_30: {
+        name: '魔導の構え',
+        description: '攻撃回数が半減する代わりに、半減した回数×30の数値だけ魔法攻撃力が上昇します。',
+      },
+      spell_siphon_30: {
+        name: '魔力簒奪',
+        description: '通常攻撃時、30%の確率で使用済みの魔法が1つ使用可能になります。',
+      },
+      frost_nova_t4: {
+        name: '氷霧の大渦',
+        description: '4ターン目の開始時、敵全体に魔法攻撃力の150%の魔法ダメージを与えます。',
+      },
+      enemy_royal_pressure_30: {
+        name: '王の威圧',
+        description: '自分よりLvが低い相手から受けるダメージを30%軽減します。',
+      },
+      enemy_chain_reattack_30: {
+        name: '連撃衝動',
+        description: '攻撃の後、30%の確率で再攻撃を行い続けます。',
+      },
+      enemy_thunder_call: {
+        name: '招雷の角',
+        description: '毎ターン開始時、敵全体に魔法攻撃力の60%の雷撃ダメージを与えます。',
+      },
       weapon_melee_attack: {
         name: '[武器]近距離攻撃',
         description: '隊列の後ろに行くほど通常攻撃のダメージが低下します。',
@@ -973,6 +1098,9 @@ const ja = {
     hpRegen: '[{{value}}%]毎ターン終了時に最大HPの{{value}}%を回復',
     hpRegenFlat: '[{{value}}]毎ターン終了時にHPを{{value}}回復',
     hpRegenAction: '回復能力',
+    hpDegenAction: '血の代償',
+    partyHealRegenAction: '癒しの霊気',
+    reattackAction: '再攻撃',
     itemSlotsBonus: 'アイテム装備可能数が増加する',
   },
   dungeonTier: {

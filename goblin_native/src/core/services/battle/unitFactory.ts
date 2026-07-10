@@ -8,6 +8,8 @@ import {
   getPhysicalDamageReductionFromSkills,
   getPureGoblinPartyStatBonusPercentFromSkills,
   getRangedAttackDamageReductionFromSkills,
+  getSingleStrikeAccuracyMultiplierFromSkills,
+  getSingleStrikeAttackMultiplierFromSkills,
   getSpellDamagePercentFromSkills,
   getUniqueSkillsById,
 } from '../../../shared/data/characterSkills'
@@ -97,7 +99,11 @@ export function createAllyUnit(
     getPureGoblinPartyStatBonusPercentFromSkills(skills, goblin.level) * pureGoblinCount
   const packStatMultiplier = 1 + packBonusPercent / 100
   const maxHP = Math.floor(effectiveStats.hp * packStatMultiplier)
-  const atk = Math.floor(combatant.atk * packStatMultiplier)
+  // 渾身の一撃/精密照準: 攻撃回数1のときのみ有効
+  const isSingleStrike = effectiveStats.attackCount === 1
+  const singleStrikeAtkMultiplier = isSingleStrike ? getSingleStrikeAttackMultiplierFromSkills(skills) : 1
+  const singleStrikeAccMultiplier = isSingleStrike ? getSingleStrikeAccuracyMultiplierFromSkills(skills) : 1
+  const atk = Math.floor(combatant.atk * packStatMultiplier * singleStrikeAtkMultiplier)
   combatant.atk = atk
   const hp = initialHP === undefined || initialHP >= effectiveStats.hp
     ? maxHP
@@ -117,7 +123,7 @@ export function createAllyUnit(
     agility: actionOrderAgility ?? baseAttributes.agility,
     luck: baseAttributes.luck,
     attackCount: effectiveStats.attackCount,
-    accuracy: effectiveStats.accuracy,
+    accuracy: Math.floor(effectiveStats.accuracy * singleStrikeAccMultiplier),
     evasion: effectiveStats.evasion,
     isAlly: true,
     originalIndex,
@@ -162,6 +168,11 @@ export function createEnemyUnit(
   combatant.buffs = toCombatBuffsFromSkills(skills)
   const learnedSpells = mergeLearnedSpells(enemy.spells, skills, enemy.level)
   const raceResistance = getRaceResistanceTotals(enemy.raceTags)
+  // 渾身の一撃/精密照準: 攻撃回数1のときのみ有効
+  const isSingleStrike = enemy.attackCount === 1
+  const singleStrikeAtkMultiplier = isSingleStrike ? getSingleStrikeAttackMultiplierFromSkills(skills) : 1
+  const singleStrikeAccMultiplier = isSingleStrike ? getSingleStrikeAccuracyMultiplierFromSkills(skills) : 1
+  combatant.atk = Math.floor(combatant.atk * singleStrikeAtkMultiplier)
   return {
     instanceId: `enemy:${combatant.id}:${originalIndex}`,
     combatant,
@@ -172,7 +183,7 @@ export function createEnemyUnit(
     agility: enemy.baseAttributes.agility,
     luck: enemy.baseAttributes.luck,
     attackCount: enemy.attackCount,
-    accuracy: enemy.accuracy,
+    accuracy: Math.floor(enemy.accuracy * singleStrikeAccMultiplier),
     evasion: enemy.evasion,
     isAlly: false,
     originalIndex,
