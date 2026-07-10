@@ -589,7 +589,7 @@ const en = {
       goblin_village_1: { name: 'Goblin Settlement: Outer Rim', description: 'The outer edge of the goblin settlement. Rank-and-file goblins and thieves roam in packs.' },
       undead_ruins_1: { name: 'Forgotten Ruins: Entrance', description: 'Near the entrance of the ruins. A dim corridor haunted by skeletons and zombies.' },
       road_1: { name: 'Roadside Route', description: 'The road closest to the goblin settlement. Wolves, bandits, and human escorts guarding cargo pass through.' },
-      orc_camp_1: { name: 'Orc Camp: Outpost', description: 'The orc camp outpost. Frontline brutes and the soldiers behind them stand watch.' },
+      orc_camp_1: { name: 'Orc Camp: Outpost', description: 'The orcs have pressed tamed goblins into their ranks. Brutes hold the front line while goblin mages and clerics back them with spells and healing, and the orc expedition captain commands from the rear.' },
       orc_fortress_1: { name: 'Orc Fortress', description: 'The true orc stronghold. Even with wolf riders and poison tactics, a frontal assault remains extremely dangerous.' },
       subjugation_force_1: { name: 'vs Subjugation Defense - Vanguard', description: 'After the goblins subjugate nearby races, a vanguard from the frontier castle advances. Intercept the regular soldiers and archers.' },
       human_village: { name: 'Frontier Village', description: 'The heart of the frontier village. Break the militia and hunters, and carve the goblin threat into the western frontier.' },

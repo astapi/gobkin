@@ -155,6 +155,33 @@ npx jest src/shared/data/__tests__/masterDataIntegrity
 
 例外リストは「既知だが保留中」の問題を明示する仕組みです。**新しい違反を追加すると落ち、既知の問題を直すと(例外リストが古くなって)落ちる**ので、直した箇所が回帰で保護されます。
 
+### 5.5 敵ステータスの算出基準(HP/ATK/DEF/EVA は Lv・能力値から導出)
+
+敵の HP/ATK/DEF/回避 は**手打ちの任意値ではなく、Lv と baseAttributes(体力/力/敏捷/運)から算出する**のが基準です。算出式は [`src/shared/utils/enemyStats.ts`](/Users/astapi/projects/goblinKingdom/goblin_native/src/shared/utils/enemyStats.ts)(`tools/studio` の敵エディタが「算出値を各ステータスへ適用」ボタンで利用)。
+
+**HPを上げたいなら Lv か vitality を、ATKを上げたいなら Lv か power を上げる**。ステータス欄を直接いじらず、根拠となる Lv・能力値を動かすこと。
+
+ただし `enemyStats.ts` の**絶対スケールは現行の実データと乖離している**(実データは式出力の約1.5〜2倍、命中に至っては約4〜5倍)。そこで**「算出式 × 標準倍率」**を基準値とする。標準倍率は再設計の基準エリアである**街道(road_1)通常敵の実効中央値**:
+
+| ステータス | 通常敵の倍率 | ボスの倍率 | 導出元 |
+|---|---|---|---|
+| HP | ×1.6 | ×1.3 | `calculateEnemyBaseHp`(vitality, Lv) |
+| ATK | ×1.6 | ×1.0 | `calculateEnemyBaseAtk`(power, Lv) |
+| DEF | ×1.25 | ×1.0 | `calculateEnemyBaseDef`(vitality, Lv) |
+| EVA | ×0.57 | ×0.4 | `calculateEnemyBaseEvasion`(agility, luck, Lv) |
+
+- **accuracy は算出式に沿わせない**。実データは全エリアで命中を約650〜780の帯に手動設定しており、術者も近接と同程度。式だと術者だけ極端に低命中になり不自然なので、**役割別の帯(近接~690 / 遠隔~760 / 術者~685、ボスは+75程度)で手動設定**する。
+- **magicDef / magicAtk / magicHeal / attackCount** も式の対象外(手動)。
+- 種族判定: orc→beast / goblin→goblin / human→human / construct→demon_race(`detectEnemyHpSpecies`)。HP係数は goblin0.8 / beast1.1 / human1.0 / demon_race1.3。
+
+補助ツール(`scripts/balance/`):
+- `statFormula.js <area...>` : 各敵の現在値 vs 算出式出力を比較
+- `statMultipliers.js <area...>` : 実データから実効倍率(中央値)を測定
+- `deriveStats.js <area...>` : Lv・能力値から「算出式×標準倍率」で HP/ATK/DEF/EVA を導出
+- `measureArea.js <area...>` / `probeArea.js <levels> <area...>` : 単エリアの必要Lv・細粒度成功率を測定
+
+**手順**: 敵の Lv・能力値を決める → `deriveStats.js` で導出値を得る → JSON に反映(accuracy等は帯で手動) → `measureArea.js`/`probeArea.js` で必要Lvを測り、進行順で単調増加かを確認 → ずれていれば Lv・能力値を動かして再導出。
+
 ---
 
 ## 6. バランス調整の標準手順
