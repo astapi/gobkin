@@ -123,6 +123,9 @@
       "rareEquipmentDrops": [
         {
           "templateId": "bow_rare_005"
+        },
+        {
+          "templateId": "bow_human_killer"
         }
       ],
       "tierRareEquipmentDrops": [

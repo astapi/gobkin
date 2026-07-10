@@ -171,6 +171,18 @@
       "rareEquipmentDrops": [
         {
           "templateId": "bow_rare_007"
+        },
+        {
+          "templateId": "sword_beast_killer"
+        },
+        {
+          "templateId": "bow_beast_killer"
+        },
+        {
+          "templateId": "claw_beast_slayer"
+        },
+        {
+          "templateId": "large_shield_fortress"
         }
       ],
       "tierRareEquipmentDrops": [
