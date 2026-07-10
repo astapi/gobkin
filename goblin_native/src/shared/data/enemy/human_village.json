@@ -7,22 +7,22 @@
       "raceTags": [
         "human"
       ],
-      "level": 21,
-      "hp": 180,
-      "atk": 40,
-      "def": 25,
-      "magicDef": 24,
-      "attackCount": 1,
-      "accuracy": 340,
-      "evasion": 20,
+      "level": 28,
+      "hp": 830,
+      "atk": 128,
+      "def": 85,
+      "magicDef": 50,
+      "attackCount": 2,
+      "accuracy": 700,
+      "evasion": 21,
       "gold": 60,
       "baseAttributes": {
-        "power": 10,
+        "power": 21,
         "wisdom": 10,
-        "spirit": 6,
-        "vitality": 8,
-        "agility": 12,
-        "luck": 5
+        "spirit": 7,
+        "vitality": 18,
+        "agility": 13,
+        "luck": 6
       },
       "rareEquipmentDrops": [
         {
@@ -55,22 +55,22 @@
       "raceTags": [
         "human"
       ],
-      "level": 23,
-      "hp": 310,
-      "atk": 35,
-      "def": 43,
-      "magicDef": 39,
+      "level": 30,
+      "hp": 1390,
+      "atk": 128,
+      "def": 140,
+      "magicDef": 115,
       "attackCount": 2,
-      "accuracy": 330,
-      "evasion": 18,
-      "gold": 68,
+      "accuracy": 690,
+      "evasion": 17,
+      "gold": 76,
       "baseAttributes": {
-        "power": 9,
-        "wisdom": 9,
-        "spirit": 10,
-        "vitality": 13,
-        "agility": 10,
-        "luck": 5
+        "power": 20,
+        "wisdom": 11,
+        "spirit": 14,
+        "vitality": 28,
+        "agility": 9,
+        "luck": 6
       },
       "rareEquipmentDrops": [
         {
@@ -103,15 +103,15 @@
       "raceTags": [
         "human"
       ],
-      "level": 23,
-      "hp": 190,
-      "atk": 70,
-      "def": 26,
-      "magicDef": 24,
-      "attackCount": 5,
-      "accuracy": 420,
-      "evasion": 26,
-      "gold": 72,
+      "level": 29,
+      "hp": 670,
+      "atk": 118,
+      "def": 69,
+      "magicDef": 52,
+      "attackCount": 4,
+      "accuracy": 770,
+      "evasion": 29,
+      "gold": 84,
       "skills": [
         {
           "id": "preemptive_strike",
@@ -120,12 +120,12 @@
         }
       ],
       "baseAttributes": {
-        "power": 18,
-        "wisdom": 18,
-        "spirit": 6,
-        "vitality": 8,
-        "agility": 16,
-        "luck": 7
+        "power": 19,
+        "wisdom": 12,
+        "spirit": 8,
+        "vitality": 14,
+        "agility": 18,
+        "luck": 8
       },
       "rareEquipmentDrops": [
         {
@@ -158,21 +158,21 @@
       "raceTags": [
         "construct"
       ],
-      "level": 25,
-      "hp": 520,
-      "atk": 350,
-      "def": 85,
-      "magicDef": 30,
+      "level": 33,
+      "hp": 1790,
+      "atk": 384,
+      "def": 165,
+      "magicDef": 42,
       "attackCount": 1,
-      "accuracy": 600,
-      "evasion": 5,
+      "accuracy": 650,
+      "evasion": 3,
       "isBoss": true,
-      "gold": 160,
+      "gold": 250,
       "baseAttributes": {
-        "power": 63,
-        "wisdom": 63,
-        "spirit": 8,
-        "vitality": 20,
+        "power": 70,
+        "wisdom": 70,
+        "spirit": 10,
+        "vitality": 30,
         "agility": 2,
         "luck": 1
       },
@@ -206,701 +206,131 @@
   ],
   "patterns": [
     {
-      "id": "HV_001",
-      "floors": [
-        1,
-        2
-      ],
-      "enemies": [
-        [
-          "VIL001",
-          "VIL001"
-        ],
-        [
-          "VIL001"
-        ],
-        [
-          "VIL001"
-        ],
-        [
-          "VIL001"
-        ],
-        [
-          "VIL003"
-        ]
-      ]
+      "id": "HV_01_001",
+      "floors": [1],
+      "enemies": [["VIL001", "VIL001"], ["VIL003"]]
     },
     {
-      "id": "HV_002",
-      "floors": [
-        1,
-        2
-      ],
-      "enemies": [
-        [
-          "VIL001",
-          "VIL001",
-          "VIL001"
-        ],
-        [
-          "VIL001"
-        ],
-        [
-          "VIL001"
-        ],
-        [
-          "VIL001"
-        ],
-        [
-          "VIL003"
-        ]
-      ]
+      "id": "HV_01_002",
+      "floors": [1],
+      "enemies": [["VIL001", "VIL001", "VIL001"], ["VIL003"]]
     },
     {
-      "id": "HV_003",
-      "floors": [
-        1,
-        2
-      ],
-      "enemies": [
-        [
-          "VIL001",
-          "VIL001"
-        ],
-        [
-          "VIL001",
-          "VIL001"
-        ],
-        [
-          "VIL001"
-        ],
-        [
-          "VIL001"
-        ],
-        [
-          "VIL003"
-        ]
-      ]
+      "id": "HV_01_003",
+      "floors": [1],
+      "enemies": [["VIL001", "VIL001"], ["VIL001"], ["VIL003"]]
     },
     {
-      "id": "HV_004",
-      "floors": [
-        1,
-        2
-      ],
-      "enemies": [
-        [
-          "VIL001",
-          "VIL001"
-        ],
-        [
-          "VIL001"
-        ],
-        [
-          "VIL001"
-        ],
-        [
-          "VIL001"
-        ],
-        [
-          "VIL003",
-          "VIL003"
-        ]
-      ]
+      "id": "HV_F1_BOSS",
+      "floors": [1],
+      "enemies": [["VIL001", "VIL001"], ["VIL001"], ["VIL003", "VIL003"]],
+      "isFloorBoss": true
     },
     {
-      "id": "HV_005",
-      "floors": [
-        1,
-        2
-      ],
-      "enemies": [
-        [
-          "VIL001",
-          "VIL001"
-        ],
-        [
-          "VIL001"
-        ],
-        [
-          "VIL001",
-          "VIL001"
-        ],
-        [
-          "VIL001"
-        ],
-        [
-          "VIL003"
-        ]
-      ]
+      "id": "HV_02_001",
+      "floors": [2],
+      "enemies": [["VIL001", "VIL001"], ["VIL001"], ["VIL003"]]
     },
     {
-      "id": "HV_006",
-      "floors": [
-        3,
-        4
-      ],
-      "enemies": [
-        [
-          "VIL001",
-          "VIL002"
-        ],
-        [
-          "VIL001"
-        ],
-        [
-          "VIL001"
-        ],
-        [
-          "VIL001"
-        ],
-        [
-          "VIL003"
-        ]
-      ]
+      "id": "HV_02_002",
+      "floors": [2],
+      "enemies": [["VIL002", "VIL001"], ["VIL003"]]
     },
     {
-      "id": "HV_007",
-      "floors": [
-        3,
-        4
-      ],
-      "enemies": [
-        [
-          "VIL002",
-          "VIL001"
-        ],
-        [
-          "VIL001",
-          "VIL001"
-        ],
-        [
-          "VIL001"
-        ],
-        [
-          "VIL001"
-        ],
-        [
-          "VIL003"
-        ]
-      ]
+      "id": "HV_02_003",
+      "floors": [2],
+      "enemies": [["VIL001", "VIL001", "VIL001"], ["VIL003", "VIL003"]]
     },
     {
-      "id": "HV_008",
-      "floors": [
-        3,
-        4
-      ],
-      "enemies": [
-        [
-          "VIL001",
-          "VIL001"
-        ],
-        [
-          "VIL002"
-        ],
-        [
-          "VIL001"
-        ],
-        [
-          "VIL001"
-        ],
-        [
-          "VIL003",
-          "VIL003"
-        ]
-      ]
+      "id": "HV_F2_BOSS",
+      "floors": [2],
+      "enemies": [["VIL002", "VIL001"], ["VIL001"], ["VIL003", "VIL003"]],
+      "isFloorBoss": true
     },
     {
-      "id": "HV_009",
-      "floors": [
-        3,
-        4
-      ],
-      "enemies": [
-        [
-          "VIL002",
-          "VIL001"
-        ],
-        [
-          "VIL001"
-        ],
-        [
-          "VIL001"
-        ],
-        [
-          "VIL002"
-        ],
-        [
-          "VIL003"
-        ]
-      ]
+      "id": "HV_03_001",
+      "floors": [3],
+      "enemies": [["VIL002", "VIL001"], ["VIL003", "VIL003"]]
     },
     {
-      "id": "HV_010",
-      "floors": [
-        3,
-        4
-      ],
-      "enemies": [
-        [
-          "VIL001",
-          "VIL002"
-        ],
-        [
-          "VIL001",
-          "VIL001"
-        ],
-        [
-          "VIL002"
-        ],
-        [
-          "VIL001"
-        ],
-        [
-          "VIL003"
-        ]
-      ]
+      "id": "HV_03_002",
+      "floors": [3],
+      "enemies": [["VIL002", "VIL002"], ["VIL001"], ["VIL003"]]
     },
     {
-      "id": "HV_011",
-      "floors": [
-        5
-      ],
-      "enemies": [
-        [
-          "VIL002",
-          "VIL002"
-        ],
-        [
-          "VIL001"
-        ],
-        [
-          "VIL001"
-        ],
-        [
-          "VIL002"
-        ],
-        [
-          "VIL003",
-          "VIL003"
-        ]
-      ]
+      "id": "HV_03_003",
+      "floors": [3],
+      "enemies": [["VIL002", "VIL001", "VIL001"], ["VIL003"]]
     },
     {
-      "id": "HV_012",
-      "floors": [
-        5
-      ],
-      "enemies": [
-        [
-          "VIL002",
-          "VIL001"
-        ],
-        [
-          "VIL002"
-        ],
-        [
-          "VIL001"
-        ],
-        [
-          "VIL001"
-        ],
-        [
-          "VIL003",
-          "VIL003"
-        ]
-      ]
+      "id": "HV_F3_BOSS",
+      "floors": [3],
+      "enemies": [["VIL002", "VIL002"], ["VIL001"], ["VIL003", "VIL003"]],
+      "isFloorBoss": true
     },
     {
-      "id": "HV_013",
-      "floors": [
-        5
-      ],
-      "enemies": [
-        [
-          "VIL002",
-          "VIL002"
-        ],
-        [
-          "VIL001",
-          "VIL001"
-        ],
-        [
-          "VIL002"
-        ],
-        [
-          "VIL001"
-        ],
-        [
-          "VIL003"
-        ]
-      ]
+      "id": "HV_04_001",
+      "floors": [4],
+      "enemies": [["VIL002", "VIL002"], ["VIL001"], ["VIL003", "VIL003"]]
     },
     {
-      "id": "HV_014",
-      "floors": [
-        5
-      ],
-      "enemies": [
-        [
-          "VIL002",
-          "VIL001"
-        ],
-        [
-          "VIL002",
-          "VIL001"
-        ],
-        [
-          "VIL001"
-        ],
-        [
-          "VIL002"
-        ],
-        [
-          "VIL003",
-          "VIL003"
-        ]
-      ]
+      "id": "HV_04_002",
+      "floors": [4],
+      "enemies": [["VIL002", "VIL001", "VIL001"], ["VIL003", "VIL003"]]
     },
     {
-      "id": "HV_015",
-      "floors": [
-        5
-      ],
-      "enemies": [
-        [
-          "VIL002",
-          "VIL002"
-        ],
-        [
-          "VIL001"
-        ],
-        [
-          "VIL002"
-        ],
-        [
-          "VIL001"
-        ],
-        [
-          "VIL003",
-          "VIL003"
-        ]
-      ]
+      "id": "HV_04_003",
+      "floors": [4],
+      "enemies": [["VIL002", "VIL002", "VIL001"], ["VIL003"]]
     },
     {
-      "id": "HV_016",
-      "floors": [
-        6
-      ],
-      "enemies": [
-        [
-          "VIL002",
-          "VIL002"
-        ],
-        [
-          "VIL002"
-        ],
-        [
-          "VIL001"
-        ],
-        [
-          "VIL002"
-        ],
-        [
-          "VIL003",
-          "VIL003"
-        ]
-      ]
+      "id": "HV_F4_BOSS",
+      "floors": [4],
+      "enemies": [["VIL002", "VIL002"], ["VIL001", "VIL001"], ["VIL003", "VIL003"]],
+      "isFloorBoss": true
     },
     {
-      "id": "HV_017",
-      "floors": [
-        6
-      ],
-      "enemies": [
-        [
-          "VIL002",
-          "VIL002"
-        ],
-        [
-          "VIL001",
-          "VIL002"
-        ],
-        [
-          "VIL002"
-        ],
-        [
-          "VIL001"
-        ],
-        [
-          "VIL003",
-          "VIL003"
-        ]
-      ]
+      "id": "HV_05_001",
+      "floors": [5],
+      "enemies": [["VIL002", "VIL002"], ["VIL001"], ["B_CANNON"]]
     },
     {
-      "id": "HV_018",
-      "floors": [
-        6
-      ],
-      "enemies": [
-        [
-          "VIL002",
-          "VIL002"
-        ],
-        [
-          "VIL002"
-        ],
-        [
-          "VIL001",
-          "VIL002"
-        ],
-        [
-          "VIL001"
-        ],
-        [
-          "VIL003",
-          "VIL003"
-        ]
-      ]
+      "id": "HV_05_002",
+      "floors": [5],
+      "enemies": [["VIL002", "VIL002", "VIL001"], ["VIL003", "VIL003"]]
     },
     {
-      "id": "HV_019",
-      "floors": [
-        6
-      ],
-      "enemies": [
-        [
-          "VIL002",
-          "VIL002",
-          "VIL001"
-        ],
-        [
-          "VIL002"
-        ],
-        [
-          "VIL002"
-        ],
-        [
-          "VIL001"
-        ],
-        [
-          "VIL003",
-          "VIL003"
-        ]
-      ]
+      "id": "HV_05_003",
+      "floors": [5],
+      "enemies": [["VIL002", "VIL001"], ["VIL003", "VIL003"], ["VIL003"]]
     },
     {
-      "id": "HV_020",
-      "floors": [
-        6
-      ],
-      "enemies": [
-        [
-          "VIL002",
-          "VIL002"
-        ],
-        [
-          "VIL002",
-          "VIL001"
-        ],
-        [
-          "VIL002"
-        ],
-        [
-          "VIL002"
-        ],
-        [
-          "VIL003",
-          "VIL003"
-        ]
-      ]
+      "id": "HV_F5_BOSS",
+      "floors": [5],
+      "enemies": [["VIL002", "VIL002"], ["VIL001"], ["B_CANNON"], ["VIL003", "VIL003"]],
+      "isFloorBoss": true
     },
     {
-      "id": "BOSS",
-      "floors": [
-        6
-      ],
-      "enemies": [
-        [
-          "VIL002",
-          "VIL002"
-        ],
-        [
-          "VIL001",
-          "VIL002"
-        ],
-        [
-          "VIL002"
-        ],
-        [
-          "B_CANNON"
-        ],
-        [
-          "VIL003",
-          "VIL003"
-        ]
-      ],
+      "id": "HV_06_001",
+      "floors": [6],
+      "enemies": [["VIL002", "VIL002"], ["VIL001"], ["B_CANNON"], ["VIL003"]]
+    },
+    {
+      "id": "HV_06_002",
+      "floors": [6],
+      "enemies": [["VIL002", "VIL002", "VIL001"], ["VIL003", "VIL003"]]
+    },
+    {
+      "id": "HV_06_003",
+      "floors": [6],
+      "enemies": [["VIL002", "VIL001"], ["B_CANNON"], ["VIL003", "VIL003"]]
+    },
+    {
+      "id": "HV_FINAL",
+      "floors": [6],
+      "enemies": [["VIL002", "VIL002"], ["B_CANNON", "B_CANNON"], ["VIL003", "VIL003"]],
+      "isFloorBoss": true,
       "isBoss": true
-    },
-    {
-      "id": "HV_004_F1_BOSS",
-      "floors": [
-        1
-      ],
-      "enemies": [
-        [
-          "VIL001",
-          "VIL001"
-        ],
-        [
-          "VIL001"
-        ],
-        [
-          "VIL001"
-        ],
-        [
-          "VIL001"
-        ],
-        [
-          "VIL003",
-          "VIL003"
-        ]
-      ],
-      "isFloorBoss": true
-    },
-    {
-      "id": "HV_004_F2_BOSS",
-      "floors": [
-        2
-      ],
-      "enemies": [
-        [
-          "VIL001",
-          "VIL001"
-        ],
-        [
-          "VIL001"
-        ],
-        [
-          "VIL001"
-        ],
-        [
-          "VIL001"
-        ],
-        [
-          "VIL003",
-          "VIL003"
-        ]
-      ],
-      "isFloorBoss": true
-    },
-    {
-      "id": "HV_008_F3_BOSS",
-      "floors": [
-        3
-      ],
-      "enemies": [
-        [
-          "VIL001",
-          "VIL001"
-        ],
-        [
-          "VIL002"
-        ],
-        [
-          "VIL001"
-        ],
-        [
-          "VIL001"
-        ],
-        [
-          "VIL003",
-          "VIL003"
-        ]
-      ],
-      "isFloorBoss": true
-    },
-    {
-      "id": "HV_008_F4_BOSS",
-      "floors": [
-        4
-      ],
-      "enemies": [
-        [
-          "VIL001",
-          "VIL001"
-        ],
-        [
-          "VIL002"
-        ],
-        [
-          "VIL001"
-        ],
-        [
-          "VIL001"
-        ],
-        [
-          "VIL003",
-          "VIL003"
-        ]
-      ],
-      "isFloorBoss": true
-    },
-    {
-      "id": "HV_014_F5_BOSS",
-      "floors": [
-        5
-      ],
-      "enemies": [
-        [
-          "VIL002",
-          "VIL001"
-        ],
-        [
-          "VIL002",
-          "VIL001"
-        ],
-        [
-          "VIL001"
-        ],
-        [
-          "VIL002"
-        ],
-        [
-          "VIL003",
-          "VIL003"
-        ]
-      ],
-      "isFloorBoss": true
-    },
-    {
-      "id": "HV_020_F6_BOSS",
-      "floors": [
-        6
-      ],
-      "enemies": [
-        [
-          "VIL002",
-          "VIL002"
-        ],
-        [
-          "VIL002",
-          "VIL001"
-        ],
-        [
-          "VIL002"
-        ],
-        [
-          "VIL002"
-        ],
-        [
-          "VIL003",
-          "VIL003"
-        ]
-      ],
-      "isFloorBoss": true
     }
   ]
 }

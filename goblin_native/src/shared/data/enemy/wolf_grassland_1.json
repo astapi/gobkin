@@ -1,6 +1,54 @@
 {
   "enemies": [
     {
+      "id": "WFG001",
+      "name": "草原オオカミ",
+      "attackType": "melee",
+      "raceTags": [
+        "beast"
+      ],
+      "level": 28,
+      "hp": 510,
+      "atk": 108,
+      "def": 51,
+      "attackCount": 3,
+      "accuracy": 560,
+      "evasion": 39,
+      "gold": 84,
+      "magicDef": 22,
+      "baseAttributes": {
+        "power": 24,
+        "wisdom": 8,
+        "spirit": 6,
+        "vitality": 10,
+        "agility": 24,
+        "luck": 10
+      },
+      "rareEquipmentDrops": [
+        {
+          "templateId": "sword_rare_021"
+        }
+      ],
+      "tierRareEquipmentDrops": [
+        {
+          "tier": 1,
+          "drops": [
+            {
+              "templateId": "armor_rare_029"
+            }
+          ]
+        },
+        {
+          "tier": 3,
+          "drops": [
+            {
+              "templateId": "accessory_rare_051"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "id": "WFG002",
       "name": "ダイアウルフ",
       "attackType": "melee",
@@ -8,17 +56,17 @@
         "beast"
       ],
       "level": 30,
-      "hp": 440,
-      "atk": 120,
-      "def": 56,
+      "hp": 700,
+      "atk": 145,
+      "def": 70,
       "attackCount": 4,
       "accuracy": 560,
-      "evasion": 46,
+      "evasion": 47,
       "gold": 96,
       "magicDef": 24,
       "baseAttributes": {
         "power": 30,
-        "wisdom": 30,
+        "wisdom": 10,
         "spirit": 6,
         "vitality": 13,
         "agility": 26,
@@ -49,6 +97,102 @@
       ]
     },
     {
+      "id": "WFG003",
+      "name": "牙狼",
+      "attackType": "melee",
+      "raceTags": [
+        "beast"
+      ],
+      "level": 31,
+      "hp": 910,
+      "atk": 190,
+      "def": 89,
+      "attackCount": 3,
+      "accuracy": 580,
+      "evasion": 40,
+      "gold": 104,
+      "magicDef": 28,
+      "baseAttributes": {
+        "power": 34,
+        "wisdom": 10,
+        "spirit": 7,
+        "vitality": 16,
+        "agility": 22,
+        "luck": 10
+      },
+      "rareEquipmentDrops": [
+        {
+          "templateId": "sword_rare_022"
+        }
+      ],
+      "tierRareEquipmentDrops": [
+        {
+          "tier": 1,
+          "drops": [
+            {
+              "templateId": "armor_rare_030"
+            }
+          ]
+        },
+        {
+          "tier": 3,
+          "drops": [
+            {
+              "templateId": "accessory_rare_052"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "WFG004",
+      "name": "草原の大鷲",
+      "attackType": "range",
+      "raceTags": [
+        "beast"
+      ],
+      "level": 30,
+      "hp": 610,
+      "atk": 132,
+      "def": 59,
+      "attackCount": 3,
+      "accuracy": 700,
+      "evasion": 51,
+      "gold": 100,
+      "magicDef": 30,
+      "baseAttributes": {
+        "power": 26,
+        "wisdom": 10,
+        "spirit": 8,
+        "vitality": 11,
+        "agility": 30,
+        "luck": 12
+      },
+      "rareEquipmentDrops": [
+        {
+          "templateId": "bow_rare_007"
+        }
+      ],
+      "tierRareEquipmentDrops": [
+        {
+          "tier": 1,
+          "drops": [
+            {
+              "templateId": "accessory_rare_051"
+            }
+          ]
+        },
+        {
+          "tier": 3,
+          "drops": [
+            {
+              "templateId": "accessory_rare_053"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "id": "B_WOLF_ALPHA",
       "name": "グランダイアウルフ",
       "attackType": "melee",
@@ -56,12 +200,12 @@
         "beast"
       ],
       "level": 40,
-      "hp": 1010,
-      "atk": 200,
+      "hp": 1310,
+      "atk": 235,
       "def": 119,
-      "attackCount": 7,
+      "attackCount": 6,
       "accuracy": 640,
-      "evasion": 52,
+      "evasion": 54,
       "isBoss": true,
       "gold": 320,
       "factorDrops": [
@@ -73,7 +217,7 @@
       "magicDef": 30,
       "baseAttributes": {
         "power": 50,
-        "wisdom": 50,
+        "wisdom": 12,
         "spirit": 8,
         "vitality": 20,
         "agility": 32,
@@ -109,306 +253,131 @@
   ],
   "patterns": [
     {
-      "id": "WG1_001",
-      "floors": [
-        1,
-        2,
-        3
-      ],
-      "enemies": [
-        [
-          "WFG002",
-          "WFG002",
-          "WFG002",
-          "WFG002",
-          "WFG002"
-        ],
-        [
-          "WFG002",
-          "WFG002"
-        ]
-      ]
+      "id": "WG_01_001",
+      "floors": [1],
+      "enemies": [["WFG001", "WFG001", "WFG001"], ["WFG001"]]
     },
     {
-      "id": "WG1_002",
-      "floors": [
-        1,
-        2,
-        3
-      ],
-      "enemies": [
-        [
-          "WFG002",
-          "WFG002",
-          "WFG002",
-          "WFG002"
-        ],
-        [
-          "WFG002",
-          "WFG002",
-          "WFG002",
-          "WFG002"
-        ]
-      ]
+      "id": "WG_01_002",
+      "floors": [1],
+      "enemies": [["WFG001", "WFG001", "WFG002"], ["WFG001"]]
     },
     {
-      "id": "WG1_003",
-      "floors": [
-        1,
-        2,
-        3
-      ],
-      "enemies": [
-        [
-          "WFG002",
-          "WFG002",
-          "WFG002",
-          "WFG002",
-          "WFG002",
-          "WFG002"
-        ],
-        [
-          "WFG002",
-          "WFG002"
-        ]
-      ]
+      "id": "WG_01_003",
+      "floors": [1],
+      "enemies": [["WFG001", "WFG001", "WFG001"], ["WFG002"]]
     },
     {
-      "id": "WG1_004",
-      "floors": [
-        4,
-        5
-      ],
-      "enemies": [
-        [
-          "WFG002",
-          "WFG002",
-          "WFG002",
-          "WFG002",
-          "WFG002"
-        ],
-        [
-          "WFG002",
-          "WFG002",
-          "WFG002"
-        ]
-      ]
+      "id": "WG_F1_BOSS",
+      "floors": [1],
+      "enemies": [["WFG002", "WFG001", "WFG001"], ["WFG001"]],
+      "isFloorBoss": true
     },
     {
-      "id": "WG1_005",
-      "floors": [
-        4,
-        5
-      ],
-      "enemies": [
-        [
-          "WFG002",
-          "WFG002",
-          "WFG002",
-          "WFG002"
-        ],
-        [
-          "WFG002",
-          "WFG002",
-          "WFG002",
-          "WFG002"
-        ]
-      ]
+      "id": "WG_02_001",
+      "floors": [2],
+      "enemies": [["WFG002", "WFG001", "WFG001"], ["WFG001", "WFG001"]]
     },
     {
-      "id": "WG1_006",
-      "floors": [
-        4,
-        5
-      ],
-      "enemies": [
-        [
-          "WFG002",
-          "WFG002",
-          "WFG002",
-          "WFG002",
-          "WFG002",
-          "WFG002"
-        ],
-        [
-          "WFG002",
-          "WFG002",
-          "WFG002"
-        ]
-      ]
+      "id": "WG_02_002",
+      "floors": [2],
+      "enemies": [["WFG001", "WFG001", "WFG001"], ["WFG002", "WFG001"]]
     },
     {
-      "id": "WG1_007",
-      "floors": [
-        6
-      ],
-      "enemies": [
-        [
-          "WFG002",
-          "WFG002",
-          "WFG002",
-          "WFG002",
-          "WFG002"
-        ],
-        [
-          "WFG002",
-          "WFG002",
-          "WFG002",
-          "WFG002"
-        ]
-      ]
+      "id": "WG_02_003",
+      "floors": [2],
+      "enemies": [["WFG002", "WFG002"], ["WFG001", "WFG001"]]
     },
     {
-      "id": "BOSS",
-      "floors": [
-        6
-      ],
-      "enemies": [
-        [
-          "WFG002",
-          "WFG002",
-          "WFG002",
-          "WFG002"
-        ],
-        [
-          "WFG002",
-          "WFG002",
-          "WFG002"
-        ],
-        [
-          "B_WOLF_ALPHA"
-        ]
-      ],
+      "id": "WG_F2_BOSS",
+      "floors": [2],
+      "enemies": [["WFG002", "WFG002", "WFG001"], ["WFG001", "WFG001"]],
+      "isFloorBoss": true
+    },
+    {
+      "id": "WG_03_001",
+      "floors": [3],
+      "enemies": [["WFG003", "WFG002", "WFG001"], ["WFG002", "WFG001"]]
+    },
+    {
+      "id": "WG_03_002",
+      "floors": [3],
+      "enemies": [["WFG002", "WFG002", "WFG002"], ["WFG003", "WFG001"]]
+    },
+    {
+      "id": "WG_03_003",
+      "floors": [3],
+      "enemies": [["WFG003", "WFG002", "WFG002"], ["WFG001", "WFG001"]]
+    },
+    {
+      "id": "WG_F3_BOSS",
+      "floors": [3],
+      "enemies": [["WFG003", "WFG002", "WFG002"], ["WFG004", "WFG001"]],
+      "isFloorBoss": true
+    },
+    {
+      "id": "WG_04_001",
+      "floors": [4],
+      "enemies": [["WFG002", "WFG002", "WFG002", "WFG002"], ["WFG004", "WFG002"]]
+    },
+    {
+      "id": "WG_04_002",
+      "floors": [4],
+      "enemies": [["WFG003", "WFG002", "WFG002"], ["WFG004", "WFG002", "WFG001"]]
+    },
+    {
+      "id": "WG_04_003",
+      "floors": [4],
+      "enemies": [["WFG002", "WFG002", "WFG002", "WFG002"], ["WFG002", "WFG002"]]
+    },
+    {
+      "id": "WG_F4_BOSS",
+      "floors": [4],
+      "enemies": [["WFG003", "WFG002", "WFG002", "WFG002"], ["WFG004", "WFG002"]],
+      "isFloorBoss": true
+    },
+    {
+      "id": "WG_05_001",
+      "floors": [5],
+      "enemies": [["WFG002", "WFG002", "WFG002", "WFG002"], ["WFG002", "WFG002", "WFG004"]]
+    },
+    {
+      "id": "WG_05_002",
+      "floors": [5],
+      "enemies": [["WFG003", "WFG002", "WFG002", "WFG002"], ["WFG004", "WFG002", "WFG002"]]
+    },
+    {
+      "id": "WG_05_003",
+      "floors": [5],
+      "enemies": [["WFG002", "WFG002", "WFG002", "WFG002", "WFG002"], ["WFG002", "WFG002"]]
+    },
+    {
+      "id": "WG_F5_BOSS",
+      "floors": [5],
+      "enemies": [["WFG003", "WFG002", "WFG002", "WFG002"], ["WFG004", "WFG004", "WFG002"]],
+      "isFloorBoss": true
+    },
+    {
+      "id": "WG_06_001",
+      "floors": [6],
+      "enemies": [["WFG002", "WFG002", "WFG002", "WFG002", "WFG002"], ["WFG002", "WFG002", "WFG004"]]
+    },
+    {
+      "id": "WG_06_002",
+      "floors": [6],
+      "enemies": [["WFG003", "WFG002", "WFG002", "WFG002"], ["WFG004", "WFG002", "WFG002", "WFG002"]]
+    },
+    {
+      "id": "WG_06_003",
+      "floors": [6],
+      "enemies": [["WFG002", "WFG002", "WFG002", "WFG002"], ["WFG002", "WFG002", "WFG002", "WFG002"]]
+    },
+    {
+      "id": "WG_FINAL",
+      "floors": [6],
+      "enemies": [["B_WOLF_ALPHA", "WFG003", "WFG002"], ["WFG004", "WFG002", "WFG002"]],
+      "isFloorBoss": true,
       "isBoss": true
-    },
-    {
-      "id": "WG1_002_F1_BOSS",
-      "floors": [
-        1
-      ],
-      "enemies": [
-        [
-          "WFG002",
-          "WFG002",
-          "WFG002",
-          "WFG002"
-        ],
-        [
-          "WFG002",
-          "WFG002",
-          "WFG002",
-          "WFG002"
-        ]
-      ],
-      "isFloorBoss": true
-    },
-    {
-      "id": "WG1_002_F2_BOSS",
-      "floors": [
-        2
-      ],
-      "enemies": [
-        [
-          "WFG002",
-          "WFG002",
-          "WFG002",
-          "WFG002"
-        ],
-        [
-          "WFG002",
-          "WFG002",
-          "WFG002",
-          "WFG002"
-        ]
-      ],
-      "isFloorBoss": true
-    },
-    {
-      "id": "WG1_002_F3_BOSS",
-      "floors": [
-        3
-      ],
-      "enemies": [
-        [
-          "WFG002",
-          "WFG002",
-          "WFG002",
-          "WFG002"
-        ],
-        [
-          "WFG002",
-          "WFG002",
-          "WFG002",
-          "WFG002"
-        ]
-      ],
-      "isFloorBoss": true
-    },
-    {
-      "id": "WG1_006_F4_BOSS",
-      "floors": [
-        4
-      ],
-      "enemies": [
-        [
-          "WFG002",
-          "WFG002",
-          "WFG002",
-          "WFG002",
-          "WFG002",
-          "WFG002"
-        ],
-        [
-          "WFG002",
-          "WFG002",
-          "WFG002"
-        ]
-      ],
-      "isFloorBoss": true
-    },
-    {
-      "id": "WG1_006_F5_BOSS",
-      "floors": [
-        5
-      ],
-      "enemies": [
-        [
-          "WFG002",
-          "WFG002",
-          "WFG002",
-          "WFG002",
-          "WFG002",
-          "WFG002"
-        ],
-        [
-          "WFG002",
-          "WFG002",
-          "WFG002"
-        ]
-      ],
-      "isFloorBoss": true
-    },
-    {
-      "id": "WG1_007_F6_BOSS",
-      "floors": [
-        6
-      ],
-      "enemies": [
-        [
-          "WFG002",
-          "WFG002",
-          "WFG002",
-          "WFG002",
-          "WFG002"
-        ],
-        [
-          "WFG002",
-          "WFG002",
-          "WFG002",
-          "WFG002"
-        ]
-      ],
-      "isFloorBoss": true
     }
   ]
 }
