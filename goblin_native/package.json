@@ -17,6 +17,7 @@
     "sim:availability": "node scripts/analyze-progression-availability.js",
     "sim:optimize": "node scripts/optimize-balance-strategy.js",
     "sim:progression": "node scripts/run-progression-simulation.js",
+    "sim:playtime": "node scripts/simulate-playtime-to-dungeon.js",
     "sim:early-balance-report": "node scripts/report-early-dungeon-balance.js",
     "sim:early-progression-check": "node scripts/check-early-progression.js",
     "sim:strategy-gates": "node scripts/check-strategy-floor-gates.js",

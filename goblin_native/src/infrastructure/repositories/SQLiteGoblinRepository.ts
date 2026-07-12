@@ -71,11 +71,28 @@ export class SQLiteGoblinRepository implements IGoblinRepository {
     }
     const db = await getDatabase()
     await db.runAsync(
-      `INSERT OR REPLACE INTO goblins
+      `INSERT INTO goblins
        (id, name, race, race_id, level, experience, avatar, stats_json,
         current_hp, effective_stats_json, factors_json, variant_factor_id, job_id,
         individual_value, skills_json, battle_action_policy_json, updated_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))`,
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))
+       ON CONFLICT(id) DO UPDATE SET
+         name = excluded.name,
+         race = excluded.race,
+         race_id = excluded.race_id,
+         level = excluded.level,
+         experience = excluded.experience,
+         avatar = excluded.avatar,
+         stats_json = excluded.stats_json,
+         current_hp = excluded.current_hp,
+         effective_stats_json = excluded.effective_stats_json,
+         factors_json = excluded.factors_json,
+         variant_factor_id = excluded.variant_factor_id,
+         job_id = excluded.job_id,
+         individual_value = excluded.individual_value,
+         skills_json = excluded.skills_json,
+         battle_action_policy_json = excluded.battle_action_policy_json,
+         updated_at = excluded.updated_at`,
       [
         persistedGoblin.id,
         persistedGoblin.name,
