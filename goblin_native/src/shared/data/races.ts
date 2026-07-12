@@ -86,6 +86,18 @@ export const races: RaceDict = {
       "exp_bonus_40"
     ]
   },
+  elder: {
+    label: "古強者ゴブリン",
+    implies: [
+      "goblin"
+    ]
+  },
+  gale: {
+    label: "疾風ゴブリン",
+    implies: [
+      "goblin"
+    ]
+  },
   human: {
     label: "人間",
     physicalResistancePercent: 0,

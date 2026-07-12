@@ -570,6 +570,8 @@ const ja = {
     race: {
       goblin: 'ゴブリン',
       founder: '始祖ゴブリン',
+      elder: '古強者ゴブリン',
+      gale: '疾風ゴブリン',
       slime: 'スライムゴブリン',
       wolf: 'ウルフゴブリン',
       orc: 'オークゴブリン',
@@ -815,6 +817,10 @@ const ja = {
       rear_guard: { name: '後列防護' },
       magic_rear_guard: { name: '魔法保護' },
       survive_lethal_hp1: { name: '気合い' },
+      gido_no_ishi: {
+        name: 'ギドの遺志',
+        description: '仲間を庇って倒れた古強者の遺志。HPが0になる攻撃を受けてもHP1で耐える。',
+      },
       exp_bonus_10: { name: '[+10%]獲得経験値' },
       exp_bonus_30: { name: '[+30%]獲得経験値' },
       exp_bonus_40: { name: '[+40%]獲得経験値' },

@@ -1,6 +1,8 @@
 export const GOBLIN_RACE_IDS = [
   'goblin',
   'founder',
+  'elder',
+  'gale',
   'slime',
   'wolf',
   'orc',
@@ -23,6 +25,8 @@ export type GoblinRaceId = (typeof GOBLIN_RACE_IDS)[number]
 const LEGACY_RACE_NAME_MAP: Record<string, GoblinRaceId> = {
   ゴブリン: 'goblin',
   始祖ゴブリン: 'founder',
+  古強者ゴブリン: 'elder',
+  疾風ゴブリン: 'gale',
   スライムゴブリン: 'slime',
   ウルフゴブリン: 'wolf',
   オークゴブリン: 'orc',
@@ -45,6 +49,8 @@ const LEGACY_RACE_NAME_MAP: Record<string, GoblinRaceId> = {
 const RACE_ID_TO_LEGACY_NAME: Record<GoblinRaceId, string> = {
   goblin: 'ゴブリン',
   founder: '始祖ゴブリン',
+  elder: '古強者ゴブリン',
+  gale: '疾風ゴブリン',
   slime: 'スライムゴブリン',
   wolf: 'ウルフゴブリン',
   orc: 'オークゴブリン',

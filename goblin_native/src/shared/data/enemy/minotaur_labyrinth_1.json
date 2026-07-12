@@ -53,7 +53,7 @@
     },
     {
       "id": "B_LABYRINTH_KEEPER",
-      "name": "迷宮の番人",
+      "name": "迷宮の主アステリオン",
       "attackType": "melee",
       "raceTags": [
         "minotaur"

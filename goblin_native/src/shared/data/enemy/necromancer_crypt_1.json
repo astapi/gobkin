@@ -128,7 +128,7 @@
     },
     {
       "id": "B_NECROMANCER_ARCHON",
-      "name": "地下霊廟の死霊術師",
+      "name": "霊廟の主モルデュス",
       "attackType": "melee",
       "raceTags": [
         "undead"

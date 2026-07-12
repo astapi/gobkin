@@ -41,6 +41,8 @@ const goblinImages: Record<string, ImageSourcePropType> = {
   goblin_cleric: require('../../../assets/goblin/goblin_cleric.png'),
   goblin_rider: require('../../../assets/goblin/goblin_rider.png'),
   goblin_rider_battle: require('../../../assets/goblin/goblin_rider_battle.png'),
+  gido: require('../../../assets/goblin/gido.png'),
+  ragu: require('../../../assets/goblin/ragu.png'),
 }
 
 export type GoblinImageOption = {

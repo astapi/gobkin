@@ -289,6 +289,60 @@
       ]
     },
     {
+      "id": "HUM006",
+      "name": "斥候長ロラン",
+      "attackType": "melee",
+      "raceTags": [
+        "human"
+      ],
+      "level": 70,
+      "hp": 2200,
+      "atk": 490,
+      "def": 117,
+      "magicDef": 84,
+      "attackCount": 5,
+      "accuracy": 644,
+      "evasion": 55,
+      "gold": 150,
+      "skills": [
+        {
+          "id": "physical_reduction_10",
+          "physicalDamageReductionPercent": 10
+        }
+      ],
+      "baseAttributes": {
+        "power": 18,
+        "wisdom": 18,
+        "spirit": 9,
+        "vitality": 22,
+        "agility": 8,
+        "luck": 5
+      },
+      "rareEquipmentDrops": [
+        {
+          "templateId": "sword_rare_024"
+        }
+      ],
+      "tierRareEquipmentDrops": [
+        {
+          "tier": 1,
+          "drops": [
+            {
+              "templateId": "shield_rare_013"
+            }
+          ]
+        },
+        {
+          "tier": 3,
+          "drops": [
+            {
+              "templateId": "armor_rare_033"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "id": "B_CAPTAIN",
       "name": "辺境城騎士団長",
       "attackType": "melee",
@@ -1435,6 +1489,32 @@
           "HUM004"
         ]
       ]
+    },
+    {
+      "id": "SUBJUGATION_FORCE_3_SCOUT_ROLAND_F6_BOSS",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "HUM006"
+        ],
+        [
+          "HUM001",
+          "HUM001"
+        ],
+        [
+          "HUM001"
+        ],
+        [
+          "HUM003",
+          "HUM002"
+        ],
+        [
+          "HUM004"
+        ]
+      ],
+      "isFloorBoss": true
     },
     {
       "id": "SUBJUGATION_FORCE_3_BOSS",

@@ -790,6 +790,12 @@ export const CHARACTER_SKILL_CATALOG = {
     surviveLethalDamageAtHp1: true,
   },
 
+  gido_no_ishi: {
+    id: 'gido_no_ishi',
+    descriptionKey: 'entities.skill.gido_no_ishi.description',
+    surviveLethalDamageAtHp1: true,
+  },
+
   exp_bonus_10: {
     id: 'exp_bonus_10',
     expBonusPercent: 10,

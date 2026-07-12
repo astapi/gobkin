@@ -124,6 +124,31 @@
         "agility": 12,
         "luck": 10
       }
+    },
+    {
+      "id": "ROY006",
+      "name": "騎士ロラン",
+      "attackType": "melee",
+      "raceTags": [
+        "human"
+      ],
+      "level": 31,
+      "hp": 350,
+      "atk": 54,
+      "def": 38,
+      "attackCount": 1,
+      "accuracy": 788,
+      "evasion": 41,
+      "gold": 200,
+      "magicDef": 57,
+      "baseAttributes": {
+        "power": 14,
+        "wisdom": 14,
+        "spirit": 14,
+        "vitality": 19,
+        "agility": 7,
+        "luck": 9
+      }
     }
   ],
   "patterns": [
@@ -382,6 +407,28 @@
           "ROY002"
         ]
       ]
+    },
+    {
+      "id": "RC2_KNIGHT_ROLAND_F4_BOSS",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "ROY006"
+        ],
+        [
+          "ROY001",
+          "ROY001"
+        ],
+        [
+          "ROY003"
+        ],
+        [
+          "ROY002"
+        ]
+      ],
+      "isFloorBoss": true
     },
     {
       "id": "RC2_005_F1_BOSS",
