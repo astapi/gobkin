@@ -128,7 +128,7 @@
     },
     {
       "id": "B_FORESTGUARD",
-      "name": "森の番人",
+      "name": "エルフの長シェンナ",
       "attackType": "melee",
       "raceTags": [
         "elf"

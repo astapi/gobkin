@@ -744,6 +744,20 @@ describe('characterSkills - 物理ダメージ軽減', () => {
     expect(describeCharacterSkill(skill)).toBe('HPが0になる攻撃を受けてもHP1で耐える')
   })
 
+  it('ギドの遺志は致死耐えフラグと専用説明キーを持つ', () => {
+    const skill = getCharacterSkill('gido_no_ishi')
+
+    expect(skill).toMatchObject({
+      id: 'gido_no_ishi',
+      surviveLethalDamageAtHp1: true,
+      descriptionKey: 'entities.skill.gido_no_ishi.description',
+    })
+    expect(hasSurviveLethalDamageAtHp1Skill([skill])).toBe(true)
+    expect(getCharacterSkillDescription(skill)).toBe(
+      '仲間を庇って倒れた古強者の遺志。HPが0になる攻撃を受けてもHP1で耐える。',
+    )
+  })
+
   it('2回行動スキルの説明文を返す', () => {
     const skill: CharacterSkill = {
       id: 'two_actions',

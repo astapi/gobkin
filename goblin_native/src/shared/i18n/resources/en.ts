@@ -559,6 +559,8 @@ const en = {
     race: {
       goblin: 'Goblin',
       founder: 'Founder Goblin',
+      elder: 'Elder Goblin',
+      gale: 'Gale Goblin',
       slime: 'Slime Goblin',
       wolf: 'Wolf Goblin',
       orc: 'Orc Goblin',
@@ -792,6 +794,10 @@ const en = {
       rear_guard: { name: 'Rear Guard' },
       magic_rear_guard: { name: 'Magic Protection' },
       survive_lethal_hp1: { name: 'Guts' },
+      gido_no_ishi: {
+        name: "Gido's Will",
+        description: 'The will of an old warrior who fell shielding his comrades. Survives lethal damage with 1 HP.',
+      },
       factor_drop_bonus_10: { name: '[+10%] Factor acquisition' },
       factor_drop_bonus_20: { name: '[+20%] Factor acquisition' },
       factor_drop_bonus_30: { name: '[+30%] Factor acquisition' },

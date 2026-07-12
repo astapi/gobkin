@@ -550,6 +550,8 @@ const ko = {
     race: {
       goblin: '고블린',
       founder: '시조 고블린',
+      elder: '고참 고블린',
+      gale: '질풍 고블린',
       slime: '슬라임 고블린',
       wolf: '울프 고블린',
       orc: '오크 고블린',
@@ -783,6 +785,10 @@ const ko = {
       rear_guard: { name: '후열 보호' },
       magic_rear_guard: { name: '마법 보호' },
       survive_lethal_hp1: { name: '근성' },
+      gido_no_ishi: {
+        name: '기드의 유지',
+        description: '동료를 감싸다 쓰러진 노전사의 유지. 치명상을 받아도 HP 1로 버틴다.',
+      },
       factor_drop_bonus_10: { name: '[+10%] 인자 획득' },
       factor_drop_bonus_20: { name: '[+20%] 인자 획득' },
       factor_drop_bonus_30: { name: '[+30%] 인자 획득' },
