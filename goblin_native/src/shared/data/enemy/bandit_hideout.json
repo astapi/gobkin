@@ -328,12 +328,7 @@
         "agility": 16,
         "luck": 12
       },
-      "isBoss": true,
-      "rareEquipmentDrops": [
-        {
-          "templateId": "accessory_human_slayer"
-        }
-      ]
+      "isBoss": true
     }
   ],
   "patterns": [

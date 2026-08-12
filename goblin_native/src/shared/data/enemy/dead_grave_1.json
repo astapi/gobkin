@@ -7,15 +7,15 @@
       "raceTags": [
         "undead"
       ],
-      "level": 22,
-      "hp": 140,
-      "atk": 34,
-      "def": 16,
+      "level": 112,
+      "hp": 3570,
+      "atk": 422,
+      "def": 293,
       "attackCount": 2,
-      "accuracy": 500,
-      "evasion": 24,
-      "gold": 66,
-      "magicDef": 16,
+      "accuracy": 764,
+      "evasion": 75,
+      "gold": 132,
+      "magicDef": 569,
       "baseAttributes": {
         "power": 9,
         "wisdom": 9,
@@ -32,15 +32,15 @@
       "raceTags": [
         "undead"
       ],
-      "level": 22,
-      "hp": 170,
-      "atk": 28,
-      "def": 14,
+      "level": 113,
+      "hp": 3150,
+      "atk": 330,
+      "def": 258,
       "attackCount": 1,
-      "accuracy": 495,
-      "evasion": 20,
-      "gold": 62,
-      "magicDef": 14,
+      "accuracy": 766,
+      "evasion": 75,
+      "gold": 124,
+      "magicDef": 502,
       "baseAttributes": {
         "power": 7,
         "wisdom": 7,
@@ -57,16 +57,16 @@
       "raceTags": [
         "undead"
       ],
-      "level": 23,
-      "hp": 110,
-      "atk": 40,
-      "magicAtk": 34,
-      "def": 10,
+      "level": 115,
+      "hp": 2280,
+      "atk": 476,
+      "magicAtk": 1187,
+      "def": 186,
       "attackCount": 1,
-      "accuracy": 520,
-      "evasion": 30,
-      "gold": 74,
-      "magicDef": 12,
+      "accuracy": 770,
+      "evasion": 75,
+      "gold": 146,
+      "magicDef": 420,
       "baseAttributes": {
         "power": 10,
         "wisdom": 9,
@@ -83,15 +83,15 @@
       "raceTags": [
         "undead"
       ],
-      "level": 23,
-      "hp": 98,
-      "atk": 44,
-      "def": 14,
+      "level": 117,
+      "hp": 3220,
+      "atk": 531,
+      "def": 264,
       "attackCount": 2,
-      "accuracy": 535,
-      "evasion": 28,
-      "gold": 76,
-      "magicDef": 16,
+      "accuracy": 774,
+      "evasion": 75,
+      "gold": 152,
+      "magicDef": 569,
       "baseAttributes": {
         "power": 11,
         "wisdom": 11,
@@ -108,15 +108,15 @@
       "raceTags": [
         "undead"
       ],
-      "level": 24,
-      "hp": 180,
-      "atk": 54,
-      "def": 22,
+      "level": 120,
+      "hp": 5130,
+      "atk": 687,
+      "def": 420,
       "attackCount": 2,
-      "accuracy": 540,
-      "evasion": 22,
-      "gold": 82,
-      "magicDef": 20,
+      "accuracy": 780,
+      "evasion": 75,
+      "gold": 162,
+      "magicDef": 704,
       "baseAttributes": {
         "power": 14,
         "wisdom": 14,
@@ -133,17 +133,17 @@
       "raceTags": [
         "undead"
       ],
-      "level": 28,
-      "hp": 860,
-      "atk": 60,
-      "magicAtk": 42,
-      "def": 28,
+      "level": 142,
+      "hp": 6020,
+      "atk": 516,
+      "magicAtk": 1494,
+      "def": 482,
       "attackCount": 3,
-      "accuracy": 635,
-      "evasion": 34,
+      "accuracy": 863,
+      "evasion": 85,
       "isBoss": true,
-      "gold": 400,
-      "magicDef": 32,
+      "gold": 798,
+      "magicDef": 1136,
       "baseAttributes": {
         "power": 15,
         "wisdom": 11,
@@ -156,7 +156,7 @@
   ],
   "patterns": [
     {
-      "id": "DEAD_GRAVE_1_DG1_001",
+      "id": "DG1_F1_A",
       "floors": [
         1
       ],
@@ -164,163 +164,415 @@
         [
           "DGR001",
           "DGR001"
+        ],
+        [
+          "DGR002"
         ]
       ]
     },
     {
-      "id": "DEAD_GRAVE_1_DG1_002",
+      "id": "DG1_F1_B",
       "floors": [
         1
       ],
       "enemies": [
         [
-          "DGR002"
+          "DGR001",
+          "DGR001",
+          "DGR001"
         ],
+        [
+          "DGR002"
+        ]
+      ]
+    },
+    {
+      "id": "DG1_F1_C",
+      "floors": [
+        1
+      ],
+      "enemies": [
         [
           "DGR001",
           "DGR001"
-        ]
-      ]
-    },
-    {
-      "id": "DEAD_GRAVE_1_DG1_003",
-      "floors": [
-        2
-      ],
-      "enemies": [
-        [
-          "DGR001",
-          "DGR002"
         ],
-        [
-          "DGR003"
-        ]
-      ]
-    },
-    {
-      "id": "DEAD_GRAVE_1_DG1_004",
-      "floors": [
-        2
-      ],
-      "enemies": [
         [
           "DGR002",
           "DGR002"
-        ],
-        [
-          "DGR003"
         ]
       ]
     },
     {
-      "id": "DEAD_GRAVE_2_DG2_001",
+      "id": "DG1_F1_BOSS",
       "floors": [
-        3
+        1
       ],
       "enemies": [
         [
           "DGR001",
-          "DGR003"
+          "DGR001",
+          "DGR001"
         ],
         [
-          "DGR004"
+          "DGR002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "DG1_F2_A",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "DGR001",
+          "DGR002"
+        ],
+        [
+          "DGR003",
+          "DGR001"
         ]
       ]
     },
     {
-      "id": "DEAD_GRAVE_2_DG2_002",
+      "id": "DG1_F2_B",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "DGR001",
+          "DGR002",
+          "DGR001"
+        ],
+        [
+          "DGR003",
+          "DGR001"
+        ]
+      ]
+    },
+    {
+      "id": "DG1_F2_C",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "DGR001",
+          "DGR002"
+        ],
+        [
+          "DGR003",
+          "DGR001",
+          "DGR003"
+        ]
+      ]
+    },
+    {
+      "id": "DG1_F2_BOSS",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "DGR001",
+          "DGR002",
+          "DGR001"
+        ],
+        [
+          "DGR003",
+          "DGR001"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "DG1_F3_A",
       "floors": [
         3
       ],
       "enemies": [
         [
           "DGR003",
-          "DGR003"
+          "DGR004"
         ],
         [
-          "DGR004"
+          "DGR001",
+          "DGR002"
         ]
       ]
     },
     {
-      "id": "DEAD_GRAVE_2_DG2_003",
+      "id": "DG1_F3_B",
       "floors": [
-        4
+        3
       ],
       "enemies": [
         [
-          "DGR005"
-        ],
-        [
+          "DGR003",
           "DGR004",
           "DGR003"
+        ],
+        [
+          "DGR001",
+          "DGR002"
         ]
       ]
     },
     {
-      "id": "DEAD_GRAVE_2_DG2_004",
+      "id": "DG1_F3_C",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "DGR003",
+          "DGR004"
+        ],
+        [
+          "DGR001",
+          "DGR002",
+          "DGR001"
+        ]
+      ]
+    },
+    {
+      "id": "DG1_F3_BOSS",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "DGR003",
+          "DGR004",
+          "DGR003"
+        ],
+        [
+          "DGR001",
+          "DGR002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "DG1_F4_A",
       "floors": [
         4
       ],
       "enemies": [
         [
           "DGR005",
-          "DGR001"
-        ],
-        [
-          "DGR004",
-          "DGR003"
-        ]
-      ]
-    },
-    {
-      "id": "DEAD_GRAVE_3_DG3_001",
-      "floors": [
-        5
-      ],
-      "enemies": [
-        [
-          "DGR004",
           "DGR004"
         ],
         [
-          "DGR003"
+          "DGR003",
+          "DGR001",
+          "DGR004"
         ]
       ]
     },
     {
-      "id": "DEAD_GRAVE_3_DG3_002",
+      "id": "DG1_F4_B",
       "floors": [
-        5
+        4
       ],
       "enemies": [
         [
+          "DGR005",
+          "DGR004",
           "DGR005"
         ],
         [
+          "DGR003",
+          "DGR001",
+          "DGR004"
+        ]
+      ]
+    },
+    {
+      "id": "DG1_F4_C",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "DGR005",
+          "DGR004"
+        ],
+        [
+          "DGR003",
+          "DGR001",
           "DGR004",
           "DGR003"
         ]
       ]
     },
     {
-      "id": "DEAD_GRAVE_3_DG3_003",
+      "id": "DG1_F4_BOSS",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "DGR005",
+          "DGR004",
+          "DGR005"
+        ],
+        [
+          "DGR003",
+          "DGR001",
+          "DGR004"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "DG1_F5_A",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "DGR005",
+          "DGR004"
+        ],
+        [
+          "DGR003",
+          "DGR004",
+          "DGR002"
+        ]
+      ]
+    },
+    {
+      "id": "DG1_F5_B",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "DGR005",
+          "DGR004",
+          "DGR005"
+        ],
+        [
+          "DGR003",
+          "DGR004",
+          "DGR002"
+        ]
+      ]
+    },
+    {
+      "id": "DG1_F5_C",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "DGR005",
+          "DGR004"
+        ],
+        [
+          "DGR003",
+          "DGR004",
+          "DGR002",
+          "DGR003"
+        ]
+      ]
+    },
+    {
+      "id": "DG1_F5_BOSS",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "DGR005",
+          "DGR004",
+          "DGR005"
+        ],
+        [
+          "DGR003",
+          "DGR004",
+          "DGR002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "DG1_F6_A",
       "floors": [
         6
       ],
       "enemies": [
         [
           "DGR005",
-          "DGR004"
+          "DGR005"
         ],
         [
+          "DGR004",
           "DGR003",
+          "DGR001"
+        ]
+      ]
+    },
+    {
+      "id": "DG1_F6_B",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "DGR005",
+          "DGR005",
+          "DGR005"
+        ],
+        [
+          "DGR004",
+          "DGR003",
+          "DGR001"
+        ]
+      ]
+    },
+    {
+      "id": "DG1_F6_C",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "DGR005",
+          "DGR005"
+        ],
+        [
+          "DGR004",
+          "DGR003",
+          "DGR001",
           "DGR004"
         ]
       ]
     },
     {
-      "id": "DEAD_GRAVE_3_BOSS",
+      "id": "DG1_F6_BOSS",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "DGR005",
+          "DGR005",
+          "DGR005"
+        ],
+        [
+          "DGR004",
+          "DGR003",
+          "DGR001"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "DG1_FINAL_BOSS",
       "floors": [
         6
       ],
@@ -330,108 +582,11 @@
         ],
         [
           "DGR005",
-          "DGR004"
+          "DGR004",
+          "DGR003"
         ]
       ],
       "isBoss": true
-    },
-    {
-      "id": "DEAD_GRAVE_1_DG1_002_F1_BOSS",
-      "floors": [
-        1
-      ],
-      "enemies": [
-        [
-          "DGR002"
-        ],
-        [
-          "DGR001",
-          "DGR001"
-        ]
-      ],
-      "isFloorBoss": true
-    },
-    {
-      "id": "DEAD_GRAVE_1_DG1_003_F2_BOSS",
-      "floors": [
-        2
-      ],
-      "enemies": [
-        [
-          "DGR001",
-          "DGR002"
-        ],
-        [
-          "DGR003"
-        ]
-      ],
-      "isFloorBoss": true
-    },
-    {
-      "id": "DEAD_GRAVE_2_DG2_002_F3_BOSS",
-      "floors": [
-        3
-      ],
-      "enemies": [
-        [
-          "DGR003",
-          "DGR003"
-        ],
-        [
-          "DGR004"
-        ]
-      ],
-      "isFloorBoss": true
-    },
-    {
-      "id": "DEAD_GRAVE_2_DG2_004_F4_BOSS",
-      "floors": [
-        4
-      ],
-      "enemies": [
-        [
-          "DGR005",
-          "DGR001"
-        ],
-        [
-          "DGR004",
-          "DGR003"
-        ]
-      ],
-      "isFloorBoss": true
-    },
-    {
-      "id": "DEAD_GRAVE_3_DG3_002_F5_BOSS",
-      "floors": [
-        5
-      ],
-      "enemies": [
-        [
-          "DGR005"
-        ],
-        [
-          "DGR004",
-          "DGR003"
-        ]
-      ],
-      "isFloorBoss": true
-    },
-    {
-      "id": "DEAD_GRAVE_3_DG3_003_F6_BOSS",
-      "floors": [
-        6
-      ],
-      "enemies": [
-        [
-          "DGR005",
-          "DGR004"
-        ],
-        [
-          "DGR003",
-          "DGR004"
-        ]
-      ],
-      "isFloorBoss": true
     }
   ]
 }

@@ -142,7 +142,7 @@
     {
       "id": "spider_forest_1",
       "name": "蜘蛛影の森",
-      "areaLevel": 46,
+      "areaLevel": 100,
       "floors": 6,
       "exploration_time_sec_first": 13200,
       "exploration_time_sec": 4400,
@@ -153,7 +153,7 @@
     {
       "id": "dead_grave_1",
       "name": "死霊の墓原",
-      "areaLevel": 46,
+      "areaLevel": 114,
       "floors": 6,
       "exploration_time_sec_first": 21300,
       "exploration_time_sec": 7100,
@@ -214,7 +214,7 @@
     {
       "id": "harpy_cliff_1",
       "name": "風切りの断崖",
-      "areaLevel": 46,
+      "areaLevel": 118,
       "floors": 6,
       "exploration_time_sec_first": 21600,
       "exploration_time_sec": 7200,
@@ -225,7 +225,7 @@
     {
       "id": "troll_canyon_1",
       "name": "トロルの峡谷",
-      "areaLevel": 46,
+      "areaLevel": 130,
       "floors": 6,
       "exploration_time_sec_first": 23820,
       "exploration_time_sec": 7940,
@@ -236,7 +236,7 @@
     {
       "id": "minotaur_labyrinth_1",
       "name": "ミノタウロス迷宮",
-      "areaLevel": 47,
+      "areaLevel": 145,
       "floors": 6,
       "exploration_time_sec_first": 26100,
       "exploration_time_sec": 8700,
@@ -246,7 +246,7 @@
     {
       "id": "human_fortress_1",
       "name": "辺境の城",
-      "areaLevel": 47,
+      "areaLevel": 140,
       "floors": 8,
       "exploration_time_sec_first": 30600,
       "exploration_time_sec": 10200,
@@ -259,7 +259,7 @@
     {
       "id": "vampire_castle_1",
       "name": "ヴァンパイアの古城",
-      "areaLevel": 55,
+      "areaLevel": 165,
       "floors": 6,
       "exploration_time_sec_first": 35100,
       "exploration_time_sec": 11700,
@@ -272,7 +272,7 @@
     {
       "id": "royal_capital_1",
       "name": "王都決戦・城門",
-      "areaLevel": 160,
+      "areaLevel": 190,
       "floors": 8,
       "exploration_time_sec_first": 52800,
       "exploration_time_sec": 17600,
@@ -283,7 +283,7 @@
     {
       "id": "royal_capital_2",
       "name": "王都決戦・王城内部",
-      "areaLevel": 170,
+      "areaLevel": 215,
       "floors": 8,
       "exploration_time_sec_first": 54000,
       "exploration_time_sec": 18000,
@@ -294,7 +294,7 @@
     {
       "id": "dragon_volcano_1",
       "name": "ドラゴンの火山巣",
-      "areaLevel": 48,
+      "areaLevel": 235,
       "floors": 6,
       "exploration_time_sec_first": 31200,
       "exploration_time_sec": 10400,
@@ -323,7 +323,7 @@
     {
       "id": "royal_capital_3",
       "name": "王都決戦・玉座の間",
-      "areaLevel": 180,
+      "areaLevel": 270,
       "floors": 8,
       "exploration_time_sec_first": 72000,
       "exploration_time_sec": 24000,

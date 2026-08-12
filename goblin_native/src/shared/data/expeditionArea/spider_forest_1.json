@@ -1,7 +1,7 @@
 {
   "id": "spider_forest_1",
   "name": "蜘蛛影の森",
-  "areaLevel": 46,
+  "areaLevel": 100,
   "floors": 6,
   "baseDurationSec": 13200,
   "description": "リザードマン湿原の先に広がる深い森。アラクネの巣網を越え、協力を引き出すだけの実力を示せ。",

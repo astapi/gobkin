@@ -1502,6 +1502,35 @@ code {
 
 .rare-items-toolbar {
   margin-top: 1rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.rare-items-view-switch {
+  display: inline-flex;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface);
+}
+
+.rare-items-view-switch button {
+  border: 0;
+  border-right: 1px solid var(--border);
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+  font: inherit;
+  padding: 0.45rem 0.7rem;
+}
+
+.rare-items-view-switch button:last-child {
+  border-right: 0;
+}
+
+.rare-items-view-switch button.selected {
+  background: var(--text);
+  color: var(--surface);
 }
 
 .rare-items-toggle {
@@ -1570,7 +1599,7 @@ code {
 }
 
 .rare-items-skill-col {
-  width: 15rem;
+  width: 18rem;
 }
 
 .rare-items-name-cell {
@@ -1582,6 +1611,24 @@ code {
 .rare-items-number-input {
   text-align: right;
   font-variant-numeric: tabular-nums;
+}
+
+.rare-items-skill-cell {
+  min-width: 18rem;
+}
+
+.rare-items-skill-hint {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  margin-top: 0.25rem;
+  color: var(--muted);
+  font-size: 0.74rem;
+  line-height: 1.25;
+}
+
+.rare-items-skill-effect {
+  color: var(--text);
 }
 
 .rare-items-drop-editor {
@@ -1607,6 +1654,76 @@ code {
 
 .rare-items-add-drop {
   align-self: flex-start;
+}
+
+.rare-distribution {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.rare-distribution-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: flex-end;
+}
+
+.rare-distribution-head h3 {
+  margin: 0;
+}
+
+.rare-distribution-head p {
+  margin: 0.25rem 0 0;
+}
+
+.rare-distribution-table {
+  min-width: 112rem;
+  background: var(--surface);
+}
+
+.rare-distribution-dungeon-col {
+  width: 18rem;
+}
+
+.rare-distribution-drop-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
+  gap: 0.45rem;
+}
+
+.rare-distribution-drop {
+  display: flex;
+  flex-direction: column;
+  gap: 0.12rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.45rem 0.55rem;
+  background: var(--surface-muted);
+}
+
+.rare-distribution-drop.new {
+  border-color: var(--accent);
+}
+
+.rare-distribution-new-badge {
+  display: inline-block;
+  margin-left: 0.4rem;
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--surface);
+  font-size: 0.68rem;
+  font-weight: 700;
+  line-height: 1;
+  padding: 0.18rem 0.35rem;
+}
+
+.rare-distribution-item-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.12rem;
+  font-size: 0.75rem;
+  line-height: 1.3;
 }
 
 @media (max-width: 1024px) {

@@ -85,7 +85,7 @@ export const EnemySchema = z
     penetrationResistancePercent: z.number().optional(),
     criticalResistancePercent: z.number().optional(),
     magicResistancePercent: z.number().optional(),
-    exp: z.number().int().nonnegative(),
+    exp: z.number().int().nonnegative().optional(),
     isBoss: z.boolean().optional(),
     gold: z.number().int().nonnegative(),
     rareEquipmentDrops: z.array(RareEquipmentDropSchema).optional(),

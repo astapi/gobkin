@@ -100,9 +100,9 @@
 
 ## 4. 次にやること(未着手)
 
-1. **蜘蛛の森(spider_forest_1)以降の大逆転**: 討伐隊(floor180)の後、spider_forest_1 が floor25 に急落(180→25)。ここが次の明確な逆転。**最優先候補**。
-2. **討伐隊より先の空洞エリア群**を順に再設計: spider_forest_1 / dead_grave_1 / harpy_cliff_1 / human_fortress_1 / vampire_castle_1 / royal_capital_1〜3 / dragon_volcano_1。多くが「空洞」(floor必要Lvが低い)。
-3. **areaLevel ラベルの振り直し**: 王都系(表示160-180)が実測 strategist 8-10 と乖離。表示・報酬・出産個体値に波及。
+1. **蜘蛛影の森以降の大逆転**: 第4期で対応済み。討伐隊以降のTier0進行を再計測し、床ペルソナで必要Lvが下がらない構成へ更新した。
+2. **討伐隊より先の空洞エリア群**: 蜘蛛影の森 / 死霊の墓原 / 風切りの断崖 / 辺境の城 / ヴァンパイアの古城 / 王都1〜3 / ドラゴン火山を第4期で再設計済み。分岐のトロル峡谷・ミノタウロス迷宮も同じ曲線へ調整した。
+3. **areaLevel ラベルの振り直し**: 対象エリアの個別JSONと `allArea.json` を同期済み。
 4. **オークの砦の寄り道ゲート測定**: 祖先モデルが rider・リザードマン因子を数え落とし strategist を過小評価。寄り道込みで測る仕組み(`balance_simulation.md` 6.2)。
 5. **高Tier敵スキルの配線判断**: プレイヤー側レアで高Tierゲートが全開になった(§2.5)。敵専用スキル3種(王の威圧/連撃衝動/招雷の角、実装済み・未配線)を高Tier敵に配線して T4 帯を再難化するか、現状の「全Tier攻略可能」を仕様とするかを決める。
 6. (将来)ボス固定装備8件の配線(`rare_item_design.md` 残処理)。
@@ -123,6 +123,28 @@
 - studio: `tools/studio/src/globals.d.ts`(`__DEV__` 宣言)
 - ドキュメント: `docs/balance_simulation.md`(5.5 算出基準)、本ファイル
 
+**第4期(蜘蛛影の森以降の再調整 / 2026-07-14)**:
+- 敵・遭遇表: `src/shared/data/enemy/{spider_forest_1,dead_grave_1,harpy_cliff_1,human_fortress_1,troll_canyon_1,minotaur_labyrinth_1,vampire_castle_1,royal_capital_1,royal_capital_2,dragon_volcano_1,royal_capital_3}.json`
+- エリアLv: 上記対象の個別エリアJSONと `src/shared/data/expeditionArea/allArea.json`
+- 再生成スクリプト: `scripts/balance/retune-post-subjugation.js`
+
+### 第4期のTier0計測結果(成功率80%到達Lv)
+
+`node scripts/balance/measureArea.js` の床/戦略ペルソナ。床はLv180までのグリッドのため、`>180` はLv180でも80%未満を表す。後続エリアの亜種は未設定のため、今後の新亜種追加で戦略側は下がる想定。
+
+| エリア | 床 | 戦略 | 位置づけ |
+|---|---:|---:|---|
+| vs討伐隊防衛戦 | 180 | 25 | 最初のLv上げ壁(基準) |
+| 蜘蛛影の森 | 180 | 25 | 壁を維持 |
+| 死霊の墓原 | >180 | 30 | 継続的なLv上げ・装備壁 |
+| 風切りの断崖 | >180 | 50 | 中盤の山場 |
+| 辺境の城 | >180 | 60 | ストーリー山場 |
+| トロル峡谷→ミノタウロス迷宮 | >180 / >180 | 70 / 100 | 分岐側の高難度ルート |
+| ヴァンパイア古城→王都1→王都2 | >180 / >180 / >180 | 70 / 70 / 70 | 王都前後の壁 |
+| ドラゴン火山→王都玉座 | >180 / >180 | 180 / 180 | 最大級の山場・最終壁 |
+
+各対象は3通常パターン＋フロアボスをフロアごとに再構成し、王都1/2には専用ボスを追加した。敵ステータスは `enemyStats.ts` の標準算出を基準に、物語上の山場ほど倍率を上げている。
+
 **計測ツール(`scripts/balance/`)**:
 | ツール | 用途 |
 |---|---|
@@ -142,8 +164,8 @@
 ## 6. 再開手順(次セッション)
 
 1. このファイルと `balance_simulation.md`(特に 5.5 と 6.2)を読む。
-2. `scripts/balance/out/tierSweep.csv` で現状の数値を確認。
-3. 「4. 次にやること」の 1(蜘蛛の森以降の逆転)から着手。手順は `balance_simulation.md` 6.1 の基本ループ + 算出基準(5.5)。
+2. `node scripts/balance/measureArea.js` で第4期の曲線を再確認する。
+3. 次は「4. 次にやること」の高Tier敵スキル配線判断へ進む。手順は `balance_simulation.md` 6.1 の基本ループ + 算出基準(5.5)。
 
 ---
 
