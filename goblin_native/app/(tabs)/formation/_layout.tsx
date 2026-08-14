@@ -64,6 +64,14 @@ export default function FormationLayout() {
         }}
       />
       <Stack.Screen
+        name="auto-summary"
+        options={{
+          title: t('ui.formation.layout.autoSummary'),
+          presentation: 'card',
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
         name="battle-log"
         options={{
           title: t('ui.formation.layout.battleLog'),

@@ -22,6 +22,7 @@ import { StartScreen } from '@/presentation/components/StartScreen'
 import { TutorialSpotlight } from '@/presentation/components/TutorialSpotlight'
 import { TutorialFinale } from '@/presentation/components/TutorialFinale'
 import { ExpeditionDropToastHost } from '@/presentation/components/ExpeditionDropToastHost'
+import { ExpeditionAutomationHost } from '@/presentation/components/ExpeditionAutomationHost'
 import { initializeI18n } from '@/shared/i18n'
 
 export default function RootLayout() {
@@ -168,6 +169,7 @@ export default function RootLayout() {
             resetAndReinitialize={resetAndReinitialize}
             reloadAfterImport={reloadAfterImport}
           >
+              <ExpeditionAutomationHost />
               <Stack screenOptions={{ headerShown: false }}>
                 <Stack.Screen name="(tabs)" />
                 <Stack.Screen

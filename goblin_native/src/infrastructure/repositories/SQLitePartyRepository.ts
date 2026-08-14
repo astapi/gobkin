@@ -21,6 +21,11 @@ interface PartyRow {
   gold_multiplier: number | null
   rare_multiplier: number | null
   title_multiplier: number | null
+  auto_expedition_enabled: number | null
+  auto_expedition_session_id: string | null
+  auto_expedition_summary_json: string | null
+  auto_expedition_date: string | null
+  auto_expedition_used_sec: number | null
   created_at: string
   updated_at: string
 }
@@ -68,8 +73,10 @@ export class SQLitePartyRepository implements IPartyRepository {
     await db.runAsync(
       `INSERT OR REPLACE INTO parties
        (id, name, member_ids_json, status, dungeon_id, dungeon_tier, target_floor, return_policy,
-        gold_multiplier, rare_multiplier, title_multiplier, updated_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))`,
+        gold_multiplier, rare_multiplier, title_multiplier, auto_expedition_enabled,
+        auto_expedition_session_id, auto_expedition_summary_json,
+        auto_expedition_date, auto_expedition_used_sec, updated_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))`,
       [
         party.id,
         party.name,
@@ -82,6 +89,11 @@ export class SQLitePartyRepository implements IPartyRepository {
         rewardMultipliers.gold,
         rewardMultipliers.rare,
         rewardMultipliers.title,
+        party.autoExpeditionEnabled ? 1 : 0,
+        party.autoExpeditionSessionId ?? null,
+        party.autoExpeditionSummary ? JSON.stringify(party.autoExpeditionSummary) : null,
+        party.autoExpeditionDate ?? null,
+        Math.max(0, Math.floor(party.autoExpeditionUsedSec ?? 0)),
       ]
     )
   }
@@ -167,6 +179,13 @@ export class SQLitePartyRepository implements IPartyRepository {
         rare: row.rare_multiplier ?? undefined,
         title: row.title_multiplier ?? undefined,
       }),
+      autoExpeditionEnabled: row.auto_expedition_enabled === 1,
+      autoExpeditionSessionId: row.auto_expedition_session_id ?? undefined,
+      autoExpeditionSummary: row.auto_expedition_summary_json
+        ? JSON.parse(row.auto_expedition_summary_json)
+        : undefined,
+      autoExpeditionDate: row.auto_expedition_date ?? undefined,
+      autoExpeditionUsedSec: Math.max(0, row.auto_expedition_used_sec ?? 0),
     }
   }
 }

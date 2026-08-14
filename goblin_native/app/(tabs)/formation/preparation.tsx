@@ -1,5 +1,5 @@
 import { useState, useCallback, useMemo, useEffect } from 'react'
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView, ActivityIndicator, Alert, Image, useWindowDimensions, Modal, Pressable, TextInput } from 'react-native'
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, ActivityIndicator, Alert, Image, useWindowDimensions, Modal, Pressable, TextInput, Switch } from 'react-native'
 import { router, useLocalSearchParams, Stack, useFocusEffect } from 'expo-router'
 import { useTranslation } from 'react-i18next'
 import { usePartyStore } from '@/presentation/stores/usePartyStore'
@@ -21,6 +21,12 @@ import {
 import { normalizePartyRewardMultipliers, DUNGEON_TIER_META, DUNGEON_TIER_SELECTABLE_MAX, getDungeonTierAreaLevel, getDungeonTierDisplayName } from '@/shared/types'
 import type { ExpeditionRequest, Goblin, Dungeon, Party, DungeonTier } from '@/shared/types'
 import { getDungeonDescription, getDungeonName, getReturnPolicyLabel } from '@/shared/i18n/entityLocalization'
+import {
+  AUTO_EXPEDITION_DAILY_LIMIT_SEC,
+  getAutoExpeditionUsage,
+  isAutoExpeditionDungeonCleared,
+  isAutoExpeditionWaiting,
+} from '@/shared/utils/autoExpedition'
 
 type ReturnPolicy = ExpeditionRequest['returnPolicy']
 
@@ -91,6 +97,7 @@ export default function ExpeditionPreparationScreen() {
     setReturnPolicy,
     setTargetFloor,
     updateName,
+    setAutoExpedition,
     refresh: refreshParties,
   } = usePartyStore()
   const goblins = useGoblinStore((state) => state.goblins)
@@ -254,6 +261,48 @@ export default function ExpeditionPreparationScreen() {
     if (!selectedDungeon) return null
     return estimateExplorationTime(selectedDungeon, selectedReturnPolicy, selectedTargetFloor, partyTimeMultiplier, false, selectedTier)
   }, [estimateExplorationTime, selectedDungeon, selectedReturnPolicy, selectedTargetFloor, partyTimeMultiplier, selectedTier])
+
+  const autoExpeditionDuration = useMemo(() => {
+    if (!selectedDungeon) return null
+    return estimateExplorationTime(
+      selectedDungeon,
+      selectedReturnPolicy,
+      selectedTargetFloor,
+      partyTimeMultiplier,
+      false,
+      selectedTier,
+      true,
+    )
+  }, [estimateExplorationTime, partyTimeMultiplier, selectedDungeon, selectedReturnPolicy, selectedTargetFloor, selectedTier])
+
+  const canEnableAutoExpedition = isAutoExpeditionDungeonCleared(selectedDungeon, selectedTier) &&
+    autoExpeditionDuration !== null &&
+    autoExpeditionDuration <= AUTO_EXPEDITION_DAILY_LIMIT_SEC
+  const autoExpeditionUsage = party ? getAutoExpeditionUsage(party, new Date()) : null
+  const autoExpeditionWaiting = party ? isAutoExpeditionWaiting(party, new Date()) : false
+  const autoRemainingHours = Math.floor((autoExpeditionUsage?.remainingSec ?? 0) / 3600)
+  const autoRemainingMinutes = Math.floor(((autoExpeditionUsage?.remainingSec ?? 0) % 3600) / 60)
+
+  const handleToggleAutoExpedition = useCallback(async (enabled: boolean) => {
+    if (!party) return
+    if (enabled && !canEnableAutoExpedition) {
+      Alert.alert(
+        t('ui.formation.preparation.autoExpeditionUnavailableTitle'),
+        t('ui.formation.preparation.autoExpeditionUnavailableBody'),
+      )
+      return
+    }
+
+    try {
+      await setAutoExpedition(party.id, enabled)
+    } catch (error) {
+      console.error('[Preparation] Failed to update auto expedition', error)
+      Alert.alert(
+        t('ui.formation.preparation.autoExpeditionFailedTitle'),
+        t('ui.formation.preparation.autoExpeditionFailedBody'),
+      )
+    }
+  }, [canEnableAutoExpedition, party, setAutoExpedition, t])
 
   const handleEditParty = useCallback(() => {
     void advanceTutorial('select_party_member')
@@ -477,7 +526,11 @@ export default function ExpeditionPreparationScreen() {
     t,
   ])
 
-  const canStartExpedition = Boolean(selectedDungeonId) && partyMembers.length > 0 && !isProcessing
+  const canStartExpedition = Boolean(selectedDungeonId) &&
+    partyMembers.length > 0 &&
+    !isProcessing &&
+    (party?.status ?? 'idle') === 'idle' &&
+    !autoExpeditionWaiting
   const { slotSize, avatarSize } = useMemo(() => {
     const slotGap = 8
     const maxSlotWidth = 50
@@ -665,6 +718,51 @@ export default function ExpeditionPreparationScreen() {
                   <Text style={styles.settingValuePlaceholder}>{t('ui.formation.preparation.dungeonUnset')}</Text>
                 )}
               </View>
+            </View>
+
+            {/* 自動周回 */}
+            <View style={styles.autoExpeditionRow}>
+              <View style={styles.autoExpeditionText}>
+                <Text style={styles.settingLabel}>{t('ui.formation.preparation.autoExpedition')}</Text>
+                {autoExpeditionWaiting ? (
+                  <>
+                    <Text style={styles.settingValueDescription}>
+                      {t('ui.formation.preparation.autoExpeditionWaitingDescription')}
+                    </Text>
+                    <Text style={styles.autoExpeditionLimitText}>
+                      {t('ui.formation.preparation.autoExpeditionWaitingResume')}
+                    </Text>
+                  </>
+                ) : canEnableAutoExpedition ? (
+                  <>
+                    <Text style={styles.settingValueDescription}>
+                      {t('ui.formation.preparation.autoExpeditionDescription')}
+                    </Text>
+                    <Text style={styles.autoExpeditionLimitText}>
+                      {t('ui.formation.preparation.autoExpeditionDailyLimit')}
+                    </Text>
+                    <Text style={styles.settingValueDescription}>
+                      {t('ui.formation.preparation.autoExpeditionRemaining', {
+                        hours: autoRemainingHours,
+                        minutes: autoRemainingMinutes,
+                      })}
+                    </Text>
+                  </>
+                ) : (
+                  <Text style={styles.settingValueDescription}>
+                    {t('ui.formation.preparation.autoExpeditionLocked')}
+                  </Text>
+                )}
+              </View>
+              <Switch
+                testID="auto-expedition-switch"
+                accessibilityLabel={t('ui.formation.preparation.autoExpedition')}
+                value={party.autoExpeditionEnabled === true}
+                onValueChange={(enabled) => void handleToggleAutoExpedition(enabled)}
+                disabled={!canEnableAutoExpedition && party.autoExpeditionEnabled !== true}
+                trackColor={{ false: '#D1D5DB', true: '#86EFAC' }}
+                thumbColor={party.autoExpeditionEnabled ? '#16A34A' : '#F9FAFB'}
+              />
             </View>
           </View>
         </View>
@@ -1091,9 +1189,24 @@ const styles = StyleSheet.create({
     color: '#6B7280',
     marginTop: 4,
   },
+  autoExpeditionLimitText: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#374151',
+    marginTop: 4,
+  },
   settingValuePlaceholder: {
     fontSize: 14,
     color: '#9CA3AF',
+  },
+  autoExpeditionRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    paddingTop: 4,
+  },
+  autoExpeditionText: {
+    flex: 1,
   },
   modalOverlay: {
     flex: 1,

@@ -1,0 +1,31 @@
+appId: com.astapi.gobkin
+name: 拠点で治療できる
+---
+- launchApp:
+    clearState: false
+- tapOn:
+    text: "許可しない"
+    optional: true
+- tapOn:
+    text: "キャンセル"
+    optional: true
+- tapOn: "ゲームをはじめる"
+- runFlow:
+    when:
+      visible: "Open debugger to view warnings."
+    commands:
+      - tapOn:
+          point: "93%,94%"
+- openLink: "gobkin://base/healing"
+- tapOn:
+    text: "開く"
+    optional: true
+- tapOn:
+    text: "開く"
+    optional: true
+- assertVisible: "HP0のゴブリンを治療できます。.*"
+- assertVisible:
+    id: "heal-goblin-button"
+- tapOn:
+    id: "heal-goblin-button"
+- assertVisible: "負傷中のゴブリンはいません。"

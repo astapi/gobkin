@@ -1,5 +1,6 @@
 import type { ExpeditionRequest, Party, DungeonTier } from '../../shared/types'
 import type { IPartyRepository } from '../repositories'
+import { createAutoExpeditionSummary } from '../../shared/utils/autoExpeditionSummary'
 
 export class ConfigurePartyUseCase {
   private readonly partyRepository: IPartyRepository
@@ -44,6 +45,22 @@ export class ConfigurePartyUseCase {
     returnPolicy: ExpeditionRequest['returnPolicy']
   ): Promise<Party> {
     await this.partyRepository.updateReturnPolicy(partyId, returnPolicy)
+    return this.requireParty(partyId)
+  }
+
+  public async setAutoExpedition(partyId: number, enabled: boolean): Promise<Party> {
+    const party = await this.requireParty(partyId)
+    const sessionId = enabled && !party.autoExpeditionEnabled
+      ? `auto_${partyId}_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`
+      : party.autoExpeditionSessionId
+    await this.partyRepository.saveParty({
+      ...party,
+      autoExpeditionEnabled: enabled,
+      autoExpeditionSessionId: sessionId,
+      autoExpeditionSummary: enabled && sessionId && !party.autoExpeditionEnabled
+        ? createAutoExpeditionSummary(sessionId)
+        : party.autoExpeditionSummary,
+    })
     return this.requireParty(partyId)
   }
 

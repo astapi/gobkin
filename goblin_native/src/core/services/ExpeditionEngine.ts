@@ -396,7 +396,8 @@ export class ExpeditionEngine {
         expeditionBoost,
         returnPolicy: request.returnPolicy,
         tier: tier || undefined,
-        seed: this.seed
+        seed: this.seed,
+        autoExpeditionSessionId: request.autoExpeditionSessionId,
       },
       durationSec: adjustedDuration,
       events,

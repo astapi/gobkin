@@ -1,0 +1,64 @@
+appId: com.astapi.gobkin
+name: 自動周回停止後に結果サマリを確認できる
+---
+- launchApp:
+    clearState: false
+- tapOn:
+    text: "許可しない"
+    optional: true
+- tapOn:
+    text: "キャンセル"
+    optional: true
+- tapOn: "ゲームをはじめる"
+- runFlow:
+    when:
+      visible: "Open debugger to view warnings."
+    commands:
+      - tapOn:
+          point: "93%,94%"
+- openLink: "gobkin://formation"
+- tapOn:
+    text: "開く"
+    optional: true
+- tapOn:
+    text: "開く"
+    optional: true
+- tapOn:
+    id: "party-card-1"
+- scrollUntilVisible:
+    element:
+      text: "自動周回"
+    direction: DOWN
+- tapOn:
+    id: "auto-expedition-switch"
+- tapOn: "出撃"
+- waitForAnimationToEnd
+- tapOn:
+    text: "出撃"
+    index: 1
+- openLink: "gobkin://formation"
+- tapOn:
+    text: "開く"
+    optional: true
+- tapOn:
+    text: "開く"
+    optional: true
+- tapOn:
+    id: "auto-expedition-badge-1"
+- tapOn: "停止する"
+- extendedWaitUntil:
+    visible:
+      id: "auto-expedition-summary-1"
+    timeout: 20000
+- tapOn:
+    id: "auto-expedition-summary-1"
+- assertVisible:
+    id: "auto-expedition-summary"
+- assertVisible: "周回数"
+- assertVisible: "[1-9][0-9]*回"
+- assertVisible: "クリア"
+- assertNotVisible: "全滅"
+- assertNotVisible: "退却"
+- assertVisible: "獲得経験値"
+- assertVisible: "獲得Gold"
+- assertVisible: "ドロップ"

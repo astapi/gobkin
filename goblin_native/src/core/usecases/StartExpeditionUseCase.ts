@@ -86,7 +86,8 @@ export class StartExpeditionUseCase {
         ...goblin,
         skills: mergedSkills,
         effectiveStats,
-        currentHp: goblin.currentHp === 0 ? 0 : effectiveStats.hp,
+        // 遠征開始時はHP0を含む全員を復活・全回復する。
+        currentHp: effectiveStats.hp,
       }
     }))
   }

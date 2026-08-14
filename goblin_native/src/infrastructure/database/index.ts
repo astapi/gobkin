@@ -19,9 +19,11 @@ import { migrateV13 } from './migrations/v13'
 import { migrateV14 } from './migrations/v14'
 import { migrateV15 } from './migrations/v15'
 import { migrateV16 } from './migrations/v16'
+import { migrateV17 } from './migrations/v17'
+import { migrateV18 } from './migrations/v18'
 
 const DB_NAME = 'goblin_kingdom.db'
-export const CURRENT_SCHEMA_VERSION = 16
+export const CURRENT_SCHEMA_VERSION = 18
 
 /**
  * マイグレーション一覧（バージョン昇順）
@@ -47,6 +49,8 @@ const MIGRATIONS: ReadonlyArray<{
   { version: 14, migrate: migrateV14 },
   { version: 15, migrate: migrateV15 },
   { version: 16, migrate: migrateV16 },
+  { version: 17, migrate: migrateV17 },
+  { version: 18, migrate: migrateV18 },
 ]
 
 let db: SQLite.SQLiteDatabase | null = null

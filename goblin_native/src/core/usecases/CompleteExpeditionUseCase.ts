@@ -21,6 +21,7 @@ import { captureDungeon } from '../services/BaseRankSystem'
 import { GOLDEN_ACORN_CLEAR_ENCOUNTER_ID, GOLDEN_ACORN_CLEAR_FACTOR_DROPS } from '../services/ExpeditionEngine'
 import { isDungeonCompleted } from '../../shared/utils/expeditionClear'
 import { getDungeonTierFactorDropMultiplier } from '../../shared/types/DungeonTier'
+import { addAutoExpeditionResult } from '../../shared/utils/autoExpeditionSummary'
 
 export interface ExpeditionCompletionResult {
   /** 既に完了処理済み（冪等性ゲートで弾かれた）ため報酬処理をスキップしたか */
@@ -397,6 +398,21 @@ export class CompleteExpeditionUseCase {
         memberLevelUps: memberLevelUps.length > 0 ? memberLevelUps : undefined,
         factorAcquisitions: factorAcquisitionList.length > 0 ? factorAcquisitionList : undefined,
       },
+    }
+
+    const autoExpeditionSessionId = replay.meta.autoExpeditionSessionId
+    if (!isAbort && autoExpeditionSessionId) {
+      const latestParty = await this.partyRepository.getParty(partyId)
+      if (latestParty) {
+        await this.partyRepository.saveParty({
+          ...latestParty,
+          autoExpeditionSummary: addAutoExpeditionResult(
+            latestParty.autoExpeditionSummary,
+            autoExpeditionSessionId,
+            enrichedReplay,
+          ),
+        })
+      }
     }
 
     // レベルアップ等を反映した enrichedReplay を、同一トランザクション内で永続化する。

@@ -46,6 +46,13 @@ import { computeCurrentFloor } from '../../shared/utils/expeditionFloor'
 import { getExpeditionTimeMultiplierFromSkills } from '../../shared/data/characterSkills'
 import { EquipmentService } from '../../core/services/EquipmentService'
 import i18n from '../../shared/i18n'
+import {
+  AUTO_EXPEDITION_DAILY_LIMIT_SEC,
+  getAutoExpeditionResumeAt,
+  isAutoExpeditionDungeonCleared,
+  isAutoExpeditionResumeDue,
+  planAutoExpedition,
+} from '../../shared/utils/autoExpedition'
 
 interface UseExpeditionFlowParams {
   parties?: Party[]
@@ -61,6 +68,8 @@ interface StartExpeditionInput {
   tier?: DungeonTier
   /** 出発時に金のドングリを消費するか */
   useGoldenAcorn?: boolean
+  /** 自動周回時に前回帰還時刻から連続させるための開始時刻 */
+  startTime?: Date
 }
 
 interface StartExpeditionResult {
@@ -126,6 +135,7 @@ export const useExpeditionFlow = ({
 }: UseExpeditionFlowParams = {}) => {
   const [isProcessing, setIsProcessing] = useState(false)
   const processedExpeditionsRef = useRef<Set<string>>(new Set())
+  const autoStartingPartyIdsRef = useRef<Set<number>>(new Set())
   // externalCurrentTime 未指定時に毎レンダー new Date() を生成すると useMemo が総崩れになるため、
   // 内部の安定した時刻state（必要時のみ1秒周期で更新）にフォールバックする。
   const internalCurrentTime = useCurrentTime({
@@ -348,7 +358,7 @@ export const useExpeditionFlow = ({
   }, [])
 
   const startExpedition = useCallback(
-    async ({ party, dungeon, returnPolicy, targetFloor = null, tier, useGoldenAcorn = false }: StartExpeditionInput): Promise<StartExpeditionResult> => {
+    async ({ party, dungeon, returnPolicy, targetFloor = null, tier, useGoldenAcorn = false, startTime: requestedStartTime }: StartExpeditionInput): Promise<StartExpeditionResult> => {
       setIsProcessing(true)
       const debugInstantAcorn = useDebugSettingsStore.getState().instantGoldenAcorn
       let acornConsumed = false
@@ -394,13 +404,16 @@ export const useExpeditionFlow = ({
           targetFloor,
           returnPolicy,
           clientVersion: 'native',
+          autoExpeditionSessionId: party.autoExpeditionEnabled
+            ? party.autoExpeditionSessionId
+            : undefined,
           durationSec,
           simulationDurationSec,
         }
 
         const boost = getExpeditionBoost(useGoldenAcorn)
         const expeditionMeta = await startExpeditionUseCase.execute(request, boost)
-        const startTime = new Date()
+        const startTime = requestedStartTime ?? new Date()
         const returnTime = new Date(startTime.getTime() + durationSec * 1000)
         const expeditionId = `exp_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`
         const record: ExpeditionRecord = {
@@ -453,6 +466,81 @@ export const useExpeditionFlow = ({
     },
     [estimateExplorationTime, getPartyExpeditionTimeMultiplier, saveExpeditionRecord, startExpeditionUseCase, scheduleExpeditionNotification],
   )
+
+  const startNextAutoExpedition = useCallback(async (
+    partyId: number,
+    preferredStartTime: Date,
+  ): Promise<boolean> => {
+    if (autoStartingPartyIdsRef.current.has(partyId)) return false
+    autoStartingPartyIdsRef.current.add(partyId)
+
+    try {
+      const party = await partyRepository.getParty(partyId)
+      if (!party?.autoExpeditionEnabled || (party.status ?? 'idle') !== 'idle') return false
+      if (party.memberIds.length === 0 || !party.dungeonId) return false
+
+      const dungeon = useDungeonStore.getState().dungeons.find(item => item.id === party.dungeonId)
+      const tier = party.dungeonTier ?? 0
+      if (!isAutoExpeditionDungeonCleared(dungeon, tier)) return false
+
+      const partyTimeMultiplier = await getPartyExpeditionTimeMultiplier(party)
+      const durationSec = dungeon
+        ? estimateExplorationTime(
+            dungeon,
+            party.returnPolicy ?? 'never',
+            party.targetFloor ?? null,
+            partyTimeMultiplier,
+            false,
+            tier,
+            true,
+          )
+        : AUTO_EXPEDITION_DAILY_LIMIT_SEC + 1
+      if (!dungeon) return false
+      const reservation = planAutoExpedition(party, preferredStartTime, durationSec)
+      if (!reservation) return false
+
+      // 日次上限到達後は遠征レコードを先行作成せず、PTを待機状態のまま翌日0時を待つ。
+      if (reservation.startTime.getTime() > Date.now()) return true
+
+      const reservedParty: Party = {
+        ...party,
+        autoExpeditionDate: reservation.date,
+        autoExpeditionUsedSec: reservation.usedSec,
+      }
+      await partyRepository.saveParty(reservedParty)
+      await usePartyStore.getState().refresh()
+
+      try {
+        await startExpedition({
+          party: reservedParty,
+          dungeon,
+          returnPolicy: party.returnPolicy ?? 'never',
+          targetFloor: party.targetFloor ?? null,
+          tier,
+          startTime: reservation.startTime,
+        })
+      } catch (error) {
+        // 予約後の出撃失敗時は、使用時間とPT状態を予約前へ戻す。
+        await partyRepository.saveParty({ ...party, status: 'idle' })
+        await usePartyStore.getState().refresh()
+        console.warn('[useExpeditionFlow] Failed to start auto expedition', error)
+        return false
+      }
+      return true
+    } finally {
+      autoStartingPartyIdsRef.current.delete(partyId)
+    }
+  }, [estimateExplorationTime, getPartyExpeditionTimeMultiplier, partyRepository, startExpedition])
+
+  const resumeWaitingAutoExpeditions = useCallback(async (): Promise<void> => {
+    const now = new Date()
+    const latestParties = usePartyStore.getState().parties
+    for (const party of latestParties) {
+      const resumeAt = getAutoExpeditionResumeAt(party)
+      if (!resumeAt || !isAutoExpeditionResumeDue(party, now)) continue
+      await startNextAutoExpedition(party.id, resumeAt)
+    }
+  }, [startNextAutoExpedition])
 
   interface BulkStartResult {
     startedCount: number
@@ -510,6 +598,9 @@ export const useExpeditionFlow = ({
             targetFloor,
             returnPolicy,
             clientVersion: 'native',
+            autoExpeditionSessionId: party.autoExpeditionEnabled
+              ? party.autoExpeditionSessionId
+              : undefined,
             durationSec,
             simulationDurationSec,
           }
@@ -581,6 +672,10 @@ export const useExpeditionFlow = ({
   const abortExpedition = useCallback(async (record: ExpeditionRecord): Promise<void> => {
     setIsProcessing(true)
     try {
+      const party = await partyRepository.getParty(record.partyId)
+      if (party?.autoExpeditionEnabled) {
+        await partyRepository.saveParty({ ...party, autoExpeditionEnabled: false })
+      }
       // replay が未計算の場合は遅延計算を実行
       let replay = record.replay
       if (!replay && record.expeditionMeta) {
@@ -674,7 +769,7 @@ export const useExpeditionFlow = ({
     } finally {
       setIsProcessing(false)
     }
-  }, [completeExpeditionUseCase, finalizeCompletion, updateExpeditionReplay, cancelExpeditionNotification])
+  }, [completeExpeditionUseCase, finalizeCompletion, updateExpeditionReplay, cancelExpeditionNotification, partyRepository])
 
   const completeDueExpeditions = useCallback(async (): Promise<void> => {
     const now = new Date()
@@ -733,6 +828,7 @@ export const useExpeditionFlow = ({
         await usePartyStore.getState().refresh()
         // ゴブリンのレベルアップ等もDB直接更新されるため同期
         await useGoblinStore.getState().refresh()
+        await startNextAutoExpedition(record.partyId, record.returnTime ?? now)
       } catch (error) {
         console.warn('[useExpeditionFlow] Failed to complete expedition', error)
         // 一時エラーで固まらないよう、次周期で再試行できるよう解放する
@@ -746,6 +842,7 @@ export const useExpeditionFlow = ({
     handleDungeonClear,
     updateExpeditionReplay,
     cancelExpeditionNotification,
+    startNextAutoExpedition,
   ])
 
   const [partyHistories, setPartyHistories] = useState<Record<number, ExpeditionRecord[]>>({})
@@ -821,12 +918,16 @@ export const useExpeditionFlow = ({
 
   useEffect(() => {
     if (!enableAutoCompletion) return
-    void completeDueExpeditions()
+    const tick = async () => {
+      await completeDueExpeditions()
+      await resumeWaitingAutoExpeditions()
+    }
+    void tick()
     const interval = setInterval(() => {
-      void completeDueExpeditions()
+      void tick()
     }, 1000)
     return () => clearInterval(interval)
-  }, [enableAutoCompletion, completeDueExpeditions])
+  }, [enableAutoCompletion, completeDueExpeditions, resumeWaitingAutoExpeditions])
 
   return {
     isProcessing,
