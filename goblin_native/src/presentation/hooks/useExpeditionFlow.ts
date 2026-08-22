@@ -11,6 +11,7 @@ import type {
   Party,
 } from '../../shared/types'
 import { StartExpeditionUseCase, CompleteExpeditionUseCase } from '../../core/usecases'
+import { MAX_EXPEDITION_HISTORY } from '../../core/repositories'
 import { GoblinBirthService, computeExpeditionReplay } from '../../core/services'
 import { areasData } from '../../shared/data'
 import { usePartyStore, getPartyRepository } from '../stores/usePartyStore'
@@ -46,6 +47,11 @@ import { computeCurrentFloor } from '../../shared/utils/expeditionFloor'
 import { getExpeditionTimeMultiplierFromSkills } from '../../shared/data/characterSkills'
 import { EquipmentService } from '../../core/services/EquipmentService'
 import i18n from '../../shared/i18n'
+import {
+  isAutoExpeditionDayBoundaryRun,
+  isAutoExpeditionDungeonCleared,
+  isAutoExpeditionRecord,
+} from '../../shared/utils/autoExpedition'
 
 interface UseExpeditionFlowParams {
   parties?: Party[]
@@ -61,10 +67,21 @@ interface StartExpeditionInput {
   tier?: DungeonTier
   /** 出発時に金のドングリを消費するか */
   useGoldenAcorn?: boolean
+  /** 自動周回時に前回帰還時刻から連続させるための開始時刻 */
+  startTime?: Date
 }
 
 interface StartExpeditionResult {
   record: ExpeditionRecord
+}
+
+interface ExpeditionMutationOptions {
+  /** false の場合、DBだけ更新し、画面向けStoreの同期を呼び出し側へ委ねる。 */
+  syncStores?: boolean
+  /** false の場合、遠征履歴を作らない。オフライン周回の中間精算で使用する。 */
+  persistRecord?: boolean
+  /** false の場合、画面用の処理中stateを更新しない。 */
+  trackProcessing?: boolean
 }
 
 const GOLDEN_ACORN_BOOST: ExpeditionBoost = {
@@ -126,6 +143,8 @@ export const useExpeditionFlow = ({
 }: UseExpeditionFlowParams = {}) => {
   const [isProcessing, setIsProcessing] = useState(false)
   const processedExpeditionsRef = useRef<Set<string>>(new Set())
+  const autoStartingPartyIdsRef = useRef<Set<number>>(new Set())
+  const completionRunningRef = useRef(false)
   // externalCurrentTime 未指定時に毎レンダー new Date() を生成すると useMemo が総崩れになるため、
   // 内部の安定した時刻state（必要時のみ1秒周期で更新）にフォールバックする。
   const internalCurrentTime = useCurrentTime({
@@ -171,6 +190,18 @@ export const useExpeditionFlow = ({
       // 冪等性ゲート（complete）と enrichedReplay 保存を同一トランザクションで実施
       expeditionRepository,
       transactionRunner,
+    )
+  }, [goblinRepository, partyRepository, baseStateRepository])
+
+  // オフライン自動周回はPT単位の外側トランザクションでまとめるため、
+  // UseCase側では新しいトランザクションを開始しない。
+  const completeCatchUpExpeditionUseCase = useMemo(() => {
+    return new CompleteExpeditionUseCase(
+      goblinRepository,
+      partyRepository,
+      baseStateRepository,
+      equipmentRepository,
+      expeditionRepository,
     )
   }, [goblinRepository, partyRepository, baseStateRepository])
 
@@ -348,8 +379,16 @@ export const useExpeditionFlow = ({
   }, [])
 
   const startExpedition = useCallback(
-    async ({ party, dungeon, returnPolicy, targetFloor = null, tier, useGoldenAcorn = false }: StartExpeditionInput): Promise<StartExpeditionResult> => {
-      setIsProcessing(true)
+    async (
+      { party, dungeon, returnPolicy, targetFloor = null, tier, useGoldenAcorn = false, startTime: requestedStartTime }: StartExpeditionInput,
+      options: ExpeditionMutationOptions = {},
+    ): Promise<StartExpeditionResult> => {
+      const trackProcessing = options.trackProcessing !== false
+      const persistRecord = options.persistRecord !== false
+      if (trackProcessing) {
+        setIsProcessing(true)
+      }
+      const syncStores = options.syncStores !== false
       const debugInstantAcorn = useDebugSettingsStore.getState().instantGoldenAcorn
       let acornConsumed = false
       try {
@@ -394,13 +433,16 @@ export const useExpeditionFlow = ({
           targetFloor,
           returnPolicy,
           clientVersion: 'native',
+          autoExpeditionSessionId: party.autoExpeditionEnabled
+            ? party.autoExpeditionSessionId
+            : undefined,
           durationSec,
           simulationDurationSec,
         }
 
         const boost = getExpeditionBoost(useGoldenAcorn)
         const expeditionMeta = await startExpeditionUseCase.execute(request, boost)
-        const startTime = new Date()
+        const startTime = requestedStartTime ?? new Date()
         const returnTime = new Date(startTime.getTime() + durationSec * 1000)
         const expeditionId = `exp_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`
         const record: ExpeditionRecord = {
@@ -419,21 +461,27 @@ export const useExpeditionFlow = ({
           updatedAt: startTime,
         }
 
-        await saveExpeditionRecord(record)
-        // UseCaseがDB上のparty.statusと出発時HPを直接更新するため、ストアを同期
-        await usePartyStore.getState().refresh()
-        await useGoblinStore.getState().refresh()
+        if (persistRecord) {
+          if (syncStores) {
+            await saveExpeditionRecord(record)
+            // UseCaseがDB上のparty.statusと出発時HPを直接更新するため、ストアを同期
+            await usePartyStore.getState().refresh()
+            await useGoblinStore.getState().refresh()
+          } else {
+            await expeditionRepository.save(record)
+          }
 
-        // チュートリアル: スライム洞窟への出撃でクリア待ちステップへ
-        if (dungeon.id === 'slime_cave') {
-          await useTutorialStore.getState().advanceTo('wait_clear')
-        }
+          // チュートリアル: スライム洞窟への出撃でクリア待ちステップへ
+          if (dungeon.id === 'slime_cave') {
+            await useTutorialStore.getState().advanceTo('wait_clear')
+          }
 
-        // ローカル通知をスケジュール
-        try {
-          await scheduleExpeditionNotification(record)
-        } catch {
-          // 通知スケジュール失敗はゲーム進行に影響させない
+          // 通常遠征のみローカル通知をスケジュール（自動周回は通知フック側で除外）
+          try {
+            await scheduleExpeditionNotification(record)
+          } catch {
+            // 通知スケジュール失敗はゲーム進行に影響させない
+          }
         }
 
         return { record }
@@ -448,11 +496,67 @@ export const useExpeditionFlow = ({
         }
         throw error
       } finally {
-        setIsProcessing(false)
+        if (trackProcessing) {
+          setIsProcessing(false)
+        }
       }
     },
     [estimateExplorationTime, getPartyExpeditionTimeMultiplier, saveExpeditionRecord, startExpeditionUseCase, scheduleExpeditionNotification],
   )
+
+  const startNextAutoExpedition = useCallback(async (
+    partyId: number,
+    preferredStartTime: Date,
+    options: ExpeditionMutationOptions = {},
+  ): Promise<StartExpeditionResult | null> => {
+    if (autoStartingPartyIdsRef.current.has(partyId)) return null
+    autoStartingPartyIdsRef.current.add(partyId)
+    const syncStores = options.syncStores !== false
+
+    try {
+      const party = await partyRepository.getParty(partyId)
+      if (!party?.autoExpeditionEnabled || (party.status ?? 'idle') !== 'idle') return null
+      if (party.memberIds.length === 0 || !party.dungeonId) return null
+
+      const dungeon = useDungeonStore.getState().dungeons.find(item => item.id === party.dungeonId)
+      const tier = party.dungeonTier ?? 0
+      if (!isAutoExpeditionDungeonCleared(dungeon, tier)) return null
+      if (!dungeon) return null
+
+      const partyTimeMultiplier = await getPartyExpeditionTimeMultiplier(party)
+      const durationSec = estimateExplorationTime(
+        dungeon,
+        party.returnPolicy ?? 'never',
+        party.targetFloor ?? null,
+        partyTimeMultiplier,
+        false,
+        tier,
+        true,
+      )
+      if (durationSec <= 0) return null
+
+      try {
+        return await startExpedition({
+          party,
+          dungeon,
+          returnPolicy: party.returnPolicy ?? 'never',
+          targetFloor: party.targetFloor ?? null,
+          tier,
+          startTime: preferredStartTime,
+        }, options)
+      } catch (error) {
+        // 出撃処理の途中で失敗した場合はPTを待機状態へ戻す。
+        await partyRepository.saveParty({ ...party, status: 'idle' })
+        if (syncStores) {
+          await usePartyStore.getState().refresh()
+        }
+        console.warn('[useExpeditionFlow] Failed to start auto expedition', error)
+        return null
+      }
+    } finally {
+      autoStartingPartyIdsRef.current.delete(partyId)
+    }
+  }, [estimateExplorationTime, getPartyExpeditionTimeMultiplier, partyRepository, startExpedition])
 
   interface BulkStartResult {
     startedCount: number
@@ -510,6 +614,9 @@ export const useExpeditionFlow = ({
             targetFloor,
             returnPolicy,
             clientVersion: 'native',
+            autoExpeditionSessionId: party.autoExpeditionEnabled
+              ? party.autoExpeditionSessionId
+              : undefined,
             durationSec,
             simulationDurationSec,
           }
@@ -554,7 +661,7 @@ export const useExpeditionFlow = ({
           await usePartyStore.getState().refresh()
           await useGoblinStore.getState().refresh()
 
-          // 一括遠征の通知をスケジュール
+          // 通常遠征のみ通知をスケジュール（自動周回は通知フック側で除外）
           for (const record of records) {
             try {
               await scheduleExpeditionNotification(record)
@@ -581,6 +688,10 @@ export const useExpeditionFlow = ({
   const abortExpedition = useCallback(async (record: ExpeditionRecord): Promise<void> => {
     setIsProcessing(true)
     try {
+      const party = await partyRepository.getParty(record.partyId)
+      if (party?.autoExpeditionEnabled) {
+        await partyRepository.saveParty({ ...party, autoExpeditionEnabled: false })
+      }
       // replay が未計算の場合は遅延計算を実行
       let replay = record.replay
       if (!replay && record.expeditionMeta) {
@@ -674,9 +785,12 @@ export const useExpeditionFlow = ({
     } finally {
       setIsProcessing(false)
     }
-  }, [completeExpeditionUseCase, finalizeCompletion, updateExpeditionReplay, cancelExpeditionNotification])
+  }, [completeExpeditionUseCase, finalizeCompletion, updateExpeditionReplay, cancelExpeditionNotification, partyRepository])
 
   const completeDueExpeditions = useCallback(async (): Promise<void> => {
+    if (completionRunningRef.current) return
+    completionRunningRef.current = true
+
     const now = new Date()
     const dueExpeditions = expeditionRecords.filter(record =>
       record.status === 'ongoing' &&
@@ -684,68 +798,162 @@ export const useExpeditionFlow = ({
       record.returnTime <= now &&
       (record.replay || record.expeditionMeta)
     )
+    const catchUpPartyIds = dueExpeditions
+      .filter(isAutoExpeditionRecord)
+      .map(record => record.partyId)
+    const isCatchingUp = catchUpPartyIds.length > 0
+    if (isCatchingUp) {
+      useExpeditionStore.getState().setCatchUpProcessing(true, catchUpPartyIds)
+    }
+    let requiresStoreSync = false
 
-    for (const record of dueExpeditions) {
-      if (processedExpeditionsRef.current.has(record.id)) continue
-      processedExpeditionsRef.current.add(record.id)
-      try {
-        // replay が未計算の場合は遅延計算を実行
-        let replay = record.replay
-        if (!replay && record.expeditionMeta) {
-          replay = await computeExpeditionReplay(record.expeditionMeta)
-          await updateExpeditionReplay(record.id, replay)
-        }
-        if (!replay) {
-          // 完了処理できなかったため次周期で再試行できるよう解放
-          processedExpeditionsRef.current.delete(record.id)
+    try {
+      for (const dueExpedition of dueExpeditions) {
+        if (isAutoExpeditionRecord(dueExpedition)) {
+          const processingRecordIds: string[] = []
+          let completedRunCount = 0
+          const catchUpStartedAt = Date.now()
+          try {
+            // オフライン分はPT単位の1トランザクションで精算する。
+            // 中間周回は履歴へ保存せず、最終的に進行中となる1周だけを保存する。
+            await transactionRunner.runInTransaction(async () => {
+              let record: ExpeditionRecord | null = dueExpedition
+              let recordPersisted = true
+
+              while (
+                record?.status === 'ongoing' &&
+                record.returnTime !== null &&
+                record.returnTime <= now
+              ) {
+                if (processedExpeditionsRef.current.has(record.id)) break
+                const processingRecordId = record.id
+                processedExpeditionsRef.current.add(processingRecordId)
+                processingRecordIds.push(processingRecordId)
+
+                let replay = record.replay
+                if (!replay && record.expeditionMeta) {
+                  replay = await computeExpeditionReplay(record.expeditionMeta)
+                }
+                if (!replay) {
+                  throw new Error(`Replay could not be computed: ${record.id}`)
+                }
+
+                const result = await completeCatchUpExpeditionUseCase.execute(record.partyId, replay, {
+                  expeditionId: recordPersisted ? record.id : undefined,
+                })
+                if (result.alreadyProcessed) {
+                  record = null
+                  break
+                }
+                completedRunCount++
+
+                if (isAutoExpeditionDayBoundaryRun(record)) {
+                  // 日付をまたいだ周回を最終周とし、設定はONのまま次周だけを作成しない。
+                  record = null
+                  break
+                }
+
+                const next = await startNextAutoExpedition(
+                  record.partyId,
+                  record.returnTime,
+                  {
+                    syncStores: false,
+                    persistRecord: false,
+                    trackProcessing: false,
+                  },
+                )
+                record = next?.record ?? null
+                recordPersisted = false
+              }
+
+              // 復帰時点でまだ進行中となる最終周だけを履歴へ残す。
+              if (record && !recordPersisted) {
+                await expeditionRepository.save(record)
+              }
+            })
+            requiresStoreSync = true
+            // 中間周回はDBに存在しないため、重複防止Setへ残さない。
+            processingRecordIds
+              .filter(id => id !== dueExpedition.id)
+              .forEach(id => processedExpeditionsRef.current.delete(id))
+            await cancelExpeditionNotification(dueExpedition.id)
+            await expeditionRepository.pruneOldCompleted(MAX_EXPEDITION_HISTORY)
+            console.info(
+              `[AutoExpeditionCatchUp] party=${dueExpedition.partyId} runs=${completedRunCount} elapsedMs=${Date.now() - catchUpStartedAt}`,
+            )
+          } catch (error) {
+            processingRecordIds.forEach(id => processedExpeditionsRef.current.delete(id))
+            console.warn('[useExpeditionFlow] Failed to settle auto expedition catch-up', error)
+          }
+          // 長い集計でもPT間で描画・入力処理へ制御を返す。
+          await new Promise<void>(resolve => setTimeout(resolve, 0))
           continue
         }
 
-        // status 確定（WHERE status='ongoing' の冪等性ゲート）・報酬付与・
-        // enrichedReplay 保存を UseCase 内で 1 トランザクションにまとめて実行する。
-        // 既に完了処理済みなら alreadyProcessed=true が返るのでスキップ。
-        const result = await completeExpeditionUseCase.execute(record.partyId, replay, {
-          expeditionId: record.id,
-        })
-        if (result.alreadyProcessed) continue
-
-        // フォアグラウンドで完了処理したため、スケジュール済み通知をキャンセル
-        await cancelExpeditionNotification(record.id)
-
-        // 履歴の剪定とストア再取得
-        await finalizeCompletion()
-
-        if (result.newDungeonCaptured) {
-          const dungeon = areasData.find(d => d.id === result.newDungeonCaptured)
-          if (dungeon?.isBaseCapture) {
-            Alert.alert(
-              i18n.t('ui.result.baseCaptured'),
-              i18n.t('ui.result.baseCapturedHint', { name: getDungeonName(dungeon) }),
-              [{ text: 'OK' }]
-            )
+        if (processedExpeditionsRef.current.has(dueExpedition.id)) continue
+        processedExpeditionsRef.current.add(dueExpedition.id)
+        try {
+          let replay = dueExpedition.replay
+          if (!replay && dueExpedition.expeditionMeta) {
+            replay = await computeExpeditionReplay(dueExpedition.expeditionMeta)
           }
-        }
+          if (!replay) {
+            processedExpeditionsRef.current.delete(dueExpedition.id)
+            continue
+          }
 
-        await handleDungeonClear({ ...record, replay: result.enrichedReplay })
-        // UseCaseがDB上のbase_state.goldや制圧済み拠点を直接更新するため、ストアを同期
-        await useBaseStore.getState().refresh()
-        // UseCaseがDB上のparty.statusを'idle'に直接更新するため、ストアを同期
-        await usePartyStore.getState().refresh()
-        // ゴブリンのレベルアップ等もDB直接更新されるため同期
-        await useGoblinStore.getState().refresh()
-      } catch (error) {
-        console.warn('[useExpeditionFlow] Failed to complete expedition', error)
-        // 一時エラーで固まらないよう、次周期で再試行できるよう解放する
-        processedExpeditionsRef.current.delete(record.id)
+          // 通常遠征は従来どおり1件の履歴として完了させる。
+          const result = await completeExpeditionUseCase.execute(dueExpedition.partyId, replay, {
+            expeditionId: dueExpedition.id,
+          })
+          requiresStoreSync = true
+          if (result.alreadyProcessed) continue
+
+          await cancelExpeditionNotification(dueExpedition.id)
+          await expeditionRepository.pruneOldCompleted(MAX_EXPEDITION_HISTORY)
+
+          if (result.newDungeonCaptured) {
+            const dungeon = areasData.find(d => d.id === result.newDungeonCaptured)
+            if (dungeon?.isBaseCapture) {
+              Alert.alert(
+                i18n.t('ui.result.baseCaptured'),
+                i18n.t('ui.result.baseCapturedHint', { name: getDungeonName(dungeon) }),
+                [{ text: 'OK' }]
+              )
+            }
+          }
+
+          await handleDungeonClear({ ...dueExpedition, replay: result.enrichedReplay })
+        } catch (error) {
+          processedExpeditionsRef.current.delete(dueExpedition.id)
+          console.warn('[useExpeditionFlow] Failed to complete expedition', error)
+        }
+      }
+    } finally {
+      try {
+        if (requiresStoreSync) {
+          // 完了・次周開始の中間状態を見せず、全Storeを最終状態へ一度だけ同期する。
+          await Promise.all([
+            useExpeditionStore.getState().refresh(),
+            useBaseStore.getState().refresh(),
+            usePartyStore.getState().refresh(),
+            useGoblinStore.getState().refresh(),
+          ])
+        }
+      } finally {
+        if (isCatchingUp) {
+          useExpeditionStore.getState().setCatchUpProcessing(false)
+        }
+        completionRunningRef.current = false
       }
     }
   }, [
     expeditionRecords,
     completeExpeditionUseCase,
-    finalizeCompletion,
+    completeCatchUpExpeditionUseCase,
     handleDungeonClear,
-    updateExpeditionReplay,
     cancelExpeditionNotification,
+    startNextAutoExpedition,
   ])
 
   const [partyHistories, setPartyHistories] = useState<Record<number, ExpeditionRecord[]>>({})
@@ -821,9 +1029,12 @@ export const useExpeditionFlow = ({
 
   useEffect(() => {
     if (!enableAutoCompletion) return
-    void completeDueExpeditions()
+    const tick = async () => {
+      await completeDueExpeditions()
+    }
+    void tick()
     const interval = setInterval(() => {
-      void completeDueExpeditions()
+      void tick()
     }, 1000)
     return () => clearInterval(interval)
   }, [enableAutoCompletion, completeDueExpeditions])

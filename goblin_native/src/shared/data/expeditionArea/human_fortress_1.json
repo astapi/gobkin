@@ -1,7 +1,7 @@
 {
   "id": "human_fortress_1",
   "name": "辺境の城",
-  "areaLevel": 47,
+  "areaLevel": 140,
   "floors": 8,
   "baseDurationSec": 30600,
   "description": "辺境の城の外郭。城壁上の弓兵と騎士、魔術師が籠城戦で迎え撃つ。 辺境の城内へ侵入。重装騎兵と城内守備隊が最後の防衛線を張る。 辺境の城の本丸。精鋭近衛兵に守られた城代との最終決戦。異種族戦力を総動員して突破せよ。",
@@ -13,5 +13,9 @@
       "battle": 30
     }
   },
-  "unlockNext": "vampire_castle_1"
+  "unlockNext": "fortress_defense_1",
+  "unlockNexts": [
+    "swamp_defense_1",
+    "harpy_defense_1"
+  ]
 }

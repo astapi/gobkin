@@ -1,0 +1,17 @@
+{
+  "id": "fortress_defense_1",
+  "name": "辺境の城・奪還防衛戦",
+  "areaLevel": 152,
+  "floors": 8,
+  "baseDurationSec": 18000,
+  "description": "落としたはずの辺境の城に、王国の奪還軍が迫る。初めて「守る側」として城壁に立ち、騎士ロラン率いる先鋒軍を撃退せよ。",
+  "encounter": {
+    "eventIntervalSec": 600,
+    "eventWeights": {
+      "exploring": 60,
+      "goldTreasure": 10,
+      "battle": 30
+    }
+  },
+  "unlockNext": "vampire_castle_1"
+}

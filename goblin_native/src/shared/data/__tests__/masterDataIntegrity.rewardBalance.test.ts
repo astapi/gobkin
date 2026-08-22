@@ -46,8 +46,11 @@ const KNOWN_REWARD_INVERSIONS = [
   'orc_camp_1->orc_fortress_1',
   'wolf_grassland_1->lizardman_swamp_1',
   'spider_forest_1->dead_grave_1',
-  'harpy_cliff_1->human_fortress_1',
-  'vampire_castle_1->royal_capital_1',
+  // 2026-08 イベントダンジョン追加時の変化:
+  //  - harpy_cliff_1->human_fortress_1 は平原会戦(margrave_sortie_1)の挿入とgold調整で解消
+  //  - vampire_castle_1->royal_capital_1 は王都平原会戦(royal_field_battle_1)の挿入で辺自体が消滅し、
+  //    王都1の報酬の薄さは royal_field_battle_1->royal_capital_1 として残る(構造は同じ・調整保留)
+  'royal_field_battle_1->royal_capital_1',
   'dragon_volcano_1->royal_capital_3',
 ].sort()
 

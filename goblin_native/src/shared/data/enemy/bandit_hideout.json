@@ -23,30 +23,7 @@
         "vitality": 15,
         "agility": 13,
         "luck": 9
-      },
-      "rareEquipmentDrops": [
-        {
-          "templateId": "hidden_rare_011"
-        }
-      ],
-      "tierRareEquipmentDrops": [
-        {
-          "tier": 1,
-          "drops": [
-            {
-              "templateId": "armor_rare_016"
-            }
-          ]
-        },
-        {
-          "tier": 3,
-          "drops": [
-            {
-              "templateId": "accessory_rare_033"
-            }
-          ]
-        }
-      ]
+      }
     },
     {
       "id": "BDT002",
@@ -71,30 +48,7 @@
         "vitality": 18,
         "agility": 12,
         "luck": 9
-      },
-      "rareEquipmentDrops": [
-        {
-          "templateId": "hidden_rare_004"
-        }
-      ],
-      "tierRareEquipmentDrops": [
-        {
-          "tier": 1,
-          "drops": [
-            {
-              "templateId": "armor_rare_004"
-            }
-          ]
-        },
-        {
-          "tier": 3,
-          "drops": [
-            {
-              "templateId": "hidden_rare_005"
-            }
-          ]
-        }
-      ]
+      }
     },
     {
       "id": "BDT003",
@@ -119,33 +73,7 @@
         "vitality": 12,
         "agility": 16,
         "luck": 10
-      },
-      "rareEquipmentDrops": [
-        {
-          "templateId": "bow_rare_005"
-        },
-        {
-          "templateId": "bow_human_killer"
-        }
-      ],
-      "tierRareEquipmentDrops": [
-        {
-          "tier": 1,
-          "drops": [
-            {
-              "templateId": "bow_rare_006"
-            }
-          ]
-        },
-        {
-          "tier": 3,
-          "drops": [
-            {
-              "templateId": "accessory_rare_034"
-            }
-          ]
-        }
-      ]
+      }
     },
     {
       "id": "BDT004",
@@ -170,30 +98,7 @@
         "vitality": 12,
         "agility": 19,
         "luck": 12
-      },
-      "rareEquipmentDrops": [
-        {
-          "templateId": "hidden_rare_001"
-        }
-      ],
-      "tierRareEquipmentDrops": [
-        {
-          "tier": 1,
-          "drops": [
-            {
-              "templateId": "accessory_rare_035"
-            }
-          ]
-        },
-        {
-          "tier": 3,
-          "drops": [
-            {
-              "templateId": "hidden_rare_012"
-            }
-          ]
-        }
-      ]
+      }
     },
     {
       "id": "BDT005",
@@ -218,30 +123,7 @@
         "vitality": 24,
         "agility": 9,
         "luck": 7
-      },
-      "rareEquipmentDrops": [
-        {
-          "templateId": "sword_rare_011"
-        }
-      ],
-      "tierRareEquipmentDrops": [
-        {
-          "tier": 1,
-          "drops": [
-            {
-              "templateId": "armor_rare_017"
-            }
-          ]
-        },
-        {
-          "tier": 3,
-          "drops": [
-            {
-              "templateId": "shield_rare_011"
-            }
-          ]
-        }
-      ]
+      }
     },
     {
       "id": "BDT006",
@@ -279,29 +161,6 @@
           "name": "マジックアロー",
           "grantsSpellId": "magic_arrow"
         }
-      ],
-      "rareEquipmentDrops": [
-        {
-          "templateId": "wand_rare_010"
-        }
-      ],
-      "tierRareEquipmentDrops": [
-        {
-          "tier": 1,
-          "drops": [
-            {
-              "templateId": "robe_rare_015"
-            }
-          ]
-        },
-        {
-          "tier": 3,
-          "drops": [
-            {
-              "templateId": "rod_rare_007"
-            }
-          ]
-        }
       ]
     },
     {
@@ -328,12 +187,7 @@
         "agility": 16,
         "luck": 12
       },
-      "isBoss": true,
-      "rareEquipmentDrops": [
-        {
-          "templateId": "accessory_human_slayer"
-        }
-      ]
+      "isBoss": true
     }
   ],
   "patterns": [

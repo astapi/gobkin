@@ -2,18 +2,14 @@ import { useCallback, useMemo, useState } from 'react'
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet, ActivityIndicator, Alert, Image } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useTranslation } from 'react-i18next'
-import { useBaseStore, selectGold } from '@/presentation/stores/useBaseStore'
 import { useGoblinStore } from '@/presentation/stores/useGoblinStore'
 import { getGoblinDisplayImage } from '@/shared/utils/goblinImages'
 import { getEffectiveStats } from '@/shared/utils/goblinStats'
-import { calculateHealingCost, isInjuredGoblin } from '@/shared/utils/healing'
+import { isInjuredGoblin } from '@/shared/utils/healing'
 import type { Goblin } from '@/shared/types'
 
 export default function HealingScreen() {
   const { t } = useTranslation()
-  const gold = useBaseStore(selectGold)
-  const baseLoading = useBaseStore((state) => state.isLoading)
-  const updateBaseState = useBaseStore((state) => state.updateBaseState)
   const goblins = useGoblinStore((state) => state.goblins)
   const goblinsLoading = useGoblinStore((state) => state.isLoading)
   const updateGoblinCurrentHp = useGoblinStore((state) => state.updateGoblinCurrentHp)
@@ -24,20 +20,9 @@ export default function HealingScreen() {
     return goblins.filter(isInjuredGoblin)
   }, [goblins])
 
-  const totalCost = useMemo(() => {
-    return injuredGoblins.reduce((sum, goblin) => sum + calculateHealingCost(goblin), 0)
-  }, [injuredGoblins])
-
   const healGoblin = useCallback(async (goblin: Goblin) => {
-    const cost = calculateHealingCost(goblin)
-    if (gold < cost) {
-      Alert.alert(t('ui.healing.insufficientGoldTitle'), t('ui.healing.insufficientGoldBody', { cost, gold }))
-      return
-    }
-
     try {
       setProcessingIds(prev => new Set(prev).add(goblin.id))
-      await updateBaseState({ gold: gold - cost })
       await updateGoblinCurrentHp(goblin.id, null)
     } catch (error) {
       console.error('[Healing] Failed to heal goblin', error)
@@ -49,18 +34,12 @@ export default function HealingScreen() {
         return next
       })
     }
-  }, [gold, t, updateBaseState, updateGoblinCurrentHp])
+  }, [t, updateGoblinCurrentHp])
 
   const healAll = useCallback(async () => {
     if (injuredGoblins.length === 0) return
-    if (gold < totalCost) {
-      Alert.alert(t('ui.healing.insufficientGoldTitle'), t('ui.healing.insufficientGoldBody', { cost: totalCost, gold }))
-      return
-    }
-
     try {
       setIsBulkProcessing(true)
-      await updateBaseState({ gold: gold - totalCost })
       for (const goblin of injuredGoblins) {
         await updateGoblinCurrentHp(goblin.id, null)
       }
@@ -70,9 +49,9 @@ export default function HealingScreen() {
     } finally {
       setIsBulkProcessing(false)
     }
-  }, [gold, injuredGoblins, t, totalCost, updateBaseState, updateGoblinCurrentHp])
+  }, [injuredGoblins, t, updateGoblinCurrentHp])
 
-  if (baseLoading || goblinsLoading) {
+  if (goblinsLoading) {
     return (
       <SafeAreaView style={styles.container} edges={['left', 'right', 'bottom']}>
         <View style={styles.loadingContainer}>
@@ -90,23 +69,19 @@ export default function HealingScreen() {
           <Text style={styles.summaryTitle}>{t('ui.healing.title')}</Text>
           <Text style={styles.summaryLead}>{t('ui.healing.lead')}</Text>
           <View style={styles.summaryRow}>
-            <Text style={styles.summaryLabel}>{t('ui.healing.goldLabel')}</Text>
-            <Text style={styles.summaryValue}>{t('ui.healing.goldValue', { gold })}</Text>
-          </View>
-          <View style={styles.summaryRow}>
             <Text style={styles.summaryLabel}>{t('ui.healing.injuredLabel')}</Text>
             <Text style={styles.summaryValue}>{t('ui.healing.injuredValue', { count: injuredGoblins.length })}</Text>
           </View>
           <TouchableOpacity
             style={[
               styles.primaryButton,
-              (injuredGoblins.length === 0 || gold < totalCost || isBulkProcessing) && styles.buttonDisabled,
+              (injuredGoblins.length === 0 || isBulkProcessing) && styles.buttonDisabled,
             ]}
             onPress={() => void healAll()}
-            disabled={injuredGoblins.length === 0 || gold < totalCost || isBulkProcessing}
+            disabled={injuredGoblins.length === 0 || isBulkProcessing}
           >
             <Text style={styles.primaryButtonText}>
-              {isBulkProcessing ? t('ui.healing.processing') : t('ui.healing.healAllButton', { cost: totalCost })}
+              {isBulkProcessing ? t('ui.healing.processing') : t('ui.healing.healAllButton')}
             </Text>
           </TouchableOpacity>
         </View>
@@ -118,9 +93,8 @@ export default function HealingScreen() {
         ) : (
           injuredGoblins.map((goblin) => {
             const maxHp = getEffectiveStats(goblin).hp
-            const cost = calculateHealingCost(goblin)
             const processing = processingIds.has(goblin.id)
-            const disabled = gold < cost || processing || isBulkProcessing
+            const disabled = processing || isBulkProcessing
 
             return (
               <View key={goblin.id} style={styles.goblinCard}>
@@ -131,12 +105,13 @@ export default function HealingScreen() {
                   <Text style={styles.goblinHp}>{t('ui.healing.hpLine', { current: goblin.currentHp ?? maxHp, max: maxHp })}</Text>
                 </View>
                 <TouchableOpacity
+                  testID="heal-goblin-button"
                   style={[styles.healButton, disabled && styles.buttonDisabled]}
                   onPress={() => void healGoblin(goblin)}
                   disabled={disabled}
                 >
                   <Text style={styles.healButtonText}>
-                    {processing ? t('ui.healing.processing') : t('ui.healing.healButton', { cost })}
+                    {processing ? t('ui.healing.processing') : t('ui.healing.healButton')}
                   </Text>
                 </TouchableOpacity>
               </View>

@@ -70,6 +70,11 @@ export const SCHEMA = {
       gold_multiplier REAL NOT NULL DEFAULT 1.0,
       rare_multiplier REAL NOT NULL DEFAULT 1.0,
       title_multiplier REAL NOT NULL DEFAULT 1.0,
+      auto_expedition_enabled INTEGER NOT NULL DEFAULT 0,
+      auto_expedition_session_id TEXT,
+      auto_expedition_summary_json TEXT,
+      auto_expedition_date TEXT,
+      auto_expedition_used_sec INTEGER NOT NULL DEFAULT 0,
       created_at TEXT NOT NULL DEFAULT (datetime('now')),
       updated_at TEXT NOT NULL DEFAULT (datetime('now'))
     )

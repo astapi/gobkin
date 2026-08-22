@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef } from 'react'
 import { Platform } from 'react-native'
 import * as Notifications from 'expo-notifications'
 import type { ExpeditionRecord } from '../../shared/types'
+import { isAutoExpeditionRecord } from '../../shared/utils/autoExpedition'
 import i18n from '../../shared/i18n'
 import { useExpeditionStore } from '../stores/useExpeditionStore'
 
@@ -27,6 +28,7 @@ function calcBadgeCountForReturnAt(returnTime: Date, selfId: string): number {
   let count = 1 // 自分自身
   for (const rec of records) {
     if (rec.id === selfId) continue
+    if (isAutoExpeditionRecord(rec)) continue
     if (rec.status !== 'ongoing') continue
     if (!rec.returnTime) continue
     if (rec.returnTime.getTime() <= targetMs) count += 1
@@ -41,6 +43,18 @@ export function useExpeditionNotification() {
     ;(async () => {
       const { status } = await Notifications.getPermissionsAsync()
       permissionGrantedRef.current = status === 'granted'
+
+      // 旧バージョン等ですでに登録済みの自動周回通知も、起動時に取り消す。
+      const ongoingAutoExpeditions = useExpeditionStore.getState().expeditionRecords.filter(record =>
+        record.status === 'ongoing' && isAutoExpeditionRecord(record)
+      )
+      await Promise.all(ongoingAutoExpeditions.map(async record => {
+        try {
+          await Notifications.cancelScheduledNotificationAsync(notificationId(record.id))
+        } catch {
+          // 未登録・取消失敗はゲーム進行に影響させない
+        }
+      }))
     })()
   }, [])
 
@@ -49,6 +63,7 @@ export function useExpeditionNotification() {
    */
   const scheduleExpeditionNotification = useCallback(
     async (record: ExpeditionRecord) => {
+      if (isAutoExpeditionRecord(record)) return
       if (!permissionGrantedRef.current) return
       if (!record.returnTime) return
 

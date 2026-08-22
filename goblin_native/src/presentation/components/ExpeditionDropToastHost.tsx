@@ -1,11 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { Animated, StyleSheet, Text, View } from 'react-native'
+import { Animated, Pressable, StyleSheet, Text, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { computeExpeditionReplay } from '@/core/services/LazyExpeditionComputer'
 import { getEquipmentTemplate } from '@/shared/data/equipmentPoolLoader'
 import { getEquipmentDisplayName } from '@/shared/i18n/entityLocalization'
 import type { ExpeditionRecord, ExpeditionReplay, TreasureDrop } from '@/shared/types'
 import { useExpeditionStore } from '@/presentation/stores/useExpeditionStore'
+import { useToastDismissStore } from '@/presentation/stores/useToastDismissStore'
 import { TIPS_BAR_HEIGHT } from '@/presentation/components/TipsBar'
 
 const DISPLAY_MS = 4200
@@ -13,6 +14,7 @@ const SCAN_INTERVAL_MS = 1000
 const TAB_BAR_BASE_HEIGHT = 60
 const TAB_BAR_BASE_PADDING = 8
 const MAX_VISIBLE_TOASTS = 20
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable)
 
 interface DropToast {
   id: string
@@ -38,7 +40,15 @@ function getReplaySecond(record: ExpeditionRecord, replay: ExpeditionReplay, now
   return elapsedRatio * replay.durationSec
 }
 
-function DropToastItem({ toast, onDone }: { toast: DropToast; onDone: (id: string) => void }) {
+function DropToastItem({
+  toast,
+  onDone,
+  onDismissAll,
+}: {
+  toast: DropToast
+  onDone: (id: string) => void
+  onDismissAll: () => void
+}) {
   const opacity = useRef(new Animated.Value(0)).current
   const translateY = useRef(new Animated.Value(8)).current
 
@@ -75,7 +85,10 @@ function DropToastItem({ toast, onDone }: { toast: DropToast; onDone: (id: strin
   }, [onDone, opacity, toast.id, translateY])
 
   return (
-    <Animated.View
+    <AnimatedPressable
+      accessibilityRole="button"
+      accessibilityLabel="表示中のドロップ通知をすべて閉じる"
+      onPress={onDismissAll}
       style={[
         styles.toast,
         {
@@ -85,7 +98,7 @@ function DropToastItem({ toast, onDone }: { toast: DropToast; onDone: (id: strin
       ]}
     >
       <Text style={styles.toastText} numberOfLines={1}>{toast.label}</Text>
-    </Animated.View>
+    </AnimatedPressable>
   )
 }
 
@@ -94,7 +107,11 @@ export function ExpeditionDropToastHost() {
   const tabBarHeight = TAB_BAR_BASE_HEIGHT + Math.max(TAB_BAR_BASE_PADDING, insets.bottom)
   const expeditionRecords = useExpeditionStore((state) => state.expeditionRecords)
   const isExpeditionLoading = useExpeditionStore((state) => state.isLoading)
+  const isCatchUpProcessing = useExpeditionStore((state) => state.isCatchUpProcessing)
+  const catchUpRevision = useExpeditionStore((state) => state.catchUpRevision)
   const updateExpeditionReplay = useExpeditionStore((state) => state.updateExpeditionReplay)
+  const toastDismissRevision = useToastDismissStore((state) => state.revision)
+  const dismissAllToastLogs = useToastDismissStore((state) => state.dismissAll)
   const [toasts, setToasts] = useState<DropToast[]>([])
   const shownKeysRef = useRef<Set<string>>(new Set())
   const shownDropKeysRef = useRef<Set<string>>(new Set())
@@ -102,10 +119,21 @@ export function ExpeditionDropToastHost() {
   const lastScannedSecondRef = useRef<Map<string, number>>(new Map())
   const knownRecordIdsRef = useRef<Set<string>>(new Set())
   const initializedRef = useRef(false)
+  const skippedCatchUpRef = useRef(false)
+  const catchUpRevisionRef = useRef(catchUpRevision)
 
   const removeToast = useCallback((id: string) => {
     setToasts(prev => prev.filter(toast => toast.id !== id))
   }, [])
+
+  const dismissAllToasts = useCallback(() => {
+    setToasts([])
+    dismissAllToastLogs()
+  }, [dismissAllToastLogs])
+
+  useEffect(() => {
+    setToasts([])
+  }, [toastDismissRevision])
 
   const enqueueDrop = useCallback((record: ExpeditionRecord, item: TreasureDrop, sourceKey: string) => {
     const titleId = item.titleId ?? 'none'
@@ -129,6 +157,20 @@ export function ExpeditionDropToastHost() {
 
   const scanDrops = useCallback(async () => {
     if (isExpeditionLoading) return
+    if (isCatchUpProcessing) {
+      skippedCatchUpRef.current = true
+      return
+    }
+
+    // オフライン周回の集計後に追加・完了したレコードは既知扱いにする。
+    // 画面復帰時に過去分のドロップトーストをまとめて再生しない。
+    if (skippedCatchUpRef.current || catchUpRevisionRef.current !== catchUpRevision) {
+      expeditionRecords.forEach(record => knownRecordIdsRef.current.add(record.id))
+      initializedRef.current = true
+      skippedCatchUpRef.current = false
+      catchUpRevisionRef.current = catchUpRevision
+      return
+    }
 
     const now = Date.now()
 
@@ -188,7 +230,7 @@ export function ExpeditionDropToastHost() {
         })
       }
     }
-  }, [enqueueDrop, expeditionRecords, isExpeditionLoading, updateExpeditionReplay])
+  }, [catchUpRevision, enqueueDrop, expeditionRecords, isCatchUpProcessing, isExpeditionLoading, updateExpeditionReplay])
 
   useEffect(() => {
     void scanDrops()
@@ -202,7 +244,7 @@ export function ExpeditionDropToastHost() {
 
   return (
     <View
-      pointerEvents="none"
+      pointerEvents="box-none"
       style={[
         styles.container,
         {
@@ -211,7 +253,12 @@ export function ExpeditionDropToastHost() {
       ]}
     >
       {toasts.map(toast => (
-        <DropToastItem key={toast.id} toast={toast} onDone={removeToast} />
+        <DropToastItem
+          key={toast.id}
+          toast={toast}
+          onDone={removeToast}
+          onDismissAll={dismissAllToasts}
+        />
       ))}
     </View>
   )

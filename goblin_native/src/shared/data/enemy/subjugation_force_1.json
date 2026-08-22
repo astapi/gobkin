@@ -29,33 +29,7 @@
         "vitality": 22,
         "agility": 10,
         "luck": 5
-      },
-      "rareEquipmentDrops": [
-        {
-          "templateId": "sword_rare_023"
-        },
-        {
-          "templateId": "sword_human_killer"
-        }
-      ],
-      "tierRareEquipmentDrops": [
-        {
-          "tier": 1,
-          "drops": [
-            {
-              "templateId": "shield_rare_020"
-            }
-          ]
-        },
-        {
-          "tier": 3,
-          "drops": [
-            {
-              "templateId": "armor_rare_031"
-            }
-          ]
-        }
-      ]
+      }
     },
     {
       "id": "HUM002",
@@ -96,30 +70,7 @@
         "vitality": 17,
         "agility": 10,
         "luck": 5
-      },
-      "rareEquipmentDrops": [
-        {
-          "templateId": "wand_rare_014"
-        }
-      ],
-      "tierRareEquipmentDrops": [
-        {
-          "tier": 1,
-          "drops": [
-            {
-              "templateId": "robe_rare_020"
-            }
-          ]
-        },
-        {
-          "tier": 3,
-          "drops": [
-            {
-              "templateId": "rod_rare_013"
-            }
-          ]
-        }
-      ]
+      }
     },
     {
       "id": "HUM003",
@@ -150,30 +101,7 @@
         "vitality": 18,
         "agility": 12,
         "luck": 6
-      },
-      "rareEquipmentDrops": [
-        {
-          "templateId": "bow_rare_009"
-        }
-      ],
-      "tierRareEquipmentDrops": [
-        {
-          "tier": 1,
-          "drops": [
-            {
-              "templateId": "armor_rare_032"
-            }
-          ]
-        },
-        {
-          "tier": 3,
-          "drops": [
-            {
-              "templateId": "accessory_rare_054"
-            }
-          ]
-        }
-      ]
+      }
     },
     {
       "id": "HUM004",
@@ -209,30 +137,7 @@
         "agility": 8,
         "luck": 5
       },
-      "magicHeal": 227,
-      "rareEquipmentDrops": [
-        {
-          "templateId": "rod_rare_014"
-        }
-      ],
-      "tierRareEquipmentDrops": [
-        {
-          "tier": 1,
-          "drops": [
-            {
-              "templateId": "robe_rare_021"
-            }
-          ]
-        },
-        {
-          "tier": 3,
-          "drops": [
-            {
-              "templateId": "accessory_rare_055"
-            }
-          ]
-        }
-      ]
+      "magicHeal": 227
     },
     {
       "id": "HUM005",
@@ -263,30 +168,7 @@
         "vitality": 22,
         "agility": 8,
         "luck": 5
-      },
-      "rareEquipmentDrops": [
-        {
-          "templateId": "sword_rare_024"
-        }
-      ],
-      "tierRareEquipmentDrops": [
-        {
-          "tier": 1,
-          "drops": [
-            {
-              "templateId": "shield_rare_013"
-            }
-          ]
-        },
-        {
-          "tier": 3,
-          "drops": [
-            {
-              "templateId": "armor_rare_033"
-            }
-          ]
-        }
-      ]
+      }
     },
     {
       "id": "HUM006",
@@ -317,30 +199,7 @@
         "vitality": 22,
         "agility": 8,
         "luck": 5
-      },
-      "rareEquipmentDrops": [
-        {
-          "templateId": "sword_rare_024"
-        }
-      ],
-      "tierRareEquipmentDrops": [
-        {
-          "tier": 1,
-          "drops": [
-            {
-              "templateId": "shield_rare_013"
-            }
-          ]
-        },
-        {
-          "tier": 3,
-          "drops": [
-            {
-              "templateId": "armor_rare_033"
-            }
-          ]
-        }
-      ]
+      }
     },
     {
       "id": "B_CAPTAIN",
@@ -372,36 +231,7 @@
         "vitality": 27,
         "agility": 9,
         "luck": 5
-      },
-      "rareEquipmentDrops": [
-        {
-          "templateId": "sword_rare_025"
-        },
-        {
-          "templateId": "shield_rare_021"
-        },
-        {
-          "templateId": "large_shield_adamant_wall"
-        }
-      ],
-      "tierRareEquipmentDrops": [
-        {
-          "tier": 1,
-          "drops": [
-            {
-              "templateId": "armor_rare_034"
-            }
-          ]
-        },
-        {
-          "tier": 3,
-          "drops": [
-            {
-              "templateId": "sword_rare_026"
-            }
-          ]
-        }
-      ]
+      }
     }
   ],
   "patterns": [

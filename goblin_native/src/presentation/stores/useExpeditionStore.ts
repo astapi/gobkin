@@ -6,6 +6,12 @@ import { expeditionRepository as repository } from '../di/repositories'
 interface ExpeditionStoreState {
   expeditionRecords: ExpeditionRecord[]
   isLoading: boolean
+  /** 期限切れの自動周回をDB上で連続処理し、画面反映を保留している状態。 */
+  isCatchUpProcessing: boolean
+  /** オフライン周回結果を集計しているPT。 */
+  catchUpPartyIds: number[]
+  /** 集計完了を購読側へ確実に通知するための連番。 */
+  catchUpRevision: number
 }
 
 interface ExpeditionStoreActions {
@@ -21,6 +27,7 @@ interface ExpeditionStoreActions {
    * トランザクション内アトミックに実施済み。ここでは履歴の剪定とストア再取得のみ行う。
    */
   finalizeCompletion: () => Promise<void>
+  setCatchUpProcessing: (processing: boolean, partyIds?: number[]) => void
 }
 
 export const useExpeditionStore = create<ExpeditionStoreState & ExpeditionStoreActions>()((set) => {
@@ -32,6 +39,9 @@ export const useExpeditionStore = create<ExpeditionStoreState & ExpeditionStoreA
   return {
     expeditionRecords: [],
     isLoading: true,
+    isCatchUpProcessing: false,
+    catchUpPartyIds: [],
+    catchUpRevision: 0,
 
     initialize: async () => {
       await repository.pruneOldCompleted(MAX_EXPEDITION_HISTORY)
@@ -79,6 +89,16 @@ export const useExpeditionStore = create<ExpeditionStoreState & ExpeditionStoreA
     finalizeCompletion: async () => {
       await repository.pruneOldCompleted(MAX_EXPEDITION_HISTORY)
       await refresh()
+    },
+
+    setCatchUpProcessing: (processing: boolean, partyIds = []) => {
+      set(state => ({
+        isCatchUpProcessing: processing,
+        catchUpPartyIds: processing ? [...new Set(partyIds)] : [],
+        catchUpRevision: !processing && state.isCatchUpProcessing
+          ? state.catchUpRevision + 1
+          : state.catchUpRevision,
+      }))
     },
   }
 })

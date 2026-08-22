@@ -86,7 +86,8 @@ export function backupGoblinToGoblin(g: BackupGoblin): Goblin {
 
 export interface SimulationOptions {
   areaId: string
-  party: BackupGoblin[]
+  /** 組み立て済みのPT。BackupGoblin から作る場合は backupGoblinToGoblin を通すこと */
+  party: Goblin[]
   trials: number
   tier?: DungeonTier
   returnPolicy: ReturnPolicy
@@ -124,7 +125,7 @@ export async function runSimulationBatch(
     onProgress,
   } = opts
 
-  const goblinParty = party.map(backupGoblinToGoblin)
+  const goblinParty = party
   const durationSec = getSimulationDurationSec(areaId, tier)
   const baseRequest: ExpeditionRequest = {
     partyId: 'studio',
@@ -214,7 +215,8 @@ export async function runSimulationBatch(
 
 export interface SingleRunOptions {
   areaId: string
-  party: BackupGoblin[]
+  /** 組み立て済みのPT。BackupGoblin から作る場合は backupGoblinToGoblin を通すこと */
+  party: Goblin[]
   tier?: DungeonTier
   returnPolicy: ReturnPolicy
   seed?: number
@@ -233,7 +235,7 @@ export async function runSingleExpedition(
   const { areaId, party, tier, returnPolicy, seed } = opts
   const trialSeed =
     seed !== undefined ? seed : Math.floor(Math.random() * 0x7fffffff)
-  const goblinParty = party.map(backupGoblinToGoblin)
+  const goblinParty = party
   const durationSec = getSimulationDurationSec(areaId, tier)
   const baseRequest: ExpeditionRequest = {
     partyId: 'studio',

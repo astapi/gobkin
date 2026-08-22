@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react'
-import { View, Text, TouchableOpacity, StyleSheet, FlatList, Modal, Alert, ScrollView, ActivityIndicator } from 'react-native'
+import { View, Text, TouchableOpacity, StyleSheet, FlatList, Modal, Alert, ScrollView, ActivityIndicator, Animated, Pressable } from 'react-native'
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import { router, useLocalSearchParams } from 'expo-router'
 import type {
@@ -8,8 +8,10 @@ import type {
   EquipmentCategory,
   WeaponSubCategory,
   CharacterSkill,
+  GoblinStats,
 } from '@/shared/types'
 import { useGoblinStore } from '@/presentation/stores/useGoblinStore'
+import { useToastDismissStore } from '@/presentation/stores/useToastDismissStore'
 import { useEquipmentService } from '@/presentation/hooks/useEquipmentService'
 import { EquipmentService } from '@/core/services/EquipmentService'
 import { getEquipmentTemplate, getEquipmentTemplates } from '@/shared/data/equipmentPoolLoader'
@@ -20,7 +22,24 @@ import {
   getCharacterSkillDescription,
 } from '@/shared/data/characterSkills'
 import { getEquipmentDisplayName, getStatLabel } from '@/shared/i18n/entityLocalization'
+import { calculateGoblinEffectiveStats } from '@/shared/utils/goblinStats'
 import type { Goblin } from '@/shared/types'
+
+const EQUIPMENT_TOAST_DISPLAY_MS = 4200
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable)
+
+const STAT_CHANGE_KEYS: ReadonlyArray<keyof GoblinStats> = [
+  'hp',
+  'atk',
+  'magicAtk',
+  'def',
+  'magicDef',
+  'attackCount',
+  'accuracy',
+  'evasion',
+  'magicHeal',
+  'criticalRate',
+]
 
 const CATEGORY_ORDER: Record<EquipmentCategory, number> = {
   weapon: 0,
@@ -121,6 +140,90 @@ type DisplayBonus = {
   stat: string
   value: number
   originalValue: number
+}
+
+type EquipmentStatToastData = {
+  id: number
+  equipmentName: string
+  statChanges: string
+}
+
+function formatStatChanges(before: GoblinStats, after: GoblinStats): string {
+  const changes = STAT_CHANGE_KEYS.flatMap((key) => {
+    const difference = after[key] - before[key]
+    if (difference === 0) return []
+    const formattedDifference = Number.isInteger(difference)
+      ? difference
+      : Math.trunc(difference * 10) / 10
+    return [`${getStatLabel(key)} ${formattedDifference > 0 ? '+' : ''}${formattedDifference}`]
+  })
+
+  return changes.length > 0 ? changes.join('  ') : '能力値の変化なし'
+}
+
+function EquipmentStatToastItem({
+  toast,
+  onDone,
+  onDismissAll,
+}: {
+  toast: EquipmentStatToastData
+  onDone: (id: number) => void
+  onDismissAll: () => void
+}) {
+  const opacity = useRef(new Animated.Value(0)).current
+  const translateY = useRef(new Animated.Value(8)).current
+
+  useEffect(() => {
+    Animated.parallel([
+      Animated.timing(opacity, {
+        toValue: 1,
+        duration: 180,
+        useNativeDriver: true,
+      }),
+      Animated.timing(translateY, {
+        toValue: 0,
+        duration: 180,
+        useNativeDriver: true,
+      }),
+    ]).start()
+
+    const timer = setTimeout(() => {
+      Animated.parallel([
+        Animated.timing(opacity, {
+          toValue: 0,
+          duration: 220,
+          useNativeDriver: true,
+        }),
+        Animated.timing(translateY, {
+          toValue: -8,
+          duration: 220,
+          useNativeDriver: true,
+        }),
+      ]).start(() => onDone(toast.id))
+    }, EQUIPMENT_TOAST_DISPLAY_MS)
+
+    return () => clearTimeout(timer)
+  }, [onDone, opacity, toast.id, translateY])
+
+  return (
+    <AnimatedPressable
+      accessibilityRole="button"
+      accessibilityLabel="表示中の装備通知をすべて閉じる"
+      onPress={onDismissAll}
+      style={[
+        styles.equipmentToast,
+        {
+          opacity,
+          transform: [{ translateY }],
+        },
+      ]}
+    >
+      <Text style={styles.equipmentToastTitle} numberOfLines={1}>
+        {toast.equipmentName}を装備
+      </Text>
+      <Text style={styles.equipmentToastStats}>{toast.statChanges}</Text>
+    </AnimatedPressable>
+  )
 }
 
 function formatBonus(stat: string, value: number): string {
@@ -269,6 +372,7 @@ function sortInventoryGroups(groups: InventoryGroup[]): InventoryGroup[] {
 function buildInventoryListEntries(groups: InventoryGroup[]): InventoryListEntry[] {
   const entries: InventoryListEntry[] = []
   let currentSectionKey: string | null = null
+  const sectionOccurrences = new Map<string, number>()
 
   for (const group of groups) {
     const { category, subCategory } = group.template
@@ -277,9 +381,11 @@ function buildInventoryListEntries(groups: InventoryGroup[]): InventoryListEntry
       : category
 
     if (sectionKey !== currentSectionKey) {
+      const occurrence = sectionOccurrences.get(sectionKey) ?? 0
+      sectionOccurrences.set(sectionKey, occurrence + 1)
       entries.push({
         type: 'category',
-        key: `category-${sectionKey}-${entries.length}`,
+        key: `category-${sectionKey}-${occurrence}`,
         label: category === 'weapon' && subCategory
           ? WEAPON_SUB_CATEGORY_LABELS[subCategory]
           : CATEGORY_LABELS[category],
@@ -477,13 +583,18 @@ export default function EquipmentScreenPage() {
   const scrollOffsetRef = useRef(0)
   const headerHeightRef = useRef(0)
   const pendingScrollRestoreRef = useRef(false)
+  const pendingScrollOffsetRef = useRef<number | null>(null)
   const getGoblinById = useGoblinStore((state) => state.getGoblinById)
+  const toastDismissRevision = useToastDismissStore((state) => state.revision)
+  const dismissAllToastLogs = useToastDismissStore((state) => state.dismissAll)
   const { equippedItems, inventoryItems, refreshEquipment, equipItem, unequipItem } =
     useEquipmentService()
   const [goblin, setGoblin] = useState<Goblin | null>(null)
   const [isLoadingGoblin, setIsLoadingGoblin] = useState(true)
   const [selectedDetail, setSelectedDetail] = useState<EquipmentInstance | null>(null)
+  const [equipmentStatToasts, setEquipmentStatToasts] = useState<EquipmentStatToastData[]>([])
   const isEquippingRef = useRef(false)
+  const equipmentToastIdRef = useRef(0)
   const [selectedInventoryFilter, setSelectedInventoryFilter] = useState<InventoryFilter>(
     ALL_INVENTORY_FILTER,
   )
@@ -570,7 +681,8 @@ export default function EquipmentScreenPage() {
     }
 
     const headerDelta = nextHeaderHeight - headerHeightRef.current
-    const nextOffset = Math.max(0, scrollOffsetRef.current + headerDelta)
+    const savedOffset = pendingScrollOffsetRef.current ?? scrollOffsetRef.current
+    const nextOffset = Math.max(0, savedOffset + headerDelta)
 
     requestAnimationFrame(() => {
       listRef.current?.scrollToOffset({ offset: nextOffset, animated: false })
@@ -579,6 +691,7 @@ export default function EquipmentScreenPage() {
     scrollOffsetRef.current = nextOffset
     headerHeightRef.current = nextHeaderHeight
     pendingScrollRestoreRef.current = false
+    pendingScrollOffsetRef.current = null
   }, [])
 
   const handleEquip = useCallback(
@@ -600,13 +713,25 @@ export default function EquipmentScreenPage() {
           Alert.alert('空きスロットなし', '先に装備を外してください')
           return
         }
+        const beforeStats = calculateGoblinEffectiveStats(goblin, equippedItems)
+        pendingScrollOffsetRef.current = scrollOffsetRef.current
         pendingScrollRestoreRef.current = true
         const result = await equipItem(goblin, equipment, targetSlot)
         if (!result.success) {
           pendingScrollRestoreRef.current = false
+          pendingScrollOffsetRef.current = null
           Alert.alert('装備エラー', result.error ?? '装備できませんでした')
           return
         }
+        const afterStats = calculateGoblinEffectiveStats(goblin, [...equippedItems, equipment])
+        const template = getEquipmentTemplate(equipment.templateId)
+        equipmentToastIdRef.current += 1
+        const toast = {
+          id: equipmentToastIdRef.current,
+          equipmentName: template ? getDisplayName(equipment, template) : equipment.templateId,
+          statChanges: formatStatChanges(beforeStats, afterStats),
+        }
+        setEquipmentStatToasts(current => [toast, ...current].slice(0, 4))
       } finally {
         isEquippingRef.current = false
       }
@@ -616,10 +741,24 @@ export default function EquipmentScreenPage() {
 
   const handleUnequip = useCallback(async (equipment: EquipmentInstance) => {
     if (!goblin) return
+    pendingScrollOffsetRef.current = scrollOffsetRef.current
     pendingScrollRestoreRef.current = true
     await unequipItem(goblin, equipment)
     setSelectedDetail(null)
   }, [goblin, unequipItem])
+
+  const handleEquipmentToastDone = useCallback((id: number) => {
+    setEquipmentStatToasts(current => current.filter(toast => toast.id !== id))
+  }, [])
+
+  const dismissAllEquipmentToasts = useCallback(() => {
+    setEquipmentStatToasts([])
+    dismissAllToastLogs()
+  }, [dismissAllToastLogs])
+
+  useEffect(() => {
+    setEquipmentStatToasts([])
+  }, [toastDismissRevision])
 
   if (isLoadingGoblin) {
     return (
@@ -828,6 +967,22 @@ export default function EquipmentScreenPage() {
           }
         />
       )}
+
+      {equipmentStatToasts.length > 0 && (
+        <View
+          pointerEvents="box-none"
+          style={[styles.equipmentToastContainer, { bottom: insets.bottom + 12 }]}
+        >
+          {equipmentStatToasts.map(toast => (
+            <EquipmentStatToastItem
+              key={toast.id}
+              toast={toast}
+              onDone={handleEquipmentToastDone}
+              onDismissAll={dismissAllEquipmentToasts}
+            />
+          ))}
+        </View>
+      )}
     </SafeAreaView>
   )
 }
@@ -866,6 +1021,37 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontWeight: '700',
     fontSize: 14,
+  },
+  equipmentToastContainer: {
+    position: 'absolute',
+    left: 12,
+    zIndex: 40,
+    elevation: 40,
+    flexDirection: 'column-reverse',
+    alignItems: 'flex-start',
+    gap: 6,
+    maxWidth: '88%',
+  },
+  equipmentToast: {
+    borderRadius: 8,
+    backgroundColor: 'rgba(31, 41, 55, 0.82)',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.18,
+    shadowRadius: 5,
+  },
+  equipmentToastTitle: {
+    color: '#FFFFFF',
+    fontSize: 13,
+    fontWeight: '800',
+  },
+  equipmentToastStats: {
+    color: '#D1FAE5',
+    fontSize: 12,
+    fontWeight: '700',
+    marginTop: 3,
   },
   section: {
     backgroundColor: '#FFFFFF',

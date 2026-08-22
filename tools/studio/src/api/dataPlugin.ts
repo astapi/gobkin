@@ -9,6 +9,8 @@ interface Options {
   dataDir: string
   scenariosDir: string
   reportsDir: string
+  /** scripts/balance/out。戦略ビルド(strategist-builds.json)の置き場 */
+  balanceOutDir: string
 }
 
 interface DungeonSummary {
@@ -202,6 +204,7 @@ export function dataApiPlugin(options: Options): Plugin {
   const libraryFile = path.join(options.dataDir, 'character-library.json')
   const scenariosDir = options.scenariosDir
   const reportsDir = options.reportsDir
+  const strategistBuildsFile = path.join(options.balanceOutDir, 'strategist-builds.json')
 
   return {
     name: 'studio-data-api',
@@ -416,6 +419,18 @@ export function dataApiPlugin(options: Options): Plugin {
           const message = err instanceof Error ? err.message : 'Unknown error'
           const status = message.startsWith('NOT_FOUND') ? 404 : 500
           return json(res, status, { error: message })
+        }
+      })
+
+      server.middlewares.use('/api/strategist-builds', async (req, res) => {
+        try {
+          if (req.method !== 'GET') {
+            return json(res, 405, { error: 'Method not allowed' })
+          }
+          return json(res, 200, await readStrategistBuilds(strategistBuildsFile))
+        } catch (err) {
+          const message = err instanceof Error ? err.message : 'Unknown error'
+          return json(res, 500, { error: message })
         }
       })
 
@@ -930,6 +945,22 @@ function formatProgressionList(values: unknown): string {
 
 function formatProgressionRate(value: unknown): string {
   return typeof value === 'number' ? `${(value * 100).toFixed(1)}%` : '-'
+}
+
+/**
+ * バランス調整で使われた戦略ペルソナのビルド一覧を返す。
+ * 生成元: goblin_native/scripts/balance/exportStrategistBuilds.js
+ * 未生成の場合は空の builds を返す(studio 側で案内を出す)。
+ */
+async function readStrategistBuilds(filePath: string): Promise<unknown> {
+  try {
+    return await readJson(filePath)
+  } catch (err) {
+    if ((err as NodeJS.ErrnoException).code === 'ENOENT') {
+      return { generatedAt: null, partySize: 6, builds: [] }
+    }
+    throw err
+  }
 }
 
 async function listBalanceScenarios(scenariosDir: string): Promise<BalanceScenarioSummary[]> {

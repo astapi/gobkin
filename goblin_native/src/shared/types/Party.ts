@@ -4,6 +4,7 @@ import type { CharacterSkill } from "./CharacterSkill"
 import type { LearnedSpell } from "./Spell"
 import type { BattleActionPolicy } from "./Battle"
 import type { GoblinStats } from "./Goblin"
+import type { EquipmentTitleId } from './EquipmentTitle'
 
 export type PartyStatus = "idle" | "expedition"
 
@@ -17,6 +18,34 @@ export const DEFAULT_PARTY_REWARD_MULTIPLIERS: PartyRewardMultipliers = {
   gold: 1.0,
   rare: 1.0,
   title: 1.0,
+}
+
+export interface AutoExpeditionRewardItemSummary {
+  templateId: string
+  titleId?: EquipmentTitleId
+  count: number
+}
+
+export interface AutoExpeditionLevelUpSummary {
+  goblinId: number
+  oldLevel: number
+  newLevel: number
+}
+
+export interface AutoExpeditionSessionSummary {
+  sessionId: string
+  runCount: number
+  /** ダンジョンをクリアして帰還した回数（既存セーブでは未設定） */
+  clearCount?: number
+  /** 全滅して帰還した回数（既存セーブでは未設定） */
+  wipeoutCount?: number
+  /** 帰還条件により退却した回数（既存セーブでは未設定） */
+  retreatCount?: number
+  xpGained: number
+  goldGained: number
+  rewardItems: AutoExpeditionRewardItemSummary[]
+  factorCount: number
+  levelUps: AutoExpeditionLevelUpSummary[]
 }
 
 export function normalizePartyRewardMultipliers(
@@ -46,6 +75,15 @@ export type Party = {
   returnPolicy?: ExpeditionRequest["returnPolicy"]
   dungeonTier?: DungeonTier
   rewardMultipliers?: PartyRewardMultipliers
+  autoExpeditionEnabled?: boolean
+  /** 現在の自動周回セッションID。OFF後は結果確認まで保持する。 */
+  autoExpeditionSessionId?: string
+  /** 最新の自動周回セッションで確定済みの累計結果 */
+  autoExpeditionSummary?: AutoExpeditionSessionSummary
+  /** @deprecated 旧8時間上限の互換読込用。新しい自動周回では使用しない。 */
+  autoExpeditionDate?: string
+  /** @deprecated 旧8時間上限の互換読込用。新しい自動周回では使用しない。 */
+  autoExpeditionUsedSec?: number
 }
 
 export interface PartyState {

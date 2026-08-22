@@ -1,0 +1,605 @@
+{
+  "enemies": [
+    {
+      "id": "SWD001",
+      "name": "懲罰隊焼き討ち兵",
+      "attackType": "melee",
+      "raceTags": [
+        "human"
+      ],
+      "level": 112,
+      "hp": 12050,
+      "atk": 1085,
+      "def": 990,
+      "attackCount": 2,
+      "accuracy": 764,
+      "evasion": 75,
+      "gold": 136,
+      "magicDef": 793,
+      "baseAttributes": {
+        "power": 12,
+        "wisdom": 10,
+        "spirit": 8,
+        "vitality": 14,
+        "agility": 8,
+        "luck": 6
+      },
+      "skills": [
+        {
+          "id": "physical_reduction_10",
+          "physicalDamageReductionPercent": 10
+        }
+      ]
+    },
+    {
+      "id": "SWD002",
+      "name": "懲罰隊斥候",
+      "attackType": "melee",
+      "raceTags": [
+        "human"
+      ],
+      "level": 114,
+      "hp": 8740,
+      "atk": 1099,
+      "def": 716,
+      "attackCount": 3,
+      "accuracy": 768,
+      "evasion": 75,
+      "gold": 139,
+      "magicDef": 599,
+      "baseAttributes": {
+        "power": 12,
+        "wisdom": 12,
+        "spirit": 6,
+        "vitality": 10,
+        "agility": 16,
+        "luck": 9
+      },
+      "skills": [
+        {
+          "id": "physical_reduction_10",
+          "physicalDamageReductionPercent": 10
+        }
+      ]
+    },
+    {
+      "id": "SWD003",
+      "name": "沼地傭兵",
+      "attackType": "melee",
+      "raceTags": [
+        "human"
+      ],
+      "level": 116,
+      "hp": 15020,
+      "atk": 1205,
+      "def": 1230,
+      "attackCount": 2,
+      "accuracy": 772,
+      "evasion": 75,
+      "gold": 141,
+      "magicDef": 1218,
+      "baseAttributes": {
+        "power": 13,
+        "wisdom": 11,
+        "spirit": 12,
+        "vitality": 17,
+        "agility": 5,
+        "luck": 7
+      },
+      "skills": [
+        {
+          "id": "physical_reduction_10",
+          "physicalDamageReductionPercent": 10
+        }
+      ]
+    },
+    {
+      "id": "SWD004",
+      "name": "従軍司祭",
+      "attackType": "melee",
+      "raceTags": [
+        "human"
+      ],
+      "level": 114,
+      "hp": 9600,
+      "atk": 734,
+      "def": 788,
+      "attackCount": 1,
+      "accuracy": 768,
+      "evasion": 75,
+      "gold": 139,
+      "magicDef": 1402,
+      "baseAttributes": {
+        "power": 8,
+        "wisdom": 14,
+        "spirit": 14,
+        "vitality": 11,
+        "agility": 7,
+        "luck": 6
+      },
+      "magicHeal": 1057,
+      "skills": [
+        {
+          "id": "physical_reduction_10",
+          "physicalDamageReductionPercent": 10
+        },
+        {
+          "id": "recovery_magic_lv7",
+          "recoveryMagicLevel": 7
+        }
+      ]
+    },
+    {
+      "id": "B_PUNISHER",
+      "name": "王国懲罰隊長",
+      "attackType": "melee",
+      "raceTags": [
+        "human"
+      ],
+      "level": 126,
+      "hp": 15250,
+      "atk": 1104,
+      "def": 1227,
+      "attackCount": 3,
+      "accuracy": 839,
+      "evasion": 85,
+      "gold": 624,
+      "magicDef": 1201,
+      "baseAttributes": {
+        "power": 18,
+        "wisdom": 16,
+        "spirit": 14,
+        "vitality": 20,
+        "agility": 10,
+        "luck": 8
+      },
+      "isBoss": true,
+      "skills": [
+        {
+          "id": "physical_reduction_10",
+          "physicalDamageReductionPercent": 10
+        }
+      ]
+    }
+  ],
+  "patterns": [
+    {
+      "id": "SD1_F1_A",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "SWD001",
+          "SWD001"
+        ],
+        [
+          "SWD002"
+        ]
+      ]
+    },
+    {
+      "id": "SD1_F1_B",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "SWD001",
+          "SWD001",
+          "SWD001"
+        ],
+        [
+          "SWD002"
+        ]
+      ]
+    },
+    {
+      "id": "SD1_F1_C",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "SWD001",
+          "SWD001"
+        ],
+        [
+          "SWD002",
+          "SWD002"
+        ]
+      ]
+    },
+    {
+      "id": "SD1_F1_BOSS",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "SWD001",
+          "SWD001",
+          "SWD001"
+        ],
+        [
+          "SWD002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "SD1_F2_A",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "SWD001",
+          "SWD003"
+        ],
+        [
+          "SWD002",
+          "SWD004"
+        ]
+      ]
+    },
+    {
+      "id": "SD1_F2_B",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "SWD001",
+          "SWD003",
+          "SWD001"
+        ],
+        [
+          "SWD002",
+          "SWD004"
+        ]
+      ]
+    },
+    {
+      "id": "SD1_F2_C",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "SWD001",
+          "SWD003"
+        ],
+        [
+          "SWD002",
+          "SWD004",
+          "SWD002"
+        ]
+      ]
+    },
+    {
+      "id": "SD1_F2_BOSS",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "SWD001",
+          "SWD003",
+          "SWD001"
+        ],
+        [
+          "SWD002",
+          "SWD004"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "SD1_F3_A",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "SWD003",
+          "SWD001"
+        ],
+        [
+          "SWD002",
+          "SWD002"
+        ]
+      ]
+    },
+    {
+      "id": "SD1_F3_B",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "SWD003",
+          "SWD001",
+          "SWD003"
+        ],
+        [
+          "SWD002",
+          "SWD002"
+        ]
+      ]
+    },
+    {
+      "id": "SD1_F3_C",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "SWD003",
+          "SWD001"
+        ],
+        [
+          "SWD002",
+          "SWD002",
+          "SWD002"
+        ]
+      ]
+    },
+    {
+      "id": "SD1_F3_BOSS",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "SWD003",
+          "SWD001",
+          "SWD003"
+        ],
+        [
+          "SWD002",
+          "SWD002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "SD1_F4_A",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "SWD003",
+          "SWD003"
+        ],
+        [
+          "SWD002",
+          "SWD004",
+          "SWD001"
+        ]
+      ]
+    },
+    {
+      "id": "SD1_F4_B",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "SWD003",
+          "SWD003",
+          "SWD003"
+        ],
+        [
+          "SWD002",
+          "SWD004",
+          "SWD001"
+        ]
+      ]
+    },
+    {
+      "id": "SD1_F4_C",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "SWD003",
+          "SWD003"
+        ],
+        [
+          "SWD002",
+          "SWD004",
+          "SWD001",
+          "SWD002"
+        ]
+      ]
+    },
+    {
+      "id": "SD1_F4_BOSS",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "SWD003",
+          "SWD003",
+          "SWD003"
+        ],
+        [
+          "SWD002",
+          "SWD004",
+          "SWD001"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "SD1_F5_A",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "SWD003",
+          "SWD003"
+        ],
+        [
+          "SWD002",
+          "SWD004",
+          "SWD002"
+        ]
+      ]
+    },
+    {
+      "id": "SD1_F5_B",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "SWD003",
+          "SWD003",
+          "SWD003"
+        ],
+        [
+          "SWD002",
+          "SWD004",
+          "SWD002"
+        ]
+      ]
+    },
+    {
+      "id": "SD1_F5_C",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "SWD003",
+          "SWD003"
+        ],
+        [
+          "SWD002",
+          "SWD004",
+          "SWD002",
+          "SWD002"
+        ]
+      ]
+    },
+    {
+      "id": "SD1_F5_BOSS",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "SWD003",
+          "SWD003",
+          "SWD003"
+        ],
+        [
+          "SWD002",
+          "SWD004",
+          "SWD002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "SD1_F6_A",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "SWD003",
+          "SWD003",
+          "SWD001"
+        ],
+        [
+          "SWD002",
+          "SWD004",
+          "SWD002"
+        ]
+      ]
+    },
+    {
+      "id": "SD1_F6_B",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "SWD003",
+          "SWD003",
+          "SWD001",
+          "SWD003"
+        ],
+        [
+          "SWD002",
+          "SWD004",
+          "SWD002"
+        ]
+      ]
+    },
+    {
+      "id": "SD1_F6_C",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "SWD003",
+          "SWD003",
+          "SWD001"
+        ],
+        [
+          "SWD002",
+          "SWD004",
+          "SWD002",
+          "SWD002"
+        ]
+      ]
+    },
+    {
+      "id": "SD1_F6_BOSS",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "SWD003",
+          "SWD003",
+          "SWD001",
+          "SWD003"
+        ],
+        [
+          "SWD002",
+          "SWD004",
+          "SWD002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "SD1_FINAL_BOSS",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "B_PUNISHER"
+        ],
+        [
+          "SWD003",
+          "SWD003",
+          "SWD002",
+          "SWD004"
+        ]
+      ],
+      "isBoss": true
+    }
+  ]
+}

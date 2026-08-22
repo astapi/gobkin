@@ -104,6 +104,7 @@ headless/
   strategistLayer.js getAvailableJobs / JOB_ROLE / buildStrategistParty(ジョブ・隊列・装備シナジー)
 strategyPremium.js  戦略プレミアム + 壁分類の測定(out/strategyPremium.csv, out/wallClassification.csv)
 analyzeThresholds.js floor必要Lv曲線の測定(out/thresholds.csv)
+exportStrategistBuilds.js 戦略ペルソナが探索したビルドを out/strategist-builds.json に保存
 out/                測定結果CSVの出力先
 ```
 
@@ -141,6 +142,35 @@ npm run balance:sim -- --areas orc_fortress_1 --level 45 --persona strategist
 node scripts/balance/strategyPremium.js   # → out/strategyPremium.csv, out/wallClassification.csv
 node scripts/balance/analyzeThresholds.js # → out/thresholds.csv(floor必要Lv曲線)
 ```
+
+### 5.35 戦略ビルドの保存と再現(`exportStrategistBuilds.js`)
+
+戦略ペルソナの探索結果はプロセス内キャッシュにしか残らないため、「どんなPTで測ったのか」が
+後から追えなかった。本スクリプトは隊列・ジョブ・亜種・装備を JSON に書き出して記録する。
+
+```bash
+node scripts/balance/exportStrategistBuilds.js --all              # 全エリア(重い)
+node scripts/balance/exportStrategistBuilds.js spider_forest_1    # 単体
+node scripts/balance/exportStrategistBuilds.js --tier 3 --level 120 vampire_castle_1
+```
+
+- 出力: `scripts/balance/out/strategist-builds.json`(git 管理下。`git diff` でビルド変化をレビューできる)
+- `--level` は探索レベル。既定 3 は `measureArea.js` がグリッド下端から探索する挙動の再現
+  (高Tierの実力を見るなら `probeOptimalBuild.js` と同様に高レベルを明示する)
+- 保存形式は `members[].loadout`(最適化スロット分)＋ `equipmentTail`(残り枠の充填候補)。
+  任意レベルの装備は `optimized + tail` を `calculateSlotCount(level)` 枠まで詰めて復元する
+- **tools/studio のシミュレーション画面がこの JSON を読み、同じPTで実行できる**
+  (PTセレクタの `[戦略] <areaId> Tier<n>`)。組み立ては `tools/studio/src/lib/strategistParty.ts` が
+  `strategistLayer.js` の buildStrategistGoblin と同一手順で行う。片方を変えたら両方直すこと
+- 移植のズレは `verifyStrategistBuilds.js` で検出できる。studio の TS を実際に読み込んで実行し、
+  シミュレータが同じ build から組むPTと effectiveStats / skills まで突き合わせる:
+
+  ```bash
+  node scripts/balance/verifyStrategistBuilds.js                  # 既定6レベルで全ビルド検証
+  node scripts/balance/verifyStrategistBuilds.js --levels 3,50,120
+  ```
+
+  strategistLayer.js か strategistParty.ts を触ったら必ず実行すること(不一致なら差分を列挙して exit 1)
 
 ### 5.4 整合性テスト(回帰防止)
 

@@ -1,0 +1,838 @@
+{
+  "enemies": [
+    {
+      "id": "RFB001",
+      "name": "王国戦列歩兵",
+      "attackType": "melee",
+      "raceTags": [
+        "human"
+      ],
+      "level": 152,
+      "hp": 11630,
+      "atk": 1038,
+      "def": 943,
+      "attackCount": 2,
+      "accuracy": 844,
+      "evasion": 75,
+      "gold": 160,
+      "magicDef": 757,
+      "baseAttributes": {
+        "power": 12,
+        "wisdom": 10,
+        "spirit": 8,
+        "vitality": 14,
+        "agility": 8,
+        "luck": 6
+      },
+      "skills": [
+        {
+          "id": "physical_reduction_10",
+          "physicalDamageReductionPercent": 10
+        }
+      ]
+    },
+    {
+      "id": "RFB002",
+      "name": "王国長弓兵",
+      "attackType": "range",
+      "raceTags": [
+        "human"
+      ],
+      "level": 156,
+      "hp": 8540,
+      "atk": 1156,
+      "def": 693,
+      "attackCount": 3,
+      "accuracy": 852,
+      "evasion": 75,
+      "gold": 164,
+      "magicDef": 487,
+      "baseAttributes": {
+        "power": 13,
+        "wisdom": 11,
+        "spirit": 5,
+        "vitality": 10,
+        "agility": 12,
+        "luck": 7
+      },
+      "skills": [
+        {
+          "id": "physical_reduction_10",
+          "physicalDamageReductionPercent": 10
+        }
+      ]
+    },
+    {
+      "id": "RFB003",
+      "name": "戦列魔導兵",
+      "attackType": "melee",
+      "raceTags": [
+        "human"
+      ],
+      "level": 158,
+      "hp": 6960,
+      "atk": 1170,
+      "def": 564,
+      "attackCount": 1,
+      "accuracy": 856,
+      "evasion": 75,
+      "gold": 166,
+      "magicDef": 592,
+      "baseAttributes": {
+        "power": 13,
+        "wisdom": 15,
+        "spirit": 6,
+        "vitality": 8,
+        "agility": 9,
+        "luck": 7
+      },
+      "skills": [
+        {
+          "id": "physical_reduction_10",
+          "physicalDamageReductionPercent": 10
+        },
+        {
+          "id": "grant_fireball",
+          "name": "ファイヤーボール",
+          "grantsSpellId": "fireball"
+        },
+        {
+          "id": "grant_magic_arrow",
+          "name": "マジックアロー",
+          "grantsSpellId": "magic_arrow"
+        }
+      ]
+    },
+    {
+      "id": "RFB004",
+      "name": "軍団司祭",
+      "attackType": "melee",
+      "raceTags": [
+        "human"
+      ],
+      "level": 158,
+      "hp": 9530,
+      "atk": 721,
+      "def": 773,
+      "attackCount": 1,
+      "accuracy": 856,
+      "evasion": 75,
+      "gold": 166,
+      "magicDef": 1381,
+      "baseAttributes": {
+        "power": 8,
+        "wisdom": 14,
+        "spirit": 14,
+        "vitality": 11,
+        "agility": 7,
+        "luck": 6
+      },
+      "magicHeal": 1069,
+      "skills": [
+        {
+          "id": "physical_reduction_10",
+          "physicalDamageReductionPercent": 10
+        },
+        {
+          "id": "recovery_magic_lv7",
+          "recoveryMagicLevel": 7
+        }
+      ]
+    },
+    {
+      "id": "RFB005",
+      "name": "王国重装騎兵",
+      "attackType": "melee",
+      "raceTags": [
+        "human"
+      ],
+      "level": 162,
+      "hp": 15160,
+      "atk": 1203,
+      "def": 1231,
+      "attackCount": 2,
+      "accuracy": 864,
+      "evasion": 75,
+      "gold": 171,
+      "magicDef": 1216,
+      "baseAttributes": {
+        "power": 13,
+        "wisdom": 11,
+        "spirit": 12,
+        "vitality": 17,
+        "agility": 5,
+        "luck": 7
+      },
+      "skills": [
+        {
+          "id": "physical_reduction_10",
+          "physicalDamageReductionPercent": 10
+        }
+      ]
+    },
+    {
+      "id": "RFB006",
+      "name": "親衛騎士",
+      "attackType": "melee",
+      "raceTags": [
+        "human"
+      ],
+      "level": 166,
+      "hp": 11000,
+      "atk": 1332,
+      "def": 891,
+      "attackCount": 3,
+      "accuracy": 872,
+      "evasion": 75,
+      "gold": 175,
+      "magicDef": 833,
+      "baseAttributes": {
+        "power": 14,
+        "wisdom": 10,
+        "spirit": 8,
+        "vitality": 12,
+        "agility": 14,
+        "luck": 8
+      },
+      "skills": [
+        {
+          "id": "physical_reduction_10",
+          "physicalDamageReductionPercent": 10
+        }
+      ]
+    },
+    {
+      "id": "B_MARSHAL",
+      "name": "王国元帥ガリウス",
+      "attackType": "melee",
+      "raceTags": [
+        "human"
+      ],
+      "level": 180,
+      "hp": 16330,
+      "atk": 1166,
+      "def": 1297,
+      "attackCount": 4,
+      "accuracy": 920,
+      "evasion": 85,
+      "gold": 772,
+      "magicDef": 1272,
+      "baseAttributes": {
+        "power": 18,
+        "wisdom": 16,
+        "spirit": 14,
+        "vitality": 20,
+        "agility": 10,
+        "luck": 8
+      },
+      "isBoss": true,
+      "skills": [
+        {
+          "id": "physical_reduction_10",
+          "physicalDamageReductionPercent": 10
+        }
+      ]
+    }
+  ],
+  "patterns": [
+    {
+      "id": "RF1_F1_A",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "RFB001",
+          "RFB001"
+        ],
+        [
+          "RFB002"
+        ]
+      ]
+    },
+    {
+      "id": "RF1_F1_B",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "RFB001",
+          "RFB001",
+          "RFB001"
+        ],
+        [
+          "RFB002"
+        ]
+      ]
+    },
+    {
+      "id": "RF1_F1_C",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "RFB001",
+          "RFB001"
+        ],
+        [
+          "RFB002",
+          "RFB002"
+        ]
+      ]
+    },
+    {
+      "id": "RF1_F1_BOSS",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "RFB001",
+          "RFB001",
+          "RFB001"
+        ],
+        [
+          "RFB002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "RF1_F2_A",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "RFB001",
+          "RFB001"
+        ],
+        [
+          "RFB002",
+          "RFB003"
+        ]
+      ]
+    },
+    {
+      "id": "RF1_F2_B",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "RFB001",
+          "RFB001",
+          "RFB001"
+        ],
+        [
+          "RFB002",
+          "RFB003"
+        ]
+      ]
+    },
+    {
+      "id": "RF1_F2_C",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "RFB001",
+          "RFB001"
+        ],
+        [
+          "RFB002",
+          "RFB003",
+          "RFB002"
+        ]
+      ]
+    },
+    {
+      "id": "RF1_F2_BOSS",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "RFB001",
+          "RFB001",
+          "RFB001"
+        ],
+        [
+          "RFB002",
+          "RFB003"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "RF1_F3_A",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "RFB005",
+          "RFB001"
+        ],
+        [
+          "RFB002",
+          "RFB004"
+        ]
+      ]
+    },
+    {
+      "id": "RF1_F3_B",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "RFB005",
+          "RFB001",
+          "RFB005"
+        ],
+        [
+          "RFB002",
+          "RFB004"
+        ]
+      ]
+    },
+    {
+      "id": "RF1_F3_C",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "RFB005",
+          "RFB001"
+        ],
+        [
+          "RFB002",
+          "RFB004",
+          "RFB002"
+        ]
+      ]
+    },
+    {
+      "id": "RF1_F3_BOSS",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "RFB005",
+          "RFB001",
+          "RFB005"
+        ],
+        [
+          "RFB002",
+          "RFB004"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "RF1_F4_A",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "RFB005",
+          "RFB001"
+        ],
+        [
+          "RFB003",
+          "RFB002",
+          "RFB004"
+        ]
+      ]
+    },
+    {
+      "id": "RF1_F4_B",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "RFB005",
+          "RFB001",
+          "RFB005"
+        ],
+        [
+          "RFB003",
+          "RFB002",
+          "RFB004"
+        ]
+      ]
+    },
+    {
+      "id": "RF1_F4_C",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "RFB005",
+          "RFB001"
+        ],
+        [
+          "RFB003",
+          "RFB002",
+          "RFB004",
+          "RFB003"
+        ]
+      ]
+    },
+    {
+      "id": "RF1_F4_BOSS",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "RFB005",
+          "RFB001",
+          "RFB005"
+        ],
+        [
+          "RFB003",
+          "RFB002",
+          "RFB004"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "RF1_F5_A",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "RFB005",
+          "RFB006"
+        ],
+        [
+          "RFB002",
+          "RFB004",
+          "RFB003"
+        ]
+      ]
+    },
+    {
+      "id": "RF1_F5_B",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "RFB005",
+          "RFB006",
+          "RFB005"
+        ],
+        [
+          "RFB002",
+          "RFB004",
+          "RFB003"
+        ]
+      ]
+    },
+    {
+      "id": "RF1_F5_C",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "RFB005",
+          "RFB006"
+        ],
+        [
+          "RFB002",
+          "RFB004",
+          "RFB003",
+          "RFB002"
+        ]
+      ]
+    },
+    {
+      "id": "RF1_F5_BOSS",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "RFB005",
+          "RFB006",
+          "RFB005"
+        ],
+        [
+          "RFB002",
+          "RFB004",
+          "RFB003"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "RF1_F6_A",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "RFB005",
+          "RFB006"
+        ],
+        [
+          "RFB003",
+          "RFB002",
+          "RFB004",
+          "RFB001"
+        ]
+      ]
+    },
+    {
+      "id": "RF1_F6_B",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "RFB005",
+          "RFB006",
+          "RFB005"
+        ],
+        [
+          "RFB003",
+          "RFB002",
+          "RFB004",
+          "RFB001"
+        ]
+      ]
+    },
+    {
+      "id": "RF1_F6_C",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "RFB005",
+          "RFB006"
+        ],
+        [
+          "RFB003",
+          "RFB002",
+          "RFB004",
+          "RFB001",
+          "RFB003"
+        ]
+      ]
+    },
+    {
+      "id": "RF1_F6_BOSS",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "RFB005",
+          "RFB006",
+          "RFB005"
+        ],
+        [
+          "RFB003",
+          "RFB002",
+          "RFB004",
+          "RFB001"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "RF1_F7_A",
+      "floors": [
+        7
+      ],
+      "enemies": [
+        [
+          "RFB005",
+          "RFB006",
+          "RFB005"
+        ],
+        [
+          "RFB002",
+          "RFB004",
+          "RFB003",
+          "RFB002"
+        ]
+      ]
+    },
+    {
+      "id": "RF1_F7_B",
+      "floors": [
+        7
+      ],
+      "enemies": [
+        [
+          "RFB005",
+          "RFB006",
+          "RFB005",
+          "RFB005"
+        ],
+        [
+          "RFB002",
+          "RFB004",
+          "RFB003",
+          "RFB002"
+        ]
+      ]
+    },
+    {
+      "id": "RF1_F7_C",
+      "floors": [
+        7
+      ],
+      "enemies": [
+        [
+          "RFB005",
+          "RFB006",
+          "RFB005"
+        ],
+        [
+          "RFB002",
+          "RFB004",
+          "RFB003",
+          "RFB002",
+          "RFB002"
+        ]
+      ]
+    },
+    {
+      "id": "RF1_F7_BOSS",
+      "floors": [
+        7
+      ],
+      "enemies": [
+        [
+          "RFB005",
+          "RFB006",
+          "RFB005",
+          "RFB005"
+        ],
+        [
+          "RFB002",
+          "RFB004",
+          "RFB003",
+          "RFB002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "RF1_F8_A",
+      "floors": [
+        8
+      ],
+      "enemies": [
+        [
+          "RFB006",
+          "RFB005",
+          "RFB006"
+        ],
+        [
+          "RFB003",
+          "RFB002",
+          "RFB004",
+          "RFB002"
+        ]
+      ]
+    },
+    {
+      "id": "RF1_F8_B",
+      "floors": [
+        8
+      ],
+      "enemies": [
+        [
+          "RFB006",
+          "RFB005",
+          "RFB006",
+          "RFB006"
+        ],
+        [
+          "RFB003",
+          "RFB002",
+          "RFB004",
+          "RFB002"
+        ]
+      ]
+    },
+    {
+      "id": "RF1_F8_C",
+      "floors": [
+        8
+      ],
+      "enemies": [
+        [
+          "RFB006",
+          "RFB005",
+          "RFB006"
+        ],
+        [
+          "RFB003",
+          "RFB002",
+          "RFB004",
+          "RFB002",
+          "RFB003"
+        ]
+      ]
+    },
+    {
+      "id": "RF1_F8_BOSS",
+      "floors": [
+        8
+      ],
+      "enemies": [
+        [
+          "RFB006",
+          "RFB005",
+          "RFB006",
+          "RFB006"
+        ],
+        [
+          "RFB003",
+          "RFB002",
+          "RFB004",
+          "RFB002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "RF1_FINAL_BOSS",
+      "floors": [
+        8
+      ],
+      "enemies": [
+        [
+          "B_MARSHAL"
+        ],
+        [
+          "RFB005",
+          "RFB006",
+          "RFB003",
+          "RFB002",
+          "RFB004"
+        ]
+      ],
+      "isBoss": true
+    }
+  ]
+}

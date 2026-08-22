@@ -12,6 +12,8 @@ export interface ExpeditionRequest {
   targetFloor?: number | null
   returnPolicy: "if_any_ko" | "if_two_ko" | "last_one" | "never"
   clientVersion: string
+  /** 自動周回結果をセッション単位で集計するためのID */
+  autoExpeditionSessionId?: string
   /**
    * 実際の帰還・表示に使う時間。
    * デバッグ短縮時は 1 秒になることがある。
@@ -51,6 +53,7 @@ export interface ExpeditionReplay {
     tier?: DungeonTier
     seed: number
     serverCommitHash?: string
+    autoExpeditionSessionId?: string
   }
   durationSec: number
   events: TimelineEvent[]

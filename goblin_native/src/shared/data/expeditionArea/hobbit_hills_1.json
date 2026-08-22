@@ -1,7 +1,7 @@
 {
   "id": "hobbit_hills_1",
   "name": "ホビットの丘陵村",
-  "areaLevel": 50,
+  "areaLevel": 35,
   "floors": 6,
   "baseDurationSec": 17100,
   "description": "辺境の村の先に広がる丘陵地。身軽なホビットの斥候と投石手が補給路を守っている。",
@@ -12,5 +12,9 @@
       "goldTreasure": 10,
       "battle": 30
     }
-  }
+  },
+  "unlockNext": "dwarf_mine_1",
+  "unlockNexts": [
+    "hobbit_hills_defense_1"
+  ]
 }

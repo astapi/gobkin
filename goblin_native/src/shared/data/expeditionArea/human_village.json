@@ -13,5 +13,8 @@
       "battle": 30
     }
   },
-  "unlockNext": "wolf_grassland_1"
+  "unlockNext": "wolf_grassland_1",
+  "unlockNexts": [
+    "hobbit_hills_1"
+  ]
 }

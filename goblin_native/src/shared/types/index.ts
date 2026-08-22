@@ -3,7 +3,15 @@ export type { Goblin, GoblinStats, GoblinBaseAttributes, GoblinJob } from "./Gob
 export type { GoblinRaceId } from "./Race"
 
 // Party related types
-export type { Party, PartyStatus, PartyState, PartyRewardMultipliers } from "./Party"
+export type {
+  Party,
+  PartyStatus,
+  PartyState,
+  PartyRewardMultipliers,
+  AutoExpeditionRewardItemSummary,
+  AutoExpeditionLevelUpSummary,
+  AutoExpeditionSessionSummary,
+} from "./Party"
 export { DEFAULT_PARTY_REWARD_MULTIPLIERS, normalizePartyRewardMultipliers } from "./Party"
 
 // Enemy related types

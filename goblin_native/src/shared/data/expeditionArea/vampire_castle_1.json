@@ -1,7 +1,7 @@
 {
   "id": "vampire_castle_1",
   "name": "ヴァンパイアの古城",
-  "areaLevel": 55,
+  "areaLevel": 165,
   "floors": 6,
   "baseDurationSec": 35100,
   "description": "王都へ向かう街道を見下ろす古城。夜の眷属を率いるヴァンパイアが影から進軍を阻む。",
@@ -13,5 +13,5 @@
       "battle": 30
     }
   },
-  "unlockNext": "royal_capital_1"
+  "unlockNext": "royal_field_battle_1"
 }

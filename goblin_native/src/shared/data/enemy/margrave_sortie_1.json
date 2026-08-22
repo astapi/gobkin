@@ -1,0 +1,820 @@
+{
+  "enemies": [
+    {
+      "id": "MGS001",
+      "name": "辺境槍兵",
+      "attackType": "melee",
+      "raceTags": [
+        "human"
+      ],
+      "level": 106,
+      "hp": 9290,
+      "atk": 837,
+      "def": 762,
+      "attackCount": 2,
+      "accuracy": 752,
+      "evasion": 75,
+      "gold": 110,
+      "magicDef": 609,
+      "baseAttributes": {
+        "power": 12,
+        "wisdom": 10,
+        "spirit": 8,
+        "vitality": 14,
+        "agility": 8,
+        "luck": 6
+      },
+      "skills": [
+        {
+          "id": "physical_reduction_10",
+          "physicalDamageReductionPercent": 10
+        }
+      ]
+    },
+    {
+      "id": "MGS002",
+      "name": "辺境弩兵",
+      "attackType": "range",
+      "raceTags": [
+        "human"
+      ],
+      "level": 108,
+      "hp": 6720,
+      "atk": 918,
+      "def": 552,
+      "attackCount": 3,
+      "accuracy": 756,
+      "evasion": 75,
+      "gold": 112,
+      "magicDef": 386,
+      "baseAttributes": {
+        "power": 13,
+        "wisdom": 11,
+        "spirit": 5,
+        "vitality": 10,
+        "agility": 12,
+        "luck": 7
+      },
+      "skills": [
+        {
+          "id": "physical_reduction_10",
+          "physicalDamageReductionPercent": 10
+        }
+      ]
+    },
+    {
+      "id": "MGS003",
+      "name": "従軍司祭",
+      "attackType": "melee",
+      "raceTags": [
+        "human"
+      ],
+      "level": 110,
+      "hp": 7490,
+      "atk": 572,
+      "def": 615,
+      "attackCount": 1,
+      "accuracy": 760,
+      "evasion": 75,
+      "gold": 114,
+      "magicDef": 1096,
+      "baseAttributes": {
+        "power": 8,
+        "wisdom": 14,
+        "spirit": 14,
+        "vitality": 11,
+        "agility": 7,
+        "luck": 6
+      },
+      "magicHeal": 820,
+      "skills": [
+        {
+          "id": "physical_reduction_10",
+          "physicalDamageReductionPercent": 10
+        },
+        {
+          "id": "recovery_magic_lv7",
+          "recoveryMagicLevel": 7
+        }
+      ]
+    },
+    {
+      "id": "MGS004",
+      "name": "辺境軽騎兵",
+      "attackType": "melee",
+      "raceTags": [
+        "human"
+      ],
+      "level": 112,
+      "hp": 8290,
+      "atk": 1014,
+      "def": 678,
+      "attackCount": 3,
+      "accuracy": 764,
+      "evasion": 75,
+      "gold": 116,
+      "magicDef": 634,
+      "baseAttributes": {
+        "power": 14,
+        "wisdom": 10,
+        "spirit": 8,
+        "vitality": 12,
+        "agility": 14,
+        "luck": 8
+      },
+      "skills": [
+        {
+          "id": "physical_reduction_10",
+          "physicalDamageReductionPercent": 10
+        }
+      ]
+    },
+    {
+      "id": "MGS005",
+      "name": "辺境重騎士",
+      "attackType": "melee",
+      "raceTags": [
+        "human"
+      ],
+      "level": 114,
+      "hp": 11870,
+      "atk": 952,
+      "def": 972,
+      "attackCount": 2,
+      "accuracy": 768,
+      "evasion": 75,
+      "gold": 119,
+      "magicDef": 962,
+      "baseAttributes": {
+        "power": 13,
+        "wisdom": 11,
+        "spirit": 12,
+        "vitality": 17,
+        "agility": 5,
+        "luck": 7
+      },
+      "skills": [
+        {
+          "id": "physical_reduction_10",
+          "physicalDamageReductionPercent": 10
+        }
+      ]
+    },
+    {
+      "id": "MGS006",
+      "name": "斥候長ロラン",
+      "attackType": "melee",
+      "raceTags": [
+        "human"
+      ],
+      "level": 118,
+      "hp": 7140,
+      "atk": 899,
+      "def": 585,
+      "attackCount": 3,
+      "accuracy": 776,
+      "evasion": 75,
+      "gold": 146,
+      "magicDef": 491,
+      "baseAttributes": {
+        "power": 12,
+        "wisdom": 12,
+        "spirit": 6,
+        "vitality": 10,
+        "agility": 16,
+        "luck": 9
+      },
+      "skills": [
+        {
+          "id": "physical_reduction_10",
+          "physicalDamageReductionPercent": 10
+        }
+      ]
+    },
+    {
+      "id": "B_MARGRAVE_FIELD",
+      "name": "辺境伯グレアム",
+      "attackType": "melee",
+      "raceTags": [
+        "human"
+      ],
+      "level": 128,
+      "hp": 12320,
+      "atk": 893,
+      "def": 991,
+      "attackCount": 3,
+      "accuracy": 842,
+      "evasion": 85,
+      "gold": 542,
+      "magicDef": 971,
+      "baseAttributes": {
+        "power": 18,
+        "wisdom": 16,
+        "spirit": 14,
+        "vitality": 20,
+        "agility": 10,
+        "luck": 8
+      },
+      "isBoss": true,
+      "skills": [
+        {
+          "id": "physical_reduction_10",
+          "physicalDamageReductionPercent": 10
+        }
+      ]
+    }
+  ],
+  "patterns": [
+    {
+      "id": "MS1_F1_A",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "MGS001",
+          "MGS001"
+        ],
+        [
+          "MGS002"
+        ]
+      ]
+    },
+    {
+      "id": "MS1_F1_B",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "MGS001",
+          "MGS001",
+          "MGS001"
+        ],
+        [
+          "MGS002"
+        ]
+      ]
+    },
+    {
+      "id": "MS1_F1_C",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "MGS001",
+          "MGS001"
+        ],
+        [
+          "MGS002",
+          "MGS002"
+        ]
+      ]
+    },
+    {
+      "id": "MS1_F1_BOSS",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "MGS001",
+          "MGS001",
+          "MGS001"
+        ],
+        [
+          "MGS002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "MS1_F2_A",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "MGS001",
+          "MGS001"
+        ],
+        [
+          "MGS002",
+          "MGS003"
+        ]
+      ]
+    },
+    {
+      "id": "MS1_F2_B",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "MGS001",
+          "MGS001",
+          "MGS001"
+        ],
+        [
+          "MGS002",
+          "MGS003"
+        ]
+      ]
+    },
+    {
+      "id": "MS1_F2_C",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "MGS001",
+          "MGS001"
+        ],
+        [
+          "MGS002",
+          "MGS003",
+          "MGS002"
+        ]
+      ]
+    },
+    {
+      "id": "MS1_F2_BOSS",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "MGS001",
+          "MGS001",
+          "MGS001"
+        ],
+        [
+          "MGS002",
+          "MGS003"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "MS1_F3_A",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "MGS004",
+          "MGS001"
+        ],
+        [
+          "MGS002",
+          "MGS002"
+        ]
+      ]
+    },
+    {
+      "id": "MS1_F3_B",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "MGS004",
+          "MGS001",
+          "MGS004"
+        ],
+        [
+          "MGS002",
+          "MGS002"
+        ]
+      ]
+    },
+    {
+      "id": "MS1_F3_C",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "MGS004",
+          "MGS001"
+        ],
+        [
+          "MGS002",
+          "MGS002",
+          "MGS002"
+        ]
+      ]
+    },
+    {
+      "id": "MS1_F3_BOSS",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "MGS004",
+          "MGS001",
+          "MGS004"
+        ],
+        [
+          "MGS002",
+          "MGS002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "MS1_F4_A",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "MGS004",
+          "MGS004"
+        ],
+        [
+          "MGS002",
+          "MGS003",
+          "MGS001"
+        ]
+      ]
+    },
+    {
+      "id": "MS1_F4_B",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "MGS004",
+          "MGS004",
+          "MGS004"
+        ],
+        [
+          "MGS002",
+          "MGS003",
+          "MGS001"
+        ]
+      ]
+    },
+    {
+      "id": "MS1_F4_C",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "MGS004",
+          "MGS004"
+        ],
+        [
+          "MGS002",
+          "MGS003",
+          "MGS001",
+          "MGS002"
+        ]
+      ]
+    },
+    {
+      "id": "MS1_F4_BOSS",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "MGS004",
+          "MGS004",
+          "MGS004"
+        ],
+        [
+          "MGS002",
+          "MGS003",
+          "MGS001"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "MS1_F5_A",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "MGS005",
+          "MGS001"
+        ],
+        [
+          "MGS002",
+          "MGS003",
+          "MGS002"
+        ]
+      ]
+    },
+    {
+      "id": "MS1_F5_B",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "MGS005",
+          "MGS001",
+          "MGS005"
+        ],
+        [
+          "MGS002",
+          "MGS003",
+          "MGS002"
+        ]
+      ]
+    },
+    {
+      "id": "MS1_F5_C",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "MGS005",
+          "MGS001"
+        ],
+        [
+          "MGS002",
+          "MGS003",
+          "MGS002",
+          "MGS002"
+        ]
+      ]
+    },
+    {
+      "id": "MS1_F5_BOSS",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "MGS005",
+          "MGS001",
+          "MGS005"
+        ],
+        [
+          "MGS002",
+          "MGS003",
+          "MGS002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "MS1_F6_A",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "MGS005",
+          "MGS004"
+        ],
+        [
+          "MGS006",
+          "MGS002",
+          "MGS003"
+        ]
+      ]
+    },
+    {
+      "id": "MS1_F6_B",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "MGS005",
+          "MGS004",
+          "MGS005"
+        ],
+        [
+          "MGS006",
+          "MGS002",
+          "MGS003"
+        ]
+      ]
+    },
+    {
+      "id": "MS1_F6_C",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "MGS005",
+          "MGS004"
+        ],
+        [
+          "MGS006",
+          "MGS002",
+          "MGS003",
+          "MGS006"
+        ]
+      ]
+    },
+    {
+      "id": "MS1_F6_BOSS",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "MGS005",
+          "MGS004",
+          "MGS005"
+        ],
+        [
+          "MGS006",
+          "MGS002",
+          "MGS003"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "MS1_F7_A",
+      "floors": [
+        7
+      ],
+      "enemies": [
+        [
+          "MGS005",
+          "MGS005",
+          "MGS004"
+        ],
+        [
+          "MGS002",
+          "MGS003",
+          "MGS002"
+        ]
+      ]
+    },
+    {
+      "id": "MS1_F7_B",
+      "floors": [
+        7
+      ],
+      "enemies": [
+        [
+          "MGS005",
+          "MGS005",
+          "MGS004",
+          "MGS005"
+        ],
+        [
+          "MGS002",
+          "MGS003",
+          "MGS002"
+        ]
+      ]
+    },
+    {
+      "id": "MS1_F7_C",
+      "floors": [
+        7
+      ],
+      "enemies": [
+        [
+          "MGS005",
+          "MGS005",
+          "MGS004"
+        ],
+        [
+          "MGS002",
+          "MGS003",
+          "MGS002",
+          "MGS002"
+        ]
+      ]
+    },
+    {
+      "id": "MS1_F7_BOSS",
+      "floors": [
+        7
+      ],
+      "enemies": [
+        [
+          "MGS005",
+          "MGS005",
+          "MGS004",
+          "MGS005"
+        ],
+        [
+          "MGS002",
+          "MGS003",
+          "MGS002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "MS1_F8_A",
+      "floors": [
+        8
+      ],
+      "enemies": [
+        [
+          "MGS005",
+          "MGS005",
+          "MGS004"
+        ],
+        [
+          "MGS006",
+          "MGS002",
+          "MGS003",
+          "MGS001"
+        ]
+      ]
+    },
+    {
+      "id": "MS1_F8_B",
+      "floors": [
+        8
+      ],
+      "enemies": [
+        [
+          "MGS005",
+          "MGS005",
+          "MGS004",
+          "MGS005"
+        ],
+        [
+          "MGS006",
+          "MGS002",
+          "MGS003",
+          "MGS001"
+        ]
+      ]
+    },
+    {
+      "id": "MS1_F8_C",
+      "floors": [
+        8
+      ],
+      "enemies": [
+        [
+          "MGS005",
+          "MGS005",
+          "MGS004"
+        ],
+        [
+          "MGS006",
+          "MGS002",
+          "MGS003",
+          "MGS001",
+          "MGS006"
+        ]
+      ]
+    },
+    {
+      "id": "MS1_F8_BOSS",
+      "floors": [
+        8
+      ],
+      "enemies": [
+        [
+          "MGS005",
+          "MGS005",
+          "MGS004",
+          "MGS005"
+        ],
+        [
+          "MGS006",
+          "MGS002",
+          "MGS003",
+          "MGS001"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "MS1_FINAL_BOSS",
+      "floors": [
+        8
+      ],
+      "enemies": [
+        [
+          "B_MARGRAVE_FIELD"
+        ],
+        [
+          "MGS005",
+          "MGS005",
+          "MGS006",
+          "MGS002",
+          "MGS003"
+        ]
+      ],
+      "isBoss": true
+    }
+  ]
+}

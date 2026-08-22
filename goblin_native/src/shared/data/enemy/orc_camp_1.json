@@ -23,30 +23,7 @@
         "vitality": 20,
         "agility": 12,
         "luck": 5
-      },
-      "rareEquipmentDrops": [
-        {
-          "templateId": "sword_rare_016"
-        }
-      ],
-      "tierRareEquipmentDrops": [
-        {
-          "tier": 1,
-          "drops": [
-            {
-              "templateId": "armor_rare_024"
-            }
-          ]
-        },
-        {
-          "tier": 3,
-          "drops": [
-            {
-              "templateId": "shield_rare_016"
-            }
-          ]
-        }
-      ]
+      }
     },
     {
       "id": "ORC005",
@@ -72,30 +49,7 @@
         "vitality": 28,
         "agility": 9,
         "luck": 4
-      },
-      "rareEquipmentDrops": [
-        {
-          "templateId": "sword_rare_017"
-        }
-      ],
-      "tierRareEquipmentDrops": [
-        {
-          "tier": 1,
-          "drops": [
-            {
-              "templateId": "armor_rare_025"
-            }
-          ]
-        },
-        {
-          "tier": 3,
-          "drops": [
-            {
-              "templateId": "accessory_rare_046"
-            }
-          ]
-        }
-      ]
+      }
     },
     {
       "id": "GOB_SOLDIER",
@@ -120,30 +74,7 @@
         "vitality": 13,
         "agility": 18,
         "luck": 8
-      },
-      "rareEquipmentDrops": [
-        {
-          "templateId": "sword_rare_013"
-        }
-      ],
-      "tierRareEquipmentDrops": [
-        {
-          "tier": 1,
-          "drops": [
-            {
-              "templateId": "armor_rare_019"
-            }
-          ]
-        },
-        {
-          "tier": 3,
-          "drops": [
-            {
-              "templateId": "accessory_rare_037"
-            }
-          ]
-        }
-      ]
+      }
     },
     {
       "id": "GOB_MAGE",
@@ -181,29 +112,6 @@
           "name": "マジックアロー",
           "grantsSpellId": "magic_arrow"
         }
-      ],
-      "rareEquipmentDrops": [
-        {
-          "templateId": "wand_rare_011"
-        }
-      ],
-      "tierRareEquipmentDrops": [
-        {
-          "tier": 1,
-          "drops": [
-            {
-              "templateId": "robe_rare_016"
-            }
-          ]
-        },
-        {
-          "tier": 3,
-          "drops": [
-            {
-              "templateId": "rod_rare_008"
-            }
-          ]
-        }
       ]
     },
     {
@@ -235,29 +143,6 @@
         {
           "id": "recovery_magic_lv6",
           "recoveryMagicLevel": 6
-        }
-      ],
-      "rareEquipmentDrops": [
-        {
-          "templateId": "rod_rare_010"
-        }
-      ],
-      "tierRareEquipmentDrops": [
-        {
-          "tier": 1,
-          "drops": [
-            {
-              "templateId": "robe_rare_017"
-            }
-          ]
-        },
-        {
-          "tier": 3,
-          "drops": [
-            {
-              "templateId": "robe_rare_018"
-            }
-          ]
         }
       ]
     },
@@ -292,160 +177,401 @@
         "vitality": 34,
         "agility": 12,
         "luck": 6
-      },
-      "rareEquipmentDrops": [
-        {
-          "templateId": "sword_rare_018"
-        },
-        {
-          "templateId": "armor_rare_026"
-        }
-      ],
-      "tierRareEquipmentDrops": [
-        {
-          "tier": 1,
-          "drops": [
-            {
-              "templateId": "accessory_rare_047"
-            }
-          ]
-        },
-        {
-          "tier": 3,
-          "drops": [
-            {
-              "templateId": "sword_rare_019"
-            }
-          ]
-        }
-      ]
+      }
     }
   ],
   "patterns": [
     {
       "id": "OC_01_001",
-      "floors": [1],
-      "enemies": [["ORC002", "ORC002"], ["GOB_SOLDIER", "GOB_SOLDIER"]]
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "ORC002",
+          "ORC002"
+        ],
+        [
+          "GOB_SOLDIER",
+          "GOB_SOLDIER"
+        ]
+      ]
     },
     {
       "id": "OC_01_002",
-      "floors": [1],
-      "enemies": [["ORC002"], ["GOB_SOLDIER", "GOB_SOLDIER", "GOB_SOLDIER"]]
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "ORC002"
+        ],
+        [
+          "GOB_SOLDIER",
+          "GOB_SOLDIER",
+          "GOB_SOLDIER"
+        ]
+      ]
     },
     {
       "id": "OC_01_003",
-      "floors": [1],
-      "enemies": [["ORC002", "ORC002"], ["GOB_SOLDIER"]]
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "ORC002",
+          "ORC002"
+        ],
+        [
+          "GOB_SOLDIER"
+        ]
+      ]
     },
     {
       "id": "OC_F1_BOSS",
-      "floors": [1],
-      "enemies": [["ORC005"], ["ORC002", "GOB_SOLDIER"], ["GOB_SOLDIER"]],
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "ORC005"
+        ],
+        [
+          "ORC002",
+          "GOB_SOLDIER"
+        ],
+        [
+          "GOB_SOLDIER"
+        ]
+      ],
       "isFloorBoss": true
     },
     {
       "id": "OC_02_001",
-      "floors": [2],
-      "enemies": [["ORC005", "ORC002"], ["GOB_SOLDIER", "GOB_SOLDIER"]]
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "ORC005",
+          "ORC002"
+        ],
+        [
+          "GOB_SOLDIER",
+          "GOB_SOLDIER"
+        ]
+      ]
     },
     {
       "id": "OC_02_002",
-      "floors": [2],
-      "enemies": [["ORC002", "ORC002"], ["GOB_SOLDIER", "GOB_SOLDIER"]]
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "ORC002",
+          "ORC002"
+        ],
+        [
+          "GOB_SOLDIER",
+          "GOB_SOLDIER"
+        ]
+      ]
     },
     {
       "id": "OC_02_003",
-      "floors": [2],
-      "enemies": [["ORC005"], ["GOB_SOLDIER", "GOB_SOLDIER", "GOB_SOLDIER"]]
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "ORC005"
+        ],
+        [
+          "GOB_SOLDIER",
+          "GOB_SOLDIER",
+          "GOB_SOLDIER"
+        ]
+      ]
     },
     {
       "id": "OC_F2_BOSS",
-      "floors": [2],
-      "enemies": [["ORC005", "ORC002"], ["GOB_SOLDIER", "GOB_SOLDIER"]],
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "ORC005",
+          "ORC002"
+        ],
+        [
+          "GOB_SOLDIER",
+          "GOB_SOLDIER"
+        ]
+      ],
       "isFloorBoss": true
     },
     {
       "id": "OC_03_001",
-      "floors": [3],
-      "enemies": [["ORC005", "ORC002"], ["GOB_MAGE"]]
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "ORC005",
+          "ORC002"
+        ],
+        [
+          "GOB_MAGE"
+        ]
+      ]
     },
     {
       "id": "OC_03_002",
-      "floors": [3],
-      "enemies": [["ORC002", "ORC002"], ["GOB_MAGE", "GOB_SOLDIER"]]
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "ORC002",
+          "ORC002"
+        ],
+        [
+          "GOB_MAGE",
+          "GOB_SOLDIER"
+        ]
+      ]
     },
     {
       "id": "OC_03_003",
-      "floors": [3],
-      "enemies": [["ORC005"], ["GOB_SOLDIER", "GOB_MAGE"]]
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "ORC005"
+        ],
+        [
+          "GOB_SOLDIER",
+          "GOB_MAGE"
+        ]
+      ]
     },
     {
       "id": "OC_F3_BOSS",
-      "floors": [3],
-      "enemies": [["ORC005", "ORC002"], ["GOB_MAGE", "GOB_SOLDIER"]],
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "ORC005",
+          "ORC002"
+        ],
+        [
+          "GOB_MAGE",
+          "GOB_SOLDIER"
+        ]
+      ],
       "isFloorBoss": true
     },
     {
       "id": "OC_04_001",
-      "floors": [4],
-      "enemies": [["ORC005", "ORC002"], ["GOB_MAGE", "GOB_MAGE"]]
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "ORC005",
+          "ORC002"
+        ],
+        [
+          "GOB_MAGE",
+          "GOB_MAGE"
+        ]
+      ]
     },
     {
       "id": "OC_04_002",
-      "floors": [4],
-      "enemies": [["ORC005", "ORC005"], ["GOB_MAGE", "GOB_SOLDIER"]]
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "ORC005",
+          "ORC005"
+        ],
+        [
+          "GOB_MAGE",
+          "GOB_SOLDIER"
+        ]
+      ]
     },
     {
       "id": "OC_04_003",
-      "floors": [4],
-      "enemies": [["ORC002", "ORC002", "ORC002"], ["GOB_MAGE"]]
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "ORC002",
+          "ORC002",
+          "ORC002"
+        ],
+        [
+          "GOB_MAGE"
+        ]
+      ]
     },
     {
       "id": "OC_F4_BOSS",
-      "floors": [4],
-      "enemies": [["ORC005", "ORC002"], ["GOB_MAGE", "GOB_MAGE"]],
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "ORC005",
+          "ORC002"
+        ],
+        [
+          "GOB_MAGE",
+          "GOB_MAGE"
+        ]
+      ],
       "isFloorBoss": true
     },
     {
       "id": "OC_05_001",
-      "floors": [5],
-      "enemies": [["ORC005", "ORC002"], ["GOB_MAGE", "GOB_CLERIC"]]
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "ORC005",
+          "ORC002"
+        ],
+        [
+          "GOB_MAGE",
+          "GOB_CLERIC"
+        ]
+      ]
     },
     {
       "id": "OC_05_002",
-      "floors": [5],
-      "enemies": [["ORC005", "ORC005"], ["GOB_CLERIC", "GOB_MAGE"]]
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "ORC005",
+          "ORC005"
+        ],
+        [
+          "GOB_CLERIC",
+          "GOB_MAGE"
+        ]
+      ]
     },
     {
       "id": "OC_05_003",
-      "floors": [5],
-      "enemies": [["ORC002", "ORC002"], ["GOB_MAGE", "GOB_CLERIC"]]
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "ORC002",
+          "ORC002"
+        ],
+        [
+          "GOB_MAGE",
+          "GOB_CLERIC"
+        ]
+      ]
     },
     {
       "id": "OC_F5_BOSS",
-      "floors": [5],
-      "enemies": [["ORC005", "ORC002"], ["GOB_MAGE", "GOB_CLERIC"]],
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "ORC005",
+          "ORC002"
+        ],
+        [
+          "GOB_MAGE",
+          "GOB_CLERIC"
+        ]
+      ],
       "isFloorBoss": true
     },
     {
       "id": "OC_06_001",
-      "floors": [6],
-      "enemies": [["ORC005", "ORC002"], ["GOB_MAGE", "GOB_CLERIC"]]
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "ORC005",
+          "ORC002"
+        ],
+        [
+          "GOB_MAGE",
+          "GOB_CLERIC"
+        ]
+      ]
     },
     {
       "id": "OC_06_002",
-      "floors": [6],
-      "enemies": [["ORC005", "ORC005"], ["GOB_MAGE", "GOB_MAGE", "GOB_CLERIC"]]
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "ORC005",
+          "ORC005"
+        ],
+        [
+          "GOB_MAGE",
+          "GOB_MAGE",
+          "GOB_CLERIC"
+        ]
+      ]
     },
     {
       "id": "OC_06_003",
-      "floors": [6],
-      "enemies": [["ORC005", "ORC002", "ORC002"], ["GOB_CLERIC"]]
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "ORC005",
+          "ORC002",
+          "ORC002"
+        ],
+        [
+          "GOB_CLERIC"
+        ]
+      ]
     },
     {
       "id": "OC_FINAL",
-      "floors": [6],
-      "enemies": [["B_ORC", "ORC005"], ["ORC002"], ["GOB_MAGE", "GOB_CLERIC"]],
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "B_ORC",
+          "ORC005"
+        ],
+        [
+          "ORC002"
+        ],
+        [
+          "GOB_MAGE",
+          "GOB_CLERIC"
+        ]
+      ],
       "isFloorBoss": true,
       "isBoss": true
     }

@@ -1,0 +1,16 @@
+{
+  "id": "dwarf_mine_purge_1",
+  "name": "坑道の魔物払い",
+  "areaLevel": 52,
+  "floors": 6,
+  "baseDurationSec": 13200,
+  "description": "坑道の深部に巣食う蟲どもが、炉の火を脅かしている。「火を絶やさない」――鍛冶王との取引を、刃で果たす時が来た。",
+  "encounter": {
+    "eventIntervalSec": 440,
+    "eventWeights": {
+      "exploring": 60,
+      "goldTreasure": 10,
+      "battle": 30
+    }
+  }
+}

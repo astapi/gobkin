@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ダンジョン必要レベル一覧</title>
+<style>
+  :root {
+    --bg: #f4f2e8; --panel: #fbfaf4; --panel-2: #ffffff;
+    --ink: #26281c; --ink-dim: #5c5e49; --ink-faint: #8a8b73;
+    --line: #ddd9c6; --torch: #b47a12; --torch-soft: #e0c07a;
+    --floor: #6b6d58; --event: #416b8a; --paid: #6a35a8;
+    --mono: ui-monospace, "SF Mono", "Menlo", "Cascadia Mono", monospace;
+    --sans: "Hiragino Sans", "Hiragino Kaku Gothic ProN", system-ui, -apple-system, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--sans); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+  .wrap { max-width: 1060px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  header { border-bottom: 2px solid var(--line); padding-bottom: 22px; margin-bottom: 8px; }
+  .eyebrow { font-family: var(--mono); font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: var(--torch); margin: 0 0 10px; }
+  h1 { font-size: clamp(24px, 4vw, 34px); line-height: 1.15; margin: 0 0 10px; font-weight: 800; letter-spacing: -.01em; }
+  .lede { font-size: 14.5px; color: var(--ink-dim); max-width: 76ch; margin: 0; }
+  .lede b { color: var(--ink); }
+  .meta { font-family: var(--mono); font-size: 11.5px; color: var(--ink-faint); margin-top: 14px; display: flex; flex-wrap: wrap; gap: 4px 18px; }
+
+  .defs { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; margin: 20px 0 4px; }
+  .def { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; font-size: 12.5px; color: var(--ink-dim); line-height: 1.55; }
+  .def b { color: var(--ink); display: block; margin-bottom: 3px; font-size: 13px; }
+  .def .sw { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 5px; vertical-align: -1px; }
+
+  h2 { font-size: 13px; font-family: var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-dim); font-weight: 700; margin: 40px 0 12px; padding-bottom: 6px; border-bottom: 1px solid var(--line); }
+  h2 .cnt { color: var(--ink-faint); font-weight: 400; margin-left: 8px; }
+
+  .tblwrap { overflow-x: auto; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; }
+  table { border-collapse: collapse; width: 100%; min-width: 900px; font-size: 12.5px; }
+  th { font-family: var(--mono); font-size: 10px; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-faint); text-align: left; padding: 10px 10px 8px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+  th.num, td.num { text-align: right; font-variant-numeric: tabular-nums; }
+  td { padding: 6px 10px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+  tr:last-child td { border-bottom: none; }
+  td.name { white-space: nowrap; font-weight: 600; }
+  td.name .tag { font-family: var(--mono); font-size: 9px; letter-spacing: .04em; border-radius: 3px; padding: 0 4px; margin-left: 6px; vertical-align: 1px; font-weight: 400; }
+  .tag.ev { color: var(--event); border: 1px solid var(--event); }
+  .tag.side { color: var(--torch); border: 1px solid var(--torch-soft); }
+  .tag.paid { color: var(--paid); border: 1px solid var(--paid); }
+  .tag.dead { color: var(--ink-faint); border: 1px solid var(--line); }
+  td.id { font-family: var(--mono); font-size: 10.5px; color: var(--ink-faint); white-space: nowrap; }
+  td.unlock { font-size: 11.5px; color: var(--ink-dim); white-space: nowrap; }
+  td.lv-strat { color: var(--torch); font-weight: 700; }
+  td.lv-floor { color: var(--floor); font-weight: 700; }
+  td.lv-floor .pct { font-weight: 400; font-size: 10.5px; color: var(--ink-faint); margin-left: 3px; }
+
+  td.viz { width: 260px; min-width: 220px; padding: 6px 14px; }
+  .track { position: relative; height: 16px; }
+  .track .axis { position: absolute; left: 0; right: 0; top: 50%; height: 1px; background: var(--line); }
+  .seg { position: absolute; top: 50%; height: 3px; transform: translateY(-50%); background: var(--torch-soft); border-radius: 2px; }
+  .dot { position: absolute; top: 50%; width: 9px; height: 9px; border-radius: 50%; transform: translate(-50%,-50%); border: 2px solid var(--panel); }
+  .dot.strat { background: var(--torch); z-index: 2; }
+  .dot.floor { background: var(--floor); }
+  .dot.floor.over { background: transparent; border: 2px dashed var(--floor); }
+
+  .axisnote { display: flex; justify-content: flex-end; gap: 24px; font-family: var(--mono); font-size: 10px; color: var(--ink-faint); padding: 8px 14px 2px; }
+
+  .notes { background: var(--panel); border: 1px solid var(--line); border-left: 3px solid var(--torch); border-radius: 8px; padding: 14px 18px; margin-top: 36px; font-size: 12.5px; color: var(--ink-dim); max-width: 82ch; }
+  .notes b { color: var(--ink); }
+  .notes ul { margin: 6px 0 0; padding-left: 18px; }
+  .notes li { margin-bottom: 5px; }
+  .notes code { font-family: var(--mono); font-size: 11px; background: var(--panel-2); border: 1px solid var(--line); padding: 1px 5px; border-radius: 3px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <p class="eyebrow">Goblin Kingdom · Balance Reference</p>
+    <h1>ダンジョン必要レベル一覧</h1>
+    <p class="lede">
+      全37エリアの攻略必要レベルを、<b>床(裸)</b>と<b>戦略(最適編成)</b>の2ペルソナで実測した一覧。
+      実際のプレイヤーが求められるレベルは、常にこの2値の<b>間</b>に位置する。
+      進行順に戦略Lvが単調増加すること(=難易度逆転がないこと)の確認資料を兼ねる。
+    </p>
+    <div class="meta">
+      <span>計測日: 2026-08-15(第5期補正後)</span>
+      <span>手法: scripts/balance/measureArea.js(成功率80%到達Lv・30シード決定論)</span>
+      <span>グリッド: 3,5,8,10,13,16,20,25,30,40,50,60,70,80,100,120,150,180</span>
+    </div>
+  </header>
+
+  <div class="defs">
+    <div class="def"><b><span class="sw" style="background:var(--floor)"></span>床(裸)必要Lv</b>
+      装備・編成の工夫なしで成功率80%に到達するレベル。「180+」はLv180でも80%未満(括弧内はLv180時点の最高撃破率)。レベルだけで押し切る場合の要求値。</div>
+    <div class="def"><b><span class="sw" style="background:var(--torch)"></span>戦略必要Lv</b>
+      ジョブ・亜種・隊列・装備を山登り探索した最適編成での到達レベル。システムを完全に理解したプレイヤーの下限値。Lv3盲目探索由来の±1グリッドのノイズを含む。</div>
+  </div>
+
+  <h2>本筋 — 序盤〜vs討伐隊防衛戦<span class="cnt" id="c1"></span></h2>
+  <div class="tblwrap"><table id="t1"></table><div class="axisnote"><span>目盛: Lv3 — Lv180(対数)</span></div></div>
+
+  <h2>本筋 — 蜘蛛影の森〜王都玉座<span class="cnt" id="c2"></span></h2>
+  <div class="tblwrap"><table id="t2"></table><div class="axisnote"><span>目盛: Lv3 — Lv180(対数)</span></div></div>
+
+  <h2>分岐・寄り道<span class="cnt" id="c3"></span></h2>
+  <div class="tblwrap"><table id="t3"></table><div class="axisnote"><span>目盛: Lv3 — Lv180(対数)</span></div></div>
+
+  <h2>サイドイベント「約束の履行」<span class="cnt" id="c4"></span></h2>
+  <div class="tblwrap"><table id="t4"></table><div class="axisnote"><span>目盛: Lv3 — Lv180(対数)</span></div></div>
+
+  <h2>課金解放<span class="cnt" id="c5"></span></h2>
+  <div class="tblwrap"><table id="t5"></table><div class="axisnote"><span>目盛: Lv3 — Lv180(対数)</span></div></div>
+
+  <div class="notes">
+    <b>読み方の注意</b>
+    <ul>
+      <li>討伐隊以降は床(裸)が全域180+=「裸お断り」。編成・装備の理解が前提の帯域で、進行の実感は戦略Lv側のカーブが支配する。</li>
+      <li>戦略Lvの同値バケット(蜘蛛=墓原の50など)は計測グリッドの粗さによるもので、床の撃破率では単調に難化している(蜘蛛87% → 墓原65%)。</li>
+      <li>辺境の村(床80)・ウルフ草原(床100)は序盤の「レベル上げ壁」。実プレイヤーはここで床の圧力によりLv40前後まで育ってから討伐隊へ向かう。</li>
+      <li>猫獣人の影遺跡の戦略120が高いのは、課金解放エリアは先行エリアを持たず入手装備プールが薄い前提で計測されるため。</li>
+      <li>戦略値は探索済みプールに全Tierレアを含む寛大な計測(balance_progress.md §2.5)。初回進行の実プレイヤーはこれより上に寄る。</li>
+    </ul>
+    <b style="display:block;margin-top:10px">再計測コマンド</b>
+    <ul>
+      <li><code>node scripts/balance/measureArea.js &lt;areaId...&gt;</code> — 本表の床/戦略値を再計測(敵データ変更後は必ず更新すること)</li>
+      <li>敵レベルを変更した場合は入手プールが変わり下流全域の戦略値が動くため、カーブ全体の再計測が必要(balance_progress.md 第5期補正の知見)。</li>
+    </ul>
+  </div>
+</div>
+
+<script>
+  // floor: 数値 or null(=180+)。pct は floor が null のときの Lv180 時点最高撃破率。
+  // tag: ev=本筋イベント, side=約束の履行, paid=課金, dead=行き止まり
+  const GROUPS = [
+    { table: "t1", cnt: "c1", rows: [
+      {no:1,  name:"スライムの洞窟",        id:"slime_cave",            lv:1,   fl:2, un:"初期解放",             floor:3,    strat:3},
+      {no:2,  name:"周辺の森",              id:"forest_outskirts",      lv:2,   fl:6, un:"スライムの洞窟",       floor:8,    strat:3},
+      {no:3,  name:"ゴブリン集落",          id:"goblin_village_1",      lv:10,  fl:6, un:"周辺の森",             floor:16,   strat:5},
+      {no:4,  name:"森外れの廃村",          id:"forest_edge_village",   lv:9,   fl:6, un:"ゴブリン集落",         floor:50,   strat:16},
+      {no:5,  name:"古井戸の地下水路",      id:"old_well_waterway",     lv:10,  fl:6, un:"森外れの廃村",         floor:60,   strat:25},
+      {no:6,  name:"忘れられた廃墟",        id:"undead_ruins_1",        lv:18,  fl:6, un:"古井戸の地下水路",     floor:70,   strat:20},
+      {no:7,  name:"盗賊のアジト",          id:"bandit_hideout",        lv:20,  fl:6, un:"忘れられた廃墟",       floor:70,   strat:20},
+      {no:8,  name:"街道",                  id:"road_1",                lv:25,  fl:6, un:"盗賊のアジト",         floor:70,   strat:16},
+      {no:9,  name:"オークの野営地",        id:"orc_camp_1",            lv:14,  fl:6, un:"街道",                 floor:70,   strat:25},
+      {no:10, name:"辺境の村",              id:"human_village",         lv:21,  fl:6, un:"オークの野営地",       floor:80,   strat:10},
+      {no:11, name:"ウルフ草原",            id:"wolf_grassland_1",      lv:30,  fl:6, un:"辺境の村",             floor:100,  strat:10},
+      {no:12, name:"リザードマンの沼砦",    id:"lizardman_swamp_1",     lv:44,  fl:6, un:"ウルフ草原",           floor:180,  strat:25, tag:"dead", tagLabel:"行き止まり"},
+      {no:13, name:"オークの砦",            id:"orc_fortress_1",        lv:45,  fl:8, un:"オークの野営地(分岐)", floor:150,  strat:16},
+      {no:14, name:"vs討伐隊防衛戦",        id:"subjugation_force_1",   lv:68,  fl:8, un:"オークの砦",           floor:180,  strat:25, tag:"ev", tagLabel:"イベント"},
+    ]},
+    { table: "t2", cnt: "c2", rows: [
+      {no:15, name:"蜘蛛影の森",            id:"spider_forest_1",       lv:100, fl:6, un:"vs討伐隊防衛戦",       floor:null, pct:87, strat:50},
+      {no:16, name:"死霊の墓原",            id:"dead_grave_1",          lv:145, fl:6, un:"蜘蛛影の森",           floor:null, pct:65, strat:50},
+      {no:17, name:"風切りの断崖",          id:"harpy_cliff_1",         lv:118, fl:6, un:"死霊の墓原",           floor:null, pct:49, strat:70},
+      {no:18, name:"vs辺境伯軍・平原会戦",  id:"margrave_sortie_1",     lv:130, fl:8, un:"風切りの断崖",         floor:null, pct:41, strat:70, tag:"ev", tagLabel:"イベント"},
+      {no:19, name:"辺境の城",              id:"human_fortress_1",      lv:140, fl:8, un:"平原会戦",             floor:null, pct:60, strat:80},
+      {no:20, name:"辺境の城・奪還防衛戦",  id:"fortress_defense_1",    lv:152, fl:8, un:"辺境の城",             floor:null, pct:43, strat:100, tag:"ev", tagLabel:"イベント"},
+      {no:21, name:"ヴァンパイアの古城",    id:"vampire_castle_1",      lv:165, fl:6, un:"奪還防衛戦",           floor:null, pct:0,  strat:100},
+      {no:22, name:"王都平原会戦",          id:"royal_field_battle_1",  lv:178, fl:8, un:"ヴァンパイアの古城",   floor:null, pct:24, strat:120, tag:"ev", tagLabel:"イベント"},
+      {no:23, name:"王都決戦・城門",        id:"royal_capital_1",       lv:190, fl:8, un:"王都平原会戦",         floor:null, pct:1,  strat:120},
+      {no:24, name:"王都決戦・王城内部",    id:"royal_capital_2",       lv:215, fl:8, un:"王都決戦・城門",       floor:null, pct:0,  strat:150},
+      {no:25, name:"ドラゴンの火山巣",      id:"dragon_volcano_1",      lv:235, fl:6, un:"王都決戦・王城内部",   floor:null, pct:0,  strat:150},
+      {no:26, name:"王都決戦・玉座の間",    id:"royal_capital_3",       lv:270, fl:8, un:"ドラゴンの火山巣",     floor:null, pct:0,  strat:180},
+    ]},
+    { table: "t3", cnt: "c3", rows: [
+      {no:"分1", name:"トロルの峡谷",       id:"troll_canyon_1",        lv:130, fl:6, un:"風切りの断崖(分岐)",   floor:null, pct:70, strat:100},
+      {no:"分2", name:"ミノタウロス迷宮",   id:"minotaur_labyrinth_1",  lv:145, fl:6, un:"トロルの峡谷",         floor:null, pct:29, strat:100},
+      {no:"寄1", name:"ホビットの丘陵村",   id:"hobbit_hills_1",        lv:35,  fl:6, un:"辺境の村(寄り道)",     floor:50,   strat:5},
+      {no:"寄2", name:"ドワーフ坑道",       id:"dwarf_mine_1",          lv:40,  fl:6, un:"ホビットの丘陵村",     floor:100,  strat:10},
+      {no:"寄3", name:"エルフの隠れ里",     id:"elf_forest_1",          lv:45,  fl:6, un:"ドワーフ坑道",         floor:100,  strat:10},
+    ]},
+    { table: "t4", cnt: "c4", rows: [
+      {no:"約1", name:"丘陵村の徴税人",     id:"hobbit_hills_defense_1",lv:45,  fl:6, un:"ホビットの丘陵村",     floor:100,  strat:10, tag:"side", tagLabel:"約束の履行"},
+      {no:"約2", name:"坑道の魔物払い",     id:"dwarf_mine_purge_1",    lv:52,  fl:6, un:"ドワーフ坑道",         floor:100,  strat:13, tag:"side", tagLabel:"約束の履行"},
+      {no:"約3", name:"沼砦防衛戦",         id:"swamp_defense_1",       lv:148, fl:6, un:"辺境の城",             floor:null, pct:20, strat:60, tag:"side", tagLabel:"約束の履行"},
+      {no:"約4", name:"断崖の鷹匠戦",       id:"harpy_defense_1",       lv:152, fl:6, un:"辺境の城",             floor:null, pct:50, strat:70, tag:"side", tagLabel:"約束の履行"},
+    ]},
+    { table: "t5", cnt: "c5", rows: [
+      {no:"課1", name:"猫獣人の影遺跡",     id:"cat_fortress_1",        lv:70,  fl:6, un:"サイドストーリー購入", floor:150,  strat:120, tag:"paid", tagLabel:"課金"},
+      {no:"課2", name:"死霊術師の地下霊廟", id:"necromancer_crypt_1",   lv:70,  fl:6, un:"サイドストーリー購入", floor:50,   strat:40,  tag:"paid", tagLabel:"課金"},
+    ]},
+  ];
+
+  const CAP = 180, OVER = 195;
+  const pos = v => Math.log(v / 3) / Math.log(OVER / 3) * 100;
+  const HEAD = '<tr><th>#</th><th>エリア</th><th>ID</th><th class="num">表示Lv</th><th class="num">階</th><th>解放条件</th><th class="num">床(裸)</th><th class="num">戦略</th><th>戦略 → 床</th></tr>';
+
+  for (const g of GROUPS) {
+    const tbl = document.getElementById(g.table);
+    let html = HEAD;
+    for (const d of g.rows) {
+      const floorEff = d.floor == null ? OVER : d.floor;
+      const xs = pos(d.strat), xf = pos(floorEff);
+      const lo = Math.min(xs, xf), hi = Math.max(xs, xf);
+      const overCls = d.floor == null ? " over" : "";
+      const floorTxt = d.floor == null
+        ? `180+<span class="pct">(${d.pct}%)</span>`
+        : d.floor;
+      const tag = d.tag ? `<span class="tag ${d.tag}">${d.tagLabel}</span>` : "";
+      html += `<tr>
+        <td class="id">${d.no}</td>
+        <td class="name">${d.name}${tag}</td>
+        <td class="id">${d.id}</td>
+        <td class="num">${d.lv}</td>
+        <td class="num">${d.fl}</td>
+        <td class="unlock">${d.un}</td>
+        <td class="num lv-floor">${floorTxt}</td>
+        <td class="num lv-strat">${d.strat}</td>
+        <td class="viz"><div class="track">
+          <div class="axis"></div>
+          <div class="seg" style="left:${lo}%;width:${hi-lo}%"></div>
+          <div class="dot floor${overCls}" style="left:${xf}%"></div>
+          <div class="dot strat" style="left:${xs}%"></div>
+        </div></td>
+      </tr>`;
+    }
+    tbl.innerHTML = html;
+    document.getElementById(g.cnt).textContent = `${g.rows.length}エリア`;
+  }
+</script>
+</body>
+</html>

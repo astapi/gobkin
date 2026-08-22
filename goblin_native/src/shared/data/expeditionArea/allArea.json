@@ -115,7 +115,10 @@
       "unlockRequires": "orc_camp_1",
       "unlockNext": "wolf_grassland_1",
       "isBaseCapture": true,
-      "rankUpTarget": 3
+      "rankUpTarget": 3,
+      "unlockNexts": [
+        "hobbit_hills_1"
+      ]
     },
     {
       "id": "wolf_grassland_1",
@@ -142,7 +145,7 @@
     {
       "id": "spider_forest_1",
       "name": "蜘蛛影の森",
-      "areaLevel": 46,
+      "areaLevel": 100,
       "floors": 6,
       "exploration_time_sec_first": 13200,
       "exploration_time_sec": 4400,
@@ -153,7 +156,7 @@
     {
       "id": "dead_grave_1",
       "name": "死霊の墓原",
-      "areaLevel": 46,
+      "areaLevel": 145,
       "floors": 6,
       "exploration_time_sec_first": 21300,
       "exploration_time_sec": 7100,
@@ -164,20 +167,50 @@
     {
       "id": "hobbit_hills_1",
       "name": "ホビットの丘陵村",
-      "areaLevel": 50,
+      "areaLevel": 35,
       "floors": 6,
       "exploration_time_sec_first": 17100,
       "exploration_time_sec": 5700,
-      "description": "辺境の外れにある丘陵地。身軽なホビットの斥候と投石手が補給路を守っている。"
+      "description": "辺境の外れにある丘陵地。身軽なホビットの斥候と投石手が補給路を守っている。",
+      "unlockNext": "dwarf_mine_1",
+      "unlockNexts": [
+        "hobbit_hills_defense_1"
+      ],
+      "unlockRequires": "human_village"
+    },
+    {
+      "id": "hobbit_hills_defense_1",
+      "name": "丘陵村の徴税人",
+      "areaLevel": 45,
+      "floors": 6,
+      "exploration_time_sec_first": 13200,
+      "exploration_time_sec": 4400,
+      "description": "王国の徴税官が、雇われの剣を連れて丘陵村へやってきた。「丘を守る」――ホビットたちと交わした最初の守る約束を果たせ。",
+      "unlockRequires": "hobbit_hills_1"
     },
     {
       "id": "dwarf_mine_1",
       "name": "ドワーフ坑道",
-      "areaLevel": 50,
+      "areaLevel": 40,
       "floors": 6,
       "exploration_time_sec_first": 18420,
       "exploration_time_sec": 6140,
-      "description": "坑道の入口。ドワーフ坑夫たちが工具を武器に抵抗してくる。 坑道深部。戦士やルーン鍛冶師が待ち構える。 坑道の最深部。坑道守護者と擲弾兵に守られた鍛冶王が待ち受ける。鍛冶能力をゴブリン国家に取り込め。"
+      "description": "坑道の入口。ドワーフ坑夫たちが工具を武器に抵抗してくる。 坑道深部。戦士やルーン鍛冶師が待ち構える。 坑道の最深部。坑道守護者と擲弾兵に守られた鍛冶王が待ち受ける。鍛冶能力をゴブリン国家に取り込め。",
+      "unlockNext": "elf_forest_1",
+      "unlockNexts": [
+        "dwarf_mine_purge_1"
+      ],
+      "unlockRequires": "hobbit_hills_1"
+    },
+    {
+      "id": "dwarf_mine_purge_1",
+      "name": "坑道の魔物払い",
+      "areaLevel": 52,
+      "floors": 6,
+      "exploration_time_sec_first": 13200,
+      "exploration_time_sec": 4400,
+      "description": "坑道の深部に巣食う蟲どもが、炉の火を脅かしている。「火を絶やさない」――鍛冶王との取引を、刃で果たす時が来た。",
+      "unlockRequires": "dwarf_mine_1"
     },
     {
       "id": "elf_forest_1",
@@ -186,7 +219,8 @@
       "floors": 6,
       "exploration_time_sec_first": 21120,
       "exploration_time_sec": 7040,
-      "description": "隠れ里の外縁。森の斥候と射手が素早い攻撃を仕掛けてくる。 里の内部。精霊使いや月の衛士が守りを固めている。 里の中枢。古樹の戦士に守られた森の番人が最後の壁として立ちはだかる。魔法の力を手に入れろ。"
+      "description": "隠れ里の外縁。森の斥候と射手が素早い攻撃を仕掛けてくる。 里の内部。精霊使いや月の衛士が守りを固めている。 里の中枢。古樹の戦士に守られた森の番人が最後の壁として立ちはだかる。魔法の力を手に入れろ。",
+      "unlockRequires": "dwarf_mine_1"
     },
     {
       "id": "lizardman_swamp_1",
@@ -197,6 +231,26 @@
       "exploration_time_sec": 6440,
       "description": "沼砦の浅瀬。沼の戦士と毒牙兵が水際で襲いかかる。 砦の深部。呪術師や暗殺者が潜む危険な沼地。 砦の本拠。鱗の重装兵に守られた沼王が待ち受ける。毒と夜襲の術を奪い、次の大戦に備えろ。",
       "unlockRequires": "wolf_grassland_1"
+    },
+    {
+      "id": "swamp_defense_1",
+      "name": "沼砦防衛戦",
+      "areaLevel": 148,
+      "floors": 6,
+      "exploration_time_sec_first": 13200,
+      "exploration_time_sec": 4400,
+      "description": "辺境の城を失った王国が、報復に沼の水を涸らしに来た。「沼を涸らさない」――沼王と交わした約束を、今度はこちらが守る番だ。",
+      "unlockRequires": "human_fortress_1"
+    },
+    {
+      "id": "harpy_defense_1",
+      "name": "断崖の鷹匠戦",
+      "areaLevel": 152,
+      "floors": 6,
+      "exploration_time_sec_first": 13200,
+      "exploration_time_sec": 4400,
+      "description": "王国の鷹匠部隊が、火矢でハーピィの巣を焼きに来た。「空を分け合う」約束のもと、翼ある隣人とともに断崖を守り抜け。",
+      "unlockRequires": "human_fortress_1"
     },
     {
       "id": "orc_fortress_1",
@@ -214,18 +268,32 @@
     {
       "id": "harpy_cliff_1",
       "name": "風切りの断崖",
-      "areaLevel": 46,
+      "areaLevel": 118,
       "floors": 6,
       "exploration_time_sec_first": 21600,
       "exploration_time_sec": 7200,
       "description": "墓原の先にそびえる断崖。ハーピィの群れが空を支配し、辺境の城へ向かう空路を閉ざしている。",
       "unlockRequires": "dead_grave_1",
+      "unlockNext": "margrave_sortie_1",
+      "unlockNexts": [
+        "troll_canyon_1"
+      ]
+    },
+    {
+      "id": "margrave_sortie_1",
+      "name": "vs辺境伯軍・平原会戦",
+      "areaLevel": 130,
+      "floors": 8,
+      "exploration_time_sec_first": 18000,
+      "exploration_time_sec": 6000,
+      "description": "辺境の城を目前にした平原。老将グレアムが籠城を捨てて打って出た。槍衾と騎兵の波を越え、野戦で辺境伯軍を打ち破れ。",
+      "unlockRequires": "harpy_cliff_1",
       "unlockNext": "human_fortress_1"
     },
     {
       "id": "troll_canyon_1",
       "name": "トロルの峡谷",
-      "areaLevel": 46,
+      "areaLevel": 130,
       "floors": 6,
       "exploration_time_sec_first": 23820,
       "exploration_time_sec": 7940,
@@ -236,7 +304,7 @@
     {
       "id": "minotaur_labyrinth_1",
       "name": "ミノタウロス迷宮",
-      "areaLevel": 47,
+      "areaLevel": 145,
       "floors": 6,
       "exploration_time_sec_first": 26100,
       "exploration_time_sec": 8700,
@@ -246,44 +314,70 @@
     {
       "id": "human_fortress_1",
       "name": "辺境の城",
-      "areaLevel": 47,
+      "areaLevel": 140,
       "floors": 8,
       "exploration_time_sec_first": 30600,
       "exploration_time_sec": 10200,
       "description": "辺境の城の外郭。城壁上の弓兵と騎士、魔術師が籠城戦で迎え撃つ。 辺境の城内へ侵入。重装騎兵と城内守備隊が最後の防衛線を張る。 辺境の城の本丸。精鋭近衛兵に守られた城代との最終決戦。異種族戦力を総動員して突破せよ。",
-      "unlockRequires": "harpy_cliff_1",
-      "unlockNext": "vampire_castle_1",
+      "unlockRequires": "margrave_sortie_1",
+      "unlockNext": "fortress_defense_1",
       "isBaseCapture": true,
-      "rankUpTarget": 5
+      "rankUpTarget": 5,
+      "unlockNexts": [
+        "swamp_defense_1",
+        "harpy_defense_1"
+      ]
+    },
+    {
+      "id": "fortress_defense_1",
+      "name": "辺境の城・奪還防衛戦",
+      "areaLevel": 152,
+      "floors": 8,
+      "exploration_time_sec_first": 18000,
+      "exploration_time_sec": 6000,
+      "description": "落としたはずの辺境の城に、王国の奪還軍が迫る。初めて「守る側」として城壁に立ち、騎士ロラン率いる先鋒軍を撃退せよ。",
+      "unlockRequires": "human_fortress_1",
+      "unlockNext": "vampire_castle_1"
     },
     {
       "id": "vampire_castle_1",
       "name": "ヴァンパイアの古城",
-      "areaLevel": 55,
+      "areaLevel": 165,
       "floors": 6,
       "exploration_time_sec_first": 35100,
       "exploration_time_sec": 11700,
       "description": "王都へ向かう街道を見下ろす古城。夜の眷属を率いるヴァンパイアが影から進軍を阻む。",
-      "unlockRequires": "human_fortress_1",
-      "unlockNext": "royal_capital_1",
+      "unlockRequires": "fortress_defense_1",
+      "unlockNext": "royal_field_battle_1",
       "isBaseCapture": true,
       "rankUpTarget": 6
     },
     {
+      "id": "royal_field_battle_1",
+      "name": "王都平原会戦",
+      "areaLevel": 178,
+      "floors": 8,
+      "exploration_time_sec_first": 21600,
+      "exploration_time_sec": 7200,
+      "description": "王都の城壁を望む大平原。王国が動かせる全軍が、元帥ガリウスの下に戦列を敷いた。約束を交わした全種族の力を束ね、最大の会戦を制せ。",
+      "unlockRequires": "vampire_castle_1",
+      "unlockNext": "royal_capital_1"
+    },
+    {
       "id": "royal_capital_1",
       "name": "王都決戦・城門",
-      "areaLevel": 160,
+      "areaLevel": 190,
       "floors": 8,
       "exploration_time_sec_first": 52800,
       "exploration_time_sec": 17600,
       "description": "王都の城門を突破する。近衛騎士と大魔導師が立ちはだかる。",
-      "unlockRequires": "vampire_castle_1",
+      "unlockRequires": "royal_field_battle_1",
       "unlockNext": "royal_capital_2"
     },
     {
       "id": "royal_capital_2",
       "name": "王都決戦・王城内部",
-      "areaLevel": 170,
+      "areaLevel": 215,
       "floors": 8,
       "exploration_time_sec_first": 54000,
       "exploration_time_sec": 18000,
@@ -294,7 +388,7 @@
     {
       "id": "dragon_volcano_1",
       "name": "ドラゴンの火山巣",
-      "areaLevel": 48,
+      "areaLevel": 235,
       "floors": 6,
       "exploration_time_sec_first": 31200,
       "exploration_time_sec": 10400,
@@ -323,7 +417,7 @@
     {
       "id": "royal_capital_3",
       "name": "王都決戦・玉座の間",
-      "areaLevel": 180,
+      "areaLevel": 270,
       "floors": 8,
       "exploration_time_sec_first": 72000,
       "exploration_time_sec": 24000,

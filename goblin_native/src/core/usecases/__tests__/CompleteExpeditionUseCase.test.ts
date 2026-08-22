@@ -856,5 +856,46 @@ describe('CompleteExpeditionUseCase', () => {
       expect(gateway.updateReplay).toHaveBeenCalledWith('exp-1', result.enrichedReplay)
       expect(runner.runInTransaction).toHaveBeenCalledTimes(1)
     })
+
+    it('自動周回の確定結果をPTのセッションサマリへ加算する', async () => {
+      const goblin = createTestGoblin({ id: 1, level: 1, experience: 0 })
+      const party = createTestParty({
+        autoExpeditionEnabled: true,
+        autoExpeditionSessionId: 'session-a',
+      })
+      const replay = createTestReplay({
+        meta: {
+          ...createTestReplay().meta,
+          autoExpeditionSessionId: 'session-a',
+        },
+        summary: {
+          success: true,
+          maxFloorReached: 3,
+          xpGained: 100,
+          goldGained: 50,
+          casualties: [],
+          treasureDrops: [{ templateId: 'wooden_club' }],
+        },
+      })
+      const partyRepo = createMockPartyRepository([party])
+      const usecase = new CompleteExpeditionUseCase(
+        createMockGoblinRepository([goblin]),
+        partyRepo,
+        createMockBaseStateRepository(createTestBaseState()),
+      )
+
+      await usecase.execute(1, replay)
+
+      expect(partyRepo.saveParty).toHaveBeenCalledWith(expect.objectContaining({
+        autoExpeditionEnabled: true,
+        autoExpeditionSummary: expect.objectContaining({
+          sessionId: 'session-a',
+          runCount: 1,
+          xpGained: 100,
+          goldGained: 50,
+          rewardItems: [{ templateId: 'wooden_club', count: 1 }],
+        }),
+      }))
+    })
   })
 })

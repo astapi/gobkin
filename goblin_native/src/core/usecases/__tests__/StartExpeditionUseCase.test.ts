@@ -80,6 +80,29 @@ function createEquipmentRepository(equipment: EquipmentInstance[]): IEquipmentRe
 }
 
 describe('StartExpeditionUseCase', () => {
+  it('HP0のメンバーを遠征開始時に最大HPまで復活させる', async () => {
+    const goblin = createTestGoblin({ currentHp: 0 })
+    const goblinRepository = createGoblinRepository(goblin)
+    const useCase = new StartExpeditionUseCase(
+      createPartyRepository(createTestParty()),
+      goblinRepository,
+      createEquipmentRepository([]),
+    )
+
+    const meta = await useCase.execute({
+      partyId: '1',
+      areaId: 'road_1',
+      returnPolicy: 'never',
+      clientVersion: 'test',
+    })
+
+    expect(meta.departingGoblins[0].currentHp).toBe(meta.departingGoblins[0].effectiveStats?.hp)
+    expect(goblinRepository.updateGoblinCurrentHp).toHaveBeenCalledWith(
+      goblin.id,
+      meta.departingGoblins[0].effectiveStats?.hp,
+    )
+  })
+
   it('遠征開始時に現在の装備から実効ステータスを再計算する', async () => {
     const goblin = createTestGoblin({
       effectiveStats: {

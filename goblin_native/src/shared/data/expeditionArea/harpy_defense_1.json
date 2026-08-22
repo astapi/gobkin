@@ -1,0 +1,16 @@
+{
+  "id": "harpy_defense_1",
+  "name": "断崖の鷹匠戦",
+  "areaLevel": 152,
+  "floors": 6,
+  "baseDurationSec": 13200,
+  "description": "王国の鷹匠部隊が、火矢でハーピィの巣を焼きに来た。「空を分け合う」約束のもと、翼ある隣人とともに断崖を守り抜け。",
+  "encounter": {
+    "eventIntervalSec": 440,
+    "eventWeights": {
+      "exploring": 60,
+      "goldTreasure": 10,
+      "battle": 30
+    }
+  }
+}

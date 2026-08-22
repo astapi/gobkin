@@ -1,5 +1,22 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { CHARACTER_SKILL_CATALOG } from '@app/shared/data/skillCatalog'
+import {
+  DROP_RANK_TABLE,
+  findStartStepIndex,
+} from '@app/core/services/DropRankRoller'
+import { getCharacterSkillDescription } from '@app/shared/data/characterSkills'
+import {
+  CHARACTER_SKILL_CATALOG,
+  getCharacterSkillDefinition,
+} from '@app/shared/data/skillCatalog'
+import {
+  DUNGEON_TIER_LIST,
+  DUNGEON_TIER_META,
+  DUNGEON_TIER_SCALING,
+  getDungeonTierAreaLevel,
+  type DungeonTier,
+} from '@app/shared/types/DungeonTier'
+import en from '@app/shared/i18n/resources/en'
+import ja from '@app/shared/i18n/resources/ja'
 
 import {
   AreaConfigSchema,
@@ -31,7 +48,7 @@ type DetailState = {
   detail: DungeonDetailDto
 }
 
-type DungeonTier = 0 | 1 | 2 | 3 | 4 | 5
+type ViewMode = 'items' | 'dungeons'
 
 type DropAssignment = {
   areaId: string
@@ -91,6 +108,7 @@ export function RareItemsPage() {
   const [pool, setPool] = useState<EquipmentPool | null>(null)
   const [details, setDetails] = useState<DetailState[]>([])
   const [query, setQuery] = useState('')
+  const [viewMode, setViewMode] = useState<ViewMode>('items')
   const [showUnassigned, setShowUnassigned] = useState(false)
   const originalRef = useRef<string>('')
 
@@ -144,6 +162,7 @@ export function RareItemsPage() {
 
   const assignmentsByTemplate = useMemo(() => buildAssignmentMap(details), [details])
   const enemyOptions = useMemo(() => buildEnemyOptions(details), [details])
+  const templateById = useMemo(() => buildTemplateMap(pool), [pool])
 
   const rareItems = useMemo(() => {
     if (!pool) return []
@@ -158,7 +177,15 @@ export function RareItemsPage() {
           template.name.toLowerCase().includes(q) ||
           template.category.toLowerCase().includes(q) ||
           (template.subCategory ?? '').toLowerCase().includes(q) ||
-          (template.grantedSkillIds ?? []).some((skillId) => skillId.toLowerCase().includes(q))
+          (template.grantedSkillIds ?? []).some((skillId) => {
+            const labels = getSkillDisplayInfo(skillId)
+            return (
+              skillId.toLowerCase().includes(q) ||
+              labels.ja.toLowerCase().includes(q) ||
+              labels.en.toLowerCase().includes(q) ||
+              labels.description.toLowerCase().includes(q)
+            )
+          })
         )
       })
       .filter((template) => showUnassigned || (assignmentsByTemplate.get(template.id)?.length ?? 0) > 0)
@@ -322,113 +349,327 @@ export function RareItemsPage() {
       </div>
 
       <div className="equipment-toolbar rare-items-toolbar">
+        <div className="rare-items-view-switch" role="tablist" aria-label="レアアイテム表示切替">
+          <button
+            type="button"
+            className={viewMode === 'items' ? 'selected' : ''}
+            onClick={() => setViewMode('items')}
+          >
+            アイテム別
+          </button>
+          <button
+            type="button"
+            className={viewMode === 'dungeons' ? 'selected' : ''}
+            onClick={() => setViewMode('dungeons')}
+          >
+            ダンジョン別
+          </button>
+        </div>
         <input
           type="search"
-          placeholder="id / name / category / skill で絞り込み"
+          placeholder="id / name / category / skill / 効果で絞り込み"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           className="search-input"
         />
-        <label className="rare-items-toggle subtle">
-          <input
-            type="checkbox"
-            checked={showUnassigned}
-            onChange={(e) => setShowUnassigned(e.target.checked)}
-          />
-          未割り当て候補も表示
-        </label>
+        {viewMode === 'items' && (
+          <label className="rare-items-toggle subtle">
+            <input
+              type="checkbox"
+              checked={showUnassigned}
+              onChange={(e) => setShowUnassigned(e.target.checked)}
+            />
+            未割り当て候補も表示
+          </label>
+        )}
       </div>
 
+      {viewMode === 'items' ? (
+        <RareItemEditTable
+          rareItems={rareItems}
+          assignmentsByTemplate={assignmentsByTemplate}
+          enemyOptions={enemyOptions}
+          updateTemplate={updateTemplate}
+          setDropAssignments={setDropAssignments}
+        />
+      ) : (
+        <DungeonRareDistributionView details={details} query={query} templateById={templateById} />
+      )}
+      <datalist id="rare-item-skill-ids">
+        {SKILL_IDS.map((skillId) => (
+          <option key={skillId} value={skillId} label={formatSkillDatalistLabel(skillId)} />
+        ))}
+      </datalist>
+    </div>
+  )
+}
+
+function RareItemEditTable({
+  rareItems,
+  assignmentsByTemplate,
+  enemyOptions,
+  updateTemplate,
+  setDropAssignments,
+}: {
+  rareItems: EquipmentTemplate[]
+  assignmentsByTemplate: Map<string, DropAssignment[]>
+  enemyOptions: EnemyOption[]
+  updateTemplate: (templateId: string, updater: (prev: EquipmentTemplate) => EquipmentTemplate) => void
+  setDropAssignments: (templateId: string, assignments: DropAssignment[]) => void
+}) {
+  return (
+    <div className="rare-items-table-wrap">
+      <table className="enemy-table rare-items-table">
+        <thead>
+          <tr>
+            <th className="rare-items-name-col">アイテム名</th>
+            <th className="rare-items-drop-col">ドロップ設定</th>
+            {EQUIPMENT_STATS.map((stat) => (
+              <th key={stat} className="num rare-items-stat-col" title={stat}>
+                {STAT_LABELS[stat]}
+              </th>
+            ))}
+            {[0, 1, 2, 3].map((index) => (
+              <th key={index} className="rare-items-skill-col">スキル{index + 1}</th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {rareItems.map((template) => {
+            const assignments = assignmentsByTemplate.get(template.id) ?? []
+            return (
+              <tr key={template.id}>
+                <td className="rare-items-name-cell">
+                  <input
+                    value={template.name}
+                    onChange={(e) =>
+                      updateTemplate(template.id, (prev) => ({ ...prev, name: e.target.value }))
+                    }
+                  />
+                  <span className="subtle">
+                    <code>{template.id}</code> · {template.category}
+                    {template.subCategory ? ` / ${template.subCategory}` : ''}
+                  </span>
+                </td>
+                <td>
+                  <DropAssignmentsCell
+                    assignments={assignments}
+                    enemyOptions={enemyOptions}
+                    onChange={(next) => setDropAssignments(template.id, next)}
+                  />
+                </td>
+                {EQUIPMENT_STATS.map((stat) => (
+                  <td key={stat} className="num">
+                    <input
+                      className="rare-items-number-input"
+                      type="number"
+                      step="0.1"
+                      value={getDirectStatValue(template.statBonuses, stat)}
+                      onChange={(e) =>
+                        updateTemplate(template.id, (prev) => ({
+                          ...prev,
+                          statBonuses: setDirectStatValue(prev.statBonuses, stat, e.target.value),
+                        }))
+                      }
+                    />
+                  </td>
+                ))}
+                {[0, 1, 2, 3].map((index) => (
+                  <td key={index} className="rare-items-skill-cell">
+                    <input
+                      list="rare-item-skill-ids"
+                      value={template.grantedSkillIds?.[index] ?? ''}
+                      onChange={(e) =>
+                        updateTemplate(template.id, (prev) => ({
+                          ...prev,
+                          ...buildGrantedSkillPatch(prev.grantedSkillIds ?? [], index, e.target.value),
+                        }))
+                      }
+                    />
+                    <SkillNameHint skillId={template.grantedSkillIds?.[index] ?? ''} />
+                  </td>
+                ))}
+              </tr>
+            )
+          })}
+          {rareItems.length === 0 && (
+            <tr>
+              <td colSpan={2 + EQUIPMENT_STATS.length + 4} className="subtle">
+                該当するレアアイテムがありません
+              </td>
+            </tr>
+          )}
+        </tbody>
+      </table>
+    </div>
+  )
+}
+
+type DistributionDrop = {
+  templateId: string
+  enemyId: string
+  enemyName: string
+  addedTier: DungeonTier
+}
+
+type DistributionRow = {
+  areaId: string
+  areaName: string
+  baseAreaLevel: number
+  tier: DungeonTier
+  effectiveAreaLevel: number
+  maxEnemyLevel: number
+  maxEffectiveEnemyLevel: number
+  maxNormalRank: number
+  drops: DistributionDrop[]
+}
+
+function DungeonRareDistributionView({
+  details,
+  query,
+  templateById,
+}: {
+  details: DetailState[]
+  query: string
+  templateById: Map<string, EquipmentTemplate>
+}) {
+  const rows = useMemo(
+    () => buildDistributionRows(details, templateById, query),
+    [details, query, templateById],
+  )
+
+  return (
+    <section className="rare-distribution">
+      <div className="rare-distribution-head">
+        <div>
+          <h3>ダンジョン別レア分布</h3>
+          <p className="subtle">
+            難易度は Tier 反映後の実効エリアLvです。レアは通常Tier分に、現在Tierまでの追加分を累積して表示します。
+          </p>
+        </div>
+        <span className="subtle">{rows.length} 行</span>
+      </div>
       <div className="rare-items-table-wrap">
-        <table className="enemy-table rare-items-table">
+        <table className="enemy-table rare-distribution-table">
           <thead>
             <tr>
-              <th className="rare-items-name-col">アイテム名</th>
-              <th className="rare-items-drop-col">ドロップ設定</th>
-              {EQUIPMENT_STATS.map((stat) => (
-                <th key={stat} className="num rare-items-stat-col" title={stat}>
-                  {STAT_LABELS[stat]}
-                </th>
-              ))}
-              {[0, 1, 2, 3].map((index) => (
-                <th key={index} className="rare-items-skill-col">スキル{index + 1}</th>
-              ))}
+              <th className="rare-distribution-dungeon-col">ダンジョン</th>
+              <th>Tier</th>
+              <th className="num">難易度</th>
+              <th className="num">敵Lv</th>
+              <th className="num">通常rank</th>
+              <th>レアアイテム</th>
             </tr>
           </thead>
           <tbody>
-            {rareItems.map((template) => {
-              const assignments = assignmentsByTemplate.get(template.id) ?? []
-              return (
-                <tr key={template.id}>
-                  <td className="rare-items-name-cell">
-                    <input
-                      value={template.name}
-                      onChange={(e) =>
-                        updateTemplate(template.id, (prev) => ({ ...prev, name: e.target.value }))
-                      }
-                    />
-                    <span className="subtle">
-                      <code>{template.id}</code> · {template.category}
-                      {template.subCategory ? ` / ${template.subCategory}` : ''}
-                    </span>
-                  </td>
-                  <td>
-                    <DropAssignmentsCell
-                      assignments={assignments}
-                      enemyOptions={enemyOptions}
-                      onChange={(next) => setDropAssignments(template.id, next)}
-                    />
-                  </td>
-                  {EQUIPMENT_STATS.map((stat) => (
-                    <td key={stat} className="num">
-                      <input
-                        className="rare-items-number-input"
-                        type="number"
-                        step="0.1"
-                        value={getDirectStatValue(template.statBonuses, stat)}
-                        onChange={(e) =>
-                          updateTemplate(template.id, (prev) => ({
-                            ...prev,
-                            statBonuses: setDirectStatValue(prev.statBonuses, stat, e.target.value),
-                          }))
-                        }
-                      />
-                    </td>
-                  ))}
-                  {[0, 1, 2, 3].map((index) => (
-                    <td key={index}>
-                      <input
-                        list="rare-item-skill-ids"
-                        value={template.grantedSkillIds?.[index] ?? ''}
-                        onChange={(e) =>
-                          updateTemplate(template.id, (prev) => ({
-                            ...prev,
-                            ...buildGrantedSkillPatch(prev.grantedSkillIds ?? [], index, e.target.value),
-                          }))
-                        }
-                      />
-                    </td>
-                  ))}
-                </tr>
-              )
-            })}
-            {rareItems.length === 0 && (
-              <tr>
-                <td colSpan={2 + EQUIPMENT_STATS.length + 4} className="subtle">
-                  該当するレアアイテムがありません
+            {rows.map((row) => (
+              <tr key={`${row.areaId}-${row.tier}`}>
+                <td>
+                  <strong>{row.areaName}</strong>
+                  <div className="subtle">
+                    <code>{row.areaId}</code> · base Lv {row.baseAreaLevel}
+                  </div>
                 </td>
+                <td>{getTierLabel(row.tier)}</td>
+                <td className="num">{row.effectiveAreaLevel}</td>
+                <td className="num">
+                  {row.maxEffectiveEnemyLevel}
+                  <div className="subtle">base {row.maxEnemyLevel}</div>
+                </td>
+                <td className="num">{row.maxNormalRank}</td>
+                <td>
+                  {row.drops.length > 0 ? (
+                    <div className="rare-distribution-drop-list">
+                      {row.drops.map((drop) => (
+                        <DistributionDropCard
+                          key={`${drop.enemyId}-${drop.templateId}-${drop.addedTier}`}
+                          drop={drop}
+                          template={templateById.get(drop.templateId)}
+                          currentTier={row.tier}
+                        />
+                      ))}
+                    </div>
+                  ) : (
+                    <span className="subtle">なし</span>
+                  )}
+                </td>
+              </tr>
+            ))}
+            {rows.length === 0 && (
+              <tr>
+                <td colSpan={6} className="subtle">該当するダンジョン/レアアイテムがありません</td>
               </tr>
             )}
           </tbody>
         </table>
       </div>
-      <datalist id="rare-item-skill-ids">
-        {SKILL_IDS.map((skillId) => (
-          <option key={skillId} value={skillId} />
-        ))}
-      </datalist>
+    </section>
+  )
+}
+
+function DistributionDropCard({
+  drop,
+  template,
+  currentTier,
+}: {
+  drop: DistributionDrop
+  template: EquipmentTemplate | undefined
+  currentTier: DungeonTier
+}) {
+  const isNewAtTier = drop.addedTier === currentTier && currentTier !== 0
+  return (
+    <div className={`rare-distribution-drop ${isNewAtTier ? 'new' : ''}`}>
+      <div>
+        <strong>{template?.name ?? drop.templateId}</strong>
+        {isNewAtTier && <span className="rare-distribution-new-badge">追加</span>}
+      </div>
+      <div className="subtle">
+        {drop.enemyName} <code>{drop.enemyId}</code>
+      </div>
+      {template ? (
+        <>
+          <div className="subtle">
+            {template.category}
+            {template.subCategory ? ` / ${template.subCategory}` : ''}
+            {template.price !== undefined ? ` · ${template.price}G` : ''}
+          </div>
+          <div className="rare-distribution-item-meta">
+            {formatTemplateStats(template)}
+            {formatTemplateSkills(template)}
+          </div>
+        </>
+      ) : (
+        <div className="invalid-cell">未登録 templateId</div>
+      )}
     </div>
   )
+}
+
+function SkillNameHint({ skillId }: { skillId: string }) {
+  if (skillId.trim() === '') return null
+  const labels = getSkillDisplayInfo(skillId)
+  return (
+    <div className="rare-items-skill-hint">
+      <span>{labels.ja}</span>
+      <span>{labels.en}</span>
+      {labels.description && <span className="rare-items-skill-effect">{labels.description}</span>}
+    </div>
+  )
+}
+
+function getSkillDisplayInfo(skillId: string): { ja: string; en: string; description: string } {
+  const key = skillId as keyof typeof ja.entities.skill
+  const skill = CHARACTER_SKILL_CATALOG[skillId as keyof typeof CHARACTER_SKILL_CATALOG]
+  return {
+    ja: ja.entities.skill[key]?.name ?? skillId,
+    en: en.entities.skill[key as keyof typeof en.entities.skill]?.name ?? skillId,
+    description: skill ? getCharacterSkillDescription(getCharacterSkillDefinition(skillId)) : '',
+  }
+}
+
+function formatSkillDatalistLabel(skillId: string): string {
+  const labels = getSkillDisplayInfo(skillId)
+  return `${labels.ja} / ${labels.en}`
 }
 
 function SaveBar({
@@ -531,6 +772,172 @@ function DropAssignmentsCell({
       </button>
     </div>
   )
+}
+
+function buildTemplateMap(pool: EquipmentPool | null): Map<string, EquipmentTemplate> {
+  const map = new Map<string, EquipmentTemplate>()
+  for (const template of pool?.templates ?? []) {
+    if (isEquipmentTemplate(template)) map.set(template.id, template)
+  }
+  return map
+}
+
+function buildDistributionRows(
+  details: DetailState[],
+  templateById: Map<string, EquipmentTemplate>,
+  query: string,
+): DistributionRow[] {
+  const normalizedQuery = query.trim().toLowerCase()
+  const rows: DistributionRow[] = []
+
+  for (const entry of details) {
+    const enemies = entry.detail.enemy?.enemies ?? []
+    const maxEnemyLevel = enemies.length > 0 ? Math.max(...enemies.map((enemy) => enemy.level)) : 0
+
+    for (const tier of DUNGEON_TIER_LIST) {
+      const drops = collectDistributionDrops(enemies as EnemyWithRareDrops[], tier)
+      const row: DistributionRow = {
+        areaId: entry.summary.areaId,
+        areaName: entry.summary.name,
+        baseAreaLevel: entry.summary.areaLevel,
+        tier,
+        effectiveAreaLevel: getDungeonTierAreaLevel(entry.summary.areaLevel, tier),
+        maxEnemyLevel,
+        maxEffectiveEnemyLevel: getEffectiveEnemyLevel(maxEnemyLevel, tier),
+        maxNormalRank: getMaxRankForLevel(getEffectiveEnemyLevel(maxEnemyLevel, tier)),
+        drops,
+      }
+
+      if (matchesDistributionRow(row, templateById, normalizedQuery)) {
+        rows.push({
+          ...row,
+          drops: normalizedQuery === ''
+            ? row.drops
+            : row.drops.filter((drop) => matchesDistributionDrop(drop, templateById, normalizedQuery)),
+        })
+      }
+    }
+  }
+
+  return rows.sort((a, b) => (
+    a.effectiveAreaLevel - b.effectiveAreaLevel ||
+    a.baseAreaLevel - b.baseAreaLevel ||
+    a.areaId.localeCompare(b.areaId) ||
+    a.tier - b.tier
+  ))
+}
+
+function collectDistributionDrops(enemies: EnemyWithRareDrops[], tier: DungeonTier): DistributionDrop[] {
+  const drops: DistributionDrop[] = []
+  const seen = new Set<string>()
+  for (const enemy of enemies) {
+    for (const drop of enemy.rareEquipmentDrops ?? []) {
+      addDistributionDrop(drops, seen, drop.templateId, enemy, 0)
+    }
+    for (const tierEntry of enemy.tierRareEquipmentDrops ?? []) {
+      if (tierEntry.tier > tier) continue
+      for (const drop of tierEntry.drops ?? []) {
+        addDistributionDrop(drops, seen, drop.templateId, enemy, tierEntry.tier)
+      }
+    }
+  }
+  return drops.sort((a, b) => (
+    a.addedTier - b.addedTier ||
+    a.enemyName.localeCompare(b.enemyName) ||
+    a.templateId.localeCompare(b.templateId)
+  ))
+}
+
+function addDistributionDrop(
+  drops: DistributionDrop[],
+  seen: Set<string>,
+  templateId: string,
+  enemy: EnemyWithRareDrops,
+  addedTier: DungeonTier,
+) {
+  const key = `${enemy.id}::${templateId}::${addedTier}`
+  if (seen.has(key)) return
+  seen.add(key)
+  drops.push({
+    templateId,
+    enemyId: enemy.id,
+    enemyName: enemy.name,
+    addedTier,
+  })
+}
+
+function matchesDistributionRow(
+  row: DistributionRow,
+  templateById: Map<string, EquipmentTemplate>,
+  query: string,
+): boolean {
+  if (query === '') return true
+  if (
+    row.areaId.toLowerCase().includes(query) ||
+    row.areaName.toLowerCase().includes(query) ||
+    getTierLabel(row.tier).toLowerCase().includes(query)
+  ) {
+    return true
+  }
+  return row.drops.some((drop) => matchesDistributionDrop(drop, templateById, query))
+}
+
+function matchesDistributionDrop(
+  drop: DistributionDrop,
+  templateById: Map<string, EquipmentTemplate>,
+  query: string,
+): boolean {
+  const template = templateById.get(drop.templateId)
+  return (
+    drop.enemyId.toLowerCase().includes(query) ||
+    drop.enemyName.toLowerCase().includes(query) ||
+    drop.templateId.toLowerCase().includes(query) ||
+    (template ? matchesTemplate(template, query) : false)
+  )
+}
+
+function matchesTemplate(template: EquipmentTemplate, query: string): boolean {
+  return (
+    template.id.toLowerCase().includes(query) ||
+    template.name.toLowerCase().includes(query) ||
+    template.category.toLowerCase().includes(query) ||
+    (template.subCategory ?? '').toLowerCase().includes(query) ||
+    formatTemplateStats(template).toLowerCase().includes(query) ||
+    formatTemplateSkills(template).toLowerCase().includes(query) ||
+    (template.grantedSkillIds ?? []).some((skillId) => {
+      const info = getSkillDisplayInfo(skillId)
+      return (
+        skillId.toLowerCase().includes(query) ||
+        info.ja.toLowerCase().includes(query) ||
+        info.en.toLowerCase().includes(query) ||
+        info.description.toLowerCase().includes(query)
+      )
+    })
+  )
+}
+
+function getMaxRankForLevel(level: number): number {
+  const idx = findStartStepIndex(level)
+  return DROP_RANK_TABLE[idx]?.rank ?? 0
+}
+
+function getEffectiveEnemyLevel(baseLevel: number, tier: DungeonTier): number {
+  const scaling = DUNGEON_TIER_SCALING[tier]
+  return Math.floor(baseLevel * scaling.statScale) + scaling.levelBonus
+}
+
+function formatTemplateStats(template: EquipmentTemplate): string {
+  const stats = (template.statBonuses ?? [])
+    .filter(isDirectStatBonus)
+    .map((bonus) => `${STAT_LABELS[bonus.stat] ?? bonus.stat}${bonus.value >= 0 ? '+' : ''}${bonus.value}`)
+  return stats.length > 0 ? stats.join(' / ') : 'ステータスなし'
+}
+
+function formatTemplateSkills(template: EquipmentTemplate): string {
+  const skills = (template.grantedSkillIds ?? [])
+    .map((skillId) => getSkillDisplayInfo(skillId))
+    .map((info) => `${info.ja}${info.description ? `: ${info.description}` : ''}`)
+  return skills.length > 0 ? skills.join(' / ') : 'スキルなし'
 }
 
 function buildAssignmentMap(details: DetailState[]): Map<string, DropAssignment[]> {
@@ -712,8 +1119,9 @@ function buildGrantedSkillPatch(
 }
 
 function getTierLabel(tier: DungeonTier): string {
-  if (tier === 0) return '通常'
-  return `Tier ${tier}`
+  const meta = DUNGEON_TIER_META[tier]
+  if (!meta?.prefix) return '通常'
+  return `Tier ${tier} ${meta.prefix}`
 }
 
 function stableStringify(value: unknown): string {

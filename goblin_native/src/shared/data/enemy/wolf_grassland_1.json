@@ -23,30 +23,7 @@
         "vitality": 10,
         "agility": 24,
         "luck": 10
-      },
-      "rareEquipmentDrops": [
-        {
-          "templateId": "sword_rare_021"
-        }
-      ],
-      "tierRareEquipmentDrops": [
-        {
-          "tier": 1,
-          "drops": [
-            {
-              "templateId": "armor_rare_029"
-            }
-          ]
-        },
-        {
-          "tier": 3,
-          "drops": [
-            {
-              "templateId": "accessory_rare_051"
-            }
-          ]
-        }
-      ]
+      }
     },
     {
       "id": "WFG002",
@@ -71,30 +48,7 @@
         "vitality": 13,
         "agility": 26,
         "luck": 12
-      },
-      "rareEquipmentDrops": [
-        {
-          "templateId": "sword_rare_021"
-        }
-      ],
-      "tierRareEquipmentDrops": [
-        {
-          "tier": 1,
-          "drops": [
-            {
-              "templateId": "armor_rare_029"
-            }
-          ]
-        },
-        {
-          "tier": 3,
-          "drops": [
-            {
-              "templateId": "accessory_rare_051"
-            }
-          ]
-        }
-      ]
+      }
     },
     {
       "id": "WFG003",
@@ -119,30 +73,7 @@
         "vitality": 16,
         "agility": 22,
         "luck": 10
-      },
-      "rareEquipmentDrops": [
-        {
-          "templateId": "sword_rare_022"
-        }
-      ],
-      "tierRareEquipmentDrops": [
-        {
-          "tier": 1,
-          "drops": [
-            {
-              "templateId": "armor_rare_030"
-            }
-          ]
-        },
-        {
-          "tier": 3,
-          "drops": [
-            {
-              "templateId": "accessory_rare_052"
-            }
-          ]
-        }
-      ]
+      }
     },
     {
       "id": "WFG004",
@@ -167,42 +98,7 @@
         "vitality": 11,
         "agility": 30,
         "luck": 12
-      },
-      "rareEquipmentDrops": [
-        {
-          "templateId": "bow_rare_007"
-        },
-        {
-          "templateId": "sword_beast_killer"
-        },
-        {
-          "templateId": "bow_beast_killer"
-        },
-        {
-          "templateId": "claw_beast_slayer"
-        },
-        {
-          "templateId": "large_shield_fortress"
-        }
-      ],
-      "tierRareEquipmentDrops": [
-        {
-          "tier": 1,
-          "drops": [
-            {
-              "templateId": "accessory_rare_051"
-            }
-          ]
-        },
-        {
-          "tier": 3,
-          "drops": [
-            {
-              "templateId": "accessory_rare_053"
-            }
-          ]
-        }
-      ]
+      }
     },
     {
       "id": "B_WOLF_ALPHA",
@@ -234,33 +130,7 @@
         "vitality": 20,
         "agility": 32,
         "luck": 13
-      },
-      "rareEquipmentDrops": [
-        {
-          "templateId": "sword_rare_022"
-        },
-        {
-          "templateId": "armor_rare_030"
-        }
-      ],
-      "tierRareEquipmentDrops": [
-        {
-          "tier": 1,
-          "drops": [
-            {
-              "templateId": "accessory_rare_052"
-            }
-          ]
-        },
-        {
-          "tier": 3,
-          "drops": [
-            {
-              "templateId": "accessory_rare_053"
-            }
-          ]
-        }
-      ]
+      }
     }
   ],
   "patterns": [
