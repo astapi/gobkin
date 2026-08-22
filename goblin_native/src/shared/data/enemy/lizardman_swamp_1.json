@@ -33,15 +33,7 @@
         "vitality": 22,
         "agility": 16,
         "luck": 5
-      },
-      "rareEquipmentDrops": [
-        {
-          "templateId": "sword_dragon_killer"
-        },
-        {
-          "templateId": "large_shield_dragon_scale"
-        }
-      ]
+      }
     },
     {
       "id": "LIZ002",
@@ -72,12 +64,7 @@
         "vitality": 18,
         "agility": 20,
         "luck": 6
-      },
-      "rareEquipmentDrops": [
-        {
-          "templateId": "bow_dragon_killer"
-        }
-      ]
+      }
     },
     {
       "id": "B_SWAMPKING",

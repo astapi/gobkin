@@ -23,30 +23,7 @@
         "vitality": 18,
         "agility": 13,
         "luck": 6
-      },
-      "rareEquipmentDrops": [
-        {
-          "templateId": "spear_rare_001"
-        }
-      ],
-      "tierRareEquipmentDrops": [
-        {
-          "tier": 1,
-          "drops": [
-            {
-              "templateId": "shield_rare_017"
-            }
-          ]
-        },
-        {
-          "tier": 3,
-          "drops": [
-            {
-              "templateId": "armor_rare_027"
-            }
-          ]
-        }
-      ]
+      }
     },
     {
       "id": "VIL002",
@@ -71,30 +48,7 @@
         "vitality": 28,
         "agility": 9,
         "luck": 6
-      },
-      "rareEquipmentDrops": [
-        {
-          "templateId": "sword_rare_020"
-        }
-      ],
-      "tierRareEquipmentDrops": [
-        {
-          "tier": 1,
-          "drops": [
-            {
-              "templateId": "shield_rare_018"
-            }
-          ]
-        },
-        {
-          "tier": 3,
-          "drops": [
-            {
-              "templateId": "armor_rare_028"
-            }
-          ]
-        }
-      ]
+      }
     },
     {
       "id": "VIL003",
@@ -126,30 +80,7 @@
         "vitality": 14,
         "agility": 18,
         "luck": 8
-      },
-      "rareEquipmentDrops": [
-        {
-          "templateId": "bow_rare_002"
-        }
-      ],
-      "tierRareEquipmentDrops": [
-        {
-          "tier": 1,
-          "drops": [
-            {
-              "templateId": "hidden_rare_016"
-            }
-          ]
-        },
-        {
-          "tier": 3,
-          "drops": [
-            {
-              "templateId": "accessory_rare_048"
-            }
-          ]
-        }
-      ]
+      }
     },
     {
       "id": "B_CANNON",
@@ -175,33 +106,7 @@
         "vitality": 30,
         "agility": 2,
         "luck": 1
-      },
-      "rareEquipmentDrops": [
-        {
-          "templateId": "accessory_rare_049"
-        },
-        {
-          "templateId": "shield_rare_019"
-        }
-      ],
-      "tierRareEquipmentDrops": [
-        {
-          "tier": 1,
-          "drops": [
-            {
-              "templateId": "accessory_rare_050"
-            }
-          ]
-        },
-        {
-          "tier": 3,
-          "drops": [
-            {
-              "templateId": "rod_rare_012"
-            }
-          ]
-        }
-      ]
+      }
     }
   ],
   "patterns": [

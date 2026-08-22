@@ -23,22 +23,7 @@
         "vitality": 1,
         "agility": 6,
         "luck": 2
-      },
-      "rareEquipmentDrops": [
-        {
-          "templateId": "accessory_split_core"
-        }
-      ],
-      "tierRareEquipmentDrops": [
-        {
-          "tier": 1,
-          "drops": [
-            {
-              "templateId": "accessory_luck_medal"
-            }
-          ]
-        }
-      ]
+      }
     },
     {
       "id": "B_SLIME",
@@ -70,12 +55,7 @@
         "vitality": 1,
         "agility": 8,
         "luck": 3
-      },
-      "rareEquipmentDrops": [
-        {
-          "templateId": "accessory_luck_medal"
-        }
-      ]
+      }
     }
   ],
   "patterns": [

@@ -23,30 +23,7 @@
         "vitality": 20,
         "agility": 12,
         "luck": 5
-      },
-      "rareEquipmentDrops": [
-        {
-          "templateId": "sword_rare_016"
-        }
-      ],
-      "tierRareEquipmentDrops": [
-        {
-          "tier": 1,
-          "drops": [
-            {
-              "templateId": "armor_rare_024"
-            }
-          ]
-        },
-        {
-          "tier": 3,
-          "drops": [
-            {
-              "templateId": "shield_rare_016"
-            }
-          ]
-        }
-      ]
+      }
     },
     {
       "id": "ORC005",
@@ -72,30 +49,7 @@
         "vitality": 28,
         "agility": 9,
         "luck": 4
-      },
-      "rareEquipmentDrops": [
-        {
-          "templateId": "sword_rare_017"
-        }
-      ],
-      "tierRareEquipmentDrops": [
-        {
-          "tier": 1,
-          "drops": [
-            {
-              "templateId": "armor_rare_025"
-            }
-          ]
-        },
-        {
-          "tier": 3,
-          "drops": [
-            {
-              "templateId": "accessory_rare_046"
-            }
-          ]
-        }
-      ]
+      }
     },
     {
       "id": "GOB_SOLDIER",
@@ -120,30 +74,7 @@
         "vitality": 13,
         "agility": 18,
         "luck": 8
-      },
-      "rareEquipmentDrops": [
-        {
-          "templateId": "sword_rare_013"
-        }
-      ],
-      "tierRareEquipmentDrops": [
-        {
-          "tier": 1,
-          "drops": [
-            {
-              "templateId": "armor_rare_019"
-            }
-          ]
-        },
-        {
-          "tier": 3,
-          "drops": [
-            {
-              "templateId": "accessory_rare_037"
-            }
-          ]
-        }
-      ]
+      }
     },
     {
       "id": "GOB_MAGE",
@@ -181,29 +112,6 @@
           "name": "マジックアロー",
           "grantsSpellId": "magic_arrow"
         }
-      ],
-      "rareEquipmentDrops": [
-        {
-          "templateId": "wand_rare_011"
-        }
-      ],
-      "tierRareEquipmentDrops": [
-        {
-          "tier": 1,
-          "drops": [
-            {
-              "templateId": "robe_rare_016"
-            }
-          ]
-        },
-        {
-          "tier": 3,
-          "drops": [
-            {
-              "templateId": "rod_rare_008"
-            }
-          ]
-        }
       ]
     },
     {
@@ -235,29 +143,6 @@
         {
           "id": "recovery_magic_lv6",
           "recoveryMagicLevel": 6
-        }
-      ],
-      "rareEquipmentDrops": [
-        {
-          "templateId": "rod_rare_010"
-        }
-      ],
-      "tierRareEquipmentDrops": [
-        {
-          "tier": 1,
-          "drops": [
-            {
-              "templateId": "robe_rare_017"
-            }
-          ]
-        },
-        {
-          "tier": 3,
-          "drops": [
-            {
-              "templateId": "robe_rare_018"
-            }
-          ]
         }
       ]
     },
@@ -292,36 +177,7 @@
         "vitality": 34,
         "agility": 12,
         "luck": 6
-      },
-      "rareEquipmentDrops": [
-        {
-          "templateId": "sword_rare_018"
-        },
-        {
-          "templateId": "armor_rare_026"
-        },
-        {
-          "templateId": "accessory_human_slayer"
-        }
-      ],
-      "tierRareEquipmentDrops": [
-        {
-          "tier": 1,
-          "drops": [
-            {
-              "templateId": "accessory_rare_047"
-            }
-          ]
-        },
-        {
-          "tier": 3,
-          "drops": [
-            {
-              "templateId": "sword_rare_019"
-            }
-          ]
-        }
-      ]
+      }
     }
   ],
   "patterns": [
