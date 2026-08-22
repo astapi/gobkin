@@ -1,10 +1,11 @@
 import { memo, useMemo, useCallback, useRef, useState } from 'react'
 import { useFocusEffect } from 'expo-router'
-import { View, Text, FlatList, TouchableOpacity, Pressable, StyleSheet, ActivityIndicator, Image, useWindowDimensions, Alert } from 'react-native'
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, ActivityIndicator, Image, useWindowDimensions, Alert } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { router, Stack } from 'expo-router'
 import { useTranslation } from 'react-i18next'
 import { usePartyStore } from '@/presentation/stores/usePartyStore'
+import { useExpeditionStore } from '@/presentation/stores/useExpeditionStore'
 import { BOTTOM_INFO_SPACING } from '@/shared/constants/layout'
 import { useGoblinStore } from '@/presentation/stores/useGoblinStore'
 import { useBaseStore, selectRank } from '@/presentation/stores/useBaseStore'
@@ -22,7 +23,7 @@ import {
   getPartyTitleMultiplierFromSkills,
 } from '@/shared/data/characterSkills'
 import { normalizePartyRewardMultipliers } from '@/shared/types'
-import { isAutoExpeditionWaiting } from '@/shared/utils/autoExpedition'
+import { isAutoExpeditionStopPending } from '@/shared/utils/autoExpedition'
 import type { Party, Goblin, Dungeon, DungeonTier, ExpeditionRequest, ExpeditionRecord } from '@/shared/types'
 
 const MAX_PARTY_SLOTS = 6
@@ -88,7 +89,7 @@ interface PartyCardProps {
   slotSize: number
   avatarSize: number
   usedGoldenAcorn: boolean
-  currentTime: Date
+  isCatchingUp: boolean
 }
 
 const PartyCard = memo(function PartyCard({
@@ -105,7 +106,7 @@ const PartyCard = memo(function PartyCard({
   slotSize,
   avatarSize,
   usedGoldenAcorn,
-  currentTime,
+  isCatchingUp,
 }: PartyCardProps) {
   const { t } = useTranslation()
   const members = useMemo(() => {
@@ -147,57 +148,55 @@ const PartyCard = memo(function PartyCard({
   }, [members])
 
   const status = party.status ?? 'idle'
-  const isWaitingForAutoExpedition = isAutoExpeditionWaiting(party, currentTime)
+  const ongoingExpedition = historyDisplays.find(item => item.record.status === 'ongoing')?.record
+  const isStoppingAutoExpedition = isAutoExpeditionStopPending(party, ongoingExpedition)
   return (
     <View style={[styles.partyCard, status === 'expedition' && usedGoldenAcorn && styles.partyCardGoldenAcorn]}>
       <TouchableOpacity
         testID={`party-card-${party.id}`}
         onPress={() => onPress(party, index)}
+        disabled={isCatchingUp}
         activeOpacity={0.7}
       >
         <View style={styles.partyHeader}>
           <Text style={styles.partyName}>{party.name}</Text>
           <View style={styles.partyHeaderActions}>
-            {party.autoExpeditionEnabled && !isWaitingForAutoExpedition && (
+            {isCatchingUp ? (
+              <View style={styles.autoExpeditionCatchingUpBadge}>
+                <Text style={styles.autoExpeditionCatchingUpBadgeText}>
+                  {t('ui.formation.index.autoExpeditionCatchingUp')}
+                </Text>
+              </View>
+            ) : party.autoExpeditionEnabled ? (
               <TouchableOpacity
                 testID={`auto-expedition-badge-${party.id}`}
-                style={styles.autoExpeditionBadge}
+                style={status === 'expedition'
+                  ? styles.autoExpeditionBadge
+                  : styles.autoExpeditionWaitingBadge}
                 onPress={(event) => {
                   event.stopPropagation()
                   onStopAuto(party)
                 }}
                 activeOpacity={0.7}
               >
-                <Text style={styles.autoExpeditionBadgeText}>{t('ui.formation.index.stopAutoExpedition')}</Text>
+                <Text style={status === 'expedition'
+                  ? styles.autoExpeditionBadgeText
+                  : styles.autoExpeditionWaitingBadgeText}
+                >
+                  {t(status === 'expedition'
+                    ? 'ui.formation.index.autoExpeditionRunning'
+                    : 'ui.formation.index.autoExpeditionWaiting')}
+                </Text>
               </TouchableOpacity>
-            )}
-            {isWaitingForAutoExpedition && (
-              <Pressable
-                testID={`auto-expedition-waiting-${party.id}`}
-                accessibilityRole="button"
-                accessibilityLabel={t('ui.formation.index.autoExpeditionWaitingAccessibility')}
-                style={styles.autoExpeditionWaitingBadge}
-                onPress={(event) => {
-                  event.stopPropagation()
-                  onStopAuto(party)
-                }}
-              >
-                <Text style={styles.autoExpeditionWaitingTitle}>
-                  {t('ui.formation.index.autoExpeditionWaiting')}
-                </Text>
-                <Text style={styles.autoExpeditionWaitingTime}>
-                  {t('ui.formation.index.autoExpeditionResumesTomorrow')}
-                </Text>
-              </Pressable>
-            )}
-            {!party.autoExpeditionEnabled && party.autoExpeditionSessionId && status === 'expedition' && (
+            ) : null}
+            {!isCatchingUp && isStoppingAutoExpedition ? (
               <View style={styles.autoExpeditionPendingBadge}>
                 <Text style={styles.autoExpeditionPendingBadgeText}>
                   {t('ui.formation.index.autoExpeditionStopPending')}
                 </Text>
               </View>
-            )}
-            {!party.autoExpeditionEnabled && party.autoExpeditionSessionId && status === 'idle' && (
+            ) : null}
+            {!isCatchingUp && !party.autoExpeditionEnabled && party.autoExpeditionSessionId && status === 'idle' && (
               <TouchableOpacity
                 testID={`auto-expedition-summary-${party.id}`}
                 style={styles.autoExpeditionSummaryBadge}
@@ -212,7 +211,7 @@ const PartyCard = memo(function PartyCard({
                 </Text>
               </TouchableOpacity>
             )}
-            {status === 'expedition' && (
+            {!isCatchingUp && status === 'expedition' && (
               <TouchableOpacity
                 style={styles.expeditionBadge}
                 onPress={(event) => {
@@ -269,8 +268,10 @@ export default function FormationScreen() {
   const advanceTutorial = useTutorialStore((state) => state.advanceTo)
   const parties = usePartyStore((state) => state.parties)
   const partiesLoading = usePartyStore((state) => state.isLoading)
+  const catchUpPartyIds = useExpeditionStore((state) => state.catchUpPartyIds)
   const createParty = usePartyStore((state) => state.createParty)
   const setAutoExpedition = usePartyStore((state) => state.setAutoExpedition)
+  const acknowledgeAutoExpeditionSummary = usePartyStore((state) => state.acknowledgeAutoExpeditionSummary)
   const goblins = useGoblinStore((state) => state.goblins)
   const goblinsLoading = useGoblinStore((state) => state.isLoading)
   const dungeons = useDungeonStore((state) => state.dungeons)
@@ -395,12 +396,9 @@ export default function FormationScreen() {
   }, [abortExpedition, partyHistories, t])
 
   const handleStopAuto = useCallback((party: Party) => {
-    const isWaiting = isAutoExpeditionWaiting(party, currentTime)
     Alert.alert(
       t('ui.formation.index.stopAutoExpeditionTitle'),
-      t(isWaiting
-        ? 'ui.formation.index.stopWaitingAutoExpeditionBody'
-        : 'ui.formation.index.stopAutoExpeditionBody'),
+      t('ui.formation.index.stopAutoExpeditionBody'),
       [
         { text: t('ui.common.cancel'), style: 'cancel' },
         {
@@ -409,14 +407,17 @@ export default function FormationScreen() {
         },
       ],
     )
-  }, [currentTime, setAutoExpedition, t])
+  }, [setAutoExpedition, t])
 
   const handleAutoSummaryPress = useCallback((party: Party) => {
     router.push({
       pathname: '/formation/auto-summary',
       params: { partyId: party.id.toString() },
     })
-  }, [])
+    void acknowledgeAutoExpeditionSummary(party.id).catch(error => {
+      console.error('[Formation] Failed to acknowledge auto expedition summary', error)
+    })
+  }, [acknowledgeAutoExpeditionSummary])
 
   const handleHistoryPress = useCallback((record: ExpeditionRecord, ongoing: boolean) => {
     if (ongoing) {
@@ -581,7 +582,7 @@ export default function FormationScreen() {
             slotSize={slotSize}
             avatarSize={avatarSize}
             usedGoldenAcorn={usedGoldenAcorn}
-            currentTime={currentTime}
+            isCatchingUp={catchUpPartyIds.includes(item.id)}
           />
         </View>
       )
@@ -605,7 +606,7 @@ export default function FormationScreen() {
         </TouchableOpacity>
       </View>
     )
-  }, [avatarSize, currentTime, goblins, handleAbort, handleAutoSummaryPress, handleHistoryPress, handleLogPress, handlePartyPress, handleStopAuto, partyHistories, partyHistoryDisplays, pt1Ref, slotSize, t])
+  }, [avatarSize, catchUpPartyIds, goblins, handleAbort, handleAutoSummaryPress, handleHistoryPress, handleLogPress, handlePartyPress, handleStopAuto, partyHistories, partyHistoryDisplays, pt1Ref, slotSize, t])
 
   if (partiesLoading || goblinsLoading || dungeonsLoading || baseLoading) {
     return (
@@ -796,22 +797,26 @@ const styles = StyleSheet.create({
     color: '#166534',
   },
   autoExpeditionWaitingBadge: {
-    backgroundColor: '#FEF3C7',
+    backgroundColor: '#E5E7EB',
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: 10,
-    alignItems: 'center',
   },
-  autoExpeditionWaitingTitle: {
+  autoExpeditionWaitingBadgeText: {
     fontSize: 11,
-    fontWeight: '700',
-    color: '#92400E',
-  },
-  autoExpeditionWaitingTime: {
-    marginTop: 1,
-    fontSize: 9,
     fontWeight: '600',
-    color: '#B45309',
+    color: '#4B5563',
+  },
+  autoExpeditionCatchingUpBadge: {
+    backgroundColor: '#DBEAFE',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 10,
+  },
+  autoExpeditionCatchingUpBadgeText: {
+    fontSize: 11,
+    fontWeight: '600',
+    color: '#1D4ED8',
   },
   autoExpeditionPendingBadge: {
     backgroundColor: '#FEF3C7',

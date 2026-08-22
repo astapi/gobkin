@@ -32,7 +32,7 @@ name: 自動周回を設定・停止できる
       text: "自動周回"
     direction: DOWN
 - assertVisible: "クリア済みの遠征を自動で繰り返します.*"
-- assertVisible: "1日の上限 8時間"
+- assertVisible: "日付をまたぐ遠征の帰還後は、次の周回を開始しません。設定はONのまま維持されます。"
 - tapOn:
     id: "auto-expedition-switch"
 - tapOn: "← 戻る"

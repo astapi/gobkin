@@ -76,13 +76,13 @@ export type Party = {
   dungeonTier?: DungeonTier
   rewardMultipliers?: PartyRewardMultipliers
   autoExpeditionEnabled?: boolean
-  /** 最新の自動周回セッションを識別するID。停止後も結果表示のため保持する。 */
+  /** 現在の自動周回セッションID。OFF後は結果確認まで保持する。 */
   autoExpeditionSessionId?: string
   /** 最新の自動周回セッションで確定済みの累計結果 */
   autoExpeditionSummary?: AutoExpeditionSessionSummary
-  /** 自動周回時間を集計したローカル日付（YYYY-MM-DD） */
+  /** @deprecated 旧8時間上限の互換読込用。新しい自動周回では使用しない。 */
   autoExpeditionDate?: string
-  /** autoExpeditionDate に自動予約した遠征時間（秒） */
+  /** @deprecated 旧8時間上限の互換読込用。新しい自動周回では使用しない。 */
   autoExpeditionUsedSec?: number
 }
 

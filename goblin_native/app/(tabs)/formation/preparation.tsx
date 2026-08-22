@@ -21,12 +21,7 @@ import {
 import { normalizePartyRewardMultipliers, DUNGEON_TIER_META, DUNGEON_TIER_SELECTABLE_MAX, getDungeonTierAreaLevel, getDungeonTierDisplayName } from '@/shared/types'
 import type { ExpeditionRequest, Goblin, Dungeon, Party, DungeonTier } from '@/shared/types'
 import { getDungeonDescription, getDungeonName, getReturnPolicyLabel } from '@/shared/i18n/entityLocalization'
-import {
-  AUTO_EXPEDITION_DAILY_LIMIT_SEC,
-  getAutoExpeditionUsage,
-  isAutoExpeditionDungeonCleared,
-  isAutoExpeditionWaiting,
-} from '@/shared/utils/autoExpedition'
+import { isAutoExpeditionDungeonCleared } from '@/shared/utils/autoExpedition'
 
 type ReturnPolicy = ExpeditionRequest['returnPolicy']
 
@@ -277,11 +272,7 @@ export default function ExpeditionPreparationScreen() {
 
   const canEnableAutoExpedition = isAutoExpeditionDungeonCleared(selectedDungeon, selectedTier) &&
     autoExpeditionDuration !== null &&
-    autoExpeditionDuration <= AUTO_EXPEDITION_DAILY_LIMIT_SEC
-  const autoExpeditionUsage = party ? getAutoExpeditionUsage(party, new Date()) : null
-  const autoExpeditionWaiting = party ? isAutoExpeditionWaiting(party, new Date()) : false
-  const autoRemainingHours = Math.floor((autoExpeditionUsage?.remainingSec ?? 0) / 3600)
-  const autoRemainingMinutes = Math.floor(((autoExpeditionUsage?.remainingSec ?? 0) % 3600) / 60)
+    autoExpeditionDuration > 0
 
   const handleToggleAutoExpedition = useCallback(async (enabled: boolean) => {
     if (!party) return
@@ -529,8 +520,7 @@ export default function ExpeditionPreparationScreen() {
   const canStartExpedition = Boolean(selectedDungeonId) &&
     partyMembers.length > 0 &&
     !isProcessing &&
-    (party?.status ?? 'idle') === 'idle' &&
-    !autoExpeditionWaiting
+    (party?.status ?? 'idle') === 'idle'
   const { slotSize, avatarSize } = useMemo(() => {
     const slotGap = 8
     const maxSlotWidth = 50
@@ -724,28 +714,13 @@ export default function ExpeditionPreparationScreen() {
             <View style={styles.autoExpeditionRow}>
               <View style={styles.autoExpeditionText}>
                 <Text style={styles.settingLabel}>{t('ui.formation.preparation.autoExpedition')}</Text>
-                {autoExpeditionWaiting ? (
-                  <>
-                    <Text style={styles.settingValueDescription}>
-                      {t('ui.formation.preparation.autoExpeditionWaitingDescription')}
-                    </Text>
-                    <Text style={styles.autoExpeditionLimitText}>
-                      {t('ui.formation.preparation.autoExpeditionWaitingResume')}
-                    </Text>
-                  </>
-                ) : canEnableAutoExpedition ? (
+                {canEnableAutoExpedition ? (
                   <>
                     <Text style={styles.settingValueDescription}>
                       {t('ui.formation.preparation.autoExpeditionDescription')}
                     </Text>
                     <Text style={styles.autoExpeditionLimitText}>
-                      {t('ui.formation.preparation.autoExpeditionDailyLimit')}
-                    </Text>
-                    <Text style={styles.settingValueDescription}>
-                      {t('ui.formation.preparation.autoExpeditionRemaining', {
-                        hours: autoRemainingHours,
-                        minutes: autoRemainingMinutes,
-                      })}
+                      {t('ui.formation.preparation.autoExpeditionDayBoundary')}
                     </Text>
                   </>
                 ) : (

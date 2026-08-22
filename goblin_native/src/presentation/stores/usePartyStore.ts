@@ -40,6 +40,7 @@ interface PartyActions {
   setTargetFloor: (partyId: number, targetFloor: number | null) => Promise<Party>
   setReturnPolicy: (partyId: number, returnPolicy: ExpeditionRequest['returnPolicy']) => Promise<Party>
   setAutoExpedition: (partyId: number, enabled: boolean) => Promise<Party>
+  acknowledgeAutoExpeditionSummary: (partyId: number) => Promise<Party>
 }
 
 export const usePartyStore = create<PartyState & PartyActions>()((set) => {
@@ -127,6 +128,12 @@ export const usePartyStore = create<PartyState & PartyActions>()((set) => {
 
     setAutoExpedition: async (partyId: number, enabled: boolean) => {
       const updated = await configurePartyUseCase.setAutoExpedition(partyId, enabled)
+      await refresh()
+      return updated
+    },
+
+    acknowledgeAutoExpeditionSummary: async (partyId: number) => {
+      const updated = await configurePartyUseCase.acknowledgeAutoExpeditionSummary(partyId)
       await refresh()
       return updated
     },

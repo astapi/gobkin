@@ -64,6 +64,19 @@ export class ConfigurePartyUseCase {
     return this.requireParty(partyId)
   }
 
+  public async acknowledgeAutoExpeditionSummary(partyId: number): Promise<Party> {
+    const party = await this.requireParty(partyId)
+    if (party.autoExpeditionEnabled || (party.status ?? 'idle') === 'expedition') {
+      return party
+    }
+
+    await this.partyRepository.saveParty({
+      ...party,
+      autoExpeditionSessionId: undefined,
+    })
+    return this.requireParty(partyId)
+  }
+
   private async requireParty(partyId: number): Promise<Party> {
     const party = await this.partyRepository.getParty(partyId)
     if (!party) {

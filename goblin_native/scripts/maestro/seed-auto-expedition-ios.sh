@@ -41,17 +41,4 @@ SET current_hp = 0, updated_at = datetime('now')
 WHERE id = (SELECT id FROM goblins ORDER BY id LIMIT 1);
 SQL
 
-if [ "${1:-}" = '--waiting' ]; then
-  sqlite3 "$database_path" <<'SQL'
-UPDATE parties
-SET auto_expedition_enabled = 1,
-    auto_expedition_session_id = 'maestro-waiting-session',
-    auto_expedition_summary_json = '{"sessionId":"maestro-waiting-session","runCount":3,"xpGained":120,"goldGained":80,"rewardItems":[],"factorCount":0,"levelUps":[]}',
-    auto_expedition_date = strftime('%Y-%m-%d', 'now', 'localtime'),
-    auto_expedition_used_sec = 30600,
-    updated_at = datetime('now')
-WHERE id = 1;
-SQL
-fi
-
 echo "Maestro用データを投入しました: $database_path"

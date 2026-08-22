@@ -887,6 +887,7 @@ describe('CompleteExpeditionUseCase', () => {
       await usecase.execute(1, replay)
 
       expect(partyRepo.saveParty).toHaveBeenCalledWith(expect.objectContaining({
+        autoExpeditionEnabled: true,
         autoExpeditionSummary: expect.objectContaining({
           sessionId: 'session-a',
           runCount: 1,

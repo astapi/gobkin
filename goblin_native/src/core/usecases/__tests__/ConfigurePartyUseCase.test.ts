@@ -80,3 +80,48 @@ describe('ConfigurePartyUseCase.setAutoExpedition', () => {
     expect(result.autoExpeditionSummary?.runCount).toBe(2)
   })
 })
+
+describe('ConfigurePartyUseCase.acknowledgeAutoExpeditionSummary', () => {
+  it('結果データを残したまま未確認のセッションIDだけをクリアする', async () => {
+    const repository = createPartyRepository({
+      id: 1,
+      name: 'PT1',
+      memberIds: [1],
+      status: 'idle',
+      autoExpeditionEnabled: false,
+      autoExpeditionSessionId: 'session-a',
+      autoExpeditionSummary: {
+        sessionId: 'session-a',
+        runCount: 2,
+        xpGained: 100,
+        goldGained: 50,
+        rewardItems: [],
+        factorCount: 0,
+        levelUps: [],
+      },
+    })
+    const useCase = new ConfigurePartyUseCase(repository)
+
+    const result = await useCase.acknowledgeAutoExpeditionSummary(1)
+
+    expect(result.autoExpeditionSessionId).toBeUndefined()
+    expect(result.autoExpeditionSummary?.sessionId).toBe('session-a')
+    expect(result.autoExpeditionSummary?.runCount).toBe(2)
+  })
+
+  it('自動周回中はセッションIDをクリアしない', async () => {
+    const repository = createPartyRepository({
+      id: 1,
+      name: 'PT1',
+      memberIds: [1],
+      status: 'expedition',
+      autoExpeditionEnabled: false,
+      autoExpeditionSessionId: 'session-a',
+    })
+    const useCase = new ConfigurePartyUseCase(repository)
+
+    const result = await useCase.acknowledgeAutoExpeditionSummary(1)
+
+    expect(result.autoExpeditionSessionId).toBe('session-a')
+  })
+})

@@ -1,47 +1,47 @@
-import type { Dungeon, Party } from '../../types'
+import type { Dungeon, ExpeditionRecord, Party } from '../../types'
 import {
-  AUTO_EXPEDITION_DAILY_LIMIT_SEC,
-  getAutoExpeditionResumeAt,
-  getAutoExpeditionUsage,
-  getLocalDateKey,
-  getNextLocalDayStart,
+  isAutoExpeditionDayBoundaryRun,
   isAutoExpeditionDungeonCleared,
-  isAutoExpeditionResumeDue,
-  isAutoExpeditionWaiting,
-  planAutoExpedition,
+  isAutoExpeditionRecord,
+  isAutoExpeditionStopPending,
 } from '../autoExpedition'
 
 const party: Party = {
   id: 1,
   name: 'PT1',
   memberIds: [1],
-  autoExpeditionDate: '2026-08-12',
-  autoExpeditionUsedSec: 3600,
+}
+
+function createExpeditionRecord(autoExpeditionSessionId?: string): ExpeditionRecord {
+  return {
+    id: 'exp-1',
+    userId: '',
+    partyId: 1,
+    partyName: 'PT1',
+    dungeonId: 'slime_cave',
+    dungeonName: 'スライムの洞窟',
+    startTime: new Date(2026, 7, 12, 10),
+    returnTime: new Date(2026, 7, 12, 11),
+    status: 'ongoing',
+    returnPolicy: 'never',
+    expeditionMeta: {
+      seed: 1,
+      request: {
+        partyId: '1',
+        areaId: 'slime_cave',
+        returnPolicy: 'never',
+        clientVersion: 'native',
+        autoExpeditionSessionId,
+      },
+      departingGoblins: [],
+      rewardMultipliers: { gold: 1, rare: 1, title: 1 },
+    },
+    createdAt: new Date(2026, 7, 12, 10),
+    updatedAt: new Date(2026, 7, 12, 10),
+  }
 }
 
 describe('autoExpedition', () => {
-  it('同じローカル日付の使用量から残り時間を計算する', () => {
-    const usage = getAutoExpeditionUsage(party, new Date(2026, 7, 12, 10))
-
-    expect(usage).toEqual({
-      date: '2026-08-12',
-      usedSec: 3600,
-      remainingSec: AUTO_EXPEDITION_DAILY_LIMIT_SEC - 3600,
-    })
-  })
-
-  it('日付が変わると使用量をリセットする', () => {
-    expect(getAutoExpeditionUsage(party, new Date(2026, 7, 13, 0)).usedSec).toBe(0)
-  })
-
-  it('翌日のローカル0時を返す', () => {
-    const next = getNextLocalDayStart(new Date(2026, 7, 12, 23, 59, 59))
-
-    expect(getLocalDateKey(next)).toBe('2026-08-13')
-    expect(next.getHours()).toBe(0)
-    expect(next.getMinutes()).toBe(0)
-  })
-
   it('選択ティアまでクリア済みの場合だけ自動周回を許可する', () => {
     const dungeon = { maxClearedTier: 1 } as Dungeon
 
@@ -51,106 +51,67 @@ describe('autoExpedition', () => {
     expect(isAutoExpeditionDungeonCleared(undefined, 0)).toBe(false)
   })
 
-  it('残り時間に収まる周回を同日に予約する', () => {
-    const reservation = planAutoExpedition(party, new Date(2026, 7, 12, 12), 7200)
+  it('同じローカル日付内で帰還する周回は継続対象にする', () => {
+    const record = createExpeditionRecord('session-a')
 
-    expect(reservation?.date).toBe('2026-08-12')
-    expect(reservation?.usedSec).toBe(10800)
-    expect(reservation?.startTime.getHours()).toBe(12)
+    expect(isAutoExpeditionDayBoundaryRun(record)).toBe(false)
   })
 
-  it('開始時点で上限未満なら、その周が8時間を超えても同日に開始する', () => {
-    const nearlyFullParty = {
-      ...party,
-      autoExpeditionUsedSec: AUTO_EXPEDITION_DAILY_LIMIT_SEC - 1800,
-    }
-    const reservation = planAutoExpedition(nearlyFullParty, new Date(2026, 7, 12, 20), 3600)
+  it('帰還予定時刻が翌日0時になる周回を最終周と判定する', () => {
+    const record = createExpeditionRecord('session-a')
+    record.startTime = new Date(2026, 7, 12, 23, 0)
+    record.returnTime = new Date(2026, 7, 13, 0, 0)
 
-    expect(reservation?.date).toBe('2026-08-12')
-    expect(reservation?.usedSec).toBe(AUTO_EXPEDITION_DAILY_LIMIT_SEC + 1800)
-    expect(reservation?.startTime.getHours()).toBe(20)
+    expect(isAutoExpeditionDayBoundaryRun(record)).toBe(true)
   })
 
-  it('開始時点ですでに8時間へ到達していたら翌日0時へ送る', () => {
-    const fullParty = {
-      ...party,
-      autoExpeditionUsedSec: AUTO_EXPEDITION_DAILY_LIMIT_SEC,
-    }
-    const reservation = planAutoExpedition(fullParty, new Date(2026, 7, 12, 20), 3600)
+  it('翌日までかかる長時間遠征も最終周と判定する', () => {
+    const record = createExpeditionRecord('session-a')
+    record.startTime = new Date(2026, 7, 12, 20, 0)
+    record.returnTime = new Date(2026, 7, 14, 1, 0)
 
-    expect(reservation?.date).toBe('2026-08-13')
-    expect(reservation?.usedSec).toBe(3600)
-    expect(reservation?.startTime.getHours()).toBe(0)
+    expect(isAutoExpeditionDayBoundaryRun(record)).toBe(true)
   })
 
-  it('上限到達日の翌日0時を再開時刻として返す', () => {
-    expect(getAutoExpeditionResumeAt({
-      ...party,
-      autoExpeditionUsedSec: AUTO_EXPEDITION_DAILY_LIMIT_SEC + 1800,
-    })).toEqual(new Date(2026, 7, 13, 0, 0, 0, 0))
+  it('通常遠征は日付をまたいでも自動周回の最終周にしない', () => {
+    const record = createExpeditionRecord()
+    record.startTime = new Date(2026, 7, 12, 23, 0)
+    record.returnTime = new Date(2026, 7, 13, 0, 0)
+
+    expect(isAutoExpeditionDayBoundaryRun(record)).toBe(false)
   })
 
-  it('上限未到達または日付が不正なら再開時刻を返さない', () => {
-    expect(getAutoExpeditionResumeAt(party)).toBeNull()
-    expect(getAutoExpeditionResumeAt({
+  it('自動周回由来の遠征中にOFFへ変更した場合だけ停止待ちにする', () => {
+    const stoppedParty: Party = {
       ...party,
-      autoExpeditionDate: 'invalid',
-      autoExpeditionUsedSec: AUTO_EXPEDITION_DAILY_LIMIT_SEC,
-    })).toBeNull()
-  })
-
-  it('上限到達後は翌日0時まで停止中となり、0時以降は再開対象になる', () => {
-    const waitingParty: Party = {
-      ...party,
-      status: 'idle',
-      autoExpeditionEnabled: true,
-      autoExpeditionUsedSec: AUTO_EXPEDITION_DAILY_LIMIT_SEC,
-      autoExpeditionSummary: {
-        sessionId: 'session-a',
-        runCount: 2,
-        xpGained: 10,
-        goldGained: 10,
-        rewardItems: [],
-        factorCount: 0,
-        levelUps: [],
-      },
-    }
-
-    expect(isAutoExpeditionWaiting(waitingParty, new Date(2026, 7, 12, 23, 59))).toBe(true)
-    expect(isAutoExpeditionResumeDue(waitingParty, new Date(2026, 7, 12, 23, 59))).toBe(false)
-    expect(isAutoExpeditionWaiting(waitingParty, new Date(2026, 7, 13, 0, 0))).toBe(false)
-    expect(isAutoExpeditionResumeDue(waitingParty, new Date(2026, 7, 13, 0, 0))).toBe(true)
-  })
-
-  it('初回の手動遠征前と進行中は停止中・再開対象にしない', () => {
-    const firstRunParty: Party = {
-      ...party,
-      autoExpeditionEnabled: true,
-      autoExpeditionUsedSec: AUTO_EXPEDITION_DAILY_LIMIT_SEC,
-      autoExpeditionSummary: {
-        sessionId: 'session-a',
-        runCount: 0,
-        xpGained: 0,
-        goldGained: 0,
-        rewardItems: [],
-        factorCount: 0,
-        levelUps: [],
-      },
-    }
-
-    expect(isAutoExpeditionWaiting(firstRunParty, new Date(2026, 7, 12, 20))).toBe(false)
-    expect(isAutoExpeditionResumeDue({
-      ...firstRunParty,
       status: 'expedition',
-      autoExpeditionSummary: { ...firstRunParty.autoExpeditionSummary!, runCount: 1 },
-    }, new Date(2026, 7, 13, 0))).toBe(false)
+      autoExpeditionEnabled: false,
+      autoExpeditionSessionId: 'session-a',
+    }
+
+    expect(isAutoExpeditionStopPending(
+      stoppedParty,
+      createExpeditionRecord('session-a'),
+    )).toBe(true)
   })
 
-  it('1周が8時間を超える場合は予約しない', () => {
-    expect(planAutoExpedition(
-      party,
-      new Date(2026, 7, 12, 12),
-      AUTO_EXPEDITION_DAILY_LIMIT_SEC + 1,
-    )).toBeNull()
+  it('過去の自動周回セッションIDが残っていても通常遠征は停止待ちにしない', () => {
+    const manualExpeditionParty: Party = {
+      ...party,
+      status: 'expedition',
+      autoExpeditionEnabled: false,
+      autoExpeditionSessionId: 'session-a',
+    }
+
+    expect(isAutoExpeditionStopPending(
+      manualExpeditionParty,
+      createExpeditionRecord(),
+    )).toBe(false)
   })
+
+  it('自動周回セッションID付きの遠征を判定する', () => {
+    expect(isAutoExpeditionRecord(createExpeditionRecord('session-a'))).toBe(true)
+    expect(isAutoExpeditionRecord(createExpeditionRecord())).toBe(false)
+  })
+
 })
