@@ -35,19 +35,13 @@ const PURCHASE_UNLOCKED_AREA_IDS = ['cat_fortress_1', 'necromancer_crypt_1']
 /**
  * 既知の「到達不能」エリア。理由付きで一件ずつ列挙する。
  * ここに載っているエリアだけが到達不能であることを本テストで保証する。
+ *
+ * 2026-08: イベントダンジョン追加時の解放グラフ再配線で、以前ここに載っていた
+ * troll_canyon_1 / minotaur_labyrinth_1（断崖からの分岐辺の欠落）と
+ * hobbit_hills_1 / dwarf_mine_1 / elf_forest_1（宙に置かれた独立エリア）は
+ * すべて到達可能になった。
  */
-const KNOWN_UNREACHABLE_AREAS: Record<string, string> = {
-  troll_canyon_1:
-    'unlockRequires: harpy_cliff_1 だが、harpy_cliff_1 の unlockNext/unlockNexts は human_fortress_1 のみで troll_canyon_1 を含まない（データのみ・未実装として確認済み）',
-  minotaur_labyrinth_1:
-    'unlockRequires: troll_canyon_1 だが troll_canyon_1 自体が到達不能なため連鎖的に到達不能（データのみ・未実装として確認済み）',
-  hobbit_hills_1:
-    'unlockRequires が設定されておらず、他のどのエリアの unlockNext/unlockNexts からも参照されていない独立エリア（docs/expedition_unlock_routes.md に「宙に置かれた」と明記）',
-  dwarf_mine_1:
-    'unlockRequires が設定されておらず、他のどのエリアの unlockNext/unlockNexts からも参照されていない独立エリア（docs/expedition_unlock_routes.md に「宙に置かれた」と明記）',
-  elf_forest_1:
-    'unlockRequires が設定されておらず、他のどのエリアの unlockNext/unlockNexts からも参照されていない独立エリア（docs/expedition_unlock_routes.md に「宙に置かれた」と明記）',
-}
+const KNOWN_UNREACHABLE_AREAS: Record<string, string> = {}
 
 function computeReachableAreaIds(): Set<string> {
   const areaById = new Map(areasData.map(area => [area.id, area]))

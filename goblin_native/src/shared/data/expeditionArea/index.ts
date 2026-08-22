@@ -30,6 +30,13 @@ import wolfGrassland1 from './wolf_grassland_1.json'
 import spiderForest1 from './spider_forest_1.json'
 import deadGrave1 from './dead_grave_1.json'
 import catFortress1 from './cat_fortress_1.json'
+import margraveSortie1 from './margrave_sortie_1.json'
+import fortressDefense1 from './fortress_defense_1.json'
+import royalFieldBattle1 from './royal_field_battle_1.json'
+import swampDefense1 from './swamp_defense_1.json'
+import harpyDefense1 from './harpy_defense_1.json'
+import hobbitHillsDefense1 from './hobbit_hills_defense_1.json'
+import dwarfMinePurge1 from './dwarf_mine_purge_1.json'
 
 const areaDatabases: Record<string, AreaConfig> = {
   dwarf_mine_1: dwarfMine1 as AreaConfig,
@@ -62,6 +69,13 @@ const areaDatabases: Record<string, AreaConfig> = {
   undead_ruins_1: undeadRuins1 as AreaConfig,
   vampire_castle_1: vampireCastle1 as AreaConfig,
   wolf_grassland_1: wolfGrassland1 as AreaConfig,
+  margrave_sortie_1: margraveSortie1 as AreaConfig,
+  fortress_defense_1: fortressDefense1 as AreaConfig,
+  royal_field_battle_1: royalFieldBattle1 as AreaConfig,
+  swamp_defense_1: swampDefense1 as AreaConfig,
+  harpy_defense_1: harpyDefense1 as AreaConfig,
+  hobbit_hills_defense_1: hobbitHillsDefense1 as AreaConfig,
+  dwarf_mine_purge_1: dwarfMinePurge1 as AreaConfig,
 }
 
 export function getAreaConfig(areaId: string): AreaConfig | null {

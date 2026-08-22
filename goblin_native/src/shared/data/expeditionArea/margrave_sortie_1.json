@@ -1,0 +1,17 @@
+{
+  "id": "margrave_sortie_1",
+  "name": "vs辺境伯軍・平原会戦",
+  "areaLevel": 130,
+  "floors": 8,
+  "baseDurationSec": 18000,
+  "description": "辺境の城を目前にした平原。老将グレアムが籠城を捨てて打って出た。槍衾と騎兵の波を越え、野戦で辺境伯軍を打ち破れ。",
+  "encounter": {
+    "eventIntervalSec": 600,
+    "eventWeights": {
+      "exploring": 60,
+      "goldTreasure": 10,
+      "battle": 30
+    }
+  },
+  "unlockNext": "human_fortress_1"
+}

@@ -13,5 +13,9 @@
       "battle": 30
     }
   },
-  "unlockNext": "vampire_castle_1"
+  "unlockNext": "fortress_defense_1",
+  "unlockNexts": [
+    "swamp_defense_1",
+    "harpy_defense_1"
+  ]
 }

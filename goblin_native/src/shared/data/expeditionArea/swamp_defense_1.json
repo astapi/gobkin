@@ -1,0 +1,16 @@
+{
+  "id": "swamp_defense_1",
+  "name": "沼砦防衛戦",
+  "areaLevel": 148,
+  "floors": 6,
+  "baseDurationSec": 13200,
+  "description": "辺境の城を失った王国が、報復に沼の水を涸らしに来た。「沼を涸らさない」――沼王と交わした約束を、今度はこちらが守る番だ。",
+  "encounter": {
+    "eventIntervalSec": 440,
+    "eventWeights": {
+      "exploring": 60,
+      "goldTreasure": 10,
+      "battle": 30
+    }
+  }
+}

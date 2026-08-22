@@ -7,15 +7,15 @@
       "raceTags": [
         "undead"
       ],
-      "level": 112,
-      "hp": 3570,
-      "atk": 422,
-      "def": 293,
+      "level": 140,
+      "hp": 7570,
+      "atk": 887,
+      "def": 616,
       "attackCount": 2,
-      "accuracy": 764,
+      "accuracy": 820,
       "evasion": 75,
-      "gold": 132,
-      "magicDef": 569,
+      "gold": 145,
+      "magicDef": 1243,
       "baseAttributes": {
         "power": 9,
         "wisdom": 9,
@@ -32,15 +32,15 @@
       "raceTags": [
         "undead"
       ],
-      "level": 113,
-      "hp": 3150,
-      "atk": 330,
-      "def": 258,
+      "level": 141,
+      "hp": 6680,
+      "atk": 694,
+      "def": 543,
       "attackCount": 1,
-      "accuracy": 766,
+      "accuracy": 822,
       "evasion": 75,
-      "gold": 124,
-      "magicDef": 502,
+      "gold": 136,
+      "magicDef": 1095,
       "baseAttributes": {
         "power": 7,
         "wisdom": 7,
@@ -57,16 +57,16 @@
       "raceTags": [
         "undead"
       ],
-      "level": 115,
-      "hp": 2280,
-      "atk": 476,
-      "magicAtk": 1187,
-      "def": 186,
+      "level": 143,
+      "hp": 4790,
+      "atk": 999,
+      "magicAtk": 2581,
+      "def": 392,
       "attackCount": 1,
-      "accuracy": 770,
+      "accuracy": 826,
       "evasion": 75,
-      "gold": 146,
-      "magicDef": 420,
+      "gold": 160,
+      "magicDef": 913,
       "baseAttributes": {
         "power": 10,
         "wisdom": 9,
@@ -83,15 +83,15 @@
       "raceTags": [
         "undead"
       ],
-      "level": 117,
-      "hp": 3220,
-      "atk": 531,
-      "def": 264,
+      "level": 145,
+      "hp": 6810,
+      "atk": 1111,
+      "def": 553,
       "attackCount": 2,
-      "accuracy": 774,
+      "accuracy": 830,
       "evasion": 75,
-      "gold": 152,
-      "magicDef": 569,
+      "gold": 167,
+      "magicDef": 1234,
       "baseAttributes": {
         "power": 11,
         "wisdom": 11,
@@ -108,15 +108,15 @@
       "raceTags": [
         "undead"
       ],
-      "level": 120,
-      "hp": 5130,
-      "atk": 687,
-      "def": 420,
+      "level": 148,
+      "hp": 10840,
+      "atk": 1438,
+      "def": 882,
       "attackCount": 2,
-      "accuracy": 780,
+      "accuracy": 836,
       "evasion": 75,
-      "gold": 162,
-      "magicDef": 704,
+      "gold": 177,
+      "magicDef": 1520,
       "baseAttributes": {
         "power": 14,
         "wisdom": 14,
@@ -133,17 +133,17 @@
       "raceTags": [
         "undead"
       ],
-      "level": 142,
-      "hp": 6020,
-      "atk": 516,
-      "magicAtk": 1494,
-      "def": 482,
+      "level": 170,
+      "hp": 13070,
+      "atk": 1114,
+      "magicAtk": 3145,
+      "def": 1039,
       "attackCount": 3,
-      "accuracy": 863,
+      "accuracy": 905,
       "evasion": 85,
       "isBoss": true,
-      "gold": 798,
-      "magicDef": 1136,
+      "gold": 861,
+      "magicDef": 2391,
       "baseAttributes": {
         "power": 15,
         "wisdom": 11,
@@ -152,6 +152,43 @@
         "agility": 10,
         "luck": 9
       }
+    },
+    {
+      "id": "DGR006",
+      "name": "怨嗟の亡霊",
+      "attackType": "melee",
+      "raceTags": [
+        "undead"
+      ],
+      "level": 144,
+      "hp": 7750,
+      "atk": 1308,
+      "def": 630,
+      "attackCount": 1,
+      "accuracy": 828,
+      "evasion": 75,
+      "gold": 194,
+      "magicDef": 661,
+      "baseAttributes": {
+        "power": 13,
+        "wisdom": 15,
+        "spirit": 6,
+        "vitality": 8,
+        "agility": 9,
+        "luck": 7
+      },
+      "skills": [
+        {
+          "id": "grant_fireball",
+          "name": "ファイヤーボール",
+          "grantsSpellId": "fireball"
+        },
+        {
+          "id": "grant_magic_arrow",
+          "name": "マジックアロー",
+          "grantsSpellId": "magic_arrow"
+        }
+      ]
     }
   ],
   "patterns": [
@@ -230,7 +267,7 @@
           "DGR002"
         ],
         [
-          "DGR003",
+          "DGR006",
           "DGR001"
         ]
       ]
@@ -247,7 +284,7 @@
           "DGR001"
         ],
         [
-          "DGR003",
+          "DGR006",
           "DGR001"
         ]
       ]
@@ -263,9 +300,9 @@
           "DGR002"
         ],
         [
-          "DGR003",
+          "DGR006",
           "DGR001",
-          "DGR003"
+          "DGR006"
         ]
       ]
     },
@@ -281,7 +318,7 @@
           "DGR001"
         ],
         [
-          "DGR003",
+          "DGR006",
           "DGR001"
         ]
       ],
@@ -298,7 +335,7 @@
           "DGR004"
         ],
         [
-          "DGR001",
+          "DGR006",
           "DGR002"
         ]
       ]
@@ -315,7 +352,7 @@
           "DGR003"
         ],
         [
-          "DGR001",
+          "DGR006",
           "DGR002"
         ]
       ]
@@ -331,9 +368,9 @@
           "DGR004"
         ],
         [
-          "DGR001",
+          "DGR006",
           "DGR002",
-          "DGR001"
+          "DGR006"
         ]
       ]
     },
@@ -349,7 +386,7 @@
           "DGR003"
         ],
         [
-          "DGR001",
+          "DGR006",
           "DGR002"
         ]
       ],
@@ -367,7 +404,7 @@
         ],
         [
           "DGR003",
-          "DGR001",
+          "DGR006",
           "DGR004"
         ]
       ]
@@ -385,7 +422,7 @@
         ],
         [
           "DGR003",
-          "DGR001",
+          "DGR006",
           "DGR004"
         ]
       ]
@@ -402,7 +439,7 @@
         ],
         [
           "DGR003",
-          "DGR001",
+          "DGR006",
           "DGR004",
           "DGR003"
         ]
@@ -421,7 +458,7 @@
         ],
         [
           "DGR003",
-          "DGR001",
+          "DGR006",
           "DGR004"
         ]
       ],
@@ -438,9 +475,9 @@
           "DGR004"
         ],
         [
-          "DGR003",
+          "DGR006",
           "DGR004",
-          "DGR002"
+          "DGR006"
         ]
       ]
     },
@@ -456,9 +493,9 @@
           "DGR005"
         ],
         [
-          "DGR003",
+          "DGR006",
           "DGR004",
-          "DGR002"
+          "DGR006"
         ]
       ]
     },
@@ -473,10 +510,10 @@
           "DGR004"
         ],
         [
-          "DGR003",
+          "DGR006",
           "DGR004",
-          "DGR002",
-          "DGR003"
+          "DGR006",
+          "DGR006"
         ]
       ]
     },
@@ -492,9 +529,9 @@
           "DGR005"
         ],
         [
-          "DGR003",
+          "DGR006",
           "DGR004",
-          "DGR002"
+          "DGR006"
         ]
       ],
       "isFloorBoss": true
@@ -511,8 +548,8 @@
         ],
         [
           "DGR004",
-          "DGR003",
-          "DGR001"
+          "DGR006",
+          "DGR003"
         ]
       ]
     },
@@ -529,8 +566,8 @@
         ],
         [
           "DGR004",
-          "DGR003",
-          "DGR001"
+          "DGR006",
+          "DGR003"
         ]
       ]
     },
@@ -546,8 +583,8 @@
         ],
         [
           "DGR004",
+          "DGR006",
           "DGR003",
-          "DGR001",
           "DGR004"
         ]
       ]
@@ -565,8 +602,8 @@
         ],
         [
           "DGR004",
-          "DGR003",
-          "DGR001"
+          "DGR006",
+          "DGR003"
         ]
       ],
       "isFloorBoss": true
@@ -582,8 +619,9 @@
         ],
         [
           "DGR005",
+          "DGR006",
           "DGR004",
-          "DGR003"
+          "DGR006"
         ]
       ],
       "isBoss": true

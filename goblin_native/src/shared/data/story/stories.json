@@ -501,10 +501,36 @@
       ]
     },
     {
+      "id": "story_after_margrave_sortie",
+      "title": "老将の槍",
+      "category": "main",
+      "order": 18,
+      "unlockCondition": {
+        "type": "dungeon_cleared",
+        "dungeonId": "margrave_sortie_1"
+      },
+      "rewards": [
+        {
+          "type": "golden_acorn",
+          "value": 5
+        }
+      ],
+      "chapters": [
+        {
+          "id": "story_after_margrave_sortie_1",
+          "text": "断崖を越えた軍の前に、辺境の城の軍旗が並んでいた。老いた辺境伯グレアムは、城壁の陰で待たなかった。平原に槍衾を敷き、自ら先頭で馬を止めていた。\n\n籠もれば城は落ちない、と誰もが言った。それでも老将は打って出た。城の中には、村々から逃げてきた民がいる。壁の内で戦えば、民が死ぬ。\n\n槍の壁は厚く、騎兵は速かった。ゴブリンの軍は初めて、「守るために攻める人間」と戦った。"
+        },
+        {
+          "id": "story_after_margrave_sortie_2",
+          "text": "空からハーピィが陣形を暴き、狼が側面を裂き、糸が騎兵の脚を縛った。日が傾くころ、辺境伯軍は隊列を保ったまま城へ退いた。敗走ではなかった。一兵も置き去りにしない、見事な退き際だった。\n\n殿には、あの斥候がいた。ロラン。オークの野営地から生きて戻った男は、もう震えていなかった。\n\nマルクは追撃を止めた。あの退き方は、群れを使い潰さない者の退き方だ。敵の中に、初めて同じものを見た。"
+        }
+      ]
+    },
+    {
       "id": "story_after_fortress",
       "title": "西方防衛線の崩壊",
       "category": "main",
-      "order": 18,
+      "order": 19,
       "unlockCondition": {
         "type": "dungeon_cleared",
         "dungeonId": "human_fortress_1"
@@ -531,10 +557,40 @@
       ]
     },
     {
+      "id": "story_after_fortress_defense",
+      "title": "守る側の壁",
+      "category": "main",
+      "order": 20,
+      "unlockCondition": {
+        "type": "dungeon_cleared",
+        "dungeonId": "fortress_defense_1"
+      },
+      "rewards": [
+        {
+          "type": "golden_acorn",
+          "value": 5
+        }
+      ],
+      "chapters": [
+        {
+          "id": "story_after_fortress_defense_1",
+          "text": "城を落として初めての雨が上がった朝、東の地平に王国の軍旗が並んだ。奪還軍。落とされた城を取り戻しに来た、王国の正規軍だった。\n\nゴブリンたちは顔を見合わせた。攻めるのではない。この壁を、今度は守るのだ。\n\nマルクは城壁に立った。いつか人間がそうしていた場所に。石の壁は、守る側に立つと、まるで違うものに見えた。"
+        },
+        {
+          "id": "story_after_fortress_defense_2",
+          "text": "先鋒を率いるのは、騎士の装いのロランだった。斥候だった男は、剣を取ることを覚えていた。\n\n糸が弩を縛り、空から岩が落ち、狼が夜襲の背後を食い破る。三日三晩の攻防の末、奪還軍は東へ退いた。\n\n退いていく列の中に、白い装いの若い騎士がいた。腰に、折れた剣を下げていた。城壁の上のマルクを、その眼だけが最後まで見ていた。"
+        },
+        {
+          "id": "story_after_fortress_defense_3",
+          "text": "――退却の陣中。\n\n「なぜ追ってこない」と若い騎士が訊いた。ロランは答えた。「あれは、獲るために戦う。殺すためには戦わん。……我々とは、戦の理由が違うのだ」\n\n若い騎士は、折れた剣の柄を握った。アレン。焼けた村の生き残りは、まだ何も言わなかった。"
+        }
+      ]
+    },
+    {
       "id": "story_after_vampire",
       "title": "王都への道",
       "category": "main",
-      "order": 19,
+      "order": 21,
       "unlockCondition": {
         "type": "dungeon_cleared",
         "dungeonId": "vampire_castle_1"
@@ -560,7 +616,7 @@
       "id": "interlude_last_blade",
       "title": "最後の刃",
       "category": "main",
-      "order": 20,
+      "order": 22,
       "unlockCondition": {
         "type": "dungeon_cleared",
         "dungeonId": "vampire_castle_1"
@@ -583,10 +639,40 @@
       ]
     },
     {
+      "id": "story_after_royal_field",
+      "title": "約束の旗",
+      "category": "main",
+      "order": 23,
+      "unlockCondition": {
+        "type": "dungeon_cleared",
+        "dungeonId": "royal_field_battle_1"
+      },
+      "rewards": [
+        {
+          "type": "golden_acorn",
+          "value": 5
+        }
+      ],
+      "chapters": [
+        {
+          "id": "story_after_royal_field_1",
+          "text": "王都を望む大平原に、王国の全軍が戦列を敷いていた。中央に立つ軍旗は、元帥ガリウス。建国以来、野戦で負けを知らぬと謳われた老元帥だった。\n\n「魔物の群れなど、平原では槍の的よ」――元帥の兵法は正しい。相手が、ただの群れであれば。\n\nマルクは丘の上で軍を止め、後ろを振り返った。そこにいるのは、もうゴブリンだけではなかった。"
+        },
+        {
+          "id": "story_after_royal_field_2",
+          "text": "狼が左翼を駆け、リザードマンが川を渡り、ミノタウロスの膂力が戦列の中央を割った。空はハーピィのもので、崩れた隊列の脚を蜘蛛の糸が縛る。ドワーフの鍛えた刃が、王国の盾を斬り開いた。\n\n沼を涸らさない。丘を守る。火を絶やさない。空を分け合う。――交わしてきた約束の一つ一つが、この平原で旗になって翻っていた。\n\n元帥ガリウスは本陣で剣を杖に立ち尽くし、やがて静かに兜を脱いだ。「……群れではない。あれは、国だ」"
+        },
+        {
+          "id": "story_after_royal_field_3",
+          "text": "会戦は一日で終わった。王国が野で戦える軍は、もうない。残るは王都の壁と、その中の玉座だけだ。\n\nマルクは平原の骸を、人間もゴブリンも分けずに埋めさせた。墓原でドマと同じ骨を拾ったときから、それは変わらない。\n\n城壁の上から、無数の眼がそれを見ていた。王都の鐘が、長く、低く鳴った。"
+        }
+      ]
+    },
+    {
       "id": "story_after_royal_capital_2",
       "title": "最後の試練",
       "category": "main",
-      "order": 21,
+      "order": 24,
       "unlockCondition": {
         "type": "dungeon_cleared",
         "dungeonId": "royal_capital_2"
@@ -608,7 +694,7 @@
       "id": "story_ending",
       "title": "ゴブリンキングダム",
       "category": "main",
-      "order": 22,
+      "order": 25,
       "unlockCondition": {
         "type": "dungeon_cleared",
         "dungeonId": "royal_capital_3"
@@ -823,6 +909,94 @@
         {
           "id": "side_harpy_cliff_1",
           "text": "崖巣の岩壁には、煤の痕が残っていた。\n\n何年も前、人間の討伐隊が油を撃ち込み、巣ごと焼いたのだという。女王の翼の火傷はそのときのもので、焼け跡からは、孵らなかった卵の殻が今も出てくる。\n\n「空は誰のものでもない。だが、巣は違う」女王はそう言って、断崖の風にゴブリンの旗が揺れるのを、黙って眺めていた。"
+        }
+      ]
+    },
+    {
+      "id": "side_swamp_defense",
+      "title": "濁らぬ流れ",
+      "category": "side",
+      "order": 111,
+      "unlockCondition": {
+        "type": "dungeon_cleared",
+        "dungeonId": "swamp_defense_1"
+      },
+      "rewards": [
+        {
+          "type": "golden_acorn",
+          "value": 5
+        }
+      ],
+      "chapters": [
+        {
+          "id": "side_swamp_defense_1",
+          "text": "王国の懲罰隊は、沼に火と毒を投げ込みに来た。戦って勝てぬなら、水を殺す。卵の眠る水を。\n\n報せを受けたマルクは、その日のうちに軍を返した。沼王ザールは何も言わず、ただマルクの隣に槍を並べた。約束を確かめる言葉は、要らなかった。\n\n懲罰隊が退いたあと、沼の水は濁らず、卵は静かに孵った。「強い流れは、いくつも見た」と沼王は言った。「戻ってくる流れは、初めてだ」"
+        }
+      ]
+    },
+    {
+      "id": "side_harpy_defense",
+      "title": "空の借り",
+      "category": "side",
+      "order": 112,
+      "unlockCondition": {
+        "type": "dungeon_cleared",
+        "dungeonId": "harpy_defense_1"
+      },
+      "rewards": [
+        {
+          "type": "golden_acorn",
+          "value": 5
+        }
+      ],
+      "chapters": [
+        {
+          "id": "side_harpy_defense_1",
+          "text": "鷹匠隊の火矢が、断崖の巣を焼きに来た。女王の翼に火傷を残した、あの火が、もう一度。\n\nだが今度は、崖の下にゴブリンがいた。岩陰から矢を射落とし、崖を登る強襲兵を狩り、火のついた巣に泥をかけた。空を分け合う約束は、巣を守る約束でもあった。\n\n戦いのあと、女王は言った。「空の借りは、空で返す」。以後、ハーピィの偵察は、頼まれずとも軍の先を飛ぶようになった。"
+        }
+      ]
+    },
+    {
+      "id": "side_hobbit_defense",
+      "title": "丘の約束",
+      "category": "side",
+      "order": 113,
+      "unlockCondition": {
+        "type": "dungeon_cleared",
+        "dungeonId": "hobbit_hills_defense_1"
+      },
+      "rewards": [
+        {
+          "type": "golden_acorn",
+          "value": 5
+        }
+      ],
+      "chapters": [
+        {
+          "id": "side_hobbit_defense_1",
+          "text": "王国の徴税官は、羊皮紙と、雇われの剣を連れて丘へ来た。戦時特別税。読めない文字の並んだ紙が、村の倉を空にする力を持っているという。\n\n長老は麦酒を出さなかった。代わりに、丘の向こうへ使いを走らせた。約束は、試される日のためにある。\n\n取り立ての剣がゴブリンの壁に阻まれて逃げ帰ったあと、長老は倉から一番いい麦酒を出した。「守る側だったね、あんたたちは」"
+        }
+      ]
+    },
+    {
+      "id": "side_dwarf_purge",
+      "title": "火を守る者",
+      "category": "side",
+      "order": 114,
+      "unlockCondition": {
+        "type": "dungeon_cleared",
+        "dungeonId": "dwarf_mine_purge_1"
+      },
+      "rewards": [
+        {
+          "type": "golden_acorn",
+          "value": 5
+        }
+      ],
+      "chapters": [
+        {
+          "id": "side_dwarf_purge_1",
+          "text": "坑道の最深部で蟲が湧いた。岩を喰い、坑木を齧り、炉へ風を送る道を塞ぐ。火が細れば、鍛冶は死ぬ。\n\n鍛冶王バルガムは、金槌を置かずに言った。「取引だ。蟲を払え。火は俺が守る」。マルクは頷き、狭い闇へ兵を入れた。\n\n大百足の骸を引き出した日、炉の火は一度も細らなかった。バルガムは初めて、ゴブリンの武器を無言で打ち直した。それが、ドワーフの礼だった。"
         }
       ]
     },

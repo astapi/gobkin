@@ -30,6 +30,13 @@ import wolfGrassland1 from './wolf_grassland_1.json'
 import spiderForest1 from './spider_forest_1.json'
 import deadGrave1 from './dead_grave_1.json'
 import catFortress1 from './cat_fortress_1.json'
+import margraveSortie1 from './margrave_sortie_1.json'
+import fortressDefense1 from './fortress_defense_1.json'
+import royalFieldBattle1 from './royal_field_battle_1.json'
+import swampDefense1 from './swamp_defense_1.json'
+import harpyDefense1 from './harpy_defense_1.json'
+import hobbitHillsDefense1 from './hobbit_hills_defense_1.json'
+import dwarfMinePurge1 from './dwarf_mine_purge_1.json'
 
 const enemyDatabases: Record<string, EnemyDatabase> = {
   dwarf_mine_1: dwarfMine1 as EnemyDatabase,
@@ -62,6 +69,13 @@ const enemyDatabases: Record<string, EnemyDatabase> = {
   undead_ruins_1: undeadRuins1 as EnemyDatabase,
   vampire_castle_1: vampireCastle1 as EnemyDatabase,
   wolf_grassland_1: wolfGrassland1 as EnemyDatabase,
+  margrave_sortie_1: margraveSortie1 as EnemyDatabase,
+  fortress_defense_1: fortressDefense1 as EnemyDatabase,
+  royal_field_battle_1: royalFieldBattle1 as EnemyDatabase,
+  swamp_defense_1: swampDefense1 as EnemyDatabase,
+  harpy_defense_1: harpyDefense1 as EnemyDatabase,
+  hobbit_hills_defense_1: hobbitHillsDefense1 as EnemyDatabase,
+  dwarf_mine_purge_1: dwarfMinePurge1 as EnemyDatabase,
 }
 
 export function getEnemyDatabase(areaId: string): EnemyDatabase | null {

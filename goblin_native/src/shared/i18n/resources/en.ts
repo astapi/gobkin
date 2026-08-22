@@ -654,6 +654,13 @@ const en = {
       cat_fortress_1: { name: 'Catfolk Shadow Ruins', description: 'Ruins occupied by catfolk assassins. Fast multi-hit ambushers race through the corridors, and a seasoned ruin lord waits in the depths.' },
       necromancer_crypt_1: { name: 'Necromancer Crypt', description: 'A sealed crypt beneath an old battlefield. Break through shadow bones and wraiths to seize the forbidden art of binding the dead.' },
       royal_capital_3: { name: 'Battle for the Royal Capital: Throne Room', description: 'The final battle. The hero and the human king stand as the last wall. This is the decisive battle for the completion of the Goblin Kingdom.' },
+      margrave_sortie_1: { name: 'vs Margrave Army: Field Battle', description: 'A plain before the frontier fortress. Old Margrave Graham has abandoned his walls and sallied forth. Break the wall of spears and cavalry in open battle.' },
+      fortress_defense_1: { name: 'Frontier Fortress: Retaking Defense', description: 'A royal army marches to retake the fallen fortress. Stand on the walls as the defender for the first time and repel the vanguard led by Knight Rolan.' },
+      royal_field_battle_1: { name: 'Royal Plains Decisive Battle', description: 'A great plain within sight of the capital walls. The entire royal army has formed ranks under Marshal Garius. Bind together every race\'s promise and win the greatest field battle.' },
+      swamp_defense_1: { name: 'Swamp Fortress Defense', description: 'Having lost the frontier fortress, the kingdom comes to drain the swamp in retaliation. "Never drain the swamp" — now it is your turn to keep the promise made to the Swamp King.' },
+      harpy_defense_1: { name: 'Cliff Falconer Battle', description: 'The kingdom\'s falconer corps has come to burn the harpy nests with fire arrows. Under the promise to share the sky, defend the cliffs alongside your winged neighbors.' },
+      hobbit_hills_defense_1: { name: 'Tax Collector of the Hills', description: 'A royal tax collector has come to the hill village with hired blades. "Protect the hills" — honor the protective promise made to the hobbits.' },
+      dwarf_mine_purge_1: { name: 'Mine Vermin Purge', description: 'Vermin nesting deep in the mine threaten the forge fires. "Never let the fire die" — time to honor the bargain with the Forge King by the blade.' },
     },
     factor: {
       slime: { name: 'Slime Factor', shortName: 'Slime', description: 'A factor infused with slime traits. Increases durability.' },

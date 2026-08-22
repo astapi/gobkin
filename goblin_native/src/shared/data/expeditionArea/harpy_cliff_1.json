@@ -13,5 +13,8 @@
       "battle": 30
     }
   },
-  "unlockNext": "human_fortress_1"
+  "unlockNext": "margrave_sortie_1",
+  "unlockNexts": [
+    "troll_canyon_1"
+  ]
 }

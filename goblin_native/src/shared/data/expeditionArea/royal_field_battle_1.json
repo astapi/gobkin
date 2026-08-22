@@ -1,0 +1,17 @@
+{
+  "id": "royal_field_battle_1",
+  "name": "王都平原会戦",
+  "areaLevel": 178,
+  "floors": 8,
+  "baseDurationSec": 21600,
+  "description": "王都の城壁を望む大平原。王国が動かせる全軍が、元帥ガリウスの下に戦列を敷いた。約束を交わした全種族の力を束ね、最大の会戦を制せ。",
+  "encounter": {
+    "eventIntervalSec": 720,
+    "eventWeights": {
+      "exploring": 60,
+      "goldTreasure": 10,
+      "battle": 30
+    }
+  },
+  "unlockNext": "royal_capital_1"
+}
