@@ -1,0 +1,3898 @@
+{
+  "generatedAt": "2026-08-15T08:57:38.837Z",
+  "partySize": 6,
+  "note": "scripts/balance/exportStrategistBuilds.js が生成。searchLevel は探索を行ったレベル(measureArea 準拠なら 3)。",
+  "builds": [
+    {
+      "areaId": "bandit_hideout",
+      "tier": 0,
+      "searchLevel": 3,
+      "score": 0.088,
+      "frontCount": 3,
+      "optimizedSlots": 2,
+      "equipmentTail": [
+        "bow_kaiser",
+        "sword_rare_008",
+        "hidden_rare_005",
+        "hidden_kaiser_dagger",
+        "large_shield_rare_001",
+        "armor_rare_012",
+        "bow_royal",
+        "sword_royal",
+        "claw_kaiser",
+        "wand_rare_005",
+        "wand_rare_009",
+        "hidden_royal_dagger",
+        "sword_undead_killer",
+        "armor_kaiser",
+        "hidden_rare_001",
+        "hidden_rare_004",
+        "rod_kaiser",
+        "sword_rare_002",
+        "wand_kaiser",
+        "bow_rare_002",
+        "bow_rare_004"
+      ],
+      "members": [
+        {
+          "kind": "job",
+          "jobId": "guard",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "sword_rare_010",
+            "sword_kaiser"
+          ]
+        },
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "slime",
+          "variant": "slime",
+          "loadout": [
+            "sword_rare_010",
+            "sword_kaiser"
+          ]
+        },
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "undead",
+          "variant": "undead",
+          "loadout": [
+            "sword_rare_010",
+            "sword_kaiser"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": "mage",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "sword_rare_010",
+            "sword_rare_008"
+          ]
+        },
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "hobgoblin",
+          "variant": "hobgoblin",
+          "loadout": [
+            "sword_rare_010",
+            "sword_kaiser"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": "mage",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "sword_rare_010",
+            "sword_kaiser"
+          ]
+        }
+      ],
+      "availableJobs": [
+        "guard",
+        "mage",
+        "thief",
+        "warrior"
+      ],
+      "availableVariants": [
+        "hobgoblin",
+        "slime",
+        "undead",
+        "wolf"
+      ]
+    },
+    {
+      "areaId": "cat_fortress_1",
+      "tier": 0,
+      "searchLevel": 3,
+      "score": 0.06,
+      "frontCount": 3,
+      "optimizedSlots": 2,
+      "equipmentTail": [
+        "gauntlet_gauntlet",
+        "gauntlet_copper",
+        "gauntlet_leather",
+        "sword_long",
+        "claw_steel",
+        "sword_broad",
+        "shield_shield",
+        "claw_iron",
+        "wand_wand",
+        "armor_armor",
+        "rod_rod",
+        "bow_long",
+        "robe_robe",
+        "claw_copper",
+        "armor_fur_vest",
+        "sword_copper",
+        "bow_short",
+        "shield_wooden",
+        "armor_leather_vest",
+        "wand_apprentice",
+        "claw_beast"
+      ],
+      "members": [
+        {
+          "kind": "job",
+          "jobId": null,
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "armor_fur_vest",
+            "claw_copper"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": null,
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "armor_fur_vest",
+            "claw_copper"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": null,
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "armor_fur_vest",
+            "claw_copper"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": null,
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "armor_fur_vest",
+            "claw_copper"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": null,
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "armor_fur_vest",
+            "claw_copper"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": null,
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "armor_fur_vest",
+            "claw_copper"
+          ]
+        }
+      ],
+      "availableJobs": [],
+      "availableVariants": []
+    },
+    {
+      "areaId": "dead_grave_1",
+      "tier": 0,
+      "searchLevel": 3,
+      "score": 0.078,
+      "frontCount": 3,
+      "optimizedSlots": 2,
+      "equipmentTail": [
+        "rod_rare_013",
+        "bow_ancient",
+        "sword_rare_010",
+        "sword_rare_019",
+        "sword_rare_023",
+        "sword_rare_024",
+        "sword_rare_025",
+        "sword_ancient",
+        "large_shield_adamant_wall",
+        "armor_rare_031",
+        "armor_rare_033",
+        "bow_rare_009",
+        "rod_rare_011",
+        "hidden_ancient_dagger",
+        "rod_ancient",
+        "sword_kaiser",
+        "bow_kaiser",
+        "sword_rare_008",
+        "sword_rare_014",
+        "hidden_rare_005",
+        "hidden_rare_012"
+      ],
+      "members": [
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "hobgoblin",
+          "variant": "hobgoblin",
+          "loadout": [
+            "wand_rare_010",
+            "wand_rare_011"
+          ]
+        },
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "hobgoblin",
+          "variant": "hobgoblin",
+          "loadout": [
+            "wand_rare_010",
+            "wand_rare_011"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": "cleric",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "wand_rare_010",
+            "wand_rare_011"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": "cleric",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "wand_rare_010",
+            "wand_rare_011"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": "mage",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "sword_rare_015",
+            "wand_rare_011"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": "cleric",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "wand_rare_010",
+            "wand_rare_011"
+          ]
+        }
+      ],
+      "availableJobs": [
+        "cleric",
+        "guard",
+        "mage",
+        "thief",
+        "warrior"
+      ],
+      "availableVariants": [
+        "hobgoblin",
+        "slime",
+        "orc",
+        "undead",
+        "wolf"
+      ]
+    },
+    {
+      "areaId": "dragon_volcano_1",
+      "tier": 0,
+      "searchLevel": 3,
+      "score": 0.082,
+      "frontCount": 3,
+      "optimizedSlots": 2,
+      "equipmentTail": [
+        "sword_dragon",
+        "sword_rare_015",
+        "rod_rare_013",
+        "rod_dragon",
+        "bow_ancient",
+        "hidden_dragon_dagger",
+        "sword_rare_010",
+        "sword_rare_019",
+        "sword_rare_023",
+        "sword_rare_024",
+        "sword_rare_025",
+        "sword_ancient",
+        "large_shield_adamant_wall",
+        "armor_rare_031",
+        "armor_rare_033",
+        "bow_rare_009",
+        "rod_rare_011",
+        "hidden_ancient_dagger",
+        "claw_dragon",
+        "armor_dragon",
+        "rod_ancient"
+      ],
+      "members": [
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "hobgoblin",
+          "variant": "hobgoblin",
+          "loadout": [
+            "robe_rare_016",
+            "robe_rare_018"
+          ]
+        },
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "hobgoblin",
+          "variant": "hobgoblin",
+          "loadout": [
+            "robe_rare_016",
+            "robe_rare_018"
+          ]
+        },
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "hobgoblin",
+          "variant": "hobgoblin",
+          "loadout": [
+            "robe_rare_016",
+            "robe_rare_018"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": "cleric",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "bow_dragon",
+            "robe_rare_018"
+          ]
+        },
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "hobgoblin",
+          "variant": "hobgoblin",
+          "loadout": [
+            "robe_rare_016",
+            "robe_rare_018"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": "cleric",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "robe_rare_016",
+            "robe_rare_018"
+          ]
+        }
+      ],
+      "availableJobs": [
+        "cleric",
+        "guard",
+        "mage",
+        "thief",
+        "warrior"
+      ],
+      "availableVariants": [
+        "hobgoblin",
+        "slime",
+        "orc",
+        "undead",
+        "wolf"
+      ]
+    },
+    {
+      "areaId": "dwarf_mine_1",
+      "tier": 0,
+      "searchLevel": 3,
+      "score": 0.172,
+      "frontCount": 3,
+      "optimizedSlots": 2,
+      "equipmentTail": [
+        "sword_rare_010",
+        "sword_rare_019",
+        "sword_ancient",
+        "rod_rare_011",
+        "hidden_ancient_dagger",
+        "rod_ancient",
+        "sword_kaiser",
+        "bow_kaiser",
+        "sword_rare_008",
+        "sword_rare_014",
+        "hidden_rare_005",
+        "hidden_rare_012",
+        "hidden_kaiser_dagger",
+        "bow_rare_006",
+        "bow_rare_008",
+        "claw_ancient",
+        "shield_rare_013",
+        "shield_rare_014",
+        "large_shield_rare_001",
+        "large_shield_rare_002",
+        "wand_rare_013"
+      ],
+      "members": [
+        {
+          "kind": "job",
+          "jobId": "guard",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "armor_rare_026",
+            "sword_rare_015"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": "warrior",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "sword_rare_015",
+            "gauntlet_gauntlet"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": "thief",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "armor_rare_026",
+            "sword_rare_015"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": "cleric",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "armor_rare_026",
+            "gauntlet_gauntlet"
+          ]
+        },
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "slime",
+          "variant": "slime",
+          "loadout": [
+            "armor_rare_026",
+            "sword_rare_015"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": "cleric",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "sword_rare_015",
+            "gauntlet_gauntlet"
+          ]
+        }
+      ],
+      "availableJobs": [
+        "cleric",
+        "guard",
+        "mage",
+        "thief",
+        "warrior"
+      ],
+      "availableVariants": [
+        "hobgoblin",
+        "slime",
+        "orc",
+        "undead",
+        "wolf"
+      ]
+    },
+    {
+      "areaId": "dwarf_mine_purge_1",
+      "tier": 0,
+      "searchLevel": 3,
+      "score": 0.088,
+      "frontCount": 3,
+      "optimizedSlots": 2,
+      "equipmentTail": [
+        "sword_rare_010",
+        "sword_rare_019",
+        "sword_ancient",
+        "rod_rare_011",
+        "hidden_ancient_dagger",
+        "rod_ancient",
+        "sword_kaiser",
+        "bow_kaiser",
+        "sword_rare_008",
+        "sword_rare_014",
+        "hidden_rare_005",
+        "hidden_rare_012",
+        "hidden_kaiser_dagger",
+        "bow_rare_006",
+        "bow_rare_008",
+        "claw_ancient",
+        "shield_rare_013",
+        "shield_rare_014",
+        "large_shield_rare_001",
+        "large_shield_rare_002",
+        "wand_rare_013"
+      ],
+      "members": [
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "hobgoblin",
+          "variant": "hobgoblin",
+          "loadout": [
+            "sword_rare_015",
+            "bow_ancient"
+          ]
+        },
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "slime",
+          "variant": "slime",
+          "loadout": [
+            "sword_rare_015",
+            "sword_rare_015"
+          ]
+        },
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "slime",
+          "variant": "slime",
+          "loadout": [
+            "sword_rare_015",
+            "sword_rare_015"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": "cleric",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "sword_rare_015",
+            "bow_ancient"
+          ]
+        },
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "hobgoblin",
+          "variant": "hobgoblin",
+          "loadout": [
+            "sword_rare_015",
+            "bow_ancient"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": "cleric",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "sword_rare_015",
+            "bow_ancient"
+          ]
+        }
+      ],
+      "availableJobs": [
+        "cleric",
+        "guard",
+        "mage",
+        "thief",
+        "warrior"
+      ],
+      "availableVariants": [
+        "hobgoblin",
+        "slime",
+        "dwarf",
+        "orc",
+        "undead",
+        "wolf"
+      ]
+    },
+    {
+      "areaId": "elf_forest_1",
+      "tier": 0,
+      "searchLevel": 3,
+      "score": 0.155161,
+      "frontCount": 3,
+      "optimizedSlots": 2,
+      "equipmentTail": [
+        "sword_rare_010",
+        "sword_rare_019",
+        "sword_ancient",
+        "rod_rare_011",
+        "hidden_ancient_dagger",
+        "rod_ancient",
+        "sword_kaiser",
+        "bow_kaiser",
+        "sword_rare_008",
+        "sword_rare_014",
+        "hidden_rare_005",
+        "hidden_rare_012",
+        "hidden_kaiser_dagger",
+        "bow_rare_006",
+        "bow_rare_008",
+        "claw_ancient",
+        "shield_rare_013",
+        "shield_rare_014",
+        "large_shield_rare_001",
+        "large_shield_rare_002",
+        "wand_rare_013"
+      ],
+      "members": [
+        {
+          "kind": "job",
+          "jobId": "guard",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "sword_rare_015",
+            "bow_ancient"
+          ]
+        },
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "slime",
+          "variant": "slime",
+          "loadout": [
+            "sword_rare_015",
+            "sword_rare_015"
+          ]
+        },
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "dwarf",
+          "variant": "dwarf",
+          "loadout": [
+            "sword_rare_015",
+            "bow_ancient"
+          ]
+        },
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "hobgoblin",
+          "variant": "hobgoblin",
+          "loadout": [
+            "sword_rare_015",
+            "bow_ancient"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": "cleric",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "sword_rare_015"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": "cleric",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "sword_rare_015",
+            "bow_ancient"
+          ]
+        }
+      ],
+      "availableJobs": [
+        "cleric",
+        "guard",
+        "mage",
+        "thief",
+        "warrior"
+      ],
+      "availableVariants": [
+        "hobgoblin",
+        "slime",
+        "dwarf",
+        "orc",
+        "undead",
+        "wolf"
+      ]
+    },
+    {
+      "areaId": "forest_edge_village",
+      "tier": 0,
+      "searchLevel": 3,
+      "score": 0.333265,
+      "frontCount": 3,
+      "optimizedSlots": 2,
+      "equipmentTail": [
+        "bow_royal",
+        "sword_royal",
+        "hidden_royal_dagger",
+        "hidden_rare_001",
+        "hidden_rare_004",
+        "sword_rare_002",
+        "bow_rare_002",
+        "sword_mithril",
+        "hidden_mithril_dagger",
+        "rod_rare_002",
+        "armor_rare_004",
+        "sword_rare_001",
+        "sword_rare_003",
+        "gauntlet_cloth_gloves",
+        "claw_royal",
+        "hidden_rare_003",
+        "hidden_rare_002",
+        "wand_royal",
+        "sword_rare_004",
+        "rod_royal",
+        "bow_mithril"
+      ],
+      "members": [
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "slime",
+          "variant": "slime",
+          "loadout": [
+            "hidden_rare_005",
+            "large_shield_rare_001"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": "warrior",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "hidden_rare_005",
+            "large_shield_rare_001"
+          ]
+        },
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "hobgoblin",
+          "variant": "hobgoblin",
+          "loadout": [
+            "hidden_rare_005",
+            "hidden_rare_005"
+          ]
+        },
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "hobgoblin",
+          "variant": "hobgoblin",
+          "loadout": [
+            "hidden_rare_005"
+          ]
+        },
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "hobgoblin",
+          "variant": "hobgoblin",
+          "loadout": [
+            "hidden_rare_005",
+            "large_shield_rare_001"
+          ]
+        },
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "hobgoblin",
+          "variant": "hobgoblin",
+          "loadout": [
+            "hidden_rare_005",
+            "large_shield_rare_001"
+          ]
+        }
+      ],
+      "availableJobs": [
+        "guard",
+        "mage",
+        "thief",
+        "warrior"
+      ],
+      "availableVariants": [
+        "hobgoblin",
+        "slime",
+        "wolf"
+      ]
+    },
+    {
+      "areaId": "forest_outskirts",
+      "tier": 0,
+      "searchLevel": 3,
+      "score": 1.5,
+      "frontCount": 3,
+      "optimizedSlots": 2,
+      "equipmentTail": [
+        "gauntlet_gauntlet",
+        "gauntlet_copper",
+        "gauntlet_leather",
+        "sword_long",
+        "claw_steel",
+        "sword_broad",
+        "shield_shield",
+        "claw_iron",
+        "wand_wand",
+        "armor_armor",
+        "rod_rod",
+        "bow_long",
+        "robe_robe",
+        "claw_copper",
+        "armor_fur_vest",
+        "sword_copper",
+        "bow_short",
+        "shield_wooden",
+        "armor_leather_vest",
+        "wand_apprentice",
+        "claw_beast"
+      ],
+      "members": [
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "slime",
+          "variant": "slime",
+          "loadout": [
+            "sword_copper",
+            "armor_fur_vest"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": null,
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "sword_copper",
+            "armor_fur_vest"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": null,
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "sword_copper",
+            "armor_fur_vest"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": null,
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "sword_copper",
+            "armor_fur_vest"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": null,
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "sword_copper",
+            "armor_fur_vest"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": null,
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "sword_copper",
+            "armor_fur_vest"
+          ]
+        }
+      ],
+      "availableJobs": [],
+      "availableVariants": [
+        "slime"
+      ]
+    },
+    {
+      "areaId": "fortress_defense_1",
+      "tier": 0,
+      "searchLevel": 3,
+      "score": 0.0595,
+      "frontCount": 3,
+      "optimizedSlots": 2,
+      "equipmentTail": [
+        "sword_dragon",
+        "sword_rare_015",
+        "rod_rare_013",
+        "rod_dragon",
+        "bow_ancient",
+        "hidden_dragon_dagger",
+        "sword_rare_010",
+        "sword_rare_019",
+        "sword_rare_023",
+        "sword_rare_024",
+        "sword_rare_025",
+        "sword_ancient",
+        "large_shield_adamant_wall",
+        "armor_rare_031",
+        "armor_rare_033",
+        "bow_rare_009",
+        "rod_rare_011",
+        "hidden_ancient_dagger",
+        "claw_dragon",
+        "armor_dragon",
+        "rod_ancient"
+      ],
+      "members": [
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "hobgoblin",
+          "variant": "hobgoblin",
+          "loadout": [
+            "sword_rare_026",
+            "bow_dragon"
+          ]
+        },
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "slime",
+          "variant": "slime",
+          "loadout": [
+            "sword_rare_026",
+            "bow_dragon"
+          ]
+        },
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "hobgoblin",
+          "variant": "hobgoblin",
+          "loadout": [
+            "sword_rare_026",
+            "bow_dragon"
+          ]
+        },
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "hobgoblin",
+          "variant": "hobgoblin",
+          "loadout": [
+            "sword_rare_026",
+            "bow_dragon"
+          ]
+        },
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "hobgoblin",
+          "variant": "hobgoblin",
+          "loadout": [
+            "sword_rare_026",
+            "bow_dragon"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": "cleric",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "sword_rare_026",
+            "bow_dragon"
+          ]
+        }
+      ],
+      "availableJobs": [
+        "cleric",
+        "guard",
+        "mage",
+        "thief",
+        "warrior"
+      ],
+      "availableVariants": [
+        "hobgoblin",
+        "slime",
+        "orc",
+        "undead",
+        "wolf"
+      ]
+    },
+    {
+      "areaId": "goblin_village_1",
+      "tier": 0,
+      "searchLevel": 3,
+      "score": 1.5,
+      "frontCount": 3,
+      "optimizedSlots": 2,
+      "equipmentTail": [
+        "sword_rare_001",
+        "gauntlet_cloth_gloves",
+        "hidden_rare_003",
+        "hidden_rare_002",
+        "wand_rare_002",
+        "hidden_dagger",
+        "armor_rare_001",
+        "armor_rare_002",
+        "armor_rare_003",
+        "gauntlet_gauntlet",
+        "shield_rare_002",
+        "gauntlet_copper",
+        "gauntlet_leather",
+        "sword_long",
+        "claw_steel",
+        "robe_rare_003",
+        "sword_broad",
+        "robe_rare_002",
+        "shield_shield",
+        "claw_iron",
+        "wand_wand"
+      ],
+      "members": [
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "slime",
+          "variant": "slime",
+          "loadout": [
+            "hidden_rare_001",
+            "sword_rare_002"
+          ]
+        },
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "slime",
+          "variant": "slime",
+          "loadout": [
+            "hidden_rare_001",
+            "sword_rare_002"
+          ]
+        },
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "wolf",
+          "variant": "wolf",
+          "loadout": [
+            "hidden_rare_001",
+            "hidden_rare_001"
+          ]
+        },
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "slime",
+          "variant": "slime",
+          "loadout": [
+            "hidden_rare_001",
+            "sword_rare_002"
+          ]
+        },
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "slime",
+          "variant": "slime",
+          "loadout": [
+            "hidden_rare_001",
+            "sword_rare_002"
+          ]
+        },
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "slime",
+          "variant": "slime",
+          "loadout": [
+            "hidden_rare_001",
+            "sword_rare_002"
+          ]
+        }
+      ],
+      "availableJobs": [],
+      "availableVariants": [
+        "slime",
+        "wolf"
+      ]
+    },
+    {
+      "areaId": "harpy_cliff_1",
+      "tier": 0,
+      "searchLevel": 3,
+      "score": 0.076,
+      "frontCount": 3,
+      "optimizedSlots": 2,
+      "equipmentTail": [
+        "sword_dragon",
+        "sword_rare_015",
+        "rod_rare_013",
+        "rod_dragon",
+        "bow_ancient",
+        "hidden_dragon_dagger",
+        "sword_rare_010",
+        "sword_rare_019",
+        "sword_rare_023",
+        "sword_rare_024",
+        "sword_rare_025",
+        "sword_ancient",
+        "large_shield_adamant_wall",
+        "armor_rare_031",
+        "armor_rare_033",
+        "bow_rare_009",
+        "rod_rare_011",
+        "hidden_ancient_dagger",
+        "claw_dragon",
+        "armor_dragon",
+        "rod_ancient"
+      ],
+      "members": [
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "hobgoblin",
+          "variant": "hobgoblin",
+          "loadout": [
+            "robe_rare_016",
+            "robe_rare_018"
+          ]
+        },
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "hobgoblin",
+          "variant": "hobgoblin",
+          "loadout": [
+            "robe_rare_016",
+            "robe_rare_018"
+          ]
+        },
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "hobgoblin",
+          "variant": "hobgoblin",
+          "loadout": [
+            "robe_rare_016",
+            "robe_rare_018"
+          ]
+        },
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "hobgoblin",
+          "variant": "hobgoblin",
+          "loadout": [
+            "robe_rare_016",
+            "robe_rare_018"
+          ]
+        },
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "hobgoblin",
+          "variant": "hobgoblin",
+          "loadout": [
+            "robe_rare_016",
+            "robe_rare_018"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": "cleric",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "robe_rare_016",
+            "robe_rare_018"
+          ]
+        }
+      ],
+      "availableJobs": [
+        "cleric",
+        "guard",
+        "mage",
+        "thief",
+        "warrior"
+      ],
+      "availableVariants": [
+        "hobgoblin",
+        "slime",
+        "orc",
+        "undead",
+        "wolf"
+      ]
+    },
+    {
+      "areaId": "harpy_defense_1",
+      "tier": 0,
+      "searchLevel": 3,
+      "score": 0.066,
+      "frontCount": 3,
+      "optimizedSlots": 2,
+      "equipmentTail": [
+        "sword_dragon",
+        "sword_rare_015",
+        "rod_rare_013",
+        "rod_dragon",
+        "bow_ancient",
+        "hidden_dragon_dagger",
+        "sword_rare_010",
+        "sword_rare_019",
+        "sword_rare_023",
+        "sword_rare_024",
+        "sword_rare_025",
+        "sword_ancient",
+        "large_shield_adamant_wall",
+        "armor_rare_031",
+        "armor_rare_033",
+        "bow_rare_009",
+        "rod_rare_011",
+        "hidden_ancient_dagger",
+        "claw_dragon",
+        "armor_dragon",
+        "rod_ancient"
+      ],
+      "members": [
+        {
+          "kind": "job",
+          "jobId": "cleric",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "sword_rare_026",
+            "bow_dragon"
+          ]
+        },
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "slime",
+          "variant": "slime",
+          "loadout": [
+            "sword_rare_026",
+            "bow_dragon"
+          ]
+        },
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "hobgoblin",
+          "variant": "hobgoblin",
+          "loadout": [
+            "sword_rare_026",
+            "bow_dragon"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": "cleric",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "bow_dragon",
+            "bow_dragon"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": "cleric",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "sword_rare_026",
+            "bow_dragon"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": "cleric",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "sword_rare_026",
+            "bow_dragon"
+          ]
+        }
+      ],
+      "availableJobs": [
+        "cleric",
+        "guard",
+        "mage",
+        "thief",
+        "warrior"
+      ],
+      "availableVariants": [
+        "hobgoblin",
+        "slime",
+        "orc",
+        "undead",
+        "wolf"
+      ]
+    },
+    {
+      "areaId": "hobbit_hills_1",
+      "tier": 0,
+      "searchLevel": 3,
+      "score": 1.399206,
+      "frontCount": 3,
+      "optimizedSlots": 2,
+      "equipmentTail": [
+        "sword_rare_019",
+        "rod_rare_011",
+        "sword_kaiser",
+        "bow_kaiser",
+        "sword_rare_008",
+        "sword_rare_014",
+        "hidden_rare_005",
+        "hidden_rare_012",
+        "hidden_kaiser_dagger",
+        "bow_rare_006",
+        "bow_rare_008",
+        "shield_rare_013",
+        "shield_rare_014",
+        "large_shield_rare_001",
+        "large_shield_rare_002",
+        "wand_rare_013",
+        "sword_rare_011",
+        "sword_rare_013",
+        "sword_rare_018",
+        "sword_rare_020",
+        "hidden_rare_016"
+      ],
+      "members": [
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "slime",
+          "variant": "slime",
+          "loadout": [
+            "sword_rare_015",
+            "sword_rare_015"
+          ]
+        },
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "orc",
+          "variant": "orc",
+          "loadout": [
+            "sword_rare_015",
+            "sword_rare_010"
+          ]
+        },
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "hobgoblin",
+          "variant": "hobgoblin",
+          "loadout": [
+            "sword_rare_015",
+            "sword_rare_010"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": "cleric",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "rod_rare_011",
+            "sword_rare_019"
+          ]
+        },
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "wolf",
+          "variant": "wolf",
+          "loadout": [
+            "sword_rare_015",
+            "sword_rare_019"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": "guard",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "sword_rare_015",
+            "sword_rare_010"
+          ]
+        }
+      ],
+      "availableJobs": [
+        "cleric",
+        "guard",
+        "mage",
+        "thief",
+        "warrior"
+      ],
+      "availableVariants": [
+        "hobgoblin",
+        "slime",
+        "orc",
+        "undead",
+        "wolf"
+      ]
+    },
+    {
+      "areaId": "hobbit_hills_defense_1",
+      "tier": 0,
+      "searchLevel": 3,
+      "score": 0.086,
+      "frontCount": 3,
+      "optimizedSlots": 2,
+      "equipmentTail": [
+        "sword_rare_010",
+        "sword_rare_019",
+        "sword_ancient",
+        "rod_rare_011",
+        "hidden_ancient_dagger",
+        "rod_ancient",
+        "sword_kaiser",
+        "bow_kaiser",
+        "sword_rare_008",
+        "sword_rare_014",
+        "hidden_rare_005",
+        "hidden_rare_012",
+        "hidden_kaiser_dagger",
+        "bow_rare_006",
+        "bow_rare_008",
+        "claw_ancient",
+        "shield_rare_013",
+        "shield_rare_014",
+        "large_shield_rare_001",
+        "large_shield_rare_002",
+        "wand_rare_013"
+      ],
+      "members": [
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "hobgoblin",
+          "variant": "hobgoblin",
+          "loadout": [
+            "sword_rare_015",
+            "bow_ancient"
+          ]
+        },
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "slime",
+          "variant": "slime",
+          "loadout": [
+            "sword_rare_015",
+            "sword_rare_015"
+          ]
+        },
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "orc",
+          "variant": "orc",
+          "loadout": [
+            "sword_rare_015",
+            "bow_ancient"
+          ]
+        },
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "hobgoblin",
+          "variant": "hobgoblin",
+          "loadout": [
+            "sword_rare_015",
+            "bow_ancient"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": "cleric",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "sword_rare_015",
+            "bow_ancient"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": "cleric",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "sword_rare_015",
+            "bow_ancient"
+          ]
+        }
+      ],
+      "availableJobs": [
+        "cleric",
+        "guard",
+        "mage",
+        "thief",
+        "warrior"
+      ],
+      "availableVariants": [
+        "hobgoblin",
+        "slime",
+        "orc",
+        "undead",
+        "wolf"
+      ]
+    },
+    {
+      "areaId": "human_fortress_1",
+      "tier": 0,
+      "searchLevel": 3,
+      "score": 0.0955,
+      "frontCount": 3,
+      "optimizedSlots": 2,
+      "equipmentTail": [
+        "sword_dragon",
+        "sword_rare_015",
+        "rod_rare_013",
+        "rod_dragon",
+        "bow_ancient",
+        "hidden_dragon_dagger",
+        "sword_rare_010",
+        "sword_rare_019",
+        "sword_rare_023",
+        "sword_rare_024",
+        "sword_rare_025",
+        "sword_ancient",
+        "large_shield_adamant_wall",
+        "armor_rare_031",
+        "armor_rare_033",
+        "bow_rare_009",
+        "rod_rare_011",
+        "hidden_ancient_dagger",
+        "claw_dragon",
+        "armor_dragon",
+        "rod_ancient"
+      ],
+      "members": [
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "hobgoblin",
+          "variant": "hobgoblin",
+          "loadout": [
+            "sword_rare_026",
+            "sword_rare_015"
+          ]
+        },
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "hobgoblin",
+          "variant": "hobgoblin",
+          "loadout": [
+            "sword_rare_015",
+            "bow_dragon"
+          ]
+        },
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "hobgoblin",
+          "variant": "hobgoblin",
+          "loadout": [
+            "sword_rare_015",
+            "bow_dragon"
+          ]
+        },
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "hobgoblin",
+          "variant": "hobgoblin",
+          "loadout": [
+            "sword_rare_026",
+            "sword_rare_015"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": "mage",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "sword_rare_026",
+            "bow_dragon"
+          ]
+        },
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "hobgoblin",
+          "variant": "hobgoblin",
+          "loadout": [
+            "sword_rare_015",
+            "bow_dragon"
+          ]
+        }
+      ],
+      "availableJobs": [
+        "cleric",
+        "guard",
+        "mage",
+        "thief",
+        "warrior"
+      ],
+      "availableVariants": [
+        "hobgoblin",
+        "slime",
+        "orc",
+        "undead",
+        "wolf"
+      ]
+    },
+    {
+      "areaId": "human_village",
+      "tier": 0,
+      "searchLevel": 3,
+      "score": 0.158824,
+      "frontCount": 3,
+      "optimizedSlots": 2,
+      "equipmentTail": [
+        "sword_rare_019",
+        "rod_rare_011",
+        "sword_kaiser",
+        "bow_kaiser",
+        "sword_rare_008",
+        "sword_rare_014",
+        "hidden_rare_005",
+        "hidden_rare_012",
+        "hidden_kaiser_dagger",
+        "bow_rare_006",
+        "bow_rare_008",
+        "shield_rare_013",
+        "shield_rare_014",
+        "large_shield_rare_001",
+        "large_shield_rare_002",
+        "wand_rare_013",
+        "sword_rare_011",
+        "sword_rare_013",
+        "sword_rare_018",
+        "armor_rare_012",
+        "armor_rare_021"
+      ],
+      "members": [
+        {
+          "kind": "job",
+          "jobId": "guard",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "sword_rare_015",
+            "rod_rare_011"
+          ]
+        },
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "slime",
+          "variant": "slime",
+          "loadout": [
+            "sword_rare_015",
+            "sword_rare_010"
+          ]
+        },
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "orc",
+          "variant": "orc",
+          "loadout": [
+            "sword_rare_015",
+            "sword_rare_010"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": "cleric",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "sword_rare_015",
+            "sword_rare_010"
+          ]
+        },
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "hobgoblin",
+          "variant": "hobgoblin",
+          "loadout": [
+            "sword_rare_015",
+            "sword_rare_010"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": "mage",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "sword_rare_015",
+            "sword_rare_010"
+          ]
+        }
+      ],
+      "availableJobs": [
+        "cleric",
+        "guard",
+        "mage",
+        "thief",
+        "warrior"
+      ],
+      "availableVariants": [
+        "hobgoblin",
+        "slime",
+        "orc",
+        "undead",
+        "wolf"
+      ]
+    },
+    {
+      "areaId": "lizardman_swamp_1",
+      "tier": 0,
+      "searchLevel": 3,
+      "score": 0.06,
+      "frontCount": 3,
+      "optimizedSlots": 2,
+      "equipmentTail": [
+        "sword_rare_010",
+        "sword_rare_019",
+        "sword_ancient",
+        "rod_rare_011",
+        "hidden_ancient_dagger",
+        "rod_ancient",
+        "sword_kaiser",
+        "bow_kaiser",
+        "sword_rare_008",
+        "sword_rare_014",
+        "sword_rare_021",
+        "sword_rare_022",
+        "hidden_rare_005",
+        "hidden_rare_012",
+        "hidden_kaiser_dagger",
+        "bow_rare_006",
+        "bow_rare_008",
+        "claw_ancient",
+        "shield_rare_013",
+        "shield_rare_014",
+        "large_shield_rare_001"
+      ],
+      "members": [
+        {
+          "kind": "job",
+          "jobId": "guard",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "gauntlet_gauntlet",
+            "claw_mithril"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": "rider",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "gauntlet_gauntlet",
+            "claw_mithril"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": "warrior",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "gauntlet_gauntlet",
+            "claw_mithril"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": "cleric",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "gauntlet_gauntlet",
+            "claw_mithril"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": "mage",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "gauntlet_gauntlet",
+            "claw_mithril"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": "cleric",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "gauntlet_gauntlet",
+            "claw_mithril"
+          ]
+        }
+      ],
+      "availableJobs": [
+        "cleric",
+        "guard",
+        "mage",
+        "rider",
+        "thief",
+        "warrior"
+      ],
+      "availableVariants": [
+        "hobgoblin",
+        "slime",
+        "orc",
+        "undead",
+        "wolf"
+      ]
+    },
+    {
+      "areaId": "margrave_sortie_1",
+      "tier": 0,
+      "searchLevel": 3,
+      "score": 0.0575,
+      "frontCount": 3,
+      "optimizedSlots": 2,
+      "equipmentTail": [
+        "sword_dragon",
+        "sword_rare_015",
+        "rod_rare_013",
+        "rod_dragon",
+        "bow_ancient",
+        "hidden_dragon_dagger",
+        "sword_rare_010",
+        "sword_rare_019",
+        "sword_rare_023",
+        "sword_rare_024",
+        "sword_rare_025",
+        "sword_ancient",
+        "large_shield_adamant_wall",
+        "armor_rare_031",
+        "armor_rare_033",
+        "bow_rare_009",
+        "rod_rare_011",
+        "hidden_ancient_dagger",
+        "claw_dragon",
+        "armor_dragon",
+        "rod_ancient"
+      ],
+      "members": [
+        {
+          "kind": "job",
+          "jobId": "guard",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "sword_rare_026",
+            "bow_dragon"
+          ]
+        },
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "slime",
+          "variant": "slime",
+          "loadout": [
+            "sword_rare_026",
+            "bow_dragon"
+          ]
+        },
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "hobgoblin",
+          "variant": "hobgoblin",
+          "loadout": [
+            "sword_rare_026",
+            "bow_dragon"
+          ]
+        },
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "hobgoblin",
+          "variant": "hobgoblin",
+          "loadout": [
+            "sword_rare_026",
+            "bow_dragon"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": "cleric",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "sword_rare_026",
+            "bow_dragon"
+          ]
+        },
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "hobgoblin",
+          "variant": "hobgoblin",
+          "loadout": [
+            "sword_rare_026",
+            "bow_dragon"
+          ]
+        }
+      ],
+      "availableJobs": [
+        "cleric",
+        "guard",
+        "mage",
+        "thief",
+        "warrior"
+      ],
+      "availableVariants": [
+        "hobgoblin",
+        "slime",
+        "orc",
+        "undead",
+        "wolf"
+      ]
+    },
+    {
+      "areaId": "minotaur_labyrinth_1",
+      "tier": 0,
+      "searchLevel": 3,
+      "score": 0.128,
+      "frontCount": 3,
+      "optimizedSlots": 2,
+      "equipmentTail": [
+        "sword_dragon",
+        "sword_rare_015",
+        "rod_rare_013",
+        "rod_dragon",
+        "bow_ancient",
+        "hidden_dragon_dagger",
+        "sword_rare_010",
+        "sword_rare_019",
+        "sword_rare_023",
+        "sword_rare_024",
+        "sword_rare_025",
+        "sword_ancient",
+        "large_shield_adamant_wall",
+        "armor_rare_031",
+        "armor_rare_033",
+        "bow_rare_009",
+        "rod_rare_011",
+        "hidden_ancient_dagger",
+        "claw_dragon",
+        "armor_dragon",
+        "rod_ancient"
+      ],
+      "members": [
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "hobgoblin",
+          "variant": "hobgoblin",
+          "loadout": [
+            "sword_rare_026",
+            "bow_dragon"
+          ]
+        },
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "hobgoblin",
+          "variant": "hobgoblin",
+          "loadout": [
+            "sword_rare_026",
+            "bow_dragon"
+          ]
+        },
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "hobgoblin",
+          "variant": "hobgoblin",
+          "loadout": [
+            "sword_rare_026",
+            "sword_rare_015"
+          ]
+        },
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "hobgoblin",
+          "variant": "hobgoblin",
+          "loadout": [
+            "sword_rare_026",
+            "sword_rare_015"
+          ]
+        },
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "hobgoblin",
+          "variant": "hobgoblin",
+          "loadout": [
+            "sword_rare_026",
+            "bow_dragon"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": "cleric",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "sword_rare_026",
+            "bow_dragon"
+          ]
+        }
+      ],
+      "availableJobs": [
+        "cleric",
+        "guard",
+        "mage",
+        "thief",
+        "warrior"
+      ],
+      "availableVariants": [
+        "hobgoblin",
+        "slime",
+        "orc",
+        "undead",
+        "wolf"
+      ]
+    },
+    {
+      "areaId": "necromancer_crypt_1",
+      "tier": 0,
+      "searchLevel": 3,
+      "score": 0.072,
+      "frontCount": 3,
+      "optimizedSlots": 2,
+      "equipmentTail": [
+        "gauntlet_gauntlet",
+        "gauntlet_copper",
+        "gauntlet_leather",
+        "sword_long",
+        "claw_steel",
+        "sword_broad",
+        "shield_shield",
+        "claw_iron",
+        "wand_wand",
+        "armor_armor",
+        "rod_rod",
+        "bow_long",
+        "robe_robe",
+        "claw_copper",
+        "armor_fur_vest",
+        "sword_copper",
+        "bow_short",
+        "shield_wooden",
+        "armor_leather_vest",
+        "wand_apprentice",
+        "claw_beast"
+      ],
+      "members": [
+        {
+          "kind": "job",
+          "jobId": null,
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "armor_fur_vest",
+            "claw_copper"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": null,
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "armor_fur_vest",
+            "claw_copper"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": null,
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "armor_fur_vest",
+            "claw_copper"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": null,
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "armor_fur_vest",
+            "gauntlet_gauntlet"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": null,
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "armor_fur_vest",
+            "claw_copper"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": null,
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "armor_fur_vest",
+            "claw_copper"
+          ]
+        }
+      ],
+      "availableJobs": [],
+      "availableVariants": []
+    },
+    {
+      "areaId": "old_well_waterway",
+      "tier": 0,
+      "searchLevel": 3,
+      "score": 0.223529,
+      "frontCount": 3,
+      "optimizedSlots": 2,
+      "equipmentTail": [
+        "bow_royal",
+        "sword_royal",
+        "wand_rare_005",
+        "hidden_royal_dagger",
+        "hidden_rare_001",
+        "hidden_rare_004",
+        "sword_rare_002",
+        "bow_rare_002",
+        "sword_mithril",
+        "hidden_mithril_dagger",
+        "rod_rare_002",
+        "armor_rare_004",
+        "sword_rare_001",
+        "sword_rare_003",
+        "sword_rare_006",
+        "gauntlet_cloth_gloves",
+        "claw_royal",
+        "hidden_rare_003",
+        "hidden_rare_002",
+        "hidden_rare_006",
+        "hidden_rare_007"
+      ],
+      "members": [
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "hobgoblin",
+          "variant": "hobgoblin",
+          "loadout": [
+            "hidden_rare_005",
+            "large_shield_rare_001"
+          ]
+        },
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "slime",
+          "variant": "slime",
+          "loadout": [
+            "hidden_rare_005",
+            "large_shield_rare_001"
+          ]
+        },
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "wolf",
+          "variant": "wolf",
+          "loadout": [
+            "hidden_rare_005"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": "mage",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "hidden_rare_005",
+            "large_shield_rare_001"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": "thief",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "hidden_rare_005",
+            "large_shield_rare_001"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": "thief",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "hidden_rare_005",
+            "large_shield_rare_001"
+          ]
+        }
+      ],
+      "availableJobs": [
+        "guard",
+        "mage",
+        "thief",
+        "warrior"
+      ],
+      "availableVariants": [
+        "hobgoblin",
+        "slime",
+        "wolf"
+      ]
+    },
+    {
+      "areaId": "orc_camp_1",
+      "tier": 0,
+      "searchLevel": 3,
+      "score": 0.132,
+      "frontCount": 3,
+      "optimizedSlots": 2,
+      "equipmentTail": [
+        "rod_rare_011",
+        "sword_kaiser",
+        "bow_kaiser",
+        "sword_rare_008",
+        "sword_rare_014",
+        "hidden_rare_005",
+        "hidden_rare_012",
+        "hidden_kaiser_dagger",
+        "bow_rare_006",
+        "bow_rare_008",
+        "shield_rare_013",
+        "shield_rare_014",
+        "large_shield_rare_001",
+        "large_shield_rare_002",
+        "wand_rare_013",
+        "sword_rare_011",
+        "sword_rare_013",
+        "armor_rare_012",
+        "armor_rare_021",
+        "bow_royal",
+        "sword_royal"
+      ],
+      "members": [
+        {
+          "kind": "job",
+          "jobId": "guard",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "armor_rare_002",
+            "armor_rare_003"
+          ]
+        },
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "slime",
+          "variant": "slime",
+          "loadout": [
+            "armor_rare_002",
+            "armor_rare_003"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": "guard",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "rod_rare_011",
+            "armor_rare_003"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": "cleric",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "rod_rare_011",
+            "armor_rare_003"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": "guard",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "rod_rare_011",
+            "armor_rare_003"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": "cleric",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "rod_rare_011",
+            "armor_rare_003"
+          ]
+        }
+      ],
+      "availableJobs": [
+        "cleric",
+        "guard",
+        "mage",
+        "thief",
+        "warrior"
+      ],
+      "availableVariants": [
+        "hobgoblin",
+        "slime",
+        "undead",
+        "wolf"
+      ]
+    },
+    {
+      "areaId": "orc_fortress_1",
+      "tier": 0,
+      "searchLevel": 3,
+      "score": 0.0475,
+      "frontCount": 3,
+      "optimizedSlots": 2,
+      "equipmentTail": [
+        "sword_rare_019",
+        "rod_rare_011",
+        "sword_kaiser",
+        "bow_kaiser",
+        "sword_rare_008",
+        "sword_rare_014",
+        "hidden_rare_005",
+        "hidden_rare_012",
+        "hidden_kaiser_dagger",
+        "bow_rare_006",
+        "bow_rare_008",
+        "shield_rare_013",
+        "shield_rare_014",
+        "large_shield_rare_001",
+        "large_shield_rare_002",
+        "wand_rare_013",
+        "sword_rare_011",
+        "sword_rare_013",
+        "sword_rare_018",
+        "armor_rare_012",
+        "armor_rare_021"
+      ],
+      "members": [
+        {
+          "kind": "job",
+          "jobId": "guard",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "armor_rare_007",
+            "armor_rare_008"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": "warrior",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "armor_rare_007",
+            "armor_rare_008"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": "thief",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "armor_rare_007",
+            "armor_rare_008"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": "cleric",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "armor_rare_007",
+            "armor_rare_008"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": "mage",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "armor_rare_007",
+            "armor_rare_008"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": "cleric",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "armor_rare_007",
+            "armor_rare_008"
+          ]
+        }
+      ],
+      "availableJobs": [
+        "cleric",
+        "guard",
+        "mage",
+        "thief",
+        "warrior"
+      ],
+      "availableVariants": [
+        "hobgoblin",
+        "slime",
+        "orc",
+        "undead",
+        "wolf"
+      ]
+    },
+    {
+      "areaId": "road_1",
+      "tier": 0,
+      "searchLevel": 3,
+      "score": 0.136769,
+      "frontCount": 3,
+      "optimizedSlots": 2,
+      "equipmentTail": [
+        "bow_kaiser",
+        "sword_rare_008",
+        "hidden_rare_005",
+        "hidden_rare_012",
+        "hidden_kaiser_dagger",
+        "bow_rare_006",
+        "large_shield_rare_001",
+        "sword_rare_011",
+        "armor_rare_012",
+        "bow_royal",
+        "sword_royal",
+        "rod_rare_007",
+        "claw_kaiser",
+        "wand_rare_005",
+        "wand_rare_009",
+        "hidden_royal_dagger",
+        "shield_rare_011",
+        "sword_undead_killer",
+        "armor_kaiser",
+        "hidden_rare_001",
+        "hidden_rare_004"
+      ],
+      "members": [
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "hobgoblin",
+          "variant": "hobgoblin",
+          "loadout": [
+            "sword_rare_010",
+            "sword_rare_010"
+          ]
+        },
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "slime",
+          "variant": "slime",
+          "loadout": [
+            "sword_rare_010",
+            "sword_kaiser"
+          ]
+        },
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "undead",
+          "variant": "undead",
+          "loadout": [
+            "sword_rare_010",
+            "sword_rare_010"
+          ]
+        },
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "hobgoblin",
+          "variant": "hobgoblin",
+          "loadout": [
+            "sword_rare_010",
+            "sword_kaiser"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": "mage",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "sword_rare_010",
+            "sword_kaiser"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": "mage",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "sword_rare_010",
+            "sword_kaiser"
+          ]
+        }
+      ],
+      "availableJobs": [
+        "guard",
+        "mage",
+        "thief",
+        "warrior"
+      ],
+      "availableVariants": [
+        "hobgoblin",
+        "slime",
+        "undead",
+        "wolf"
+      ]
+    },
+    {
+      "areaId": "royal_capital_1",
+      "tier": 0,
+      "searchLevel": 3,
+      "score": 0.1255,
+      "frontCount": 3,
+      "optimizedSlots": 2,
+      "equipmentTail": [
+        "sword_dragon",
+        "sword_rare_015",
+        "rod_rare_013",
+        "rod_dragon",
+        "bow_ancient",
+        "hidden_dragon_dagger",
+        "sword_rare_010",
+        "sword_rare_019",
+        "sword_rare_023",
+        "sword_rare_024",
+        "sword_rare_025",
+        "sword_ancient",
+        "large_shield_adamant_wall",
+        "armor_rare_031",
+        "armor_rare_033",
+        "bow_rare_009",
+        "rod_rare_011",
+        "hidden_ancient_dagger",
+        "claw_dragon",
+        "armor_dragon",
+        "rod_ancient"
+      ],
+      "members": [
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "hobgoblin",
+          "variant": "hobgoblin",
+          "loadout": [
+            "sword_rare_026",
+            "sword_rare_015"
+          ]
+        },
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "hobgoblin",
+          "variant": "hobgoblin",
+          "loadout": [
+            "sword_rare_026",
+            "sword_rare_015"
+          ]
+        },
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "hobgoblin",
+          "variant": "hobgoblin",
+          "loadout": [
+            "sword_rare_026",
+            "sword_rare_015"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": "cleric",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "sword_rare_026",
+            "bow_dragon"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": "cleric",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "bow_dragon",
+            "bow_dragon"
+          ]
+        },
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "hobgoblin",
+          "variant": "hobgoblin",
+          "loadout": [
+            "sword_rare_026",
+            "sword_rare_015"
+          ]
+        }
+      ],
+      "availableJobs": [
+        "cleric",
+        "guard",
+        "mage",
+        "thief",
+        "warrior"
+      ],
+      "availableVariants": [
+        "hobgoblin",
+        "slime",
+        "orc",
+        "undead",
+        "wolf"
+      ]
+    },
+    {
+      "areaId": "royal_capital_2",
+      "tier": 0,
+      "searchLevel": 3,
+      "score": 0.0675,
+      "frontCount": 3,
+      "optimizedSlots": 2,
+      "equipmentTail": [
+        "sword_dragon",
+        "sword_rare_015",
+        "rod_rare_013",
+        "rod_dragon",
+        "bow_ancient",
+        "hidden_dragon_dagger",
+        "sword_rare_010",
+        "sword_rare_019",
+        "sword_rare_023",
+        "sword_rare_024",
+        "sword_rare_025",
+        "sword_ancient",
+        "large_shield_adamant_wall",
+        "armor_rare_031",
+        "armor_rare_033",
+        "bow_rare_009",
+        "rod_rare_011",
+        "hidden_ancient_dagger",
+        "claw_dragon",
+        "armor_dragon",
+        "rod_ancient"
+      ],
+      "members": [
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "hobgoblin",
+          "variant": "hobgoblin",
+          "loadout": [
+            "robe_rare_016",
+            "robe_rare_018"
+          ]
+        },
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "hobgoblin",
+          "variant": "hobgoblin",
+          "loadout": [
+            "robe_rare_016",
+            "sword_rare_015"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": "thief",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "robe_rare_016",
+            "robe_rare_018"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": "cleric",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "robe_rare_016",
+            "robe_rare_018"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": "mage",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "robe_rare_016",
+            "robe_rare_018"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": "cleric",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "robe_rare_016",
+            "robe_rare_018"
+          ]
+        }
+      ],
+      "availableJobs": [
+        "cleric",
+        "guard",
+        "mage",
+        "thief",
+        "warrior"
+      ],
+      "availableVariants": [
+        "hobgoblin",
+        "slime",
+        "orc",
+        "undead",
+        "wolf"
+      ]
+    },
+    {
+      "areaId": "royal_capital_3",
+      "tier": 0,
+      "searchLevel": 3,
+      "score": 0.0595,
+      "frontCount": 3,
+      "optimizedSlots": 2,
+      "equipmentTail": [
+        "sword_dragon",
+        "sword_rare_015",
+        "rod_rare_013",
+        "rod_dragon",
+        "bow_ancient",
+        "hidden_dragon_dagger",
+        "sword_rare_010",
+        "sword_rare_019",
+        "sword_rare_023",
+        "sword_rare_024",
+        "sword_rare_025",
+        "sword_ancient",
+        "large_shield_adamant_wall",
+        "armor_rare_031",
+        "armor_rare_033",
+        "bow_rare_009",
+        "rod_rare_011",
+        "hidden_ancient_dagger",
+        "claw_dragon",
+        "armor_dragon",
+        "rod_ancient"
+      ],
+      "members": [
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "hobgoblin",
+          "variant": "hobgoblin",
+          "loadout": [
+            "sword_rare_026",
+            "bow_dragon"
+          ]
+        },
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "hobgoblin",
+          "variant": "hobgoblin",
+          "loadout": [
+            "sword_rare_026",
+            "bow_dragon"
+          ]
+        },
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "hobgoblin",
+          "variant": "hobgoblin",
+          "loadout": [
+            "sword_rare_026",
+            "bow_dragon"
+          ]
+        },
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "hobgoblin",
+          "variant": "hobgoblin",
+          "loadout": [
+            "sword_rare_026",
+            "bow_dragon"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": "cleric",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "sword_rare_026",
+            "bow_dragon"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": "cleric",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "sword_rare_026",
+            "bow_dragon"
+          ]
+        }
+      ],
+      "availableJobs": [
+        "cleric",
+        "guard",
+        "mage",
+        "thief",
+        "warrior"
+      ],
+      "availableVariants": [
+        "hobgoblin",
+        "slime",
+        "orc",
+        "undead",
+        "wolf"
+      ]
+    },
+    {
+      "areaId": "royal_field_battle_1",
+      "tier": 0,
+      "searchLevel": 3,
+      "score": 0.0555,
+      "frontCount": 3,
+      "optimizedSlots": 2,
+      "equipmentTail": [
+        "sword_dragon",
+        "sword_rare_015",
+        "rod_rare_013",
+        "rod_dragon",
+        "bow_ancient",
+        "hidden_dragon_dagger",
+        "sword_rare_010",
+        "sword_rare_019",
+        "sword_rare_023",
+        "sword_rare_024",
+        "sword_rare_025",
+        "sword_ancient",
+        "large_shield_adamant_wall",
+        "armor_rare_031",
+        "armor_rare_033",
+        "bow_rare_009",
+        "rod_rare_011",
+        "hidden_ancient_dagger",
+        "claw_dragon",
+        "armor_dragon",
+        "rod_ancient"
+      ],
+      "members": [
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "hobgoblin",
+          "variant": "hobgoblin",
+          "loadout": [
+            "sword_rare_026",
+            "bow_dragon"
+          ]
+        },
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "hobgoblin",
+          "variant": "hobgoblin",
+          "loadout": [
+            "sword_rare_015",
+            "bow_dragon"
+          ]
+        },
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "orc",
+          "variant": "orc",
+          "loadout": [
+            "sword_rare_026",
+            "bow_dragon"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": "cleric",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "sword_rare_026",
+            "bow_dragon"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": "cleric",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "sword_rare_026",
+            "bow_dragon"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": "cleric",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "sword_rare_026",
+            "bow_dragon"
+          ]
+        }
+      ],
+      "availableJobs": [
+        "cleric",
+        "guard",
+        "mage",
+        "thief",
+        "warrior"
+      ],
+      "availableVariants": [
+        "hobgoblin",
+        "slime",
+        "orc",
+        "undead",
+        "wolf"
+      ]
+    },
+    {
+      "areaId": "slime_cave",
+      "tier": 0,
+      "searchLevel": 3,
+      "score": 1.5,
+      "frontCount": 3,
+      "optimizedSlots": 2,
+      "equipmentTail": [
+        "gauntlet_gauntlet",
+        "gauntlet_copper",
+        "gauntlet_leather",
+        "sword_long",
+        "claw_steel",
+        "sword_broad",
+        "shield_shield",
+        "claw_iron",
+        "wand_wand",
+        "armor_armor",
+        "rod_rod",
+        "bow_long",
+        "robe_robe",
+        "claw_copper",
+        "armor_fur_vest",
+        "sword_copper",
+        "bow_short",
+        "shield_wooden",
+        "armor_leather_vest",
+        "wand_apprentice",
+        "claw_beast"
+      ],
+      "members": [
+        {
+          "kind": "job",
+          "jobId": null,
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "armor_fur_vest",
+            "claw_copper"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": null,
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "armor_fur_vest",
+            "claw_copper"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": null,
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "armor_fur_vest",
+            "claw_copper"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": null,
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "armor_fur_vest",
+            "claw_copper"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": null,
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "armor_fur_vest",
+            "claw_copper"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": null,
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "armor_fur_vest",
+            "claw_copper"
+          ]
+        }
+      ],
+      "availableJobs": [],
+      "availableVariants": []
+    },
+    {
+      "areaId": "spider_forest_1",
+      "tier": 0,
+      "searchLevel": 3,
+      "score": 0.074,
+      "frontCount": 3,
+      "optimizedSlots": 2,
+      "equipmentTail": [
+        "rod_rare_013",
+        "bow_ancient",
+        "sword_rare_010",
+        "sword_rare_019",
+        "sword_rare_023",
+        "sword_rare_024",
+        "sword_rare_025",
+        "sword_ancient",
+        "large_shield_adamant_wall",
+        "armor_rare_031",
+        "armor_rare_033",
+        "bow_rare_009",
+        "rod_rare_011",
+        "hidden_ancient_dagger",
+        "rod_ancient",
+        "sword_kaiser",
+        "bow_kaiser",
+        "sword_rare_008",
+        "sword_rare_014",
+        "hidden_rare_005",
+        "hidden_rare_012"
+      ],
+      "members": [
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "hobgoblin",
+          "variant": "hobgoblin",
+          "loadout": [
+            "sword_rare_026",
+            "sword_rare_015"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": "warrior",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "sword_rare_026",
+            "sword_rare_015"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": "thief",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "sword_rare_026",
+            "sword_rare_015"
+          ]
+        },
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "hobgoblin",
+          "variant": "hobgoblin",
+          "loadout": [
+            "sword_rare_026",
+            "sword_rare_015"
+          ]
+        },
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "hobgoblin",
+          "variant": "hobgoblin",
+          "loadout": [
+            "sword_rare_026",
+            "sword_rare_015"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": "cleric",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "sword_rare_026",
+            "sword_rare_015"
+          ]
+        }
+      ],
+      "availableJobs": [
+        "cleric",
+        "guard",
+        "mage",
+        "thief",
+        "warrior"
+      ],
+      "availableVariants": [
+        "hobgoblin",
+        "slime",
+        "orc",
+        "undead",
+        "wolf"
+      ]
+    },
+    {
+      "areaId": "subjugation_force_1",
+      "tier": 0,
+      "searchLevel": 3,
+      "score": 0.0475,
+      "frontCount": 3,
+      "optimizedSlots": 2,
+      "equipmentTail": [
+        "sword_rare_010",
+        "sword_rare_019",
+        "sword_ancient",
+        "rod_rare_011",
+        "hidden_ancient_dagger",
+        "rod_ancient",
+        "sword_kaiser",
+        "bow_kaiser",
+        "sword_rare_008",
+        "sword_rare_014",
+        "hidden_rare_005",
+        "hidden_rare_012",
+        "hidden_kaiser_dagger",
+        "bow_rare_006",
+        "bow_rare_008",
+        "claw_ancient",
+        "shield_rare_013",
+        "shield_rare_014",
+        "large_shield_rare_001",
+        "large_shield_rare_002",
+        "wand_rare_013"
+      ],
+      "members": [
+        {
+          "kind": "job",
+          "jobId": "guard",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "armor_rare_024",
+            "armor_rare_025"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": "warrior",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "armor_rare_024",
+            "armor_rare_025"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": "thief",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "armor_rare_024",
+            "armor_rare_025"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": "cleric",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "armor_rare_024",
+            "armor_rare_025"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": "mage",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "armor_rare_024",
+            "armor_rare_025"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": "cleric",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "armor_rare_024",
+            "armor_rare_025"
+          ]
+        }
+      ],
+      "availableJobs": [
+        "cleric",
+        "guard",
+        "mage",
+        "thief",
+        "warrior"
+      ],
+      "availableVariants": [
+        "hobgoblin",
+        "slime",
+        "orc",
+        "undead",
+        "wolf"
+      ]
+    },
+    {
+      "areaId": "swamp_defense_1",
+      "tier": 0,
+      "searchLevel": 3,
+      "score": 0.07,
+      "frontCount": 3,
+      "optimizedSlots": 2,
+      "equipmentTail": [
+        "sword_dragon",
+        "sword_rare_015",
+        "rod_rare_013",
+        "rod_dragon",
+        "bow_ancient",
+        "hidden_dragon_dagger",
+        "sword_rare_010",
+        "sword_rare_019",
+        "sword_rare_023",
+        "sword_rare_024",
+        "sword_rare_025",
+        "sword_ancient",
+        "large_shield_adamant_wall",
+        "armor_rare_031",
+        "armor_rare_033",
+        "bow_rare_009",
+        "rod_rare_011",
+        "hidden_ancient_dagger",
+        "claw_dragon",
+        "armor_dragon",
+        "rod_ancient"
+      ],
+      "members": [
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "hobgoblin",
+          "variant": "hobgoblin",
+          "loadout": [
+            "robe_rare_016",
+            "robe_rare_018"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": "warrior",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "robe_rare_016",
+            "robe_rare_018"
+          ]
+        },
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "hobgoblin",
+          "variant": "hobgoblin",
+          "loadout": [
+            "robe_rare_016",
+            "robe_rare_018"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": "cleric",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "sword_rare_026",
+            "robe_rare_018"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": "mage",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "robe_rare_016",
+            "robe_rare_018"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": "cleric",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "robe_rare_016",
+            "robe_rare_018"
+          ]
+        }
+      ],
+      "availableJobs": [
+        "cleric",
+        "guard",
+        "mage",
+        "thief",
+        "warrior"
+      ],
+      "availableVariants": [
+        "hobgoblin",
+        "slime",
+        "orc",
+        "undead",
+        "wolf"
+      ]
+    },
+    {
+      "areaId": "troll_canyon_1",
+      "tier": 0,
+      "searchLevel": 3,
+      "score": 0.138,
+      "frontCount": 3,
+      "optimizedSlots": 2,
+      "equipmentTail": [
+        "sword_dragon",
+        "sword_rare_015",
+        "rod_rare_013",
+        "rod_dragon",
+        "bow_ancient",
+        "hidden_dragon_dagger",
+        "sword_rare_010",
+        "sword_rare_019",
+        "sword_rare_023",
+        "sword_rare_024",
+        "sword_rare_025",
+        "sword_ancient",
+        "large_shield_adamant_wall",
+        "armor_rare_031",
+        "armor_rare_033",
+        "bow_rare_009",
+        "rod_rare_011",
+        "hidden_ancient_dagger",
+        "claw_dragon",
+        "armor_dragon",
+        "rod_ancient"
+      ],
+      "members": [
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "hobgoblin",
+          "variant": "hobgoblin",
+          "loadout": [
+            "sword_rare_026",
+            "bow_dragon"
+          ]
+        },
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "hobgoblin",
+          "variant": "hobgoblin",
+          "loadout": [
+            "sword_rare_026",
+            "bow_dragon"
+          ]
+        },
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "hobgoblin",
+          "variant": "hobgoblin",
+          "loadout": [
+            "sword_rare_026",
+            "sword_rare_015"
+          ]
+        },
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "hobgoblin",
+          "variant": "hobgoblin",
+          "loadout": [
+            "sword_rare_026",
+            "sword_rare_015"
+          ]
+        },
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "hobgoblin",
+          "variant": "hobgoblin",
+          "loadout": [
+            "sword_rare_026",
+            "sword_rare_015"
+          ]
+        },
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "hobgoblin",
+          "variant": "hobgoblin",
+          "loadout": [
+            "sword_rare_026",
+            "sword_rare_015"
+          ]
+        }
+      ],
+      "availableJobs": [
+        "cleric",
+        "guard",
+        "mage",
+        "thief",
+        "warrior"
+      ],
+      "availableVariants": [
+        "hobgoblin",
+        "slime",
+        "orc",
+        "undead",
+        "wolf"
+      ]
+    },
+    {
+      "areaId": "undead_ruins_1",
+      "tier": 0,
+      "searchLevel": 3,
+      "score": 0.243484,
+      "frontCount": 3,
+      "optimizedSlots": 2,
+      "equipmentTail": [
+        "large_shield_rare_001",
+        "armor_rare_012",
+        "bow_royal",
+        "sword_royal",
+        "wand_rare_005",
+        "hidden_royal_dagger",
+        "hidden_rare_001",
+        "hidden_rare_004",
+        "sword_rare_002",
+        "bow_rare_002",
+        "wand_rare_006",
+        "wand_rare_007",
+        "sword_mithril",
+        "hidden_mithril_dagger",
+        "rod_rare_002",
+        "rod_rare_005",
+        "armor_rare_004",
+        "armor_rare_009",
+        "armor_rare_010",
+        "sword_rare_001",
+        "sword_rare_003"
+      ],
+      "members": [
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "hobgoblin",
+          "variant": "hobgoblin",
+          "loadout": [
+            "armor_rare_012",
+            "hidden_rare_005"
+          ]
+        },
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "hobgoblin",
+          "variant": "hobgoblin",
+          "loadout": [
+            "sword_rare_008",
+            "hidden_rare_005"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": "thief",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "sword_rare_008",
+            "hidden_rare_005"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": "warrior",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "sword_rare_008",
+            "hidden_rare_005"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": "mage",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "sword_rare_008",
+            "large_shield_rare_001"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": "mage",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "sword_rare_008",
+            "hidden_rare_005"
+          ]
+        }
+      ],
+      "availableJobs": [
+        "guard",
+        "mage",
+        "thief",
+        "warrior"
+      ],
+      "availableVariants": [
+        "hobgoblin",
+        "slime",
+        "undead",
+        "wolf"
+      ]
+    },
+    {
+      "areaId": "vampire_castle_1",
+      "tier": 0,
+      "searchLevel": 3,
+      "score": 0.08,
+      "frontCount": 3,
+      "optimizedSlots": 2,
+      "equipmentTail": [
+        "sword_dragon",
+        "sword_rare_015",
+        "rod_rare_013",
+        "rod_dragon",
+        "bow_ancient",
+        "hidden_dragon_dagger",
+        "sword_rare_010",
+        "sword_rare_019",
+        "sword_rare_023",
+        "sword_rare_024",
+        "sword_rare_025",
+        "sword_ancient",
+        "large_shield_adamant_wall",
+        "armor_rare_031",
+        "armor_rare_033",
+        "bow_rare_009",
+        "rod_rare_011",
+        "hidden_ancient_dagger",
+        "claw_dragon",
+        "armor_dragon",
+        "rod_ancient"
+      ],
+      "members": [
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "hobgoblin",
+          "variant": "hobgoblin",
+          "loadout": [
+            "sword_rare_026",
+            "sword_rare_015"
+          ]
+        },
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "hobgoblin",
+          "variant": "hobgoblin",
+          "loadout": [
+            "bow_dragon",
+            "bow_dragon"
+          ]
+        },
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "hobgoblin",
+          "variant": "hobgoblin",
+          "loadout": [
+            "sword_rare_026",
+            "bow_dragon"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": "cleric",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "sword_rare_026",
+            "bow_dragon"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": "mage",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "sword_rare_026",
+            "bow_dragon"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": "cleric",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "sword_rare_026",
+            "bow_dragon"
+          ]
+        }
+      ],
+      "availableJobs": [
+        "cleric",
+        "guard",
+        "mage",
+        "thief",
+        "warrior"
+      ],
+      "availableVariants": [
+        "hobgoblin",
+        "slime",
+        "orc",
+        "undead",
+        "wolf"
+      ]
+    },
+    {
+      "areaId": "wolf_grassland_1",
+      "tier": 0,
+      "searchLevel": 3,
+      "score": 0.098,
+      "frontCount": 3,
+      "optimizedSlots": 2,
+      "equipmentTail": [
+        "sword_rare_019",
+        "rod_rare_011",
+        "sword_kaiser",
+        "bow_kaiser",
+        "sword_rare_008",
+        "sword_rare_014",
+        "hidden_rare_005",
+        "hidden_rare_012",
+        "hidden_kaiser_dagger",
+        "bow_rare_006",
+        "bow_rare_008",
+        "shield_rare_013",
+        "shield_rare_014",
+        "large_shield_rare_001",
+        "large_shield_rare_002",
+        "wand_rare_013",
+        "sword_rare_011",
+        "sword_rare_013",
+        "sword_rare_018",
+        "sword_rare_020",
+        "hidden_rare_016"
+      ],
+      "members": [
+        {
+          "kind": "job",
+          "jobId": "guard",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "armor_rare_011",
+            "armor_rare_014"
+          ]
+        },
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "slime",
+          "variant": "slime",
+          "loadout": [
+            "armor_rare_011",
+            "armor_rare_014"
+          ]
+        },
+        {
+          "kind": "variant",
+          "jobId": null,
+          "raceId": "hobgoblin",
+          "variant": "hobgoblin",
+          "loadout": [
+            "armor_rare_011",
+            "armor_rare_014"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": "cleric",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "rod_rare_011",
+            "armor_rare_014"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": "mage",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "armor_rare_011",
+            "armor_rare_014"
+          ]
+        },
+        {
+          "kind": "job",
+          "jobId": "cleric",
+          "raceId": null,
+          "variant": null,
+          "loadout": [
+            "rod_rare_011",
+            "armor_rare_014"
+          ]
+        }
+      ],
+      "availableJobs": [
+        "cleric",
+        "guard",
+        "mage",
+        "thief",
+        "warrior"
+      ],
+      "availableVariants": [
+        "hobgoblin",
+        "slime",
+        "orc",
+        "undead",
+        "wolf"
+      ]
+    }
+  ]
+}

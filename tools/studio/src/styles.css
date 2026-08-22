@@ -1878,6 +1878,56 @@ code {
   font-size: 0.82rem;
 }
 
+/* 戦略ビルド（バランス調整で使ったPT）のプレビュー */
+.strategist-preview {
+  margin-top: 0.85rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface-muted);
+  padding: 0.7rem 0.85rem;
+}
+
+.strategist-preview-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 0.5rem;
+  font-size: 0.82rem;
+}
+
+.strategist-preview-table th {
+  text-align: left;
+  font-weight: 600;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border);
+  padding: 0.25rem 0.5rem 0.35rem 0;
+  white-space: nowrap;
+}
+
+.strategist-preview-table td {
+  padding: 0.3rem 0.5rem 0.3rem 0;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+
+.strategist-preview-table tr:last-child td {
+  border-bottom: none;
+}
+
+.strategist-loadout {
+  color: var(--text-muted);
+  font-size: 0.76rem;
+  line-height: 1.5;
+  word-break: break-word;
+}
+
+.strategist-shortcuts {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.7rem;
+}
+
 .simulate-actions {
   display: flex;
   justify-content: flex-end;
