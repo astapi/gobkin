@@ -23,6 +23,7 @@ type GoblinRaceContext = Pick<Goblin, 'race' | 'baseAttributes'> & {
   raceId?: Goblin['raceId']
   job?: Goblin['job']
   skills?: Goblin['skills']
+  equipmentBaseAttributeBonuses?: Partial<GoblinBaseAttributes>
 }
 
 const BASE_ATTRIBUTE_KEYS: Array<keyof GoblinBaseAttributes> = [
@@ -84,7 +85,9 @@ export function getGoblinBaseAttributesAtLevel(goblin: GoblinRaceContext, level:
   const result = {} as GoblinBaseAttributes
 
   for (const key of BASE_ATTRIBUTE_KEYS) {
-    result[key] = Math.min(maximums[key], base[key] + bonus) + (skillBonuses[key] ?? 0)
+    result[key] = Math.min(maximums[key], base[key] + bonus)
+      + (skillBonuses[key] ?? 0)
+      + (goblin.equipmentBaseAttributeBonuses?.[key] ?? 0)
   }
 
   return result

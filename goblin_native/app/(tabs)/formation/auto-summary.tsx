@@ -8,6 +8,7 @@ import { useGoblinStore } from '@/presentation/stores/useGoblinStore'
 import { getEquipmentTemplate } from '@/shared/data/equipmentPoolLoader'
 import { getEquipmentDisplayName } from '@/shared/i18n/entityLocalization'
 import { BOTTOM_INFO_SPACING } from '@/shared/constants/layout'
+import { EquipmentModService } from '@/core/services/EquipmentModService'
 
 export default function AutoExpeditionSummaryScreen() {
   const { t } = useTranslation()
@@ -94,7 +95,7 @@ export default function AutoExpeditionSummaryScreen() {
               value={t('ui.formation.autoSummary.itemCount', { count: equipmentCount })}
             />
             {rewardItems.map(item => (
-              <View key={`${item.templateId}:${item.titleId ?? ''}`} style={styles.itemRow}>
+              <View key={EquipmentModService.getStackKey(item)} style={styles.itemRow}>
                 <Text style={styles.itemName}>{item.name}</Text>
                 <Text style={styles.itemCount}>×{item.count}</Text>
               </View>

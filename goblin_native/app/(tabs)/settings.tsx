@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { View, Text, TouchableOpacity, StyleSheet, Alert, Switch, ScrollView } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { router } from 'expo-router'
+import { router, type Href } from 'expo-router'
 import { useTranslation } from 'react-i18next'
 import { useReset } from '@/presentation/contexts/ResetContext'
 import { BOTTOM_INFO_SPACING } from '@/shared/constants/layout'
@@ -146,6 +146,17 @@ export default function SettingsScreen() {
               )
             })}
           </View>
+        </View>
+
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>{t('ui.settings.autoSell.sectionTitle')}</Text>
+          <Text style={styles.sectionDescription}>{t('ui.settings.autoSell.description')}</Text>
+          <TouchableOpacity
+            style={styles.secondaryButton}
+            onPress={() => router.push('/base/auto-sell' as Href)}
+          >
+            <Text style={styles.secondaryButtonText}>{t('ui.settings.autoSell.open')}</Text>
+          </TouchableOpacity>
         </View>
 
         <View style={styles.section}>

@@ -60,6 +60,13 @@ function createDummyEnemy(overrides?: Partial<Enemy>): Enemy {
 }
 
 describe('rollTreasureDrops', () => {
+  it('通常ドロップへprefixとsuffixのMODを必ず付与する', () => {
+    const drop = callRollTreasureDrops(1, [createDummyEnemy()], new Set(), 35, { rare: 99 })[0]
+
+    expect(drop?.prefixMod).toBeDefined()
+    expect(drop?.suffixMod).toBeDefined()
+  })
+
   describe('アイテムランク定義', () => {
     it('最大ランクは 7。rank 0 は1カテゴリに複数個ありうる', () => {
       // 剣（11アイテム: 下位4つはrank 0、その後1刻みで7まで）

@@ -1,5 +1,6 @@
 export * from './IGoblinRepository'
 export * from './IEquipmentRepository'
+export * from './IEquipmentAutoSellFilterRepository'
 export * from './IPartyRepository'
 export * from './IPendingGoblinRepository'
 export * from './IBaseStateRepository'

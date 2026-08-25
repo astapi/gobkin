@@ -6,6 +6,7 @@ import type { EquipmentInstance } from '../../shared/types'
 import type { IEquipmentRepository } from '../../core/repositories/IEquipmentRepository'
 import { getDatabase } from '../database'
 import { getEquipmentTitleLabel } from '../../shared/i18n/entityLocalization'
+import { EquipmentModService } from '../../core/services/EquipmentModService'
 
 interface EquipmentRow {
   id: string
@@ -14,6 +15,8 @@ interface EquipmentRow {
   goblin_id: number | null
   title_id: string | null
   title_name: string | null
+  prefix_mod_json: string | null
+  suffix_mod_json: string | null
   created_at: string
 }
 
@@ -53,8 +56,10 @@ export class SQLiteEquipmentRepository implements IEquipmentRepository {
   async save(equipment: EquipmentInstance): Promise<void> {
     const db = await getDatabase()
     await db.runAsync(
-      `INSERT OR REPLACE INTO equipment (id, template_id, slot_index, goblin_id, title_id, title_name)
-       VALUES (?, ?, ?, ?, ?, ?)`,
+      `INSERT OR REPLACE INTO equipment (
+         id, template_id, slot_index, goblin_id, title_id, title_name,
+         prefix_mod_json, suffix_mod_json
+       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         equipment.id,
         equipment.templateId,
@@ -62,6 +67,8 @@ export class SQLiteEquipmentRepository implements IEquipmentRepository {
         equipment.goblinId,
         equipment.titleId ?? null,
         null,
+        equipment.prefixMod ? JSON.stringify(equipment.prefixMod) : null,
+        equipment.suffixMod ? JSON.stringify(equipment.suffixMod) : null,
       ]
     )
   }
@@ -80,6 +87,20 @@ export class SQLiteEquipmentRepository implements IEquipmentRepository {
       goblinId: row.goblin_id,
       titleId,
       titleName: titleId ? getEquipmentTitleLabel(titleId) : (row.title_name ?? undefined),
+      prefixMod: this.parseMod(row.prefix_mod_json, 'prefix'),
+      suffixMod: this.parseMod(row.suffix_mod_json, 'suffix'),
+    }
+  }
+
+  private parseMod(
+    json: string | null,
+    slot: 'prefix' | 'suffix',
+  ): EquipmentInstance['prefixMod'] {
+    if (!json) return undefined
+    try {
+      return EquipmentModService.normalizeRoll(JSON.parse(json), slot)
+    } catch {
+      return undefined
     }
   }
 }

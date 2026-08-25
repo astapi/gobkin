@@ -149,6 +149,16 @@ export function getDungeonTierTitleRollCount(tier: DungeonTier = 0): number {
   return DUNGEON_TIER_TITLE_ROLL_COUNTS[tier] ?? DUNGEON_TIER_TITLE_ROLL_COUNTS[0]
 }
 
+/**
+ * MOD Tier抽選の判定回数（Tier別）。
+ * 称号と同じ回数だけ抽選し、その中で最も高いMOD Tierを採用する。
+ */
+export const DUNGEON_TIER_MOD_ROLL_COUNTS = DUNGEON_TIER_TITLE_ROLL_COUNTS
+
+export function getDungeonTierModRollCount(tier: DungeonTier = 0): number {
+  return DUNGEON_TIER_MOD_ROLL_COUNTS[tier] ?? DUNGEON_TIER_MOD_ROLL_COUNTS[0]
+}
+
 /** ダンジョン探索時間クラス */
 export type DungeonTierClass = 'A' | 'B' | 'C'
 

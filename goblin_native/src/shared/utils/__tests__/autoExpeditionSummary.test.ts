@@ -42,6 +42,7 @@ describe('addAutoExpeditionResult', () => {
     summary = addAutoExpeditionResult(summary, 'session-a', createReplay({
       xpGained: 80,
       goldGained: 30,
+      autoSoldGold: 5,
       treasureDrops: [{ templateId: 'robe' }],
     }))
 
@@ -52,7 +53,7 @@ describe('addAutoExpeditionResult', () => {
       wipeoutCount: 0,
       retreatCount: 0,
       xpGained: 180,
-      goldGained: 70,
+      goldGained: 75,
       rewardItems: [
         { templateId: 'club', count: 2 },
         { templateId: 'robe', count: 1 },
@@ -60,6 +61,24 @@ describe('addAutoExpeditionResult', () => {
       factorCount: 2,
       levelUps: [],
     })
+  })
+
+  it('prefixとsuffixが同じ装備だけをまとめる', () => {
+    const power = { id: 'power' as const, tier: 9 as const }
+    const vitality = { id: 'vitality' as const, tier: 8 as const }
+    const agility = { id: 'agility' as const, tier: 8 as const }
+    const summary = addAutoExpeditionResult(undefined, 'session-a', createReplay({
+      treasureDrops: [
+        { templateId: 'club', prefixMod: power, suffixMod: vitality },
+        { templateId: 'club', prefixMod: power, suffixMod: vitality },
+        { templateId: 'club', prefixMod: power, suffixMod: agility },
+      ],
+    }))
+
+    expect(summary.rewardItems).toEqual([
+      { templateId: 'club', prefixMod: power, suffixMod: vitality, count: 2 },
+      { templateId: 'club', prefixMod: power, suffixMod: agility, count: 1 },
+    ])
   })
 
   it('クリア・全滅・退却を帰還理由ごとに集計する', () => {

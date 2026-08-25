@@ -5,6 +5,7 @@ import { calculateSlotCount } from '../../shared/data/equipmentConfig'
 import { getEquipmentTemplate } from '../../shared/data/equipmentPoolLoader'
 import { cloneCharacterSkill, hasItemSlotsBonusSkill } from '../../shared/data/characterSkills'
 import { EquipmentTitleService } from './EquipmentTitleService'
+import { EquipmentModService } from './EquipmentModService'
 
 /**
  * 装備の着脱・バリデーション・ステータスボーナス計算を担当するサービス
@@ -180,6 +181,18 @@ export class EquipmentService {
         bonuses.push({
           ...bonus,
           value: Number((this.scaleValueByTitle(bonus.value, eq) * penaltyMultiplier).toFixed(4)),
+          sourceCategory: template.category,
+          sourceSubCategory: template.subCategory,
+        })
+      }
+
+      for (const mod of [eq.prefixMod, eq.suffixMod]) {
+        if (!mod) continue
+        const bonus = EquipmentModService.toStatBonus(mod)
+        if (!bonus) continue
+        bonuses.push({
+          ...bonus,
+          value: Number((bonus.value * penaltyMultiplier).toFixed(4)),
           sourceCategory: template.category,
           sourceSubCategory: template.subCategory,
         })

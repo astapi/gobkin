@@ -9,12 +9,13 @@ import { GoldBadge } from '@/presentation/components/GoldBadge'
 import { GoldenAcornBadge } from '@/presentation/components/GoldenAcornBadge'
 import { describeCharacterSkill, getCharacterSkillDescription } from '@/shared/data/characterSkills'
 import { getShopEquipment, getEquipmentTemplate, getEquipmentTemplates } from '@/shared/data/equipmentPoolLoader'
-import { EQUIPMENT_TITLE_DEFS } from '@/shared/data/equipmentTitleConfig'
 import { getEquipmentDisplayName, getEquipmentLabel, getStatLabel } from '@/shared/i18n/entityLocalization'
+import { EquipmentModService } from '@/core/services/EquipmentModService'
+import { EquipmentService } from '@/core/services/EquipmentService'
+import { EquipmentSaleService } from '@/core/services/EquipmentSaleService'
 import type { EquipmentCategory, EquipmentInstance, EquipmentTemplate, WeaponSubCategory } from '@/shared/types'
 
 const SHOP_UNLOCK_RANK = 2
-const SELL_PRICE_RATE = 0.5
 
 const CATEGORY_ORDER: Record<EquipmentCategory, number> = {
   weapon: 0,
@@ -131,20 +132,16 @@ function isDisplayValueZero(value: number): boolean {
   return displayValue === 0
 }
 
-function getInlineStats(template: EquipmentTemplate): string {
-  return template.statBonuses
+function getInlineStats(template: EquipmentTemplate, item?: EquipmentInstance): string {
+  const bonuses = item ? EquipmentService.calculateEquipmentBonuses([item]) : template.statBonuses
+  return bonuses
     .filter((bonus) => !isDisplayValueZero(bonus.value))
     .map((bonus) => `${getStatLabel(bonus.stat)}${formatBonus(bonus.stat, bonus.value)}`)
     .join('  ')
 }
 
 function getSellPrice(item: EquipmentInstance): number {
-  const template = getEquipmentTemplate(item.templateId)
-  if (!template) return 0
-  const titleDef = item.titleId
-    ? EQUIPMENT_TITLE_DEFS.find((title) => title.id === item.titleId)
-    : undefined
-  return Math.max(1, Math.floor(template.price * (titleDef?.priceMultiplier ?? 1) * SELL_PRICE_RATE))
+  return EquipmentSaleService.getSellPrice(item)
 }
 
 function createPurchasedEquipment(templateId: string): EquipmentInstance {
@@ -172,7 +169,7 @@ function sortInventoryGroups(items: EquipmentInstance[]): InventoryGroup[] {
   for (const item of items) {
     const template = getEquipmentTemplate(item.templateId)
     if (!template) continue
-    const key = `${item.templateId}::${item.titleId ?? 'none'}`
+    const key = EquipmentModService.getStackKey(item)
     const existing = grouped.get(key)
     if (existing) {
       existing.count += 1
@@ -313,6 +310,9 @@ function ShopItemDetail({
     ? getEquipmentLabel(template)
     : getEquipmentDisplayName(selected.group.item, template)
   const skills = template.grantedSkills ?? []
+  const bonuses = selected.mode === 'buy'
+    ? template.statBonuses
+    : EquipmentService.calculateEquipmentBonuses([selected.group.item])
 
   return (
     <Modal visible={visible} animationType="fade" transparent onRequestClose={onClose}>
@@ -326,8 +326,11 @@ function ShopItemDetail({
             <Text style={styles.detailName}>{name}</Text>
 
             <View style={styles.detailList}>
-              {template.statBonuses.map((bonus, index) => (
+              {bonuses.map((bonus, index) => (
                 <Text key={`bonus-${index}`} style={styles.detailListText}>
+                  {bonus.sourceModSlot && bonus.sourceModTier
+                    ? `[${bonus.sourceModSlot === 'prefix' ? 'Prefix' : 'Suffix'} T${bonus.sourceModTier}] `
+                    : ''}
                   {getStatLabel(bonus.stat)} {formatBonus(bonus.stat, bonus.value)}
                 </Text>
               ))}
@@ -381,6 +384,7 @@ function ShopEquipmentRow({
   name,
   template,
   price,
+  item,
   disabled,
   onPress,
   onShowDetail,
@@ -388,11 +392,12 @@ function ShopEquipmentRow({
   name: string
   template: EquipmentTemplate
   price: number
+  item?: EquipmentInstance
   disabled?: boolean
   onPress: () => void
   onShowDetail: () => void
 }) {
-  const inlineStats = getInlineStats(template)
+  const inlineStats = getInlineStats(template, item)
 
   return (
     <TouchableOpacity
@@ -676,6 +681,7 @@ export default function EquipmentShopScreen() {
             <ShopEquipmentRow
               name={name}
               template={item.group.template}
+              item={item.group.item}
               price={price}
               disabled={processingId === item.group.item.id}
               onPress={() => setSelectedItem({ mode: 'sell', group: item.group })}

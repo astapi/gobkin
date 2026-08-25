@@ -5,6 +5,7 @@ import type { LearnedSpell } from "./Spell"
 import type { BattleActionPolicy } from "./Battle"
 import type { GoblinStats } from "./Goblin"
 import type { EquipmentTitleId } from './EquipmentTitle'
+import type { EquipmentModRoll } from './Equipment'
 
 export type PartyStatus = "idle" | "expedition"
 
@@ -23,6 +24,8 @@ export const DEFAULT_PARTY_REWARD_MULTIPLIERS: PartyRewardMultipliers = {
 export interface AutoExpeditionRewardItemSummary {
   templateId: string
   titleId?: EquipmentTitleId
+  prefixMod?: EquipmentModRoll
+  suffixMod?: EquipmentModRoll
   count: number
 }
 

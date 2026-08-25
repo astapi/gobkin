@@ -8,6 +8,7 @@ import type { ExpeditionRecord, ExpeditionReplay, TreasureDrop } from '@/shared/
 import { useExpeditionStore } from '@/presentation/stores/useExpeditionStore'
 import { useToastDismissStore } from '@/presentation/stores/useToastDismissStore'
 import { TIPS_BAR_HEIGHT } from '@/presentation/components/TipsBar'
+import { EquipmentModService } from '@/core/services/EquipmentModService'
 
 const DISPLAY_MS = 4200
 const SCAN_INTERVAL_MS = 1000
@@ -136,11 +137,11 @@ export function ExpeditionDropToastHost() {
   }, [toastDismissRevision])
 
   const enqueueDrop = useCallback((record: ExpeditionRecord, item: TreasureDrop, sourceKey: string) => {
-    const titleId = item.titleId ?? 'none'
-    const dropKey = `${record.id}:${item.templateId}:${titleId}`
+    const stackKey = EquipmentModService.getStackKey(item)
+    const dropKey = `${record.id}:${stackKey}`
     if (shownDropKeysRef.current.has(dropKey)) return
 
-    const key = `${record.id}:${sourceKey}:${item.templateId}:${titleId}`
+    const key = `${record.id}:${sourceKey}:${stackKey}`
     if (shownKeysRef.current.has(key)) return
 
     const itemName = resolveDropName(item)

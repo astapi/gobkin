@@ -14,6 +14,7 @@ import { useGoblinStore } from '@/presentation/stores/useGoblinStore'
 import { useToastDismissStore } from '@/presentation/stores/useToastDismissStore'
 import { useEquipmentService } from '@/presentation/hooks/useEquipmentService'
 import { EquipmentService } from '@/core/services/EquipmentService'
+import { EquipmentModService } from '@/core/services/EquipmentModService'
 import { getEquipmentTemplate, getEquipmentTemplates } from '@/shared/data/equipmentPoolLoader'
 import { EQUIPMENT_TITLE_DEFS } from '@/shared/data/equipmentTitleConfig'
 import {
@@ -140,6 +141,8 @@ type DisplayBonus = {
   stat: string
   value: number
   originalValue: number
+  sourceModSlot?: 'prefix' | 'suffix'
+  sourceModTier?: number
 }
 
 type EquipmentStatToastData = {
@@ -247,12 +250,15 @@ function getInlineBonusLabel(bonus: DisplayBonus): string {
 }
 
 function getDetailBonusLabel(bonus: DisplayBonus): string {
-  const { stat, value, originalValue } = bonus
+  const { stat, value, originalValue, sourceModSlot, sourceModTier } = bonus
   const label = getStatLabel(stat)
   const originalSuffix = value !== originalValue
     ? `(${formatBonus(stat, originalValue)})`
     : ''
-  return `${label} ${formatBonus(stat, value)}${originalSuffix}`
+  const modLabel = sourceModSlot && sourceModTier
+    ? `[${sourceModSlot === 'prefix' ? 'Prefix' : 'Suffix'} T${sourceModTier}] `
+    : ''
+  return `${modLabel}${label} ${formatBonus(stat, value)}${originalSuffix}`
 }
 
 function getDisplayBonuses(
@@ -272,6 +278,8 @@ function getDisplayBonuses(
       stat: bonus.stat,
       value: bonus.value,
       originalValue: originalBonuses[index]?.value ?? bonus.value,
+      sourceModSlot: bonus.sourceModSlot,
+      sourceModTier: bonus.sourceModTier,
     }))
     .filter((bonus) => !isDisplayValueZero(bonus.value))
 }
@@ -316,7 +324,7 @@ function groupInventory(
     const template = getEquipmentTemplate(eq.templateId)
     if (!template) continue
 
-    const key = `inv::${eq.templateId}::${eq.titleId ?? 'none'}`
+    const key = `inv::${EquipmentModService.getStackKey(eq)}`
     const existing = grouped.get(key)
     if (existing) {
       existing.count += 1
@@ -365,6 +373,9 @@ function sortInventoryGroups(groups: InventoryGroup[]): InventoryGroup[] {
     const titleA = titleOrder.get(a.equipment.titleId ?? 'none') ?? 0
     const titleB = titleOrder.get(b.equipment.titleId ?? 'none') ?? 0
     if (titleA !== titleB) return titleA - titleB
+    const modDiff = EquipmentModService.getModSignature(a.equipment)
+      .localeCompare(EquipmentModService.getModSignature(b.equipment))
+    if (modDiff !== 0) return modDiff
     return (a.isEquipped ? 1 : 0) - (b.isEquipped ? 1 : 0)
   })
 }

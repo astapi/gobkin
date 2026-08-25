@@ -1,6 +1,7 @@
 import type { EnemySnap } from "./Enemy"
 import type { CombatReplay } from "./Battle"
 import type { EquipmentTitleId } from "./EquipmentTitle"
+import type { EquipmentModRoll } from "./Equipment"
 import type { Goblin } from "./Goblin"
 import type { PartyRewardMultipliers } from "./Party"
 import type { DungeonTier } from "./DungeonTier"
@@ -63,6 +64,13 @@ export interface ExpeditionReplay {
 export interface TreasureDrop {
   templateId: string  // EquipmentTemplate.id
   titleId?: EquipmentTitleId   // 称号ID（未設定 = 称号なし）
+  prefixMod?: EquipmentModRoll
+  suffixMod?: EquipmentModRoll
+}
+
+export interface AutoSoldEquipment {
+  drop: TreasureDrop
+  gold: number
 }
 
 export type TimelineEvent =
@@ -145,6 +153,8 @@ export interface RewardSummary {
   goldMultiplier?: number  // PT倍率×スキル補正の合成値（Goldログ表示用）
   casualties: string[]
   treasureDrops?: TreasureDrop[]  // 宝箱から獲得した装備
+  autoSoldEquipment?: AutoSoldEquipment[]  // 自動売却され、インベントリへ入らなかった装備
+  autoSoldGold?: number  // 自動売却で得たゴールド（goldGainedとは別）
   memberLevelUps?: MemberLevelUp[]  // 遠征完了時に確定したレベルアップ情報
   factorAcquisitions?: FactorAcquisition[]  // 遠征完了時に獲得した因子情報
 }

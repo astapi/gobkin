@@ -136,6 +136,8 @@ export default function ExpeditionResultScreen() {
   const goldGained = replay?.summary.goldGained ?? 0
   const goldMultiplier = replay?.summary.goldMultiplier ?? 1
   const treasureDrops = replay?.summary.treasureDrops ?? []
+  const autoSoldEquipment = replay?.summary.autoSoldEquipment ?? []
+  const autoSoldGold = replay?.summary.autoSoldGold ?? 0
 
   // 因子を獲得したメンバーごとに「誰が・どの因子を」取得したかをまとめる
   const acquiredFactors = useMemo(() => {
@@ -324,6 +326,11 @@ export default function ExpeditionResultScreen() {
                 })
               : t('ui.result.gainedGold', { value: goldGained.toLocaleString() })}
           </Text>
+          {autoSoldGold > 0 && (
+            <Text style={styles.summaryText}>
+              {t('ui.result.autoSoldGold', { value: autoSoldGold.toLocaleString() })}
+            </Text>
+          )}
         </View>
 
         {treasureDrops.length > 0 && (
@@ -331,6 +338,20 @@ export default function ExpeditionResultScreen() {
             <Text style={styles.sectionTitle}>{t('ui.result.items')}</Text>
             {treasureDrops.map((drop, idx) => (
               <Text key={idx} style={styles.summaryText}>{resolveTreasureName(drop)}</Text>
+            ))}
+          </View>
+        )}
+
+        {autoSoldEquipment.length > 0 && (
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>{t('ui.result.autoSoldItems')}</Text>
+            {autoSoldEquipment.map((item, idx) => (
+              <Text key={idx} style={styles.summaryText}>
+                {t('ui.result.autoSoldItem', {
+                  name: resolveTreasureName(item.drop),
+                  gold: item.gold.toLocaleString(),
+                })}
+              </Text>
             ))}
           </View>
         )}

@@ -157,6 +157,8 @@ export const SCHEMA = {
       goblin_id INTEGER,
       title_id TEXT,
       title_name TEXT,
+      prefix_mod_json TEXT,
+      suffix_mod_json TEXT,
       created_at TEXT NOT NULL DEFAULT (datetime('now')),
       FOREIGN KEY (goblin_id) REFERENCES goblins(id) ON DELETE SET NULL
     )

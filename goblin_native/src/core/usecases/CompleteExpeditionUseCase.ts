@@ -1,4 +1,4 @@
-import type { CharacterSkill, ExpeditionReplay, Goblin, MemberLevelUp, TimelineEvent, TreasureDrop } from '../../shared/types'
+import type { AutoSoldEquipment, CharacterSkill, ExpeditionReplay, Goblin, MemberLevelUp, TimelineEvent, TreasureDrop } from '../../shared/types'
 import { getEnemyDatabase } from '../../shared/data/enemy'
 import { getEffectiveStats } from '../../shared/utils/goblinStats'
 import {
@@ -12,6 +12,7 @@ import { GoblinEntity } from '../domain'
 import type { IGoblinRepository, IPartyRepository, IBaseStateRepository } from '../repositories'
 import type { IEquipmentRepository } from '../repositories/IEquipmentRepository'
 import type { ITransactionRunner } from '../repositories/ITransactionRunner'
+import type { IEquipmentAutoSellFilterRepository } from '../repositories/IEquipmentAutoSellFilterRepository'
 import type { IExpeditionCompletionGateway } from '../repositories/IExpeditionCompletionGateway'
 import type { LevelUpResult } from '../services/ExperienceSystem'
 import type { FactorDropConfig } from '../../shared/types/Factor'
@@ -22,6 +23,8 @@ import { GOLDEN_ACORN_CLEAR_ENCOUNTER_ID, GOLDEN_ACORN_CLEAR_FACTOR_DROPS } from
 import { isDungeonCompleted } from '../../shared/utils/expeditionClear'
 import { getDungeonTierFactorDropMultiplier } from '../../shared/types/DungeonTier'
 import { addAutoExpeditionResult } from '../../shared/utils/autoExpeditionSummary'
+import { EquipmentAutoSellService } from '../services/EquipmentAutoSellService'
+import { EquipmentSaleService } from '../services/EquipmentSaleService'
 
 export interface ExpeditionCompletionResult {
   /** 既に完了処理済み（冪等性ゲートで弾かれた）ため報酬処理をスキップしたか */
@@ -32,6 +35,8 @@ export interface ExpeditionCompletionResult {
   newDungeonCaptured?: string
   goldGained: number
   treasureDrops?: TreasureDrop[]
+  autoSoldEquipment?: AutoSoldEquipment[]
+  autoSoldGold: number
   enrichedReplay: ExpeditionReplay
 }
 
@@ -47,6 +52,7 @@ export class CompleteExpeditionUseCase {
   private readonly equipmentRepository?: IEquipmentRepository
   private readonly expeditionGateway?: IExpeditionCompletionGateway
   private readonly transactionRunner: ITransactionRunner
+  private readonly equipmentAutoSellFilterRepository?: IEquipmentAutoSellFilterRepository
 
   constructor(
     goblinRepository: IGoblinRepository,
@@ -54,7 +60,8 @@ export class CompleteExpeditionUseCase {
     baseStateRepository: IBaseStateRepository,
     equipmentRepository?: IEquipmentRepository,
     expeditionGateway?: IExpeditionCompletionGateway,
-    transactionRunner?: ITransactionRunner
+    transactionRunner?: ITransactionRunner,
+    equipmentAutoSellFilterRepository?: IEquipmentAutoSellFilterRepository,
   ) {
     this.goblinRepository = goblinRepository
     this.partyRepository = partyRepository
@@ -62,6 +69,7 @@ export class CompleteExpeditionUseCase {
     this.equipmentRepository = equipmentRepository
     this.expeditionGateway = expeditionGateway
     this.transactionRunner = transactionRunner ?? passthroughTransactionRunner
+    this.equipmentAutoSellFilterRepository = equipmentAutoSellFilterRepository
   }
 
   /**
@@ -99,6 +107,7 @@ export class CompleteExpeditionUseCase {
           updatedGoblinIds: [],
           factorAcquisitions: new Map(),
           goldGained: 0,
+          autoSoldGold: 0,
           enrichedReplay: replay,
         }
       }
@@ -336,8 +345,24 @@ export class CompleteExpeditionUseCase {
     }
 
     const treasureDrops = replay.summary.treasureDrops ?? []
-    if (!isAbort && treasureDrops.length > 0 && this.equipmentRepository) {
+    const keptTreasureDrops: TreasureDrop[] = []
+    const autoSoldEquipment: AutoSoldEquipment[] = []
+    const autoSellSettings = !isAbort && this.equipmentAutoSellFilterRepository
+      ? await this.equipmentAutoSellFilterRepository.getSettings()
+      : undefined
+
+    if (!isAbort && treasureDrops.length > 0) {
       for (const drop of treasureDrops) {
+        if (autoSellSettings && EquipmentAutoSellService.shouldAutoSell(drop, autoSellSettings)) {
+          autoSoldEquipment.push({
+            drop,
+            gold: EquipmentSaleService.getSellPrice(drop),
+          })
+          continue
+        }
+
+        keptTreasureDrops.push(drop)
+        if (!this.equipmentRepository) continue
         const equipmentId = `eq_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
         await this.equipmentRepository.save({
           id: equipmentId,
@@ -345,12 +370,16 @@ export class CompleteExpeditionUseCase {
           slotIndex: -1,
           goblinId: null,
           titleId: drop.titleId,
+          prefixMod: drop.prefixMod,
+          suffixMod: drop.suffixMod,
         })
       }
     }
 
     let newDungeonCaptured: string | undefined
-    const goldGained = isAbort ? 0 : (replay.summary.goldGained || 0)
+    const autoSoldGold = autoSoldEquipment.reduce((total, item) => total + item.gold, 0)
+    const expeditionGoldGained = isAbort ? 0 : (replay.summary.goldGained || 0)
+    const goldGained = expeditionGoldGained + autoSoldGold
 
     if (!isAbort) {
       const currentBaseState = await this.baseStateRepository.getBaseState()
@@ -395,6 +424,9 @@ export class CompleteExpeditionUseCase {
       ...replay,
       summary: {
         ...replay.summary,
+        treasureDrops: keptTreasureDrops.length > 0 ? keptTreasureDrops : undefined,
+        autoSoldEquipment: autoSoldEquipment.length > 0 ? autoSoldEquipment : undefined,
+        autoSoldGold: autoSoldGold > 0 ? autoSoldGold : undefined,
         memberLevelUps: memberLevelUps.length > 0 ? memberLevelUps : undefined,
         factorAcquisitions: factorAcquisitionList.length > 0 ? factorAcquisitionList : undefined,
       },
@@ -427,7 +459,9 @@ export class CompleteExpeditionUseCase {
       factorAcquisitions,
       newDungeonCaptured,
       goldGained,
-      treasureDrops: treasureDrops.length > 0 ? treasureDrops : undefined,
+      treasureDrops: keptTreasureDrops.length > 0 ? keptTreasureDrops : undefined,
+      autoSoldEquipment: autoSoldEquipment.length > 0 ? autoSoldEquipment : undefined,
+      autoSoldGold,
       enrichedReplay,
     }
   }

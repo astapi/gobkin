@@ -1,4 +1,4 @@
-import type { Goblin, GoblinStats } from '../../shared/types/Goblin'
+import type { Goblin, GoblinBaseAttributes, GoblinStats } from '../../shared/types/Goblin'
 import type { CharacterSkill } from '../../shared/types/CharacterSkill'
 import type { EquipmentStatBonus } from '../../shared/types/Equipment'
 import {
@@ -36,18 +36,21 @@ export class GoblinStatCalculator {
     goblin: Goblin,
     equipmentBonuses?: EquipmentStatBonus[],
   ): GoblinStats {
+    const adjustedEquipmentBonuses = applySkillBonusesToEquipmentBonuses(goblin.skills, equipmentBonuses ?? [])
+    const equipmentBaseAttributeBonuses = this.aggregateEquipmentBaseAttributes(adjustedEquipmentBonuses)
+    const statContext = { ...goblin, equipmentBaseAttributeBonuses }
     const base = {
       ...goblin.stats,
-      hp: calculateGoblinBaseHp(goblin.level, goblin),
-      atk: calculateGoblinBaseAtk(goblin.level, goblin),
-      magicAtk: calculateGoblinBaseMagicAtk(goblin.level, goblin),
-      def: calculateGoblinBaseDef(goblin.level, goblin),
-      magicDef: calculateGoblinBaseMagicDef(goblin.level, goblin),
-      attackCount: calculateGoblinBaseAttackCount(goblin.level, goblin),
-      accuracy: calculateGoblinBaseAccuracy(goblin.level, goblin),
-      evasion: calculateGoblinBaseEvasion(goblin.level, goblin),
-      magicHeal: calculateGoblinBaseMagicHeal(goblin.level, goblin),
-      criticalRate: calculateGoblinBaseCriticalRate(goblin.level, goblin),
+      hp: calculateGoblinBaseHp(goblin.level, statContext),
+      atk: calculateGoblinBaseAtk(goblin.level, statContext),
+      magicAtk: calculateGoblinBaseMagicAtk(goblin.level, statContext),
+      def: calculateGoblinBaseDef(goblin.level, statContext),
+      magicDef: calculateGoblinBaseMagicDef(goblin.level, statContext),
+      attackCount: calculateGoblinBaseAttackCount(goblin.level, statContext),
+      accuracy: calculateGoblinBaseAccuracy(goblin.level, statContext),
+      evasion: calculateGoblinBaseEvasion(goblin.level, statContext),
+      magicHeal: calculateGoblinBaseMagicHeal(goblin.level, statContext),
+      criticalRate: calculateGoblinBaseCriticalRate(goblin.level, statContext),
     }
     // 1. 因子ボーナスを計算
     const factorBonuses = FactorInheritanceService.calculateFactorBonuses(goblin.factors ?? [])
@@ -55,7 +58,6 @@ export class GoblinStatCalculator {
     // 2. 装備・スキルボーナスを集計
     const skillBonuses = getSkillStatBonuses(goblin.skills)
     const skillMultipliers = getSkillStatMultipliers(goblin.skills)
-    const adjustedEquipmentBonuses = applySkillBonusesToEquipmentBonuses(goblin.skills, equipmentBonuses ?? [])
     const equipFlat = this.aggregateEquipmentFlat(adjustedEquipmentBonuses)
     const equipPercent = this.aggregateEquipmentPercent(adjustedEquipmentBonuses)
 
@@ -130,6 +132,27 @@ export class GoblinStatCalculator {
 
   private static readonly ZERO_STATS: Record<keyof GoblinStats, number> = {
     hp: 0, atk: 0, magicAtk: 0, def: 0, magicDef: 0, attackCount: 0, accuracy: 0, evasion: 0, magicHeal: 0, criticalRate: 0,
+  }
+
+  private static readonly ZERO_BASE_ATTRIBUTES: GoblinBaseAttributes = {
+    power: 0,
+    wisdom: 0,
+    spirit: 0,
+    vitality: 0,
+    agility: 0,
+    luck: 0,
+  }
+
+  private static aggregateEquipmentBaseAttributes(
+    bonuses: EquipmentStatBonus[],
+  ): GoblinBaseAttributes {
+    const result = { ...this.ZERO_BASE_ATTRIBUTES }
+    for (const bonus of bonuses) {
+      if (!bonus.stat.endsWith('_flat')) continue
+      const key = bonus.stat.slice(0, -'_flat'.length)
+      if (key in result) result[key as keyof GoblinBaseAttributes] += bonus.value
+    }
+    return result
   }
 
   /** 装備のstat名からGoblinStatsのキーへの特別マッピング */

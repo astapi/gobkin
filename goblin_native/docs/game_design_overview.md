@@ -180,7 +180,7 @@ formation/index（パーティ一覧）
 - **エリアデータ**: `src/shared/data/expeditionArea/`。なお `_2` / `_3` バリアントは廃止され、難易度は **Tier** に統合されています。
 - **Tier**（`src/shared/types/DungeonTier.ts`）: 0〜5の難易度段階。
 
-| Tier | 接頭辞 | statScale | rewardScale | 因子ドロップ率 | 称号抽選回数 |
+| Tier | 接頭辞 | statScale | rewardScale | 因子ドロップ率 | 称号・MOD抽選回数 |
 | --- | --- | --- | --- | --- | --- |
 | 0 | （なし） | 1.00 | 1.00 | 1.5% | 1 |
 | 1 | 魔性 | 1.58 | 1.58 | 2.5% | 2 |
@@ -199,6 +199,7 @@ Tier により敵ステータス・報酬・探索時間がスケールします
   - **ノーマルドロップ**: 敵ごとに運判定（`100 - rare*10 < 運乱数`）→ 敵Lvから `DropRankRoller` でランク抽選 → 該当ランク装備プールから抽選。同一遠征で同一テンプレートは1個まで。
   - **レアドロップ**: 敵の `rareEquipmentDrops` / `tierRareEquipmentDrops` から、アイテムごとに判定（`100 - rare*0.1 < 運乱数`）。
   - **称号付与**: `EquipmentTitleService.rollTitle()`。Tierが高いほど抽選回数が増え高位称号が出やすい。
+  - **装備MOD**: 敵Lvで抽選可能Tierを解禁し、ダンジョンTier別回数だけウェイト抽選して最上位Tierを採用する。装備称号とは独立。
 - **因子ドロップ**: ボスの `factorDrops` から確率抽選（後述）。
 
 ### 3.8 ブースト
