@@ -45,6 +45,7 @@
   - `base/upgrade`（拠点拡張, Rank1）
   - `base/training`（訓練所, Rank2）
   - `base/shop`（装備商店, Rank2）
+  - `base/warehouse`（倉庫, Rank1）
   - `shop`（特別商店, Rank1）
 
 ### 遠征（`(tabs)/formation`）
@@ -112,11 +113,12 @@
 - `base/upgrade.tsx`: ダンジョン制圧後にゴールドでランクアップ。依存: `useBaseStore`。
 - `base/training.tsx`: 純ゴブリンへのジョブ付与（変更不可）。依存: `useBaseStore` / `useDungeonStore` / `useGoblinStore` / `usePartyStore` / `useStoryStore`。
 - `base/shop.tsx`: 装備の購入/売却。依存: `useBaseStore`。
+- `base/warehouse.tsx`: 未装備アイテムの一覧・名前/MOD数/カテゴリ/称号による複合絞り込み・詳細確認。依存: `equipmentRepository`。
 - `app/shop.tsx`: 特別商店（課金アイテム）。
 
 ### ゴブリン個別（`app/goblin/`）
 - `detail.tsx`: ステータス・スキル・因子の詳細。依存: `useGoblinStore` / `usePartyStore` / `useBaseStore`。
-- `equipment.tsx`: 装備の装着/取り外し（カテゴリ/サブカテゴリフィルタ、重複ペナルティ可視化）。依存: `useEquipmentService` / `useGoblinStore`。
+- `equipment.tsx`: 装備の装着/取り外し（名前/MOD数/カテゴリ/称号フィルタ、重複ペナルティ可視化）。依存: `useEquipmentService` / `useGoblinStore`。
 - `avatar.tsx`: アバター設定。
 
 ### 図鑑（`(tabs)/encyclopedia.tsx` と `app/encyclopedia-detail/`）
