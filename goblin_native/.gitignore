@@ -46,3 +46,7 @@ yarn-error.*
 
 # env
 .env
+
+# ローカル生成物
+.claude/
+artifacts/

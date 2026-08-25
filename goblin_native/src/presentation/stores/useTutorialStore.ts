@@ -5,6 +5,7 @@ import {
 } from '../di/repositories'
 import {
   isAtOrAfter,
+  reconcileTutorialStep,
   tutorialStepIndex,
   type TutorialStep,
 } from '../../shared/types/Tutorial'
@@ -40,12 +41,13 @@ export const useTutorialStore = create<TutorialStoreState & TutorialStoreActions
     try {
       const stored = await repository.getStep()
 
-      // 既存ユーザー（マイグレーション直後にチュートリアル未開始だがスライム洞窟をクリア済み）の救済
-      if (stored === 'not_started') {
+      // 既存ユーザーと、攻略完了直後に終了して進行ステップだけ残った状態を救済する。
+      if (stored === 'not_started' || stored === 'wait_clear') {
         const slimeProgress = await dungeonRepository.get('slime_cave')
-        if (slimeProgress?.cleared) {
-          await persistStep('completed')
-          set({ step: 'completed', isLoading: false })
+        const reconciled = reconcileTutorialStep(stored, slimeProgress?.cleared === true)
+        if (reconciled !== stored) {
+          await persistStep(reconciled)
+          set({ step: reconciled, isLoading: false })
           return
         }
       }

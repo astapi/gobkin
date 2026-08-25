@@ -48,6 +48,14 @@ npm test
 npx tsc --noEmit
 ```
 
+## AIによるゲーム操作・プレイテスト
+
+- AI APIでセーブデータを進行させる場合は、作業前に必ず [`docs/ai_agent_playbook.md`](/Users/astapi/projects/goblinKingdom/goblin_native/docs/ai_agent_playbook.md) を読んでください。
+- APIのプロトコル仕様は [`docs/ai_agent_api.md`](/Users/astapi/projects/goblinKingdom/goblin_native/docs/ai_agent_api.md) を参照してください。
+- API操作には `npm run ai:bridge` と、AIブリッジへ接続済みの起動中アプリが必要です。最初に `GET /v1/health` の `gameConnected` と `hasObservation` を確認してください。
+- 1秒デバッグモードは設定画面の「探索時間を1秒にする」で切り替えます。API自体にはデバッグ設定を変更する操作はありません。
+- API操作は実際のSQLiteセーブデータを更新します。プレイテスト依頼では、ユーザーから初期化の指示がない限り既存セーブを引き継いでください。
+
 ## 実装ルール
 
 - `src/core` はプラットフォーム非依存を維持し、React Native / Expo 依存を入れないでください。
@@ -64,6 +72,8 @@ npx tsc --noEmit
 - 実装ガイド: [`docs/implementation_guide.md`](/Users/astapi/projects/goblinKingdom/goblin_native/docs/implementation_guide.md)
 - 残タスク: [`docs/remaining_tasks.md`](/Users/astapi/projects/goblinKingdom/goblin_native/docs/remaining_tasks.md)
 - SQLite: [`docs/sqlite_migration.md`](/Users/astapi/projects/goblinKingdom/goblin_native/docs/sqlite_migration.md)
+- AIプレイ手順: [`docs/ai_agent_playbook.md`](/Users/astapi/projects/goblinKingdom/goblin_native/docs/ai_agent_playbook.md)
+- AI API仕様: [`docs/ai_agent_api.md`](/Users/astapi/projects/goblinKingdom/goblin_native/docs/ai_agent_api.md)
 
 ## 注意点
 

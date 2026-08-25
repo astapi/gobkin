@@ -39,6 +39,15 @@ interface PartyActions {
   setDungeonTier: (partyId: number, tier: DungeonTier) => Promise<Party>
   setTargetFloor: (partyId: number, targetFloor: number | null) => Promise<Party>
   setReturnPolicy: (partyId: number, returnPolicy: ExpeditionRequest['returnPolicy']) => Promise<Party>
+  configureExpedition: (
+    partyId: number,
+    settings: {
+      dungeonId: string
+      tier: DungeonTier
+      targetFloor: number | null
+      returnPolicy: ExpeditionRequest['returnPolicy']
+    },
+  ) => Promise<Party>
   setAutoExpedition: (partyId: number, enabled: boolean) => Promise<Party>
   acknowledgeAutoExpeditionSummary: (partyId: number) => Promise<Party>
 }
@@ -122,6 +131,12 @@ export const usePartyStore = create<PartyState & PartyActions>()((set) => {
 
     setReturnPolicy: async (partyId: number, returnPolicy: ExpeditionRequest['returnPolicy']) => {
       const updated = await configurePartyUseCase.setReturnPolicy(partyId, returnPolicy)
+      await refresh()
+      return updated
+    },
+
+    configureExpedition: async (partyId, settings) => {
+      const updated = await configurePartyUseCase.configureExpedition(partyId, settings)
       await refresh()
       return updated
     },
