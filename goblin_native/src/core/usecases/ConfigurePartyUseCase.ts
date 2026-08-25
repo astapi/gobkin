@@ -48,6 +48,27 @@ export class ConfigurePartyUseCase {
     return this.requireParty(partyId)
   }
 
+  public async configureExpedition(
+    partyId: number,
+    settings: {
+      dungeonId: string
+      tier: DungeonTier
+      targetFloor: number | null
+      returnPolicy: ExpeditionRequest['returnPolicy']
+    },
+  ): Promise<Party> {
+    const party = await this.requireParty(partyId)
+    const updated: Party = {
+      ...party,
+      dungeonId: settings.dungeonId,
+      dungeonTier: settings.tier,
+      targetFloor: settings.targetFloor,
+      returnPolicy: settings.returnPolicy,
+    }
+    await this.partyRepository.saveParty(updated)
+    return this.requireParty(partyId)
+  }
+
   public async setAutoExpedition(partyId: number, enabled: boolean): Promise<Party> {
     const party = await this.requireParty(partyId)
     const sessionId = enabled && !party.autoExpeditionEnabled

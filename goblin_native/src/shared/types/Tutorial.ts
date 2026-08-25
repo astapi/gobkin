@@ -47,3 +47,14 @@ export const tutorialStepIndex = (step: TutorialStep): number =>
 
 export const isAtOrAfter = (current: TutorialStep, target: TutorialStep): boolean =>
   tutorialStepIndex(current) >= tutorialStepIndex(target)
+
+/** 起動時に永続状態と攻略済みデータの食い違いを復旧する。 */
+export const reconcileTutorialStep = (
+  stored: TutorialStep,
+  slimeCaveCleared: boolean,
+): TutorialStep => {
+  if (!slimeCaveCleared) return stored
+  if (stored === 'not_started') return 'completed'
+  if (stored === 'wait_clear') return 'learn_factor'
+  return stored
+}

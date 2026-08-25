@@ -32,6 +32,7 @@ const ja = {
       equipmentShop: '装備商店',
       equipmentChange: '装備変更',
       shop: '特別商店',
+      aiAgent: 'AIエージェント',
     },
     settings: {
       debug: 'Debug',
@@ -53,6 +54,11 @@ const ja = {
         sectionTitle: '装備フィルター',
         description: '装備の種類ごとに、遠征で拾った装備を残す条件を設定します。',
         open: '自動売却フィルターを設定',
+      },
+      aiAgent: {
+        sectionTitle: 'AIエージェント',
+        description: '外部AIブリッジとの接続状態と操作ログを確認します。AIの操作は通常画面にも即時反映されます。',
+        open: 'AI観戦画面を開く',
       },
       backup: {
         sectionTitle: 'データ管理',
@@ -79,6 +85,22 @@ const ja = {
         errorImportVersionMismatch: 'このバックアップは現在のアプリと互換性がありません。アプリを最新版に更新してください。',
         errorImportTampered: 'バックアップファイルが書き換えられている可能性があるため、読み込みを中止しました。',
       },
+    },
+    aiAgent: {
+      status: {
+        disabled: '無効',
+        connecting: '接続中',
+        connected: '接続済み',
+        disconnected: '未接続',
+      },
+      description: 'AIが実行した操作と判断理由を表示します。接続中はゲーム状態がローカルブリッジへ同期されます。',
+      noBridgeUrl: 'ブリッジURL未設定',
+      notSynced: '未同期',
+      snapshotMeta: '状態 revision {{revision}} / 最終同期 {{time}}',
+      reconnect: '再接続',
+      clearLogs: 'ログ消去',
+      actionLog: 'AI操作ログ',
+      emptyLog: 'AIの操作はまだありません。',
     },
     encyclopedia: {
       title: '図鑑',

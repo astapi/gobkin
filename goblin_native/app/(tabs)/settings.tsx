@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { View, Text, TouchableOpacity, StyleSheet, Alert, Switch, ScrollView } from 'react-native'
+import { View, Text, TouchableOpacity, StyleSheet, Alert, Switch, ScrollView, Pressable } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { router, type Href } from 'expo-router'
 import { useTranslation } from 'react-i18next'
@@ -157,6 +157,17 @@ export default function SettingsScreen() {
           >
             <Text style={styles.secondaryButtonText}>{t('ui.settings.autoSell.open')}</Text>
           </TouchableOpacity>
+        </View>
+
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>{t('ui.settings.aiAgent.sectionTitle')}</Text>
+          <Text style={styles.sectionDescription}>{t('ui.settings.aiAgent.description')}</Text>
+          <Pressable
+            style={styles.secondaryButton}
+            onPress={() => router.push('/ai-agent' as Href)}
+          >
+            <Text style={styles.secondaryButtonText}>{t('ui.settings.aiAgent.open')}</Text>
+          </Pressable>
         </View>
 
         <View style={styles.section}>

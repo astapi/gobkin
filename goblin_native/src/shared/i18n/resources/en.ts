@@ -32,6 +32,7 @@ const en = {
       equipmentShop: 'Equipment Shop',
       equipmentChange: 'Change Equipment',
       shop: 'Special Shop',
+      aiAgent: 'AI Agent',
     },
     settings: {
       debug: 'Debug',
@@ -53,6 +54,11 @@ const en = {
         sectionTitle: 'Equipment Filter',
         description: 'Choose which expedition drops to keep for each equipment type.',
         open: 'Configure Auto-Sell Filter',
+      },
+      aiAgent: {
+        sectionTitle: 'AI Agent',
+        description: 'View the external AI bridge connection and action log. AI actions are reflected in the regular UI immediately.',
+        open: 'Open AI Observer',
       },
       backup: {
         sectionTitle: 'Data Management',
@@ -79,6 +85,22 @@ const en = {
         errorImportVersionMismatch: 'This backup is not compatible with the current app. Please update the app to the latest version.',
         errorImportTampered: 'The backup file appears to have been modified, so the import was aborted.',
       },
+    },
+    aiAgent: {
+      status: {
+        disabled: 'Disabled',
+        connecting: 'Connecting',
+        connected: 'Connected',
+        disconnected: 'Disconnected',
+      },
+      description: 'Shows actions performed by the AI and its reasoning. While connected, public game state is synchronized to the local bridge.',
+      noBridgeUrl: 'Bridge URL not configured',
+      notSynced: 'Not synced',
+      snapshotMeta: 'State revision {{revision}} / Last sync {{time}}',
+      reconnect: 'Reconnect',
+      clearLogs: 'Clear Log',
+      actionLog: 'AI Action Log',
+      emptyLog: 'The AI has not performed any actions yet.',
     },
     encyclopedia: {
       title: 'Codex',

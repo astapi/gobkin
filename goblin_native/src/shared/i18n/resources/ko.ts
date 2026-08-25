@@ -31,6 +31,7 @@ const ko = {
       equipmentShop: '장비 상점',
       equipmentChange: '장비 변경',
       shop: '특별 상점',
+      aiAgent: 'AI 에이전트',
     },
     settings: {
       debug: 'Debug',
@@ -52,6 +53,11 @@ const ko = {
         sectionTitle: '장비 필터',
         description: '장비 종류별로 원정에서 획득한 장비를 남길 조건을 설정합니다.',
         open: '자동 판매 필터 설정',
+      },
+      aiAgent: {
+        sectionTitle: 'AI 에이전트',
+        description: '외부 AI 브리지 연결 상태와 작업 로그를 확인합니다. AI 작업은 일반 UI에도 즉시 반영됩니다.',
+        open: 'AI 관전 화면 열기',
       },
       backup: {
         sectionTitle: '데이터 관리',
@@ -78,6 +84,22 @@ const ko = {
         errorImportVersionMismatch: '이 백업은 현재 앱과 호환되지 않습니다. 앱을 최신 버전으로 업데이트하세요.',
         errorImportTampered: '백업 파일이 변경된 것으로 보여 가져오기를 중단했습니다.',
       },
+    },
+    aiAgent: {
+      status: {
+        disabled: '비활성',
+        connecting: '연결 중',
+        connected: '연결됨',
+        disconnected: '연결 안 됨',
+      },
+      description: 'AI가 실행한 작업과 판단 이유를 표시합니다. 연결 중에는 공개 게임 상태가 로컬 브리지와 동기화됩니다.',
+      noBridgeUrl: '브리지 URL 미설정',
+      notSynced: '동기화 안 됨',
+      snapshotMeta: '상태 revision {{revision}} / 마지막 동기화 {{time}}',
+      reconnect: '다시 연결',
+      clearLogs: '로그 삭제',
+      actionLog: 'AI 작업 로그',
+      emptyLog: '아직 AI 작업이 없습니다.',
     },
     encyclopedia: {
       title: '도감',
