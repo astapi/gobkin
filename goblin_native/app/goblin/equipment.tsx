@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import { View, Text, TouchableOpacity, StyleSheet, FlatList, Modal, Alert, ScrollView, ActivityIndicator, Animated, Pressable } from 'react-native'
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import { router, useLocalSearchParams } from 'expo-router'
+import { useTranslation } from 'react-i18next'
 import type {
   EquipmentInstance,
   EquipmentTemplate,
@@ -25,6 +26,13 @@ import {
 import { getEquipmentDisplayName, getStatLabel } from '@/shared/i18n/entityLocalization'
 import { calculateGoblinEffectiveStats } from '@/shared/utils/goblinStats'
 import type { Goblin } from '@/shared/types'
+import { EquipmentInventoryFilterSheet } from '@/presentation/components/EquipmentInventoryFilterSheet'
+import {
+  DEFAULT_EQUIPMENT_INVENTORY_FILTER,
+  getEquipmentInventoryFilterActiveCount,
+  matchesEquipmentInventoryFilter,
+  type EquipmentInventoryFilter,
+} from '@/shared/utils/equipmentInventoryFilter'
 
 const EQUIPMENT_TOAST_DISPLAY_MS = 4200
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable)
@@ -75,43 +83,6 @@ const WEAPON_SUB_CATEGORY_LABELS: Record<WeaponSubCategory, string> = {
   claw: '爪',
   hidden: '暗器',
 }
-
-const CATEGORY_FILTER_ORDER: Exclude<EquipmentCategory, 'weapon'>[] = [
-  'armor',
-  'robe',
-  'shield',
-  'large_shield',
-  'gauntlet',
-  'wand',
-  'rod',
-  'accessory',
-]
-
-const WEAPON_SUB_CATEGORY_FILTER_ORDER: WeaponSubCategory[] = [
-  'sword',
-  'claw',
-  'bow',
-  'hidden',
-]
-
-type InventoryFilter =
-  | {
-      type: 'all'
-      key: 'all'
-      label: string
-    }
-  | {
-      type: 'weaponSubCategory'
-      key: WeaponSubCategory
-      label: string
-    }
-  | {
-      type: 'category'
-      key: Exclude<EquipmentCategory, 'weapon'>
-      label: string
-    }
-
-const ALL_INVENTORY_FILTER: InventoryFilter = { type: 'all', key: 'all', label: 'すべて' }
 
 function getDisplayName(eq: EquipmentInstance, template: EquipmentTemplate): string {
   return getEquipmentDisplayName(eq, template)
@@ -414,41 +385,6 @@ function buildInventoryListEntries(groups: InventoryGroup[]): InventoryListEntry
   return entries
 }
 
-function matchesInventoryFilter(group: InventoryGroup, filter: InventoryFilter): boolean {
-  if (filter.type === 'all') return true
-  if (filter.type === 'weaponSubCategory') {
-    return group.template.category === 'weapon' && group.template.subCategory === filter.key
-  }
-  return group.template.category === filter.key
-}
-
-function buildInventoryFilterOptions(groups: InventoryGroup[]): InventoryFilter[] {
-  const categories = new Set(groups.map((group) => group.template.category))
-  const weaponSubCategories = new Set(
-    groups
-      .map((group) => group.template.subCategory)
-      .filter((subCategory): subCategory is WeaponSubCategory => Boolean(subCategory)),
-  )
-
-  return [
-    ALL_INVENTORY_FILTER,
-    ...WEAPON_SUB_CATEGORY_FILTER_ORDER
-      .filter((subCategory) => weaponSubCategories.has(subCategory))
-      .map((subCategory): InventoryFilter => ({
-        type: 'weaponSubCategory',
-        key: subCategory,
-        label: WEAPON_SUB_CATEGORY_LABELS[subCategory],
-      })),
-    ...CATEGORY_FILTER_ORDER
-      .filter((category) => categories.has(category))
-      .map((category): InventoryFilter => ({
-        type: 'category',
-        key: category,
-        label: CATEGORY_LABELS[category],
-      })),
-  ]
-}
-
 /** 装備済みアイテムの詳細モーダル */
 function ItemDetail({
   equipment,
@@ -588,6 +524,7 @@ function EquipmentRow({
 }
 
 export default function EquipmentScreenPage() {
+  const { t } = useTranslation()
   const { goblinId } = useLocalSearchParams<{ goblinId: string }>()
   const insets = useSafeAreaInsets()
   const listRef = useRef<FlatList<InventoryListEntry>>(null)
@@ -606,8 +543,8 @@ export default function EquipmentScreenPage() {
   const [equipmentStatToasts, setEquipmentStatToasts] = useState<EquipmentStatToastData[]>([])
   const isEquippingRef = useRef(false)
   const equipmentToastIdRef = useRef(0)
-  const [selectedInventoryFilter, setSelectedInventoryFilter] = useState<InventoryFilter>(
-    ALL_INVENTORY_FILTER,
+  const [selectedInventoryFilter, setSelectedInventoryFilter] = useState<EquipmentInventoryFilter>(
+    DEFAULT_EQUIPMENT_INVENTORY_FILTER,
   )
   const [isFilterSheetVisible, setIsFilterSheetVisible] = useState(false)
 
@@ -651,12 +588,10 @@ export default function EquipmentScreenPage() {
     () => groupInventory(inventoryItems, equippedItems),
     [inventoryItems, equippedItems],
   )
-  const inventoryFilterOptions = useMemo(
-    () => buildInventoryFilterOptions(groupedInventory),
-    [groupedInventory],
-  )
   const filteredInventoryGroups = useMemo(
-    () => groupedInventory.filter((group) => matchesInventoryFilter(group, selectedInventoryFilter)),
+    () => groupedInventory.filter(
+      (group) => matchesEquipmentInventoryFilter(group, selectedInventoryFilter),
+    ),
     [groupedInventory, selectedInventoryFilter],
   )
   const inventoryListEntries = useMemo(
@@ -684,6 +619,20 @@ export default function EquipmentScreenPage() {
   const inventoryEmptyText = inventoryItems.length === 0 && equippedItems.length === 0
     ? '所持アイテムがありません'
     : '条件に合うアイテムがありません'
+  const activeInventoryFilterCount = getEquipmentInventoryFilterActiveCount(
+    selectedInventoryFilter,
+  )
+
+  const handleApplyInventoryFilter = useCallback((filter: EquipmentInventoryFilter) => {
+    setSelectedInventoryFilter(filter)
+    setIsFilterSheetVisible(false)
+    requestAnimationFrame(() => {
+      listRef.current?.scrollToOffset({
+        offset: headerHeightRef.current,
+        animated: true,
+      })
+    })
+  }, [])
 
   const restoreScrollPosition = useCallback((nextHeaderHeight: number) => {
     if (!pendingScrollRestoreRef.current) {
@@ -882,7 +831,9 @@ export default function EquipmentScreenPage() {
                   onPress={() => setIsFilterSheetVisible(true)}
                 >
                   <Text style={styles.inventoryFilterStatus}>
-                    {selectedInventoryFilter.label}
+                    {activeInventoryFilterCount > 0
+                      ? t('ui.equipmentInventoryFilter.summary', { count: activeInventoryFilterCount })
+                      : t('ui.equipmentInventoryFilter.all')}
                   </Text>
                 </TouchableOpacity>
               </View>
@@ -899,69 +850,13 @@ export default function EquipmentScreenPage() {
           ItemSeparatorComponent={() => <View style={styles.itemSeparator} />}
         />
 
-      <Modal
+      <EquipmentInventoryFilterSheet
         visible={isFilterSheetVisible}
-        animationType="slide"
-        transparent
-        onRequestClose={() => setIsFilterSheetVisible(false)}
-      >
-        <View style={styles.filterSheetOverlay}>
-          <TouchableOpacity
-            style={styles.filterSheetBackdrop}
-            activeOpacity={1}
-            onPress={() => setIsFilterSheetVisible(false)}
-          />
-          <View
-            style={[styles.filterSheet, { paddingBottom: insets.bottom + 16 }]}
-          >
-            <View style={styles.filterSheetHeader}>
-              <Text style={styles.filterSheetTitle}>絞り込み</Text>
-              <TouchableOpacity onPress={() => setIsFilterSheetVisible(false)}>
-                <Text style={styles.filterSheetClose}>閉じる</Text>
-              </TouchableOpacity>
-            </View>
-
-            <ScrollView
-              style={styles.filterOptionScroll}
-              contentContainerStyle={styles.filterOptionGrid}
-              showsVerticalScrollIndicator={false}
-            >
-              {inventoryFilterOptions.map((option) => {
-                  const isSelected = option.type === selectedInventoryFilter.type
-                    && option.key === selectedInventoryFilter.key
-                  return (
-                    <TouchableOpacity
-                      key={`${option.type}-${option.key}`}
-                      style={[
-                        styles.filterOption,
-                        isSelected && styles.filterOptionSelected,
-                      ]}
-                      onPress={() => {
-                        setSelectedInventoryFilter(option)
-                        setIsFilterSheetVisible(false)
-                        requestAnimationFrame(() => {
-                          listRef.current?.scrollToOffset({
-                            offset: headerHeightRef.current,
-                            animated: true,
-                          })
-                        })
-                      }}
-                    >
-                      <Text
-                        style={[
-                          styles.filterOptionText,
-                          isSelected && styles.filterOptionTextSelected,
-                        ]}
-                      >
-                        {option.label}
-                      </Text>
-                    </TouchableOpacity>
-                  )
-                })}
-            </ScrollView>
-          </View>
-        </View>
-      </Modal>
+        value={selectedInventoryFilter}
+        targets={groupedInventory}
+        onApply={handleApplyInventoryFilter}
+        onClose={() => setIsFilterSheetVisible(false)}
+      />
 
       {selectedDetail && getEquipmentTemplate(selectedDetail.templateId) && (
         <ItemDetail
@@ -1189,67 +1084,6 @@ const styles = StyleSheet.create({
   emptyInventoryText: {
     fontSize: 14,
     color: '#9CA3AF',
-  },
-  filterSheetOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.28)',
-    justifyContent: 'flex-end',
-  },
-  filterSheetBackdrop: {
-    ...StyleSheet.absoluteFillObject,
-  },
-  filterSheet: {
-    backgroundColor: '#FFFFFF',
-    borderTopLeftRadius: 16,
-    borderTopRightRadius: 16,
-    padding: 16,
-    maxHeight: '72%',
-  },
-  filterSheetHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: 14,
-  },
-  filterSheetTitle: {
-    fontSize: 17,
-    fontWeight: '800',
-    color: '#1F2937',
-  },
-  filterSheetClose: {
-    fontSize: 14,
-    fontWeight: '700',
-    color: '#4B5563',
-  },
-  filterOptionScroll: {
-    flexGrow: 0,
-  },
-  filterOptionGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 8,
-  },
-  filterOption: {
-    minWidth: 72,
-    borderRadius: 999,
-    borderWidth: 1,
-    borderColor: '#E5E7EB',
-    backgroundColor: '#F9FAFB',
-    paddingHorizontal: 14,
-    paddingVertical: 10,
-    alignItems: 'center',
-  },
-  filterOptionSelected: {
-    borderColor: '#1F2937',
-    backgroundColor: '#1F2937',
-  },
-  filterOptionText: {
-    fontSize: 14,
-    fontWeight: '700',
-    color: '#374151',
-  },
-  filterOptionTextSelected: {
-    color: '#FFFFFF',
   },
   overlayBackground: {
     flex: 1,

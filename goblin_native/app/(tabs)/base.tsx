@@ -18,6 +18,7 @@ import RankBadgeIcon from '../../assets/base/rank-badge.svg'
 import SpecialShopIcon from '../../assets/base/icon-special-shop.svg'
 import TrainingIcon from '../../assets/base/icon-training.svg'
 import UpgradeIcon from '../../assets/base/icon-upgrade.svg'
+import WarehouseIcon from '../../assets/base/icon-warehouse.svg'
 import MaxPartiesIcon from '../../assets/tab/tab_hensei.svg'
 
 const EQUIPMENT_SHOP_UNLOCK_RANK = 2
@@ -48,6 +49,13 @@ export default function BaseManagementScreen() {
   const baseHeaderImage = baseHeaderImages[rank] ?? baseHeaderImages[4]
 
   const menuItems: BaseMenuItem[] = [
+    {
+      title: t('ui.base.warehouseTitle'),
+      description: t('ui.base.warehouseDescription'),
+      href: '/base/warehouse' as Extract<Href, string>,
+      unlockRank: 1,
+      Icon: WarehouseIcon,
+    },
     {
       title: t('ui.base.healingTitle'),
       description: t('ui.base.healingDescription'),
