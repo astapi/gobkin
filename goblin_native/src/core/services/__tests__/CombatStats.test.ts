@@ -629,6 +629,39 @@ describe('GoblinStatCalculator — 戦闘ステータス計算', () => {
     ]))
   })
 
+  it('EquipmentServiceはMOD値を称号倍率で二重強化しない', () => {
+    const bonuses = EquipmentService.calculateEquipmentBonuses([
+      {
+        id: 'eq1',
+        templateId: 'sword_broad',
+        slotIndex: 0,
+        goblinId: 1,
+        titleId: 'broken',
+        prefixMod: { id: 'power', tier: 1 },
+      },
+    ])
+
+    expect(bonuses).toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        stat: 'power_flat',
+        value: 10,
+        sourceModSlot: 'prefix',
+        sourceModTier: 1,
+      }),
+    ]))
+  })
+
+  it('基本能力MODを派生ステータス計算へ反映する', () => {
+    const goblin = createTestGoblin({
+      baseAttributes: { power: 10, wisdom: 10, spirit: 10, vitality: 10, agility: 10, luck: 10 },
+    })
+    const base = GoblinStatCalculator.calculate(goblin)
+    const modified = GoblinStatCalculator.calculate(goblin, [{ stat: 'power_flat', value: 2 }])
+
+    expect(modified.atk).toBeGreaterThan(base.atk)
+    expect(modified.accuracy).toBeGreaterThan(base.accuracy)
+  })
+
   it('EquipmentServiceは称号付き装備のマイナス補正を倍率適用する', () => {
     const bonuses = EquipmentService.calculateEquipmentBonuses([
       { id: 'eq1', templateId: 'armor_armor', slotIndex: 0, goblinId: 1, titleId: 'masterwork' },

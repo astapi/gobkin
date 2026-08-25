@@ -7,6 +7,7 @@
  */
 import { SQLiteGoblinRepository } from '@/infrastructure/repositories/SQLiteGoblinRepository'
 import { SQLiteEquipmentRepository } from '@/infrastructure/repositories/SQLiteEquipmentRepository'
+import { SQLiteEquipmentAutoSellFilterRepository } from '@/infrastructure/repositories/SQLiteEquipmentAutoSellFilterRepository'
 import { SQLitePartyRepository } from '@/infrastructure/repositories/SQLitePartyRepository'
 import { SQLitePendingGoblinRepository } from '@/infrastructure/repositories/SQLitePendingGoblinRepository'
 import { SQLiteBaseStateRepository } from '@/infrastructure/repositories/SQLiteBaseStateRepository'
@@ -19,6 +20,7 @@ import { SQLiteTransactionRunner } from '@/infrastructure/database/SQLiteTransac
 import type {
   IGoblinRepository,
   IEquipmentRepository,
+  IEquipmentAutoSellFilterRepository,
   IPartyRepository,
   IPendingGoblinRepository,
   IBaseStateRepository,
@@ -32,6 +34,7 @@ import type {
 
 export const goblinRepository: IGoblinRepository = SQLiteGoblinRepository.getInstance()
 export const equipmentRepository: IEquipmentRepository = SQLiteEquipmentRepository.getInstance()
+export const equipmentAutoSellFilterRepository: IEquipmentAutoSellFilterRepository = SQLiteEquipmentAutoSellFilterRepository.getInstance()
 export const partyRepository: IPartyRepository = SQLitePartyRepository.getInstance()
 export const pendingGoblinRepository: IPendingGoblinRepository = SQLitePendingGoblinRepository.getInstance()
 export const dungeonProgressRepository: IDungeonProgressRepository = SQLiteDungeonProgressRepository.getInstance()

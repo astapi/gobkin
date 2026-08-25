@@ -2,6 +2,7 @@ import type {
   AutoExpeditionSessionSummary,
   ExpeditionReplay,
 } from '../types'
+import { isSameEquipmentStack } from './equipmentModIdentity'
 
 export function createAutoExpeditionSummary(sessionId: string): AutoExpeditionSessionSummary {
   return {
@@ -31,9 +32,7 @@ export function addAutoExpeditionResult(
   const levelUps = base.levelUps.map(item => ({ ...item }))
 
   for (const drop of replay.summary.treasureDrops ?? []) {
-    const existing = rewardItems.find(item => (
-      item.templateId === drop.templateId && item.titleId === drop.titleId
-    ))
+    const existing = rewardItems.find(item => isSameEquipmentStack(item, drop))
     if (existing) {
       existing.count += 1
     } else {
@@ -70,7 +69,9 @@ export function addAutoExpeditionResult(
     wipeoutCount: (base.wipeoutCount ?? 0) + (isWipeout ? 1 : 0),
     retreatCount: (base.retreatCount ?? 0) + (isRetreat ? 1 : 0),
     xpGained: base.xpGained + Math.max(0, replay.summary.xpGained),
-    goldGained: base.goldGained + Math.max(0, replay.summary.goldGained),
+    goldGained: base.goldGained
+      + Math.max(0, replay.summary.goldGained)
+      + Math.max(0, replay.summary.autoSoldGold ?? 0),
     rewardItems,
     factorCount: base.factorCount + factorCount,
     levelUps,

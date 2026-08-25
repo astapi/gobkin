@@ -1,6 +1,6 @@
 import { CompleteExpeditionUseCase } from '../CompleteExpeditionUseCase'
 import { GOLDEN_ACORN_CLEAR_ENCOUNTER_ID } from '../../services/ExpeditionEngine'
-import type { IGoblinRepository, IPartyRepository, IBaseStateRepository, IEquipmentRepository, ITransactionRunner, IExpeditionCompletionGateway } from '../../repositories'
+import type { IGoblinRepository, IPartyRepository, IBaseStateRepository, IEquipmentRepository, IEquipmentAutoSellFilterRepository, ITransactionRunner, IExpeditionCompletionGateway } from '../../repositories'
 import { getCharacterSkill } from '../../../shared/data/skillCatalog'
 import { getDefaultSkillsForRace } from '../../../shared/data/raceSkills'
 import { DEFAULT_PARTY_REWARD_MULTIPLIERS } from '../../../shared/types'
@@ -896,6 +896,95 @@ describe('CompleteExpeditionUseCase', () => {
           rewardItems: [{ templateId: 'wooden_club', count: 1 }],
         }),
       }))
+    })
+
+    it('ドロップ装備のprefixとsuffixをインベントリへ保存する', async () => {
+      const goblin = createTestGoblin({ id: 1 })
+      const party = createTestParty({ id: 1, memberIds: [1] })
+      const equipmentRepo = createMockEquipmentRepository([])
+      const replay = createTestReplay({
+        summary: {
+          success: true,
+          maxFloorReached: 3,
+          xpGained: 0,
+          goldGained: 0,
+          casualties: [],
+          treasureDrops: [{
+            templateId: 'sword_long',
+            titleId: 'masterwork',
+            prefixMod: { id: 'power', tier: 9 },
+            suffixMod: { id: 'vitality', tier: 8 },
+          }],
+        },
+      })
+      const usecase = new CompleteExpeditionUseCase(
+        createMockGoblinRepository([goblin]),
+        createMockPartyRepository([party]),
+        createMockBaseStateRepository(createTestBaseState()),
+        equipmentRepo,
+      )
+
+      await usecase.execute(1, replay)
+
+      expect(equipmentRepo.save).toHaveBeenCalledWith(expect.objectContaining({
+        templateId: 'sword_long',
+        titleId: 'masterwork',
+        prefixMod: { id: 'power', tier: 9 },
+        suffixMod: { id: 'vitality', tier: 8 },
+      }))
+    })
+
+    it('自動売却対象は保存せず、売却額をゴールドへ加算して結果へ記録する', async () => {
+      const goblin = createTestGoblin({ id: 1 })
+      const party = createTestParty({ id: 1, memberIds: [1] })
+      const equipmentRepo = createMockEquipmentRepository([])
+      const baseRepo = createMockBaseStateRepository(createTestBaseState({ gold: 100 }))
+      const autoSellRepo: IEquipmentAutoSellFilterRepository = {
+        getSettings: jest.fn(async () => ({
+          version: 1 as const,
+          policies: {
+            sword_long: { mode: 'sell_all' as const, keepRules: [] },
+          },
+        })),
+        saveSettings: jest.fn(async () => {}),
+      }
+      const replay = createTestReplay({
+        summary: {
+          success: true,
+          maxFloorReached: 3,
+          xpGained: 0,
+          goldGained: 50,
+          casualties: [],
+          treasureDrops: [{
+            templateId: 'sword_long',
+            titleId: 'masterwork',
+            prefixMod: { id: 'power', tier: 9 },
+            suffixMod: { id: 'vitality', tier: 8 },
+          }],
+        },
+      })
+      const usecase = new CompleteExpeditionUseCase(
+        createMockGoblinRepository([goblin]),
+        createMockPartyRepository([party]),
+        baseRepo,
+        equipmentRepo,
+        undefined,
+        undefined,
+        autoSellRepo,
+      )
+
+      const result = await usecase.execute(1, replay)
+
+      expect(equipmentRepo.save).not.toHaveBeenCalled()
+      expect(baseRepo.saveBaseState).toHaveBeenCalledWith(expect.objectContaining({ gold: 250 }))
+      expect(result.goldGained).toBe(150)
+      expect(result.autoSoldGold).toBe(100)
+      expect(result.treasureDrops).toBeUndefined()
+      expect(result.enrichedReplay.summary.treasureDrops).toBeUndefined()
+      expect(result.enrichedReplay.summary.autoSoldEquipment).toEqual([{
+        drop: replay.summary.treasureDrops?.[0],
+        gold: 100,
+      }])
     })
   })
 })

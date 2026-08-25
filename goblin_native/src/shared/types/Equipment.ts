@@ -20,6 +20,12 @@ export type WeaponRange = 'melee' | 'ranged'
  * 装備のステータスボーナス種別
  */
 export type EquipmentStat =
+  | 'power_flat'
+  | 'wisdom_flat'
+  | 'spirit_flat'
+  | 'vitality_flat'
+  | 'agility_flat'
+  | 'luck_flat'
   | 'hp_flat'
   | 'atk_flat'
   | 'def_flat'
@@ -43,6 +49,59 @@ export interface EquipmentStatBonus {
   value: number
   sourceCategory?: EquipmentCategory
   sourceSubCategory?: WeaponSubCategory
+  sourceModSlot?: EquipmentModSlot
+  sourceModTier?: EquipmentModTier
+  sourceModId?: EquipmentModId
+}
+
+export type EquipmentModSlot = 'prefix' | 'suffix'
+
+export type EquipmentModId =
+  | 'power'
+  | 'wisdom'
+  | 'spirit'
+  | 'vitality'
+  | 'agility'
+  | 'luck'
+
+/** PoE形式。T1が最高、T10が最低。 */
+export type EquipmentModTier = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10
+
+/** 装備に確定したMOD。値とprefix/suffix種別は定義から解決する。 */
+export interface EquipmentModRoll {
+  id: EquipmentModId
+  tier: EquipmentModTier
+}
+
+export interface EquipmentModDef {
+  id: EquipmentModId
+  slot: EquipmentModSlot
+  stat: EquipmentStat
+}
+
+export type EquipmentAutoSellMode = 'keep_all' | 'sell_all' | 'rules'
+export type EquipmentAutoSellModId = EquipmentModId | 'none'
+
+/**
+ * 詳細設定で装備を「残す」条件。
+ * 配列が空の項目は不問。1ルール内はAND、複数ルール間はORで判定する。
+ */
+export interface EquipmentAutoSellKeepRule {
+  titleIds: EquipmentTitleId[]
+  prefixModIds: EquipmentAutoSellModId[]
+  prefixTiers: EquipmentModTier[]
+  suffixModIds: EquipmentAutoSellModId[]
+  suffixTiers: EquipmentModTier[]
+}
+
+export interface EquipmentAutoSellPolicy {
+  mode: EquipmentAutoSellMode
+  keepRules: EquipmentAutoSellKeepRule[]
+}
+
+export interface EquipmentAutoSellSettings {
+  version: 1
+  policies: Record<string, EquipmentAutoSellPolicy>
 }
 
 /**
@@ -73,4 +132,6 @@ export interface EquipmentInstance {
   goblinId: number | null // 装着先、null = 在庫
   titleId?: EquipmentTitleId   // 称号ID（未設定 = 称号なし）
   titleName?: string           // 称号の表示名（例: "伝説の"）
+  prefixMod?: EquipmentModRoll
+  suffixMod?: EquipmentModRoll
 }

@@ -2,6 +2,7 @@ import type { Enemy, TreasureDrop, PartyRewardMultipliers, DungeonTier } from '.
 import { normalizePartyRewardMultipliers } from '../../shared/types'
 import { getEquipmentTemplate, getEquipmentByRank } from '../../shared/data/equipmentPoolLoader'
 import { EquipmentTitleService } from './EquipmentTitleService'
+import { EquipmentModService } from './EquipmentModService'
 import { rollDropRank } from './DropRankRoller'
 import { rollLuckValue } from './LuckRoller'
 
@@ -55,9 +56,11 @@ export function rollTreasureDrops(
 
     const titleLuckRoll = rollLuckValue(partyLuckAverage, rng)
     const title = EquipmentTitleService.rollTitle(effectiveTitleMultiplier, titleLuckRoll, tier, rng)
+    const titleId = title.titleId !== 'none' ? title.titleId : undefined
     drops.push({
       templateId: selected.id,
-      titleId: title.titleId !== 'none' ? title.titleId : undefined,
+      titleId,
+      ...EquipmentModService.rollMods(enemy.level, tier, rng),
     })
     pendingDroppedIds.add(selected.id)
   }
@@ -84,9 +87,11 @@ export function rollTreasureDrops(
 
       const titleLuckRoll = rollLuckValue(partyLuckAverage, rng)
       const title = EquipmentTitleService.rollTitle(effectiveTitleMultiplier, titleLuckRoll, tier, rng)
+      const titleId = title.titleId !== 'none' ? title.titleId : undefined
       drops.push({
         templateId: drop.templateId,
-        titleId: title.titleId !== 'none' ? title.titleId : undefined,
+        titleId,
+        ...EquipmentModService.rollMods(enemy.level, tier, rng),
       })
       pendingDroppedIds.add(drop.templateId)
     }

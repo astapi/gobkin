@@ -21,6 +21,7 @@ import { useBaseStore, getBaseStateRepository } from '../stores/useBaseStore'
 import { useDungeonStore } from '../stores/useDungeonStore'
 import {
   equipmentRepository,
+  equipmentAutoSellFilterRepository,
   expeditionRepository,
   transactionRunner,
 } from '../di/repositories'
@@ -190,6 +191,7 @@ export const useExpeditionFlow = ({
       // 冪等性ゲート（complete）と enrichedReplay 保存を同一トランザクションで実施
       expeditionRepository,
       transactionRunner,
+      equipmentAutoSellFilterRepository,
     )
   }, [goblinRepository, partyRepository, baseStateRepository])
 
@@ -202,6 +204,8 @@ export const useExpeditionFlow = ({
       baseStateRepository,
       equipmentRepository,
       expeditionRepository,
+      undefined,
+      equipmentAutoSellFilterRepository,
     )
   }, [goblinRepository, partyRepository, baseStateRepository])
 
