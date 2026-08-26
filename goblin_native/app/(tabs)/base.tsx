@@ -1,9 +1,10 @@
+import { useCallback } from 'react'
 import type { FC } from 'react'
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet, ActivityIndicator, ImageBackground } from 'react-native'
+import { View, Text, ScrollView, Pressable, StyleSheet, ActivityIndicator, ImageBackground } from 'react-native'
 import type { ImageSourcePropType } from 'react-native'
 import type { SvgProps } from 'react-native-svg'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { router } from 'expo-router'
+import { router, useFocusEffect } from 'expo-router'
 import type { Href } from 'expo-router'
 import { useTranslation } from 'react-i18next'
 import { useBaseStore, selectRank, selectMaxParties, selectMaxGoblins, selectCanRankUp } from '@/presentation/stores/useBaseStore'
@@ -20,6 +21,8 @@ import TrainingIcon from '../../assets/base/icon-training.svg'
 import UpgradeIcon from '../../assets/base/icon-upgrade.svg'
 import WarehouseIcon from '../../assets/base/icon-warehouse.svg'
 import MaxPartiesIcon from '../../assets/tab/tab_hensei.svg'
+import { useTutorialStore } from '@/presentation/stores/useTutorialStore'
+import { useTutorialTarget } from '@/presentation/hooks/useTutorialTarget'
 
 const EQUIPMENT_SHOP_UNLOCK_RANK = 2
 const baseHeaderImages: Record<number, ImageSourcePropType> = {
@@ -29,6 +32,7 @@ const baseHeaderImages: Record<number, ImageSourcePropType> = {
   4: require('../../assets/base/base-header-rank-4-orc-fortress.jpg'),
 }
 type BaseMenuItem = {
+  id?: string
   title: string
   description: string
   href: Extract<Href, string>
@@ -47,8 +51,29 @@ export default function BaseManagementScreen() {
   const goblins = useGoblinStore((state) => state.goblins)
   const baseLocationName = getBaseLocationName(rank) || t('ui.base.locationUnknown')
   const baseHeaderImage = baseHeaderImages[rank] ?? baseHeaderImages[4]
+  const growGroupMenuRef = useTutorialTarget<View>({
+    activeOn: ['add_goblin'],
+    messageKey: 'ui.tutorial.banner.openGrowGroup',
+    placement: 'above',
+  })
+
+  useFocusEffect(
+    useCallback(() => {
+      if (useTutorialStore.getState().step === 'open_goblin_list') {
+        void useTutorialStore.getState().advanceTo('add_goblin')
+      }
+    }, []),
+  )
 
   const menuItems: BaseMenuItem[] = [
+    {
+      id: 'grow-group',
+      title: t('ui.base.growGroupTitle'),
+      description: t('ui.base.growGroupDescription'),
+      href: '/base/grow-group' as Extract<Href, string>,
+      unlockRank: 1,
+      Icon: CapacityIcon,
+    },
     {
       title: t('ui.base.warehouseTitle'),
       description: t('ui.base.warehouseDescription'),
@@ -149,23 +174,30 @@ export default function BaseManagementScreen() {
           </View>
 
           <View style={styles.menuList}>
-            {menuItems.map((item) => (
-              <TouchableOpacity key={item.href} style={styles.menuButton} onPress={() => router.push(item.href)}>
-                <View style={styles.menuButtonIconWrap}>
-                  <item.Icon width={42} height={42} />
-                  {item.showBadge ? (
-                    <View style={styles.menuButtonBadge} pointerEvents="none">
-                      <Text style={styles.menuButtonBadgeText}>!</Text>
-                    </View>
-                  ) : null}
-                </View>
-                <View style={styles.menuButtonTextGroup}>
-                  <Text style={styles.menuButtonTitle}>{item.title}</Text>
-                  <Text style={styles.menuButtonDescription}>{item.description}</Text>
-                </View>
-                <Text style={styles.menuButtonArrow}>›</Text>
-              </TouchableOpacity>
-            ))}
+            {menuItems.map((item) => {
+              const button = (
+                <Pressable style={styles.menuButton} onPress={() => router.push(item.href)}>
+                  <View style={styles.menuButtonIconWrap}>
+                    <item.Icon width={42} height={42} />
+                    {item.showBadge ? (
+                      <View style={styles.menuButtonBadge} pointerEvents="none">
+                        <Text style={styles.menuButtonBadgeText}>!</Text>
+                      </View>
+                    ) : null}
+                  </View>
+                  <View style={styles.menuButtonTextGroup}>
+                    <Text style={styles.menuButtonTitle}>{item.title}</Text>
+                    <Text style={styles.menuButtonDescription}>{item.description}</Text>
+                  </View>
+                  <Text style={styles.menuButtonArrow}>›</Text>
+                </Pressable>
+              )
+              return item.id === 'grow-group' ? (
+                <View key={item.href} ref={growGroupMenuRef}>{button}</View>
+              ) : (
+                <View key={item.href}>{button}</View>
+              )
+            })}
           </View>
         </View>
       </ScrollView>

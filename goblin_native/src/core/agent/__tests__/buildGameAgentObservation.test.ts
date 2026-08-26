@@ -15,7 +15,6 @@ describe('buildGameAgentObservation', () => {
       capturedDungeons: [],
       currentMaxParties: 1,
       currentMaxGoblins: 10,
-      currentIVBonus: 0,
       gold: 100,
     }
     const goblin: Goblin = {

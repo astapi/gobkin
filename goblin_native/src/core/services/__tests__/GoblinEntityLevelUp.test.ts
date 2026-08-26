@@ -43,4 +43,12 @@ describe('GoblinEntity レベルアップ時の派生ステータス再計算', 
     expect(snapshot.stats.magicHeal).toBe(expected.magicHeal)
     expect(snapshot.stats.criticalRate).toBe(expected.criticalRate)
   })
+
+  it('純ゴブリンは＋値に応じた最大レベルで停止する', () => {
+    const entity = new GoblinEntity(createPlainGoblin({ level: 49, plusValue: 0 }))
+    const result = entity.gainExperience(100_000_000)
+
+    expect(result.newLevel).toBe(50)
+    expect(entity.toSnapshot().level).toBe(50)
+  })
 })

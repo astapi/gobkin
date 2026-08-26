@@ -59,9 +59,6 @@ function getCardUniqueSkills(goblin: Goblin) {
 export default function GoblinListScreen() {
   const { t } = useTranslation()
   const advanceTutorial = useTutorialStore((state) => state.advanceTo)
-  const tutorialStep = useTutorialStore((state) => state.step)
-  // 拠点追加チュートリアル中は解雇を封じる（保留ゴブリンが消えると進行不能になるため）
-  const isAddGoblinStep = tutorialStep === 'add_goblin'
   // 一覧画面に来たら「ゴブリンを確認」ステップへ。
   // 直前ステップ (see_first_goblin) のときだけ進める（飛ばし防止）。
   useFocusEffect(
@@ -69,9 +66,6 @@ export default function GoblinListScreen() {
       const current = useTutorialStore.getState().step
       if (current === 'see_first_goblin') {
         void advanceTutorial('view_first_goblin')
-      } else if (current === 'open_goblin_list') {
-        // 一覧タブを開いたら、保留ゴブリンを拠点に追加するステップへ
-        void advanceTutorial('add_goblin')
       }
     }, [advanceTutorial]),
   )
@@ -80,12 +74,6 @@ export default function GoblinListScreen() {
     messageKey: 'ui.tutorial.banner.viewFirstGoblin',
     placement: 'below',
     allowThrough: false,
-  })
-  // チュートリアル: 冒険クリアで産まれた保留ゴブリンを拠点に追加させる
-  const pendingSectionRef = useTutorialTarget<View>({
-    activeOn: ['add_goblin'],
-    messageKey: 'ui.tutorial.banner.addGoblin',
-    placement: 'above',
   })
   const goblins = useGoblinStore((state) => state.goblins)
   const isLoading = useGoblinStore((state) => state.isLoading)
@@ -312,10 +300,6 @@ export default function GoblinListScreen() {
       }
       await saveGoblin(goblin)
       await removePendingGoblin(goblin.id)
-      // チュートリアル: ゴブリンを拠点に追加したら締めの演出（finish）へ進める
-      if (useTutorialStore.getState().step === 'add_goblin') {
-        void useTutorialStore.getState().advanceTo('finish')
-      }
     } catch (error) {
       const message = error instanceof Error ? error.message : 'ゴブリンの追加に失敗しました。'
       Alert.alert('追加エラー', message)
@@ -325,8 +309,6 @@ export default function GoblinListScreen() {
   }, [closeOpenSwipeable, saveGoblin, removePendingGoblin])
 
   const handleDismissPending = useCallback((goblin: Goblin) => {
-    // チュートリアル（拠点追加）中は解雇させない
-    if (useTutorialStore.getState().step === 'add_goblin') return
     closeOpenSwipeable()
     Alert.alert(
       '解雇確認',
@@ -344,8 +326,6 @@ export default function GoblinListScreen() {
 
   const handleDismissAllPending = useCallback(() => {
     if (pendingGoblins.length === 0 || isBulkDismissingPending) return
-    // チュートリアル（拠点追加）中は一括解雇させない
-    if (useTutorialStore.getState().step === 'add_goblin') return
     closeOpenSwipeable()
     Alert.alert(
       '一括解雇確認',
@@ -411,7 +391,7 @@ export default function GoblinListScreen() {
     }
 
     return (
-      <View ref={pendingSectionRef} style={styles.pendingSection}>
+      <View style={styles.pendingSection}>
         <View style={styles.pendingSectionHeader}>
           <View style={styles.pendingSectionHeaderLeft}>
             <Text style={styles.pendingSectionTitle}>{t('ui.goblinList.pendingSectionTitle')}</Text>
@@ -419,17 +399,15 @@ export default function GoblinListScreen() {
               <Text style={styles.pendingBadgeText}>{pendingGoblins.length} / {maxPendingGoblins}</Text>
             </View>
           </View>
-          {!isAddGoblinStep && (
-            <TouchableOpacity
-              style={[styles.bulkDismissButton, isBulkDismissingPending && styles.bulkDismissButtonDisabled]}
-              onPress={handleDismissAllPending}
-              disabled={isBulkDismissingPending}
-            >
-              <Text style={styles.bulkDismissButtonText}>
-                {isBulkDismissingPending ? t('ui.goblinList.processing') : t('ui.goblinList.dismissAll')}
-              </Text>
-            </TouchableOpacity>
-          )}
+          <TouchableOpacity
+            style={[styles.bulkDismissButton, isBulkDismissingPending && styles.bulkDismissButtonDisabled]}
+            onPress={handleDismissAllPending}
+            disabled={isBulkDismissingPending}
+          >
+            <Text style={styles.bulkDismissButtonText}>
+              {isBulkDismissingPending ? t('ui.goblinList.processing') : t('ui.goblinList.dismissAll')}
+            </Text>
+          </TouchableOpacity>
         </View>
         {pendingGoblins.map((goblin) => {
           const effectiveStats = getEffectiveStats(goblin)
@@ -497,14 +475,12 @@ export default function GoblinListScreen() {
                     <Text style={styles.addButtonText}>{t('ui.goblinList.add')}</Text>
                   </TouchableOpacity>
                 )}
-                {!isAddGoblinStep && (
-                  <TouchableOpacity
-                    style={styles.dismissButton}
-                    onPress={() => handleDismissPending(goblin)}
-                  >
-                    <Text style={styles.dismissButtonText}>{t('ui.goblinList.dismiss')}</Text>
-                  </TouchableOpacity>
-                )}
+                <TouchableOpacity
+                  style={styles.dismissButton}
+                  onPress={() => handleDismissPending(goblin)}
+                >
+                  <Text style={styles.dismissButtonText}>{t('ui.goblinList.dismiss')}</Text>
+                </TouchableOpacity>
               </View>
             </View>
           )
@@ -512,7 +488,7 @@ export default function GoblinListScreen() {
         <View style={styles.footerSpacer} />
       </View>
     )
-  }, [handleAddPending, handleDismissAllPending, handleDismissPending, handlePendingGoblinPress, hasCapacity, isAddGoblinStep, isBulkDismissingPending, maxPendingGoblins, pendingGoblins, pendingSectionRef, t])
+  }, [handleAddPending, handleDismissAllPending, handleDismissPending, handlePendingGoblinPress, hasCapacity, isBulkDismissingPending, maxPendingGoblins, pendingGoblins, t])
 
 
   if (isLoading) {

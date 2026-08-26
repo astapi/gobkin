@@ -17,6 +17,7 @@ import { SQLiteStoryProgressRepository } from '@/infrastructure/repositories/SQL
 import { SQLiteTicketRepository } from '@/infrastructure/repositories/SQLiteTicketRepository'
 import { SQLiteTutorialStateRepository } from '@/infrastructure/repositories/SQLiteTutorialStateRepository'
 import { SQLiteTransactionRunner } from '@/infrastructure/database/SQLiteTransactionRunner'
+import { SQLiteGoblinBirthSlotRepository } from '@/infrastructure/repositories/SQLiteGoblinBirthSlotRepository'
 import type {
   IGoblinRepository,
   IEquipmentRepository,
@@ -30,6 +31,7 @@ import type {
   ITicketRepository,
   ITutorialStateRepository,
   ITransactionRunner,
+  IGoblinBirthSlotRepository,
 } from '@/core/repositories'
 
 export const goblinRepository: IGoblinRepository = SQLiteGoblinRepository.getInstance()
@@ -43,6 +45,7 @@ export const storyProgressRepository: IStoryProgressRepository = SQLiteStoryProg
 export const ticketRepository: ITicketRepository = SQLiteTicketRepository.getInstance()
 export const tutorialStateRepository: ITutorialStateRepository = SQLiteTutorialStateRepository.getInstance()
 export const transactionRunner: ITransactionRunner = SQLiteTransactionRunner.getInstance()
+export const goblinBirthSlotRepository: IGoblinBirthSlotRepository = SQLiteGoblinBirthSlotRepository.getInstance()
 
 // 拠点状態リポジトリ。ensureInitialized は初期化専用でインターフェースに含めないため、
 // インターフェース型で公開しつつ初期化ヘルパーを別途提供する。

@@ -23,6 +23,7 @@ export const SCHEMA = {
       factors_json TEXT,
       variant_factor_id TEXT,
       individual_value INTEGER DEFAULT 1,
+      plus_value INTEGER NOT NULL DEFAULT 0,
       skills_json TEXT NOT NULL DEFAULT '[]',
       battle_action_policy_json TEXT,
       created_at TEXT NOT NULL DEFAULT (datetime('now')),
@@ -51,9 +52,22 @@ export const SCHEMA = {
       factors_json TEXT,
       variant_factor_id TEXT,
       individual_value INTEGER DEFAULT 1,
+      plus_value INTEGER NOT NULL DEFAULT 0,
       skills_json TEXT NOT NULL DEFAULT '[]',
       battle_action_policy_json TEXT,
       created_at TEXT NOT NULL DEFAULT (datetime('now'))
+    )
+  `,
+
+  goblinBirthSlots: `
+    CREATE TABLE IF NOT EXISTS goblin_birth_slots (
+      slot_index INTEGER PRIMARY KEY CHECK (slot_index >= 1),
+      source_goblin_id INTEGER NOT NULL,
+      is_active INTEGER NOT NULL DEFAULT 0,
+      cycle_started_at TEXT,
+      next_birth_at TEXT,
+      source_snapshots_json TEXT NOT NULL DEFAULT '[]',
+      updated_at TEXT NOT NULL DEFAULT (datetime('now'))
     )
   `,
 

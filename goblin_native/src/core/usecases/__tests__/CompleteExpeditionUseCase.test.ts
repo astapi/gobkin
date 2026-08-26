@@ -42,7 +42,6 @@ function createTestBaseState(overrides: Partial<BaseState> = {}): BaseState {
     capturedDungeons: [],
     currentMaxParties: 2,
     currentMaxGoblins: 10,
-    currentIVBonus: 0,
     gold: 100,
     ...overrides,
   }

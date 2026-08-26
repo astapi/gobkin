@@ -1,7 +1,5 @@
 import {
   BASE_RANK_CONFIGS,
-  BASE_RANK_BONUS,
-  calculateIndividualValue,
   captureDungeon,
   checkRankUpAvailable,
   createInitialBaseState,
@@ -9,51 +7,7 @@ import {
 } from '../BaseRankSystem'
 import type { BaseState } from '../../../shared/types/BaseState'
 
-/** シード付き乱数（他のテストと同じ実装） */
-function createSeededRandom(seed: number): () => number {
-  let state = seed
-  return () => {
-    state = (state * 1664525 + 1013904223) % 0x100000000
-    return (state >>> 0) / 0x100000000
-  }
-}
-
 describe('BaseRankSystem', () => {
-  describe('calculateIndividualValue（レンジの具体値は仕様見直し保留中のため緩い検証のみ）', () => {
-    it('呼び出しが壊れず、結果は0〜100程度の妥当な範囲に収まる', () => {
-      for (let seed = 0; seed < 200; seed++) {
-        const rng = createSeededRandom(seed)
-        const areaLevel = (seed % 10) + 1
-        const baseRank = (seed % 7) + 1
-        const iv = calculateIndividualValue(areaLevel, baseRank, rng)
-        expect(Number.isFinite(iv)).toBe(true)
-        expect(iv).toBeGreaterThanOrEqual(0)
-        expect(iv).toBeLessThanOrEqual(100)
-      }
-    })
-
-    it('最終的な個体値は常に1〜64の範囲にクランプされる', () => {
-      const fixedZero = () => 0
-      const fixedMax = () => 0.999999
-
-      for (let areaLevel = 0; areaLevel <= 10; areaLevel++) {
-        for (let baseRank = 0; baseRank <= 8; baseRank++) {
-          expect(calculateIndividualValue(areaLevel, baseRank, fixedZero)).toBeGreaterThanOrEqual(1)
-          expect(calculateIndividualValue(areaLevel, baseRank, fixedZero)).toBeLessThanOrEqual(64)
-          expect(calculateIndividualValue(areaLevel, baseRank, fixedMax)).toBeGreaterThanOrEqual(1)
-          expect(calculateIndividualValue(areaLevel, baseRank, fixedMax)).toBeLessThanOrEqual(64)
-        }
-      }
-    })
-
-    it('未定義の拠点ランク(bonus未設定)を渡してもクラッシュせず1〜64に収まる', () => {
-      const rng = createSeededRandom(1)
-      const iv = calculateIndividualValue(1, 999, rng)
-      expect(iv).toBeGreaterThanOrEqual(1)
-      expect(iv).toBeLessThanOrEqual(64)
-    })
-  })
-
   describe('checkRankUpAvailable', () => {
     it('最大ランク(7)の場合はランクアップ不可', () => {
       const baseState: BaseState = {
@@ -146,7 +100,6 @@ describe('BaseRankSystem', () => {
         expect(result.state.gold).toBe(0)
         expect(result.state.currentMaxParties).toBe(2)
         expect(result.state.currentMaxGoblins).toBe(20)
-        expect(result.state.currentIVBonus).toBe(2)
         expect(result.state.capacity).toBe(20)
       }
     })
@@ -251,13 +204,12 @@ describe('BaseRankSystem', () => {
       expect(baseState.capturedDungeons).toEqual([])
       expect(baseState.currentMaxParties).toBe(BASE_RANK_CONFIGS[0].maxParties)
       expect(baseState.currentMaxGoblins).toBe(BASE_RANK_CONFIGS[0].maxGoblins)
-      expect(baseState.currentIVBonus).toBe(BASE_RANK_CONFIGS[0].ivBonus)
       expect(baseState.capacity).toBe(BASE_RANK_CONFIGS[0].maxGoblins)
       expect(baseState.gold).toBeGreaterThan(0)
     })
   })
 
-  describe('BASE_RANK_CONFIGS / BASE_RANK_BONUS の整合性', () => {
+  describe('BASE_RANK_CONFIGS の整合性', () => {
     it('ランクは1から7まで連番で定義されている', () => {
       expect(BASE_RANK_CONFIGS.map((c) => c.rank)).toEqual([1, 2, 3, 4, 5, 6, 7])
     })
@@ -267,12 +219,6 @@ describe('BaseRankSystem', () => {
         expect(BASE_RANK_CONFIGS[i].upgradeCost).toBeGreaterThan(BASE_RANK_CONFIGS[i - 1].upgradeCost)
         expect(BASE_RANK_CONFIGS[i].maxParties).toBeGreaterThanOrEqual(BASE_RANK_CONFIGS[i - 1].maxParties)
         expect(BASE_RANK_CONFIGS[i].maxGoblins).toBeGreaterThan(BASE_RANK_CONFIGS[i - 1].maxGoblins)
-      }
-    })
-
-    it('BASE_RANK_BONUSは各ランク設定のivBonusと一致する', () => {
-      for (const config of BASE_RANK_CONFIGS) {
-        expect(BASE_RANK_BONUS[config.rank]).toBe(config.ivBonus)
       }
     })
   })

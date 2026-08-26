@@ -3,7 +3,7 @@
 ## 概要
 
 ゴブリンが勢力を拡大し、敵の拠点を制圧することで拠点ランクを上げるシステム。
-拠点ランクの上昇により、パーティ編成数、ゴブリン収容数、個体値ボーナスが増加する。
+拠点ランクの上昇により、パーティ編成数、ゴブリン収容数、「群れを増やす」の同時稼働枠数が増加する。
 
 ## 拠点ランクの進行
 
@@ -47,117 +47,63 @@ const BASE_RANK_CONFIGS = [
     rank: 1,
     maxParties: 1,        // 編成可能なパーティ数
     maxGoblins: 10,       // 収容可能なゴブリン数
-    ivBonus: 0,           // 個体値ボーナス
   },
   {
     rank: 2,
     maxParties: 2,
     maxGoblins: 20,
-    ivBonus: 2,           // +2
   },
   {
     rank: 3,
     maxParties: 3,
     maxGoblins: 35,
-    ivBonus: 4,           // +4
   },
   {
     rank: 4,
     maxParties: 4,
     maxGoblins: 50,
-    ivBonus: 6,           // +6
   },
   {
     rank: 5,
     maxParties: 5,
     maxGoblins: 70,
-    ivBonus: 8,           // +8
   },
   {
     rank: 6,
     maxParties: 6,
     maxGoblins: 100,
-    ivBonus: 10,          // +10
   },
   {
     rank: 7,
     maxParties: 8,
     maxGoblins: 150,
-    ivBonus: 12,          // +12
   },
 ];
 ```
 
-## 個体値計算システム
+## ＋値と最大レベル
 
 ### 基本ロジック
 
 ```
-最終個体値 = エリアレベルベース個体値 + 拠点ランクボーナス
-→ 1-64の範囲にクランプ
+子の＋値 = max(継承元の＋値, ランダム選出個体の＋値) + 1
 ```
 
-### エリアレベルごとのベース個体値範囲
+拠点にマルクしかいない場合は、マルク単独で `マルクの＋値 + 1` とする。
 
-各ダンジョンエリアには「エリアレベル」（1-8）が設定されており、これがゴブリン生成時のベース個体値を決定する。
-
-```typescript
-const AREA_LEVEL_IV_RANGES: Record<number, [number, number]> = {
-  1: [1, 8],      // 序盤（スライム洞窟、周辺の森）
-  2: [6, 14],     // 初期中盤（ゴブリン集落、盗賊のアジト、ハーフリング農村）
-  3: [12, 20],    // 中盤（交易路の関所、小さな鉱山、沼地の見張り小屋）
-  4: [18, 28],    // 中盤後期（ドワーフ坑道、オークキャンプ、アンデッド墳墓）
-  5: [26, 36],    // 上級（リザードマン集落、ハーピーの崖巣、トロルの峡谷）
-  6: [34, 44],    // 終盤（ミノタウロス迷宮、吸血鬼の古城、ドラゴンの火山巣）
-  7: [42, 52],    // 最終盤（人間の街塞、騎士団本部、学術都市）
-  8: [50, 60],    // 最終決戦（王都防衛戦）
-};
-```
-
-### 計算例
-
-**例1: ランク1拠点でエリアレベル1のダンジョンをクリア**
-```
-ベース個体値: 1-8（ランダム） → 仮に5
-拠点ランクボーナス: +0
-最終個体値: 5
-```
-
-**例2: ランク3拠点でエリアレベル3のダンジョンをクリア**
-```
-ベース個体値: 12-20（ランダム） → 仮に16
-拠点ランクボーナス: +4
-最終個体値: 20
-```
-
-**例3: ランク7拠点でエリアレベル8のダンジョンをクリア**
-```
-ベース個体値: 50-60（ランダム） → 仮に55
-拠点ランクボーナス: +12
-最終個体値: 67 → 64にクランプ
-```
-
-**例4: ランク7拠点でエリアレベル1のダンジョンを周回**
-```
-ベース個体値: 1-8（ランダム） → 仮に6
-拠点ランクボーナス: +12
-最終個体値: 18
-```
+純ゴブリンの最大レベルは `min(200, 50 + ＋値×3)`。亜種と始祖ゴブリンは＋値による最大レベル変化がなく、Lv200まで成長できる。既存個体が移行時点で計算上限を超えている場合は現在レベルを下げない。
 
 ### ゲームプレイへの影響
 
 **メリット**：
-1. **難易度と報酬の相関**: 難しいダンジョンほど高個体値のゴブリンが得られる
-2. **拠点成長の価値**: 拠点ランクを上げれば、すべての遠征でゴブリンの質が底上げされる
-3. **選択肢の多様性**:
-   - 高難易度に挑戦して高個体値狙い
-   - 低難易度を周回してゴブリン数を集める（個体値は低め）
-   - バランスを取って中難易度を攻略
+1. **世代更新**: 高い＋値を持つ個体を使うほど次世代の＋値が上がる
+2. **拠点成長の価値**: 拠点ランクを上げるほど同時稼働枠が増える
+3. **選択肢の多様性**: レベルと因子の組み合わせを見て設定個体を選ぶ
 
 **プレイヤーの戦略**：
-- **序盤**: エリアレベル1-2を周回して戦力を整える
-- **中盤**: 拠点ランクを上げつつ、エリアレベル3-5に挑戦
-- **終盤**: 高ランク拠点 + 高レベルエリアで最強ゴブリンを量産
+- **序盤**: マルク単独から最初の＋1を誕生させる
+- **中盤**: 高い＋値と狙った因子を持つ個体を継承元にする
+- **終盤**: 亜種ごとの最低＋値を満たして希少亜種を狙う
 
 ## データ構造
 
@@ -169,7 +115,6 @@ interface BaseState {
   capturedDungeons: string[];      // 制圧済みダンジョンIDのリスト
   currentMaxParties: number;       // 現在の最大パーティ数
   currentMaxGoblins: number;       // 現在の最大ゴブリン数
-  currentIVBonus: number;          // 現在の個体値ボーナス
 }
 ```
 
@@ -194,7 +139,6 @@ interface BaseRankConfig {
   rank: number;
   maxParties: number;
   maxGoblins: number;
-  ivBonus: number;
   unlockCondition: {
     dungeonId: string;             // 制圧する必要のあるダンジョンID
     clearCount?: number;           // 必要なクリア回数（デフォルト1）
@@ -204,24 +148,11 @@ interface BaseRankConfig {
 
 ## 実装ロジック
 
-### 個体値計算関数
+### ＋値計算関数
 
 ```typescript
-function calculateIndividualValue(
-  areaLevel: number,
-  baseRank: number,
-  random: () => number
-): number {
-  // エリアレベルのベース範囲を取得
-  const [min, max] = AREA_LEVEL_IV_RANGES[areaLevel] || [1, 8];
-  const baseIV = Math.floor(min + (max - min) * random());
-
-  // 拠点ランクボーナスを加算
-  const bonus = BASE_RANK_BONUS[baseRank] || 0;
-  const finalIV = baseIV + bonus;
-
-  // 1-64にクランプ
-  return Math.max(1, Math.min(64, finalIV));
+function calculateBirthPlusValue(plusValues: number[]): number {
+  return Math.max(...plusValues) + 1;
 }
 ```
 
@@ -275,7 +206,6 @@ async function captureDungeon(
       baseState.rank = nextRank;
       baseState.currentMaxParties = nextConfig.maxParties;
       baseState.currentMaxGoblins = nextConfig.maxGoblins;
-      baseState.currentIVBonus = nextConfig.ivBonus;
     }
   }
 
@@ -324,7 +254,7 @@ interface BaseDefense {
 
 ### Phase 1: 基本システム
 1. BaseStateデータ構造の実装
-2. 個体値計算ロジックの実装
+2. ＋値計算ロジックの実装
 3. ランクアップ判定ロジックの実装
 4. GoblinBirthServiceへの統合
 
@@ -336,7 +266,7 @@ interface BaseDefense {
 
 ### Phase 3: ゲームバランス調整
 1. エリアレベルの設定
-2. 個体値範囲の微調整
+2. 純ゴブリンの最大レベルと亜種最低＋値の調整
 3. ランクアップ条件の調整
 
 ### Phase 4: 拡張機能

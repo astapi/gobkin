@@ -14,10 +14,10 @@ goblin_native はローカルデータ永続化に **SQLite（expo-sqlite）** �
 
 - スキーマ定義: [`src/infrastructure/database/schema.ts`](/Users/astapi/projects/goblinKingdom/goblin_native/src/infrastructure/database/schema.ts)
 - 初期化・マイグレーション: [`src/infrastructure/database/index.ts`](/Users/astapi/projects/goblinKingdom/goblin_native/src/infrastructure/database/index.ts)
-- マイグレーション: `src/infrastructure/database/migrations/v1.ts` 〜 `v16.ts`
+- マイグレーション: `src/infrastructure/database/migrations/v1.ts` 〜 `v23.ts`
 - リポジトリ実装: `src/infrastructure/repositories/SQLite*.ts`
 
-> **現行スキーマバージョン: 16**（`CURRENT_SCHEMA_VERSION = 16`）。新規インストールは `schema.ts` で最新形を作成し、既存DBは差分マイグレーションで追従します。
+> **現行スキーマバージョン: 23**（`CURRENT_SCHEMA_VERSION = 23`）。新規インストールは `schema.ts` で最新形を作成し、既存DBは差分マイグレーションで追従します。
 
 ---
 
@@ -27,6 +27,7 @@ goblin_native はローカルデータ永続化に **SQLite（expo-sqlite）** �
 |---------|--------|------|--------|
 | `goblins` | `id` | 拠点所属ゴブリン | schema.ts |
 | `pending_goblins` | `id` | 産まれた（受け入れ待ち）ゴブリン | schema.ts |
+| `goblin_birth_slots` | `slot_index` | 「群れを増やす」の設定・稼働時刻・因子元スナップショット | migration v21 |
 | `parties` | `id` | パーティ編成・遠征設定 | schema.ts |
 | `expeditions` | `id`(TEXT) | 遠征記録（メタ/リプレイ） | schema.ts + v10 |
 | `base_state` | `id`(=1) | 拠点状態（シングルトン行） | schema.ts |
@@ -63,7 +64,8 @@ CREATE TABLE IF NOT EXISTS goblins (
   effective_stats_json TEXT,                      -- 因子/装備/スキル適用後の実効ステータス
   factors_json TEXT,                              -- string[]（獲得因子）
   variant_factor_id TEXT,                         -- 亜種化の元因子
-  individual_value INTEGER DEFAULT 1,             -- 個体値（1〜64）
+  individual_value INTEGER DEFAULT 1,             -- 旧バージョン互換（アプリでは未使用）
+  plus_value INTEGER NOT NULL DEFAULT 0,           -- 血統の＋値
   skills_json TEXT NOT NULL DEFAULT '[]',         -- CharacterSkill[]
   battle_action_policy_json TEXT,                 -- 戦闘行動方針
   created_at TEXT NOT NULL DEFAULT (datetime('now')),
@@ -135,7 +137,7 @@ CREATE TABLE IF NOT EXISTS base_state (
   captured_dungeons_json TEXT NOT NULL DEFAULT '[]',  -- 制圧済みダンジョンID[]
   current_max_parties INTEGER NOT NULL DEFAULT 1,
   current_max_goblins INTEGER NOT NULL DEFAULT 10,
-  current_iv_bonus INTEGER NOT NULL DEFAULT 0,        -- 個体値ボーナス
+  current_iv_bonus INTEGER NOT NULL DEFAULT 0,        -- 旧バージョン互換（アプリでは未使用）
   gold INTEGER NOT NULL DEFAULT 0,
   next_goblin_id INTEGER NOT NULL DEFAULT 1,
   updated_at TEXT NOT NULL DEFAULT (datetime('now'))
@@ -238,6 +240,13 @@ INSERT OR IGNORE INTO app_metadata (key, value) VALUES ('schema_version', '1');
 | v14 | 最初のゴブリン（founder）を始祖ゴブリン「マルク」の固定データへ上書き |
 | v15 | MODシステム廃止に伴い、goblins/pending_goblins から `mods_json` を撤去（temp テーブル経由の再構築） |
 | v16 | `dungeon_progress.cleared_floors_json` 追加（既存クリア済みダンジョンのフロア到達状況を backfill） |
+| v17 | PTごとの自動周回設定と日次使用時間を追加 |
+| v18 | 自動周回結果のセッションIDを追加 |
+| v19 | イベントダンジョン追加に伴う解放状態を backfill |
+| v20 | 装備のprefix/suffix MOD保存列を追加 |
+| v21 | `goblin_birth_slots` テーブルを追加 |
+| v22 | 稼働中の誕生枠を10分間隔へ補正 |
+| v23 | goblins/pending_goblins に `plus_value` を追加し、誕生枠を継承元1体の列構成へ移行 |
 
 > 正確な内容は各 `migrations/v{n}.ts` を参照してください。`schema.ts` は常に最新スキーマを保持しており、新規インストールでは v1 適用時点で最新カラムが揃うため、v2 以降のマイグレーションは新規インストールでは実質的に無処理（カラム存在チェックでスキップ）になります。
 
@@ -256,7 +265,7 @@ INSERT OR IGNORE INTO app_metadata (key, value) VALUES ('schema_version', '1');
 
 ### データベース初期化（`database/index.ts`）
 
-- `CURRENT_SCHEMA_VERSION = 16`。
+- `CURRENT_SCHEMA_VERSION = 23`。
 - `getDatabase()` は既に接続済みの場合でも `ensureMigrations()` を呼び、アプリアップデート後も未適用マイグレーションがあれば追従します（初回接続時は `initializeDatabase()` が `openDatabaseAsync` → `runMigrations` を実行）。
 - `initializationPromise` で重複初期化を防止し、初期化失敗時は Promise をリセットして再試行可能にします。
 - `ensureMigrations()` は `migrationPromise`（in-flight Promise）で並行呼び出しを直列化し、二重実行を防ぎます。
@@ -290,8 +299,8 @@ INSERT OR IGNORE INTO app_metadata (key, value) VALUES ('schema_version', '1');
 
 ### バックアップフォーマット
 
-- 対象テーブルは `BackupSchema.ts` の `EXPORTABLE_TABLES` で定義: `goblins` / `pending_goblins` / `parties` / `expeditions` / `base_state` / `dungeon_progress` / `equipment` / `story_progress` / `tickets` / `app_metadata`。
-- `BACKUP_FORMAT_VERSION = 2`。v2 で `tickets` テーブルがバックアップ対象に追加されました。旧 v1 形式のバックアップ（`tickets` を含まない）も後方互換で読み込み可能です（欠損テーブルは空配列として復元）。
+- 対象テーブルは `BackupSchema.ts` の `EXPORTABLE_TABLES` で定義: `goblins` / `pending_goblins` / `goblin_birth_slots` / `parties` / `expeditions` / `base_state` / `dungeon_progress` / `equipment` / `story_progress` / `tickets` / `app_metadata`。
+- `BACKUP_FORMAT_VERSION = 3`。v3で `goblin_birth_slots` テーブルがバックアップ対象に追加されました。旧形式のバックアップも後方互換で読み込み可能です（欠損テーブルは空配列として復元）。
 - インポート時、バックアップの `meta.schemaVersion` が現在の `CURRENT_SCHEMA_VERSION` より小さい場合は、全テーブルの置き換え後に `ensureMigrations()` を実行し、既存のマイグレーション（バックフィルロジックを含む）で現行スキーマまで引き上げます。`meta.schemaVersion` が現行より新しい場合はインポートを拒否します（`unsupportedSchema`）。
 
 ---

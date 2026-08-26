@@ -37,35 +37,46 @@ export default function ExpeditionResultScreen() {
   const markDungeonCleared = useDungeonStore((state) => state.markDungeonCleared)
   const markDungeonFloorCleared = useDungeonStore((state) => state.markDungeonFloorCleared)
   const markUnlockNotified = useDungeonStore((state) => state.markUnlockNotified)
-  const {
-    expeditionRecords,
-    getExpeditionById,
-    refresh: refreshExpeditions,
-    isLoading: isExpeditionLoading,
-  } = useExpeditionStore()
+  const getExpeditionById = useExpeditionStore((state) => state.getExpeditionById)
+  const refreshExpeditions = useExpeditionStore((state) => state.refresh)
   const checkAndUnlockStories = useStoryStore((state) => state.checkAndUnlockStories)
-  const [hasRetriedLoad, setHasRetriedLoad] = useState(false)
+  const [isResultLoading, setIsResultLoading] = useState(Boolean(expeditionId))
   const [expeditionRecord, setExpeditionRecord] = useState<ExpeditionRecord | null>(null)
   const [unlockedStories, setUnlockedStories] = useState<Story[]>([])
 
   useEffect(() => {
-    if (!expeditionId) return
-    void (async () => {
-      const byId = await getExpeditionById(expeditionId)
-      if (byId) {
-        setExpeditionRecord(byId)
-      } else {
-        const fromList = expeditionRecords.find(record => record.id === expeditionId) ?? null
-        setExpeditionRecord(fromList)
-      }
-    })()
-  }, [expeditionId, getExpeditionById, expeditionRecords])
+    let active = true
 
-  useEffect(() => {
-    if (!expeditionId || isExpeditionLoading || expeditionRecord || hasRetriedLoad) return
-    void refreshExpeditions()
-    setHasRetriedLoad(true)
-  }, [expeditionId, expeditionRecord, hasRetriedLoad, isExpeditionLoading, refreshExpeditions])
+    setExpeditionRecord(null)
+    if (!expeditionId) {
+      setIsResultLoading(false)
+      return () => {
+        active = false
+      }
+    }
+
+    setIsResultLoading(true)
+    void (async () => {
+      let record = await getExpeditionById(expeditionId)
+      if (!record) {
+        await refreshExpeditions()
+        record = await getExpeditionById(expeditionId)
+      }
+      if (active) {
+        setExpeditionRecord(record)
+        setIsResultLoading(false)
+      }
+    })().catch(error => {
+      console.warn('[ExpeditionResult] Failed to load expedition result', error)
+      if (active) {
+        setIsResultLoading(false)
+      }
+    })
+
+    return () => {
+      active = false
+    }
+  }, [expeditionId, getExpeditionById, refreshExpeditions])
 
   const replay = expeditionRecord?.replay ?? null
 
@@ -246,7 +257,7 @@ export default function ExpeditionResultScreen() {
     router.dismissAll()
   }, [])
 
-  if (expeditionId && (isExpeditionLoading || (!expeditionRecord && !hasRetriedLoad))) {
+  if (isResultLoading) {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.loadingContainer}>

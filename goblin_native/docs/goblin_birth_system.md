@@ -2,52 +2,47 @@
 
 ## 概要
 
-ゴブリンはダンジョンを完全制圧した際に1体誕生する。
-誕生時に個体値・ステータス・因子引き継ぎ・亜種化がすべて決定される。
+拠点の「群れを増やす」で、プレイヤーが継承元のゴブリンを1体固定して活動を開始する。
+もう1体は各サイクル開始時に拠点メンバーからランダムに選ばれる。拠点にマルクしかいない場合はマルク単独で活動できる。
+10分経過すると1体が誕生し、停止するまで同じ継承元で次のサイクルを自動開始する。
+設定したゴブリンは拘束されず、遠征・訓練・装備変更を引き続き行える。
 
 ## 誕生のトリガー
 
 ### 条件
 
-以下の**両方**を満たした場合にゴブリンが1体誕生する:
+1. 拠点ランクに応じて利用可能な枠を選ぶ（利用枠数 = 拠点ランク）
+2. 継承元のゴブリンを1体設定する
+3. 「開始」を実行する
+4. 10分経過する
 
-1. `replay.summary.success === true`（遠征成功）
-2. `replay.summary.maxFloorReached >= dungeon.floors`（ダンジョン全フロア到達＝完全制圧）
-
-### 誕生数
-
-**1回の制圧につき1体**。複数体同時に誕生する仕組みはない。
+各サイクル開始時に継承元とランダム選出個体の＋値・因子をスナップショットとして保存する。活動中に変化した内容は、次のサイクル開始時から反映される。
 
 ### 処理の流れ
 
 ```
-ダンジョン制圧
+開始
   │
-  ├─ ① ダンジョンをクリア済みにマーク
-  ├─ ② nextGoblinId を採番（アトミックインクリメント）
-  ├─ ③ GoblinBirthService.createNewGoblin() でゴブリン生成
-  │     引数: nextId, undefined(IV), goblins(拠点全員), areaLevel, rank
+  ├─ ① ランダム個体を選び、1〜2体の＋値・因子をスナップショット保存
+  ├─ ② next_birth_at を10分後に設定
+  ├─ ③ 時刻到達後に nextGoblinId を採番
+  ├─ ④ GoblinBirthService.createNewGoblinFromFactorSources() で生成
   │
-  └─ ④ 保存先の振り分け
-        ├─ 拠点に空きあり → goblins テーブルに直接保存
-        └─ 容量超過 → pending_goblins テーブルに待機保存
-              └─ 待機数が上限（ランク×5）に達している場合は誕生しない
+  └─ ⑤ pending_goblins へ保存して次サイクルを自動開始
+        └─ 待機上限（ランク×5）到達時は枠を保持したまま自動待機
 ```
 
 ## 誕生の処理詳細
 
-### GoblinBirthService.createNewGoblin()
+### GoblinBirthService.createNewGoblinFromFactorSources()
 
 ```
-引数: (nextGoblinId, individualValue?, baseGoblins?, areaLevel?, baseRank?)
+引数: (nextGoblinId, plusValue, sourceFactorIds, baseRank?)
   │
-  ├─ 1. 個体値の決定
-  │     ├─ individualValue 指定あり → そのまま使用
-  │     ├─ areaLevel + baseRank 指定 → calculateIndividualValue() で自動計算
-  │     └─ いずれもなし → デフォルト値 1
+  ├─ 1. ＋値はスナップショット内の最大値+1で計算済み
   │
-  ├─ 2. 因子引き継ぎ評価（baseGoblins がある場合のみ）
-  │     ├─ 親選出（拠点から最大2体）
+  ├─ 2. 継承元とランダム個体の因子から引き継ぎ評価
+  │     ├─ 因子を重複排除
   │     ├─ 各因子の引き継ぎ判定
   │     └─ 亜種化判定
   │
@@ -59,50 +54,21 @@
         └─ Goblin オブジェクト返却
 ```
 
-## 個体値システム
+## ＋値システム
 
 ### 概要
 
-個体値（IV: Individual Value）は1〜64の整数値で、ゴブリンの潜在能力を表す。
+＋値は血統の世代進行を表す0以上の整数で、すべてのゴブリンが保持する。
 
 ### 計算式
 
 ```
-個体値 = clamp(1, 64, baseIV + bonus)
-
-baseIV = floor(min + (max - min) × random())   ← エリアレベルで範囲決定
-bonus  = BASE_RANK_BONUS[拠点ランク]
+子の＋値 = max(継承元の＋値, ランダム個体の＋値) + 1
 ```
 
-### エリアレベルごとのベース範囲
+マルク単独の場合は `マルクの＋値 + 1`。純ゴブリンは `Lv50 + ＋値×3`（最大Lv200）まで成長できる。亜種とマルクは＋値にかかわらず最大Lv200で、亜種では＋値が戦闘性能に直接影響しない。
 
-| エリアレベル | 範囲 | 対応ダンジョン例 |
-|-------------|------|----------------|
-| 1 | 1〜8 | スライムの洞窟、周辺の森 |
-| 2 | 6〜14 | ゴブリン集落、忘れられた廃墟 |
-| 3 | 12〜20 | オークの野営地、vs討伐隊防衛戦 |
-| 4 | 18〜28 | 辺境の村 |
-| 5 | 26〜36 | ドワーフ坑道、エルフの隠れ里 |
-| 6 | 34〜44 | リザードマンの沼砦、トロルの峡谷 |
-| 7 | 42〜52 | 人間の城塞 |
-| 8 | 50〜60 | 王都決戦 |
-
-### 拠点ランクボーナス
-
-| ランク | ボーナス | 解放条件ダンジョン | ランクアップ費用 |
-|--------|---------|------------------|--------------|
-| 1 | +0 | 初期 | - |
-| 2 | +2 | ゴブリン集落・中枢 | 100G |
-| 3 | +4 | オークの野営地・本陣 | 500G |
-| 4 | +6 | vs討伐隊防衛戦 | 1,500G |
-| 5 | +8 | ドワーフ坑道 | 4,000G |
-| 6 | +10 | 人間の城塞 | 10,000G |
-| 7 | +12 | 王都決戦 | 25,000G |
-
-### 個体値の理論値
-
-- **最低**: エリアLv1 + ランク1 = 1〜8（ボーナスなし）
-- **最高**: エリアLv8 + ランク7 = 50+12〜60+12 = 62〜64（上限64でクランプ）
+亜種化には因子ごとの最低＋値が必要。例としてウルフゴブリンは＋5以上でのみ亜種化抽選の候補になる。
 
 ## 基礎ステータス生成
 
@@ -161,9 +127,9 @@ bonus  = BASE_RANK_BONUS[拠点ランク]
 
 ### 容量超過時の挙動
 
-1. **拠点に空きあり**: `goblins` テーブルに直接保存、即座に使用可能
-2. **拠点が満員**: `pending_goblins` テーブルに待機保存
-3. **待機枠も満杯**: ゴブリンは誕生しない（消失）
+1. 誕生した個体は `pending_goblins` テーブルに保存
+2. 待機枠が満杯なら、誕生枠を「受け入れ枠待ち」にして消失を防止
+3. 待機枠が空くと自動で誕生処理を再開
 
 ## ID管理
 
@@ -171,7 +137,7 @@ bonus  = BASE_RANK_BONUS[拠点ランク]
 
 - `base_state` テーブルの `next_goblin_id` カラムで管理
 - `getAndIncrementNextGoblinId()` でアトミックにインクリメント
-- 初期値: 1
+- 初期値: 1（マルク id=0 の次）
 
 ```sql
 UPDATE base_state SET next_goblin_id = next_goblin_id + 1 WHERE id = 1
@@ -200,6 +166,7 @@ UPDATE base_state SET next_goblin_id = next_goblin_id + 1 WHERE id = 1
 | level | 1 |
 | experience | 0 |
 | factors | 引き継ぎ結果（なければ空配列） |
+| plusValue | 継承元とランダム個体の大きい方+1 |
 | variantFactorId | 亜種の場合のみ設定 |
 | spells | なし |
 
@@ -208,11 +175,13 @@ UPDATE base_state SET next_goblin_id = next_goblin_id + 1 WHERE id = 1
 | ファイル | 内容 |
 |---------|------|
 | `src/core/services/GoblinBirthService.ts` | 誕生ロジック本体（ステータス生成、名前選択） |
-| `src/core/services/BaseRankSystem.ts` | 個体値計算、拠点ランク設定 |
+| `src/core/services/GoblinBirthCycleSystem.ts` | 誕生時間、枠数、ランダム個体選出、＋値計算 |
+| `src/core/services/GoblinLevelCap.ts` | 純ゴブリンの＋値による最大レベル計算 |
 | `src/core/services/FactorInheritanceService.ts` | 因子引き継ぎ・亜種化判定 |
 | `src/core/services/GoblinStatCalculator.ts` | 実効ステータス計算 |
 | `src/shared/data/equipmentConfig.ts` | 血統別攻撃回数設定 |
-| `src/presentation/hooks/useExpeditionFlow.ts` | 誕生トリガー・保存先振り分け |
+| `src/presentation/stores/useGoblinBirthStore.ts` | 枠設定・開始・停止・時間経過処理 |
+| `src/infrastructure/repositories/SQLiteGoblinBirthSlotRepository.ts` | 誕生枠の永続化 |
 | `src/infrastructure/repositories/SQLiteGoblinRepository.ts` | ゴブリンDB保存 |
 | `src/infrastructure/repositories/SQLitePendingGoblinRepository.ts` | 待機ゴブリンDB保存 |
 | `src/infrastructure/repositories/SQLiteBaseStateRepository.ts` | nextGoblinId管理 |

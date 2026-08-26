@@ -40,6 +40,7 @@ import {
 } from '../characterSkills'
 import { getCharacterSkill } from '../skillCatalog'
 import { getDefaultSkillsForRace } from '../raceSkills'
+import { factorSkillInheritanceRules } from '../skillBirthRules'
 
 describe('characterSkills - 物理ダメージ軽減', () => {
   it('物理ダメージ軽減スキルの値を合算する', () => {
@@ -570,6 +571,20 @@ describe('characterSkills - 物理ダメージ軽減', () => {
 
   it('スケイルゴブリンのデフォルトスキルに2列攻撃を含める', () => {
     expect(getDefaultSkillsForRace('スケイルゴブリン').map((skill) => skill.id)).toContain('two_column_attack')
+  })
+
+  it('スライムゴブリンのデフォルト回復スキルは毎ターン10%回復する', () => {
+    const skillIds = getDefaultSkillsForRace('スライムゴブリン').map((skill) => skill.id)
+
+    expect(skillIds).toContain('hp_regen_10')
+    expect(skillIds).not.toContain('hp_regen_20')
+  })
+
+  it('スライム因子から継承する回復スキルは毎ターン10%回復する', () => {
+    const skillIds = factorSkillInheritanceRules.slime.skills.map((skill) => skill.skillId)
+
+    expect(skillIds).toContain('hp_regen_10')
+    expect(skillIds).not.toContain('hp_regen_20')
   })
 
   it('スキル一覧取得時も同じidは1件にまとまる', () => {

@@ -12,7 +12,7 @@ import type {
 } from '../../shared/types'
 import { StartExpeditionUseCase, CompleteExpeditionUseCase } from '../../core/usecases'
 import { MAX_EXPEDITION_HISTORY } from '../../core/repositories'
-import { GoblinBirthService, computeExpeditionReplay } from '../../core/services'
+import { computeExpeditionReplay } from '../../core/services'
 import { areasData } from '../../shared/data'
 import { usePartyStore, getPartyRepository } from '../stores/usePartyStore'
 import { useGoblinStore, getGoblinRepository } from '../stores/useGoblinStore'
@@ -155,12 +155,6 @@ export const useExpeditionFlow = ({
 
   const partyRepository = getPartyRepository()
   const goblinRepository = getGoblinRepository()
-  const goblins = useGoblinStore((state) => state.goblins)
-  const addPendingGoblin = useBaseStore((state) => state.addPendingGoblin)
-  const isPendingLoading = useBaseStore((state) => state.isLoading)
-  const getNextGoblinId = useBaseStore((state) => state.getNextGoblinId)
-  const rank = useBaseStore(s => s.baseState?.rank ?? 1)
-  const isBaseLoading = useBaseStore(s => s.isLoading)
   const baseStateRepository = getBaseStateRepository()
   const markDungeonCleared = useDungeonStore((state) => state.markDungeonCleared)
   const markDungeonFloorCleared = useDungeonStore((state) => state.markDungeonFloorCleared)
@@ -228,7 +222,7 @@ export const useExpeditionFlow = ({
   }, [equipmentRepository, goblinRepository])
 
   const handleDungeonClear = useCallback(async (record: ExpeditionRecord) => {
-    if (!record.replay || isPendingLoading || isBaseLoading) return
+    if (!record.replay) return
 
     const dungeon = areasData.find(area => area.id === record.dungeonId)
     if (!dungeon) return
@@ -255,37 +249,10 @@ export const useExpeditionFlow = ({
       })
     }
 
-    const nextId = await getNextGoblinId()
-    const areaLevel = record.replay.meta.effectiveAreaLevel ??
-      getDungeonTierAreaLevel(dungeon.areaLevel ?? 1, tier ?? 0)
-    const latestGoblins = (
-      await Promise.all(record.replay.meta.party.map(id => goblinRepository.getGoblin(Number.parseInt(id, 10))))
-    ).filter((goblin): goblin is NonNullable<typeof goblin> => goblin !== null)
-    const goblinBirthService = new GoblinBirthService()
-    const newGoblin = goblinBirthService.createNewGoblin(
-      nextId,
-      undefined,
-      latestGoblins.length > 0 ? latestGoblins : goblins,
-      areaLevel,
-      rank
-    )
-
-    await useBaseStore.getState().refreshPendingGoblins()
-    const latestPendingGoblins = useBaseStore.getState().pendingGoblins
-    const maxPending = rank * 5
-    if (latestPendingGoblins.length >= maxPending) return
-    await addPendingGoblin(newGoblin)
   }, [
-    addPendingGoblin,
     checkAndUnlockStories,
-    getNextGoblinId,
-    goblinRepository,
-    goblins,
-    isBaseLoading,
-    isPendingLoading,
     markDungeonCleared,
     markDungeonFloorCleared,
-    rank,
   ])
 
   const estimateExplorationTime = useCallback((

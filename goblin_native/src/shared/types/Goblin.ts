@@ -42,7 +42,7 @@ export type Goblin = {
   effectiveStats?: GoblinStats  // 実効ステータス（stats + 因子適用後）、未設定時はGoblinStatCalculatorで計算
   factors?: string[]  // 獲得した因子IDの配列
   variantFactorId?: string  // 亜種として生まれた因子ID
-  individualValue?: number  // 個体値 (1〜64)、未定義の場合は1として扱う
+  plusValue?: number  // 血統の＋値。未定義の場合は0として扱う
   skills: CharacterSkill[]  // パッシブスキル一覧
   spells?: LearnedSpell[]  // 習得した呪文リスト
   battleActionPolicy?: BattleActionPolicy // 戦闘時の行動率設定

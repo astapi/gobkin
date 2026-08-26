@@ -3,7 +3,7 @@
  * レベル200までの近似曲線パターン経験値テーブル
  */
 
-const MAX_LEVEL = 200
+export const MAX_LEVEL = 200
 const EXP_CURVE_SCALE = 0.00032188652886324764
 const EXP_CURVE_LEVEL_OFFSET = 9.17
 const EXP_CURVE_EXPONENT = 4.735402233154439
@@ -13,8 +13,8 @@ const EXP_CURVE_EXPONENT = 4.735402233154439
  * 参考ゲームの観測値から推定した近似式:
  * 0.00032188652886324764 × (レベル + 9.17) ^ 4.735402233154439
  */
-export function getExpForNextLevel(currentLevel: number): number {
-  if (currentLevel >= MAX_LEVEL) {
+export function getExpForNextLevel(currentLevel: number, maxLevel = MAX_LEVEL): number {
+  if (currentLevel >= maxLevel) {
     return 0 // レベル上限到達
   }
 
@@ -77,11 +77,12 @@ export interface LevelUpResult {
 export function addExperience(
   currentLevel: number,
   currentExp: number,
-  expToAdd: number
+  expToAdd: number,
+  maxLevel = MAX_LEVEL,
 ): LevelUpResult {
-  if (currentLevel >= MAX_LEVEL) {
+  if (currentLevel >= maxLevel) {
     return {
-      newLevel: MAX_LEVEL,
+      newLevel: currentLevel,
       oldLevel: currentLevel,
       levelsGained: 0,
       remainingExp: currentExp,
@@ -94,7 +95,7 @@ export function addExperience(
   let exp = currentExp + expToAdd
   let levelsGained = 0
 
-  while (level < MAX_LEVEL) {
+  while (level < maxLevel) {
     const expForNext = getExpForNextLevel(level)
     if (exp < expForNext) {
       break
@@ -116,12 +117,12 @@ export function addExperience(
 /**
  * 現在のレベルでの経験値進捗率を取得（0.0〜1.0）
  */
-export function getExpProgress(currentLevel: number, currentExp: number): number {
-  if (currentLevel >= MAX_LEVEL) {
+export function getExpProgress(currentLevel: number, currentExp: number, maxLevel = MAX_LEVEL): number {
+  if (currentLevel >= maxLevel) {
     return 1.0
   }
 
-  const expForNext = getExpForNextLevel(currentLevel)
+  const expForNext = getExpForNextLevel(currentLevel, maxLevel)
   if (expForNext === 0) {
     return 1.0
   }

@@ -5,6 +5,7 @@ export { SQLiteDungeonProgressRepository } from './SQLiteDungeonProgressReposito
 export { SQLiteExpeditionRepository } from './SQLiteExpeditionRepository'
 export { SQLitePendingGoblinRepository } from './SQLitePendingGoblinRepository'
 export { SQLiteBaseStateRepository } from './SQLiteBaseStateRepository'
+export { SQLiteGoblinBirthSlotRepository } from './SQLiteGoblinBirthSlotRepository'
 
 export { SQLiteTicketRepository } from './SQLiteTicketRepository'
 

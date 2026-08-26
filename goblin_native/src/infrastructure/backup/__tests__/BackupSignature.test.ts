@@ -18,6 +18,7 @@ const buildDoc = (override?: Partial<BackupDocument>): BackupDocument => {
   const baseTables = {
     goblins: [{ id: 1, name: 'Marku' }],
     pending_goblins: [],
+    goblin_birth_slots: [],
     parties: [{ id: 1, name: 'PT1' }],
     expeditions: [],
     base_state: [{ id: 1, gold: 500 }],
@@ -90,6 +91,7 @@ describe('BackupSignature', () => {
     const tables = {
       goblins: [{ name: 'A', id: 1 }],
       pending_goblins: [],
+      goblin_birth_slots: [],
       parties: [],
       expeditions: [],
       base_state: [],

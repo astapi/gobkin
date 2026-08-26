@@ -29,6 +29,7 @@ export const factorDatabase: Record<string, Factor> = {
         effects: variant.factorEffects,
         variantConfig: {
           probability: variant.variantProbability,
+          minPlusValue: variant.minPlusValue,
           raceId: variant.raceId,
           raceName: variant.raceName,
           avatar: variant.avatar,
