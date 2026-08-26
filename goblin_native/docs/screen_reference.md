@@ -144,7 +144,7 @@
 - 出撃開始: `formation/preparation.tsx` → `useExpeditionFlow.startExpedition()`（内部で `StartExpeditionUseCase`）。
 - 進行/再生: `formation/playback.tsx` が `ExpeditionReplay` を読み込み、イベントログとHPを更新。
 - 完了: `useExpeditionFlow` が `returnTime` 到達時に自動完了し、`CompleteExpeditionUseCase.execute()` で経験値・因子・装備・制圧を反映。
-- 新ゴブリン誕生: 完全制圧時に `GoblinBirthService.createNewGoblin()` で保留ゴブリンを追加。
+- 新ゴブリン誕生: 拠点の「群れを増やす」で継承元を1体設定し、ランダム選出された拠点メンバーとの＋値・因子を使って時間経過後に保留ゴブリンを追加。マルクだけの場合は単独で開始可能。
 
 ### ダンジョン進行
 - 踏破/制圧更新: 遠征完了処理（`useExpeditionFlow` / `CompleteExpeditionUseCase`）で `useDungeonStore` を更新。

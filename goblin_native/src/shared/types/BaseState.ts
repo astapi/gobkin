@@ -8,7 +8,6 @@ export type BaseState = {
   capturedDungeons: string[]       // 制圧済みダンジョンIDのリスト
   currentMaxParties: number        // 現在の最大パーティ数
   currentMaxGoblins: number        // 現在の最大ゴブリン数
-  currentIVBonus: number           // 現在の個体値ボーナス
   gold: number                     // 所持ゴールド
 }
 
@@ -19,7 +18,6 @@ export interface BaseRankConfig {
   rank: number                     // ランク（1-7）
   maxParties: number               // 編成可能なパーティ数
   maxGoblins: number               // 収容可能なゴブリン数
-  ivBonus: number                  // 個体値ボーナス
   upgradeCost: number              // ランクアップに必要なゴールド
   unlockCondition: {
     dungeonId: string              // 制圧する必要のあるダンジョンID

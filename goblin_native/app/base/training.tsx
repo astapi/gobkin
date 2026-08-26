@@ -91,6 +91,8 @@ export default function BaseTrainingScreen() {
             setIsTraining(true)
             try {
               await saveGoblin(applyGoblinJob(activeGoblin, effectiveSelectedJob))
+              setSelectedGoblinId(null)
+              setSelectedJob(undefined)
               Alert.alert(t('ui.training.successTitle'), t('ui.training.successBody', { name: activeGoblin.name, jobName: nextJob.name }))
             } catch (error) {
               const message = error instanceof Error ? error.message : t('ui.training.failureBody')

@@ -34,7 +34,7 @@ export const factorSkillInheritanceRules: Record<string, FactorSkillInheritanceR
         probability: 0.08
       },
       {
-        skillId: "hp_regen_20",
+        skillId: "hp_regen_10",
         probability: 0.08
       }
     ]

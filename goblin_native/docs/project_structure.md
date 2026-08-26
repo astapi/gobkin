@@ -58,6 +58,7 @@ Expo Router のファイルベースルーティング。詳細な責務・遷�
   - 6タブ構成。定義順は `story` / `index`（ゴブリン一覧）/ `formation`（遠征）/ `base`（拠点）/ `encyclopedia`（図鑑）/ `settings`（設定）。
   - 画面下部に TipsBar / 現在時刻バッジ / ゴールドバッジ / 金のドングリバッジを重ねて表示。
 - `app/(tabs)/index.tsx` … ゴブリン一覧、産まれたゴブリンの受け入れ/解雇。
+- `app/base/grow-group.tsx` … 継承元1体の設定、継続誕生枠の開始/停止。
 - `app/(tabs)/base.tsx` … 拠点トップ。施設メニューの起点。
 - `app/(tabs)/formation/` … 遠征フロー（編成〜準備〜再生〜結果）。
   - `index.tsx` パーティ一覧 / `preparation.tsx` 遠征準備 / `edit.tsx` メンバー編集
@@ -103,7 +104,7 @@ Expo Router のファイルベースルーティング。詳細な責務・遷�
   - 戦闘: `BattleSystem.ts` / `DamageCalculator.ts` / `CombatantManager.ts`
   - 遠征: `ExpeditionEngine.ts` / `LazyExpeditionComputer.ts`
   - 成長/ステータス: `ExperienceSystem.ts` / `GoblinStatCalculator.ts` / `BaseRankSystem.ts`
-  - 誕生/因子: `GoblinBirthService.ts` / `BirthSkillService.ts` / `FactorInheritanceService.ts` / `FactorService.ts`
+  - 誕生/因子: `GoblinBirthService.ts` / `GoblinBirthCycleSystem.ts` / `BirthSkillService.ts` / `FactorInheritanceService.ts` / `FactorService.ts`
   - 装備/ドロップ: `EquipmentService.ts` / `EquipmentTitleService.ts` / `DropRankRoller.ts` / `LuckRoller.ts`
 - `usecases/`
   - 遠征: `StartExpeditionUseCase.ts` / `CompleteExpeditionUseCase.ts` / `ExecuteBattleUseCase.ts`
@@ -114,7 +115,7 @@ Expo Router のファイルベースルーティング。詳細な責務・遷�
 - `database/`
   - `schema.ts`: SQLiteスキーマ。
   - `index.ts`: DB初期化/アクセス（シングルトン）。
-  - `migrations/v1.ts`〜`v16.ts`: バージョン別マイグレーション。
+  - `migrations/v1.ts`〜`v22.ts`: バージョン別マイグレーション。
 - `repositories/`（シングルトン、`getInstance()` 取得、内部キャッシュで同期IF提供）
   - `SQLiteGoblinRepository.ts` / `SQLitePartyRepository.ts` / `SQLiteBaseStateRepository.ts`
   - `SQLiteExpeditionRepository.ts` / `SQLitePendingGoblinRepository.ts` / `SQLiteDungeonProgressRepository.ts`

@@ -71,7 +71,7 @@ export const GoblinCard = memo(function GoblinCard({
             {getRaceLabel(goblin.raceId ?? goblin.race)}
           </Text>
           <Text style={[styles.level, isAssignedElsewhere && styles.levelDisabled]}>
-            {t('ui.common.levelShort')}{goblin.level}
+            {t('ui.common.levelShort')}{goblin.level} · ＋{goblin.plusValue ?? 0}
           </Text>
         </View>
         {(factorIds.length > 0 || inheritedOrManifestedSkills.length > 0) && (

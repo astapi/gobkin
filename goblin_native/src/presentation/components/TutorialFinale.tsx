@@ -4,7 +4,7 @@ import { useTutorialStore } from '../stores/useTutorialStore'
 
 /**
  * チュートリアルの締め演出。
- * 拠点にゴブリンを迎え入れた後（step === 'finish'）に全画面で表示し、
+ * 「群れを増やす」の活動を開始した後（step === 'finish'）に全画面で表示し、
  * 「冒険を始める」を押すとチュートリアルを完了する。
  */
 export function TutorialFinale() {

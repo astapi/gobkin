@@ -13,7 +13,6 @@ interface BaseStateRow {
   captured_dungeons_json: string
   current_max_parties: number
   current_max_goblins: number
-  current_iv_bonus: number
   gold: number
   next_goblin_id: number
   updated_at: string
@@ -26,7 +25,6 @@ const DEFAULT_BASE_STATE: BaseState = {
   capturedDungeons: [],
   currentMaxParties: 1,
   currentMaxGoblins: 10,
-  currentIVBonus: 0,
   gold: 500,
 }
 
@@ -55,7 +53,6 @@ export class SQLiteBaseStateRepository implements IBaseStateRepository {
       capturedDungeons: JSON.parse(row.captured_dungeons_json || '[]'),
       currentMaxParties: row.current_max_parties,
       currentMaxGoblins: row.current_max_goblins,
-      currentIVBonus: row.current_iv_bonus,
       gold: row.gold,
     }
   }
@@ -68,7 +65,7 @@ export class SQLiteBaseStateRepository implements IBaseStateRepository {
       `UPDATE base_state SET
         capacity = ?, rank = ?, captured_dungeons_json = ?,
         current_max_parties = ?, current_max_goblins = ?,
-        current_iv_bonus = ?, gold = ?, updated_at = datetime('now')
+        gold = ?, updated_at = datetime('now')
        WHERE id = 1`,
       [
         state.capacity,
@@ -76,7 +73,6 @@ export class SQLiteBaseStateRepository implements IBaseStateRepository {
         JSON.stringify(state.capturedDungeons),
         state.currentMaxParties,
         state.currentMaxGoblins,
-        state.currentIVBonus,
         state.gold,
       ]
     )
@@ -91,16 +87,15 @@ export class SQLiteBaseStateRepository implements IBaseStateRepository {
       await db.runAsync(
         `INSERT INTO base_state (
           id, capacity, rank, captured_dungeons_json,
-          current_max_parties, current_max_goblins, current_iv_bonus, gold,
+          current_max_parties, current_max_goblins, gold,
           next_goblin_id
-        ) VALUES (1, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        ) VALUES (1, ?, ?, ?, ?, ?, ?, ?)`,
         [
           DEFAULT_BASE_STATE.capacity,
           DEFAULT_BASE_STATE.rank,
           JSON.stringify(DEFAULT_BASE_STATE.capturedDungeons),
           DEFAULT_BASE_STATE.currentMaxParties,
           DEFAULT_BASE_STATE.currentMaxGoblins,
-          DEFAULT_BASE_STATE.currentIVBonus,
           DEFAULT_BASE_STATE.gold,
           DEFAULT_BASE_STATE.nextGoblinId ?? 1,
         ]

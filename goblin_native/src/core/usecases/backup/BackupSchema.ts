@@ -3,13 +3,14 @@
  */
 
 export const BACKUP_APP_ID = 'goblin_kingdom'
-// v2: tickets テーブルを追加（旧 v1 バックアップは tickets 無しでも読み込み可能）
-export const BACKUP_FORMAT_VERSION = 2
+// v3: goblin_birth_slots テーブルを追加（旧バックアップは欠損テーブルを空として扱う）
+export const BACKUP_FORMAT_VERSION = 3
 export const BACKUP_SIGNATURE_ALGORITHM = 'HMAC-SHA256'
 
 export const EXPORTABLE_TABLES = [
   'goblins',
   'pending_goblins',
+  'goblin_birth_slots',
   'parties',
   'expeditions',
   'base_state',

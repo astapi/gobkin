@@ -22,7 +22,7 @@ interface PendingGoblinRow {
   effective_stats_json: string | null
   factors_json: string | null
   variant_factor_id: string | null
-  individual_value: number | null
+  plus_value: number | null
   skills_json: string
   battle_action_policy_json: string | null
   created_at: string
@@ -53,7 +53,7 @@ export class SQLitePendingGoblinRepository implements IPendingGoblinRepository {
       `INSERT OR REPLACE INTO pending_goblins
        (id, name, race, race_id, level, experience, avatar, stats_json,
         effective_stats_json, factors_json, variant_factor_id, job_id,
-        individual_value, skills_json, battle_action_policy_json)
+        plus_value, skills_json, battle_action_policy_json)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         normalizedGoblin.id,
@@ -68,7 +68,7 @@ export class SQLitePendingGoblinRepository implements IPendingGoblinRepository {
         normalizedGoblin.factors ? JSON.stringify(normalizedGoblin.factors) : null,
         normalizedGoblin.variantFactorId ?? null,
         normalizedGoblin.job ?? null,
-        normalizedGoblin.individualValue ?? 1,
+        normalizedGoblin.plusValue ?? 0,
         JSON.stringify(normalizedGoblin.skills),
         normalizedGoblin.battleActionPolicy
           ? JSON.stringify(normalizeBattleActionPolicy(normalizedGoblin.battleActionPolicy))
@@ -105,7 +105,7 @@ export class SQLitePendingGoblinRepository implements IPendingGoblinRepository {
         ? JSON.parse(row.factors_json)
         : undefined,
       variantFactorId: row.variant_factor_id ?? undefined,
-      individualValue: row.individual_value ?? undefined,
+      plusValue: row.plus_value ?? 0,
       skills: JSON.parse(row.skills_json),
       battleActionPolicy: row.battle_action_policy_json
         ? normalizeBattleActionPolicy(JSON.parse(row.battle_action_policy_json))

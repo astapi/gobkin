@@ -344,7 +344,7 @@ goldGained = Σ(各戦闘の enemy.gold)
 {
   id: "forest_outskirts",
   name: "周辺の森",
-  areaLevel: 2,              // 個体値計算・装備プール用
+  areaLevel: 2,              // 装備プール・表示用
   floors: 3,                 // フロア数
   baseDurationSec: 60,       // 基本探索時間（秒）
   encounter: {
@@ -391,7 +391,7 @@ AND replay.summary.maxFloorReached >= dungeon.floors
 2. 初回制圧なら拠点化（`captureDungeon()`）
 3. ゴールド加算
 4. 次のダンジョン解放（`unlockNext`）
-5. 新ゴブリン誕生（GoblinBirthService）
+5. 次のダンジョン・ストーリー解放
 
 ## 遠征の永続化
 

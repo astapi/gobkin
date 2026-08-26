@@ -14,6 +14,7 @@ import { getFactorImage } from '@/shared/utils/factorImages'
 import { GoblinStatCalculator } from '@/core/services/GoblinStatCalculator'
 import { EquipmentService } from '@/core/services/EquipmentService'
 import { getExpForNextLevel, getExpProgress } from '@/core/services/ExperienceSystem'
+import { getGoblinMaxLevel } from '@/core/services/GoblinLevelCap'
 import { getCharacterSkillEffectDescriptions, getUniqueSkillsById } from '@/shared/data/characterSkills'
 import { equipmentRepository } from '@/presentation/di/repositories'
 import { getDefaultSkillsForRace } from '@/shared/data/raceSkills'
@@ -265,8 +266,9 @@ export default function GoblinDetailScreen() {
     () => goblin ? getEffectiveStats(goblin) : null,
     [goblin]
   )
-  const expForNext = goblin ? getExpForNextLevel(goblin.level) : 0
-  const expProgress = goblin ? getExpProgress(goblin.level, goblin.experience) : 0
+  const maxLevel = goblin ? getGoblinMaxLevel(goblin) : 0
+  const expForNext = goblin ? getExpForNextLevel(goblin.level, maxLevel) : 0
+  const expProgress = goblin ? getExpProgress(goblin.level, goblin.experience, maxLevel) : 0
   const characterSkills = useMemo(() => getUniqueSkillsById(goblin?.skills ?? []), [goblin])
   const equipmentSkills = useMemo(
     () => getUniqueSkillsById(EquipmentService.collectGrantedSkills(equippedItems)),
@@ -440,7 +442,9 @@ export default function GoblinDetailScreen() {
               )}
               <Text style={styles.profileRace}>{getRaceLabel(goblin.raceId ?? goblin.race)}</Text>
               {jobLabel && <Text style={styles.profileJob}>{jobLabel}</Text>}
-              <Text style={styles.profileLevel}>{t('ui.common.levelShort')}{goblin.level}</Text>
+              <Text style={styles.profileLevel}>
+                {t('ui.common.levelShort')}{goblin.level} / {maxLevel} · ＋{goblin.plusValue ?? 0}
+              </Text>
             </View>
           </View>
         </View>

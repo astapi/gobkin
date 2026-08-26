@@ -9,6 +9,7 @@ import { getGoblinDisplayImage } from '@/shared/utils/goblinImages'
 import { getFactorImage } from '@/shared/utils/factorImages'
 import { calculateGoblinEffectiveStats, getEffectiveStats } from '@/shared/utils/goblinStats'
 import { getExpForNextLevel } from '@/core/services/ExperienceSystem'
+import { getGoblinMaxLevel } from '@/core/services/GoblinLevelCap'
 import {
   getCharacterSkillEffectDescriptions,
   getRowDamageMultiplierFromSkills,
@@ -282,7 +283,7 @@ export default function PartyInfoScreen() {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>{t('ui.formation.partyInfo.levelSectionTitle')}</Text>
           {partyMembers.map((goblin) => {
-            const expForNext = getExpForNextLevel(goblin.level)
+            const expForNext = getExpForNextLevel(goblin.level, getGoblinMaxLevel(goblin))
             const remainingExp = Math.max(0, expForNext - goblin.experience)
 
             return (

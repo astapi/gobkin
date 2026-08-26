@@ -159,7 +159,7 @@ describe('FactorInheritanceService', () => {
     })
 
     it('亜種判定に成功した場合、variantConfigの内容が結果に反映される', () => {
-      const parent1 = createGoblin({ id: 1, factors: ['wolf'] })
+      const parent1 = createGoblin({ id: 1, factors: ['wolf'], plusValue: 4 })
       expect(factorDatabase.wolf.variantConfig?.probability).toBe(0.15)
 
       // 因子1個の場合シャッフルは発生しない（要素数1のFisher-Yatesはループしない）ため

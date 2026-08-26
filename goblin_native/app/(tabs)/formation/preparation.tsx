@@ -5,7 +5,6 @@ import { useTranslation } from 'react-i18next'
 import { usePartyStore } from '@/presentation/stores/usePartyStore'
 import { BOTTOM_INFO_SPACING } from '@/shared/constants/layout'
 import { useGoblinStore } from '@/presentation/stores/useGoblinStore'
-import { useBaseStore, selectRank } from '@/presentation/stores/useBaseStore'
 import { useDungeonStore } from '@/presentation/stores/useDungeonStore'
 import { useTutorialStore } from '@/presentation/stores/useTutorialStore'
 import { useTutorialTarget } from '@/presentation/hooks/useTutorialTarget'
@@ -97,8 +96,6 @@ export default function ExpeditionPreparationScreen() {
   } = usePartyStore()
   const goblins = useGoblinStore((state) => state.goblins)
   const goblinsLoading = useGoblinStore((state) => state.isLoading)
-  const pendingGoblins = useBaseStore((state) => state.pendingGoblins)
-  const rank = useBaseStore(selectRank)
   const dungeons = useDungeonStore((state) => state.dungeons)
   const dungeonsLoading = useDungeonStore((state) => state.isLoading)
   const { startExpedition, estimateExplorationTime, getPartyExpeditionTimeMultiplier, isProcessing } = useExpeditionFlow()
@@ -487,26 +484,11 @@ export default function ExpeditionPreparationScreen() {
       Alert.alert(dungeonLabel, body, buttons)
     }
 
-    const maxPendingGoblins = rank * 5
-    if (pendingGoblins.length >= maxPendingGoblins) {
-      Alert.alert(
-        t('ui.formation.common.confirm'),
-        t('ui.formation.preparation.pendingOverflowBody'),
-        [
-          { text: t('ui.common.cancel'), style: 'cancel' },
-          { text: t('ui.formation.common.launch'), onPress: showLaunchConfirmation },
-        ],
-      )
-      return
-    }
-
     showLaunchConfirmation()
   }, [
     estimatedExplorationTime,
     isProcessing,
-    pendingGoblins.length,
     party,
-    rank,
     selectedDungeon,
     selectedDungeonId,
     selectedReturnPolicy,

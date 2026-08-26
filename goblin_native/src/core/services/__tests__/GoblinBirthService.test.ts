@@ -1,5 +1,4 @@
 import { GoblinBirthService } from '../GoblinBirthService'
-import { calculateIndividualValue, AREA_LEVEL_IV_RANGES, BASE_RANK_BONUS } from '../BaseRankSystem'
 import { applyGoblinJob } from '../../../shared/data/goblinJobs'
 import {
   calculateGoblinBaseAccuracy,
@@ -31,67 +30,41 @@ function sequenceRng(values: number[]): () => number {
 }
 
 describe('GoblinBirthService', () => {
+  it('固定した因子元から＋値と因子を使って生成できる', () => {
+    const service = new GoblinBirthService(() => 0)
+    const goblin = service.createNewGoblinFromFactorSources(99, 24, ['slime'], 2)
+
+    expect(goblin.id).toBe(99)
+    expect(goblin.plusValue).toBe(24)
+    expect(goblin.factors).toEqual(['slime'])
+    expect(goblin.raceId).toBe('slime')
+  })
+
+  it('ウルフゴブリンは＋5以上でのみ誕生候補になる', () => {
+    const belowThreshold = new GoblinBirthService(() => 0)
+      .createNewGoblinFromFactorSources(1, 4, ['wolf'])
+    const atThreshold = new GoblinBirthService(() => 0)
+      .createNewGoblinFromFactorSources(2, 5, ['wolf'])
+
+    expect(belowThreshold.raceId).toBe('goblin')
+    expect(atThreshold.raceId).toBe('wolf')
+  })
+
   describe('createNewGoblin の引数パターン', () => {
-    it('individualValue を直接指定した場合、その値が使われる', () => {
+    it('plusValue を直接指定した場合、その値が使われる', () => {
       const rng = createSeededRng(100)
       const service = new GoblinBirthService(rng)
       const goblin = service.createNewGoblin(1, 32)
 
-      expect(goblin.individualValue).toBe(32)
+      expect(goblin.plusValue).toBe(32)
     })
 
-    it('individualValue=undefined, areaLevel/baseRank指定 → 自動計算される', () => {
-      const rng = createSeededRng(200)
-      const service = new GoblinBirthService(rng)
-      const goblin = service.createNewGoblin(1, undefined, undefined, 3, 2)
-
-      // areaLevel=3: [12,20], baseRank=2: bonus=2 → 14〜22
-      const [min, max] = AREA_LEVEL_IV_RANGES[3]
-      const bonus = BASE_RANK_BONUS[2]
-      expect(goblin.individualValue).toBeGreaterThanOrEqual(min + bonus)
-      expect(goblin.individualValue).toBeLessThanOrEqual(max + bonus)
-    })
-
-    it('全引数省略時は個体値が1になる', () => {
+    it('全引数省略時は＋0になる', () => {
       const rng = createSeededRng(300)
       const service = new GoblinBirthService(rng)
       const goblin = service.createNewGoblin(1)
 
-      expect(goblin.individualValue).toBe(1)
-    })
-
-    it('playback.tsx と同じ呼び出しパターンで正しく動作する', () => {
-      // playback.tsx: createNewGoblin(nextId, undefined, goblins, areaLevel, rank)
-      const rng = createSeededRng(400)
-      const service = new GoblinBirthService(rng)
-      const areaLevel = 5
-      const rank = 3
-      const goblin = service.createNewGoblin(1, undefined, [], areaLevel, rank)
-
-      // areaLevel=5: [26,36], baseRank=3: bonus=4 → 30〜40
-      const [min, max] = AREA_LEVEL_IV_RANGES[areaLevel]
-      const bonus = BASE_RANK_BONUS[rank]
-      expect(goblin.individualValue).toBeGreaterThanOrEqual(min + bonus)
-      expect(goblin.individualValue).toBeLessThanOrEqual(max + bonus)
-      // 個体値1ではないことを確認（Codex botの指摘が誤りであることの証明）
-      expect(goblin.individualValue).toBeGreaterThan(1)
-    })
-
-    it('areaLevelのみ指定でbaseRank未指定 → デフォルト1になる', () => {
-      const rng = createSeededRng(500)
-      const service = new GoblinBirthService(rng)
-      // areaLevel指定、baseRank未指定 → calculateIndividualValue は呼ばれず IV=1
-      const goblin = service.createNewGoblin(1, undefined, undefined, 3)
-
-      expect(goblin.individualValue).toBe(1)
-    })
-
-    it('baseRankのみ指定でareaLevel未指定 → デフォルト1になる', () => {
-      const rng = createSeededRng(600)
-      const service = new GoblinBirthService(rng)
-      const goblin = service.createNewGoblin(1, undefined, undefined, undefined, 3)
-
-      expect(goblin.individualValue).toBe(1)
+      expect(goblin.plusValue).toBe(0)
     })
   })
 
@@ -222,17 +195,17 @@ describe('GoblinBirthService', () => {
       expect(getGoblinHpLevelScale(120, 'ホブゴブリン')).toBeCloseTo(30)
     })
 
-    it('個体値は1〜64にクランプされる', () => {
+    it('＋値は0以上の整数に正規化される', () => {
       const rng = createSeededRng(800)
       const service = new GoblinBirthService(rng)
 
       const goblinLow = service.createNewGoblin(1, -5)
-      expect(goblinLow.individualValue).toBe(1)
+      expect(goblinLow.plusValue).toBe(0)
 
       const rng2 = createSeededRng(801)
       const service2 = new GoblinBirthService(rng2)
       const goblinHigh = service2.createNewGoblin(2, 100)
-      expect(goblinHigh.individualValue).toBe(64)
+      expect(goblinHigh.plusValue).toBe(100)
     })
 
     it('同じシードで同じゴブリンが生成される（決定論的）', () => {
@@ -246,7 +219,7 @@ describe('GoblinBirthService', () => {
 
       expect(goblin1.name).toBe(goblin2.name)
       expect(goblin1.stats).toEqual(goblin2.stats)
-      expect(goblin1.individualValue).toBe(goblin2.individualValue)
+      expect(goblin1.plusValue).toBe(goblin2.plusValue)
     })
 
     it('因子を継承した純ゴブリンは抽選枠内で亜種固有スキルを継承する', () => {
@@ -276,7 +249,7 @@ describe('GoblinBirthService', () => {
       const rng = sequenceRng([0, 0.99, 0, 0, 0, 0])
       const service = new GoblinBirthService(rng)
 
-      const goblin = service.createNewGoblin(2, 10, [parent], undefined, 1)
+      const goblin = service.createNewGoblin(2, 10, [parent], 1)
 
       expect(goblin.raceId).toBe('goblin')
       expect(goblin.factors).toEqual(['wolf'])
@@ -288,58 +261,5 @@ describe('GoblinBirthService', () => {
         'additional_damage_13',
       ])
     })
-  })
-})
-
-describe('calculateIndividualValue', () => {
-  it('areaLevel=1, baseRank=1 → 1〜8の範囲', () => {
-    for (let seed = 0; seed < 100; seed++) {
-      const rng = createSeededRng(seed)
-      const iv = calculateIndividualValue(1, 1, rng)
-      expect(iv).toBeGreaterThanOrEqual(1)
-      expect(iv).toBeLessThanOrEqual(8)
-    }
-  })
-
-  it('拠点ランクボーナスが加算される', () => {
-    // 固定乱数(常に0を返す) → ベース値は範囲の最小値
-    const fixedZero = () => 0
-    const ivRank1 = calculateIndividualValue(1, 1, fixedZero) // [1,8] + 0 = 1
-    const ivRank3 = calculateIndividualValue(1, 3, fixedZero) // [1,8] + 4 = 5
-
-    expect(ivRank1).toBe(1)
-    expect(ivRank3).toBe(5)
-  })
-
-  it('高エリアレベルほどベース個体値が高い', () => {
-    const fixedHalf = () => 0.5
-    const ivLow = calculateIndividualValue(1, 1, fixedHalf)
-    const ivHigh = calculateIndividualValue(8, 1, fixedHalf)
-
-    expect(ivHigh).toBeGreaterThan(ivLow)
-  })
-
-  it('結果は1〜64にクランプされる', () => {
-    // 最大ケース: areaLevel=8 [50,60] + rank7 bonus=12 → 最大72 → クランプ64
-    const fixedOne = () => 0.999
-    const iv = calculateIndividualValue(8, 7, fixedOne)
-    expect(iv).toBeLessThanOrEqual(64)
-
-    // 最小ケース
-    const fixedZero = () => 0
-    const ivMin = calculateIndividualValue(1, 1, fixedZero)
-    expect(ivMin).toBeGreaterThanOrEqual(1)
-  })
-
-  it('範囲外の低areaLevelはデフォルト範囲[1,8]にフォールバック', () => {
-    const fixedZero = () => 0
-    const iv = calculateIndividualValue(0, 1, fixedZero)
-    expect(iv).toBe(1)
-  })
-
-  it('areaLevel=9以上は最高エリア帯の範囲を使う', () => {
-    const fixedZero = () => 0
-    const iv = calculateIndividualValue(99, 1, fixedZero)
-    expect(iv).toBe(50)
   })
 })

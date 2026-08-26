@@ -111,7 +111,6 @@ export const useBaseStore = create<BaseStoreState & BaseStoreActions>()((set, ge
 export const selectRank = (s: BaseStoreState) => s.baseState?.rank ?? 1
 export const selectMaxGoblins = (s: BaseStoreState) => s.baseState?.currentMaxGoblins ?? 10
 export const selectMaxParties = (s: BaseStoreState) => s.baseState?.currentMaxParties ?? 1
-export const selectIvBonus = (s: BaseStoreState) => s.baseState?.currentIVBonus ?? 0
 export const selectGold = (s: BaseStoreState) => s.baseState?.gold ?? 0
 export const selectCapacity = (s: BaseStoreState) => s.baseState?.capacity ?? 10
 export const selectCanRankUp = (s: BaseStoreState) =>

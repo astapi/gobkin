@@ -35,10 +35,10 @@
 報酬獲得（経験値・ゴールド・装備・因子）
         │
         ▼
-ダンジョン制圧 → 新ダンジョン解放 + 新ゴブリン誕生
+ダンジョン制圧 → 新ダンジョン解放 + 新因子獲得
         │
         ▼
-因子を持つゴブリンから次世代（亜種含む）が生まれる
+拠点の「群れを増やす」で固定した継承元とランダム選出個体から次世代（亜種含む）が生まれる
         │
         └──────────────► 拠点へ戻る（ループ）
 ```
@@ -156,7 +156,7 @@ formation/index（パーティ一覧）
    - 経験値分配（勝利戦闘ごとに生存メンバー数で割る）→ レベルアップ
    - ボスの `factorDrops` から因子を確率抽選
    - 宝箱ドロップを装備DBに保存
-   - ダンジョン制圧判定 → 制圧時は次ダンジョン解放 + 新ゴブリン誕生
+   - ダンジョン制圧判定 → 制圧時は次ダンジョン・ストーリー解放
    - `result.tsx` で成果を表示
 
 ### 3.4 タイムラインイベント（`TimelineEvent`、`src/shared/types/Expedition.ts`）
@@ -468,9 +468,9 @@ HPのみ        = floor((基礎 + 装備フラット + スキルフラット) ×
 ### 7.5 効果と継承
 
 - **ステータス**: 全因子の `effects` を合算しフラット加算（HPは計算式末尾で加算）。
-- **継承**（`FactorInheritanceService.evaluateInheritance`、新ゴブリン誕生時）:
-  1. 拠点ゴブリンから親を最大2体選出（Fisher-Yates）
-  2. 親の因子を収集（重複排除）
+- **継承**（`FactorInheritanceService.evaluateFactorIds`、新ゴブリン誕生時）:
+  1. 「群れを増やす」で固定した継承元とランダム選出個体の因子を収集
+  2. 因子を重複排除
   3. 各因子を `inheritProbability` で個別判定
   4. 引き継いだ因子をシャッフルし、各 `variantConfig.probability` で亜種判定
   5. **最初に成功した1種のみ亜種化**（複合亜種なし）
@@ -528,25 +528,25 @@ HPのみ        = floor((基礎 + 装備フラット + スキルフラット) ×
 | --- | --- |
 | 誕生ロジック | `src/core/services/GoblinBirthService.ts` |
 | 因子継承 | `src/core/services/FactorInheritanceService.ts` |
-| 個体値計算 | `src/core/services/BaseRankSystem.ts` |
+| ＋値・時間計算 | `src/core/services/GoblinBirthCycleSystem.ts` |
 | 生まれつきスキル | `src/shared/data/skillBirthRules.ts` |
-| 遠征完了トリガー | `src/presentation/hooks/useExpeditionFlow.ts` |
+| 継続誕生状態 | `src/presentation/stores/useGoblinBirthStore.ts` |
+| 誕生枠画面 | `app/base/grow-group.tsx` |
 
 ### 9.2 誕生のトリガー
 
-1. **遠征完全クリア時**（最も基本）: ダンジョンを全フロア制圧すると新ゴブリンが「待機中（pending）」として生成され、拠点一覧に追加候補として表示。待機枠上限は `拠点ランク × 5`。
+1. **群れを増やす**: 拠点ランクと同数の枠を利用できる。各枠へ継承元を1体固定し、「開始」から10分後に新ゴブリンを `pending_goblins` へ追加。もう1体は各サイクル開始時に拠点からランダム選出し、停止するまで同じ継承元で自動継続する。マルクしかいない場合は単独で開始できる。
 2. **ストーリー報酬**: ストーリー読了で特定亜種を確定付与（`useStoryStore.grantPendingGoblin`）。待機枠上限を超えても付与。
 
-### 9.3 生成フロー（`createNewGoblin`）
+各サイクル開始時に継承元とランダム個体の＋値・因子を保存する。設定個体は拘束されず遠征などに参加でき、変化した内容は次サイクルから反映される。待機枠が満杯の場合は誕生枠が自動待機し、個体は消失しない。
+
+### 9.3 生成フロー（`createNewGoblinFromFactorSources`）
 
 ```
-createNewGoblin(nextId, individualValue?, baseGoblins?, areaLevel?, baseRank?)
-  ├─ 個体値決定
-  │   ├─ individualValue 指定があればそれ
-  │   ├─ areaLevel + baseRank → calculateIndividualValue()
-  │   └─ どちらもなければ 1
-  ├─ 因子継承評価（baseGoblins から）
-  │   └─ FactorInheritanceService.evaluateInheritance()
+createNewGoblinFromFactorSources(nextId, plusValue, sourceFactorIds, baseRank?)
+  ├─ ＋値はサイクル開始時の1〜2体の最大値+1で決定済み
+  ├─ 因子継承評価（sourceFactorIds から）
+  │   └─ FactorInheritanceService.evaluateFactorIds()
   │       → inheritedFactors / isVariant / variantRaceId ...
   └─ createGoblin()
       ├─ 亜種なら亜種アバター・固有スキル・基本能力値を適用
@@ -554,18 +554,13 @@ createNewGoblin(nextId, individualValue?, baseGoblins?, areaLevel?, baseRank?)
       └─ baseAttributes を基本値±[-5,+3]で変動
 ```
 
-### 9.4 個体値（IV、1〜64）
+### 9.4 ＋値
 
 ```
-finalIV = clamp(floor(min + (max-min)*rand) + BASE_RANK_BONUS[baseRank], 1, 64)
+childPlus = max(source.plusValue, randomPartner.plusValue) + 1
 ```
 
-- エリアレベル別ベース範囲 `AREA_LEVEL_IV_RANGES`: Area1 [1,8] 〜 Area8 [50,60]
-- 拠点ランクボーナス `BASE_RANK_BONUS`: Rank1=0 〜 Rank7=+12
-
-> **現在仕様見直し中**: `AREA_LEVEL_IV_RANGES` はキー1〜8の旧エリア番号を前提としたテーブルですが、`BaseRankSystem.getAreaLevelIvRange()` に渡る実際の `areaLevel` は現行データでは1〜180程度まで幅広く分布しており（例: slime_cave=1, forest_outskirts=2 だが、forest_edge_village=9, goblin_village_1=10, orc_camp_1=14 …と多くのダンジョンでキー1〜8の範囲を超える）、テーブルに一致するキーがない場合は `areaLevel > 8` の分岐で Area8 の範囲 `[50,60]` に一律フォールバックしています。旧エリア番号前提のマッピングと現行データの `areaLevel` の間に不整合がある既知の問題として、仕様の見直しを保留中です。
-
-例: Rank3拠点でArea3遠征 → IV = (12-20) + 4 = 16〜24。
+マルク単独の場合は `childPlus = mark.plusValue + 1`。純ゴブリンの最大レベルは `50 + ＋値×3`（上限200）。亜種と始祖は最大Lv200固定で、亜種化には種族ごとの最低＋値が必要。
 
 ### 9.5 ステータス確定
 
@@ -607,7 +602,7 @@ finalIV = clamp(floor(min + (max-min)*rand) + BASE_RANK_BONUS[baseRank], 1, 64)
 
 ### 10.3 BaseState（`src/shared/types/BaseState.ts`）
 
-`rank` / `capacity` / `currentMaxParties` / `currentMaxGoblins` / `currentIVBonus` / `capturedDungeons` / `gold` / `nextGoblinId`。リポジトリは `IBaseStateRepository`（SQLite実装）。
+`rank` / `capacity` / `currentMaxParties` / `currentMaxGoblins` / `capturedDungeons` / `gold` / `nextGoblinId`。リポジトリは `IBaseStateRepository`（SQLite実装）。
 
 ### 10.4 訓練所（ジョブ）
 
@@ -631,12 +626,12 @@ finalIV = clamp(floor(min + (max-min)*rand) + BASE_RANK_BONUS[baseRank], 1, 64)
 拠点ランク
   ├─ currentMaxParties → 編成可能パーティ数
   ├─ currentMaxGoblins → ゴブリン収容上限（待機追加時の制限）
-  ├─ currentIVBonus    → 新ゴブリンの個体値に加算
+  ├─ rank              → 「群れを増やす」の同時稼働枠数
   ├─ capturedDungeons  → ランクアップ可否・ジョブ解放条件
   └─ gold              → ランクアップ・治療・装備購入の原資
 ```
 
-遠征完全クリア → `GoblinBirthService.createNewGoblin(..., areaLevel, baseRank)` で拠点ランクボーナスが個体値に自動反映され、拠点所属ゴブリンの因子が子に継承されます。
+「群れを増やす」では、固定した継承元とランダム選出個体の大きい＋値に1を加え、両者が持つ因子を継承候補として抽選します。マルクしかいない場合は単独の＋値と因子を使います。
 
 ---
 

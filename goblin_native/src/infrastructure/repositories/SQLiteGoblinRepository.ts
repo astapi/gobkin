@@ -25,7 +25,7 @@ interface GoblinRow {
   effective_stats_json: string | null
   factors_json: string | null
   variant_factor_id: string | null
-  individual_value: number | null
+  plus_value: number | null
   skills_json: string
   battle_action_policy_json: string | null
   created_at: string
@@ -74,7 +74,7 @@ export class SQLiteGoblinRepository implements IGoblinRepository {
       `INSERT INTO goblins
        (id, name, race, race_id, level, experience, avatar, stats_json,
         current_hp, effective_stats_json, factors_json, variant_factor_id, job_id,
-        individual_value, skills_json, battle_action_policy_json, updated_at)
+        plus_value, skills_json, battle_action_policy_json, updated_at)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))
        ON CONFLICT(id) DO UPDATE SET
          name = excluded.name,
@@ -89,7 +89,7 @@ export class SQLiteGoblinRepository implements IGoblinRepository {
          factors_json = excluded.factors_json,
          variant_factor_id = excluded.variant_factor_id,
          job_id = excluded.job_id,
-         individual_value = excluded.individual_value,
+         plus_value = excluded.plus_value,
          skills_json = excluded.skills_json,
          battle_action_policy_json = excluded.battle_action_policy_json,
          updated_at = excluded.updated_at`,
@@ -107,7 +107,7 @@ export class SQLiteGoblinRepository implements IGoblinRepository {
         persistedGoblin.factors ? JSON.stringify(persistedGoblin.factors) : null,
         persistedGoblin.variantFactorId ?? null,
         persistedGoblin.job ?? null,
-        persistedGoblin.individualValue ?? 1,
+        persistedGoblin.plusValue ?? 0,
         JSON.stringify(persistedGoblin.skills),
         persistedGoblin.battleActionPolicy
           ? JSON.stringify(normalizeBattleActionPolicy(persistedGoblin.battleActionPolicy))
@@ -170,7 +170,7 @@ export class SQLiteGoblinRepository implements IGoblinRepository {
         ? JSON.parse(row.factors_json)
         : undefined,
       variantFactorId: row.variant_factor_id ?? undefined,
-      individualValue: row.individual_value ?? undefined,
+      plusValue: row.plus_value ?? 0,
       skills: JSON.parse(row.skills_json),
       battleActionPolicy: row.battle_action_policy_json
         ? normalizeBattleActionPolicy(JSON.parse(row.battle_action_policy_json))

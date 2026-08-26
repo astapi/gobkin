@@ -102,7 +102,7 @@ function createRewardGoblin(id: number, factorId: string): Goblin | null {
       magicHeal: 1,
       criticalRate: 0,
     },
-    individualValue: 1,
+    plusValue: 0,
     factors: [factorId],
     variantFactorId: factorId,
     skills: getDefaultSkillsForRace(variant.raceId),
@@ -180,7 +180,7 @@ function createNamedGoblin(id: number, seed: NamedGoblinSeed): Goblin {
       magicHeal: 1,
       criticalRate: 0,
     },
-    individualValue: 1,
+    plusValue: 0,
     skills: getDefaultSkillsForRace(seed.raceId),
   })
 

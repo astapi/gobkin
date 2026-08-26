@@ -82,14 +82,33 @@ export class FactorInheritanceService {
       parents.parent2.factors.forEach(f => parentFactorIds.add(f))
     }
 
-    // 親が因子を持っていない場合
-    if (parentFactorIds.size === 0) {
-      return emptyResult
+    const parentPlusValues = [parents.parent1, parents.parent2]
+      .filter((parent): parent is Goblin => parent !== null)
+      .map((parent) => Math.max(0, Math.floor(parent.plusValue ?? 0)))
+    const childPlusValue = (parentPlusValues.length > 0 ? Math.max(...parentPlusValues) : 0) + 1
+    return this.evaluateFactorIds([...parentFactorIds], rng, childPlusValue)
+  }
+
+  /**
+   * 指定された因子群から引き継ぎ・亜種化判定を行う。
+   * 「群れを増やす」の固定選択スナップショットでも同じ抽選を再利用する。
+   */
+  static evaluateFactorIds(
+    factorIds: readonly string[],
+    rng: () => number,
+    plusValue = 0,
+  ): InheritanceResult {
+    const emptyResult: InheritanceResult = {
+      inheritedFactors: [],
+      isVariant: false,
     }
+
+    const uniqueFactorIds = [...new Set(factorIds)]
+    if (uniqueFactorIds.length === 0) return emptyResult
 
     // 各因子について引き継ぎ判定
     const inheritedFactors: string[] = []
-    for (const factorId of parentFactorIds) {
+    for (const factorId of uniqueFactorIds) {
       const factor = factorDatabase[factorId]
       if (!factor) continue
 
@@ -122,7 +141,7 @@ export class FactorInheritanceService {
 
     for (const factorId of variantCandidateFactorIds) {
       const factor = factorDatabase[factorId]
-      if (factor?.variantConfig) {
+      if (factor?.variantConfig && plusValue >= factor.variantConfig.minPlusValue) {
         if (rng() < factor.variantConfig.probability) {
           isVariant = true
           variantRaceId = factor.variantConfig.raceId

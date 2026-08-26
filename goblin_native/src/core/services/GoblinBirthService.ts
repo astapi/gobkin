@@ -2,7 +2,6 @@ import type { Goblin, GoblinStats } from '../../shared/types'
 import { GoblinStatCalculator } from './GoblinStatCalculator'
 import { FactorInheritanceService, type InheritanceResult } from './FactorInheritanceService'
 import { BirthSkillService } from './BirthSkillService'
-import { calculateIndividualValue } from './BaseRankSystem'
 import { getDefaultSkillsForRace } from '../../shared/data/raceSkills'
 import {
   calculateGoblinBaseAccuracy,
@@ -55,39 +54,48 @@ export class GoblinBirthService {
   }
 
   /**
-   * 単体のゴブリンを生成する（遠征成功時など）
+   * 単体のゴブリンを生成する
    * @param nextGoblinId 次のゴブリンID
-   * @param individualValue 個体値 (1〜64)、指定しない場合は自動計算
+   * @param plusValue 血統の＋値
    * @param baseGoblins 因子引き継ぎ元の拠点ゴブリン（オプション）
-   * @param areaLevel エリアレベル（1-8）、個体値計算に使用（オプション）
-   * @param baseRank 拠点ランク（1-7）、個体値計算に使用（オプション）
+   * @param baseRank 拠点ランク（1-7）、誕生スキル抽選に使用（オプション）
    */
   public createNewGoblin(
     nextGoblinId: number,
-    individualValue?: number,
+    plusValue = 0,
     baseGoblins?: Goblin[],
-    areaLevel?: number,
-    baseRank?: number
+    baseRank?: number,
   ): Goblin {
-    // 個体値が指定されていない場合、エリアレベルと拠点ランクから計算
-    let finalIV = individualValue
-    if (finalIV === undefined && areaLevel !== undefined && baseRank !== undefined) {
-      finalIV = calculateIndividualValue(areaLevel, baseRank, this.random)
-    }
-    // どちらも指定されていない場合はデフォルト値1
-    if (finalIV === undefined) {
-      finalIV = 1
-    }
+    const inheritance = baseGoblins
+      ? this.evaluateFactorInheritance(baseGoblins, plusValue)
+      : undefined
+    return this.createGoblin(nextGoblinId, plusValue, inheritance, baseRank)
+  }
 
-    const inheritance = baseGoblins ? this.evaluateFactorInheritance(baseGoblins) : undefined
-    return this.createGoblin(nextGoblinId, finalIV, inheritance, baseRank)
+  /** 固定選択した個体の因子スナップショットから新しいゴブリンを生成する。 */
+  public createNewGoblinFromFactorSources(
+    nextGoblinId: number,
+    plusValue: number,
+    sourceFactorIds: readonly string[],
+    baseRank?: number,
+  ): Goblin {
+    const inheritance = FactorInheritanceService.evaluateFactorIds(sourceFactorIds, this.random, plusValue)
+    return this.createGoblin(
+      nextGoblinId,
+      plusValue,
+      inheritance.inheritedFactors.length > 0 ? inheritance : undefined,
+      baseRank,
+    )
   }
 
   /**
    * 因子引き継ぎを評価
    * @param baseGoblins 拠点所属ゴブリン
    */
-  private evaluateFactorInheritance(baseGoblins: Goblin[]): InheritanceResult | undefined {
+  private evaluateFactorInheritance(
+    baseGoblins: Goblin[],
+    plusValue: number,
+  ): InheritanceResult | undefined {
     console.log('[GoblinBirth] evaluateFactorInheritance called', {
       baseGoblinsCount: baseGoblins.length,
       baseGoblins: baseGoblins.map(g => ({ name: g.name, factors: g.factors })),
@@ -99,7 +107,11 @@ export class GoblinBirthService {
     }
 
     const parents = FactorInheritanceService.selectParents(baseGoblins, this.random)
-    const inheritance = FactorInheritanceService.evaluateInheritance(parents, this.random)
+    const factorIds = [
+      ...(parents.parent1?.factors ?? []),
+      ...(parents.parent2?.factors ?? []),
+    ]
+    const inheritance = FactorInheritanceService.evaluateFactorIds(factorIds, this.random, plusValue)
 
     console.log('[GoblinBirth] Inheritance result:', inheritance)
 
@@ -114,18 +126,17 @@ export class GoblinBirthService {
   /**
    * 新しいゴブリンを生成
    * @param id ゴブリンID
-   * @param individualValue 個体値 (1〜64)、デフォルトは1
+   * @param plusValue 血統の＋値
    * @param inheritance 因子引き継ぎ結果（オプション）
    */
   private createGoblin(
     id: number,
-    individualValue = 1,
+    plusValue = 0,
     inheritance?: InheritanceResult,
     baseRank?: number
   ): Goblin {
     const name = this.selectRandomName()
-    // 個体値を1〜64の範囲にクランプ
-    const clampedIV = Math.max(1, Math.min(64, individualValue))
+    const normalizedPlusValue = Math.max(0, Math.floor(plusValue))
 
     // 種族とアバターを決定
     const raceId = inheritance?.isVariant
@@ -161,7 +172,7 @@ export class GoblinBirthService {
       stats,
       baseAttributes,
       effectiveStats: stats,  // 仮設定、後で計算
-      individualValue: clampedIV,
+      plusValue: normalizedPlusValue,
       skills: [...defaultSkills, ...birthSkills],
       factors: inheritance?.inheritedFactors ?? [],
     }

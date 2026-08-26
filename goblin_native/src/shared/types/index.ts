@@ -95,6 +95,7 @@ export {
 
 // Base related types
 export type { BaseState } from "./BaseState"
+export type { GoblinBirthSlot, GoblinBirthSourceSnapshot } from './GoblinBirthSlot'
 
 // Story related types
 export type { Story, StoryCategory, StoryUnlockCondition, StoryReward, StoryChapter } from "./Story"

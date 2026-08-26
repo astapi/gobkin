@@ -26,7 +26,7 @@ function createGoblin(overrides: Partial<Goblin> = {}): Goblin {
     effectiveStats: overrides.effectiveStats,
     factors: overrides.factors,
     variantFactorId: overrides.variantFactorId,
-    individualValue: overrides.individualValue,
+    plusValue: overrides.plusValue,
     skills: overrides.skills ?? [],
     spells: overrides.spells,
   }

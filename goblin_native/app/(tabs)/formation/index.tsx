@@ -8,13 +8,13 @@ import { usePartyStore } from '@/presentation/stores/usePartyStore'
 import { useExpeditionStore } from '@/presentation/stores/useExpeditionStore'
 import { BOTTOM_INFO_SPACING } from '@/shared/constants/layout'
 import { useGoblinStore } from '@/presentation/stores/useGoblinStore'
-import { useBaseStore, selectRank } from '@/presentation/stores/useBaseStore'
 import { useExpeditionFlow, type ExpeditionHistoryDisplay } from '@/presentation/hooks/useExpeditionFlow'
 import { getGoldenAcornCount } from '@/presentation/stores/usePurchaseStore'
 import { useCurrentTime } from '@/presentation/hooks/useCurrentTime'
 import { useDungeonStore } from '@/presentation/stores/useDungeonStore'
 import { useTutorialStore } from '@/presentation/stores/useTutorialStore'
 import { useTutorialTarget } from '@/presentation/hooks/useTutorialTarget'
+import { selectRank, useBaseStore } from '@/presentation/stores/useBaseStore'
 import { getGoblinDisplayImage } from '@/shared/utils/goblinImages'
 import { getPartyEffectiveStats } from '@/shared/utils/goblinStats'
 import {
@@ -277,7 +277,6 @@ export default function FormationScreen() {
   const dungeons = useDungeonStore((state) => state.dungeons)
   const dungeonsLoading = useDungeonStore((state) => state.isLoading)
   const baseLoading = useBaseStore((state) => state.isLoading)
-  const pendingGoblins = useBaseStore((state) => state.pendingGoblins)
   const rank = useBaseStore(selectRank)
   const currentTime = useCurrentTime({ enabled: true })
   const {
@@ -531,22 +530,8 @@ export default function FormationScreen() {
       Alert.alert(t('ui.formation.index.bulkLaunchConfirmTitle'), body, buttons)
     }
 
-    const maxPendingGoblins = rank * 5
-    const remainingPendingSlots = Math.max(0, maxPendingGoblins - pendingGoblins.length)
-    if (inputs.length > remainingPendingSlots) {
-      Alert.alert(
-        t('ui.formation.common.confirm'),
-        t('ui.formation.index.pendingOverflowBody', { count: inputs.length }),
-        [
-          { text: t('ui.common.cancel'), style: 'cancel' },
-          { text: t('ui.formation.common.launch'), onPress: showBulkLaunchConfirmation },
-        ],
-      )
-      return
-    }
-
     showBulkLaunchConfirmation()
-  }, [dungeons, parties, pendingGoblins.length, rank, startBulkExpedition, t])
+  }, [dungeons, parties, startBulkExpedition, t])
 
   const canBulkLaunch = useMemo(() => {
     return parties.some((party) => {

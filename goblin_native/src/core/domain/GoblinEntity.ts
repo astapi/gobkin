@@ -1,5 +1,6 @@
 import type { Goblin, GoblinStats } from '../../shared/types'
 import { addExperience, type LevelUpResult } from '../services/ExperienceSystem'
+import { getGoblinMaxLevel } from '../services/GoblinLevelCap'
 import { GoblinStatCalculator } from '../services/GoblinStatCalculator'
 import {
   calculateGoblinDerivedStats,
@@ -75,7 +76,12 @@ export class GoblinEntity {
    * 経験値を獲得してレベルアップ処理を行う
    */
   public gainExperience(expAmount: number): LevelUpResult {
-    const result = addExperience(this.level, this.experience, expAmount)
+    const result = addExperience(
+      this.level,
+      this.experience,
+      expAmount,
+      getGoblinMaxLevel({ ...this.base, level: this.level }),
+    )
     this.level = result.newLevel
     this.experience = result.remainingExp
 

@@ -27,6 +27,7 @@ export interface FactorEffect {
  */
 export interface FactorVariantConfig {
   probability: number  // 亜種発生確率 (0.0 ~ 1.0)
+  minPlusValue: number // 亜種として誕生可能になる最低＋値
   raceId: GoblinRaceId
   raceName: string     // 亜種の種族名 例: "スライムゴブリン"
   avatar: string       // 亜種専用アバター画像パス

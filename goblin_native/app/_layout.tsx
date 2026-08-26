@@ -24,6 +24,8 @@ import { TutorialFinale } from '@/presentation/components/TutorialFinale'
 import { ExpeditionDropToastHost } from '@/presentation/components/ExpeditionDropToastHost'
 import { ExpeditionAutomationHost } from '@/presentation/components/ExpeditionAutomationHost'
 import { GameAgentSyncHost } from '@/presentation/components/GameAgentSyncHost'
+import { GoblinBirthAutomationHost } from '@/presentation/components/GoblinBirthAutomationHost'
+import { useGoblinBirthStore } from '@/presentation/stores/useGoblinBirthStore'
 import { initializeI18n } from '@/shared/i18n'
 
 export default function RootLayout() {
@@ -61,6 +63,7 @@ export default function RootLayout() {
         usePurchaseStore.getState().initialize(),
         useStoryStore.getState().initialize(),
         useTutorialStore.getState().initialize(),
+        useGoblinBirthStore.getState().initialize(),
       ])
       // 通知パーミッション要求（ネイティブのみ）
       if (Platform.OS !== 'web') {
@@ -106,31 +109,22 @@ export default function RootLayout() {
       if (tutorialStep === 'not_started') {
         await useTutorialStore.getState().advanceTo('read_prologue')
         router.replace('/(tabs)/story')
+      } else if (tutorialStep === 'learn_factor' && tutorialResultRecord) {
+        // 攻略完了直後に終了していた場合だけ、起動時にチュートリアル結果画面から再開する。
+        router.replace({
+          pathname: '/formation/result',
+          params: {
+            expeditionId: tutorialResultRecord.id,
+            partyId: tutorialResultRecord.partyId.toString(),
+          },
+        })
       }
       setShowLaunchStartScreen(false)
       setLaunchStartRequested(false)
     }
 
     void enterGame()
-  }, [launchStartRequested, startupReady, tutorialStep])
-
-  // 攻略完了とチュートリアル状態の保存タイミングがずれても、結果画面から再開する。
-  useEffect(() => {
-    if (
-      showLaunchStartScreen ||
-      !startupReady ||
-      tutorialStep !== 'learn_factor' ||
-      !tutorialResultRecord
-    ) return
-
-    router.replace({
-      pathname: '/formation/result',
-      params: {
-        expeditionId: tutorialResultRecord.id,
-        partyId: tutorialResultRecord.partyId.toString(),
-      },
-    })
-  }, [showLaunchStartScreen, startupReady, tutorialResultRecord, tutorialStep])
+  }, [launchStartRequested, startupReady, tutorialResultRecord, tutorialStep])
 
   if (error) {
     return (
@@ -196,6 +190,7 @@ export default function RootLayout() {
             reloadAfterImport={reloadAfterImport}
           >
               <ExpeditionAutomationHost />
+              <GoblinBirthAutomationHost />
               <GameAgentSyncHost />
               <Stack screenOptions={{ headerShown: false }}>
                 <Stack.Screen name="(tabs)" />
@@ -208,6 +203,17 @@ export default function RootLayout() {
                     headerTintColor: '#6B7280',
                     headerBackTitle: t('ui.common.back'),
                     title: t('ui.root.baseUpgrade'),
+                  }}
+                />
+                <Stack.Screen
+                  name="base/grow-group"
+                  options={{
+                    headerShown: true,
+                    headerStyle: { backgroundColor: '#FFFFFF' },
+                    headerTitleStyle: { color: '#1F2937', fontWeight: 'bold' },
+                    headerTintColor: '#6B7280',
+                    headerBackTitle: t('ui.common.back'),
+                    title: t('ui.root.growGoblinGroup'),
                   }}
                 />
                 <Stack.Screen

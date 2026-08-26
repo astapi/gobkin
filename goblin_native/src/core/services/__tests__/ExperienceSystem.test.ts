@@ -1,4 +1,4 @@
-import { getExpForNextLevel } from '../ExperienceSystem'
+import { addExperience, getExpForNextLevel } from '../ExperienceSystem'
 
 describe('ExperienceSystem', () => {
   it('参考ゲームの観測値に近い必要経験値を返す', () => {
@@ -12,5 +12,11 @@ describe('ExperienceSystem', () => {
 
   it('レベル上限では次レベル経験値を0にする', () => {
     expect(getExpForNextLevel(200)).toBe(0)
+    expect(getExpForNextLevel(50, 50)).toBe(0)
+  })
+
+  it('個体ごとの最大レベルを超えてレベルアップしない', () => {
+    const result = addExperience(49, 0, 1_000_000, 50)
+    expect(result.newLevel).toBe(50)
   })
 })

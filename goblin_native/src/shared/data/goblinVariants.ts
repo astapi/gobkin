@@ -12,6 +12,7 @@ export interface GoblinVariantDefinition {
   inheritProbability: number
   factorEffects: FactorEffect[]
   variantProbability: number
+  minPlusValue: number
   raceId: GoblinRaceId
   raceName: string
   avatar: string
@@ -40,7 +41,7 @@ export const goblinVariantDefinitions: Record<string, GoblinVariantDefinition> =
       "talent_hp_150",
       "armor_mastery_130",
       "rear_guard",
-      "hp_regen_20",
+      "hp_regen_10",
       "base_spirit_up_3",
       "base_vitality_up_3"
     ],
@@ -59,6 +60,7 @@ export const goblinVariantDefinitions: Record<string, GoblinVariantDefinition> =
     inheritProbability: 0.3,
     raceId: "slime",
     raceName: "スライムゴブリン",
+    minPlusValue: 0,
     variantProbability: 0.2
   },
   wolf: {
@@ -95,6 +97,7 @@ export const goblinVariantDefinitions: Record<string, GoblinVariantDefinition> =
     inheritProbability: 0.25,
     raceId: "wolf",
     raceName: "ウルフゴブリン",
+    minPlusValue: 5,
     variantProbability: 0.15
   },
   orc: {
@@ -135,6 +138,7 @@ export const goblinVariantDefinitions: Record<string, GoblinVariantDefinition> =
     inheritProbability: 0.2,
     raceId: "orc",
     raceName: "オークゴブリン",
+    minPlusValue: 10,
     variantProbability: 0.1
   },
   undead: {
@@ -169,6 +173,7 @@ export const goblinVariantDefinitions: Record<string, GoblinVariantDefinition> =
     inheritProbability: 0.2,
     raceId: "undead",
     raceName: "アンデッドゴブリン",
+    minPlusValue: 10,
     variantProbability: 0.15
   },
   hobgoblin: {
@@ -211,6 +216,7 @@ export const goblinVariantDefinitions: Record<string, GoblinVariantDefinition> =
     inheritProbability: 0.25,
     raceId: "hobgoblin",
     raceName: "ホブゴブリン",
+    minPlusValue: 15,
     variantProbability: 0.2
   },
   dwarf: {
@@ -235,6 +241,7 @@ export const goblinVariantDefinitions: Record<string, GoblinVariantDefinition> =
     inheritProbability: 0.2,
     raceId: "dwarf",
     raceName: "アイアンゴブリン",
+    minPlusValue: 20,
     variantProbability: 0.1
   },
   elf: {
@@ -254,6 +261,7 @@ export const goblinVariantDefinitions: Record<string, GoblinVariantDefinition> =
     inheritProbability: 0.2,
     raceId: "elf",
     raceName: "フェイゴブリン",
+    minPlusValue: 20,
     variantProbability: 0.1
   },
   harpy: {
@@ -287,6 +295,7 @@ export const goblinVariantDefinitions: Record<string, GoblinVariantDefinition> =
     inheritProbability: 0.15,
     raceId: "harpy",
     raceName: "スカイゴブリン",
+    minPlusValue: 25,
     variantProbability: 0.08
   },
   hobbit: {
@@ -320,6 +329,7 @@ export const goblinVariantDefinitions: Record<string, GoblinVariantDefinition> =
     inheritProbability: 0.15,
     raceId: "hobbit",
     raceName: "スクラッパーゴブリン",
+    minPlusValue: 25,
     variantProbability: 0.08
   },
   lizardman: {
@@ -353,6 +363,7 @@ export const goblinVariantDefinitions: Record<string, GoblinVariantDefinition> =
     inheritProbability: 0.15,
     raceId: "lizardman",
     raceName: "スケイルゴブリン",
+    minPlusValue: 30,
     variantProbability: 0.1
   },
   troll: {
@@ -386,6 +397,7 @@ export const goblinVariantDefinitions: Record<string, GoblinVariantDefinition> =
     inheritProbability: 0.15,
     raceId: "troll",
     raceName: "トロルゴブリン",
+    minPlusValue: 35,
     variantProbability: 0.08
   },
   minotaur: {
@@ -419,6 +431,7 @@ export const goblinVariantDefinitions: Record<string, GoblinVariantDefinition> =
     inheritProbability: 0.12,
     raceId: "minotaur",
     raceName: "ゴズゴブリン",
+    minPlusValue: 40,
     variantProbability: 0.06
   },
   vampire: {
@@ -452,6 +465,7 @@ export const goblinVariantDefinitions: Record<string, GoblinVariantDefinition> =
     inheritProbability: 0.1,
     raceId: "vampire",
     raceName: "ヴァンプゴブリン",
+    minPlusValue: 45,
     variantProbability: 0.05
   },
   dragon: {
@@ -490,6 +504,7 @@ export const goblinVariantDefinitions: Record<string, GoblinVariantDefinition> =
     inheritProbability: 0.08,
     raceId: "dragon",
     raceName: "ドラゴンゴブリン",
+    minPlusValue: 50,
     variantProbability: 0.04
   },
   shadow: {
@@ -533,6 +548,7 @@ export const goblinVariantDefinitions: Record<string, GoblinVariantDefinition> =
     inheritProbability: 0.18,
     raceId: "shadow",
     raceName: "シャドウゴブリン",
+    minPlusValue: 50,
     variantProbability: 0.12
   }
 }
