@@ -10,5 +10,7 @@ export interface GoblinBirthSlot {
   isActive: boolean
   cycleStartedAt?: string
   nextBirthAt?: string
+  /** 待機枠満杯によって進行を停止した時刻。 */
+  capacityPausedAt?: string
   sourceSnapshots: GoblinBirthSourceSnapshot[]
 }

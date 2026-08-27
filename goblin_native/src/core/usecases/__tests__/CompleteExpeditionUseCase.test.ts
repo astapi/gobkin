@@ -897,6 +897,46 @@ describe('CompleteExpeditionUseCase', () => {
       }))
     })
 
+    it('10周目の確定後も自動周回設定をONのまま維持する', async () => {
+      const goblin = createTestGoblin({ id: 1, level: 1, experience: 0 })
+      const party = createTestParty({
+        autoExpeditionEnabled: true,
+        autoExpeditionSessionId: 'session-a',
+        autoExpeditionSummary: {
+          sessionId: 'session-a',
+          runCount: 9,
+          clearCount: 9,
+          wipeoutCount: 0,
+          retreatCount: 0,
+          xpGained: 0,
+          goldGained: 0,
+          rewardItems: [],
+          factorCount: 0,
+          levelUps: [],
+        },
+      })
+      const replay = createTestReplay({
+        meta: {
+          ...createTestReplay().meta,
+          autoExpeditionSessionId: 'session-a',
+        },
+      })
+      const partyRepo = createMockPartyRepository([party])
+      const usecase = new CompleteExpeditionUseCase(
+        createMockGoblinRepository([goblin]),
+        partyRepo,
+        createMockBaseStateRepository(createTestBaseState()),
+      )
+
+      await usecase.execute(1, replay)
+
+      expect(partyRepo.saveParty).toHaveBeenCalledWith(expect.objectContaining({
+        autoExpeditionEnabled: true,
+        autoExpeditionSessionId: 'session-a',
+        autoExpeditionSummary: expect.objectContaining({ runCount: 10 }),
+      }))
+    })
+
     it('ドロップ装備のprefixとsuffixをインベントリへ保存する', async () => {
       const goblin = createTestGoblin({ id: 1 })
       const party = createTestParty({ id: 1, memberIds: [1] })

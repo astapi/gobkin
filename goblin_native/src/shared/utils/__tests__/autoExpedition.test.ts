@@ -1,5 +1,10 @@
 import type { Dungeon, ExpeditionRecord, Party } from '../../types'
 import {
+  AUTO_EXPEDITION_CATCH_UP_MAX_BATCH_MS,
+  AUTO_EXPEDITION_CATCH_UP_MAX_RUNS_PER_BATCH,
+  AUTO_EXPEDITION_MAX_RUNS_PER_SESSION,
+  canContinueAutoExpeditionCatchUp,
+  hasReachedAutoExpeditionRunLimit,
   isAutoExpeditionDayBoundaryRun,
   isAutoExpeditionDungeonCleared,
   isAutoExpeditionRecord,
@@ -42,6 +47,44 @@ function createExpeditionRecord(autoExpeditionSessionId?: string): ExpeditionRec
 }
 
 describe('autoExpedition', () => {
+  it('オフライン精算は周回数または処理時間の上限で分割する', () => {
+    const startedAt = 1_000
+    expect(canContinueAutoExpeditionCatchUp(0, startedAt, startedAt)).toBe(true)
+    expect(canContinueAutoExpeditionCatchUp(
+      AUTO_EXPEDITION_CATCH_UP_MAX_RUNS_PER_BATCH,
+      startedAt,
+      startedAt,
+    )).toBe(false)
+    expect(canContinueAutoExpeditionCatchUp(
+      1,
+      startedAt,
+      startedAt + AUTO_EXPEDITION_CATCH_UP_MAX_BATCH_MS,
+    )).toBe(false)
+  })
+
+  it('同じセッションで10周確定したPTだけを上限到達と判定する', () => {
+    const summary = {
+      sessionId: 'session-a',
+      runCount: AUTO_EXPEDITION_MAX_RUNS_PER_SESSION,
+      xpGained: 0,
+      goldGained: 0,
+      rewardItems: [],
+      factorCount: 0,
+      levelUps: [],
+    }
+
+    expect(hasReachedAutoExpeditionRunLimit({
+      ...party,
+      autoExpeditionSessionId: 'session-a',
+      autoExpeditionSummary: summary,
+    })).toBe(true)
+    expect(hasReachedAutoExpeditionRunLimit({
+      ...party,
+      autoExpeditionSessionId: 'session-b',
+      autoExpeditionSummary: summary,
+    })).toBe(false)
+  })
+
   it('選択ティアまでクリア済みの場合だけ自動周回を許可する', () => {
     const dungeon = { maxClearedTier: 1 } as Dungeon
 

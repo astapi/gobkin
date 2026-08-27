@@ -20,7 +20,10 @@ import {
 import { normalizePartyRewardMultipliers, DUNGEON_TIER_META, DUNGEON_TIER_SELECTABLE_MAX, getDungeonTierAreaLevel, getDungeonTierDisplayName } from '@/shared/types'
 import type { ExpeditionRequest, Goblin, Dungeon, Party, DungeonTier } from '@/shared/types'
 import { getDungeonDescription, getDungeonName, getReturnPolicyLabel } from '@/shared/i18n/entityLocalization'
-import { isAutoExpeditionDungeonCleared } from '@/shared/utils/autoExpedition'
+import {
+  hasReachedAutoExpeditionRunLimit,
+  isAutoExpeditionDungeonCleared,
+} from '@/shared/utils/autoExpedition'
 
 type ReturnPolicy = ExpeditionRequest['returnPolicy']
 
@@ -415,6 +418,11 @@ export default function ExpeditionPreparationScreen() {
       return
     }
 
+    if (hasReachedAutoExpeditionRunLimit(party)) {
+      Alert.alert('自動周回上限', '周回結果を確認してから次の遠征を開始してください。')
+      return
+    }
+
     const doStartExpedition = async (useGoldenAcorn: boolean) => {
       try {
         await startExpedition({
@@ -502,7 +510,8 @@ export default function ExpeditionPreparationScreen() {
   const canStartExpedition = Boolean(selectedDungeonId) &&
     partyMembers.length > 0 &&
     !isProcessing &&
-    (party?.status ?? 'idle') === 'idle'
+    (party?.status ?? 'idle') === 'idle' &&
+    !(party?.autoExpeditionEnabled && party && hasReachedAutoExpeditionRunLimit(party))
   const { slotSize, avatarSize } = useMemo(() => {
     const slotGap = 8
     const maxSlotWidth = 50

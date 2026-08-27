@@ -1,5 +1,28 @@
 import type { Dungeon, DungeonTier, ExpeditionRecord, Party } from '../types'
 
+/** 1回のUI占有を短く保つため、オフライン精算を分割する。 */
+export const AUTO_EXPEDITION_CATCH_UP_MAX_RUNS_PER_BATCH = 10
+export const AUTO_EXPEDITION_CATCH_UP_MAX_BATCH_MS = 250
+/** PTごとの自動周回1セッション上限。 */
+export const AUTO_EXPEDITION_MAX_RUNS_PER_SESSION = 10
+
+export function canContinueAutoExpeditionCatchUp(
+  completedRunCount: number,
+  batchStartedAtMs: number,
+  nowMs: number,
+): boolean {
+  return completedRunCount < AUTO_EXPEDITION_CATCH_UP_MAX_RUNS_PER_BATCH &&
+    nowMs - batchStartedAtMs < AUTO_EXPEDITION_CATCH_UP_MAX_BATCH_MS
+}
+
+export function hasReachedAutoExpeditionRunLimit(party: Party): boolean {
+  return Boolean(
+    party.autoExpeditionSessionId &&
+    party.autoExpeditionSummary?.sessionId === party.autoExpeditionSessionId &&
+    party.autoExpeditionSummary.runCount >= AUTO_EXPEDITION_MAX_RUNS_PER_SESSION,
+  )
+}
+
 export function getLocalDateKey(date: Date): string {
   const year = date.getFullYear()
   const month = String(date.getMonth() + 1).padStart(2, '0')

@@ -124,4 +124,33 @@ describe('ConfigurePartyUseCase.acknowledgeAutoExpeditionSummary', () => {
 
     expect(result.autoExpeditionSessionId).toBe('session-a')
   })
+
+  it('上限到達後に結果を確認するとONのまま次回用セッションを準備する', async () => {
+    const repository = createPartyRepository({
+      id: 1,
+      name: 'PT1',
+      memberIds: [1],
+      status: 'idle',
+      autoExpeditionEnabled: true,
+      autoExpeditionSessionId: 'session-a',
+      autoExpeditionSummary: {
+        sessionId: 'session-a',
+        runCount: 10,
+        xpGained: 100,
+        goldGained: 50,
+        rewardItems: [],
+        factorCount: 0,
+        levelUps: [],
+      },
+    })
+    const useCase = new ConfigurePartyUseCase(repository)
+
+    const result = await useCase.acknowledgeAutoExpeditionSummary(1)
+
+    expect(result.autoExpeditionEnabled).toBe(true)
+    expect(result.autoExpeditionSessionId).toMatch(/^auto_1_/)
+    expect(result.autoExpeditionSessionId).not.toBe('session-a')
+    expect(result.autoExpeditionSummary?.sessionId).toBe('session-a')
+    expect(result.autoExpeditionSummary?.runCount).toBe(10)
+  })
 })

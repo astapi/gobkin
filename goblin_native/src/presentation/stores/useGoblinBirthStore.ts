@@ -7,6 +7,8 @@ import {
   createGoblinBirthSourceSnapshot,
   getMaxGoblinBirthSlots,
   hasGoblinBirthSourceConflict,
+  pauseGoblinBirthSlotForCapacity,
+  resumeGoblinBirthSlotAfterCapacity,
   selectRandomBirthPartner,
 } from '../../core/services/GoblinBirthCycleSystem'
 import { GoblinBirthService } from '../../core/services/GoblinBirthService'
@@ -31,10 +33,12 @@ interface GoblinBirthActions {
   configureSlot: (slotIndex: number, sourceGoblinId: number) => Promise<void>
   startSlot: (slotIndex: number, now?: Date) => Promise<void>
   stopSlot: (slotIndex: number) => Promise<void>
+  syncCapacityPause: (isCapacityFull: boolean, now?: Date) => Promise<void>
   settleDueBirths: (now?: Date) => Promise<void>
 }
 
 let settlementPromise: Promise<void> | null = null
+let capacitySyncPromise: Promise<void> | null = null
 
 function sortSlots(slots: GoblinBirthSlot[]): GoblinBirthSlot[] {
   return [...slots].sort((a, b) => a.slotIndex - b.slotIndex)
@@ -95,6 +99,7 @@ export const useGoblinBirthStore = create<GoblinBirthState & GoblinBirthActions>
       sourceGoblinId,
       isActive: false,
       sourceSnapshots: [],
+      capacityPausedAt: undefined,
     })
     await get().refresh()
   },
@@ -113,6 +118,7 @@ export const useGoblinBirthStore = create<GoblinBirthState & GoblinBirthActions>
       cycleStartedAt: startedAt,
       nextBirthAt: new Date(now.getTime() + GOBLIN_BIRTH_DURATION_MS).toISOString(),
       sourceSnapshots: snapshots,
+      capacityPausedAt: undefined,
     })
     await get().refresh()
   },
@@ -126,8 +132,34 @@ export const useGoblinBirthStore = create<GoblinBirthState & GoblinBirthActions>
       cycleStartedAt: undefined,
       nextBirthAt: undefined,
       sourceSnapshots: [],
+      capacityPausedAt: undefined,
     })
     await get().refresh()
+  },
+
+  syncCapacityPause: async (isCapacityFull, now = new Date()) => {
+    const previousSync = capacitySyncPromise ?? Promise.resolve()
+    const sync = previousSync.catch(() => undefined).then(async () => {
+      if (settlementPromise) await settlementPromise
+      const slots = await goblinBirthSlotRepository.getAll()
+      const updatedSlots = slots.map((slot) => isCapacityFull
+        ? pauseGoblinBirthSlotForCapacity(slot, now)
+        : resumeGoblinBirthSlotAfterCapacity(slot, now))
+      const changedSlots = updatedSlots.filter((slot, index) => slot !== slots[index])
+      if (changedSlots.length === 0) return
+      await transactionRunner.runInTransaction(async () => {
+        for (const slot of changedSlots) {
+          await goblinBirthSlotRepository.save(slot)
+        }
+      })
+      set({ slots: sortSlots(updatedSlots) })
+    })
+    capacitySyncPromise = sync
+    try {
+      await sync
+    } finally {
+      if (capacitySyncPromise === sync) capacitySyncPromise = null
+    }
   },
 
   settleDueBirths: async (now = new Date()) => {
@@ -145,7 +177,7 @@ export const useGoblinBirthStore = create<GoblinBirthState & GoblinBirthActions>
         const maxPending = baseState.rank * 5
         const nowMs = now.getTime()
         const dueSlots = (await goblinBirthSlotRepository.getAll())
-          .filter((slot) => slot.isActive && slot.nextBirthAt)
+          .filter((slot) => slot.isActive && !slot.capacityPausedAt && slot.nextBirthAt)
 
         // オフライン経過分は、枠ごとの次回時刻が古い順に1体ずつ処理する。
         // 1枠の蓄積だけで待機枠を占有し、ほかの枠が飢餓状態になるのを防ぐ。
@@ -163,6 +195,7 @@ export const useGoblinBirthStore = create<GoblinBirthState & GoblinBirthActions>
               cycleStartedAt: undefined,
               nextBirthAt: undefined,
               sourceSnapshots: [],
+              capacityPausedAt: undefined,
             })
             dueSlots.shift()
             continue
@@ -183,6 +216,7 @@ export const useGoblinBirthStore = create<GoblinBirthState & GoblinBirthActions>
                 cycleStartedAt: new Date(completedAtMs).toISOString(),
                 nextBirthAt: new Date(completedAtMs + GOBLIN_BIRTH_DURATION_MS).toISOString(),
                 sourceSnapshots: nextSnapshots,
+                capacityPausedAt: undefined,
               }
             : {
                 ...slot,
@@ -190,6 +224,7 @@ export const useGoblinBirthStore = create<GoblinBirthState & GoblinBirthActions>
                 cycleStartedAt: undefined,
                 nextBirthAt: undefined,
                 sourceSnapshots: [],
+                capacityPausedAt: undefined,
               }
 
           let saved = false

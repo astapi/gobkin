@@ -160,9 +160,7 @@ export default function GrowGoblinGroupScreen() {
           const isProcessing = processingSlotIndex === slotIndex
           const isCapacityWait = Boolean(
             slot?.isActive &&
-            slot.nextBirthAt &&
-            Date.parse(slot.nextBirthAt) <= currentTime.getTime() &&
-            pendingCount >= rank * 5,
+            (slot.capacityPausedAt || pendingCount >= rank * 5),
           )
           const remaining = slot?.nextBirthAt
             ? formatRemaining(Date.parse(slot.nextBirthAt) - currentTime.getTime())

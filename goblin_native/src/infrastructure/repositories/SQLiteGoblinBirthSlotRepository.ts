@@ -8,6 +8,7 @@ interface GoblinBirthSlotRow {
   is_active: number
   cycle_started_at: string | null
   next_birth_at: string | null
+  capacity_paused_at: string | null
   source_snapshots_json: string
 }
 
@@ -34,13 +35,14 @@ export class SQLiteGoblinBirthSlotRepository implements IGoblinBirthSlotReposito
     await db.runAsync(
       `INSERT INTO goblin_birth_slots (
         slot_index, source_goblin_id, is_active,
-        cycle_started_at, next_birth_at, source_snapshots_json, updated_at
-      ) VALUES (?, ?, ?, ?, ?, ?, datetime('now'))
+        cycle_started_at, next_birth_at, capacity_paused_at, source_snapshots_json, updated_at
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, datetime('now'))
       ON CONFLICT(slot_index) DO UPDATE SET
         source_goblin_id = excluded.source_goblin_id,
         is_active = excluded.is_active,
         cycle_started_at = excluded.cycle_started_at,
         next_birth_at = excluded.next_birth_at,
+        capacity_paused_at = excluded.capacity_paused_at,
         source_snapshots_json = excluded.source_snapshots_json,
         updated_at = excluded.updated_at`,
       [
@@ -49,6 +51,7 @@ export class SQLiteGoblinBirthSlotRepository implements IGoblinBirthSlotReposito
         slot.isActive ? 1 : 0,
         slot.cycleStartedAt ?? null,
         slot.nextBirthAt ?? null,
+        slot.capacityPausedAt ?? null,
         JSON.stringify(slot.sourceSnapshots),
       ],
     )
@@ -86,6 +89,7 @@ export class SQLiteGoblinBirthSlotRepository implements IGoblinBirthSlotReposito
       isActive: row.is_active === 1,
       cycleStartedAt: row.cycle_started_at ?? undefined,
       nextBirthAt: row.next_birth_at ?? undefined,
+      capacityPausedAt: row.capacity_paused_at ?? undefined,
       sourceSnapshots,
     }
   }
