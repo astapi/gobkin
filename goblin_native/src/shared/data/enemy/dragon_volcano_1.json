@@ -13,7 +13,7 @@
       "def": 967,
       "attackCount": 1,
       "accuracy": 968,
-      "evasion": 75,
+      "evasion": 878,
       "gold": 286,
       "magicDef": 885,
       "baseAttributes": {
@@ -38,7 +38,7 @@
       "def": 1095,
       "attackCount": 2,
       "accuracy": 984,
-      "evasion": 75,
+      "evasion": 1037,
       "gold": 328,
       "magicDef": 941,
       "baseAttributes": {
@@ -63,7 +63,7 @@
       "def": 1352,
       "attackCount": 2,
       "accuracy": 990,
-      "evasion": 75,
+      "evasion": 938,
       "gold": 397,
       "magicDef": 1119,
       "baseAttributes": {
@@ -83,12 +83,12 @@
         "dragon"
       ],
       "level": 264,
-      "hp": 18900,
+      "hp": 20190,
       "atk": 1341,
       "def": 1494,
       "attackCount": 3,
       "accuracy": 1046,
-      "evasion": 85,
+      "evasion": 1017,
       "criticalRate": 0.12,
       "isBoss": true,
       "gold": 1516,

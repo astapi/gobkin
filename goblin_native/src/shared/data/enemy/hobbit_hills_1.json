@@ -13,7 +13,7 @@
       "def": 81,
       "attackCount": 1,
       "accuracy": 600,
-      "evasion": 73,
+      "evasion": 115,
       "gold": 86,
       "magicDef": 64,
       "baseAttributes": {
@@ -38,7 +38,7 @@
       "def": 75,
       "attackCount": 1,
       "accuracy": 604,
-      "evasion": 71,
+      "evasion": 116,
       "gold": 93,
       "magicDef": 68,
       "baseAttributes": {
@@ -63,7 +63,7 @@
       "def": 175,
       "attackCount": 2,
       "accuracy": 620,
-      "evasion": 75,
+      "evasion": 162,
       "gold": 438,
       "magicDef": 133,
       "baseAttributes": {

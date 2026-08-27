@@ -13,7 +13,7 @@
       "def": 115,
       "attackCount": 2,
       "accuracy": 620,
-      "evasion": 40,
+      "evasion": 136,
       "gold": 70,
       "magicDef": 55,
       "baseAttributes": {
@@ -38,7 +38,7 @@
       "def": 93,
       "attackCount": 3,
       "accuracy": 624,
-      "evasion": 61,
+      "evasion": 173,
       "gold": 74,
       "magicDef": 57,
       "baseAttributes": {
@@ -58,12 +58,12 @@
         "beast"
       ],
       "level": 41,
-      "hp": 980,
+      "hp": 990,
       "atk": 127,
       "def": 89,
       "attackCount": 3,
       "accuracy": 622,
-      "evasion": 59,
+      "evasion": 169,
       "gold": 72,
       "magicDef": 55,
       "baseAttributes": {
@@ -88,7 +88,7 @@
       "def": 128,
       "attackCount": 2,
       "accuracy": 628,
-      "evasion": 44,
+      "evasion": 151,
       "gold": 77,
       "magicDef": 59,
       "baseAttributes": {
@@ -108,12 +108,12 @@
         "insect"
       ],
       "level": 54,
-      "hp": 2250,
+      "hp": 3300,
       "atk": 172,
       "def": 194,
       "attackCount": 3,
       "accuracy": 731,
-      "evasion": 43,
+      "evasion": 198,
       "gold": 386,
       "magicDef": 120,
       "baseAttributes": {

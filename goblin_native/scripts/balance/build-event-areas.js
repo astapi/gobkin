@@ -28,8 +28,8 @@ const AREA_DIR = path.join(ROOT, 'src/shared/data/expeditionArea')
 const ENEMY_DIR = path.join(ROOT, 'src/shared/data/enemy')
 const ALL_AREA_PATH = path.join(AREA_DIR, 'allArea.json')
 
-const NORMAL_MULTIPLIER = { hp: 1.6, atk: 1.6, def: 1.25, eva: 0.57 }
-const BOSS_MULTIPLIER = { hp: 1.3, atk: 1, def: 1, eva: 0.4 }
+const NORMAL_MULTIPLIER = { hp: 1, atk: 1.6, def: 1.25, eva: 1 }
+const BOSS_MULTIPLIER = { hp: 1.6, atk: 1, def: 1, eva: 1 }
 const round10 = value => Math.round(value / 10) * 10
 const round = value => Math.round(value)
 
@@ -452,8 +452,7 @@ function buildStatsFromRole(id, spec, statBoost, bossStatBoost, goldScale) {
     def: round(calculateEnemyBaseDefFromInputs(level, attrs.vitality, species) * multiplier.def * boost),
     attackCount: spec.attackCount ?? role.attackCount,
     accuracy: Math.min(isBoss ? 1050 : 990, round((isBoss ? 650 : 540) + level * (isBoss ? 1.5 : 2))),
-    evasion: Math.min(isBoss ? 85 : 75,
-      round(calculateEnemyBaseEvasionFromInputs(level, attrs.agility, attrs.luck, species) * multiplier.eva * boost)),
+    evasion: calculateEnemyBaseEvasionFromInputs(level, attrs.agility, attrs.luck, species),
     gold: round((spec.gold ?? level * (isBoss ? 5.5 : 1.35)) * (goldScale ?? 1)),
     magicDef: round(calculateEnemyBaseDefFromInputs(level, attrs.spirit, species) * multiplier.def * boost * 1.4),
     baseAttributes: { ...attrs },
@@ -511,8 +510,7 @@ function buildRetuneStats(enemy, level, config) {
   next.hp = round10(calculateEnemyBaseHpFromInputs(level, attrs.vitality, species) * multiplier.hp * statBoost)
   next.atk = round(calculateEnemyBaseAtkFromInputs(level, attrs.power, species) * multiplier.atk * statBoost)
   next.def = round(calculateEnemyBaseDefFromInputs(level, attrs.vitality, species) * multiplier.def * statBoost)
-  next.evasion = Math.min(enemy.isBoss ? 85 : 75,
-    round(calculateEnemyBaseEvasionFromInputs(level, attrs.agility, attrs.luck, species) * multiplier.eva * statBoost))
+  next.evasion = calculateEnemyBaseEvasionFromInputs(level, attrs.agility, attrs.luck, species)
   next.accuracy = Math.min(enemy.isBoss ? 1050 : 990,
     round((enemy.isBoss ? 650 : 540) + level * (enemy.isBoss ? 1.5 : 2)))
 
