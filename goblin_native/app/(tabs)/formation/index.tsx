@@ -23,7 +23,10 @@ import {
   getPartyTitleMultiplierFromSkills,
 } from '@/shared/data/characterSkills'
 import { normalizePartyRewardMultipliers } from '@/shared/types'
-import { isAutoExpeditionStopPending } from '@/shared/utils/autoExpedition'
+import {
+  hasReachedAutoExpeditionRunLimit,
+  isAutoExpeditionStopPending,
+} from '@/shared/utils/autoExpedition'
 import type { Party, Goblin, Dungeon, DungeonTier, ExpeditionRequest, ExpeditionRecord } from '@/shared/types'
 
 const MAX_PARTY_SLOTS = 6
@@ -150,6 +153,7 @@ const PartyCard = memo(function PartyCard({
   const status = party.status ?? 'idle'
   const ongoingExpedition = historyDisplays.find(item => item.record.status === 'ongoing')?.record
   const isStoppingAutoExpedition = isAutoExpeditionStopPending(party, ongoingExpedition)
+  const hasReachedAutoRunLimit = hasReachedAutoExpeditionRunLimit(party)
   return (
     <View style={[styles.partyCard, status === 'expedition' && usedGoldenAcorn && styles.partyCardGoldenAcorn]}>
       <TouchableOpacity
@@ -196,7 +200,10 @@ const PartyCard = memo(function PartyCard({
                 </Text>
               </View>
             ) : null}
-            {!isCatchingUp && !party.autoExpeditionEnabled && party.autoExpeditionSessionId && status === 'idle' && (
+            {!isCatchingUp &&
+              party.autoExpeditionSessionId &&
+              status === 'idle' &&
+              (!party.autoExpeditionEnabled || hasReachedAutoRunLimit) && (
               <TouchableOpacity
                 testID={`auto-expedition-summary-${party.id}`}
                 style={styles.autoExpeditionSummaryBadge}

@@ -32,6 +32,7 @@ import {
 } from '@/shared/data/equipmentPoolLoader'
 import { getEquipmentDisplayName, getStatLabel } from '@/shared/i18n/entityLocalization'
 import { EquipmentInventoryFilterSheet } from '@/presentation/components/EquipmentInventoryFilterSheet'
+import { EquipmentInventoryFilterButton } from '@/presentation/components/EquipmentInventoryFilterButton'
 import {
   DEFAULT_EQUIPMENT_INVENTORY_FILTER,
   getEquipmentInventoryFilterActiveCount,
@@ -349,13 +350,6 @@ export default function WarehouseScreen() {
               <Text style={styles.screenTitle}>{t('ui.warehouse.title')}</Text>
               <Text style={styles.itemCount}>{t('ui.warehouse.itemCount', { count: items.length })}</Text>
             </View>
-            <Pressable style={styles.filterButton} onPress={() => setFilterVisible(true)}>
-              <Text style={styles.filterButtonText}>
-                {activeFilterCount > 0
-                  ? t('ui.equipmentInventoryFilter.summary', { count: activeFilterCount })
-                  : t('ui.equipmentInventoryFilter.all')}
-              </Text>
-            </Pressable>
           </View>
         )}
         ListEmptyComponent={(
@@ -374,7 +368,12 @@ export default function WarehouseScreen() {
             ) : null}
           </View>
         )}
-        ListFooterComponent={<View style={{ height: insets.bottom + 24 }} />}
+        ListFooterComponent={<View style={{ height: insets.bottom + 80 }} />}
+      />
+
+      <EquipmentInventoryFilterButton
+        activeFilterCount={activeFilterCount}
+        onPress={() => setFilterVisible(true)}
       />
 
       <EquipmentInventoryFilterSheet
@@ -413,10 +412,6 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   listHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    gap: 12,
     marginBottom: 10,
   },
   screenTitle: {
@@ -428,17 +423,6 @@ const styles = StyleSheet.create({
     color: '#6B7280',
     fontSize: 12,
     marginTop: 2,
-  },
-  filterButton: {
-    backgroundColor: '#E5E7EB',
-    borderRadius: 999,
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-  },
-  filterButtonText: {
-    color: '#4B5563',
-    fontSize: 12,
-    fontWeight: '700',
   },
   categoryHeader: {
     paddingTop: 8,

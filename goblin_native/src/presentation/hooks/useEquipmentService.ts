@@ -25,21 +25,25 @@ export const useEquipmentService = () => {
 
   const equipItem = useCallback(
     async (goblin: Goblin, equipment: EquipmentInstance, slotIndex: number) => {
-      const result = EquipmentService.equip(goblin, equipment, slotIndex, equippedItems)
+      // Service は引数を直接更新するため、React state 由来のオブジェクトを渡さない。
+      const nextGoblin: Goblin = { ...goblin, skills: [...goblin.skills] }
+      const nextEquipment: EquipmentInstance = { ...equipment }
+      const result = EquipmentService.equip(nextGoblin, nextEquipment, slotIndex, equippedItems)
       if (!result.success) {
-        return { success: false, error: result.error }
+        return { success: false as const, error: result.error }
       }
-      await repository.save(equipment)
+      await repository.save(nextEquipment)
       if (result.unequipped) {
         await repository.save(result.unequipped)
       }
       const updatedEquipped = await repository.getByGoblinId(goblin.id)
+      const effectiveStats = calculateGoblinEffectiveStats(goblin, updatedEquipped)
       await saveGoblin({
-        ...goblin,
-        effectiveStats: calculateGoblinEffectiveStats(goblin, updatedEquipped),
+        ...nextGoblin,
+        effectiveStats,
       })
       await refreshEquipment(goblin.id)
-      return { success: true }
+      return { success: true as const, effectiveStats }
     },
     [repository, equippedItems, refreshEquipment, saveGoblin],
   )

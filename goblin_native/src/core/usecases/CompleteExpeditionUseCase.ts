@@ -436,13 +436,14 @@ export class CompleteExpeditionUseCase {
     if (!isAbort && autoExpeditionSessionId) {
       const latestParty = await this.partyRepository.getParty(partyId)
       if (latestParty) {
+        const autoExpeditionSummary = addAutoExpeditionResult(
+          latestParty.autoExpeditionSummary,
+          autoExpeditionSessionId,
+          enrichedReplay,
+        )
         await this.partyRepository.saveParty({
           ...latestParty,
-          autoExpeditionSummary: addAutoExpeditionResult(
-            latestParty.autoExpeditionSummary,
-            autoExpeditionSessionId,
-            enrichedReplay,
-          ),
+          autoExpeditionSummary,
         })
       }
     }

@@ -87,13 +87,18 @@ export class ConfigurePartyUseCase {
 
   public async acknowledgeAutoExpeditionSummary(partyId: number): Promise<Party> {
     const party = await this.requireParty(partyId)
-    if (party.autoExpeditionEnabled || (party.status ?? 'idle') === 'expedition') {
+    if ((party.status ?? 'idle') === 'expedition') {
       return party
     }
 
+    // 設定がONなら、表示中の結果は残したまま次回出発用の新セッションを準備する。
+    // 自動では出発せず、ユーザーが次に遠征を開始するまで待機する。
+    const nextSessionId = party.autoExpeditionEnabled
+      ? `auto_${partyId}_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`
+      : undefined
     await this.partyRepository.saveParty({
       ...party,
-      autoExpeditionSessionId: undefined,
+      autoExpeditionSessionId: nextSessionId,
     })
     return this.requireParty(partyId)
   }

@@ -10,7 +10,7 @@ export function GoblinBirthAutomationHost() {
   const rank = useBaseStore((state) => state.baseState?.rank ?? 1)
   const nearestBirthAt = useMemo(() => {
     const timestamps = slots
-      .filter((slot) => slot.isActive && slot.nextBirthAt)
+      .filter((slot) => slot.isActive && !slot.capacityPausedAt && slot.nextBirthAt)
       .map((slot) => Date.parse(slot.nextBirthAt!))
       .filter(Number.isFinite)
     return timestamps.length > 0 ? Math.min(...timestamps) : undefined
@@ -24,6 +24,12 @@ export function GoblinBirthAutomationHost() {
     }, Math.min(delay, 2_147_000_000))
     return () => clearTimeout(timer)
   }, [nearestBirthAt, pendingCount, rank])
+
+  useEffect(() => {
+    void useGoblinBirthStore.getState()
+      .syncCapacityPause(pendingCount >= rank * 5)
+      .catch((error) => console.warn('[GoblinBirthAutomationHost] Failed to sync capacity pause', error))
+  }, [pendingCount, rank])
 
   useEffect(() => {
     const subscription = AppState.addEventListener('change', (state) => {

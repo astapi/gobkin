@@ -45,10 +45,13 @@ import { getDungeonName } from '../../shared/i18n/entityLocalization'
 import { computeDungeonExplorationTime, getDungeonTierAreaLevel, getDungeonTierDisplayName } from '../../shared/types'
 import { getMaxClearedFloorFromReplay, isDungeonCompleted } from '../../shared/utils/expeditionClear'
 import { computeCurrentFloor } from '../../shared/utils/expeditionFloor'
+import { applyInstantDungeonExploration } from '../../shared/utils/expeditionDuration'
 import { getExpeditionTimeMultiplierFromSkills } from '../../shared/data/characterSkills'
 import { EquipmentService } from '../../core/services/EquipmentService'
 import i18n from '../../shared/i18n'
 import {
+  canContinueAutoExpeditionCatchUp,
+  hasReachedAutoExpeditionRunLimit,
   isAutoExpeditionDayBoundaryRun,
   isAutoExpeditionDungeonCleared,
   isAutoExpeditionRecord,
@@ -264,10 +267,6 @@ export const useExpeditionFlow = ({
     tier: DungeonTier = 0,
     ignoreInstantDungeonExploration: boolean = false,
   ): number => {
-    if (instantDungeonExploration && !ignoreInstantDungeonExploration) {
-      return 1
-    }
-
     const tierCleared = (dungeon.maxClearedTier ?? 0) > tier
     const fullFirstTime = computeDungeonExplorationTime(
       dungeon.id,
@@ -308,8 +307,12 @@ export const useExpeditionFlow = ({
     const speedMultiplier = getSpeedMultiplier()
     const monthlyPassSpeed = hasMonthlyPass() ? MONTHLY_PASS_SPEED_MULTIPLIER : 1
     const goldenAcornSpeed = goldenAcornUsed ? GOLDEN_ACORN_SPEED_MULTIPLIER : 1
-    return Math.floor(
+    const durationSec = Math.floor(
       baseTime * multiplier * speedMultiplier * partyExpeditionTimeMultiplier * monthlyPassSpeed * goldenAcornSpeed,
+    )
+    return applyInstantDungeonExploration(
+      durationSec,
+      instantDungeonExploration && !ignoreInstantDungeonExploration,
     )
   }, [instantDungeonExploration])
 
@@ -351,7 +354,15 @@ export const useExpeditionFlow = ({
 
   const startExpedition = useCallback(
     async (
-      { party, dungeon, returnPolicy, targetFloor = null, tier, useGoldenAcorn = false, startTime: requestedStartTime }: StartExpeditionInput,
+      {
+        party,
+        dungeon,
+        returnPolicy,
+        targetFloor = null,
+        tier,
+        useGoldenAcorn = false,
+        startTime: requestedStartTime,
+      }: StartExpeditionInput,
       options: ExpeditionMutationOptions = {},
     ): Promise<StartExpeditionResult> => {
       const trackProcessing = options.trackProcessing !== false
@@ -388,6 +399,9 @@ export const useExpeditionFlow = ({
           useGoldenAcorn,
           tier ?? 0,
         )
+        if (durationSec <= 0) {
+          throw new Error('遠征時間が不正です')
+        }
         const simulationDurationSec = isTutorialSlimeLaunch ? durationSec : estimateExplorationTime(
           dungeon,
           returnPolicy,
@@ -486,25 +500,17 @@ export const useExpeditionFlow = ({
 
     try {
       const party = await partyRepository.getParty(partyId)
-      if (!party?.autoExpeditionEnabled || (party.status ?? 'idle') !== 'idle') return null
+      if (!party) return null
+      if (party.autoExpeditionEnabled && hasReachedAutoExpeditionRunLimit(party)) {
+        return null
+      }
+      if (!party.autoExpeditionEnabled || (party.status ?? 'idle') !== 'idle') return null
       if (party.memberIds.length === 0 || !party.dungeonId) return null
 
       const dungeon = useDungeonStore.getState().dungeons.find(item => item.id === party.dungeonId)
       const tier = party.dungeonTier ?? 0
       if (!isAutoExpeditionDungeonCleared(dungeon, tier)) return null
       if (!dungeon) return null
-
-      const partyTimeMultiplier = await getPartyExpeditionTimeMultiplier(party)
-      const durationSec = estimateExplorationTime(
-        dungeon,
-        party.returnPolicy ?? 'never',
-        party.targetFloor ?? null,
-        partyTimeMultiplier,
-        false,
-        tier,
-        true,
-      )
-      if (durationSec <= 0) return null
 
       try {
         return await startExpedition({
@@ -544,6 +550,10 @@ export const useExpeditionFlow = ({
 
       try {
         for (const { party, dungeon, returnPolicy, targetFloor = null, tier, useGoldenAcorn = false } of inputs) {
+          if (party.autoExpeditionEnabled && hasReachedAutoExpeditionRunLimit(party)) {
+            skippedReasons.push(`${party.name}: 自動周回が10周に到達しています`)
+            continue
+          }
           let acornAppliedForThisInput = false
           if (useGoldenAcorn) {
             if (debugInstantAcorn) {
@@ -763,7 +773,7 @@ export const useExpeditionFlow = ({
     completionRunningRef.current = true
 
     const now = new Date()
-    const dueExpeditions = expeditionRecords.filter(record =>
+    const dueExpeditions = useExpeditionStore.getState().expeditionRecords.filter(record =>
       record.status === 'ongoing' &&
       record.returnTime &&
       record.returnTime <= now &&
@@ -794,7 +804,12 @@ export const useExpeditionFlow = ({
               while (
                 record?.status === 'ongoing' &&
                 record.returnTime !== null &&
-                record.returnTime <= now
+                record.returnTime <= now &&
+                canContinueAutoExpeditionCatchUp(
+                  completedRunCount,
+                  catchUpStartedAt,
+                  Date.now(),
+                )
               ) {
                 if (processedExpeditionsRef.current.has(record.id)) break
                 const processingRecordId = record.id
@@ -919,7 +934,6 @@ export const useExpeditionFlow = ({
       }
     }
   }, [
-    expeditionRecords,
     completeExpeditionUseCase,
     completeCatchUpExpeditionUseCase,
     handleDungeonClear,

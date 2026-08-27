@@ -66,6 +66,7 @@ export const SCHEMA = {
       is_active INTEGER NOT NULL DEFAULT 0,
       cycle_started_at TEXT,
       next_birth_at TEXT,
+      capacity_paused_at TEXT,
       source_snapshots_json TEXT NOT NULL DEFAULT '[]',
       updated_at TEXT NOT NULL DEFAULT (datetime('now'))
     )

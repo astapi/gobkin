@@ -15,7 +15,9 @@ export default function GoblinLayout() {
         options={{
           headerShown: true,
           title: t('ui.root.equipmentChange'),
-          presentation: 'formSheet',
+          // 長い仮想リストを formSheet のパンジェスチャーから分離する。
+          presentation: 'fullScreenModal',
+          gestureEnabled: false,
           headerStyle: { backgroundColor: '#FFFFFF' },
           headerTitleStyle: { color: '#1F2937', fontWeight: 'bold' },
           headerTintColor: '#6B7280',

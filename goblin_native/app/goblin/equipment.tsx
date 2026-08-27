@@ -27,6 +27,7 @@ import { getEquipmentDisplayName, getStatLabel } from '@/shared/i18n/entityLocal
 import { calculateGoblinEffectiveStats } from '@/shared/utils/goblinStats'
 import type { Goblin } from '@/shared/types'
 import { EquipmentInventoryFilterSheet } from '@/presentation/components/EquipmentInventoryFilterSheet'
+import { EquipmentInventoryFilterButton } from '@/presentation/components/EquipmentInventoryFilterButton'
 import {
   DEFAULT_EQUIPMENT_INVENTORY_FILTER,
   getEquipmentInventoryFilterActiveCount,
@@ -683,7 +684,8 @@ export default function EquipmentScreenPage() {
           Alert.alert('装備エラー', result.error ?? '装備できませんでした')
           return
         }
-        const afterStats = calculateGoblinEffectiveStats(goblin, [...equippedItems, equipment])
+        // Repository から読み直して保存した実効値で差分を表示する。
+        const afterStats = result.effectiveStats
         const template = getEquipmentTemplate(equipment.templateId)
         equipmentToastIdRef.current += 1
         const toast = {
@@ -823,19 +825,8 @@ export default function EquipmentScreenPage() {
                 </View>
               </View>
 
-              <View style={[styles.flatSectionHeader, styles.inventoryHeaderRow]}>
+              <View style={styles.flatSectionHeader}>
                 <Text style={styles.flatSectionTitle}>所持アイテム</Text>
-                <TouchableOpacity
-                  style={styles.inventoryFilterButton}
-                  activeOpacity={0.8}
-                  onPress={() => setIsFilterSheetVisible(true)}
-                >
-                  <Text style={styles.inventoryFilterStatus}>
-                    {activeInventoryFilterCount > 0
-                      ? t('ui.equipmentInventoryFilter.summary', { count: activeInventoryFilterCount })
-                      : t('ui.equipmentInventoryFilter.all')}
-                  </Text>
-                </TouchableOpacity>
               </View>
             </>
           )}
@@ -849,6 +840,11 @@ export default function EquipmentScreenPage() {
           ListFooterComponent={<View style={{ height: listBottomSpacerHeight }} />}
           ItemSeparatorComponent={() => <View style={styles.itemSeparator} />}
         />
+
+      <EquipmentInventoryFilterButton
+        activeFilterCount={activeInventoryFilterCount}
+        onPress={() => setIsFilterSheetVisible(true)}
+      />
 
       <EquipmentInventoryFilterSheet
         visible={isFilterSheetVisible}
@@ -980,23 +976,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     color: '#1F2937',
-  },
-  inventoryHeaderRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    gap: 12,
-  },
-  inventoryFilterButton: {
-    backgroundColor: '#E5E7EB',
-    borderRadius: 999,
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-  },
-  inventoryFilterStatus: {
-    fontSize: 12,
-    fontWeight: '700',
-    color: '#4B5563',
   },
   equipmentHeaderGroup: {
     marginBottom: 0,
