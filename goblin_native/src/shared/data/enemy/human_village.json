@@ -8,13 +8,13 @@
         "human"
       ],
       "level": 28,
-      "hp": 830,
-      "atk": 128,
+      "hp": 880,
+      "atk": 136,
       "def": 85,
       "magicDef": 50,
       "attackCount": 2,
       "accuracy": 700,
-      "evasion": 21,
+      "evasion": 89,
       "gold": 60,
       "baseAttributes": {
         "power": 21,
@@ -33,13 +33,13 @@
         "human"
       ],
       "level": 30,
-      "hp": 1390,
-      "atk": 128,
+      "hp": 1480,
+      "atk": 136,
       "def": 140,
       "magicDef": 115,
       "attackCount": 2,
       "accuracy": 690,
-      "evasion": 17,
+      "evasion": 84,
       "gold": 76,
       "baseAttributes": {
         "power": 20,
@@ -58,13 +58,13 @@
         "human"
       ],
       "level": 29,
-      "hp": 670,
-      "atk": 118,
+      "hp": 720,
+      "atk": 126,
       "def": 69,
       "magicDef": 52,
       "attackCount": 4,
       "accuracy": 770,
-      "evasion": 29,
+      "evasion": 108,
       "gold": 84,
       "skills": [
         {
@@ -90,13 +90,13 @@
         "construct"
       ],
       "level": 33,
-      "hp": 1790,
-      "atk": 384,
+      "hp": 2940,
+      "atk": 422,
       "def": 165,
       "magicDef": 42,
       "attackCount": 1,
       "accuracy": 650,
-      "evasion": 3,
+      "evasion": 76,
       "isBoss": true,
       "gold": 250,
       "baseAttributes": {

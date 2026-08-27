@@ -8,13 +8,13 @@
         "lizardman"
       ],
       "level": 44,
-      "hp": 1260,
+      "hp": 1830,
       "atk": 293,
       "def": 145,
       "magicDef": 40,
       "attackCount": 6,
       "accuracy": 640,
-      "evasion": 300,
+      "evasion": 163,
       "gold": 38,
       "skills": [
         {
@@ -43,13 +43,13 @@
         "lizardman"
       ],
       "level": 44,
-      "hp": 1030,
+      "hp": 1600,
       "atk": 220,
       "def": 119,
       "magicDef": 22,
       "attackCount": 6,
       "accuracy": 660,
-      "evasion": 800,
+      "evasion": 182,
       "gold": 41,
       "skills": [
         {
@@ -74,13 +74,13 @@
         "lizardman"
       ],
       "level": 55,
-      "hp": 2030,
+      "hp": 4460,
       "atk": 481,
       "def": 227,
       "magicDef": 62,
       "attackCount": 8,
       "accuracy": 680,
-      "evasion": 250,
+      "evasion": 177,
       "isBoss": true,
       "gold": 220,
       "skills": [

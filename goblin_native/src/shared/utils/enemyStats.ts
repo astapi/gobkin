@@ -9,7 +9,11 @@
 // 未参照に見えても death-code ではないので削除しないこと(過去に監査で誤削除された)。
 import type { Enemy } from '../types'
 import { races } from '../data/races'
-import { getGoblinHpLevelScale } from './goblinHp'
+import {
+  calculateBaseEvasionFromAttributes,
+  getBaseAttributeLevelBonus,
+  getGoblinHpLevelScale,
+} from './goblinHp'
 
 export type EnemyHpSpecies = 'goblin' | 'beast' | 'human' | 'demon_race'
 
@@ -19,6 +23,9 @@ const ENEMY_HP_SPECIES_COEFFICIENTS: Record<EnemyHpSpecies, number> = {
   human: 1.0,
   demon_race: 1.3,
 }
+
+/** 敵は装備で回避を補強できないため、共通基礎式の最終値を少し補う。 */
+export const ENEMY_EVASION_EQUIPMENT_COMPENSATION = 1.2
 
 export function getEnemyHpSpeciesCoefficient(species: EnemyHpSpecies): number {
   return ENEMY_HP_SPECIES_COEFFICIENTS[species]
@@ -53,7 +60,10 @@ export function calculateEnemyBaseHpFromInputs(
 ): number {
   const levelScale = getGoblinHpLevelScale(level, species)
   const coefficient = getEnemyHpSpeciesCoefficient(species)
-  const baseHp = Math.floor(vitality * (1 + levelScale * 10 * coefficient) + 1)
+  // 味方と同じく、基礎体力はレベルで最大+10まで成長する。
+  const attributeLevelBonus = Math.min(10, getBaseAttributeLevelBonus(level))
+  const effectiveVitality = vitality + attributeLevelBonus
+  const baseHp = Math.floor(effectiveVitality * (1 + levelScale * 10 * coefficient) + 1)
   return roundOnesPlace(baseHp)
 }
 
@@ -89,10 +99,17 @@ export function calculateEnemyBaseEvasionFromInputs(
   luck: number,
   species: EnemyHpSpecies,
 ): number {
-  const levelScale = getGoblinHpLevelScale(level, species)
   const coefficient = getEnemyHpSpeciesCoefficient(species)
-  const attributeAverage = (agility + luck) / 2
-  return Math.round(attributeAverage * (1 + levelScale * coefficient))
+  // 味方と同じく、基礎能力値はレベルで最大+10まで成長する。
+  const attributeLevelBonus = Math.min(10, getBaseAttributeLevelBonus(level))
+  return calculateBaseEvasionFromAttributes(
+    level,
+    agility + attributeLevelBonus,
+    luck + attributeLevelBonus,
+    species,
+    coefficient,
+    ENEMY_EVASION_EQUIPMENT_COMPENSATION,
+  )
 }
 
 export function calculateEnemyBaseEvasion(enemy: Pick<Enemy, 'level' | 'raceTags' | 'baseAttributes'>): number {

@@ -145,7 +145,11 @@ export class DamageCalculator {
     const attackPower = opt.isMagic ? (attacker.magicAtk ?? attacker.atk) : attacker.atk;
     const base = attackPower * skill.power;
     const defPower = opt.isMagic ? (defender.magicDef ?? defender.def) : defender.def;
-    const defMitigate = 1 - defPower / (defPower + (opt.defConstant ?? 100));
+    // 固定値だけを防御係数にすると、ATK/DEF が成長する中盤以降はダメージが
+    // ほぼ一定値に収束し、HP 成長に追いつかなくなる。攻撃力を係数の下限にして、
+    // 同じ ATK:DEF 比ならレベルが上がってもダメージ割合が維持されるようにする。
+    const defConstant = Math.max(opt.defConstant ?? 100, attackPower);
+    const defMitigate = 1 - defPower / (defPower + defConstant);
 
     const targetTags = expandRaceTags(races, defender.raceTags);
     const attackerTags = expandRaceTags(races, attacker.raceTags);

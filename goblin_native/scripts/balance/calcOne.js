@@ -4,7 +4,7 @@
 //   例: node scripts/balance/calcOne.js "wolf 30 13 30 26 12 beast" "alpha 40 20 50 32 13 beast boss"
 require('./headless/runtime')
 const S = require('@/shared/utils/enemyStats')
-const M = { normal: { hp: 1.6, atk: 1.6, def: 1.25, eva: 0.57 }, boss: { hp: 1.3, atk: 1.0, def: 1.0, eva: 0.4 } }
+const M = { normal: { hp: 1.0, atk: 1.6, def: 1.25, eva: 1.0 }, boss: { hp: 1.6, atk: 1.0, def: 1.0, eva: 1.0 } }
 const r10 = v => Math.round(v / 10) * 10, r = v => Math.round(v)
 console.log('name          Lv  sp     | HP   ATK  DEF  EVA')
 for (const spec of process.argv.slice(2)) {

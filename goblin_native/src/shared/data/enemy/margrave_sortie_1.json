@@ -13,7 +13,7 @@
       "def": 762,
       "attackCount": 2,
       "accuracy": 752,
-      "evasion": 75,
+      "evasion": 371,
       "gold": 110,
       "magicDef": 609,
       "baseAttributes": {
@@ -44,7 +44,7 @@
       "def": 552,
       "attackCount": 3,
       "accuracy": 756,
-      "evasion": 75,
+      "evasion": 431,
       "gold": 112,
       "magicDef": 386,
       "baseAttributes": {
@@ -75,7 +75,7 @@
       "def": 615,
       "attackCount": 1,
       "accuracy": 760,
-      "evasion": 75,
+      "evasion": 369,
       "gold": 114,
       "magicDef": 1096,
       "baseAttributes": {
@@ -111,7 +111,7 @@
       "def": 678,
       "attackCount": 3,
       "accuracy": 764,
-      "evasion": 75,
+      "evasion": 475,
       "gold": 116,
       "magicDef": 634,
       "baseAttributes": {
@@ -142,7 +142,7 @@
       "def": 972,
       "attackCount": 2,
       "accuracy": 768,
-      "evasion": 75,
+      "evasion": 366,
       "gold": 119,
       "magicDef": 962,
       "baseAttributes": {
@@ -173,7 +173,7 @@
       "def": 585,
       "attackCount": 3,
       "accuracy": 776,
-      "evasion": 75,
+      "evasion": 527,
       "gold": 146,
       "magicDef": 491,
       "baseAttributes": {
@@ -204,7 +204,7 @@
       "def": 991,
       "attackCount": 3,
       "accuracy": 842,
-      "evasion": 85,
+      "evasion": 471,
       "gold": 542,
       "magicDef": 971,
       "baseAttributes": {

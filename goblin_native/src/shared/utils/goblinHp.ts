@@ -209,17 +209,36 @@ export function calculateGoblinBaseAccuracy(level: number, goblin: GoblinStatCon
   return Math.round((attributeAverage * (1 + levelScale * 2 * coefficient) + 50) * multiplier)
 }
 
+/** 味方・敵で共通の、敏捷/運とレベル帯係数から回避を求める式 */
+export function calculateBaseEvasionFromAttributes(
+  level: number,
+  agility: number,
+  luck: number,
+  race: string,
+  coefficient: number,
+  multiplier = 1,
+): number {
+  const levelScale = getGoblinStatLevelScale(level, race)
+  const attributeAverage = (agility + luck) / 2
+  return Math.round(attributeAverage * (1 + levelScale * coefficient) * multiplier)
+}
+
 export function calculateGoblinBaseEvasion(level: number, goblin: GoblinStatContext): number {
   if (hasStoredStat(goblin, 'evasion')) {
     return goblin.stats.evasion
   }
 
   const attributes = getGoblinBaseAttributesAtLevel(goblin, level)
-  const levelScale = getGoblinStatLevelScale(level, goblin.raceId ?? goblin.race)
   const coefficient = getGoblinStatCoefficient(goblin)
-  const attributeAverage = (attributes.agility + attributes.luck) / 2
   const multiplier = getBaseStatMultiplier(goblin, 'evasion')
-  return Math.round(attributeAverage * (1 + levelScale * coefficient) * multiplier)
+  return calculateBaseEvasionFromAttributes(
+    level,
+    attributes.agility,
+    attributes.luck,
+    goblin.raceId ?? goblin.race,
+    coefficient,
+    multiplier,
+  )
 }
 
 export function calculateGoblinBaseAttackCount(level: number, goblin: GoblinStatContext): number {

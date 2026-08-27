@@ -8,12 +8,12 @@
         "beast"
       ],
       "level": 28,
-      "hp": 510,
+      "hp": 640,
       "atk": 108,
       "def": 51,
       "attackCount": 3,
       "accuracy": 560,
-      "evasion": 39,
+      "evasion": 132,
       "gold": 84,
       "magicDef": 22,
       "baseAttributes": {
@@ -33,12 +33,12 @@
         "beast"
       ],
       "level": 30,
-      "hp": 700,
+      "hp": 880,
       "atk": 145,
       "def": 70,
       "attackCount": 4,
       "accuracy": 560,
-      "evasion": 47,
+      "evasion": 150,
       "gold": 96,
       "magicDef": 24,
       "baseAttributes": {
@@ -58,12 +58,12 @@
         "beast"
       ],
       "level": 31,
-      "hp": 910,
+      "hp": 1140,
       "atk": 190,
       "def": 89,
       "attackCount": 3,
       "accuracy": 580,
-      "evasion": 40,
+      "evasion": 139,
       "gold": 104,
       "magicDef": 28,
       "baseAttributes": {
@@ -83,12 +83,12 @@
         "beast"
       ],
       "level": 30,
-      "hp": 610,
+      "hp": 760,
       "atk": 132,
       "def": 59,
       "attackCount": 3,
       "accuracy": 700,
-      "evasion": 51,
+      "evasion": 160,
       "gold": 100,
       "magicDef": 30,
       "baseAttributes": {
@@ -108,12 +108,12 @@
         "beast"
       ],
       "level": 40,
-      "hp": 1310,
+      "hp": 2430,
       "atk": 235,
       "def": 119,
       "attackCount": 6,
       "accuracy": 640,
-      "evasion": 54,
+      "evasion": 232,
       "isBoss": true,
       "gold": 320,
       "factorDrops": [

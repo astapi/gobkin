@@ -47,6 +47,7 @@ const { applySkillBonusesToEquipmentBonuses } = require('../src/shared/data/char
 const { getGoblinVariantByFactorId } = require('../src/shared/data/goblinVariants')
 const { getCharacterSkill } = require('../src/shared/data/skillCatalog')
 const { getLegacyRaceName } = require('../src/shared/types/Race')
+const { getEffectiveStats } = require('../src/shared/utils/goblinStats')
 console.log = c; console.warn = c; console.info = c
 
 function applyVariant(g, vid) {
@@ -91,18 +92,22 @@ async function runOnce(areaId, party, seed) {
 
 function summarize(replay, partySize) {
   const dmg = Array(partySize).fill(0)
-  let battles = 0; let rounds = 0
+  let battles = 0; let rounds = 0; let bossBattles = 0; let bossRounds = 0
   let success = replay.summary?.success === true
   for (const e of replay.events ?? []) {
     if (e.type !== 'battle' && e.type !== 'boss') continue
     battles++
     rounds += e.combat?.rounds ?? 0
+    if (e.type === 'boss') {
+      bossBattles++
+      bossRounds += e.combat?.rounds ?? 0
+    }
     const delta = e.combat?.allyHPDelta ?? []
     for (let i = 0; i < partySize; i++) {
       if (delta[i] < 0) dmg[i] += -delta[i]
     }
   }
-  return { success, battles, rounds, dmg }
+  return { success, battles, rounds, bossBattles, bossRounds, dmg }
 }
 
 async function main() {
@@ -118,30 +123,42 @@ async function main() {
 
   console.log(`# ${scenarioId} / Lv${level} / iter=${iterations}`)
   console.log()
-  console.log('  Loadout              wins  avgRounds  totalDmg/run  tank_dmg(列1)  others_dmg')
+  console.log('  Loadout              wins  avgRounds  winAvgRounds  winBossRounds  dmg/battleHP  totalDmg/run  tank_dmg(列1)  others_dmg')
 
   const origLog = console.log
   for (const lo of scenario.loadouts) {
     if (lo.name === 'C_misformation') continue
     const party = buildParty(lo, level)
     const partySize = party.length
-    let wins = 0, totalRounds = 0, totalBattles = 0
+    const partyMaxHp = party.reduce((sum, goblin) => sum + getEffectiveStats(goblin).hp, 0)
+    let wins = 0, totalRounds = 0, totalBattles = 0, winRounds = 0, winBattles = 0, winBossRounds = 0, winBossBattles = 0
     const totalDmg = Array(partySize).fill(0)
     for (let i = 0; i < iterations; i++) {
       console.log = () => {}; console.warn = () => {}; console.info = () => {}
       const replay = await runOnce(scenario.areaId, party, (1 + i * 7919) | 0)
       console.log = origLog; console.warn = origLog; console.info = origLog
       const s = summarize(replay, partySize)
-      if (s.success) wins++
+      if (s.success) {
+        wins++
+        winRounds += s.rounds
+        winBattles += s.battles
+        winBossRounds += s.bossRounds
+        winBossBattles += s.bossBattles
+      }
       totalRounds += s.rounds; totalBattles += s.battles
       for (let j = 0; j < partySize; j++) totalDmg[j] += s.dmg[j]
     }
     const avgRounds = totalBattles > 0 ? (totalRounds/totalBattles).toFixed(2) : '-'
+    const winAvgRounds = winBattles > 0 ? (winRounds/winBattles).toFixed(2) : '-'
+    const winBossAvgRounds = winBossBattles > 0 ? (winBossRounds/winBossBattles).toFixed(2) : '-'
     const totalAll = totalDmg.reduce((a,b) => a+b, 0)
+    const damagePerBattleHp = totalBattles > 0 && partyMaxHp > 0
+      ? `${(totalAll / totalBattles / partyMaxHp * 100).toFixed(1)}%`
+      : '-'
     const dmgPerRun = (totalAll/iterations).toFixed(0)
     const tankDmg = (totalDmg[0]/iterations).toFixed(0)
     const otherDmg = (totalDmg.slice(1).reduce((a,b)=>a+b, 0)/iterations).toFixed(0)
-    console.log(`  ${lo.name.padEnd(20)} ${wins}/${iterations}    ${avgRounds.padStart(5)}    ${dmgPerRun.padStart(6)}        ${tankDmg.padStart(6)}        ${otherDmg.padStart(6)}`)
+    console.log(`  ${lo.name.padEnd(20)} ${wins}/${iterations}    ${avgRounds.padStart(5)}         ${winAvgRounds.padStart(5)}          ${winBossAvgRounds.padStart(5)}       ${damagePerBattleHp.padStart(6)}      ${dmgPerRun.padStart(6)}        ${tankDmg.padStart(6)}        ${otherDmg.padStart(6)}`)
   }
 }
 

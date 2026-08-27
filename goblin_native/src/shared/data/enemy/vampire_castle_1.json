@@ -14,7 +14,7 @@
       "def": 2301,
       "attackCount": 2,
       "accuracy": 836,
-      "evasion": 75,
+      "evasion": 902,
       "gold": 224,
       "magicDef": 2659,
       "baseAttributes": {
@@ -41,7 +41,7 @@
       "def": 1989,
       "attackCount": 1,
       "accuracy": 848,
-      "evasion": 75,
+      "evasion": 882,
       "gold": 245,
       "magicDef": 2989,
       "baseAttributes": {
@@ -68,7 +68,7 @@
       "def": 3734,
       "attackCount": 2,
       "accuracy": 917,
-      "evasion": 85,
+      "evasion": 1228,
       "isBoss": true,
       "gold": 1037,
       "magicDef": 3724,

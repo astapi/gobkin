@@ -195,11 +195,14 @@ npx jest src/shared/data/__tests__/masterDataIntegrity
 
 | ステータス | 通常敵の倍率 | ボスの倍率 | 導出元 |
 |---|---|---|---|
-| HP | ×1.6 | ×1.3 | `calculateEnemyBaseHp`(vitality, Lv) |
+| HP | ×1.0 | ×1.6 | `calculateEnemyBaseHp`(vitality, Lv) |
 | ATK | ×1.6 | ×1.0 | `calculateEnemyBaseAtk`(power, Lv) |
 | DEF | ×1.25 | ×1.0 | `calculateEnemyBaseDef`(vitality, Lv) |
-| EVA | ×0.57 | ×0.4 | `calculateEnemyBaseEvasion`(agility, luck, Lv) |
+| EVA | ×1.0 | ×1.0 | `calculateEnemyBaseEvasion`(agility, luck, Lv) |
 
+- HPは味方と同じく、体力をレベルで最大+10まで成長させてから算出する。従来の通常敵`×1.6`はこの成長補正と重複するため廃止し、忘れられた廃墟以降は通常敵`×1.0`、ボス`×1.6`を最低基準としてボスの耐久倍率を高くする。序盤エリアは進行バランスを維持するため、既存JSONのHPを据え置く。
+- 長期戦を意図する最終ボスは個別倍率を使う。オークの砦ボスは`×6.0`、討伐隊ボスは`×5.0`とし、適正戦力で最終ボス戦8〜20ターンを目標にする。通常戦は標準HPを維持する。
+- EVAは味方と同じ「敏捷・運の平均×レベル帯係数」で算出し、能力値も味方と同じくレベルで最大+10まで成長させる。敵は装備で回避を補強できないため、最終値へ一律`×1.2`を掛ける。実データは算出値へ統一し、手打ち値を残さない。
 - **accuracy は算出式に沿わせない**。実データは全エリアで命中を約650〜780の帯に手動設定しており、術者も近接と同程度。式だと術者だけ極端に低命中になり不自然なので、**役割別の帯(近接~690 / 遠隔~760 / 術者~685、ボスは+75程度)で手動設定**する。
 - **magicDef / magicAtk / magicHeal / attackCount** も式の対象外(手動)。
 - 種族判定: orc→beast / goblin→goblin / human→human / construct→demon_race(`detectEnemyHpSpecies`)。HP係数は goblin0.8 / beast1.1 / human1.0 / demon_race1.3。

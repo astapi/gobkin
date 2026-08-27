@@ -13,7 +13,7 @@
       "def": 344,
       "attackCount": 2,
       "accuracy": 740,
-      "evasion": 75,
+      "evasion": 586,
       "gold": 134,
       "magicDef": 119,
       "baseAttributes": {
@@ -38,7 +38,7 @@
       "def": 396,
       "attackCount": 2,
       "accuracy": 746,
-      "evasion": 75,
+      "evasion": 621,
       "gold": 143,
       "magicDef": 128,
       "baseAttributes": {
@@ -64,7 +64,7 @@
       "def": 448,
       "attackCount": 3,
       "accuracy": 752,
-      "evasion": 75,
+      "evasion": 668,
       "gold": 158,
       "magicDef": 153,
       "baseAttributes": {
@@ -84,13 +84,13 @@
         "spider"
       ],
       "level": 126,
-      "hp": 7530,
+      "hp": 8590,
       "atk": 644,
       "magicAtk": 259,
       "def": 605,
       "attackCount": 3,
       "accuracy": 839,
-      "evasion": 85,
+      "evasion": 832,
       "isBoss": true,
       "gold": 720,
       "magicDef": 221,

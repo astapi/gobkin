@@ -13,8 +13,8 @@ const {
 const base = require('path').resolve(__dirname, '../../src/shared/data/enemy')
 
 const MULT = {
-  normal: { hp: 1.6, atk: 1.6, def: 1.25, eva: 0.57 },
-  boss: { hp: 1.3, atk: 1.0, def: 1.0, eva: 0.4 },
+  normal: { hp: 1.0, atk: 1.6, def: 1.25, eva: 1.0 },
+  boss: { hp: 1.6, atk: 1.0, def: 1.0, eva: 1.0 },
 }
 const r10 = v => Math.round(v / 10) * 10 // HPは10刻み
 const r = v => Math.round(v)

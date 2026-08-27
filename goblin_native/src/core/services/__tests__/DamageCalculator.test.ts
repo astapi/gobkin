@@ -107,3 +107,64 @@ describe('DamageCalculator race slayer', () => {
     expect(damage).toBe(100)
   })
 })
+
+describe('DamageCalculator defense scaling', () => {
+  const skill: Skill = { id: 'base', name: 'base', power: 1 }
+  const makeCombatant = (id: string, atk: number, def: number): Combatant => ({
+    id,
+    name: id,
+    atk,
+    def,
+    attackCount: 1,
+    accuracy: 100,
+    evasion: 10,
+    raceTags: ['human'],
+  })
+
+  it('ATKとDEFを同率で成長させた場合もダメージ割合を維持する', () => {
+    const calculator = new DamageCalculator(() => 0)
+    const low = calculator.calcDamage(
+      races,
+      makeCombatant('low-attacker', 100, 0),
+      makeCombatant('low-defender', 0, 100),
+      skill,
+      { defConstant: 100, randomMin: 1, randomMax: 1 },
+      () => 0,
+    )
+    const high = calculator.calcDamage(
+      races,
+      makeCombatant('high-attacker', 1000, 0),
+      makeCombatant('high-defender', 0, 1000),
+      skill,
+      { defConstant: 100, randomMin: 1, randomMax: 1 },
+      () => 0,
+    )
+
+    expect(low).toBe(50)
+    expect(high).toBe(500)
+  })
+
+  it('攻撃力より高い防御へ投資すると被ダメージを段階的に軽減する', () => {
+    const calculator = new DamageCalculator(() => 0)
+    const attacker = makeCombatant('attacker', 1000, 0)
+    const unarmored = calculator.calcDamage(
+      races,
+      attacker,
+      makeCombatant('unarmored', 0, 500),
+      skill,
+      { defConstant: 100, randomMin: 1, randomMax: 1 },
+      () => 0,
+    )
+    const armored = calculator.calcDamage(
+      races,
+      attacker,
+      makeCombatant('armored', 0, 2000),
+      skill,
+      { defConstant: 100, randomMin: 1, randomMax: 1 },
+      () => 0,
+    )
+
+    expect(unarmored).toBe(666)
+    expect(armored).toBe(333)
+  })
+})
