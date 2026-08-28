@@ -70,6 +70,9 @@ export default function BattleLogScreen() {
     <SafeAreaView style={styles.container}>
       <View style={styles.navBar}>
         <TouchableOpacity
+          testID="battle-log-back"
+          accessibilityRole="button"
+          accessibilityLabel={t('ui.formation.common.back')}
           onPress={() => {
             if (router.canGoBack()) {
               router.back()
@@ -88,6 +91,9 @@ export default function BattleLogScreen() {
         <View style={styles.emptyState}>
           <Text style={styles.emptyText}>{t('ui.formation.battleLog.loadFailed')}</Text>
           <TouchableOpacity
+            testID="battle-log-empty-back"
+            accessibilityRole="button"
+            accessibilityLabel={t('ui.formation.common.back')}
             style={styles.emptyBackButton}
             onPress={() => {
               if (router.canGoBack()) {
@@ -129,6 +135,7 @@ export default function BattleLogScreen() {
                 {turnIndexEntries.map(({ turn, index }) => (
                   <TouchableOpacity
                     key={`turn-index-${turn}`}
+                    testID={`battle-log-turn-${turn}`}
                     style={styles.turnIndexButton}
                     onPress={() => scrollToTurn(index)}
                     accessibilityRole="button"

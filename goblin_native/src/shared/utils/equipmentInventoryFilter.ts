@@ -9,13 +9,12 @@ import { getEquipmentDisplayName } from '@/shared/i18n/entityLocalization'
 
 export type EquipmentModCountFilter = 'all' | 1 | 2
 export type EquipmentCategoryFilter = 'all' | EquipmentCategory
-export type EquipmentTitleFilter = 'all' | EquipmentTitleId
 
 export interface EquipmentInventoryFilter {
   nameQuery: string
   modCount: EquipmentModCountFilter
   category: EquipmentCategoryFilter
-  titleId: EquipmentTitleFilter
+  titleIds: EquipmentTitleId[]
 }
 
 export interface EquipmentInventoryFilterTarget {
@@ -27,7 +26,7 @@ export const DEFAULT_EQUIPMENT_INVENTORY_FILTER: EquipmentInventoryFilter = {
   nameQuery: '',
   modCount: 'all',
   category: 'all',
-  titleId: 'all',
+  titleIds: [],
 }
 
 export const EQUIPMENT_CATEGORY_FILTER_ORDER: EquipmentCategory[] = [
@@ -71,7 +70,7 @@ export function matchesEquipmentInventoryFilter(
   }
 
   const titleId = target.equipment.titleId ?? 'none'
-  if (filter.titleId !== 'all' && titleId !== filter.titleId) {
+  if (filter.titleIds.length > 0 && !filter.titleIds.includes(titleId)) {
     return false
   }
 
@@ -102,5 +101,5 @@ export function getEquipmentInventoryFilterActiveCount(
   return Number(normalizeSearchText(filter.nameQuery).length > 0)
     + Number(filter.modCount !== 'all')
     + Number(filter.category !== 'all')
-    + Number(filter.titleId !== 'all')
+    + Number(filter.titleIds.length > 0)
 }

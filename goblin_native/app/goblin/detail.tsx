@@ -1,7 +1,7 @@
 import { useMemo, useCallback, useEffect, useRef, useState } from 'react'
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, Alert, PanResponder, Modal, Pressable, TextInput } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { useLocalSearchParams, router, useNavigation } from 'expo-router'
+import { Stack, useLocalSearchParams, router } from 'expo-router'
 import { useTranslation } from 'react-i18next'
 import { useGoblinStore } from '@/presentation/stores/useGoblinStore'
 import { useBaseStore } from '@/presentation/stores/useBaseStore'
@@ -90,6 +90,9 @@ function SkillGroup({
           return (
             <TouchableOpacity
               key={`${skill.id}-${idx}`}
+              testID={`goblin-skill-${skill.id}-${idx}`}
+              accessibilityRole="button"
+              accessibilityLabel={getSkillLabel(skill)}
               style={styles.abilityItem}
               activeOpacity={0.75}
               onPress={() => onPressSkill(skill)}
@@ -110,11 +113,15 @@ function SkillGroup({
 }
 
 function BattleActionRateSlider({
+  testID,
+  label,
   value,
   onChange,
   onSlidingStart,
   onSlidingComplete,
 }: {
+  testID: string
+  label: string
   value: number
   onChange: (value: number) => void
   onSlidingStart: () => void
@@ -153,6 +160,17 @@ function BattleActionRateSlider({
   return (
     <View style={styles.sliderBlock}>
       <View
+        testID={testID}
+        accessible
+        accessibilityRole="adjustable"
+        accessibilityLabel={label}
+        accessibilityValue={{ min: 0, max: 100, now: clampedValue, text: `${clampedValue}%` }}
+        accessibilityActions={[{ name: 'increment' }, { name: 'decrement' }]}
+        onAccessibilityAction={(event) => {
+          const delta = event.nativeEvent.actionName === 'increment' ? 5 : -5
+          onChange(Math.max(0, Math.min(100, clampedValue + delta)))
+          onSlidingComplete()
+        }}
         ref={trackRef}
         style={styles.sliderTrackTouchArea}
         onLayout={event => setTrackWidth(event.nativeEvent.layout.width)}
@@ -193,7 +211,6 @@ export default function GoblinDetailScreen() {
   const [editingName, setEditingName] = useState('')
   const [isSavingName, setIsSavingName] = useState(false)
   const savedBattleActionPolicyRef = useRef<string>(JSON.stringify(normalizeBattleActionPolicy()))
-  const parentNav = useNavigation()
   const isPendingGoblin = source === 'pending'
   const parsedGoblinId = useMemo(() => {
     if (!goblinId) return null
@@ -257,10 +274,9 @@ export default function GoblinDetailScreen() {
     if (goblin) {
       const nextPolicy = normalizeBattleActionPolicy(goblin.battleActionPolicy)
       savedBattleActionPolicyRef.current = JSON.stringify(nextPolicy)
-      parentNav.getParent()?.setOptions({ title: goblin.name })
       setBattleActionPolicyDraft(nextPolicy)
     }
-  }, [goblin, parentNav])
+  }, [goblin])
 
   const effectiveStats = useMemo(
     () => goblin ? getEffectiveStats(goblin) : null,
@@ -418,7 +434,23 @@ export default function GoblinDetailScreen() {
   if (!goblin || !effectiveStats) return null
 
   return (
-    <SafeAreaView style={styles.container} edges={['left', 'right', 'bottom']}>
+    <>
+      <Stack.Screen
+        options={{
+          title: goblin.name,
+          headerLeft: () => (
+            <TouchableOpacity
+              accessibilityRole="button"
+              accessibilityLabel={t('ui.common.back')}
+              hitSlop={8}
+              onPress={() => router.back()}
+            >
+              <Text style={styles.headerBackButtonText}>← {t('ui.common.back')}</Text>
+            </TouchableOpacity>
+          ),
+        }}
+      />
+      <SafeAreaView style={styles.container} edges={['left', 'right', 'bottom']}>
       <ScrollView style={styles.content} scrollEnabled={!isSlidingBattleActionPolicy}>
         <View style={styles.profileCard}>
           <View style={styles.profileRow}>
@@ -430,6 +462,7 @@ export default function GoblinDetailScreen() {
                 <Text style={styles.profileName}>{goblin.name}</Text>
               ) : (
                 <TouchableOpacity
+                  testID="goblin-rename"
                   onPress={handleOpenRenameModal}
                   activeOpacity={0.6}
                   style={styles.profileNameTouchable}
@@ -534,6 +567,8 @@ export default function GoblinDetailScreen() {
                     <Text style={styles.policyValue}>{battleActionPolicyDraft[field.key]}%</Text>
                   </View>
                   <BattleActionRateSlider
+                    testID={`goblin-action-policy-${field.key}`}
+                    label={t(field.labelKey)}
                     value={battleActionPolicyDraft[field.key]}
                     onChange={(value) => handleChangeBattleActionPolicy(field.key, value)}
                     onSlidingStart={() => setIsSlidingBattleActionPolicy(true)}
@@ -598,17 +633,35 @@ export default function GoblinDetailScreen() {
         {!isPendingGoblin && (
           <>
             {canChangeAvatar && (
-              <TouchableOpacity style={styles.equipmentButton} onPress={handleOpenAvatar}>
+              <TouchableOpacity
+                testID="goblin-change-avatar"
+                accessibilityRole="button"
+                accessibilityLabel="画像変更"
+                style={styles.equipmentButton}
+                onPress={handleOpenAvatar}
+              >
                 <Text style={styles.equipmentButtonText}>画像変更</Text>
               </TouchableOpacity>
             )}
 
-            <TouchableOpacity style={styles.equipmentButton} onPress={handleOpenEquipment}>
+            <TouchableOpacity
+              testID="goblin-change-equipment"
+              accessibilityRole="button"
+              accessibilityLabel={t('ui.goblin.equipmentChange')}
+              style={styles.equipmentButton}
+              onPress={handleOpenEquipment}
+            >
               <Text style={styles.equipmentButtonText}>{t('ui.goblin.equipmentChange')}</Text>
             </TouchableOpacity>
 
             {!isProtectedGoblin(goblin) && (
-              <TouchableOpacity style={styles.banishButton} onPress={handleBanish}>
+              <TouchableOpacity
+                testID="goblin-banish"
+                accessibilityRole="button"
+                accessibilityLabel={t('ui.goblin.banishButton')}
+                style={styles.banishButton}
+                onPress={handleBanish}
+              >
                 <Text style={styles.banishButtonText}>{t('ui.goblin.banishButton')}</Text>
               </TouchableOpacity>
             )}
@@ -626,13 +679,21 @@ export default function GoblinDetailScreen() {
       >
         <Pressable
           style={styles.renameModalOverlay}
+          accessible={false}
           onPress={() => {
             if (!isSavingName) setIsRenameModalVisible(false)
           }}
         >
-          <Pressable style={styles.renameModalContent} onPress={() => undefined}>
+          <Pressable
+            accessibilityViewIsModal
+            accessible={false}
+            style={styles.renameModalContent}
+            onPress={() => undefined}
+          >
             <Text style={styles.renameModalTitle}>{t('ui.goblin.renameTitle')}</Text>
             <TextInput
+              testID="goblin-rename-input"
+              accessibilityLabel={t('ui.goblin.renameTitle')}
               value={editingName}
               onChangeText={setEditingName}
               placeholder={t('ui.goblin.renamePlaceholder')}
@@ -647,6 +708,10 @@ export default function GoblinDetailScreen() {
             />
             <View style={styles.renameActionRow}>
               <TouchableOpacity
+                testID="goblin-rename-cancel"
+                accessibilityRole="button"
+                accessibilityLabel={t('ui.common.cancel')}
+                accessibilityState={{ disabled: isSavingName }}
                 style={[styles.renameActionButton, styles.renameCancelButton]}
                 onPress={() => setIsRenameModalVisible(false)}
                 disabled={isSavingName}
@@ -654,6 +719,10 @@ export default function GoblinDetailScreen() {
                 <Text style={styles.renameCancelButtonText}>{t('ui.common.cancel')}</Text>
               </TouchableOpacity>
               <TouchableOpacity
+                testID="goblin-rename-save"
+                accessibilityRole="button"
+                accessibilityLabel={t('ui.common.save')}
+                accessibilityState={{ disabled: isSavingName, busy: isSavingName }}
                 style={[styles.renameActionButton, styles.renamePrimaryButton, isSavingName && styles.renamePrimaryButtonDisabled]}
                 onPress={() => void handleSaveName()}
                 disabled={isSavingName}
@@ -666,11 +735,17 @@ export default function GoblinDetailScreen() {
           </Pressable>
         </Pressable>
       </Modal>
-    </SafeAreaView>
+      </SafeAreaView>
+    </>
   )
 }
 
 const styles = StyleSheet.create({
+  headerBackButtonText: {
+    color: '#6B7280',
+    fontSize: 16,
+    fontWeight: '600',
+  },
   container: {
     flex: 1,
     backgroundColor: '#F9FAFB',

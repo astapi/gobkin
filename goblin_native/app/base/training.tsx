@@ -135,6 +135,10 @@ export default function BaseTrainingScreen() {
                 <View style={styles.settingItem}>
                   <Text style={styles.settingLabel}>{t('ui.training.targetLabel')}</Text>
                   <TouchableOpacity
+                    testID="training-select-goblin"
+                    accessibilityRole="button"
+                    accessibilityLabel={t('ui.training.targetLabel')}
+                    accessibilityValue={{ text: activeGoblin.name }}
                     style={styles.settingValue}
                     onPress={() => setIsGoblinModalVisible(true)}
                   >
@@ -159,12 +163,19 @@ export default function BaseTrainingScreen() {
                     return (
                       <TouchableOpacity
                         key={job.id}
+                        testID={`training-job-${job.id}`}
+                        accessibilityRole="radio"
+                        accessibilityLabel={job.name}
+                        accessibilityState={{ checked: isSelected }}
                         style={[styles.jobCard, isSelected && styles.jobCardSelected]}
                         onPress={() => setSelectedJob(job.id)}
                       >
                         <View style={styles.jobCardHeader}>
                           <Text style={styles.jobCardTitle}>{job.name}</Text>
                           <TouchableOpacity
+                            testID={`training-job-${job.id}-details`}
+                            accessibilityRole="button"
+                            accessibilityLabel={`${job.name} ${t('ui.training.jobTipsButton')}`}
                             style={styles.jobTipsButton}
                             onPress={() => handleShowJobTips(job.id)}
                           >
@@ -177,6 +188,15 @@ export default function BaseTrainingScreen() {
                 </View>
 
                 <TouchableOpacity
+                  testID="training-confirm"
+                  accessibilityRole="button"
+                  accessibilityLabel={effectiveSelectedJob
+                    ? t('ui.training.trainButton', { name: activeGoblin.name })
+                    : t('ui.training.selectJobPlaceholder')}
+                  accessibilityState={{
+                    disabled: !effectiveSelectedJob || selectedGoblinEntry?.isExpedition || isTraining,
+                    busy: isTraining,
+                  }}
                   style={[
                     styles.primaryButton,
                     (!effectiveSelectedJob || selectedGoblinEntry?.isExpedition || isTraining) && styles.primaryButtonDisabled,
@@ -211,8 +231,12 @@ export default function BaseTrainingScreen() {
         animationType="fade"
         onRequestClose={() => setIsGoblinModalVisible(false)}
       >
-        <Pressable style={styles.modalOverlay} onPress={() => setIsGoblinModalVisible(false)}>
-          <View style={styles.modalContent}>
+        <Pressable
+          style={styles.modalOverlay}
+          onPress={() => setIsGoblinModalVisible(false)}
+          accessible={false}
+        >
+          <View accessibilityViewIsModal style={styles.modalContent}>
             <Text style={styles.modalTitle}>{t('ui.training.modalTitle')}</Text>
             <ScrollView style={styles.modalList} contentContainerStyle={styles.modalListContent}>
               {trainableGoblins.length === 0 ? (
@@ -224,6 +248,10 @@ export default function BaseTrainingScreen() {
                   return (
                     <TouchableOpacity
                       key={goblin.id}
+                      testID={`training-goblin-${goblin.id}`}
+                      accessibilityRole="radio"
+                      accessibilityLabel={`${goblin.name}、${getRaceLabel(goblin.raceId ?? goblin.race)}、${jobName}`}
+                      accessibilityState={{ checked: isSelected }}
                       style={[styles.modalOption, isSelected && styles.modalOptionSelected]}
                       onPress={() => {
                         setSelectedGoblinId(goblin.id)
@@ -255,7 +283,13 @@ export default function BaseTrainingScreen() {
                 })
               )}
             </ScrollView>
-            <TouchableOpacity style={styles.modalCloseButton} onPress={() => setIsGoblinModalVisible(false)}>
+            <TouchableOpacity
+              testID="training-goblin-close"
+              accessibilityRole="button"
+              accessibilityLabel={t('ui.common.close')}
+              style={styles.modalCloseButton}
+              onPress={() => setIsGoblinModalVisible(false)}
+            >
               <Text style={styles.modalCloseButtonText}>{t('ui.common.close')}</Text>
             </TouchableOpacity>
           </View>

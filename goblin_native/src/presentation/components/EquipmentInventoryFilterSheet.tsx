@@ -66,8 +66,13 @@ export function EquipmentInventoryFilterSheet({
     setDraft((current) => ({ ...current, category }))
   }
 
-  const selectTitle = (titleId: EquipmentInventoryFilter['titleId']) => {
-    setDraft((current) => ({ ...current, titleId }))
+  const toggleTitle = (titleId: EquipmentTitleId) => {
+    setDraft((current) => ({
+      ...current,
+      titleIds: current.titleIds.includes(titleId)
+        ? current.titleIds.filter((selectedTitleId) => selectedTitleId !== titleId)
+        : [...current.titleIds, titleId],
+    }))
   }
 
   const getTitleLabel = (titleId: EquipmentTitleId): string => {
@@ -78,11 +83,19 @@ export function EquipmentInventoryFilterSheet({
   return (
     <Modal visible={visible} animationType="slide" transparent onRequestClose={onClose}>
       <View style={styles.overlay}>
-        <Pressable style={styles.backdrop} onPress={onClose} />
-        <View style={[styles.sheet, { paddingBottom: insets.bottom + 16 }]}>
+        <Pressable style={styles.backdrop} onPress={onClose} accessible={false} />
+        <View
+          accessibilityViewIsModal
+          style={[styles.sheet, { paddingBottom: insets.bottom + 16 }]}
+        >
           <View style={styles.header}>
             <Text style={styles.title}>{t('ui.equipmentInventoryFilter.title')}</Text>
-            <Pressable onPress={onClose}>
+            <Pressable
+              testID="equipment-filter-close"
+              accessibilityRole="button"
+              accessibilityLabel={t('ui.common.close')}
+              onPress={onClose}
+            >
               <Text style={styles.close}>{t('ui.common.close')}</Text>
             </Pressable>
           </View>
@@ -96,6 +109,8 @@ export function EquipmentInventoryFilterSheet({
             <View style={styles.section}>
               <Text style={styles.sectionTitle}>{t('ui.equipmentInventoryFilter.name')}</Text>
               <TextInput
+                testID="equipment-filter-name"
+                accessibilityLabel={t('ui.equipmentInventoryFilter.name')}
                 value={draft.nameQuery}
                 onChangeText={(nameQuery) => setDraft((current) => ({ ...current, nameQuery }))}
                 placeholder={t('ui.equipmentInventoryFilter.namePlaceholder')}
@@ -110,6 +125,7 @@ export function EquipmentInventoryFilterSheet({
 
             <FilterSection title={t('ui.equipmentInventoryFilter.modCount')}>
               <FilterChip
+                testID="equipment-filter-mod-all"
                 label={t('ui.equipmentInventoryFilter.all')}
                 selected={draft.modCount === 'all'}
                 onPress={() => selectModCount('all')}
@@ -117,6 +133,7 @@ export function EquipmentInventoryFilterSheet({
               {([1, 2] as const).map((count) => (
                 <FilterChip
                   key={count}
+                  testID={`equipment-filter-mod-${count}`}
                   label={t('ui.equipmentInventoryFilter.modCountValue', { count })}
                   selected={draft.modCount === count}
                   onPress={() => selectModCount(count)}
@@ -126,6 +143,7 @@ export function EquipmentInventoryFilterSheet({
 
             <FilterSection title={t('ui.equipmentInventoryFilter.category')}>
               <FilterChip
+                testID="equipment-filter-category-all"
                 label={t('ui.equipmentInventoryFilter.all')}
                 selected={draft.category === 'all'}
                 onPress={() => selectCategory('all')}
@@ -133,6 +151,7 @@ export function EquipmentInventoryFilterSheet({
               {categories.map((category) => (
                 <FilterChip
                   key={category}
+                  testID={`equipment-filter-category-${category}`}
                   label={t(CATEGORY_LABEL_KEYS[category])}
                   selected={draft.category === category}
                   onPress={() => selectCategory(category)}
@@ -142,16 +161,20 @@ export function EquipmentInventoryFilterSheet({
 
             <FilterSection title={t('ui.equipmentInventoryFilter.equipmentTitle')}>
               <FilterChip
+                testID="equipment-filter-title-all"
                 label={t('ui.equipmentInventoryFilter.all')}
-                selected={draft.titleId === 'all'}
-                onPress={() => selectTitle('all')}
+                selected={draft.titleIds.length === 0}
+                onPress={() => setDraft((current) => ({ ...current, titleIds: [] }))}
+                accessibilityRole="checkbox"
               />
               {titleIds.map((titleId) => (
                 <FilterChip
                   key={titleId}
+                  testID={`equipment-filter-title-${titleId}`}
                   label={getTitleLabel(titleId)}
-                  selected={draft.titleId === titleId}
-                  onPress={() => selectTitle(titleId)}
+                  selected={draft.titleIds.includes(titleId)}
+                  onPress={() => toggleTitle(titleId)}
+                  accessibilityRole="checkbox"
                 />
               ))}
             </FilterSection>
@@ -159,12 +182,21 @@ export function EquipmentInventoryFilterSheet({
 
           <View style={styles.actions}>
             <Pressable
+              testID="equipment-filter-clear"
+              accessibilityRole="button"
+              accessibilityLabel={t('ui.equipmentInventoryFilter.clear')}
               style={styles.clearButton}
               onPress={() => setDraft(DEFAULT_EQUIPMENT_INVENTORY_FILTER)}
             >
               <Text style={styles.clearButtonText}>{t('ui.equipmentInventoryFilter.clear')}</Text>
             </Pressable>
-            <Pressable style={styles.applyButton} onPress={() => onApply(draft)}>
+            <Pressable
+              testID="equipment-filter-apply"
+              accessibilityRole="button"
+              accessibilityLabel={t('ui.equipmentInventoryFilter.apply')}
+              style={styles.applyButton}
+              onPress={() => onApply(draft)}
+            >
               <Text style={styles.applyButtonText}>{t('ui.equipmentInventoryFilter.apply')}</Text>
             </Pressable>
           </View>
@@ -184,17 +216,23 @@ function FilterSection({ title, children }: { title: string; children: React.Rea
 }
 
 function FilterChip({
+  testID,
   label,
   selected,
   onPress,
+  accessibilityRole = 'radio',
 }: {
+  testID: string
   label: string
   selected: boolean
   onPress: () => void
+  accessibilityRole?: 'radio' | 'checkbox'
 }) {
   return (
     <Pressable
-      accessibilityRole="radio"
+      testID={testID}
+      accessibilityRole={accessibilityRole}
+      accessibilityLabel={label}
       accessibilityState={{ checked: selected }}
       style={[styles.chip, selected && styles.chipSelected]}
       onPress={onPress}

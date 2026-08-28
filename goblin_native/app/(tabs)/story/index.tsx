@@ -41,6 +41,7 @@ export default function StoryTabScreen() {
             return (
               <StoryCard
                 key={story.id}
+                id={story.id}
                 ref={ref}
                 title={story.title}
                 read={story.read}
@@ -56,6 +57,7 @@ export default function StoryTabScreen() {
             {sideStories.map(story => (
               <StoryCard
                 key={story.id}
+                id={story.id}
                 title={story.title}
                 read={story.read}
                 onPress={() => handleStoryPress(story.id)}
@@ -69,15 +71,22 @@ export default function StoryTabScreen() {
 }
 
 interface StoryCardProps {
+  id: string
   title: string
   read: boolean
   onPress: () => void
 }
 
-const StoryCard = forwardRef<View, StoryCardProps>(function StoryCard({ title, read, onPress }, ref) {
+const StoryCard = forwardRef<View, StoryCardProps>(function StoryCard({ id, title, read, onPress }, ref) {
   return (
     <View ref={ref} collapsable={false}>
-      <TouchableOpacity style={styles.card} onPress={onPress}>
+      <TouchableOpacity
+        testID={`story-card-${id}`}
+        accessibilityRole="button"
+        accessibilityLabel={read ? title : `${title}、NEW`}
+        style={styles.card}
+        onPress={onPress}
+      >
         <View style={styles.cardContent}>
           <Text style={styles.cardTitle}>{title}</Text>
           {!read && <View style={styles.newBadge}><Text style={styles.newBadgeText}>NEW</Text></View>}

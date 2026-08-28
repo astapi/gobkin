@@ -182,6 +182,7 @@ export default function GrowGoblinGroupScreen() {
 
               <View style={styles.sources}>
                 <SourceButton
+                  testID={`grow-group-source-${slotIndex}`}
                   label={t('ui.goblinBirth.sourceLabel')}
                   goblin={sourceGoblin}
                   disabled={Boolean(slot?.isActive || isProcessing)}
@@ -201,6 +202,10 @@ export default function GrowGoblinGroupScreen() {
                   ) : null}
                 </View>
                 <Pressable
+                  testID={`grow-group-action-${slotIndex}`}
+                  accessibilityRole="button"
+                  accessibilityLabel={t(slot?.isActive ? 'ui.goblinBirth.stop' : 'ui.goblinBirth.start')}
+                  accessibilityState={{ disabled: isProcessing || !slot, busy: isProcessing }}
                   style={[
                     styles.actionButton,
                     slot?.isActive ? styles.stopButton : styles.startButton,
@@ -237,6 +242,7 @@ export default function GrowGoblinGroupScreen() {
 }
 
 const SourceButton = memo(function SourceButton({
+  testID,
   label,
   goblin,
   disabled,
@@ -244,6 +250,7 @@ const SourceButton = memo(function SourceButton({
   selectLabel,
   showSelectLabel,
 }: {
+  testID: string
   label: string
   goblin?: Goblin
   disabled: boolean
@@ -252,7 +259,15 @@ const SourceButton = memo(function SourceButton({
   showSelectLabel: boolean
 }) {
   return (
-    <Pressable style={[styles.sourceButton, disabled && styles.sourceButtonDisabled]} disabled={disabled} onPress={onPress}>
+    <Pressable
+      testID={testID}
+      accessibilityRole="button"
+      accessibilityLabel={goblin ? `${label}、${goblin.name}` : selectLabel}
+      accessibilityState={{ disabled }}
+      style={[styles.sourceButton, disabled && styles.sourceButtonDisabled]}
+      disabled={disabled}
+      onPress={onPress}
+    >
       <Text style={styles.sourceLabel}>{label}</Text>
       {goblin ? (
         <View style={styles.sourceGoblinRow}>
@@ -294,10 +309,16 @@ const GoblinPickerModal = memo(function GoblinPickerModal({
 }) {
   return (
     <Modal visible={visible} animationType="slide" presentationStyle="pageSheet" onRequestClose={onClose}>
-      <View style={styles.modalScreen}>
+      <View accessibilityViewIsModal style={styles.modalScreen}>
         <View style={styles.modalHeader}>
           <Text style={styles.modalTitle}>{title}</Text>
-          <Pressable onPress={onClose} hitSlop={12}>
+          <Pressable
+            testID="grow-group-picker-close"
+            accessibilityRole="button"
+            accessibilityLabel={closeLabel}
+            onPress={onClose}
+            hitSlop={12}
+          >
             <Text style={styles.modalClose}>{closeLabel}</Text>
           </Pressable>
         </View>
@@ -306,7 +327,13 @@ const GoblinPickerModal = memo(function GoblinPickerModal({
           keyExtractor={(goblin) => goblin.id.toString()}
           contentContainerStyle={styles.pickerList}
           renderItem={({ item }) => (
-            <Pressable style={styles.pickerRow} onPress={() => onSelect(item)}>
+            <Pressable
+              testID={`grow-group-picker-goblin-${item.id}`}
+              accessibilityRole="button"
+              accessibilityLabel={`${item.name}、${getRaceLabel(item.raceId ?? item.race)}、Lv.${item.level}`}
+              style={styles.pickerRow}
+              onPress={() => onSelect(item)}
+            >
               <Image source={getGoblinDisplayImage(item)} style={styles.pickerAvatar} />
               <View style={styles.pickerInfo}>
                 <View style={styles.pickerNameRow}>

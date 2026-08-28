@@ -540,7 +540,13 @@ export default function ExpeditionPreparationScreen() {
     return (
       <View style={styles.errorContainer}>
         <Text style={styles.errorText}>{t('ui.formation.common.partyNotFound')}</Text>
-        <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
+        <TouchableOpacity
+          testID="preparation-error-back"
+          accessibilityRole="button"
+          accessibilityLabel={t('ui.formation.common.back')}
+          style={styles.backButton}
+          onPress={() => router.back()}
+        >
           <Text style={styles.backButtonText}>{t('ui.formation.common.back')}</Text>
         </TouchableOpacity>
       </View>
@@ -552,13 +558,22 @@ export default function ExpeditionPreparationScreen() {
       <Stack.Screen
         options={{
           headerLeft: () => (
-            <TouchableOpacity onPress={() => router.back()}>
+            <TouchableOpacity
+              testID="preparation-back"
+              accessibilityRole="button"
+              accessibilityLabel={t('ui.formation.common.back')}
+              onPress={() => router.back()}
+            >
               <Text style={styles.headerButton}>← {t('ui.formation.common.back')}</Text>
             </TouchableOpacity>
           ),
           headerRight: () => (
             <View ref={launchButtonRef} collapsable={false}>
               <TouchableOpacity
+                testID="preparation-launch"
+                accessibilityRole="button"
+                accessibilityLabel={t('ui.formation.common.launch')}
+                accessibilityState={{ disabled: !canStartExpedition }}
                 onPress={handleStartExpedition}
                 disabled={!canStartExpedition}
               >
@@ -576,7 +591,14 @@ export default function ExpeditionPreparationScreen() {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>{t('ui.formation.preparation.sectionParty')}</Text>
           <View style={styles.card}>
-            <TouchableOpacity style={styles.partyInfoButton} onPress={handleOpenPartyInfo} activeOpacity={0.8}>
+            <TouchableOpacity
+              testID="preparation-party-info"
+              accessibilityRole="button"
+              accessibilityLabel={party.name}
+              style={styles.partyInfoButton}
+              onPress={handleOpenPartyInfo}
+              activeOpacity={0.8}
+            >
               <Text style={styles.partyName}>{party.name}</Text>
               <Text style={styles.partyRewardText}>{partyRewardText}</Text>
 
@@ -588,16 +610,34 @@ export default function ExpeditionPreparationScreen() {
             </TouchableOpacity>
 
             <View ref={editPartyRef} collapsable={false}>
-              <TouchableOpacity style={styles.editButton} onPress={handleEditParty}>
+              <TouchableOpacity
+                testID="preparation-edit-members"
+                accessibilityRole="button"
+                accessibilityLabel={t('ui.formation.preparation.editMembers')}
+                style={styles.editButton}
+                onPress={handleEditParty}
+              >
                 <Text style={styles.editButtonText}>{t('ui.formation.preparation.editMembers')}</Text>
               </TouchableOpacity>
             </View>
 
-            <TouchableOpacity style={styles.secondaryButton} onPress={handleOpenEquipmentList}>
+            <TouchableOpacity
+              testID="preparation-equipment-list"
+              accessibilityRole="button"
+              accessibilityLabel={t('ui.formation.preparation.equipmentList')}
+              style={styles.secondaryButton}
+              onPress={handleOpenEquipmentList}
+            >
               <Text style={styles.secondaryButtonText}>{t('ui.formation.preparation.equipmentList')}</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.secondaryButton} onPress={handleOpenPartyNameModal}>
+            <TouchableOpacity
+              testID="preparation-rename-party"
+              accessibilityRole="button"
+              accessibilityLabel={t('ui.formation.preparation.renameParty')}
+              style={styles.secondaryButton}
+              onPress={handleOpenPartyNameModal}
+            >
               <Text style={styles.secondaryButtonText}>{t('ui.formation.preparation.renameParty')}</Text>
             </TouchableOpacity>
           </View>
@@ -611,6 +651,11 @@ export default function ExpeditionPreparationScreen() {
             <View style={styles.settingItem} ref={selectDungeonRef} collapsable={false}>
               <Text style={styles.settingLabel}>{t('ui.formation.preparation.dungeon')}</Text>
               <TouchableOpacity
+                testID="preparation-select-dungeon"
+                accessibilityRole="button"
+                accessibilityLabel={t('ui.formation.preparation.dungeon')}
+                accessibilityValue={{ text: selectedDungeon ? formatDungeonLabel(selectedDungeon, selectedTier) : t('ui.formation.preparation.dungeonUnset') }}
+                accessibilityState={{ disabled: unlockedDungeons.length === 0 }}
                 style={styles.settingValue}
                 onPress={() => setIsDungeonModalVisible(true)}
                 disabled={unlockedDungeons.length === 0}
@@ -639,6 +684,10 @@ export default function ExpeditionPreparationScreen() {
                     return (
                       <TouchableOpacity
                         key={meta.tier}
+                        testID={`preparation-tier-${meta.tier}`}
+                        accessibilityRole="radio"
+                        accessibilityLabel={t(meta.labelKey)}
+                        accessibilityState={{ checked: isSelected, disabled: !isUnlocked }}
                         style={[
                           styles.tierButton,
                           isSelected && styles.tierButtonSelected,
@@ -666,6 +715,10 @@ export default function ExpeditionPreparationScreen() {
             <View style={styles.settingItem}>
               <Text style={styles.settingLabel}>{t('ui.formation.preparation.targetFloor')}</Text>
               <TouchableOpacity
+                testID="preparation-select-target-floor"
+                accessibilityRole="button"
+                accessibilityLabel={t('ui.formation.preparation.targetFloor')}
+                accessibilityState={{ disabled: !selectedDungeon }}
                 style={styles.settingValue}
                 onPress={() => setIsTargetFloorModalVisible(true)}
                 disabled={!selectedDungeon}
@@ -680,6 +733,9 @@ export default function ExpeditionPreparationScreen() {
             <View style={styles.settingItem}>
               <Text style={styles.settingLabel}>{t('ui.formation.preparation.returnPolicy')}</Text>
               <TouchableOpacity
+                testID="preparation-select-return-policy"
+                accessibilityRole="button"
+                accessibilityLabel={t('ui.formation.preparation.returnPolicy')}
                 style={styles.settingValue}
                 onPress={() => setIsReturnPolicyModalVisible(true)}
               >
@@ -739,8 +795,12 @@ export default function ExpeditionPreparationScreen() {
         animationType="fade"
         onRequestClose={() => setIsDungeonModalVisible(false)}
       >
-        <Pressable style={styles.modalOverlay} onPress={() => setIsDungeonModalVisible(false)}>
-          <View style={styles.modalContent}>
+        <Pressable
+          style={styles.modalOverlay}
+          onPress={() => setIsDungeonModalVisible(false)}
+          accessible={false}
+        >
+          <View accessibilityViewIsModal style={styles.modalContent}>
             <Text style={styles.modalTitle}>{t('ui.formation.preparation.selectDungeonTitle')}</Text>
             <ScrollView style={styles.modalList} contentContainerStyle={styles.modalListContent}>
               {unlockedDungeons.length === 0 ? (
@@ -749,6 +809,10 @@ export default function ExpeditionPreparationScreen() {
                 unlockedDungeons.map(dungeon => (
                   <TouchableOpacity
                     key={dungeon.id}
+                    testID={`preparation-dungeon-${dungeon.id}`}
+                    accessibilityRole="radio"
+                    accessibilityLabel={formatDungeonLabel(dungeon)}
+                    accessibilityState={{ checked: selectedDungeonId === dungeon.id }}
                     style={[
                       styles.modalOption,
                       selectedDungeonId === dungeon.id && styles.modalOptionSelected,
@@ -769,7 +833,13 @@ export default function ExpeditionPreparationScreen() {
                 ))
               )}
             </ScrollView>
-            <TouchableOpacity style={styles.modalCloseButton} onPress={() => setIsDungeonModalVisible(false)}>
+            <TouchableOpacity
+              testID="preparation-dungeon-close"
+              accessibilityRole="button"
+              accessibilityLabel={t('ui.formation.common.close')}
+              style={styles.modalCloseButton}
+              onPress={() => setIsDungeonModalVisible(false)}
+            >
               <Text style={styles.modalCloseButtonText}>{t('ui.formation.common.close')}</Text>
             </TouchableOpacity>
           </View>
@@ -788,15 +858,23 @@ export default function ExpeditionPreparationScreen() {
       >
         <Pressable
           style={styles.modalOverlay}
+          accessible={false}
           onPress={() => {
             if (!isSavingPartyName) {
               setIsPartyNameModalVisible(false)
             }
           }}
         >
-          <Pressable style={styles.modalContent} onPress={() => undefined}>
+          <Pressable
+            accessibilityViewIsModal
+            accessible={false}
+            style={styles.modalContent}
+            onPress={() => undefined}
+          >
             <Text style={styles.modalTitle}>{t('ui.formation.preparation.renameTitle')}</Text>
             <TextInput
+              testID="preparation-party-name-input"
+              accessibilityLabel={t('ui.formation.preparation.renameParty')}
               value={editingPartyName}
               onChangeText={setEditingPartyName}
               placeholder={t('ui.formation.preparation.renamePlaceholder')}
@@ -811,6 +889,10 @@ export default function ExpeditionPreparationScreen() {
             />
             <View style={styles.modalActionRow}>
               <TouchableOpacity
+                testID="preparation-party-name-cancel"
+                accessibilityRole="button"
+                accessibilityLabel={t('ui.common.cancel')}
+                accessibilityState={{ disabled: isSavingPartyName }}
                 style={[styles.modalActionButton, styles.modalCancelButton]}
                 onPress={() => setIsPartyNameModalVisible(false)}
                 disabled={isSavingPartyName}
@@ -818,6 +900,10 @@ export default function ExpeditionPreparationScreen() {
                 <Text style={styles.modalCancelButtonText}>{t('ui.common.cancel')}</Text>
               </TouchableOpacity>
               <TouchableOpacity
+                testID="preparation-party-name-save"
+                accessibilityRole="button"
+                accessibilityLabel={t('ui.formation.common.save')}
+                accessibilityState={{ disabled: isSavingPartyName, busy: isSavingPartyName }}
                 style={[styles.modalActionButton, styles.modalPrimaryButton, isSavingPartyName && styles.modalPrimaryButtonDisabled]}
                 onPress={() => void handleSavePartyName()}
                 disabled={isSavingPartyName}
@@ -837,11 +923,19 @@ export default function ExpeditionPreparationScreen() {
         animationType="fade"
         onRequestClose={() => setIsTargetFloorModalVisible(false)}
       >
-        <Pressable style={styles.modalOverlay} onPress={() => setIsTargetFloorModalVisible(false)}>
-          <View style={styles.modalContent}>
+        <Pressable
+          style={styles.modalOverlay}
+          onPress={() => setIsTargetFloorModalVisible(false)}
+          accessible={false}
+        >
+          <View accessibilityViewIsModal style={styles.modalContent}>
             <Text style={styles.modalTitle}>{t('ui.formation.preparation.selectTargetFloorTitle')}</Text>
             <ScrollView style={styles.modalList} contentContainerStyle={styles.modalListContent}>
               <TouchableOpacity
+                testID="preparation-target-floor-deepest"
+                accessibilityRole="radio"
+                accessibilityLabel={t('ui.formation.preparation.targetFloorDeepest')}
+                accessibilityState={{ checked: selectedTargetFloor === null }}
                 style={[
                   styles.modalOption,
                   selectedTargetFloor === null && styles.modalOptionSelected,
@@ -861,6 +955,10 @@ export default function ExpeditionPreparationScreen() {
               {selectedDungeon ? Array.from({ length: selectedDungeon.floors }, (_, index) => index + 1).map(floor => (
                 <TouchableOpacity
                   key={floor}
+                  testID={`preparation-target-floor-${floor}`}
+                  accessibilityRole="radio"
+                  accessibilityLabel={t('ui.formation.preparation.targetFloorUntil', { floor })}
+                  accessibilityState={{ checked: selectedTargetFloor === floor }}
                   style={[
                     styles.modalOption,
                     selectedTargetFloor === floor && styles.modalOptionSelected,
@@ -879,7 +977,13 @@ export default function ExpeditionPreparationScreen() {
                 </TouchableOpacity>
               )) : null}
             </ScrollView>
-            <TouchableOpacity style={styles.modalCloseButton} onPress={() => setIsTargetFloorModalVisible(false)}>
+            <TouchableOpacity
+              testID="preparation-target-floor-close"
+              accessibilityRole="button"
+              accessibilityLabel={t('ui.formation.common.close')}
+              style={styles.modalCloseButton}
+              onPress={() => setIsTargetFloorModalVisible(false)}
+            >
               <Text style={styles.modalCloseButtonText}>{t('ui.formation.common.close')}</Text>
             </TouchableOpacity>
           </View>
@@ -892,13 +996,21 @@ export default function ExpeditionPreparationScreen() {
         animationType="fade"
         onRequestClose={() => setIsReturnPolicyModalVisible(false)}
       >
-        <Pressable style={styles.modalOverlay} onPress={() => setIsReturnPolicyModalVisible(false)}>
-          <View style={styles.modalContent}>
+        <Pressable
+          style={styles.modalOverlay}
+          onPress={() => setIsReturnPolicyModalVisible(false)}
+          accessible={false}
+        >
+          <View accessibilityViewIsModal style={styles.modalContent}>
             <Text style={styles.modalTitle}>{t('ui.formation.preparation.selectReturnPolicyTitle')}</Text>
             <ScrollView style={styles.modalList} contentContainerStyle={styles.modalListContent}>
               {(['if_any_ko', 'if_two_ko', 'last_one', 'never'] as ReturnPolicy[]).map(policy => (
                 <TouchableOpacity
                   key={policy}
+                  testID={`preparation-return-policy-${policy}`}
+                  accessibilityRole="radio"
+                  accessibilityLabel={getReturnPolicyLabel(policy)}
+                  accessibilityState={{ checked: selectedReturnPolicy === policy }}
                   style={[
                     styles.modalOption,
                     selectedReturnPolicy === policy && styles.modalOptionSelected,
@@ -917,7 +1029,13 @@ export default function ExpeditionPreparationScreen() {
                 </TouchableOpacity>
               ))}
             </ScrollView>
-            <TouchableOpacity style={styles.modalCloseButton} onPress={() => setIsReturnPolicyModalVisible(false)}>
+            <TouchableOpacity
+              testID="preparation-return-policy-close"
+              accessibilityRole="button"
+              accessibilityLabel={t('ui.formation.common.close')}
+              style={styles.modalCloseButton}
+              onPress={() => setIsReturnPolicyModalVisible(false)}
+            >
               <Text style={styles.modalCloseButtonText}>{t('ui.formation.common.close')}</Text>
             </TouchableOpacity>
           </View>

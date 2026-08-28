@@ -567,7 +567,12 @@ export default function ExpeditionPlaybackScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.navBar}>
-        <TouchableOpacity onPress={() => router.back()}>
+        <TouchableOpacity
+          testID="expedition-playback-back"
+          accessibilityRole="button"
+          accessibilityLabel={t('ui.formation.common.back')}
+          onPress={() => router.back()}
+        >
           <Text style={styles.navBack}>← {t('ui.formation.common.back')}</Text>
         </TouchableOpacity>
         <Text style={styles.navTitle}>{dungeonDisplayName} - {t('ui.formation.playback.logViewTitle')}</Text>
@@ -659,9 +664,11 @@ const PlaybackLogRow = memo(function PlaybackLogRow({
   if (entry.detail) {
     return (
       <TouchableOpacity
+        testID={`playback-battle-log-${entry.id}`}
         style={styles.logRow}
         activeOpacity={0.7}
         accessibilityRole="button"
+        accessibilityLabel={`${baseText}、${detailLabel}`}
         hitSlop={{ top: 6, bottom: 6, left: 8, right: 8 }}
         onPress={() => onOpenBattleLog(entry.detail!, entry.meta)}
       >
@@ -674,9 +681,11 @@ const PlaybackLogRow = memo(function PlaybackLogRow({
   if (entry.levelUps) {
     return (
       <TouchableOpacity
+        testID={`playback-level-up-log-${entry.id}`}
         style={styles.logRow}
         activeOpacity={0.7}
         accessibilityRole="button"
+        accessibilityLabel={`${baseText}、${detailLabel}`}
         hitSlop={{ top: 6, bottom: 6, left: 8, right: 8 }}
         onPress={() => onOpenLevelUpLog(entry.levelUps!)}
       >

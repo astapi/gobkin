@@ -32,7 +32,7 @@ const baseHeaderImages: Record<number, ImageSourcePropType> = {
   4: require('../../assets/base/base-header-rank-4-orc-fortress.jpg'),
 }
 type BaseMenuItem = {
-  id?: string
+  id: string
   title: string
   description: string
   href: Extract<Href, string>
@@ -75,6 +75,7 @@ export default function BaseManagementScreen() {
       Icon: CapacityIcon,
     },
     {
+      id: 'warehouse',
       title: t('ui.base.warehouseTitle'),
       description: t('ui.base.warehouseDescription'),
       href: '/base/warehouse' as Extract<Href, string>,
@@ -82,6 +83,7 @@ export default function BaseManagementScreen() {
       Icon: WarehouseIcon,
     },
     {
+      id: 'healing',
       title: t('ui.base.healingTitle'),
       description: t('ui.base.healingDescription'),
       href: '/base/healing' as const,
@@ -89,6 +91,7 @@ export default function BaseManagementScreen() {
       Icon: HealingIcon,
     },
     {
+      id: 'upgrade',
       title: t('ui.base.upgradeTitle'),
       description: t('ui.base.upgradeDescription'),
       href: '/base/upgrade' as const,
@@ -97,6 +100,7 @@ export default function BaseManagementScreen() {
       showBadge: canRankUp,
     },
     {
+      id: 'training',
       title: t('ui.base.trainingTitle'),
       description: t('ui.base.trainingDescription'),
       href: '/base/training' as const,
@@ -104,6 +108,7 @@ export default function BaseManagementScreen() {
       Icon: TrainingIcon,
     },
     {
+      id: 'equipment-shop',
       title: t('ui.base.shopTitle'),
       description: t('ui.base.shopDescription'),
       href: '/base/shop' as const,
@@ -111,6 +116,7 @@ export default function BaseManagementScreen() {
       Icon: EquipmentShopIcon,
     },
     {
+      id: 'premium-shop',
       title: t('ui.base.premiumShopTitle'),
       description: t('ui.base.premiumShopDescription'),
       href: '/shop' as const,
@@ -176,7 +182,14 @@ export default function BaseManagementScreen() {
           <View style={styles.menuList}>
             {menuItems.map((item) => {
               const button = (
-                <Pressable style={styles.menuButton} onPress={() => router.push(item.href)}>
+                <Pressable
+                  testID={`base-menu-${item.id}`}
+                  accessibilityRole="button"
+                  accessibilityLabel={item.title}
+                  accessibilityHint={item.description}
+                  style={styles.menuButton}
+                  onPress={() => router.push(item.href)}
+                >
                   <View style={styles.menuButtonIconWrap}>
                     <item.Icon width={42} height={42} />
                     {item.showBadge ? (

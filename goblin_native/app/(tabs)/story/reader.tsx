@@ -76,7 +76,13 @@ export default function StoryReaderScreen() {
       <SafeAreaView style={styles.container}>
         <View style={styles.center}>
           <Text style={styles.errorText}>{t('ui.story.notFound')}</Text>
-          <TouchableOpacity style={styles.backButton} onPress={navigateBackToStoryList}>
+          <TouchableOpacity
+            testID="story-reader-error-back"
+            accessibilityRole="button"
+            accessibilityLabel={t('ui.common.back')}
+            style={styles.backButton}
+            onPress={navigateBackToStoryList}
+          >
             <Text style={styles.backButtonText}>{t('ui.common.back')}</Text>
           </TouchableOpacity>
         </View>
@@ -89,12 +95,22 @@ export default function StoryReaderScreen() {
   return (
     <SafeAreaView style={styles.container} edges={['top', 'left', 'right', 'bottom']}>
       <View style={styles.navBar}>
-        <TouchableOpacity onPress={navigateBackToStoryList}>
+        <TouchableOpacity
+          testID="story-reader-back"
+          accessibilityRole="button"
+          accessibilityLabel={t('ui.common.back')}
+          onPress={navigateBackToStoryList}
+        >
           <Text style={styles.navBack}>← {t('ui.common.back')}</Text>
         </TouchableOpacity>
         <Text style={styles.navTitle} numberOfLines={1}>{story.title}</Text>
         {!isAlreadyRead ? (
-          <TouchableOpacity onPress={handleSkip}>
+          <TouchableOpacity
+            testID="story-reader-skip"
+            accessibilityRole="button"
+            accessibilityLabel={t('ui.story.skip')}
+            onPress={handleSkip}
+          >
             <Text style={styles.skipButton}>{t('ui.story.skip')}</Text>
           </TouchableOpacity>
         ) : (
@@ -122,7 +138,13 @@ export default function StoryReaderScreen() {
         <View style={styles.divider} />
 
         {!isAlreadyRead ? (
-          <TouchableOpacity style={styles.completeButton} onPress={() => void handleComplete()}>
+          <TouchableOpacity
+            testID="story-reader-complete"
+            accessibilityRole="button"
+            accessibilityLabel={t('ui.story.complete')}
+            style={styles.completeButton}
+            onPress={() => void handleComplete()}
+          >
             <Text style={styles.completeButtonText}>{t('ui.story.complete')}</Text>
           </TouchableOpacity>
         ) : (
@@ -131,7 +153,13 @@ export default function StoryReaderScreen() {
           </View>
         )}
 
-        <TouchableOpacity style={styles.returnButton} onPress={navigateBackToStoryList}>
+        <TouchableOpacity
+          testID="story-reader-return"
+          accessibilityRole="button"
+          accessibilityLabel={t('ui.common.back')}
+          style={styles.returnButton}
+          onPress={navigateBackToStoryList}
+        >
           <Text style={styles.returnButtonText}>{t('ui.common.back')}</Text>
         </TouchableOpacity>
       </ScrollView>

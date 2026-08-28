@@ -104,6 +104,10 @@ export default function GoblinAvatarScreen() {
             return (
               <TouchableOpacity
                 key={option.key}
+                testID={`goblin-avatar-${option.key}`}
+                accessibilityRole="radio"
+                accessibilityLabel={option.key}
+                accessibilityState={{ checked: selected, disabled: isSaving }}
                 style={[
                   styles.optionCard,
                   selected && styles.optionCardSelected,

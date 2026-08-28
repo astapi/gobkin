@@ -44,7 +44,8 @@ export default function FormationLayout() {
         name="equipment"
         options={{
           title: t('ui.formation.layout.equipment'),
-          presentation: 'formSheet',
+          presentation: 'card',
+          headerBackButtonDisplayMode: 'generic',
         }}
       />
       <Stack.Screen

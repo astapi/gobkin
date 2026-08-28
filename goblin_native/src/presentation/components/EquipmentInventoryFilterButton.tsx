@@ -19,6 +19,7 @@ export function EquipmentInventoryFilterButton({
 
   return (
     <Pressable
+      testID="equipment-inventory-filter-button"
       accessibilityRole="button"
       accessibilityLabel={label}
       style={({ pressed }) => [

@@ -14,6 +14,7 @@ import type { Goblin, Party } from '@/shared/types'
 const MAX_PARTY_SIZE = 6
 
 interface SlotProps {
+  testID: string
   label: string
   goblin?: Goblin
   isEmpty: boolean
@@ -22,11 +23,15 @@ interface SlotProps {
   onRemove?: () => void
 }
 
-function PartySlot({ label, goblin, isEmpty, isSelected, onPress, onRemove }: SlotProps) {
+function PartySlot({ testID, label, goblin, isEmpty, isSelected, onPress, onRemove }: SlotProps) {
   const { t } = useTranslation()
   if (isEmpty || !goblin) {
     return (
       <TouchableOpacity
+        testID={testID}
+        accessibilityRole="button"
+        accessibilityLabel={`${label}、${t('ui.formation.edit.emptySlot')}`}
+        accessibilityState={{ selected: isSelected }}
         style={[styles.slotContainer, isSelected && styles.slotSelected]}
         onPress={onPress}
         activeOpacity={0.7}
@@ -44,6 +49,10 @@ function PartySlot({ label, goblin, isEmpty, isSelected, onPress, onRemove }: Sl
 
   return (
     <TouchableOpacity
+      testID={testID}
+      accessibilityRole="button"
+      accessibilityLabel={`${label}、${goblin.name}、Lv.${goblin.level}`}
+      accessibilityState={{ selected: isSelected }}
       style={[styles.slotContainer, styles.filledSlot, isSelected && styles.slotSelected]}
       onPress={onPress}
       activeOpacity={0.7}
@@ -56,6 +65,9 @@ function PartySlot({ label, goblin, isEmpty, isSelected, onPress, onRemove }: Sl
       <Text style={styles.slotLevel}>Lv.{goblin.level}</Text>
       {onRemove && (
         <TouchableOpacity
+          testID={`${testID}-remove`}
+          accessibilityRole="button"
+          accessibilityLabel={`${goblin.name}を外す`}
           style={styles.removeButton}
           onPress={(e) => {
             e.stopPropagation?.()
@@ -246,7 +258,13 @@ export default function PartyEditScreen() {
     return (
       <View style={styles.errorContainer}>
         <Text style={styles.errorText}>{t('ui.formation.common.partyNotFound')}</Text>
-        <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
+        <TouchableOpacity
+          testID="party-edit-error-back"
+          accessibilityRole="button"
+          accessibilityLabel={t('ui.formation.common.back')}
+          style={styles.backButton}
+          onPress={() => router.back()}
+        >
           <Text style={styles.backButtonText}>{t('ui.formation.common.back')}</Text>
         </TouchableOpacity>
       </View>
@@ -258,13 +276,23 @@ export default function PartyEditScreen() {
       <Stack.Screen
         options={{
           headerLeft: () => (
-            <TouchableOpacity onPress={() => router.back()}>
+            <TouchableOpacity
+              testID="party-edit-cancel"
+              accessibilityRole="button"
+              accessibilityLabel={t('ui.formation.edit.cancel')}
+              onPress={() => router.back()}
+            >
               <Text style={styles.headerButton}>{t('ui.formation.edit.cancel')}</Text>
             </TouchableOpacity>
           ),
           headerRight: () => (
             <View ref={saveButtonRef} collapsable={false}>
-              <TouchableOpacity onPress={handleSave}>
+              <TouchableOpacity
+                testID="party-edit-save"
+                accessibilityRole="button"
+                accessibilityLabel={t('ui.formation.common.save')}
+                onPress={handleSave}
+              >
                 <Text style={[styles.headerButton, styles.headerButtonPrimary]}>{t('ui.formation.common.save')}</Text>
               </TouchableOpacity>
             </View>
@@ -283,6 +311,7 @@ export default function PartyEditScreen() {
             {slots.map((goblin, index) => (
               <PartySlot
                 key={index}
+                testID={`party-slot-${index}`}
                 label={getSlotLabel(index)}
                 goblin={goblin}
                 isEmpty={!goblin}

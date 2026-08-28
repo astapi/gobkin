@@ -46,6 +46,10 @@ export function StartScreen({ onStart, starting = false }: StartScreenProps) {
           <View style={styles.footer}>
             <View style={styles.buttonScrim}>
               <Pressable
+                testID="start-game-button"
+                accessibilityRole="button"
+                accessibilityLabel={t('ui.start.beginButton')}
+                accessibilityState={{ disabled: starting, busy: starting }}
                 style={({ pressed }) => [
                   styles.startButton,
                   pressed && styles.startButtonPressed,

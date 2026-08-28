@@ -135,6 +135,10 @@ export default function SettingsScreen() {
               return (
                 <TouchableOpacity
                   key={language}
+                  testID={`settings-language-${language}`}
+                  accessibilityRole="radio"
+                  accessibilityLabel={t(LANGUAGE_LABEL_KEYS[language])}
+                  accessibilityState={{ checked: selected, disabled: isChangingLanguage }}
                   style={[styles.languageButton, selected && styles.languageButtonSelected]}
                   onPress={() => void handleChangeLanguage(language)}
                   disabled={isChangingLanguage}
@@ -152,6 +156,9 @@ export default function SettingsScreen() {
           <Text style={styles.sectionTitle}>{t('ui.settings.autoSell.sectionTitle')}</Text>
           <Text style={styles.sectionDescription}>{t('ui.settings.autoSell.description')}</Text>
           <TouchableOpacity
+            testID="settings-auto-sell"
+            accessibilityRole="button"
+            accessibilityLabel={t('ui.settings.autoSell.open')}
             style={styles.secondaryButton}
             onPress={() => router.push('/base/auto-sell' as Href)}
           >
@@ -163,6 +170,9 @@ export default function SettingsScreen() {
           <Text style={styles.sectionTitle}>{t('ui.settings.aiAgent.sectionTitle')}</Text>
           <Text style={styles.sectionDescription}>{t('ui.settings.aiAgent.description')}</Text>
           <Pressable
+            testID="settings-ai-agent"
+            accessibilityRole="button"
+            accessibilityLabel={t('ui.settings.aiAgent.open')}
             style={styles.secondaryButton}
             onPress={() => router.push('/ai-agent' as Href)}
           >
@@ -181,6 +191,10 @@ export default function SettingsScreen() {
             </View>
           </View>
           <TouchableOpacity
+            testID="settings-backup-export"
+            accessibilityRole="button"
+            accessibilityLabel={t('ui.settings.backup.exportButton')}
+            accessibilityState={{ disabled: isExporting || isImporting, busy: isExporting }}
             style={[styles.primaryButton, isExporting && styles.primaryButtonDisabled]}
             onPress={() => void handleExportSaveData()}
             disabled={isExporting || isImporting}
@@ -201,6 +215,10 @@ export default function SettingsScreen() {
             </View>
           </View>
           <TouchableOpacity
+            testID="settings-backup-import"
+            accessibilityRole="button"
+            accessibilityLabel={t('ui.settings.backup.importButton')}
+            accessibilityState={{ disabled: isExporting || isImporting, busy: isImporting }}
             style={[styles.secondaryButton, isImporting && styles.secondaryButtonDisabled]}
             onPress={handleImportSaveData}
             disabled={isExporting || isImporting}
@@ -221,6 +239,8 @@ export default function SettingsScreen() {
               <Text style={styles.settingDescription}>{t('ui.settings.instantExplorationDescription')}</Text>
             </View>
             <Switch
+              testID="settings-instant-exploration"
+              accessibilityLabel={t('ui.settings.instantExplorationTitle')}
               value={instantDungeonExploration}
               onValueChange={(value) => {
                 void setInstantDungeonExploration(value)
@@ -229,6 +249,10 @@ export default function SettingsScreen() {
           </View>
 
           <TouchableOpacity
+            testID="settings-reset-data"
+            accessibilityRole="button"
+            accessibilityLabel={t('ui.settings.resetButton')}
+            accessibilityState={{ disabled: isResetting, busy: isResetting }}
             style={styles.dangerButton}
             onPress={handleResetData}
             disabled={isResetting}

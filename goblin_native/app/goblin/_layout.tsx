@@ -6,32 +6,30 @@ export default function GoblinLayout() {
   return (
     <Stack
       screenOptions={{
-        headerShown: false,
+        headerShown: true,
+        headerStyle: { backgroundColor: '#FFFFFF' },
+        headerTitleStyle: { color: '#1F2937', fontWeight: 'bold' },
+        headerTintColor: '#6B7280',
+        headerBackTitle: t('ui.common.back'),
+        headerBackButtonDisplayMode: 'generic',
       }}
     >
-      <Stack.Screen name="detail" />
+      <Stack.Screen
+        name="detail"
+        options={{ title: t('ui.root.goblinDetail') }}
+      />
       <Stack.Screen
         name="equipment"
         options={{
-          headerShown: true,
           title: t('ui.root.equipmentChange'),
-          // 長い仮想リストを formSheet のパンジェスチャーから分離する。
-          presentation: 'fullScreenModal',
-          gestureEnabled: false,
-          headerStyle: { backgroundColor: '#FFFFFF' },
-          headerTitleStyle: { color: '#1F2937', fontWeight: 'bold' },
-          headerTintColor: '#6B7280',
+          presentation: 'card',
         }}
       />
       <Stack.Screen
         name="avatar"
         options={{
-          headerShown: true,
           title: '画像変更',
           presentation: 'formSheet',
-          headerStyle: { backgroundColor: '#FFFFFF' },
-          headerTitleStyle: { color: '#1F2937', fontWeight: 'bold' },
-          headerTintColor: '#6B7280',
         }}
       />
     </Stack>

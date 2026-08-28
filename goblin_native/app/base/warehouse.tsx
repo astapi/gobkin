@@ -30,7 +30,11 @@ import {
   getEquipmentTemplate,
   getEquipmentTemplates,
 } from '@/shared/data/equipmentPoolLoader'
-import { getEquipmentDisplayName, getStatLabel } from '@/shared/i18n/entityLocalization'
+import {
+  getEquipmentDisplayName,
+  getEquipmentLabel,
+  getStatLabel,
+} from '@/shared/i18n/entityLocalization'
 import { EquipmentInventoryFilterSheet } from '@/presentation/components/EquipmentInventoryFilterSheet'
 import { EquipmentInventoryFilterButton } from '@/presentation/components/EquipmentInventoryFilterButton'
 import {
@@ -39,6 +43,10 @@ import {
   matchesEquipmentInventoryFilter,
   type EquipmentInventoryFilter,
 } from '@/shared/utils/equipmentInventoryFilter'
+import {
+  groupEquipmentVariantsByTemplate,
+  type EquipmentInventoryBaseGroup,
+} from '@/shared/utils/equipmentInventoryGrouping'
 
 const CATEGORY_ORDER: Record<EquipmentCategory, number> = {
   weapon: 0,
@@ -83,6 +91,7 @@ type InventoryGroup = {
 
 type InventoryListEntry =
   | { type: 'category'; key: string; label: string }
+  | { type: 'base'; key: string; group: EquipmentInventoryBaseGroup<InventoryGroup> }
   | { type: 'item'; key: string; group: InventoryGroup }
 
 function formatBonus(stat: string, value: number): string {
@@ -150,7 +159,10 @@ function groupInventory(items: EquipmentInstance[]): InventoryGroup[] {
   })
 }
 
-function buildListEntries(groups: InventoryGroup[]): InventoryListEntry[] {
+function buildListEntries(
+  groups: EquipmentInventoryBaseGroup<InventoryGroup>[],
+  expandedTemplateIds: ReadonlySet<string>,
+): InventoryListEntry[] {
   const entries: InventoryListEntry[] = []
   let currentSectionKey: string | null = null
   const sectionOccurrences = new Map<string, number>()
@@ -174,11 +186,48 @@ function buildListEntries(groups: InventoryGroup[]): InventoryListEntry[] {
       currentSectionKey = sectionKey
     }
 
-    entries.push({ type: 'item', key: group.key, group })
+    entries.push({ type: 'base', key: group.key, group })
+    if (expandedTemplateIds.has(group.template.id)) {
+      for (const variant of group.variants) {
+        entries.push({ type: 'item', key: `variant::${variant.key}`, group: variant })
+      }
+    }
   }
 
   return entries
 }
+
+const EquipmentBaseRow = memo(function EquipmentBaseRow({
+  group,
+  expanded,
+  onToggle,
+}: {
+  group: EquipmentInventoryBaseGroup<InventoryGroup>
+  expanded: boolean
+  onToggle: (templateId: string) => void
+}) {
+  const name = getEquipmentLabel(group.template)
+  const countLabel = group.matchedCount === group.totalCount
+    ? `×${group.totalCount}`
+    : `${group.matchedCount}/${group.totalCount}`
+
+  return (
+    <Pressable
+      testID={`warehouse-equipment-group-${group.template.id}`}
+      accessibilityRole="button"
+      accessibilityState={{ expanded }}
+      accessibilityLabel={`${name} ${countLabel}`}
+      style={styles.baseRow}
+      onPress={() => onToggle(group.template.id)}
+    >
+      <View style={styles.baseRowInfo}>
+        <Text style={styles.baseRowName} numberOfLines={1}>{name}</Text>
+        <Text style={styles.baseRowCount}>{countLabel}</Text>
+      </View>
+      <Text style={styles.baseRowChevron}>{expanded ? '−' : '＋'}</Text>
+    </Pressable>
+  )
+})
 
 const EquipmentRow = memo(function EquipmentRow({
   group,
@@ -192,6 +241,7 @@ const EquipmentRow = memo(function EquipmentRow({
 
   return (
     <Pressable
+      testID={`warehouse-equipment-variant-${group.equipment.id}`}
       accessibilityRole="button"
       accessibilityLabel={itemName}
       style={styles.itemRow}
@@ -228,7 +278,7 @@ function ItemDetail({
   return (
     <Modal visible animationType="fade" transparent onRequestClose={onClose}>
       <View style={styles.overlayBackground}>
-        <View style={styles.detailCard}>
+        <View accessibilityViewIsModal style={styles.detailCard}>
           <ScrollView
             style={styles.detailScroll}
             contentContainerStyle={styles.detailScrollContent}
@@ -262,7 +312,13 @@ function ItemDetail({
               </View>
             ) : null}
           </ScrollView>
-          <Pressable style={styles.detailCloseButton} onPress={onClose}>
+          <Pressable
+            testID="warehouse-equipment-detail-close"
+            accessibilityRole="button"
+            accessibilityLabel="閉じる"
+            style={styles.detailCloseButton}
+            onPress={onClose}
+          >
             <Text style={styles.detailCloseButtonText}>閉じる</Text>
           </Pressable>
         </View>
@@ -282,6 +338,7 @@ export default function WarehouseScreen() {
   )
   const [filterVisible, setFilterVisible] = useState(false)
   const [selectedItem, setSelectedItem] = useState<EquipmentInstance | null>(null)
+  const [expandedTemplateIds, setExpandedTemplateIds] = useState<Set<string>>(new Set())
 
   const loadItems = useCallback(async () => {
     setLoading(true)
@@ -300,17 +357,33 @@ export default function WarehouseScreen() {
     void loadItems()
   }, [loadItems]))
 
-  const groups = useMemo(() => groupInventory(items), [items])
-  const filteredGroups = useMemo(
-    () => groups.filter((group) => matchesEquipmentInventoryFilter(group, selectedFilter)),
-    [groups, selectedFilter],
+  const variantGroups = useMemo(() => groupInventory(items), [items])
+  const filteredVariantGroups = useMemo(
+    () => variantGroups.filter((group) => matchesEquipmentInventoryFilter(group, selectedFilter)),
+    [variantGroups, selectedFilter],
   )
-  const entries = useMemo(() => buildListEntries(filteredGroups), [filteredGroups])
+  const baseGroups = useMemo(
+    () => groupEquipmentVariantsByTemplate(variantGroups, filteredVariantGroups),
+    [filteredVariantGroups, variantGroups],
+  )
+  const entries = useMemo(
+    () => buildListEntries(baseGroups, expandedTemplateIds),
+    [baseGroups, expandedTemplateIds],
+  )
   const activeFilterCount = getEquipmentInventoryFilterActiveCount(selectedFilter)
 
   const handleApplyFilter = useCallback((filter: EquipmentInventoryFilter) => {
     setSelectedFilter(filter)
     setFilterVisible(false)
+  }, [])
+
+  const toggleTemplate = useCallback((templateId: string) => {
+    setExpandedTemplateIds((current) => {
+      const next = new Set(current)
+      if (next.has(templateId)) next.delete(templateId)
+      else next.add(templateId)
+      return next
+    })
   }, [])
 
   const renderItem = useCallback(({ item }: { item: InventoryListEntry }) => {
@@ -321,8 +394,17 @@ export default function WarehouseScreen() {
         </View>
       )
     }
+    if (item.type === 'base') {
+      return (
+        <EquipmentBaseRow
+          group={item.group}
+          expanded={expandedTemplateIds.has(item.group.template.id)}
+          onToggle={toggleTemplate}
+        />
+      )
+    }
     return <EquipmentRow group={item.group} onPress={setSelectedItem} />
-  }, [])
+  }, [expandedTemplateIds, toggleTemplate])
 
   if (loading) {
     return (
@@ -362,7 +444,13 @@ export default function WarehouseScreen() {
                   : t('ui.warehouse.emptyFiltered')}
             </Text>
             {loadFailed ? (
-              <Pressable style={styles.retryButton} onPress={() => void loadItems()}>
+              <Pressable
+                testID="warehouse-retry"
+                accessibilityRole="button"
+                accessibilityLabel={t('ui.warehouse.retry')}
+                style={styles.retryButton}
+                onPress={() => void loadItems()}
+              >
                 <Text style={styles.retryButtonText}>{t('ui.warehouse.retry')}</Text>
               </Pressable>
             ) : null}
@@ -379,7 +467,7 @@ export default function WarehouseScreen() {
       <EquipmentInventoryFilterSheet
         visible={filterVisible}
         value={selectedFilter}
-        targets={groups}
+        targets={variantGroups}
         onApply={handleApplyFilter}
         onClose={() => setFilterVisible(false)}
       />
@@ -433,6 +521,41 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: '700',
   },
+  baseRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
+    borderColor: '#D1D5DB',
+    borderRadius: 10,
+    borderWidth: 1,
+    paddingHorizontal: 12,
+    paddingVertical: 14,
+  },
+  baseRowInfo: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  baseRowName: {
+    flex: 1,
+    color: '#1F2937',
+    fontSize: 15,
+    fontWeight: '700',
+  },
+  baseRowCount: {
+    color: '#6B7280',
+    fontSize: 13,
+    fontWeight: '700',
+  },
+  baseRowChevron: {
+    width: 24,
+    marginLeft: 10,
+    color: '#4B5563',
+    fontSize: 18,
+    fontWeight: '700',
+    textAlign: 'center',
+  },
   itemRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -441,6 +564,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: 1,
     padding: 12,
+    marginLeft: 12,
   },
   itemInfo: {
     flex: 1,
