@@ -161,6 +161,7 @@ export default function TabLayout() {
         name="story"
         options={{
           title: t('ui.tabs.story'),
+          tabBarButtonTestID: 'tab-story',
           headerShown: false,
           tabBarIcon: ({ color }) => <TabIcon Icon={StoryIcon} color={color} size={30} />,
           tabBarBadge: unreadCount > 0 ? unreadCount : undefined,
@@ -171,6 +172,7 @@ export default function TabLayout() {
         name="index"
         options={{
           title: t('ui.tabs.goblinList'),
+          tabBarButtonTestID: 'tab-goblin-list',
           headerTitle: t('ui.tabs.goblinList'),
           headerShown: false,
           tabBarIcon: ({ color }) => <TabIcon Icon={ListIcon} color={color} size={20} />,
@@ -180,6 +182,7 @@ export default function TabLayout() {
         name="formation"
         options={{
           title: t('ui.tabs.formation'),
+          tabBarButtonTestID: 'tab-formation',
           headerTitle: t('ui.tabs.formation'),
           headerShown: false,
           tabBarIcon: ({ color }) => <TabIcon Icon={HenseiIcon} color={color} />,
@@ -189,6 +192,7 @@ export default function TabLayout() {
         name="base"
         options={{
           title: t('ui.tabs.base'),
+          tabBarButtonTestID: 'tab-base',
           headerTitle: t('ui.tabs.base'),
           headerShown: false,
           tabBarIcon: ({ color }) => <TabIcon Icon={BaseIcon} color={color} size={40} />,
@@ -200,6 +204,7 @@ export default function TabLayout() {
         name="encyclopedia"
         options={{
           title: t('ui.tabs.encyclopedia'),
+          tabBarButtonTestID: 'tab-encyclopedia',
           headerTitle: t('ui.tabs.encyclopedia'),
           headerShown: false,
           tabBarIcon: ({ color }) => <TabIcon Icon={EncyclopediaIcon} color={color} />,
@@ -209,6 +214,7 @@ export default function TabLayout() {
         name="settings"
         options={{
           title: t('ui.tabs.settings'),
+          tabBarButtonTestID: 'tab-settings',
           headerShown: false,
           tabBarIcon: ({ color }) => <TabIcon Icon={SettingIcon} color={color} />,
         }}

@@ -241,6 +241,10 @@ export default function ShopScreen() {
     return (
       <TouchableOpacity
         key={pkg.identifier}
+        testID={`premium-shop-product-${pkg.identifier}`}
+        accessibilityRole="button"
+        accessibilityLabel={`${displayInfo.name}、${price}`}
+        accessibilityState={{ disabled: isDisabled }}
         style={[
           styles.productCard,
           isDisabled && !isLocked && styles.productCardPurchased,
@@ -337,6 +341,10 @@ export default function ShopScreen() {
           <Text style={styles.subtitle}>{t('shop.subtitle')}</Text>
         </View>
         <TouchableOpacity
+          testID="premium-shop-restore"
+          accessibilityRole="button"
+          accessibilityLabel={t('shop.restore')}
+          accessibilityState={{ disabled: isRestoring, busy: isRestoring }}
           style={styles.restoreButton}
           onPress={handleRestore}
           disabled={isRestoring}

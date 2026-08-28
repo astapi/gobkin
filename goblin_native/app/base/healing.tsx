@@ -73,6 +73,13 @@ export default function HealingScreen() {
             <Text style={styles.summaryValue}>{t('ui.healing.injuredValue', { count: injuredGoblins.length })}</Text>
           </View>
           <TouchableOpacity
+            testID="heal-all-button"
+            accessibilityRole="button"
+            accessibilityLabel={t('ui.healing.healAllButton')}
+            accessibilityState={{
+              disabled: injuredGoblins.length === 0 || isBulkProcessing,
+              busy: isBulkProcessing,
+            }}
             style={[
               styles.primaryButton,
               (injuredGoblins.length === 0 || isBulkProcessing) && styles.buttonDisabled,
@@ -105,7 +112,10 @@ export default function HealingScreen() {
                   <Text style={styles.goblinHp}>{t('ui.healing.hpLine', { current: goblin.currentHp ?? maxHp, max: maxHp })}</Text>
                 </View>
                 <TouchableOpacity
-                  testID="heal-goblin-button"
+                  testID={`heal-goblin-${goblin.id}`}
+                  accessibilityRole="button"
+                  accessibilityLabel={`${goblin.name}を${t('ui.healing.healButton')}`}
+                  accessibilityState={{ disabled, busy: processing }}
                   style={[styles.healButton, disabled && styles.buttonDisabled]}
                   onPress={() => void healGoblin(goblin)}
                   disabled={disabled}

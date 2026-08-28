@@ -80,10 +80,22 @@ export default function GameAgentScreen() {
               </Text>
               <Text style={styles.description}>{t('ui.aiAgent.description')}</Text>
               <View style={styles.buttonRow}>
-                <Pressable style={styles.primaryButton} onPress={requestReconnect}>
+                <Pressable
+                  testID="ai-agent-reconnect"
+                  accessibilityRole="button"
+                  accessibilityLabel={t('ui.aiAgent.reconnect')}
+                  style={styles.primaryButton}
+                  onPress={requestReconnect}
+                >
                   <Text style={styles.primaryButtonText}>{t('ui.aiAgent.reconnect')}</Text>
                 </Pressable>
-                <Pressable style={styles.secondaryButton} onPress={clearLogs}>
+                <Pressable
+                  testID="ai-agent-clear-logs"
+                  accessibilityRole="button"
+                  accessibilityLabel={t('ui.aiAgent.clearLogs')}
+                  style={styles.secondaryButton}
+                  onPress={clearLogs}
+                >
                   <Text style={styles.secondaryButtonText}>{t('ui.aiAgent.clearLogs')}</Text>
                 </Pressable>
               </View>
@@ -230,4 +242,3 @@ const styles = StyleSheet.create({
     paddingVertical: 32,
   },
 })
-

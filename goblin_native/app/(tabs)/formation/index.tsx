@@ -158,6 +158,9 @@ const PartyCard = memo(function PartyCard({
     <View style={[styles.partyCard, status === 'expedition' && usedGoldenAcorn && styles.partyCardGoldenAcorn]}>
       <TouchableOpacity
         testID={`party-card-${party.id}`}
+        accessibilityRole="button"
+        accessibilityLabel={`${party.name}、${members.length}体`}
+        accessibilityState={{ disabled: isCatchingUp }}
         onPress={() => onPress(party, index)}
         disabled={isCatchingUp}
         activeOpacity={0.7}
@@ -174,6 +177,8 @@ const PartyCard = memo(function PartyCard({
             ) : party.autoExpeditionEnabled ? (
               <TouchableOpacity
                 testID={`auto-expedition-badge-${party.id}`}
+                accessibilityRole="button"
+                accessibilityLabel={t('ui.formation.index.autoExpeditionRunning')}
                 style={status === 'expedition'
                   ? styles.autoExpeditionBadge
                   : styles.autoExpeditionWaitingBadge}
@@ -206,6 +211,8 @@ const PartyCard = memo(function PartyCard({
               (!party.autoExpeditionEnabled || hasReachedAutoRunLimit) && (
               <TouchableOpacity
                 testID={`auto-expedition-summary-${party.id}`}
+                accessibilityRole="button"
+                accessibilityLabel={t('ui.formation.index.autoExpeditionSummary')}
                 style={styles.autoExpeditionSummaryBadge}
                 onPress={(event) => {
                   event.stopPropagation()
@@ -220,6 +227,9 @@ const PartyCard = memo(function PartyCard({
             )}
             {!isCatchingUp && status === 'expedition' && (
               <TouchableOpacity
+                testID={`expedition-abort-${party.id}`}
+                accessibilityRole="button"
+                accessibilityLabel={t('ui.formation.index.abortButton')}
                 style={styles.expeditionBadge}
                 onPress={(event) => {
                   event.stopPropagation()
@@ -248,6 +258,9 @@ const PartyCard = memo(function PartyCard({
             {historyDisplays.map(item => (
               <View key={item.id} style={styles.historyRow}>
                 <TouchableOpacity
+                  testID={`expedition-history-${item.id}`}
+                  accessibilityRole="button"
+                  accessibilityLabel={`${item.title}、${item.subtitle}`}
                   style={styles.historyContent}
                   onPress={() => onHistoryPress(item.record, item.ongoing)}
                   activeOpacity={0.7}
@@ -256,7 +269,13 @@ const PartyCard = memo(function PartyCard({
                   <Text style={styles.historyDungeon}>{item.subtitle}</Text>
                 </TouchableOpacity>
                 {!item.ongoing && (
-                  <TouchableOpacity style={styles.historyArrow} onPress={() => onLogPress(item.record)}>
+                  <TouchableOpacity
+                    testID={`expedition-log-${item.id}`}
+                    accessibilityRole="button"
+                    accessibilityLabel={`${item.title}のログ`}
+                    style={styles.historyArrow}
+                    onPress={() => onLogPress(item.record)}
+                  >
                     <Text style={styles.historyArrowText}>&gt;</Text>
                   </TouchableOpacity>
                 )}
@@ -583,6 +602,9 @@ export default function FormationScreen() {
     return (
       <View ref={wrapperRef} collapsable={false}>
         <TouchableOpacity
+          testID={`party-card-empty-${index}`}
+          accessibilityRole="button"
+          accessibilityLabel={t('ui.formation.index.partyDefaultName', { index: index + 1 })}
           style={styles.partyCard}
           onPress={() => handlePartyPress(null, index)}
           activeOpacity={0.7}
@@ -615,7 +637,14 @@ export default function FormationScreen() {
         options={{
           title: '',
           headerRight: () => (
-            <TouchableOpacity onPress={handleBulkLaunch} disabled={!canBulkLaunch || isBulkLaunching}>
+            <TouchableOpacity
+              testID="formation-bulk-launch"
+              accessibilityRole="button"
+              accessibilityLabel={t('ui.formation.index.bulkLaunch')}
+              accessibilityState={{ disabled: !canBulkLaunch || isBulkLaunching, busy: isBulkLaunching }}
+              onPress={handleBulkLaunch}
+              disabled={!canBulkLaunch || isBulkLaunching}
+            >
               <Text style={[
                 styles.headerAction,
                 (!canBulkLaunch || isBulkLaunching) && styles.headerActionDisabled,

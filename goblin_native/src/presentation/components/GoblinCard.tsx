@@ -136,6 +136,10 @@ export const GoblinCard = memo(function GoblinCard({
   if (onPress && !disabled) {
     return (
       <TouchableOpacity
+        testID={`goblin-card-${goblin.id}`}
+        accessibilityRole="button"
+        accessibilityLabel={`${goblin.name}、${getRaceLabel(goblin.raceId ?? goblin.race)}、${t('ui.common.levelShort')}${goblin.level}`}
+        accessibilityState={{ selected: isAssigned }}
         onPress={onPress}
         activeOpacity={isAssignedElsewhere ? 1 : 0.7}
       >

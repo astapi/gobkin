@@ -29,6 +29,9 @@ export default function LevelUpLogScreen() {
     <SafeAreaView style={styles.container}>
       <View style={styles.navBar}>
         <TouchableOpacity
+          testID="level-up-log-back"
+          accessibilityRole="button"
+          accessibilityLabel={t('ui.formation.common.back')}
           onPress={() => {
             if (router.canGoBack()) {
               router.back()

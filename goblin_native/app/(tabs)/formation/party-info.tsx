@@ -258,7 +258,13 @@ export default function PartyInfoScreen() {
     return (
       <View style={styles.loadingContainer}>
         <Text style={styles.errorText}>{t('ui.formation.common.partyNotFound')}</Text>
-        <TouchableOpacity style={styles.backButton} onPress={handleBack}>
+        <TouchableOpacity
+          testID="party-info-error-back"
+          accessibilityRole="button"
+          accessibilityLabel={t('ui.formation.common.back')}
+          style={styles.backButton}
+          onPress={handleBack}
+        >
           <Text style={styles.backButtonText}>{t('ui.formation.common.back')}</Text>
         </TouchableOpacity>
       </View>
@@ -271,7 +277,12 @@ export default function PartyInfoScreen() {
         options={{
           title: t('ui.formation.partyInfo.title'),
           headerLeft: () => (
-            <TouchableOpacity onPress={handleBack}>
+            <TouchableOpacity
+              testID="party-info-back"
+              accessibilityRole="button"
+              accessibilityLabel={t('ui.formation.common.back')}
+              onPress={handleBack}
+            >
               <Text style={styles.headerButton}>← {t('ui.formation.common.back')}</Text>
             </TouchableOpacity>
           ),
@@ -364,6 +375,9 @@ export default function PartyInfoScreen() {
                       {skills.map((skill, index) => (
                         <TouchableOpacity
                           key={`${goblin.id}-${skill.id}-${index}`}
+                          testID={`party-info-skill-${goblin.id}-${skill.id}-${index}`}
+                          accessibilityRole="button"
+                          accessibilityLabel={getSkillLabel(skill)}
                           style={styles.skillChip}
                           activeOpacity={0.75}
                           onPress={() => handlePressSkill(skill)}

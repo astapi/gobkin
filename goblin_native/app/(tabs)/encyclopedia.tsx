@@ -34,6 +34,9 @@ export default function EncyclopediaDungeonListScreen() {
             unlockedDungeons.map((dungeon) => (
               <TouchableOpacity
                 key={dungeon.id}
+                testID={`encyclopedia-dungeon-${dungeon.id}`}
+                accessibilityRole="button"
+                accessibilityLabel={getDungeonName(dungeon)}
                 style={styles.dungeonCard}
                 activeOpacity={0.8}
                 onPress={() => router.push(`/encyclopedia-detail/${dungeon.id}`)}

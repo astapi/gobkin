@@ -23,7 +23,11 @@ import {
   describeCharacterSkill,
   getCharacterSkillDescription,
 } from '@/shared/data/characterSkills'
-import { getEquipmentDisplayName, getStatLabel } from '@/shared/i18n/entityLocalization'
+import {
+  getEquipmentDisplayName,
+  getEquipmentLabel,
+  getStatLabel,
+} from '@/shared/i18n/entityLocalization'
 import { calculateGoblinEffectiveStats } from '@/shared/utils/goblinStats'
 import type { Goblin } from '@/shared/types'
 import { EquipmentInventoryFilterSheet } from '@/presentation/components/EquipmentInventoryFilterSheet'
@@ -34,6 +38,10 @@ import {
   matchesEquipmentInventoryFilter,
   type EquipmentInventoryFilter,
 } from '@/shared/utils/equipmentInventoryFilter'
+import {
+  groupEquipmentVariantsByTemplate,
+  type EquipmentInventoryBaseGroup,
+} from '@/shared/utils/equipmentInventoryGrouping'
 
 const EQUIPMENT_TOAST_DISPLAY_MS = 4200
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable)
@@ -102,6 +110,11 @@ type InventoryListEntry =
       type: 'category'
       key: string
       label: string
+    }
+  | {
+      type: 'base'
+      key: string
+      group: EquipmentInventoryBaseGroup<InventoryGroup>
     }
   | {
       type: 'item'
@@ -352,7 +365,10 @@ function sortInventoryGroups(groups: InventoryGroup[]): InventoryGroup[] {
   })
 }
 
-function buildInventoryListEntries(groups: InventoryGroup[]): InventoryListEntry[] {
+function buildInventoryListEntries(
+  groups: EquipmentInventoryBaseGroup<InventoryGroup>[],
+  expandedTemplateIds: ReadonlySet<string>,
+): InventoryListEntry[] {
   const entries: InventoryListEntry[] = []
   let currentSectionKey: string | null = null
   const sectionOccurrences = new Map<string, number>()
@@ -376,14 +392,51 @@ function buildInventoryListEntries(groups: InventoryGroup[]): InventoryListEntry
       currentSectionKey = sectionKey
     }
 
-    entries.push({
-      type: 'item',
-      key: group.key,
-      group,
-    })
+    entries.push({ type: 'base', key: group.key, group })
+    if (expandedTemplateIds.has(group.template.id)) {
+      for (const variant of group.variants) {
+        entries.push({
+          type: 'item',
+          key: `variant::${variant.key}`,
+          group: variant,
+        })
+      }
+    }
   }
 
   return entries
+}
+
+function EquipmentBaseRow({
+  group,
+  expanded,
+  onToggle,
+}: {
+  group: EquipmentInventoryBaseGroup<InventoryGroup>
+  expanded: boolean
+  onToggle: (templateId: string) => void
+}) {
+  const name = getEquipmentLabel(group.template)
+  const countLabel = group.matchedCount === group.totalCount
+    ? `×${group.totalCount}`
+    : `${group.matchedCount}/${group.totalCount}`
+
+  return (
+    <TouchableOpacity
+      testID={`equipment-group-${group.template.id}`}
+      accessibilityRole="button"
+      accessibilityState={{ expanded }}
+      accessibilityLabel={`${name} ${countLabel}`}
+      style={styles.baseRow}
+      onPress={() => onToggle(group.template.id)}
+    >
+      <View style={styles.baseRowInfo}>
+        <Text style={styles.baseRowName} numberOfLines={1}>{name}</Text>
+        <Text style={styles.baseRowCount}>{countLabel}</Text>
+      </View>
+      <Text style={styles.baseRowChevron}>{expanded ? '−' : '＋'}</Text>
+    </TouchableOpacity>
+  )
 }
 
 /** 装備済みアイテムの詳細モーダル */
@@ -411,7 +464,7 @@ function ItemDetail({
   return (
     <Modal visible={visible} animationType="fade" transparent onRequestClose={onClose}>
       <View style={styles.overlayBackground}>
-        <View style={styles.detailCard}>
+        <View accessibilityViewIsModal style={styles.detailCard}>
           <ScrollView
             style={styles.detailScroll}
             contentContainerStyle={styles.detailScrollContent}
@@ -452,11 +505,23 @@ function ItemDetail({
 
           <View style={styles.detailActions}>
             {onUnequip && (
-              <TouchableOpacity style={styles.unequipButton} onPress={onUnequip}>
+              <TouchableOpacity
+                testID="equipment-detail-unequip"
+                accessibilityRole="button"
+                accessibilityLabel="外す"
+                style={styles.unequipButton}
+                onPress={onUnequip}
+              >
                 <Text style={styles.unequipButtonText}>外す</Text>
               </TouchableOpacity>
             )}
-            <TouchableOpacity style={styles.detailCloseButton} onPress={onClose}>
+            <TouchableOpacity
+              testID="equipment-detail-close"
+              accessibilityRole="button"
+              accessibilityLabel="閉じる"
+              style={styles.detailCloseButton}
+              onPress={onClose}
+            >
               <Text style={styles.detailCloseButtonText}>閉じる</Text>
             </TouchableOpacity>
           </View>
@@ -468,6 +533,7 @@ function ItemDetail({
 
 /** 装備アイテム1行 */
 function EquipmentRow({
+  testID,
   eq,
   template,
   onPress,
@@ -476,7 +542,9 @@ function EquipmentRow({
   count,
   characterSkills,
   penaltyPercent,
+  nested,
 }: {
+  testID: string
   eq: EquipmentInstance
   template: EquipmentTemplate
   onPress: () => void
@@ -485,6 +553,7 @@ function EquipmentRow({
   count?: number
   characterSkills: CharacterSkill[]
   penaltyPercent?: number
+  nested?: boolean
 }) {
   const penaltyMultiplier = penaltyPercent === undefined ? 1 : penaltyPercent / 100
   const displayBonuses = getDisplayBonuses(eq, characterSkills, penaltyMultiplier)
@@ -496,8 +565,12 @@ function EquipmentRow({
 
   return (
     <TouchableOpacity
+      testID={testID}
+      accessibilityRole="button"
+      accessibilityLabel={itemName}
       style={[
         styles.itemRow,
+        nested && styles.itemRowNested,
         highlighted && styles.itemRowHighlighted,
         penaltyPercent !== undefined && styles.itemRowPenalty,
       ]}
@@ -512,6 +585,9 @@ function EquipmentRow({
         </Text>
       </View>
       <TouchableOpacity
+        testID={`${testID}-detail`}
+        accessibilityRole="button"
+        accessibilityLabel={`${itemName}の詳細`}
         style={styles.itemTipsButton}
         onPress={(event) => {
           event.stopPropagation()
@@ -548,6 +624,7 @@ export default function EquipmentScreenPage() {
     DEFAULT_EQUIPMENT_INVENTORY_FILTER,
   )
   const [isFilterSheetVisible, setIsFilterSheetVisible] = useState(false)
+  const [expandedTemplateIds, setExpandedTemplateIds] = useState<Set<string>>(new Set())
 
   useEffect(() => {
     if (!goblinId) {
@@ -595,9 +672,13 @@ export default function EquipmentScreenPage() {
     ),
     [groupedInventory, selectedInventoryFilter],
   )
+  const baseInventoryGroups = useMemo(
+    () => groupEquipmentVariantsByTemplate(groupedInventory, filteredInventoryGroups),
+    [filteredInventoryGroups, groupedInventory],
+  )
   const inventoryListEntries = useMemo(
-    () => buildInventoryListEntries(filteredInventoryGroups),
-    [filteredInventoryGroups],
+    () => buildInventoryListEntries(baseInventoryGroups, expandedTemplateIds),
+    [baseInventoryGroups, expandedTemplateIds],
   )
   const penaltyPercents = useMemo(() => {
     const multipliers = EquipmentService.getEquipmentPenaltyMultipliers(equippedItems)
@@ -632,6 +713,15 @@ export default function EquipmentScreenPage() {
         offset: headerHeightRef.current,
         animated: true,
       })
+    })
+  }, [])
+
+  const toggleTemplate = useCallback((templateId: string) => {
+    setExpandedTemplateIds((current) => {
+      const next = new Set(current)
+      if (next.has(templateId)) next.delete(templateId)
+      else next.add(templateId)
+      return next
     })
   }, [])
 
@@ -738,7 +828,13 @@ export default function EquipmentScreenPage() {
       <SafeAreaView style={styles.container} edges={['left', 'right', 'bottom']}>
         <View style={styles.stateContainer}>
           <Text style={styles.stateText}>ゴブリンが見つかりません</Text>
-          <TouchableOpacity style={styles.stateBackButton} onPress={() => router.back()}>
+          <TouchableOpacity
+            testID="equipment-back"
+            accessibilityRole="button"
+            accessibilityLabel="戻る"
+            style={styles.stateBackButton}
+            onPress={() => router.back()}
+          >
             <Text style={styles.stateBackButtonText}>戻る</Text>
           </TouchableOpacity>
         </View>
@@ -773,10 +869,21 @@ export default function EquipmentScreenPage() {
               )
             }
 
+            if (item.type === 'base') {
+              return (
+                <EquipmentBaseRow
+                  group={item.group}
+                  expanded={expandedTemplateIds.has(item.group.template.id)}
+                  onToggle={toggleTemplate}
+                />
+              )
+            }
+
             const { group } = item
             const isEquipped = group.isEquipped
             return (
               <EquipmentRow
+                testID={`inventory-equipment-${group.equipment.id}`}
                 eq={group.equipment}
                 template={group.template}
                 onPress={() => isEquipped ? handleUnequip(group.equipment) : handleEquip(group.equipment)}
@@ -785,6 +892,7 @@ export default function EquipmentScreenPage() {
                 count={group.count}
                 characterSkills={characterSkills}
                 penaltyPercent={isEquipped ? penaltyPercents.get(group.equipment.templateId) : undefined}
+                nested
               />
             )
           }}
@@ -807,6 +915,7 @@ export default function EquipmentScreenPage() {
                       return (
                         <EquipmentRow
                           key={eq.id}
+                          testID={`equipped-item-${eq.id}`}
                           eq={eq}
                           template={template}
                           onPress={() => handleUnequip(eq)}
@@ -992,6 +1101,9 @@ const styles = StyleSheet.create({
     borderColor: '#E5E7EB',
     backgroundColor: '#F9FAFB',
   },
+  itemRowNested: {
+    marginLeft: 12,
+  },
   itemSeparator: {
     height: 8,
   },
@@ -1006,6 +1118,41 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: '700',
     color: '#6B7280',
+  },
+  baseRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 12,
+    paddingVertical: 14,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#D1D5DB',
+    backgroundColor: '#FFFFFF',
+  },
+  baseRowInfo: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  baseRowName: {
+    flex: 1,
+    fontSize: 15,
+    fontWeight: '700',
+    color: '#1F2937',
+  },
+  baseRowCount: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#6B7280',
+  },
+  baseRowChevron: {
+    width: 24,
+    marginLeft: 10,
+    fontSize: 18,
+    fontWeight: '700',
+    textAlign: 'center',
+    color: '#4B5563',
   },
   itemRowHighlighted: {
     borderColor: '#93C5FD',

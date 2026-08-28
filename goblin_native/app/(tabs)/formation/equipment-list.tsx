@@ -161,6 +161,9 @@ export default function PartyEquipmentListScreen() {
             return (
               <TouchableOpacity
                 key={member.id}
+                testID={`party-equipment-member-${member.id}`}
+                accessibilityRole="button"
+                accessibilityLabel={`${member.name}、${t('ui.equipmentList.equippedCount', { equipped: equippedItems.length, max: maxSlots })}`}
                 style={styles.memberCard}
                 onPress={() => handleOpenGoblinEquipment(member.id)}
                 activeOpacity={0.85}

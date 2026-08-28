@@ -191,11 +191,21 @@ export default function EquipmentAutoSellScreen() {
   return (
     <SafeAreaView style={styles.container} edges={['top', 'left', 'right', 'bottom']}>
       <View style={styles.header}>
-        <Pressable onPress={handleBack} style={styles.headerButton}>
+        <Pressable
+          testID="auto-sell-back"
+          accessibilityRole="button"
+          accessibilityLabel={t('ui.common.back')}
+          onPress={handleBack}
+          style={styles.headerButton}
+        >
           <Text style={styles.backText}>‹ {t('ui.common.back')}</Text>
         </Pressable>
         <Text style={styles.headerTitle}>{t('ui.autoSell.title')}</Text>
         <Pressable
+          testID="auto-sell-save"
+          accessibilityRole="button"
+          accessibilityLabel={t('ui.common.save')}
+          accessibilityState={{ disabled: !dirty || saving, busy: saving }}
           onPress={() => void saveSettings()}
           style={styles.headerButton}
           disabled={!dirty || saving}
@@ -215,6 +225,8 @@ export default function EquipmentAutoSellScreen() {
             <Text style={styles.description}>{t('ui.autoSell.description')}</Text>
             <Text style={styles.warning}>{t('ui.autoSell.appliesFuture')}</Text>
             <TextInput
+              testID="auto-sell-search"
+              accessibilityLabel={t('ui.autoSell.searchPlaceholder')}
               value={query}
               onChangeText={setQuery}
               placeholder={t('ui.autoSell.searchPlaceholder')}
@@ -232,6 +244,10 @@ export default function EquipmentAutoSellScreen() {
                 {MODE_OPTIONS.map(mode => (
                   <TouchableOpacity
                     key={mode}
+                    testID={`auto-sell-${item.id}-${mode}`}
+                    accessibilityRole="radio"
+                    accessibilityLabel={`${getEquipmentLabel(item)}、${modeLabel(mode)}`}
+                    accessibilityState={{ checked: policy.mode === mode }}
                     style={[styles.modeButton, policy.mode === mode && styles.modeButtonSelected]}
                     onPress={() => selectMode(item, mode)}
                   >
@@ -256,15 +272,27 @@ export default function EquipmentAutoSellScreen() {
         animationType="slide"
         onRequestClose={() => setEditingTemplate(null)}
       >
-        <SafeAreaView style={styles.container} edges={['top', 'left', 'right', 'bottom']}>
+        <SafeAreaView accessibilityViewIsModal style={styles.container} edges={['top', 'left', 'right', 'bottom']}>
           <View style={styles.header}>
-            <Pressable onPress={() => setEditingTemplate(null)} style={styles.headerButton}>
+            <Pressable
+              testID="auto-sell-rule-cancel"
+              accessibilityRole="button"
+              accessibilityLabel={t('ui.common.cancel')}
+              onPress={() => setEditingTemplate(null)}
+              style={styles.headerButton}
+            >
               <Text style={styles.backText}>{t('ui.common.cancel')}</Text>
             </Pressable>
             <Text style={styles.headerTitle} numberOfLines={1}>
               {editingTemplate ? getEquipmentLabel(editingTemplate) : ''}
             </Text>
-            <Pressable onPress={saveRuleEditor} style={styles.headerButton}>
+            <Pressable
+              testID="auto-sell-rule-save"
+              accessibilityRole="button"
+              accessibilityLabel={t('ui.common.save')}
+              onPress={saveRuleEditor}
+              style={styles.headerButton}
+            >
               <Text style={styles.saveText}>{t('ui.common.save')}</Text>
             </Pressable>
           </View>
@@ -276,6 +304,10 @@ export default function EquipmentAutoSellScreen() {
                 {draftRules.map((_, index) => (
                   <TouchableOpacity
                     key={index}
+                    testID={`auto-sell-rule-${index}`}
+                    accessibilityRole="tab"
+                    accessibilityLabel={t('ui.autoSell.ruleNumber', { number: index + 1 })}
+                    accessibilityState={{ selected: activeRuleIndex === index }}
                     style={[styles.ruleTab, activeRuleIndex === index && styles.ruleTabSelected]}
                     onPress={() => setActiveRuleIndex(index)}
                   >
@@ -284,7 +316,13 @@ export default function EquipmentAutoSellScreen() {
                     </Text>
                   </TouchableOpacity>
                 ))}
-                <TouchableOpacity style={styles.addRuleButton} onPress={addRule}>
+                <TouchableOpacity
+                  testID="auto-sell-rule-add"
+                  accessibilityRole="button"
+                  accessibilityLabel={t('ui.autoSell.addRule')}
+                  style={styles.addRuleButton}
+                  onPress={addRule}
+                >
                   <Text style={styles.addRuleText}>＋ {t('ui.autoSell.addRule')}</Text>
                 </TouchableOpacity>
               </ScrollView>
@@ -293,6 +331,7 @@ export default function EquipmentAutoSellScreen() {
                 {EQUIPMENT_TITLE_DEFS.map(definition => (
                   <FilterChip
                     key={definition.id}
+                    testID={`auto-sell-title-${definition.id}`}
                     label={definition.id === 'none' ? t('ui.autoSell.noTitle') : getEquipmentTitleLabel(definition.id)}
                     selected={activeRule.titleIds.includes(definition.id)}
                     onPress={() => updateActiveRule('titleIds', values => (
@@ -304,6 +343,7 @@ export default function EquipmentAutoSellScreen() {
 
               <FilterSection title={t('ui.autoSell.prefixCondition')} hint={t('ui.autoSell.unselectedAny')}>
                 <FilterChip
+                  testID="auto-sell-prefix-none"
                   label={t('ui.autoSell.noMod')}
                   selected={activeRule.prefixModIds.includes('none')}
                   onPress={() => updateActiveRule('prefixModIds', values => toggleValue(values, 'none'))}
@@ -311,6 +351,7 @@ export default function EquipmentAutoSellScreen() {
                 {EQUIPMENT_MOD_DEFS.filter(definition => definition.slot === 'prefix').map(definition => (
                   <FilterChip
                     key={definition.id}
+                    testID={`auto-sell-prefix-${definition.id}`}
                     label={getStatLabel(definition.stat)}
                     selected={activeRule.prefixModIds.includes(definition.id)}
                     onPress={() => updateActiveRule('prefixModIds', values => (
@@ -321,6 +362,7 @@ export default function EquipmentAutoSellScreen() {
               </FilterSection>
 
               <TierSection
+                testIDPrefix="auto-sell-prefix-tier"
                 title={t('ui.autoSell.prefixTierCondition')}
                 selected={activeRule.prefixTiers}
                 onToggle={tier => updateActiveRule('prefixTiers', values => toggleValue(values, tier))}
@@ -329,6 +371,7 @@ export default function EquipmentAutoSellScreen() {
 
               <FilterSection title={t('ui.autoSell.suffixCondition')} hint={t('ui.autoSell.unselectedAny')}>
                 <FilterChip
+                  testID="auto-sell-suffix-none"
                   label={t('ui.autoSell.noMod')}
                   selected={activeRule.suffixModIds.includes('none')}
                   onPress={() => updateActiveRule('suffixModIds', values => toggleValue(values, 'none'))}
@@ -336,6 +379,7 @@ export default function EquipmentAutoSellScreen() {
                 {EQUIPMENT_MOD_DEFS.filter(definition => definition.slot === 'suffix').map(definition => (
                   <FilterChip
                     key={definition.id}
+                    testID={`auto-sell-suffix-${definition.id}`}
                     label={getStatLabel(definition.stat)}
                     selected={activeRule.suffixModIds.includes(definition.id)}
                     onPress={() => updateActiveRule('suffixModIds', values => (
@@ -346,13 +390,20 @@ export default function EquipmentAutoSellScreen() {
               </FilterSection>
 
               <TierSection
+                testIDPrefix="auto-sell-suffix-tier"
                 title={t('ui.autoSell.suffixTierCondition')}
                 selected={activeRule.suffixTiers}
                 onToggle={tier => updateActiveRule('suffixTiers', values => toggleValue(values, tier))}
                 hint={t('ui.autoSell.unselectedAny')}
               />
 
-              <TouchableOpacity style={styles.removeRuleButton} onPress={removeActiveRule}>
+              <TouchableOpacity
+                testID="auto-sell-rule-remove"
+                accessibilityRole="button"
+                accessibilityLabel={t('ui.autoSell.removeRule')}
+                style={styles.removeRuleButton}
+                onPress={removeActiveRule}
+              >
                 <Text style={styles.removeRuleText}>{t('ui.autoSell.removeRule')}</Text>
               </TouchableOpacity>
             </ScrollView>
@@ -384,11 +435,13 @@ function FilterSection({
 }
 
 function TierSection({
+  testIDPrefix,
   title,
   selected,
   onToggle,
   hint,
 }: {
+  testIDPrefix: string
   title: string
   selected: EquipmentModTier[]
   onToggle: (tier: EquipmentModTier) => void
@@ -399,6 +452,7 @@ function TierSection({
       {MOD_TIERS.map(tier => (
         <FilterChip
           key={tier}
+          testID={`${testIDPrefix}-${tier}`}
           label={`T${tier}`}
           selected={selected.includes(tier)}
           onPress={() => onToggle(tier)}
@@ -408,9 +462,23 @@ function TierSection({
   )
 }
 
-function FilterChip({ label, selected, onPress }: { label: string; selected: boolean; onPress: () => void }) {
+function FilterChip({
+  testID,
+  label,
+  selected,
+  onPress,
+}: {
+  testID: string
+  label: string
+  selected: boolean
+  onPress: () => void
+}) {
   return (
     <TouchableOpacity
+      testID={testID}
+      accessibilityRole="checkbox"
+      accessibilityLabel={label}
+      accessibilityState={{ checked: selected }}
       style={[styles.filterChip, selected && styles.filterChipSelected]}
       onPress={onPress}
     >

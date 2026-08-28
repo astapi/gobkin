@@ -22,7 +22,14 @@ export function TutorialFinale() {
       <View style={styles.card}>
         <Text style={styles.body}>{t('ui.tutorial.finale.body')}</Text>
         <Text style={styles.lead}>{t('ui.tutorial.finale.lead')}</Text>
-        <TouchableOpacity style={styles.button} onPress={handleStart} activeOpacity={0.85}>
+        <TouchableOpacity
+          testID="tutorial-finale-start"
+          accessibilityRole="button"
+          accessibilityLabel={t('ui.tutorial.finale.start')}
+          style={styles.button}
+          onPress={handleStart}
+          activeOpacity={0.85}
+        >
           <Text style={styles.buttonText}>{t('ui.tutorial.finale.start')}</Text>
         </TouchableOpacity>
       </View>

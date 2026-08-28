@@ -131,7 +131,13 @@ export default function RootLayout() {
       <SafeAreaProvider>
         <View style={styles.loadingContainer}>
           <Text style={styles.errorText}>DB init error: {error}</Text>
-          <Pressable style={styles.resetButton} onPress={() => void resetAndReinitialize()}>
+          <Pressable
+            testID="root-reset-database"
+            accessibilityRole="button"
+            accessibilityLabel={t('ui.root.resetDatabase')}
+            style={styles.resetButton}
+            onPress={() => void resetAndReinitialize()}
+          >
             <Text style={styles.resetButtonText}>{t('ui.root.resetDatabase')}</Text>
           </Pressable>
         </View>
@@ -274,12 +280,7 @@ export default function RootLayout() {
                 <Stack.Screen
                   name="goblin"
                   options={{
-                    headerShown: true,
-                    headerStyle: { backgroundColor: '#FFFFFF' },
-                    headerTitleStyle: { color: '#1F2937', fontWeight: 'bold' },
-                    headerTintColor: '#6B7280',
-                    headerBackTitle: t('ui.common.back'),
-                    title: t('ui.root.goblinDetail'),
+                    headerShown: false,
                   }}
                 />
                 <Stack.Screen

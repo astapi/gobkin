@@ -161,6 +161,13 @@ export default function BaseUpgradeScreen() {
                 </View>
 
                 <TouchableOpacity
+                  testID="base-rank-up"
+                  accessibilityRole="button"
+                  accessibilityLabel={t('ui.baseUpgrade.rankUpButton', { nextRank: nextRankInfo.nextRank })}
+                  accessibilityState={{
+                    disabled: !nextRankInfo.isCaptured || gold < nextRankInfo.upgradeCost || isRankingUp,
+                    busy: isRankingUp,
+                  }}
                   style={[
                     styles.primaryButton,
                     (!nextRankInfo.isCaptured || gold < nextRankInfo.upgradeCost || isRankingUp) && styles.primaryButtonDisabled,

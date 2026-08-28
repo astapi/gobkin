@@ -29,9 +29,23 @@ type SortKey = 'party' | 'hp'
 type RaceFilter = 'all' | 'pure' | GoblinRaceId
 type JobFilter = 'all' | 'none' | GoblinJob
 
-function FilterChip({ label, active, onPress }: { label: string; active: boolean; onPress: () => void }) {
+function FilterChip({
+  testID,
+  label,
+  active,
+  onPress,
+}: {
+  testID: string
+  label: string
+  active: boolean
+  onPress: () => void
+}) {
   return (
     <TouchableOpacity
+      testID={testID}
+      accessibilityRole="radio"
+      accessibilityLabel={label}
+      accessibilityState={{ checked: active }}
       style={[styles.filterChip, active && styles.filterChipActive]}
       onPress={onPress}
     >
@@ -269,6 +283,9 @@ export default function GoblinListScreen() {
 
   const renderRightActions = useCallback((goblin: Goblin) => (
     <TouchableOpacity
+      testID={`banish-goblin-${goblin.id}`}
+      accessibilityRole="button"
+      accessibilityLabel={`${goblin.name}を${t('ui.goblinList.banish')}`}
       style={styles.swipeDeleteAction}
       activeOpacity={0.8}
       onPress={() => handleDeleteGoblin(goblin)}
@@ -352,12 +369,11 @@ export default function GoblinListScreen() {
 
   const renderGoblinItem = useCallback(({ item: goblin, index }: { item: Goblin; index: number }) => {
     const card = (
-      <Pressable onPress={() => handleGoblinPress(goblin)}>
-        <GoblinCard
-          goblin={goblin}
-          assignedPartyName={partyNameByGoblinId.get(goblin.id)}
-        />
-      </Pressable>
+      <GoblinCard
+        goblin={goblin}
+        assignedPartyName={partyNameByGoblinId.get(goblin.id)}
+        onPress={() => handleGoblinPress(goblin)}
+      />
     )
 
     return (
@@ -400,6 +416,10 @@ export default function GoblinListScreen() {
             </View>
           </View>
           <TouchableOpacity
+            testID="pending-goblins-dismiss-all"
+            accessibilityRole="button"
+            accessibilityLabel={t('ui.goblinList.dismissAll')}
+            accessibilityState={{ disabled: isBulkDismissingPending, busy: isBulkDismissingPending }}
             style={[styles.bulkDismissButton, isBulkDismissingPending && styles.bulkDismissButtonDisabled]}
             onPress={handleDismissAllPending}
             disabled={isBulkDismissingPending}
@@ -421,6 +441,9 @@ export default function GoblinListScreen() {
             <View key={goblin.id} style={styles.pendingCard}>
               <View style={styles.pendingRow}>
                 <TouchableOpacity
+                  testID={`pending-goblin-${goblin.id}`}
+                  accessibilityRole="button"
+                  accessibilityLabel={`${goblin.name}、${getRaceLabel(goblin.raceId ?? goblin.race)}、${t('ui.common.levelShort')}${goblin.level}`}
                   style={styles.pendingPressable}
                   activeOpacity={0.8}
                   onPress={() => handlePendingGoblinPress(goblin)}
@@ -469,6 +492,9 @@ export default function GoblinListScreen() {
                 </TouchableOpacity>
                 {hasCapacity && (
                   <TouchableOpacity
+                    testID={`pending-goblin-add-${goblin.id}`}
+                    accessibilityRole="button"
+                    accessibilityLabel={`${goblin.name}を${t('ui.goblinList.add')}`}
                     style={styles.addButton}
                     onPress={() => handleAddPending(goblin)}
                   >
@@ -476,6 +502,9 @@ export default function GoblinListScreen() {
                   </TouchableOpacity>
                 )}
                 <TouchableOpacity
+                  testID={`pending-goblin-dismiss-${goblin.id}`}
+                  accessibilityRole="button"
+                  accessibilityLabel={`${goblin.name}を${t('ui.goblinList.dismiss')}`}
                   style={styles.dismissButton}
                   onPress={() => handleDismissPending(goblin)}
                 >
@@ -524,6 +553,10 @@ export default function GoblinListScreen() {
             {(['party', 'hp'] as const).map((key) => (
               <TouchableOpacity
                 key={key}
+                testID={`goblin-sort-${key}`}
+                accessibilityRole="radio"
+                accessibilityLabel={t(`ui.goblinList.sort.${key}`)}
+                accessibilityState={{ checked: sortKey === key }}
                 style={[styles.sortButton, sortKey === key && styles.sortButtonActive]}
                 onPress={() => {
                   closeOpenSwipeable()
@@ -537,6 +570,9 @@ export default function GoblinListScreen() {
             ))}
           </View>
           <TouchableOpacity
+            testID="goblin-filter-open"
+            accessibilityRole="button"
+            accessibilityLabel={t('ui.goblinList.filter.trigger')}
             style={[styles.filterTriggerButton, activeFilterCount > 0 && styles.filterTriggerButtonActive]}
             onPress={() => {
               closeOpenSwipeable()
@@ -562,12 +598,25 @@ export default function GoblinListScreen() {
         transparent
         onRequestClose={() => setIsFilterModalVisible(false)}
       >
-        <Pressable style={styles.modalBackdrop} onPress={() => setIsFilterModalVisible(false)}>
-          <Pressable style={styles.modalSheet} onPress={(e) => e.stopPropagation()}>
+        <Pressable
+          style={styles.modalBackdrop}
+          onPress={() => setIsFilterModalVisible(false)}
+          accessible={false}
+        >
+          <Pressable
+            accessibilityViewIsModal
+            accessible={false}
+            style={styles.modalSheet}
+            onPress={(e) => e.stopPropagation()}
+          >
             <View style={styles.modalHandle} />
             <View style={styles.modalHeader}>
               <Text style={styles.modalTitle}>{t('ui.goblinList.filter.title')}</Text>
               <TouchableOpacity
+                testID="goblin-filter-reset"
+                accessibilityRole="button"
+                accessibilityLabel={t('ui.goblinList.filter.reset')}
+                accessibilityState={{ disabled: activeFilterCount === 0 }}
                 onPress={() => {
                   setRaceFilter('all')
                   setJobFilter('all')
@@ -585,12 +634,14 @@ export default function GoblinListScreen() {
               <Text style={styles.modalSectionTitle}>{t('ui.goblinList.filter.raceSection')}</Text>
               <View style={styles.modalChipWrap}>
                 <FilterChip
+                  testID="goblin-filter-race-all"
                   label={t('ui.goblinList.filter.allRaces')}
                   active={raceFilter === 'all'}
                   onPress={() => setRaceFilter('all')}
                 />
                 {hasPureGoblin && (
                   <FilterChip
+                    testID="goblin-filter-race-pure"
                     label={t('ui.goblinList.filter.pureGoblin')}
                     active={raceFilter === 'pure'}
                     onPress={() => setRaceFilter('pure')}
@@ -599,6 +650,7 @@ export default function GoblinListScreen() {
                 {availableRaceIds.map((raceId) => (
                   <FilterChip
                     key={raceId}
+                    testID={`goblin-filter-race-${raceId}`}
                     label={getRaceLabel(raceId)}
                     active={raceFilter === raceId}
                     onPress={() => setRaceFilter(raceId)}
@@ -612,12 +664,14 @@ export default function GoblinListScreen() {
                   </Text>
                   <View style={styles.modalChipWrap}>
                     <FilterChip
+                      testID="goblin-filter-job-all"
                       label={t('ui.goblinList.filter.allJobs')}
                       active={jobFilter === 'all'}
                       onPress={() => setJobFilter('all')}
                     />
                     {hasUnemployedPureGoblin && (
                       <FilterChip
+                        testID="goblin-filter-job-none"
                         label={t('ui.goblinList.filter.noJob')}
                         active={jobFilter === 'none'}
                         onPress={() => setJobFilter('none')}
@@ -626,6 +680,7 @@ export default function GoblinListScreen() {
                     {availableJobs.map((job) => (
                       <FilterChip
                         key={job}
+                        testID={`goblin-filter-job-${job}`}
                         label={getGoblinJobLabel(job)}
                         active={jobFilter === job}
                         onPress={() => setJobFilter(job)}
@@ -636,6 +691,9 @@ export default function GoblinListScreen() {
               )}
             </ScrollView>
             <TouchableOpacity
+              testID="goblin-filter-apply"
+              accessibilityRole="button"
+              accessibilityLabel={t('ui.goblinList.filter.applyWithCount', { count: sortedGoblins.length })}
               style={styles.modalApplyButton}
               onPress={() => setIsFilterModalVisible(false)}
             >

@@ -1,6 +1,6 @@
 # AIエージェント プレイ手順書
 
-Codexなどの新しいセッションが、AIエージェントAPIを使って既存セーブを継続プレイするための運用手順です。APIの型や同期方式の詳細は [`ai_agent_api.md`](./ai_agent_api.md) を参照してください。
+Codexなどの新しいセッションが、AIエージェントAPIを使って既存セーブを継続プレイするための運用手順です。APIの型や同期方式の詳細は [`ai_agent_api.md`](./ai_agent_api.md)、agent-deviceで通常UIを操作する場合は [`agent_device_ui_guide.md`](./agent_device_ui_guide.md) を参照してください。
 
 ## 重要事項
 
@@ -200,6 +200,8 @@ curl -sS http://127.0.0.1:8787/v1/action-log
 - セーブデータの初期化、インポート、エクスポート
 
 対象外の操作が進行に必要な場合は、アプリの通常UIを操作します。APIで無理に代替せず、UI操作後に `/v1/observation` を再取得して同期を確認します。
+
+通常UIは固定 `testID` を使って操作できます。座標タップや翻訳済みラベルへの依存を避け、具体的なIDと操作例は [`agent_device_ui_guide.md`](./agent_device_ui_guide.md) を参照してください。
 
 ## 安全なプレイ方針
 

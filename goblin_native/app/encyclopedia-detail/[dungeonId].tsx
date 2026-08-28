@@ -38,6 +38,9 @@ export default function EncyclopediaMonsterListScreen() {
           return (
             <TouchableOpacity
               key={entry.enemy.id}
+              testID={`encyclopedia-enemy-${entry.enemy.id}`}
+              accessibilityRole="button"
+              accessibilityLabel={`${getEnemyName(entry.enemy)}、${entry.isBoss ? t('ui.encyclopedia.boss') : t('ui.encyclopedia.normal')}、Lv.${entry.enemy.level}`}
               style={styles.enemyCard}
               activeOpacity={0.8}
               onPress={() => router.push(`/encyclopedia-detail/${dungeon.id}/${entry.enemy.id}`)}

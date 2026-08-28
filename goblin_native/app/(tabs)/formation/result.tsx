@@ -281,7 +281,12 @@ export default function ExpeditionResultScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.navBar}>
-        <TouchableOpacity onPress={() => router.back()}>
+        <TouchableOpacity
+          testID="expedition-result-back"
+          accessibilityRole="button"
+          accessibilityLabel={t('ui.common.back')}
+          onPress={() => router.back()}
+        >
           <Text style={styles.navBack}>← {t('ui.common.back')}</Text>
         </TouchableOpacity>
         <Text style={styles.navTitle}>{t('ui.result.title')}</Text>
@@ -370,6 +375,10 @@ export default function ExpeditionResultScreen() {
         {acquiredFactors.length > 0 && (
           <View ref={factorSectionRef} style={styles.section}>
             <TouchableOpacity
+              testID="expedition-result-factors"
+              accessibilityRole="button"
+              accessibilityLabel={t('ui.result.factorsAcquired')}
+              accessibilityState={{ disabled: !isLearnFactorStep }}
               activeOpacity={isLearnFactorStep ? 0.7 : 1}
               onPress={handleFactorAck}
               disabled={!isLearnFactorStep}
@@ -400,6 +409,10 @@ export default function ExpeditionResultScreen() {
         {nextAreaName && isSuccess && showUnlockNotice && (
           <View ref={unlockSectionRef} style={styles.section}>
             <TouchableOpacity
+              testID="expedition-result-unlock"
+              accessibilityRole="button"
+              accessibilityLabel={t('ui.result.unlockedArea', { name: nextAreaName })}
+              accessibilityState={{ disabled: !isLearnUnlockStep }}
               activeOpacity={isLearnUnlockStep ? 0.7 : 1}
               onPress={handleUnlockAck}
               disabled={!isLearnUnlockStep}
@@ -415,6 +428,9 @@ export default function ExpeditionResultScreen() {
             {unlockedStories.map(story => (
               <TouchableOpacity
                 key={story.id}
+                testID={`expedition-result-story-${story.id}`}
+                accessibilityRole="button"
+                accessibilityLabel={story.title}
                 style={styles.storyButton}
                 onPress={() => router.push({ pathname: '/(tabs)/story/reader', params: { storyId: story.id } })}
               >
@@ -426,7 +442,13 @@ export default function ExpeditionResultScreen() {
         )}
 
         <View ref={menuButtonRef} style={styles.bottomSection}>
-          <TouchableOpacity style={styles.menuButton} onPress={handleBackToList}>
+          <TouchableOpacity
+            testID="expedition-result-menu"
+            accessibilityRole="button"
+            accessibilityLabel={t('ui.result.backToMenu')}
+            style={styles.menuButton}
+            onPress={handleBackToList}
+          >
             <Text style={styles.menuButtonText}>{t('ui.result.backToMenu')}</Text>
           </TouchableOpacity>
         </View>

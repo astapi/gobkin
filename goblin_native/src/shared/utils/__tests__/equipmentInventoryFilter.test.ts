@@ -56,24 +56,24 @@ describe('equipmentInventoryFilter', () => {
     )).toBe(true)
   })
 
-  it('カテゴリと称号を組み合わせて絞り込む', () => {
+  it('カテゴリと複数称号を組み合わせて絞り込む', () => {
     const equipment = createEquipment({ titleId: 'legendary' })
     const target = { equipment, template }
 
     expect(matchesEquipmentInventoryFilter(
       target,
-      createFilter({ category: 'weapon', titleId: 'legendary' }),
+      createFilter({ category: 'weapon', titleIds: ['masterwork', 'legendary'] }),
     )).toBe(true)
     expect(matchesEquipmentInventoryFilter(
       target,
-      createFilter({ category: 'armor', titleId: 'legendary' }),
+      createFilter({ category: 'armor', titleIds: ['masterwork', 'legendary'] }),
     )).toBe(false)
   })
 
   it('未設定の称号を称号なしとして扱う', () => {
     expect(matchesEquipmentInventoryFilter(
       { equipment: createEquipment(), template },
-      createFilter({ titleId: 'none' }),
+      createFilter({ titleIds: ['none'] }),
     )).toBe(true)
   })
 
@@ -90,7 +90,7 @@ describe('equipmentInventoryFilter', () => {
       nameQuery: 'sword',
       modCount: 1,
       category: 'weapon',
-      titleId: 'none',
+      titleIds: ['none', 'magical'],
     }))).toBe(4)
   })
 })

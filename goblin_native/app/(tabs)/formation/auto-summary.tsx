@@ -31,7 +31,13 @@ export default function AutoExpeditionSummaryScreen() {
   return (
     <SafeAreaView style={styles.container} edges={['top', 'left', 'right', 'bottom']}>
       <View style={styles.header}>
-        <Pressable style={styles.backButton} onPress={() => router.back()}>
+        <Pressable
+          testID="auto-expedition-summary-back"
+          accessibilityRole="button"
+          accessibilityLabel={t('ui.formation.common.back')}
+          style={styles.backButton}
+          onPress={() => router.back()}
+        >
           <Text style={styles.backButtonText}>‹ {t('ui.formation.common.back')}</Text>
         </Pressable>
         <Text style={styles.headerTitle}>{t('ui.formation.autoSummary.title')}</Text>

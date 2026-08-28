@@ -317,7 +317,7 @@ function ShopItemDetail({
   return (
     <Modal visible={visible} animationType="fade" transparent onRequestClose={onClose}>
       <View style={styles.overlayBackground}>
-        <View style={styles.detailCard}>
+        <View accessibilityViewIsModal style={styles.detailCard}>
           <ScrollView
             style={styles.detailScroll}
             contentContainerStyle={styles.detailScrollContent}
@@ -355,6 +355,10 @@ function ShopItemDetail({
 
           <View style={styles.detailActions}>
             <TouchableOpacity
+              testID="shop-detail-action"
+              accessibilityRole="button"
+              accessibilityLabel={selected.mode === 'buy' ? t('ui.shop.buyTab') : t('ui.shop.sellTab')}
+              accessibilityState={{ disabled, busy: processing }}
               style={[
                 selected.mode === 'buy' ? styles.buyButton : styles.sellDetailButton,
                 disabled && styles.buttonDisabled,
@@ -370,7 +374,13 @@ function ShopItemDetail({
                     : t('ui.shop.sellPrice', { price })}
               </Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.detailCloseButton} onPress={onClose}>
+            <TouchableOpacity
+              testID="shop-detail-close"
+              accessibilityRole="button"
+              accessibilityLabel={t('ui.common.close')}
+              style={styles.detailCloseButton}
+              onPress={onClose}
+            >
               <Text style={styles.detailCloseButtonText}>{t('ui.common.close')}</Text>
             </TouchableOpacity>
           </View>
@@ -401,6 +411,10 @@ function ShopEquipmentRow({
 
   return (
     <TouchableOpacity
+      testID={`shop-equipment-${item?.id ?? template.id}`}
+      accessibilityRole="button"
+      accessibilityLabel={`${name}、${formatPrice(price)}`}
+      accessibilityState={{ disabled }}
       style={[styles.itemRow, disabled && styles.itemRowDisabled]}
       onPress={onPress}
       activeOpacity={0.85}
@@ -419,6 +433,9 @@ function ShopEquipmentRow({
         </View>
       </View>
       <TouchableOpacity
+        testID={`shop-equipment-${item?.id ?? template.id}-detail`}
+        accessibilityRole="button"
+        accessibilityLabel={`${name}の詳細`}
         style={styles.itemTipsButton}
         onPress={(event) => {
           event.stopPropagation()
@@ -609,6 +626,10 @@ export default function EquipmentShopScreen() {
               <>
                 <View style={styles.segment}>
                   <TouchableOpacity
+                    testID="shop-mode-buy"
+                    accessibilityRole="radio"
+                    accessibilityLabel={t('ui.shop.buyTab')}
+                    accessibilityState={{ checked: mode === 'buy' }}
                     style={[styles.segmentButton, mode === 'buy' && styles.segmentButtonActive]}
                     onPress={() => setMode('buy')}
                   >
@@ -617,6 +638,10 @@ export default function EquipmentShopScreen() {
                     </Text>
                   </TouchableOpacity>
                   <TouchableOpacity
+                    testID="shop-mode-sell"
+                    accessibilityRole="radio"
+                    accessibilityLabel={t('ui.shop.sellTab')}
+                    accessibilityState={{ checked: mode === 'sell' }}
                     style={[styles.segmentButton, mode === 'sell' && styles.segmentButtonActive]}
                     onPress={() => setMode('sell')}
                   >
@@ -631,6 +656,9 @@ export default function EquipmentShopScreen() {
                     {mode === 'buy' ? t('ui.shop.buyTab') : t('ui.shop.sellTab')}
                   </Text>
                   <TouchableOpacity
+                    testID="shop-filter-open"
+                    accessibilityRole="button"
+                    accessibilityLabel={`絞り込み、${selectedFilter.label}`}
                     style={styles.inventoryFilterButton}
                     activeOpacity={0.8}
                     onPress={() => setIsFilterSheetVisible(true)}
@@ -703,14 +731,20 @@ export default function EquipmentShopScreen() {
       >
         <View style={styles.filterSheetOverlay}>
           <TouchableOpacity
+            accessible={false}
             style={styles.filterSheetBackdrop}
             activeOpacity={1}
             onPress={() => setIsFilterSheetVisible(false)}
           />
-          <View style={[styles.filterSheet, { paddingBottom: insets.bottom + 16 }]}>
+          <View accessibilityViewIsModal style={[styles.filterSheet, { paddingBottom: insets.bottom + 16 }]}>
             <View style={styles.filterSheetHeader}>
               <Text style={styles.filterSheetTitle}>絞り込み</Text>
-              <TouchableOpacity onPress={() => setIsFilterSheetVisible(false)}>
+              <TouchableOpacity
+                testID="shop-filter-close"
+                accessibilityRole="button"
+                accessibilityLabel="閉じる"
+                onPress={() => setIsFilterSheetVisible(false)}
+              >
                 <Text style={styles.filterSheetClose}>閉じる</Text>
               </TouchableOpacity>
             </View>
@@ -725,6 +759,10 @@ export default function EquipmentShopScreen() {
                 return (
                   <TouchableOpacity
                     key={`${option.type}-${option.key}`}
+                    testID={`shop-filter-${option.type}-${option.key}`}
+                    accessibilityRole="radio"
+                    accessibilityLabel={option.label}
+                    accessibilityState={{ checked: isSelected }}
                     style={[styles.filterOption, isSelected && styles.filterOptionSelected]}
                     onPress={() => {
                       setSelectedFilter(option)
