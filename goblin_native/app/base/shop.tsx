@@ -14,6 +14,11 @@ import { EquipmentModService } from '@/core/services/EquipmentModService'
 import { EquipmentService } from '@/core/services/EquipmentService'
 import { EquipmentSaleService } from '@/core/services/EquipmentSaleService'
 import type { EquipmentCategory, EquipmentInstance, EquipmentTemplate, WeaponSubCategory } from '@/shared/types'
+import {
+  groupEquipmentVariantsByTemplate,
+  type EquipmentInventoryBaseGroup,
+} from '@/shared/utils/equipmentInventoryGrouping'
+import { promptEquipmentAutoSell } from '@/presentation/utils/promptEquipmentAutoSell'
 
 const SHOP_UNLOCK_RANK = 2
 
@@ -95,7 +100,7 @@ const ALL_SHOP_FILTER: ShopFilter = { type: 'all', key: 'all', label: 'すべて
 
 type InventoryGroup = {
   key: string
-  item: EquipmentInstance
+  equipment: EquipmentInstance
   template: EquipmentTemplate
   count: number
 }
@@ -110,6 +115,11 @@ type ShopListEntry =
       type: 'buyItem'
       key: string
       template: EquipmentTemplate
+    }
+  | {
+      type: 'sellBase'
+      key: string
+      group: EquipmentInventoryBaseGroup<InventoryGroup>
     }
   | {
       type: 'sellItem'
@@ -175,7 +185,7 @@ function sortInventoryGroups(items: EquipmentInstance[]): InventoryGroup[] {
       existing.count += 1
       continue
     }
-    grouped.set(key, { key, item, template, count: 1 })
+    grouped.set(key, { key, equipment: item, template, count: 1 })
   }
 
   const groups = Array.from(grouped.values())
@@ -186,7 +196,7 @@ function sortInventoryGroups(items: EquipmentInstance[]): InventoryGroup[] {
     if (catDiff !== 0) return catDiff
     const orderDiff = (templateOrder.get(a.template.id) ?? 0) - (templateOrder.get(b.template.id) ?? 0)
     if (orderDiff !== 0) return orderDiff
-    return getSellPrice(a.item) - getSellPrice(b.item)
+    return getSellPrice(a.equipment) - getSellPrice(b.equipment)
   })
 }
 
@@ -262,7 +272,10 @@ function buildBuyListEntries(templates: EquipmentTemplate[]): ShopListEntry[] {
   return entries
 }
 
-function buildSellListEntries(groups: InventoryGroup[]): ShopListEntry[] {
+function buildSellListEntries(
+  groups: EquipmentInventoryBaseGroup<InventoryGroup>[],
+  expandedTemplateIds: ReadonlySet<string>,
+): ShopListEntry[] {
   const entries: ShopListEntry[] = []
   let currentSectionKey: string | null = null
 
@@ -277,11 +290,16 @@ function buildSellListEntries(groups: InventoryGroup[]): ShopListEntry[] {
       currentSectionKey = sectionKey
     }
 
-    entries.push({
-      type: 'sellItem',
-      key: group.key,
-      group,
-    })
+    entries.push({ type: 'sellBase', key: group.key, group })
+    if (expandedTemplateIds.has(group.template.id)) {
+      for (const variant of group.variants) {
+        entries.push({
+          type: 'sellItem',
+          key: `variant::${variant.key}`,
+          group: variant,
+        })
+      }
+    }
   }
 
   return entries
@@ -308,11 +326,11 @@ function ShopItemDetail({
   const template = selected.mode === 'buy' ? selected.template : selected.group.template
   const name = selected.mode === 'buy'
     ? getEquipmentLabel(template)
-    : getEquipmentDisplayName(selected.group.item, template)
+    : getEquipmentDisplayName(selected.group.equipment, template)
   const skills = template.grantedSkills ?? []
   const bonuses = selected.mode === 'buy'
     ? template.statBonuses
-    : EquipmentService.calculateEquipmentBonuses([selected.group.item])
+    : EquipmentService.calculateEquipmentBonuses([selected.group.equipment])
 
   return (
     <Modal visible={visible} animationType="fade" transparent onRequestClose={onClose}>
@@ -390,6 +408,39 @@ function ShopItemDetail({
   )
 }
 
+function ShopEquipmentBaseRow({
+  group,
+  expanded,
+  onToggle,
+}: {
+  group: EquipmentInventoryBaseGroup<InventoryGroup>
+  expanded: boolean
+  onToggle: (templateId: string) => void
+}) {
+  const name = getEquipmentLabel(group.template)
+  const countLabel = group.matchedCount === group.totalCount
+    ? `×${group.totalCount}`
+    : `${group.matchedCount}/${group.totalCount}`
+
+  return (
+    <TouchableOpacity
+      testID={`shop-sell-equipment-group-${group.template.id}`}
+      accessibilityRole="button"
+      accessibilityState={{ expanded }}
+      accessibilityLabel={`${name} ${countLabel}`}
+      style={styles.baseRow}
+      onPress={() => onToggle(group.template.id)}
+      activeOpacity={0.85}
+    >
+      <View style={styles.baseRowInfo}>
+        <Text style={styles.baseRowName} numberOfLines={1}>{name}</Text>
+        <Text style={styles.baseRowCount}>{countLabel}</Text>
+      </View>
+      <Text style={styles.baseRowChevron}>{expanded ? '−' : '＋'}</Text>
+    </TouchableOpacity>
+  )
+}
+
 function ShopEquipmentRow({
   name,
   template,
@@ -415,7 +466,7 @@ function ShopEquipmentRow({
       accessibilityRole="button"
       accessibilityLabel={`${name}、${formatPrice(price)}`}
       accessibilityState={{ disabled }}
-      style={[styles.itemRow, disabled && styles.itemRowDisabled]}
+      style={[styles.itemRow, item && styles.variantItemRow, disabled && styles.itemRowDisabled]}
       onPress={onPress}
       activeOpacity={0.85}
     >
@@ -462,6 +513,7 @@ export default function EquipmentShopScreen() {
   const [selectedItem, setSelectedItem] = useState<SelectedShopItem | null>(null)
   const [selectedFilter, setSelectedFilter] = useState<ShopFilter>(ALL_SHOP_FILTER)
   const [isFilterSheetVisible, setIsFilterSheetVisible] = useState(false)
+  const [expandedTemplateIds, setExpandedTemplateIds] = useState<Set<string>>(new Set())
 
   const shopItems = useMemo(() => sortTemplates(getShopEquipment(rank)), [rank])
   const sellGroups = useMemo(() => sortInventoryGroups(inventory), [inventory])
@@ -482,11 +534,15 @@ export default function EquipmentShopScreen() {
     () => sellGroups.filter((group) => matchesShopFilter(group.template, selectedFilter)),
     [sellGroups, selectedFilter],
   )
+  const sellBaseGroups = useMemo(
+    () => groupEquipmentVariantsByTemplate(sellGroups, filteredSellGroups),
+    [filteredSellGroups, sellGroups],
+  )
   const listEntries = useMemo(
     () => mode === 'buy'
       ? buildBuyListEntries(filteredShopItems)
-      : buildSellListEntries(filteredSellGroups),
-    [filteredShopItems, filteredSellGroups, mode],
+      : buildSellListEntries(sellBaseGroups, expandedTemplateIds),
+    [expandedTemplateIds, filteredShopItems, mode, sellBaseGroups],
   )
   const listBottomSpacerHeight = useMemo(
     () => insets.bottom + 96,
@@ -511,6 +567,15 @@ export default function EquipmentShopScreen() {
   const refreshInventory = useCallback(async () => {
     const unequipped = await equipmentRepository.getUnequipped()
     setInventory(unequipped)
+  }, [])
+
+  const toggleTemplate = useCallback((templateId: string) => {
+    setExpandedTemplateIds((current) => {
+      const next = new Set(current)
+      if (next.has(templateId)) next.delete(templateId)
+      else next.add(templateId)
+      return next
+    })
   }, [])
 
   useEffect(() => {
@@ -584,6 +649,7 @@ export default function EquipmentShopScreen() {
                 await addGold(price)
                 await refreshInventory()
                 setSelectedItem(null)
+                await promptEquipmentAutoSell(item, template, t)
               } catch (error) {
                 console.error('[EquipmentShop] Failed to sell item', error)
                 Alert.alert(t('ui.shop.failureTitle'), t('ui.shop.sellFailureBody'))
@@ -701,17 +767,27 @@ export default function EquipmentShopScreen() {
             )
           }
 
-          const price = getSellPrice(item.group.item)
+          if (item.type === 'sellBase') {
+            return (
+              <ShopEquipmentBaseRow
+                group={item.group}
+                expanded={expandedTemplateIds.has(item.group.template.id)}
+                onToggle={toggleTemplate}
+              />
+            )
+          }
+
+          const price = getSellPrice(item.group.equipment)
           const name = item.group.count > 1
-            ? `x${item.group.count} ${getEquipmentDisplayName(item.group.item, item.group.template)}`
-            : getEquipmentDisplayName(item.group.item, item.group.template)
+            ? `x${item.group.count} ${getEquipmentDisplayName(item.group.equipment, item.group.template)}`
+            : getEquipmentDisplayName(item.group.equipment, item.group.template)
           return (
             <ShopEquipmentRow
               name={name}
               template={item.group.template}
-              item={item.group.item}
+              item={item.group.equipment}
               price={price}
-              disabled={processingId === item.group.item.id}
+              disabled={processingId === item.group.equipment.id}
               onPress={() => setSelectedItem({ mode: 'sell', group: item.group })}
               onShowDetail={() => setSelectedItem({ mode: 'sell', group: item.group })}
             />
@@ -787,20 +863,20 @@ export default function EquipmentShopScreen() {
           processing={
             selectedItem.mode === 'buy'
               ? processingId === selectedItem.template.id
-              : processingId === selectedItem.group.item.id
+              : processingId === selectedItem.group.equipment.id
           }
           disabled={
             selectedItem.mode === 'buy'
               ? gold < selectedItem.template.price || processingId === selectedItem.template.id
-              : processingId === selectedItem.group.item.id
+              : processingId === selectedItem.group.equipment.id
           }
-          price={selectedItem.mode === 'buy' ? selectedItem.template.price : getSellPrice(selectedItem.group.item)}
+          price={selectedItem.mode === 'buy' ? selectedItem.template.price : getSellPrice(selectedItem.group.equipment)}
           onClose={() => setSelectedItem(null)}
           onAction={() => {
             if (selectedItem.mode === 'buy') {
               void buyItem(selectedItem.template)
             } else {
-              void sellItem(selectedItem.group.item)
+              void sellItem(selectedItem.group.equipment)
             }
           }}
         />
@@ -889,6 +965,41 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: '#6B7280',
   },
+  baseRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 12,
+    paddingVertical: 14,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#D1D5DB',
+    backgroundColor: '#FFFFFF',
+  },
+  baseRowInfo: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  baseRowName: {
+    flex: 1,
+    fontSize: 15,
+    fontWeight: '700',
+    color: '#1F2937',
+  },
+  baseRowCount: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#6B7280',
+  },
+  baseRowChevron: {
+    width: 24,
+    marginLeft: 10,
+    color: '#4B5563',
+    fontSize: 18,
+    fontWeight: '700',
+    textAlign: 'center',
+  },
   itemRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -897,6 +1008,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#E5E7EB',
     backgroundColor: '#F9FAFB',
+  },
+  variantItemRow: {
+    marginLeft: 12,
   },
   itemRowDisabled: {
     opacity: 0.58,

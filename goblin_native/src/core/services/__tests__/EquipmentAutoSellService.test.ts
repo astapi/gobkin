@@ -77,6 +77,91 @@ describe('EquipmentAutoSellService', () => {
     expect(EquipmentAutoSellService.shouldAutoSell(drop, settings)).toBe(true)
   })
 
+  it('手動売却した装備と完全一致する売却条件を追加する', () => {
+    const settings = EquipmentAutoSellService.addExactSellRule(
+      { version: 1, policies: {} },
+      drop,
+    )
+
+    expect(EquipmentAutoSellService.shouldAutoSell(drop, settings)).toBe(true)
+    expect(EquipmentAutoSellService.shouldAutoSell(
+      { ...drop, prefixMod: { id: 'power', tier: 8 } },
+      settings,
+    )).toBe(false)
+    expect(settings.policies.sword_long).toEqual({
+      mode: 'keep_all',
+      keepRules: [],
+      sellRules: [{
+        titleIds: ['masterwork'],
+        prefixModIds: ['power'],
+        prefixTiers: [9],
+        suffixModIds: ['vitality'],
+        suffixTiers: [8],
+      }],
+    })
+  })
+
+  it('同じ完全一致売却条件を重複追加しない', () => {
+    const once = EquipmentAutoSellService.addExactSellRule(
+      { version: 1, policies: {} },
+      drop,
+    )
+    const twice = EquipmentAutoSellService.addExactSellRule(once, drop)
+
+    expect(twice.policies.sword_long.sellRules).toHaveLength(1)
+  })
+
+  it('一括売却フィルターは装備種・称号・MOD数が一致した装備を売る', () => {
+    const settings = EquipmentAutoSellService.addBulkSellFilter(
+      { version: 1, policies: {} },
+      {
+        templateIds: ['sword_club'],
+        titleIds: ['stinky'],
+        modCount: 1,
+      },
+    )
+
+    expect(EquipmentAutoSellService.shouldAutoSell({
+      templateId: 'sword_club',
+      titleId: 'stinky',
+      prefixMod: { id: 'power', tier: 5 },
+    }, settings)).toBe(true)
+    expect(EquipmentAutoSellService.shouldAutoSell({
+      templateId: 'sword_club',
+      titleId: 'masterwork',
+      prefixMod: { id: 'power', tier: 5 },
+    }, settings)).toBe(false)
+    expect(EquipmentAutoSellService.shouldAutoSell({
+      templateId: 'sword_club',
+      titleId: 'stinky',
+      prefixMod: { id: 'power', tier: 5 },
+      suffixMod: { id: 'vitality', tier: 5 },
+    }, settings)).toBe(false)
+    expect(EquipmentAutoSellService.shouldAutoSell({
+      templateId: 'sword_long',
+      titleId: 'stinky',
+      prefixMod: { id: 'power', tier: 5 },
+    }, settings)).toBe(false)
+  })
+
+  it('同じ一括売却フィルターを重複追加しない', () => {
+    const filter = {
+      templateIds: ['sword_club'],
+      titleIds: ['stinky'] as const,
+      modCount: 'all' as const,
+    }
+    const once = EquipmentAutoSellService.addBulkSellFilter(
+      { version: 1, policies: {} },
+      { ...filter, titleIds: [...filter.titleIds] },
+    )
+    const twice = EquipmentAutoSellService.addBulkSellFilter(
+      once,
+      { ...filter, titleIds: [...filter.titleIds] },
+    )
+
+    expect(twice.bulkSellFilters).toHaveLength(1)
+  })
+
   it('壊れたJSONから不正値と空ルールを除外する', () => {
     expect(EquipmentAutoSellService.normalizeSettings({
       policies: {

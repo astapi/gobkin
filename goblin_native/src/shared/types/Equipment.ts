@@ -97,11 +97,24 @@ export interface EquipmentAutoSellKeepRule {
 export interface EquipmentAutoSellPolicy {
   mode: EquipmentAutoSellMode
   keepRules: EquipmentAutoSellKeepRule[]
+  /** 手動売却時に追加した、完全一致する装備を売る条件。残す条件より優先する。 */
+  sellRules?: EquipmentAutoSellKeepRule[]
+}
+
+/**
+ * 倉庫の一括売却から追加した自動売却条件。
+ * 名前・カテゴリは保存時点で templateIds に解決し、称号とMOD数は今後のドロップにも適用する。
+ */
+export interface EquipmentAutoSellBulkFilter {
+  templateIds: string[]
+  titleIds: EquipmentTitleId[]
+  modCount: 'all' | 1 | 2
 }
 
 export interface EquipmentAutoSellSettings {
   version: 1
   policies: Record<string, EquipmentAutoSellPolicy>
+  bulkSellFilters?: EquipmentAutoSellBulkFilter[]
 }
 
 /**

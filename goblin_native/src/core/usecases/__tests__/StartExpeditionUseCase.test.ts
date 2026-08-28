@@ -76,6 +76,7 @@ function createEquipmentRepository(equipment: EquipmentInstance[]): IEquipmentRe
     getUnequipped: jest.fn(async () => equipment.filter((item) => item.goblinId === null)),
     save: jest.fn(async () => {}),
     delete: jest.fn(async () => {}),
+    deleteMany: jest.fn(async () => {}),
   }
 }
 

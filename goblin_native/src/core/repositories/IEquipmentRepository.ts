@@ -6,4 +6,5 @@ export interface IEquipmentRepository {
   getUnequipped(): Promise<EquipmentInstance[]>
   save(equipment: EquipmentInstance): Promise<void>
   delete(id: string): Promise<void>
+  deleteMany(ids: string[]): Promise<void>
 }

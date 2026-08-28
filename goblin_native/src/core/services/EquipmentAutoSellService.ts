@@ -1,6 +1,7 @@
 import { EQUIPMENT_TITLE_DEFS } from '../../shared/data/equipmentTitleConfig'
 import { getEquipmentModDef } from '../../shared/data/equipmentModConfig'
 import type {
+  EquipmentAutoSellBulkFilter,
   EquipmentAutoSellKeepRule,
   EquipmentAutoSellModId,
   EquipmentAutoSellPolicy,
@@ -64,7 +65,7 @@ function isRuleActive(rule: EquipmentAutoSellKeepRule): boolean {
 
 function normalizePolicy(value: unknown): EquipmentAutoSellPolicy | undefined {
   if (!value || typeof value !== 'object') return undefined
-  const candidate = value as { mode?: unknown; keepRules?: unknown }
+  const candidate = value as { mode?: unknown; keepRules?: unknown; sellRules?: unknown }
   if (candidate.mode !== 'keep_all' && candidate.mode !== 'sell_all' && candidate.mode !== 'rules') {
     return undefined
   }
@@ -73,7 +74,52 @@ function normalizePolicy(value: unknown): EquipmentAutoSellPolicy | undefined {
       .map(normalizeRule)
       .filter((rule): rule is EquipmentAutoSellKeepRule => rule !== undefined && isRuleActive(rule))
     : []
-  return { mode: candidate.mode, keepRules }
+  const sellRules = Array.isArray(candidate.sellRules)
+    ? candidate.sellRules
+      .map(normalizeRule)
+      .filter((rule): rule is EquipmentAutoSellKeepRule => rule !== undefined && isRuleActive(rule))
+    : []
+  return {
+    mode: candidate.mode,
+    keepRules,
+    ...(sellRules.length > 0 ? { sellRules } : {}),
+  }
+}
+
+function normalizeBulkFilter(value: unknown): EquipmentAutoSellBulkFilter | undefined {
+  if (!value || typeof value !== 'object') return undefined
+  const candidate = value as { templateIds?: unknown; titleIds?: unknown; modCount?: unknown }
+  if (!Array.isArray(candidate.templateIds)) return undefined
+
+  const templateIds = [...new Set(candidate.templateIds.filter((item): item is string => (
+    typeof item === 'string' && item.length > 0
+  )))].sort()
+  if (templateIds.length === 0) return undefined
+
+  const modCount = candidate.modCount === 1 || candidate.modCount === 2
+    ? candidate.modCount
+    : 'all'
+  return {
+    templateIds,
+    titleIds: normalizeTitleIds(candidate.titleIds),
+    modCount,
+  }
+}
+
+function matchesBulkFilter(drop: TreasureDrop, filter: EquipmentAutoSellBulkFilter): boolean {
+  if (!filter.templateIds.includes(drop.templateId)) return false
+  if (filter.titleIds.length > 0 && !filter.titleIds.includes(drop.titleId ?? 'none')) return false
+  if (filter.modCount === 'all') return true
+  const modCount = Number(Boolean(drop.prefixMod)) + Number(Boolean(drop.suffixMod))
+  return modCount === filter.modCount
+}
+
+function bulkFilterKey(filter: EquipmentAutoSellBulkFilter): string {
+  return JSON.stringify({
+    templateIds: [...filter.templateIds].sort(),
+    titleIds: [...filter.titleIds].sort(),
+    modCount: filter.modCount,
+  })
 }
 
 function matchesSelection<T>(selection: readonly T[], actual: T): boolean {
@@ -109,7 +155,7 @@ export class EquipmentAutoSellService {
 
   static normalizeSettings(value: unknown): EquipmentAutoSellSettings {
     if (!value || typeof value !== 'object') return DEFAULT_EQUIPMENT_AUTO_SELL_SETTINGS
-    const candidate = value as { policies?: unknown }
+    const candidate = value as { policies?: unknown; bulkSellFilters?: unknown }
     if (!candidate.policies || typeof candidate.policies !== 'object' || Array.isArray(candidate.policies)) {
       return DEFAULT_EQUIPMENT_AUTO_SELL_SETTINGS
     }
@@ -120,13 +166,89 @@ export class EquipmentAutoSellService {
       const policy = normalizePolicy(policyValue)
       if (policy) policies[templateId] = policy
     }
-    return { version: 1, policies }
+    const bulkSellFilters = Array.isArray(candidate.bulkSellFilters)
+      ? candidate.bulkSellFilters
+        .map(normalizeBulkFilter)
+        .filter((filter): filter is EquipmentAutoSellBulkFilter => filter !== undefined)
+        .filter((filter, index, filters) => (
+          filters.findIndex(candidateFilter => bulkFilterKey(candidateFilter) === bulkFilterKey(filter)) === index
+        ))
+      : []
+    return {
+      version: 1,
+      policies,
+      ...(bulkSellFilters.length > 0 ? { bulkSellFilters } : {}),
+    }
+  }
+
+  /** 手動売却した装備と、称号・MOD・Tierまで完全一致する売却条件を作る。 */
+  static createExactSellRule(equipment: Pick<
+    TreasureDrop,
+    'titleId' | 'prefixMod' | 'suffixMod'
+  >): EquipmentAutoSellKeepRule {
+    return {
+      titleIds: [equipment.titleId ?? 'none'],
+      prefixModIds: [equipment.prefixMod?.id ?? 'none'],
+      prefixTiers: equipment.prefixMod ? [equipment.prefixMod.tier] : [],
+      suffixModIds: [equipment.suffixMod?.id ?? 'none'],
+      suffixTiers: equipment.suffixMod ? [equipment.suffixMod.tier] : [],
+    }
+  }
+
+  /** 同じ完全一致条件を重複させず、既存設定へ追加する。 */
+  static addExactSellRule(
+    settings: EquipmentAutoSellSettings,
+    equipment: Pick<TreasureDrop, 'templateId' | 'titleId' | 'prefixMod' | 'suffixMod'>,
+  ): EquipmentAutoSellSettings {
+    const normalized = this.normalizeSettings(settings)
+    const currentPolicy = normalized.policies[equipment.templateId] ?? {
+      mode: 'keep_all' as const,
+      keepRules: [],
+    }
+    const nextRule = this.createExactSellRule(equipment)
+    const sellRules = currentPolicy.sellRules ?? []
+    const isDuplicate = sellRules.some(rule => matchesRule(equipment, rule))
+
+    if (isDuplicate) return normalized
+
+    return {
+      ...normalized,
+      policies: {
+        ...normalized.policies,
+        [equipment.templateId]: {
+          ...currentPolicy,
+          sellRules: [...sellRules, nextRule],
+        },
+      },
+    }
+  }
+
+  /** 倉庫の一括売却に使った装備種・称号・MOD数を自動売却条件へ追加する。 */
+  static addBulkSellFilter(
+    settings: EquipmentAutoSellSettings,
+    filter: EquipmentAutoSellBulkFilter,
+  ): EquipmentAutoSellSettings {
+    const normalized = this.normalizeSettings(settings)
+    const nextFilter = normalizeBulkFilter(filter)
+    if (!nextFilter) return normalized
+
+    const currentFilters = normalized.bulkSellFilters ?? []
+    const nextKey = bulkFilterKey(nextFilter)
+    if (currentFilters.some(current => bulkFilterKey(current) === nextKey)) return normalized
+
+    return {
+      ...normalized,
+      bulkSellFilters: [...currentFilters, nextFilter],
+    }
   }
 
   /** 未設定は残す。詳細設定は、どの残す条件にも一致しない場合だけ売却する。 */
   static shouldAutoSell(drop: TreasureDrop, settings: EquipmentAutoSellSettings): boolean {
+    if (settings.bulkSellFilters?.some(filter => matchesBulkFilter(drop, filter))) return true
     const policy = settings.policies[drop.templateId]
-    if (!policy || policy.mode === 'keep_all') return false
+    if (!policy) return false
+    if (policy.sellRules?.some(rule => matchesRule(drop, rule))) return true
+    if (policy.mode === 'keep_all') return false
     if (policy.mode === 'sell_all') return true
     return !policy.keepRules.some(rule => matchesRule(drop, rule))
   }

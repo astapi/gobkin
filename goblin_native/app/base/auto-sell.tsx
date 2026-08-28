@@ -102,9 +102,17 @@ export default function EquipmentAutoSellScreen() {
 
   const setPolicy = (templateId: string, nextPolicy: EquipmentAutoSellPolicy) => {
     setSettings(current => ({
-      version: 1,
+      ...current,
       policies: { ...current.policies, [templateId]: nextPolicy },
     }))
+    setDirty(true)
+  }
+
+  const clearBulkSellFilters = () => {
+    setSettings(current => {
+      const { bulkSellFilters: _removed, ...rest } = current
+      return rest
+    })
     setDirty(true)
   }
 
@@ -160,8 +168,17 @@ export default function EquipmentAutoSellScreen() {
       Alert.alert(t('ui.autoSell.ruleRequiredTitle'), t('ui.autoSell.ruleRequiredBody'))
       return
     }
-    setPolicy(editingTemplate.id, { mode: 'rules', keepRules: activeRules })
+    const currentPolicy = settings.policies[editingTemplate.id] ?? defaultPolicy()
+    setPolicy(editingTemplate.id, { ...currentPolicy, mode: 'rules', keepRules: activeRules })
     setEditingTemplate(null)
+  }
+
+  const clearManualSellRules = (templateId: string) => {
+    const currentPolicy = settings.policies[templateId] ?? defaultPolicy()
+    setPolicy(templateId, {
+      mode: currentPolicy.mode,
+      keepRules: currentPolicy.keepRules,
+    })
   }
 
   const addRule = () => {
@@ -224,6 +241,25 @@ export default function EquipmentAutoSellScreen() {
           <View style={styles.listHeader}>
             <Text style={styles.description}>{t('ui.autoSell.description')}</Text>
             <Text style={styles.warning}>{t('ui.autoSell.appliesFuture')}</Text>
+            {(settings.bulkSellFilters?.length ?? 0) > 0 ? (
+              <View style={styles.bulkSellFilterCard}>
+                <Text style={styles.bulkSellFilterText}>
+                  {t('ui.autoSell.bulkSellFilterCount', {
+                    count: settings.bulkSellFilters?.length ?? 0,
+                  })}
+                </Text>
+                <Pressable
+                  testID="auto-sell-clear-bulk-filters"
+                  accessibilityRole="button"
+                  accessibilityLabel={t('ui.autoSell.clearBulkSellFilters')}
+                  onPress={clearBulkSellFilters}
+                >
+                  <Text style={styles.clearManualSellRulesText}>
+                    {t('ui.autoSell.clearBulkSellFilters')}
+                  </Text>
+                </Pressable>
+              </View>
+            ) : null}
             <TextInput
               testID="auto-sell-search"
               accessibilityLabel={t('ui.autoSell.searchPlaceholder')}
@@ -261,6 +297,23 @@ export default function EquipmentAutoSellScreen() {
                 <Text style={styles.ruleCount}>
                   {t('ui.autoSell.ruleCount', { count: policy.keepRules.length })}
                 </Text>
+              )}
+              {(policy.sellRules?.length ?? 0) > 0 && (
+                <View style={styles.manualSellRuleRow}>
+                  <Text style={styles.ruleCount}>
+                    {t('ui.autoSell.manualSellRuleCount', { count: policy.sellRules?.length ?? 0 })}
+                  </Text>
+                  <Pressable
+                    testID={`auto-sell-${item.id}-clear-sell-filters`}
+                    accessibilityRole="button"
+                    accessibilityLabel={t('ui.autoSell.clearManualSellRules')}
+                    onPress={() => clearManualSellRules(item.id)}
+                  >
+                    <Text style={styles.clearManualSellRulesText}>
+                      {t('ui.autoSell.clearManualSellRules')}
+                    </Text>
+                  </Pressable>
+                </View>
               )}
             </View>
           )
@@ -500,6 +553,8 @@ const styles = StyleSheet.create({
   listHeader: { marginBottom: 12 },
   description: { color: '#4B5563', fontSize: 13, lineHeight: 19 },
   warning: { marginTop: 6, color: '#92400E', fontSize: 12, lineHeight: 18 },
+  bulkSellFilterCard: { marginTop: 10, padding: 12, gap: 7, alignItems: 'flex-end', backgroundColor: '#FFF7ED', borderWidth: 1, borderColor: '#FDBA74', borderRadius: 9 },
+  bulkSellFilterText: { alignSelf: 'stretch', color: '#9A3412', fontSize: 12, fontWeight: '700' },
   helpText: { color: '#6B7280', fontSize: 13 },
   searchInput: { marginTop: 12, height: 42, borderWidth: 1, borderColor: '#D1D5DB', borderRadius: 10, backgroundColor: '#FFFFFF', paddingHorizontal: 12, fontSize: 14, color: '#1F2937' },
   itemCard: { backgroundColor: '#FFFFFF', borderRadius: 10, padding: 12, marginBottom: 8, borderWidth: 1, borderColor: '#E5E7EB' },
@@ -510,6 +565,8 @@ const styles = StyleSheet.create({
   modeText: { color: '#4B5563', fontSize: 12, fontWeight: '600' },
   modeTextSelected: { color: '#1D4ED8' },
   ruleCount: { marginTop: 8, color: '#6B7280', fontSize: 11, textAlign: 'right' },
+  manualSellRuleRow: { marginTop: 8, gap: 6, alignItems: 'flex-end' },
+  clearManualSellRulesText: { color: '#DC2626', fontSize: 12, fontWeight: '700' },
   editorContent: { padding: 16, paddingBottom: 48 },
   ruleTabs: { gap: 8, paddingVertical: 14 },
   ruleTab: { paddingHorizontal: 14, paddingVertical: 9, borderRadius: 18, backgroundColor: '#FFFFFF', borderWidth: 1, borderColor: '#D1D5DB' },
