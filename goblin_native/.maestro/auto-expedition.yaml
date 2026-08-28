@@ -1,0 +1,46 @@
+appId: com.astapi.gobkin
+name: 自動周回を設定・停止できる
+---
+- launchApp:
+    clearState: false
+- tapOn:
+    text: "許可しない"
+    optional: true
+- tapOn:
+    text: "キャンセル"
+    optional: true
+- tapOn: "ゲームをはじめる"
+- runFlow:
+    when:
+      visible: "Open debugger to view warnings."
+    commands:
+      - tapOn:
+          point: "93%,94%"
+- openLink: "gobkin://formation"
+- tapOn:
+    text: "開く"
+    optional: true
+- tapOn:
+    text: "開く"
+    optional: true
+- assertVisible: "冒険の準備"
+- tapOn:
+    id: "party-card-1"
+- assertVisible: "冒険準備"
+- scrollUntilVisible:
+    element:
+      text: "自動周回"
+    direction: DOWN
+- assertVisible: "クリア済みの遠征を自動で繰り返します.*"
+- assertVisible: "日付をまたぐ遠征の帰還後は、次の周回を開始しません。設定はONのまま維持されます。"
+- tapOn:
+    id: "auto-expedition-switch"
+- tapOn: "← 戻る"
+- assertVisible:
+    id: "auto-expedition-badge-1"
+- tapOn:
+    id: "auto-expedition-badge-1"
+- assertVisible: "現在の遠征は継続し、帰還後の次周から停止します。"
+- tapOn: "停止する"
+- assertNotVisible:
+    id: "auto-expedition-badge-1"

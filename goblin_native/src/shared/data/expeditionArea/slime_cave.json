@@ -1,0 +1,17 @@
+{
+  "id": "slime_cave",
+  "name": "スライムの洞窟",
+  "areaLevel": 1,
+  "floors": 2,
+  "baseDurationSec": 30,
+  "description": "スライムがたくさんいる洞窟",
+  "encounter": {
+    "eventIntervalSec": 3,
+    "eventWeights": {
+      "exploring": 60,
+      "goldTreasure": 10,
+      "battle": 30
+    }
+  },
+  "unlockNext": "forest_outskirts"
+}

@@ -1,0 +1,16 @@
+{
+  "id": "necromancer_crypt_1",
+  "name": "死霊術師の地下霊廟",
+  "areaLevel": 70,
+  "floors": 6,
+  "baseDurationSec": 14000,
+  "description": "古い戦場の地下に封じられた霊廟。死者を軍勢として縛る禁術を守るため、影骨兵と怨霊が奥へ進む者を拒む。",
+  "encounter": {
+    "eventIntervalSec": 1400,
+    "eventWeights": {
+      "exploring": 60,
+      "goldTreasure": 10,
+      "battle": 30
+    }
+  }
+}

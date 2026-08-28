@@ -1,0 +1,249 @@
+{
+  "createdAt": "2026-06-05T01:36:56.153Z",
+  "scenario": "forest_outskirts",
+  "level": 3,
+  "config": {
+    "generations": 5,
+    "population": 14,
+    "iterations": 4,
+    "validationIterations": 40,
+    "seed": 3008,
+    "cleric": "optional",
+    "jobs": [],
+    "variants": [
+      "slime"
+    ],
+    "maxUnlockRank": 1,
+    "maxDropRank": 1,
+    "allowRare": false,
+    "availability": "/Users/astapi/projects/goblinKingdom/goblin_native/reports/progression-goblin-village-1-check/01-slime_cave-availability.json"
+  },
+  "insights": {
+    "winningCandidateCount": 3,
+    "frequentJobs": [],
+    "frequentVariants": [
+      [
+        "slime",
+        6
+      ]
+    ],
+    "frequentEquipment": [
+      [
+        "bow_long",
+        14
+      ],
+      [
+        "gauntlet_gauntlet",
+        13
+      ],
+      [
+        "armor_fur_vest",
+        3
+      ],
+      [
+        "armor_armor",
+        3
+      ],
+      [
+        "gauntlet_cloth_gloves",
+        1
+      ],
+      [
+        "gauntlet_leather",
+        1
+      ],
+      [
+        "sword_long",
+        1
+      ]
+    ]
+  },
+  "candidates": [
+    {
+      "result": {
+        "wins": 40,
+        "iterations": 40,
+        "winRate": 1,
+        "avgRoundsPerBattle": 1.0034423407917383,
+        "equipmentCost": 15035,
+        "score": 999998.9965426242
+      },
+      "genome": {
+        "members": [
+          {
+            "job": null,
+            "variantFactorId": "slime",
+            "equipmentTemplateIds": [
+              "gauntlet_cloth_gloves",
+              "armor_fur_vest"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "bow_long",
+              "gauntlet_gauntlet"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "bow_long",
+              "gauntlet_gauntlet"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "bow_long",
+              "gauntlet_gauntlet"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "bow_long",
+              "gauntlet_gauntlet"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "slime",
+            "equipmentTemplateIds": [
+              "bow_long",
+              "gauntlet_gauntlet"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "result": {
+        "wins": 40,
+        "iterations": 40,
+        "winRate": 1,
+        "avgRoundsPerBattle": 1.0053285968028418,
+        "equipmentCost": 13145,
+        "score": 999998.9946582582
+      },
+      "genome": {
+        "members": [
+          {
+            "job": null,
+            "variantFactorId": "slime",
+            "equipmentTemplateIds": [
+              "armor_armor",
+              "armor_fur_vest"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "bow_long",
+              "gauntlet_gauntlet"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "slime",
+            "equipmentTemplateIds": [
+              "bow_long",
+              "gauntlet_leather"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "bow_long",
+              "gauntlet_gauntlet"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "bow_long",
+              "gauntlet_gauntlet"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "slime",
+            "equipmentTemplateIds": [
+              "bow_long",
+              "gauntlet_gauntlet"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "result": {
+        "wins": 40,
+        "iterations": 40,
+        "winRate": 1,
+        "avgRoundsPerBattle": 1.008635578583765,
+        "equipmentCost": 12330,
+        "score": 999998.9913520914
+      },
+      "genome": {
+        "members": [
+          {
+            "job": null,
+            "variantFactorId": "slime",
+            "equipmentTemplateIds": [
+              "armor_armor",
+              "armor_fur_vest"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "sword_long",
+              "armor_armor"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "bow_long",
+              "gauntlet_gauntlet"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "bow_long",
+              "gauntlet_gauntlet"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "bow_long",
+              "gauntlet_gauntlet"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "bow_long",
+              "gauntlet_gauntlet"
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

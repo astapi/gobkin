@@ -1,0 +1,430 @@
+{
+  "areas": [
+    {
+      "id": "slime_cave",
+      "name": "スライムの洞窟",
+      "areaLevel": 1,
+      "floors": 2,
+      "exploration_time_sec_first": 30,
+      "exploration_time_sec": 10,
+      "description": "スライムだけが出現する入門用の洞窟。ゴブリン1体でも攻略可能。",
+      "unlockNext": "forest_outskirts",
+      "unlocked": true
+    },
+    {
+      "id": "forest_outskirts",
+      "name": "周辺の森",
+      "areaLevel": 2,
+      "floors": 6,
+      "exploration_time_sec_first": 360,
+      "exploration_time_sec": 120,
+      "description": "明るい森、弱い獣や小鬼が出現",
+      "unlockRequires": "slime_cave",
+      "unlockNext": "goblin_village_1"
+    },
+    {
+      "id": "goblin_village_1",
+      "name": "ゴブリン集落",
+      "areaLevel": 10,
+      "floors": 6,
+      "exploration_time_sec_first": 1860,
+      "exploration_time_sec": 620,
+      "description": "ゴブリン集落の外縁部。雑兵ゴブリンやシーフが群れをなして徘徊している。 集落の内部へ侵入。ウォリアーやメイジが組織的に守りを固めている。 集落の中枢。ガードに守られた奥にホブゴブリンが君臨する。独立を勝ち取るため、反逆の狼煙を上げる。",
+      "unlockRequires": "forest_outskirts",
+      "unlockNext": "forest_edge_village",
+      "isBaseCapture": true,
+      "rankUpTarget": 2
+    },
+    {
+      "id": "forest_edge_village",
+      "name": "森外れの廃村",
+      "areaLevel": 9,
+      "floors": 6,
+      "exploration_time_sec_first": 8100,
+      "exploration_time_sec": 2700,
+      "description": "ゴブリン集落の外に残された、人間の古い開拓村。朽ちた畑と家屋の奥に、廃村の地下へ続く古井戸が口を開けている。",
+      "unlockRequires": "goblin_village_1",
+      "unlockNext": "old_well_waterway"
+    },
+    {
+      "id": "old_well_waterway",
+      "name": "古井戸の地下水路",
+      "areaLevel": 10,
+      "floors": 6,
+      "exploration_time_sec_first": 9180,
+      "exploration_time_sec": 3060,
+      "description": "廃村の古井戸から降りる地下水路。苔むした水路と崩れた排水路を抜けた先に、忘れられた廃墟の地下口がある。",
+      "unlockRequires": "forest_edge_village",
+      "unlockNext": "undead_ruins_1"
+    },
+    {
+      "id": "undead_ruins_1",
+      "name": "忘れられた廃墟",
+      "areaLevel": 18,
+      "floors": 6,
+      "exploration_time_sec_first": 3240,
+      "exploration_time_sec": 1080,
+      "description": "地下水路の出口に広がる忘れられた廃墟。スケルトンとゾンビが徘徊する薄暗い回廊から、死霊術師の残骸が眠る最奥へ進む。",
+      "unlockRequires": "old_well_waterway",
+      "unlockNext": "bandit_hideout"
+    },
+    {
+      "id": "bandit_hideout",
+      "name": "盗賊のアジト",
+      "areaLevel": 20,
+      "floors": 6,
+      "exploration_time_sec_first": 11880,
+      "exploration_time_sec": 3960,
+      "description": "辺境城の監視が届きにくい山道の隠れ家。街道の荷を襲う盗賊たちが、奪った武器と通行記録を溜め込んでいる。",
+      "unlockRequires": "undead_ruins_1",
+      "unlockNext": "road_1"
+    },
+    {
+      "id": "road_1",
+      "name": "街道",
+      "areaLevel": 25,
+      "floors": 6,
+      "exploration_time_sec_first": 4860,
+      "exploration_time_sec": 1620,
+      "description": "辺境の村と辺境の城を結ぶ生活路。森から出てくる獣や、荷を守る人間の護衛が行き交う。ここを押さえれば村は孤立する。",
+      "unlockRequires": "bandit_hideout",
+      "unlockNext": "orc_camp_1"
+    },
+    {
+      "id": "orc_camp_1",
+      "name": "オークの野営地",
+      "areaLevel": 14,
+      "floors": 6,
+      "exploration_time_sec_first": 7200,
+      "exploration_time_sec": 2400,
+      "description": "オーク野営地の前哨。前線のブルートと、その後方に控える兵たちが見張りに立っている。 野営地の陣営部。前に出るブルートを壁に、兵たちが厚く控える。 野営地の本陣。ブルートが陣を固め、奥にはオーク遠征隊長が控える。攻略すれば拠点として利用可能。",
+      "unlockRequires": "road_1",
+      "unlockNext": "human_village",
+      "unlockNexts": [
+        "orc_fortress_1"
+      ]
+    },
+    {
+      "id": "human_village",
+      "name": "辺境の村",
+      "areaLevel": 21,
+      "floors": 6,
+      "exploration_time_sec_first": 8100,
+      "exploration_time_sec": 2700,
+      "description": "辺境の村の中心部。自警団と猟師を退け、西方にゴブリンの脅威を刻みつけろ。",
+      "unlockRequires": "orc_camp_1",
+      "unlockNext": "wolf_grassland_1",
+      "isBaseCapture": true,
+      "rankUpTarget": 3,
+      "unlockNexts": [
+        "hobbit_hills_1"
+      ]
+    },
+    {
+      "id": "wolf_grassland_1",
+      "name": "ウルフ草原",
+      "areaLevel": 30,
+      "floors": 6,
+      "exploration_time_sec_first": 11760,
+      "exploration_time_sec": 3920,
+      "description": "辺境の村の西に広がる草原。大型ウルフの群れを屈服させ、騎獣と機動戦力を手に入れろ。",
+      "unlockRequires": "human_village",
+      "unlockNext": "lizardman_swamp_1"
+    },
+    {
+      "id": "subjugation_force_1",
+      "name": "vs討伐隊防衛戦",
+      "areaLevel": 68,
+      "floors": 8,
+      "exploration_time_sec_first": 17520,
+      "exploration_time_sec": 5840,
+      "description": "周辺種族を従えた脅威に対し、辺境城から先遣隊が接近。正規兵と弓兵中心の部隊を迎撃せよ。 討伐隊の本隊が到着。騎士・魔術師・クレリックを含む正規編成で攻勢が激化する。 辺境城騎士団長が自ら前線に立つ。精鋭部隊との最終決戦。撃退せよ。",
+      "unlockRequires": "orc_fortress_1",
+      "unlockNext": "spider_forest_1"
+    },
+    {
+      "id": "spider_forest_1",
+      "name": "蜘蛛影の森",
+      "areaLevel": 100,
+      "floors": 6,
+      "exploration_time_sec_first": 13200,
+      "exploration_time_sec": 4400,
+      "description": "リザードマン湿原の先に広がる深い森。アラクネの巣網を越え、協力を引き出すだけの実力を示せ。",
+      "unlockRequires": "subjugation_force_1",
+      "unlockNext": "dead_grave_1"
+    },
+    {
+      "id": "dead_grave_1",
+      "name": "死霊の墓原",
+      "areaLevel": 145,
+      "floors": 6,
+      "exploration_time_sec_first": 21300,
+      "exploration_time_sec": 7100,
+      "description": "墓標が乱立する荒野の外縁。眠りを失った亡者たちが夜ごと這い出してくる。 崩れた墓所が密集する地帯。霊体と骨兵が入り混じり、足を止めた者から喰われていく。 墓原の中心にある古い霊廟。死の気配を束ねる主を倒し、断崖へ続く道を切り開け。",
+      "unlockRequires": "spider_forest_1",
+      "unlockNext": "harpy_cliff_1"
+    },
+    {
+      "id": "hobbit_hills_1",
+      "name": "ホビットの丘陵村",
+      "areaLevel": 35,
+      "floors": 6,
+      "exploration_time_sec_first": 17100,
+      "exploration_time_sec": 5700,
+      "description": "辺境の外れにある丘陵地。身軽なホビットの斥候と投石手が補給路を守っている。",
+      "unlockNext": "dwarf_mine_1",
+      "unlockNexts": [
+        "hobbit_hills_defense_1"
+      ],
+      "unlockRequires": "human_village"
+    },
+    {
+      "id": "hobbit_hills_defense_1",
+      "name": "丘陵村の徴税人",
+      "areaLevel": 45,
+      "floors": 6,
+      "exploration_time_sec_first": 13200,
+      "exploration_time_sec": 4400,
+      "description": "王国の徴税官が、雇われの剣を連れて丘陵村へやってきた。「丘を守る」――ホビットたちと交わした最初の守る約束を果たせ。",
+      "unlockRequires": "hobbit_hills_1"
+    },
+    {
+      "id": "dwarf_mine_1",
+      "name": "ドワーフ坑道",
+      "areaLevel": 40,
+      "floors": 6,
+      "exploration_time_sec_first": 18420,
+      "exploration_time_sec": 6140,
+      "description": "坑道の入口。ドワーフ坑夫たちが工具を武器に抵抗してくる。 坑道深部。戦士やルーン鍛冶師が待ち構える。 坑道の最深部。坑道守護者と擲弾兵に守られた鍛冶王が待ち受ける。鍛冶能力をゴブリン国家に取り込め。",
+      "unlockNext": "elf_forest_1",
+      "unlockNexts": [
+        "dwarf_mine_purge_1"
+      ],
+      "unlockRequires": "hobbit_hills_1"
+    },
+    {
+      "id": "dwarf_mine_purge_1",
+      "name": "坑道の魔物払い",
+      "areaLevel": 52,
+      "floors": 6,
+      "exploration_time_sec_first": 13200,
+      "exploration_time_sec": 4400,
+      "description": "坑道の深部に巣食う蟲どもが、炉の火を脅かしている。「火を絶やさない」――鍛冶王との取引を、刃で果たす時が来た。",
+      "unlockRequires": "dwarf_mine_1"
+    },
+    {
+      "id": "elf_forest_1",
+      "name": "エルフの隠れ里",
+      "areaLevel": 45,
+      "floors": 6,
+      "exploration_time_sec_first": 21120,
+      "exploration_time_sec": 7040,
+      "description": "隠れ里の外縁。森の斥候と射手が素早い攻撃を仕掛けてくる。 里の内部。精霊使いや月の衛士が守りを固めている。 里の中枢。古樹の戦士に守られた森の番人が最後の壁として立ちはだかる。魔法の力を手に入れろ。",
+      "unlockRequires": "dwarf_mine_1"
+    },
+    {
+      "id": "lizardman_swamp_1",
+      "name": "リザードマンの沼砦",
+      "areaLevel": 44,
+      "floors": 6,
+      "exploration_time_sec_first": 19320,
+      "exploration_time_sec": 6440,
+      "description": "沼砦の浅瀬。沼の戦士と毒牙兵が水際で襲いかかる。 砦の深部。呪術師や暗殺者が潜む危険な沼地。 砦の本拠。鱗の重装兵に守られた沼王が待ち受ける。毒と夜襲の術を奪い、次の大戦に備えろ。",
+      "unlockRequires": "wolf_grassland_1"
+    },
+    {
+      "id": "swamp_defense_1",
+      "name": "沼砦防衛戦",
+      "areaLevel": 148,
+      "floors": 6,
+      "exploration_time_sec_first": 13200,
+      "exploration_time_sec": 4400,
+      "description": "辺境の城を失った王国が、報復に沼の水を涸らしに来た。「沼を涸らさない」――沼王と交わした約束を、今度はこちらが守る番だ。",
+      "unlockRequires": "human_fortress_1"
+    },
+    {
+      "id": "harpy_defense_1",
+      "name": "断崖の鷹匠戦",
+      "areaLevel": 152,
+      "floors": 6,
+      "exploration_time_sec_first": 13200,
+      "exploration_time_sec": 4400,
+      "description": "王国の鷹匠部隊が、火矢でハーピィの巣を焼きに来た。「空を分け合う」約束のもと、翼ある隣人とともに断崖を守り抜け。",
+      "unlockRequires": "human_fortress_1"
+    },
+    {
+      "id": "orc_fortress_1",
+      "name": "オークの砦",
+      "areaLevel": 45,
+      "floors": 8,
+      "exploration_time_sec_first": 17280,
+      "exploration_time_sec": 5760,
+      "description": "オークの本拠地。狼騎兵と毒の戦術を揃え、ついに挑む本格要塞。ここを落とした時、人間は討伐軍を差し向ける。",
+      "unlockRequires": "orc_camp_1",
+      "unlockNext": "subjugation_force_1",
+      "isBaseCapture": true,
+      "rankUpTarget": 4
+    },
+    {
+      "id": "harpy_cliff_1",
+      "name": "風切りの断崖",
+      "areaLevel": 118,
+      "floors": 6,
+      "exploration_time_sec_first": 21600,
+      "exploration_time_sec": 7200,
+      "description": "墓原の先にそびえる断崖。ハーピィの群れが空を支配し、辺境の城へ向かう空路を閉ざしている。",
+      "unlockRequires": "dead_grave_1",
+      "unlockNext": "margrave_sortie_1",
+      "unlockNexts": [
+        "troll_canyon_1"
+      ]
+    },
+    {
+      "id": "margrave_sortie_1",
+      "name": "vs辺境伯軍・平原会戦",
+      "areaLevel": 130,
+      "floors": 8,
+      "exploration_time_sec_first": 18000,
+      "exploration_time_sec": 6000,
+      "description": "辺境の城を目前にした平原。老将グレアムが籠城を捨てて打って出た。槍衾と騎兵の波を越え、野戦で辺境伯軍を打ち破れ。",
+      "unlockRequires": "harpy_cliff_1",
+      "unlockNext": "human_fortress_1"
+    },
+    {
+      "id": "troll_canyon_1",
+      "name": "トロルの峡谷",
+      "areaLevel": 130,
+      "floors": 6,
+      "exploration_time_sec_first": 23820,
+      "exploration_time_sec": 7940,
+      "description": "峡谷の入口。トロルが単体で徘徊している。一体でも油断ならない巨躯。 峡谷の深部。洞窟トロルや投石トロルが群れをなす。 峡谷の最奥。巨大トロルの群れの先に、峡谷の暴君が待ち受ける。再生能力を手に入れろ。",
+      "unlockRequires": "harpy_cliff_1",
+      "unlockNext": "minotaur_labyrinth_1"
+    },
+    {
+      "id": "minotaur_labyrinth_1",
+      "name": "ミノタウロス迷宮",
+      "areaLevel": 145,
+      "floors": 6,
+      "exploration_time_sec_first": 26100,
+      "exploration_time_sec": 8700,
+      "description": "城塞へ続く古い迷宮。重い斧を振るうミノタウロスの戦士たちが侵入者を迷路へ誘い込む。",
+      "unlockRequires": "troll_canyon_1"
+    },
+    {
+      "id": "human_fortress_1",
+      "name": "辺境の城",
+      "areaLevel": 140,
+      "floors": 8,
+      "exploration_time_sec_first": 30600,
+      "exploration_time_sec": 10200,
+      "description": "辺境の城の外郭。城壁上の弓兵と騎士、魔術師が籠城戦で迎え撃つ。 辺境の城内へ侵入。重装騎兵と城内守備隊が最後の防衛線を張る。 辺境の城の本丸。精鋭近衛兵に守られた城代との最終決戦。異種族戦力を総動員して突破せよ。",
+      "unlockRequires": "margrave_sortie_1",
+      "unlockNext": "fortress_defense_1",
+      "isBaseCapture": true,
+      "rankUpTarget": 5,
+      "unlockNexts": [
+        "swamp_defense_1",
+        "harpy_defense_1"
+      ]
+    },
+    {
+      "id": "fortress_defense_1",
+      "name": "辺境の城・奪還防衛戦",
+      "areaLevel": 152,
+      "floors": 8,
+      "exploration_time_sec_first": 18000,
+      "exploration_time_sec": 6000,
+      "description": "落としたはずの辺境の城に、王国の奪還軍が迫る。初めて「守る側」として城壁に立ち、騎士ロラン率いる先鋒軍を撃退せよ。",
+      "unlockRequires": "human_fortress_1",
+      "unlockNext": "vampire_castle_1"
+    },
+    {
+      "id": "vampire_castle_1",
+      "name": "ヴァンパイアの古城",
+      "areaLevel": 165,
+      "floors": 6,
+      "exploration_time_sec_first": 35100,
+      "exploration_time_sec": 11700,
+      "description": "王都へ向かう街道を見下ろす古城。夜の眷属を率いるヴァンパイアが影から進軍を阻む。",
+      "unlockRequires": "fortress_defense_1",
+      "unlockNext": "royal_field_battle_1",
+      "isBaseCapture": true,
+      "rankUpTarget": 6
+    },
+    {
+      "id": "royal_field_battle_1",
+      "name": "王都平原会戦",
+      "areaLevel": 178,
+      "floors": 8,
+      "exploration_time_sec_first": 21600,
+      "exploration_time_sec": 7200,
+      "description": "王都の城壁を望む大平原。王国が動かせる全軍が、元帥ガリウスの下に戦列を敷いた。約束を交わした全種族の力を束ね、最大の会戦を制せ。",
+      "unlockRequires": "vampire_castle_1",
+      "unlockNext": "royal_capital_1"
+    },
+    {
+      "id": "royal_capital_1",
+      "name": "王都決戦・城門",
+      "areaLevel": 190,
+      "floors": 8,
+      "exploration_time_sec_first": 52800,
+      "exploration_time_sec": 17600,
+      "description": "王都の城門を突破する。近衛騎士と大魔導師が立ちはだかる。",
+      "unlockRequires": "royal_field_battle_1",
+      "unlockNext": "royal_capital_2"
+    },
+    {
+      "id": "royal_capital_2",
+      "name": "王都決戦・王城内部",
+      "areaLevel": 215,
+      "floors": 8,
+      "exploration_time_sec_first": 54000,
+      "exploration_time_sec": 18000,
+      "description": "王城内部へ侵攻。聖騎士や王国禁衛隊が最後の防衛線を張る。",
+      "unlockRequires": "royal_capital_1",
+      "unlockNext": "dragon_volcano_1"
+    },
+    {
+      "id": "dragon_volcano_1",
+      "name": "ドラゴンの火山巣",
+      "areaLevel": 235,
+      "floors": 6,
+      "exploration_time_sec_first": 31200,
+      "exploration_time_sec": 10400,
+      "description": "王城地下から通じる火山巣。王国が最後に解き放ったドラゴンを越えなければ玉座には届かない。",
+      "unlockRequires": "royal_capital_2",
+      "unlockNext": "royal_capital_3"
+    },
+    {
+      "id": "cat_fortress_1",
+      "name": "猫獣人の影遺跡",
+      "areaLevel": 70,
+      "floors": 6,
+      "exploration_time_sec_first": 42000,
+      "exploration_time_sec": 14000,
+      "description": "朽ちた遺跡を住処にした猫系獣人の巣。素早い連撃と奇襲を得意とする暗殺兵が回廊を駆け、最奥では百戦錬磨の遺跡主が待つ。撃破できればワーキャット因子を奪える可能性がある。"
+    },
+    {
+      "id": "necromancer_crypt_1",
+      "name": "死霊術師の地下霊廟",
+      "areaLevel": 70,
+      "floors": 6,
+      "exploration_time_sec_first": 42000,
+      "exploration_time_sec": 14000,
+      "description": "古い戦場の地下に封じられた霊廟。死者を軍勢として縛る禁術を守るため、影骨兵と怨霊が奥へ進む者を拒む。"
+    },
+    {
+      "id": "royal_capital_3",
+      "name": "王都決戦・玉座の間",
+      "areaLevel": 270,
+      "floors": 8,
+      "exploration_time_sec_first": 72000,
+      "exploration_time_sec": 24000,
+      "description": "最終決戦。勇者と人間王が最後の壁として立ちはだかる。ゴブリンキングダムの完成をかけた決戦。",
+      "unlockRequires": "dragon_volcano_1",
+      "isBaseCapture": true,
+      "rankUpTarget": 7
+    }
+  ]
+}

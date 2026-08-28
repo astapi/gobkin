@@ -1,0 +1,16 @@
+{
+  "id": "royal_capital_3",
+  "name": "王都決戦・玉座の間",
+  "areaLevel": 270,
+  "floors": 8,
+  "baseDurationSec": 72000,
+  "description": "最終決戦。勇者と人間王が最後の壁として立ちはだかる。ゴブリンキングダムの完成をかけた決戦。",
+  "encounter": {
+    "eventIntervalSec": 1800,
+    "eventWeights": {
+      "exploring": 60,
+      "goldTreasure": 10,
+      "battle": 30
+    }
+  }
+}

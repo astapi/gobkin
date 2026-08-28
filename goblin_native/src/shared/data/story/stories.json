@@ -1,0 +1,1106 @@
+{
+  "stories": [
+    {
+      "id": "prologue",
+      "title": "目覚め",
+      "category": "main",
+      "order": 0,
+      "unlockCondition": null,
+      "rewards": [],
+      "chapters": [
+        {
+          "id": "prologue_1",
+          "text": "森の端にある小さな洞窟で、一匹のゴブリンが目を覚ました。\n\n名はマルク。最弱と呼ばれる群れに生まれた、ほんの少しだけ大きな個体だった。\n\n他のゴブリンたちは、殴られれば縮こまり、餌を投げられれば飛びつき、命じられれば歩いた。マルクだけは、その前に一瞬だけ考えた。なぜ自分にだけそんな間が空くのか、本人にも分からなかった。"
+        },
+        {
+          "id": "prologue_2",
+          "text": "森の奥には、マルクたちより強いゴブリンの集落があった。\n\nそこのゴブリンたちは、マルクの群れに荷を運ばせ、食い残しを拾わせ、危ない場所を先に歩かせた。先に歩かされて戻らなかった仲間のことを、マルクは覚えている。ドマ。固い木の実の割り方を、マルクに教えてくれた個体だ。\n\n戻らなくても、餌は増えなかった。次の日には、また別の仲間が前に出された。マルクは覚えた。言われた通りに歩くだけでは、いつか自分の番が来る。"
+        },
+        {
+          "id": "prologue_3",
+          "text": "逆らえば群れごと潰される。逃げても森の奥では生きられない。\n\nならば、支配するゴブリンたちを倒せるだけの力をつけるしかない。\n\nマルクは何も変わらないふりをして、近くの洞窟へ狩りに出た。ついてきたのは、群れで一番の年寄りのギドだけだった。「考える顔をするな。バレるぞ」と、ギドは小声で悪態をついた。"
+        }
+      ]
+    },
+    {
+      "id": "story_after_slime_cave",
+      "title": "宿りし力",
+      "category": "main",
+      "order": 1,
+      "unlockCondition": {
+        "type": "dungeon_cleared",
+        "dungeonId": "slime_cave"
+      },
+      "rewards": [
+        {
+          "type": "golden_acorn",
+          "value": 5
+        }
+      ],
+      "chapters": [
+        {
+          "id": "story_after_slime_cave_1",
+          "text": "スライムの洞窟を制覇した。\n\n弱い獲物だった。集落のゴブリンなら見向きもしない、価値のない洞窟だった。\n\nそれでもマルクの体の奥で、ぐにゃりと何かが脈打った。倒したスライムの何かが、自分の中に滲み込んだ。"
+        },
+        {
+          "id": "story_after_slime_cave_2",
+          "text": "数日後、洞窟に新しいゴブリンが生まれた。\n\n小さく、弱く、けれど潰しても立ち上がるようなしぶとさを持っていた。\n\n仲間たちは不思議がらない。ただ、死ににくい仲間が増えたことだけを覚えた。マルクだけが、あのスライムの感触を思い出していた。"
+        },
+        {
+          "id": "story_after_slime_cave_3",
+          "text": "敵を倒せば、何かが残る。それはマルクの中に宿り、やがて群れの中に生まれてくる。\n\nだがその夜、マルクは自分の腕が、ほんの一瞬、スライムのように形を失った気がした。慌てて握り直した拳は、いつものゴブリンの拳だった。気のせいだ、と思うことにした。\n\nまだ誰にも知られてはならない。集落のゴブリンたちに気づかれる前に、森の奥で次の力を探す。"
+        }
+      ]
+    },
+    {
+      "id": "story_after_forest",
+      "title": "同族との対峙",
+      "category": "main",
+      "order": 2,
+      "unlockCondition": {
+        "type": "dungeon_cleared",
+        "dungeonId": "forest_outskirts"
+      },
+      "rewards": [
+        {
+          "type": "golden_acorn",
+          "value": 5
+        },
+        {
+          "type": "named_goblin",
+          "value": "gido"
+        }
+      ],
+      "chapters": [
+        {
+          "id": "story_after_forest_1",
+          "text": "森で獣を狩り、小さな魔物を倒し、マルクたちの群れは少しずつ変わっていった。\n\n足の速いゴブリン。鼻の利くゴブリン。獲物に食らいついたまま離れないゴブリン。\n\n集落のゴブリンたちは、まだ気づいていない。マルクたちは相変わらず、荷を運ぶ弱い群れのふりを続けた。"
+        },
+        {
+          "id": "story_after_forest_2",
+          "text": "森を抜けた先に、支配者たちの集落が見えた。そこには、マルクたちを押しのけ、奪い、命令してきた同族がいる。\n\n「勝てるのか」とギドが訊いた。マルクは答えた。勝てなければ、どうせ順番に死ぬ。ドマのように、一匹ずつ。\n\nギドは長いあいだ黙って、それから石斧を拾った。「なら、一番前は俺だ。年寄りからでいいだろう」"
+        }
+      ]
+    },
+    {
+      "id": "story_after_goblin_village",
+      "title": "独立の狼煙",
+      "category": "main",
+      "order": 3,
+      "unlockCondition": {
+        "type": "dungeon_cleared",
+        "dungeonId": "goblin_village_1"
+      },
+      "rewards": [
+        {
+          "type": "golden_acorn",
+          "value": 5
+        },
+        {
+          "type": "skill",
+          "value": "abnormal_marku"
+        }
+      ],
+      "chapters": [
+        {
+          "id": "story_after_goblin_village_1",
+          "text": "ゴブリン集落への奇襲は、夜明け前に終わった。\n\n見張りが騒ぐ前に外縁を抜き、内部へ雪崩れ込み、中枢にいたホブゴブリンを打ち倒した。荷を運ばされていた弱い群れは、ついに命令する声を黙らせた。"
+        },
+        {
+          "id": "story_after_goblin_village_mercy",
+          "text": "中枢のホブゴブリンが倒れたとき、集落に残っていたのは、震える下っ端のゴブリンたちだった。昨日までマルクたちを蹴り、荷を押しつけてきた連中だ。\n\nギドは殺せと言った。マルクは首を振った。蹴らされていただけだ。俺たちと同じだ。\n\n使い潰さない。それがこの群れの、最初の約束になった。震えていたゴブリンたちは、その日からマルクの後ろを歩くようになった。"
+        },
+        {
+          "id": "story_after_goblin_village_base",
+          "text": "マルクたちは集落を奪い取り、初めて自分たちの拠点を得た。\n\nだが、勝っただけでは生きられない。食料も道具も、周囲の地形も足りない。支配していたゴブリンたちが隠していた古い道筋を辿り、森の外れに捨てられた人間の村を探ることになった。"
+        },
+        {
+          "id": "story_after_goblin_village_training",
+          "text": "集落には訓練所が残っていた。敵のゴブリンたちにはガード、シーフ、ウォリアー、メイジなど、特定の能力に秀でた者がいた。\n\n我々も訓練すれば出来るはずだ。マルクは仲間を集め、奪った場所をただの巣穴ではなく、群れの拠点へ変え始めた。"
+        }
+      ]
+    },
+    {
+      "id": "story_after_forest_edge_village",
+      "title": "人間の痕跡",
+      "category": "main",
+      "order": 4,
+      "unlockCondition": {
+        "type": "dungeon_cleared",
+        "dungeonId": "forest_edge_village"
+      },
+      "rewards": [
+        {
+          "type": "golden_acorn",
+          "value": 5
+        }
+      ],
+      "chapters": [
+        {
+          "id": "story_after_forest_edge_village_1",
+          "text": "森外れの廃村に、もう人間はいなかった。\n\n崩れた家、荒れた畑、朽ちた柵。ゴブリンたちは食えるものと使える鉄片を探して走り回ったが、マルクはそこに暮らしがあった痕跡を見ていた。"
+        },
+        {
+          "id": "story_after_forest_edge_village_2",
+          "text": "村の中央に古井戸があった。水は涸れていたが、底から冷たい風が吹き上がってくる。\n\n井戸の壁には、人間が後から掘り広げた足場が残っていた。下には水路がある。森から外へ出るための、誰にも見られない道かもしれなかった。"
+        }
+      ]
+    },
+    {
+      "id": "story_after_old_well_waterway",
+      "title": "井戸底の道",
+      "category": "main",
+      "order": 5,
+      "unlockCondition": {
+        "type": "dungeon_cleared",
+        "dungeonId": "old_well_waterway"
+      },
+      "rewards": [
+        {
+          "type": "golden_acorn",
+          "value": 5
+        }
+      ],
+      "chapters": [
+        {
+          "id": "story_after_old_well_waterway_1",
+          "text": "古井戸の底は、ただの水場ではなかった。\n\n苔むした水路、崩れた排水路、骨が溜まった貯水槽。廃村の住民たちは、何かから逃げるように地下へ降り、そのまま戻らなかった。"
+        },
+        {
+          "id": "story_after_old_well_waterway_2",
+          "text": "水門を越えた先で、古い石造りの回廊が現れた。\n\n廃村よりも古い、人間が死者を封じた場所。マルクたちは、森の外へ進むために、忘れられた廃墟の暗がりへ足を踏み入れる。"
+        }
+      ]
+    },
+    {
+      "id": "story_after_ruins",
+      "title": "廃墟の出口",
+      "category": "main",
+      "order": 6,
+      "unlockCondition": {
+        "type": "dungeon_cleared",
+        "dungeonId": "undead_ruins_1"
+      },
+      "rewards": [
+        {
+          "type": "golden_acorn",
+          "value": 5
+        }
+      ],
+      "chapters": [
+        {
+          "id": "story_after_ruins_1",
+          "text": "忘れられた廃墟の奥で、動く死体たちは最後まで倒れなかった。\n\n腕が落ちても、腹を裂かれても、骨だけになっても前へ出てくる。そのしぶとさは、マルクの群れにも残った。弱いゴブリンたちは、死に近い場所を越えて、さらに死ににくい群れになった。"
+        },
+        {
+          "id": "story_after_ruins_2",
+          "text": "廃墟を抜けると、森の匂いが薄れた。\n\nその先にあったのは王国の城ではなく、岩場に隠れた人間の巣だった。荷車の跡、奪われた箱、粗末な見張り台。王国からも外れた盗賊たちが、街道の荷を狙って潜んでいる。"
+        }
+      ]
+    },
+    {
+      "id": "story_after_bandit_hideout",
+      "title": "奪った地図",
+      "category": "main",
+      "order": 7,
+      "unlockCondition": {
+        "type": "dungeon_cleared",
+        "dungeonId": "bandit_hideout"
+      },
+      "rewards": [
+        {
+          "type": "golden_acorn",
+          "value": 5
+        }
+      ],
+      "chapters": [
+        {
+          "id": "story_after_bandit_hideout_1",
+          "text": "盗賊のアジトには、食料よりも多くの道具があった。\n\n短剣、弓、油、火打ち石、そして人間の文字が書かれた紙束。ゴブリンたちには価値が分からないものも、マルクには道を示すものに見えた。\n\n紙の上の線と印が、土地の形なのだとマルクは直感した。人間は、歩いたことのない場所を知ることができる。この力は、どんな牙よりも遠くまで届く。"
+        },
+        {
+          "id": "story_after_bandit_hideout_2",
+          "text": "盗賊たちは辺境の村と辺境の城を結ぶ道を襲っていた。\n\nその道を押さえれば、村への荷も、城への報告も止まる。マルクたちは初めて、人間の土地をただ襲うのではなく、流れを断つことを覚えた。次は街道だ。"
+        }
+      ]
+    },
+    {
+      "id": "story_after_road",
+      "title": "オークとの邂逅",
+      "category": "main",
+      "order": 8,
+      "unlockCondition": {
+        "type": "dungeon_cleared",
+        "dungeonId": "road_1"
+      },
+      "rewards": [
+        {
+          "type": "golden_acorn",
+          "value": 5
+        }
+      ],
+      "chapters": [
+        {
+          "id": "story_after_road_1",
+          "text": "街道を押さえると、群れは初めて人間の荷を奪った。\n\n袋に詰められた穀物。手入れされた刃物。火を起こす道具。辺境の村と辺境の城の間には、ゴブリンが奪えばすぐ役に立つものが流れていた。"
+        },
+        {
+          "id": "story_after_road_2",
+          "text": "だが、街道を荒らしていたのは盗賊だけではなかった。\n\n森側へ続く脇道には、折れた木と踏み潰された足跡が増えていく。人間の護衛とは違う、太く重い臭いが残っていた。\n\nオークだ。辺境の村を狙う前に、この道を力で奪い合う連中を退けなければならない。"
+        }
+      ]
+    },
+    {
+      "id": "story_after_orc_camp",
+      "title": "辺境の脅威",
+      "category": "main",
+      "order": 9,
+      "unlockCondition": {
+        "type": "dungeon_cleared",
+        "dungeonId": "orc_camp_1"
+      },
+      "rewards": [
+        {
+          "type": "golden_acorn",
+          "value": 5
+        }
+      ],
+      "chapters": [
+        {
+          "id": "story_after_orc_camp_1",
+          "text": "オークの野営地を制圧した。\n\nゴブリンたちは、オークの大きな武器を引きずり、肉を奪い、壊れた柵の中で眠った。洞窟でも集落でもない、外に作られた拠点だった。\n\nマルクはそこで、群れがもう隠れて生きる大きさではなくなったことを知った。"
+        },
+        {
+          "id": "story_after_orc_camp_2",
+          "text": "野営地の外で、人間の斥候を捕らえた。まだ若い人間だった。\n\n斥候はゴブリンの数を見て、オークの死体を見て、そして並んだゴブリンたちが合図ひとつで動くのを見て、顔色を変えた。マルクには人間の言葉は分からない。それでも、相手が数を数えていることは分かった。\n\n縄を噛み切って逃げた斥候は、きっと村へ戻り、見たものを話す。ならば報告が形になる前に、こちらから村を落とす。"
+        }
+      ]
+    },
+    {
+      "id": "story_after_village",
+      "title": "辺境城の静観",
+      "category": "main",
+      "order": 10,
+      "unlockCondition": {
+        "type": "dungeon_cleared",
+        "dungeonId": "human_village"
+      },
+      "rewards": [
+        {
+          "type": "golden_acorn",
+          "value": 5
+        }
+      ],
+      "chapters": [
+        {
+          "id": "story_after_village_1",
+          "text": "辺境の村を落とした。\n\n家は低く、柵は弱く、倉には食料が詰まっていた。だが人間たちは、ただ逃げるだけではなかった。鐘を鳴らし、弓を取り、子どもを奥へ隠して、最後まで抵抗した。\n\nマルクはそこで初めて、人間の土地を奪った。森の獲物とは違う。これは、誰かの暮らす場所だった。"
+        },
+        {
+          "id": "story_after_village_boy",
+          "text": "燃える倉の前で、一人の人間の子どもが折れた剣を拾い、マルクに向かってきた。\n\n震える切っ先。濡れた眼。それでも逃げなかった。マルクは一歩で間合いを潰せたが、そうしなかった。奪われる側の眼を、マルクはよく知っていた。\n\n子どもは大人に引きずられ、東の街道へ消えた。マルクはすぐに忘れた。それがいつか、玉座の前で自分を待つことになる眼だとは、知りようもなかった。"
+        },
+        {
+          "id": "story_after_village_2",
+          "text": "村から逃げた人間は、辺境の城へ向かった。\n\nすぐに大軍は来ない。人間たちはまだ、マルクたちを大きくなりすぎた魔物の群れだと思っている。\n\nだが次は違う。村を落としたゴブリンの名は、必ず城へ届く。討伐隊が来る前に、群れを軍に変えなければならない。"
+        },
+        {
+          "id": "story_after_village_interlude",
+          "text": "――辺境の城。\n\n老いた辺境伯グレアムは、村の生き残りの訴えを聞いていた。ゴブリンにやられた、と口々に言う。誰も本気にしなかった。ゴブリンは、畑を荒らして棒で追われる魔物の名だ。\n\nただ一人、オークの野営地から生きて戻った若い斥候ロランだけが、青い顔で言った。「あれは群れではありません。並んで、合図で動いていました。――あれは、軍です」"
+        },
+        {
+          "id": "story_after_village_3",
+          "text": "村の西には草原が広がっていた。\n\nそこには大きな狼の群れがいる。速く走り、遠くを嗅ぎ、敵より先に襲いかかる獣たちだ。\n\nマルクは草原へ向かう。人間が来る前に、走る力を手に入れるために。"
+        }
+      ]
+    },
+    {
+      "id": "story_after_wolf_grassland",
+      "title": "狼を駆る者",
+      "category": "main",
+      "order": 11,
+      "unlockCondition": {
+        "type": "dungeon_cleared",
+        "dungeonId": "wolf_grassland_1"
+      },
+      "rewards": [
+        {
+          "type": "golden_acorn",
+          "value": 5
+        },
+        {
+          "type": "named_goblin",
+          "value": "ragu"
+        }
+      ],
+      "chapters": [
+        {
+          "id": "story_after_wolf_grassland_1",
+          "text": "草原の狼の群れを従えた。長を倒したマルクに、群れは牙を収めた。狼は、強い者の下でしか走らない。\n\n最初に背に乗ったのは、若いラグだった。三歩で振り落とされ、腕の骨を折り、それでも笑いながらまた乗った。次は五歩。その次は丘の向こうまで。\n\n骨より先に、根性が折れない奴だった。マルクの群れは、初めて敵より速く動く力を得た。"
+        },
+        {
+          "id": "story_after_wolf_grassland_2",
+          "text": "狼を得ても、人間の城を落とすには足りない。\n\n人間は柵を作り、門を閉ざし、弓を並べる。正面から走り込めば、強くなったゴブリンでも倒される。\n\n草原の先には湿地がある。そこにいるリザードマンは、毒と夜襲を使うという。マルクは次の戦い方を奪いに行く。"
+        }
+      ]
+    },
+    {
+      "id": "story_after_lizardman_swamp",
+      "title": "沼の掟",
+      "category": "main",
+      "order": 12,
+      "unlockCondition": {
+        "type": "dungeon_cleared",
+        "dungeonId": "lizardman_swamp_1"
+      },
+      "rewards": [
+        {
+          "type": "golden_acorn",
+          "value": 5
+        }
+      ],
+      "chapters": [
+        {
+          "id": "story_after_lizardman_swamp_1",
+          "text": "リザードマンの沼砦を制圧した。毒を塗った刃。泥に身を沈めて待つ伏兵。夜の水音に紛れる足取り。ゴブリンたちは、正面から殴る以外の戦い方を覚えた。\n\n沼王は、最後の一撃を受ける前に槍を水へ沈めた。「沼の掟は一つ。強い流れには、逆らわぬことだ」\n\nただし降伏の条件に、一つだけ約束を求めた。沼を涸らさぬこと。卵の眠る水を、戦で汚さぬこと。マルクは頷いた。約束が、また一つ増えた。"
+        },
+        {
+          "id": "story_after_lizardman_swamp_2",
+          "text": "それでも、辺境の城はまだ遠い。\n\n人間に本気で動かれる前に、こちらから大きな戦果を見せる必要がある。村を落としただけでは、城はまだ様子を見る。だが、オークの砦まで奪えば話は変わる。\n\nマルクは進路を変えた。次はオークの本拠地を落とす。人間たちに、ゴブリンがただの魔物ではないと知らせるために。"
+        }
+      ]
+    },
+    {
+      "id": "story_after_subjugation",
+      "title": "落とせぬ城",
+      "category": "main",
+      "order": 13,
+      "unlockCondition": {
+        "type": "dungeon_cleared",
+        "dungeonId": "subjugation_force_1"
+      },
+      "rewards": [
+        {
+          "type": "golden_acorn",
+          "value": 5
+        },
+        {
+          "type": "named_goblin_skill",
+          "value": "gido_no_ishi"
+        }
+      ],
+      "chapters": [
+        {
+          "id": "story_after_subjugation_1",
+          "text": "村を焼き、砦を奪った借りを取り立てに、人間の軍が来た。\n\n整った隊列。揃った武具。号令ひとつで向きを変える槍の壁。森の獣とも、オークとも違う。数ではなく、形で戦う集団だった。先頭では、いつかの若い斥候が地図を広げていた。\n\nマルクは悟った。人間の強さは、一人一人の強さではない。これが、軍というものだった。"
+        },
+        {
+          "id": "story_after_subjugation_2",
+          "text": "勝った。狼が槍の壁の背後を食い破り、毒が隊列を崩し、夜が人間の眼を奪った。討伐隊は半分になって東へ逃げた。\n\nだが夜明け、ギドが冷たくなっていた。槍衾から若い個体を突き飛ばして庇い、腹を貫かれていた。夜通しいつもの悪態をつき続け、朝には静かになっていた。\n\nマルクは初めて知った。勝ちにも、値段がある。"
+        },
+        {
+          "id": "story_after_subjugation_3",
+          "text": "辺境の城は門を閉ざした。野戦で勝つ力は得た。だが、石の壁を崩す力はまだない。攻めれば、ギドと同じ骸が山になる。\n\nもう誰も使い潰させない。そのために城を落とし、人間が二度と来られない場所を作る。\n\n湿原の先、蜘蛛影の森。アラクネの知恵と巣網の力が要る。マルクは軍を返した。"
+        }
+      ]
+    },
+    {
+      "id": "interlude_capital_report",
+      "title": "王都の嗤い",
+      "category": "main",
+      "order": 14,
+      "unlockCondition": {
+        "type": "dungeon_cleared",
+        "dungeonId": "subjugation_force_1"
+      },
+      "rewards": [
+        {
+          "type": "golden_acorn",
+          "value": 5
+        }
+      ],
+      "chapters": [
+        {
+          "id": "interlude_capital_report_1",
+          "text": "――王都。\n\n討伐隊敗北の報は、早馬で三日を駆けて王都へ届いた。評議の間は、笑いから始まった。ゴブリン相手に隊を潰すとは、辺境の兵はよほど鈍っている、と。\n\nだが書記官が地図に印を打つたび、笑いは消えていった。廃村、街道、オークの砦、そして討伐隊。印は、一つの意思で線につながっていた。"
+        },
+        {
+          "id": "interlude_capital_report_2",
+          "text": "「魔物は、地図を持たぬはずだ」と誰かが言った。誰も答えなかった。\n\n王城の中庭では、焼けた辺境の村から拾われた少年が、騎士たちに混じって剣を振っていた。折れた剣を、まだ捨てずに腰に下げていた。\n\n名を、アレンといった。"
+        }
+      ]
+    },
+    {
+      "id": "story_after_spider_forest",
+      "title": "巣森の盟約",
+      "category": "main",
+      "order": 15,
+      "unlockCondition": {
+        "type": "dungeon_cleared",
+        "dungeonId": "spider_forest_1"
+      },
+      "rewards": [
+        {
+          "type": "golden_acorn",
+          "value": 5
+        }
+      ],
+      "chapters": [
+        {
+          "id": "story_after_spider_forest_1",
+          "text": "蜘蛛影の森では、枝の一本、影の一つまでが女王の目だった。\n\n課されたのは、糸を焼かず、巣を壊さず、女王の間へ辿り着くこと。力ずくで押し入る者を、この森は静かに食ってきた。\n\nゴブリンたちは狩りで覚えた足で糸を跨ぎ、夜の眼で影を読み、三日かけて森の心臓へ辿り着いた。"
+        },
+        {
+          "id": "story_after_spider_forest_2",
+          "text": "女王アラクネは、糸の玉座からマルクを見下ろした。「お前たちは、喰らい尽くす側か。それとも、巣を張る側か」\n\nマルクは考え、答えた。奪われない場所が欲しい。仲間が朝までいる巣が欲しい。\n\n「それを人間の言葉で、国と呼ぶ」女王は嗤い、盟約を結んだ。蜘蛛は森を出ない。だが、糸と知恵は貸そう。糸は、城の壁をも縛る。"
+        }
+      ]
+    },
+    {
+      "id": "story_after_dead_grave",
+      "title": "墓原の先",
+      "category": "main",
+      "order": 16,
+      "unlockCondition": {
+        "type": "dungeon_cleared",
+        "dungeonId": "dead_grave_1"
+      },
+      "rewards": [
+        {
+          "type": "golden_acorn",
+          "value": 5
+        }
+      ],
+      "chapters": [
+        {
+          "id": "story_after_dead_grave_1",
+          "text": "死霊の墓原を越えた。腕が落ちても、骨だけになっても前へ出てくる亡者の群れ。軍は、消耗戦に耐える胆力を得た。\n\n骸の中に、ゴブリンの小さな骨が混じっていた。いつの時代の、どこの群れかも分からない。使い潰されて、ここまで流れてきたのだろう。マルクは骨を拾わせ、土に埋めさせた。\n\n断崖への道が開けた。次に要るのは、空だ。"
+        }
+      ]
+    },
+    {
+      "id": "story_after_harpy_cliff",
+      "title": "空を得る",
+      "category": "main",
+      "order": 17,
+      "unlockCondition": {
+        "type": "dungeon_cleared",
+        "dungeonId": "harpy_cliff_1"
+      },
+      "rewards": [
+        {
+          "type": "golden_acorn",
+          "value": 5
+        }
+      ],
+      "chapters": [
+        {
+          "id": "story_after_harpy_cliff_1",
+          "text": "風切りの断崖のハーピィたちは、最初、巣を狙う獣としてマルクたちを襲った。爪と、歌と、風。地を這う者に、空は遠かった。\n\nだが女王の翼の付け根には、古い火傷があった。人間が巣を焼いた痕だという。空を焼かれた者と、地を奪われた者。話は、そこから通じた。\n\n「城壁の上の人間は、空を見ない」と女王は言った。空を分け合う約束と引き換えに、群れは初めて、空の目と翼を得た。"
+        }
+      ]
+    },
+    {
+      "id": "story_after_margrave_sortie",
+      "title": "老将の槍",
+      "category": "main",
+      "order": 18,
+      "unlockCondition": {
+        "type": "dungeon_cleared",
+        "dungeonId": "margrave_sortie_1"
+      },
+      "rewards": [
+        {
+          "type": "golden_acorn",
+          "value": 5
+        }
+      ],
+      "chapters": [
+        {
+          "id": "story_after_margrave_sortie_1",
+          "text": "断崖を越えた軍の前に、辺境の城の軍旗が並んでいた。老いた辺境伯グレアムは、城壁の陰で待たなかった。平原に槍衾を敷き、自ら先頭で馬を止めていた。\n\n籠もれば城は落ちない、と誰もが言った。それでも老将は打って出た。城の中には、村々から逃げてきた民がいる。壁の内で戦えば、民が死ぬ。\n\n槍の壁は厚く、騎兵は速かった。ゴブリンの軍は初めて、「守るために攻める人間」と戦った。"
+        },
+        {
+          "id": "story_after_margrave_sortie_2",
+          "text": "空からハーピィが陣形を暴き、狼が側面を裂き、糸が騎兵の脚を縛った。日が傾くころ、辺境伯軍は隊列を保ったまま城へ退いた。敗走ではなかった。一兵も置き去りにしない、見事な退き際だった。\n\n殿には、あの斥候がいた。ロラン。オークの野営地から生きて戻った男は、もう震えていなかった。\n\nマルクは追撃を止めた。あの退き方は、群れを使い潰さない者の退き方だ。敵の中に、初めて同じものを見た。"
+        }
+      ]
+    },
+    {
+      "id": "story_after_fortress",
+      "title": "西方防衛線の崩壊",
+      "category": "main",
+      "order": 19,
+      "unlockCondition": {
+        "type": "dungeon_cleared",
+        "dungeonId": "human_fortress_1"
+      },
+      "rewards": [
+        {
+          "type": "golden_acorn",
+          "value": 5
+        }
+      ],
+      "chapters": [
+        {
+          "id": "story_after_fortress_1",
+          "text": "夜、糸が先に城へ登った。壁の弩を縛り、鐘の縄を切り、門の閂に絡みつく。\n\n風が鳴り、ハーピィが火を落とす。狼が崩れた門を駆け、亡者が矢を受けながら進み、その背後をゴブリンの軍が埋めた。走る力、毒、糸、空、死ににくさ。奪い、借り、約束してきた全てが、一つの夜に束ねられた。\n\n辺境の城は、夜明けを待たずに落ちた。"
+        },
+        {
+          "id": "story_after_fortress_2",
+          "text": "本丸の広間で、老いた辺境伯グレアムは、最後まで椅子から動かなかった。剣を抜き、しかし振るわず、攻め込んだマルクを長いあいだ見ていた。\n\n「……獣の目では、ないな」それが、マルクには聞き取れなかった言葉だった。老将は、剣を床に置いた。\n\nマルクは辺境伯を殺さず、城の民とともに東へ去らせた。皆殺しにするために来たのではない。ここは今日から、ゴブリンの生きる場所だ。"
+        },
+        {
+          "id": "story_after_fortress_3",
+          "text": "東へ落ちていく人間の列は、何度も振り返りながら、口々に何かを言った。その言葉は、後に王都まで届くことになる。\n\n――あれは獣の群れではない。あれには、王がいる。\n\n最初にマルクを王と呼んだのは、ゴブリンではなく人間だった。そして王都への街道を見下ろす古城には、夜より濃い気配が巣くっていた。"
+        }
+      ]
+    },
+    {
+      "id": "story_after_fortress_defense",
+      "title": "守る側の壁",
+      "category": "main",
+      "order": 20,
+      "unlockCondition": {
+        "type": "dungeon_cleared",
+        "dungeonId": "fortress_defense_1"
+      },
+      "rewards": [
+        {
+          "type": "golden_acorn",
+          "value": 5
+        }
+      ],
+      "chapters": [
+        {
+          "id": "story_after_fortress_defense_1",
+          "text": "城を落として初めての雨が上がった朝、東の地平に王国の軍旗が並んだ。奪還軍。落とされた城を取り戻しに来た、王国の正規軍だった。\n\nゴブリンたちは顔を見合わせた。攻めるのではない。この壁を、今度は守るのだ。\n\nマルクは城壁に立った。いつか人間がそうしていた場所に。石の壁は、守る側に立つと、まるで違うものに見えた。"
+        },
+        {
+          "id": "story_after_fortress_defense_2",
+          "text": "先鋒を率いるのは、騎士の装いのロランだった。斥候だった男は、剣を取ることを覚えていた。\n\n糸が弩を縛り、空から岩が落ち、狼が夜襲の背後を食い破る。三日三晩の攻防の末、奪還軍は東へ退いた。\n\n退いていく列の中に、白い装いの若い騎士がいた。腰に、折れた剣を下げていた。城壁の上のマルクを、その眼だけが最後まで見ていた。"
+        },
+        {
+          "id": "story_after_fortress_defense_3",
+          "text": "――退却の陣中。\n\n「なぜ追ってこない」と若い騎士が訊いた。ロランは答えた。「あれは、獲るために戦う。殺すためには戦わん。……我々とは、戦の理由が違うのだ」\n\n若い騎士は、折れた剣の柄を握った。アレン。焼けた村の生き残りは、まだ何も言わなかった。"
+        }
+      ]
+    },
+    {
+      "id": "story_after_vampire",
+      "title": "王都への道",
+      "category": "main",
+      "order": 21,
+      "unlockCondition": {
+        "type": "dungeon_cleared",
+        "dungeonId": "vampire_castle_1"
+      },
+      "rewards": [
+        {
+          "type": "golden_acorn",
+          "value": 5
+        }
+      ],
+      "chapters": [
+        {
+          "id": "story_after_vampire_1",
+          "text": "街道を見下ろす古城の主は、戦う前に晩餐へ招いてきた。\n\n「夜の眷属となれ、ゴブリンの王よ。人間の国など、百年も待てば勝手に崩れる」\n\nマルクは断った。百年待てば、仲間はみな死んでいる。ゴブリンの命は、待つようにはできていない。ヴァンパイアは嗤い、晩餐の間の蝋燭が一斉に消えた。"
+        },
+        {
+          "id": "story_after_vampire_2",
+          "text": "夜通しの死闘の果てに、ヴァンパイアは灰になりながら嗤った。\n\n「その力……どこで拾った? 北の山の向こうで、同じ眼を見たことがある。喰らって、取り込んで、際限なく膨らんでいく眼だ。お前は、あの方の――」\n\n答えを聞く前に、灰は風に散った。遠くに王都の城壁が見える。マルクの中で、因子が微かに疼いた。"
+        }
+      ]
+    },
+    {
+      "id": "interlude_last_blade",
+      "title": "最後の刃",
+      "category": "main",
+      "order": 22,
+      "unlockCondition": {
+        "type": "dungeon_cleared",
+        "dungeonId": "vampire_castle_1"
+      },
+      "rewards": [
+        {
+          "type": "golden_acorn",
+          "value": 5
+        }
+      ],
+      "chapters": [
+        {
+          "id": "interlude_last_blade_1",
+          "text": "――王都、決戦前夜。\n\n城壁の上で、ロランは西の地平を見ていた。オークの野営地で震えて逃げた日から、ずっとあの眼を追いかけてきた。誰よりも早く「軍だ」と言い、誰にも信じられず、そして全てその通りになった。\n\n「勝てると思うか」と、隣に立った若い騎士が訊いた。白い装いに、真っ直ぐな剣。国中の希望を背負わされた、勇者と呼ばれる青年だった。"
+        },
+        {
+          "id": "interlude_last_blade_2",
+          "text": "ロランは正直に答えた。「分からん。だが、あれは殺すために来るのではない。生きる場所を取りに来るのだ。……我々が、奴らの森を魔物の土地と呼んで、焼いてきたようにな」\n\nアレンは黙って、折れた剣の柄を握った。故郷を焼いた炎と、あの日のゴブリンの眼を、忘れたことはない。\n\n夜明けとともに、鐘が鳴る。"
+        }
+      ]
+    },
+    {
+      "id": "story_after_royal_field",
+      "title": "約束の旗",
+      "category": "main",
+      "order": 23,
+      "unlockCondition": {
+        "type": "dungeon_cleared",
+        "dungeonId": "royal_field_battle_1"
+      },
+      "rewards": [
+        {
+          "type": "golden_acorn",
+          "value": 5
+        }
+      ],
+      "chapters": [
+        {
+          "id": "story_after_royal_field_1",
+          "text": "王都を望む大平原に、王国の全軍が戦列を敷いていた。中央に立つ軍旗は、元帥ガリウス。建国以来、野戦で負けを知らぬと謳われた老元帥だった。\n\n「魔物の群れなど、平原では槍の的よ」――元帥の兵法は正しい。相手が、ただの群れであれば。\n\nマルクは丘の上で軍を止め、後ろを振り返った。そこにいるのは、もうゴブリンだけではなかった。"
+        },
+        {
+          "id": "story_after_royal_field_2",
+          "text": "狼が左翼を駆け、リザードマンが川を渡り、ミノタウロスの膂力が戦列の中央を割った。空はハーピィのもので、崩れた隊列の脚を蜘蛛の糸が縛る。ドワーフの鍛えた刃が、王国の盾を斬り開いた。\n\n沼を涸らさない。丘を守る。火を絶やさない。空を分け合う。――交わしてきた約束の一つ一つが、この平原で旗になって翻っていた。\n\n元帥ガリウスは本陣で剣を杖に立ち尽くし、やがて静かに兜を脱いだ。「……群れではない。あれは、国だ」"
+        },
+        {
+          "id": "story_after_royal_field_3",
+          "text": "会戦は一日で終わった。王国が野で戦える軍は、もうない。残るは王都の壁と、その中の玉座だけだ。\n\nマルクは平原の骸を、人間もゴブリンも分けずに埋めさせた。墓原でドマと同じ骨を拾ったときから、それは変わらない。\n\n城壁の上から、無数の眼がそれを見ていた。王都の鐘が、長く、低く鳴った。"
+        }
+      ]
+    },
+    {
+      "id": "story_after_royal_capital_2",
+      "title": "最後の試練",
+      "category": "main",
+      "order": 24,
+      "unlockCondition": {
+        "type": "dungeon_cleared",
+        "dungeonId": "royal_capital_2"
+      },
+      "rewards": [
+        {
+          "type": "golden_acorn",
+          "value": 5
+        }
+      ],
+      "chapters": [
+        {
+          "id": "story_after_royal_capital_2_1",
+          "text": "王城の内部を制圧した。しかし、玉座への道は開かない。王国は、最後の鎖を解いた。\n\n建国の王が、王都の地下深くの火脈に封じたという竜。解き放たれた竜は王都を焼かず、地の底の火の巣へと潜り、炎の奥からマルクたちを誘った。\n\n「久しいな、この匂い」と、炎の中で声がした。「喰らう者の匂いだ。北の御方と、同じ匂いがする」――玉座への道は、この巣の先にしかない。"
+        }
+      ]
+    },
+    {
+      "id": "story_ending",
+      "title": "ゴブリンキングダム",
+      "category": "main",
+      "order": 25,
+      "unlockCondition": {
+        "type": "dungeon_cleared",
+        "dungeonId": "royal_capital_3"
+      },
+      "rewards": [
+        {
+          "type": "golden_acorn",
+          "value": 5
+        }
+      ],
+      "chapters": [
+        {
+          "id": "story_ending_1",
+          "text": "玉座の間の扉の前に、一人の人間が立っていた。\n\n白い装いに、真っ直ぐな剣。人間たちが最後の希望と呼び、勇者と呼ぶ刃。\n\nマルクは、その眼を覚えていた。燃える辺境の村で、折れた剣を拾って睨みつけてきた、あの子どもの眼だった。"
+        },
+        {
+          "id": "story_ending_2",
+          "text": "「俺の村を焼いたのは、お前だ」\n\nマルクは、否定しなかった。あの村は誰かの暮らす場所で、それを奪ったのは自分たちだ。恨まれるのは正しい。だから剣を受け、恨みごと受け止めて、それでも打ち倒した。\n\n勇者は膝をつき、剣は折れ、それでも眼だけは折れなかった。マルクは、とどめを刺さなかった。かつての自分と同じ眼を、この世から消したくなかった。"
+        },
+        {
+          "id": "story_ending_3",
+          "text": "人間の王は、玉座の前で問うた。「魔物に、国が治められるものか」\n\nマルクは、覚えたての人間の言葉で答えた。お前たちは、俺たちを使い潰した。俺は、使い潰さない。それだけだ。\n\n王は何かを言いかけ、やめ、王冠を床に置いた。長い戦いが、終わった。"
+        },
+        {
+          "id": "story_ending_4",
+          "text": "玉座に座ったとき、マルクが思い出していたのは、森の端の小さな洞窟だった。戻らなかったドマ。悪態をついて死んだギド。欲しかったのは玉座ではない。仲間が朝までいる場所だった。\n\n振り返れば、国とは約束の束だった。使い潰さない。沼を涸らさない。丘を守る。火を絶やさない。空を分け合う。――その束の一番上に、今日、人間との約束が載る。\n\nラグが、次いで群れの全員が、マルクを王と呼んだ。ゴブリンキングダムが、生まれた。"
+        },
+        {
+          "id": "story_ending_5",
+          "text": "その夜、北の空が、微かに赤かった。\n\n北方大山脈の向こう。灰になった夜の主が言い残し、炎の底の竜が懐かしんだ、「北の御方」のいる場所。\n\n風に乗って、何かの視線がマルクの因子に触れた気がした。――見つけた、と。\n\nゴブリンキングダムの物語は、まだ終わらない。"
+        }
+      ]
+    },
+    {
+      "id": "side_orc_fortress",
+      "title": "オークの本拠地",
+      "category": "side",
+      "order": 103,
+      "unlockCondition": {
+        "type": "dungeon_cleared",
+        "dungeonId": "orc_fortress_1"
+      },
+      "rewards": [
+        {
+          "type": "golden_acorn",
+          "value": 5
+        }
+      ],
+      "chapters": [
+        {
+          "id": "side_orc_fortress_1",
+          "text": "オークの砦を攻略した。\n\n厚い門を破り、見張り台を焼き、奥にいたオークの長を引きずり下ろした。狼の速さと、湿地で覚えた夜襲がなければ落とせなかった拠点だ。\n\nマルクの群れは、オークの武器と重い鎧を奪った。ゴブリンたちはそれをうまく扱えない。それでも、奪ったものを身につけた姿は、もう森の弱い群れには見えなかった。"
+        },
+        {
+          "id": "side_orc_fortress_2",
+          "text": "砦の煙は遠くからも見えた。\n\n辺境の村を落としたゴブリンが、今度はオークの砦まで奪った。その知らせは、逃げた人間と煙の両方で辺境の城へ届く。\n\nマルクは分かっていた。次は人間が来る。こちらから探しに行かなくても、武器を持った人間たちが、ゴブリンを殺すためにやって来る。"
+        },
+        {
+          "id": "side_orc_fortress_3",
+          "text": "砦に残ったオークの若い衆は、去らなかった。オークは、勝った者に従う。\n\nゴブリンの旗の下に、初めて別の種族が並んだ日だった。群れは、もうゴブリンだけのものではない。\n\nマルクはまだ知らない。それが、国というものの始まりだということを。"
+        }
+      ]
+    },
+    {
+      "id": "side_hobbit_hills",
+      "title": "丘陵の民",
+      "category": "side",
+      "order": 104,
+      "unlockCondition": {
+        "type": "dungeon_cleared",
+        "dungeonId": "hobbit_hills_1"
+      },
+      "rewards": [
+        {
+          "type": "golden_acorn",
+          "value": 5
+        }
+      ],
+      "chapters": [
+        {
+          "id": "side_hobbit_hills_1",
+          "text": "丘陵の村に攻め入ったとき、ホビットたちは戦わなかった。\n\n長老は麦酒と焼き菓子を並べ、マルクに問うた。「あんたたちは、畑を焼く側かね。それとも、守る側かね」――奪う前に問われたのは、初めてだった。\n\n群れはこの村から食料と斥候の術を得る。代わりに、丘を荒らす魔物と人間の徴税人から村を守る。ゴブリンが初めて交わした、守るための約束だった。"
+        }
+      ]
+    },
+    {
+      "id": "side_dwarf_mine",
+      "title": "鍛冶王の遺産",
+      "category": "side",
+      "order": 105,
+      "unlockCondition": {
+        "type": "dungeon_cleared",
+        "dungeonId": "dwarf_mine_1"
+      },
+      "rewards": [
+        {
+          "type": "golden_acorn",
+          "value": 5
+        }
+      ],
+      "chapters": [
+        {
+          "id": "side_dwarf_mine_1",
+          "text": "坑道の最深部で、鍛冶王は金槌を杖にして立っていた。もう勝敗は決していた。それでも老ドワーフは、炉の前を譲らなかった。\n\n「腕ずくで技は奪えん。技は、手が覚えるもんだ。持って行けるもんなら、持って行ってみろ」\n\nマルクは武器を下ろし、取引を持ちかけた。坑道を蝕む魔物は我らが払う。火を絶やさぬと約束する。だから、鍛え方を教えろ。鍛冶王は長く黙り、それから初めてゴブリンに炉の前を譲った。「……まず火を見ろ。話はそれからだ」"
+        }
+      ]
+    },
+    {
+      "id": "side_elf_forest",
+      "title": "森の民の問い",
+      "category": "side",
+      "order": 106,
+      "unlockCondition": {
+        "type": "dungeon_cleared",
+        "dungeonId": "elf_forest_1"
+      },
+      "rewards": [
+        {
+          "type": "golden_acorn",
+          "value": 5
+        }
+      ],
+      "chapters": [
+        {
+          "id": "side_elf_forest_1",
+          "text": "隠れ里の最奥で、エルフの長は矢を収めさせた。戦って勝てぬからではない。マルクの中に視えたものが、戦いよりも重かったからだ。\n\n「その身の内のもの、どこまでが自分か、分かっているのか」長はマルクの因子を視ていた。喰らい、取り込み、群れへ波及させる力。かつて北の果てで、その力を極め尽くした者がいたという。人間たちはそれを、魔王と呼んだ。\n\n「お前は王になるのか。それとも、ただの喰らう者になるのか」――古代魔法の知識とともに、マルクは答えのない問いを持ち帰った。"
+        }
+      ]
+    },
+    {
+      "id": "side_lizardman_swamp",
+      "title": "濁らぬ流れ",
+      "category": "side",
+      "order": 107,
+      "unlockCondition": {
+        "type": "dungeon_cleared",
+        "dungeonId": "lizardman_swamp_1"
+      },
+      "rewards": [
+        {
+          "type": "golden_acorn",
+          "value": 5
+        }
+      ],
+      "chapters": [
+        {
+          "id": "side_lizardman_swamp_1",
+          "text": "沼砦のリザードマンたちは、約束が守られているか、時おり岸から群れを窺った。\n\n戦のあとも、沼の水は濁らなかった。卵は孵り、幼体は泳ぎ、ゴブリンは水を汲むだけで去っていく。\n\n沼王は呟いた。「強い流れは、いくつも見てきた。濁らぬ流れは、初めてだ」"
+        }
+      ]
+    },
+    {
+      "id": "side_troll_canyon",
+      "title": "峡谷の暴君",
+      "category": "side",
+      "order": 108,
+      "unlockCondition": {
+        "type": "dungeon_cleared",
+        "dungeonId": "troll_canyon_1"
+      },
+      "rewards": [
+        {
+          "type": "golden_acorn",
+          "value": 5
+        }
+      ],
+      "chapters": [
+        {
+          "id": "side_troll_canyon_1",
+          "text": "トロルの暴君は、何度倒れても立ち上がった。潰れた骨が鳴りながら戻り、裂けた肉がその場で閉じる。\n\n決着は力ではなく、根競べだった。再生が追いつかなくなるまで、群れは交代で立ち向かい続けた。丸一日かけて、峡谷は静かになった。\n\n得たのは、痛みを忘れる因子だった。マルクはその力を手にして、少しだけ怖くなった。痛みを忘れた群れは、止まるべき場所でも、どこまでも進んでしまう。"
+        }
+      ]
+    },
+    {
+      "id": "side_minotaur",
+      "title": "迷宮の主",
+      "category": "side",
+      "order": 109,
+      "unlockCondition": {
+        "type": "dungeon_cleared",
+        "dungeonId": "minotaur_labyrinth_1"
+      },
+      "rewards": [
+        {
+          "type": "golden_acorn",
+          "value": 5
+        }
+      ],
+      "chapters": [
+        {
+          "id": "side_minotaur_1",
+          "text": "迷宮の主は、群れで攻め入ったマルクたちを嗤った。「王を名乗るなら、一人で来い」\n\nマルクは一人で角の前に立った。三度倒され、四度目に斧の風を潜り、額を打った。ミノタウロスは膝をつき、初めて敵に名を訊いた。\n\n迷宮の民は、強さにしか従わない。以後、その膂力は城門を破る先陣となる。"
+        }
+      ]
+    },
+    {
+      "id": "side_harpy_cliff",
+      "title": "焼かれた翼",
+      "category": "side",
+      "order": 110,
+      "unlockCondition": {
+        "type": "dungeon_cleared",
+        "dungeonId": "harpy_cliff_1"
+      },
+      "rewards": [
+        {
+          "type": "golden_acorn",
+          "value": 5
+        }
+      ],
+      "chapters": [
+        {
+          "id": "side_harpy_cliff_1",
+          "text": "崖巣の岩壁には、煤の痕が残っていた。\n\n何年も前、人間の討伐隊が油を撃ち込み、巣ごと焼いたのだという。女王の翼の火傷はそのときのもので、焼け跡からは、孵らなかった卵の殻が今も出てくる。\n\n「空は誰のものでもない。だが、巣は違う」女王はそう言って、断崖の風にゴブリンの旗が揺れるのを、黙って眺めていた。"
+        }
+      ]
+    },
+    {
+      "id": "side_swamp_defense",
+      "title": "濁らぬ流れ",
+      "category": "side",
+      "order": 111,
+      "unlockCondition": {
+        "type": "dungeon_cleared",
+        "dungeonId": "swamp_defense_1"
+      },
+      "rewards": [
+        {
+          "type": "golden_acorn",
+          "value": 5
+        }
+      ],
+      "chapters": [
+        {
+          "id": "side_swamp_defense_1",
+          "text": "王国の懲罰隊は、沼に火と毒を投げ込みに来た。戦って勝てぬなら、水を殺す。卵の眠る水を。\n\n報せを受けたマルクは、その日のうちに軍を返した。沼王ザールは何も言わず、ただマルクの隣に槍を並べた。約束を確かめる言葉は、要らなかった。\n\n懲罰隊が退いたあと、沼の水は濁らず、卵は静かに孵った。「強い流れは、いくつも見た」と沼王は言った。「戻ってくる流れは、初めてだ」"
+        }
+      ]
+    },
+    {
+      "id": "side_harpy_defense",
+      "title": "空の借り",
+      "category": "side",
+      "order": 112,
+      "unlockCondition": {
+        "type": "dungeon_cleared",
+        "dungeonId": "harpy_defense_1"
+      },
+      "rewards": [
+        {
+          "type": "golden_acorn",
+          "value": 5
+        }
+      ],
+      "chapters": [
+        {
+          "id": "side_harpy_defense_1",
+          "text": "鷹匠隊の火矢が、断崖の巣を焼きに来た。女王の翼に火傷を残した、あの火が、もう一度。\n\nだが今度は、崖の下にゴブリンがいた。岩陰から矢を射落とし、崖を登る強襲兵を狩り、火のついた巣に泥をかけた。空を分け合う約束は、巣を守る約束でもあった。\n\n戦いのあと、女王は言った。「空の借りは、空で返す」。以後、ハーピィの偵察は、頼まれずとも軍の先を飛ぶようになった。"
+        }
+      ]
+    },
+    {
+      "id": "side_hobbit_defense",
+      "title": "丘の約束",
+      "category": "side",
+      "order": 113,
+      "unlockCondition": {
+        "type": "dungeon_cleared",
+        "dungeonId": "hobbit_hills_defense_1"
+      },
+      "rewards": [
+        {
+          "type": "golden_acorn",
+          "value": 5
+        }
+      ],
+      "chapters": [
+        {
+          "id": "side_hobbit_defense_1",
+          "text": "王国の徴税官は、羊皮紙と、雇われの剣を連れて丘へ来た。戦時特別税。読めない文字の並んだ紙が、村の倉を空にする力を持っているという。\n\n長老は麦酒を出さなかった。代わりに、丘の向こうへ使いを走らせた。約束は、試される日のためにある。\n\n取り立ての剣がゴブリンの壁に阻まれて逃げ帰ったあと、長老は倉から一番いい麦酒を出した。「守る側だったね、あんたたちは」"
+        }
+      ]
+    },
+    {
+      "id": "side_dwarf_purge",
+      "title": "火を守る者",
+      "category": "side",
+      "order": 114,
+      "unlockCondition": {
+        "type": "dungeon_cleared",
+        "dungeonId": "dwarf_mine_purge_1"
+      },
+      "rewards": [
+        {
+          "type": "golden_acorn",
+          "value": 5
+        }
+      ],
+      "chapters": [
+        {
+          "id": "side_dwarf_purge_1",
+          "text": "坑道の最深部で蟲が湧いた。岩を喰い、坑木を齧り、炉へ風を送る道を塞ぐ。火が細れば、鍛冶は死ぬ。\n\n鍛冶王バルガムは、金槌を置かずに言った。「取引だ。蟲を払え。火は俺が守る」。マルクは頷き、狭い闇へ兵を入れた。\n\n大百足の骸を引き出した日、炉の火は一度も細らなかった。バルガムは初めて、ゴブリンの武器を無言で打ち直した。それが、ドワーフの礼だった。"
+        }
+      ]
+    },
+    {
+      "id": "side_shadow_cat_ruins",
+      "title": "月影の契約",
+      "category": "side",
+      "order": 120,
+      "unlockCondition": {
+        "type": "purchase",
+        "entitlementId": "shadow_cat_side_story"
+      },
+      "rewards": [],
+      "chapters": [
+        {
+          "id": "side_shadow_cat_ruins_1",
+          "text": "夜の森で、マルクは薄い爪痕のついた石板を拾った。\n\n石板には猫獣人の古い紋様が刻まれていた。獣の気配は近いのに、足音はない。見張りのゴブリンたちは、何かに見られていると怯えた。"
+        },
+        {
+          "id": "side_shadow_cat_ruins_2",
+          "text": "石板を追うと、月明かりの下に埋もれた遺跡が現れた。\n\nそこは猫獣人が影を鍛えた場所だという。影を奪えれば、ゴブリンにも夜を走る力が宿るかもしれない。\n\nマルクは斥候を集め、遺跡への道を開いた。"
+        }
+      ]
+    },
+    {
+      "id": "side_shadow_cat_cleared",
+      "title": "月影の血脈",
+      "category": "side",
+      "order": 121,
+      "unlockCondition": {
+        "type": "dungeon_cleared",
+        "dungeonId": "cat_fortress_1"
+      },
+      "rewards": [
+        {
+          "type": "goblin",
+          "value": "shadow"
+        },
+        {
+          "type": "golden_acorn",
+          "value": 5
+        }
+      ],
+      "chapters": [
+        {
+          "id": "side_shadow_cat_cleared_1",
+          "text": "猫獣人の影遺跡を制圧した。\n\n倒れた遺跡主の影は、月明かりに溶けず、マルクの足元へ流れ込んだ。影は爪となり、耳となり、夜を見通す感覚となって残った。"
+        },
+        {
+          "id": "side_shadow_cat_cleared_2",
+          "text": "石板に刻まれた爪痕は、猫獣人が影と血を混ぜて力を継がせた証だった。\n\nこの因子を得たゴブリンは、夜を駆ける獣の影をまとい、シャドウゴブリンへ変わる可能性を持つ。"
+        }
+      ]
+    },
+    {
+      "id": "side_necromancer_crypt",
+      "title": "死霊術師の禁書",
+      "category": "side",
+      "order": 122,
+      "unlockCondition": {
+        "type": "purchase",
+        "entitlementId": "necromancer_side_story"
+      },
+      "rewards": [],
+      "chapters": [
+        {
+          "id": "side_necromancer_crypt_1",
+          "text": "戦場跡の地下から、黒い鎖で封じられた禁書が掘り出された。\n\nページには死者の名を縛る術式がびっしりと記され、触れたゴブリンの影だけが、まるで別の意思を持つように揺れた。"
+        },
+        {
+          "id": "side_necromancer_crypt_2",
+          "text": "禁書は地下霊廟の奥から持ち出されたものだった。\n\n死者を恐れる人間たちは入口を封じたが、マルクにとっては違う。眠る死者も、縛られた影も、王国を築くための兵になり得る。\n\n死霊術を奪うため、地下霊廟への道を開いた。"
+        }
+      ]
+    },
+    {
+      "id": "side_necromancer_cleared",
+      "title": "死者を率いる者",
+      "category": "side",
+      "order": 123,
+      "unlockCondition": {
+        "type": "dungeon_cleared",
+        "dungeonId": "necromancer_crypt_1"
+      },
+      "rewards": [
+        {
+          "type": "job",
+          "value": "necromancer"
+        },
+        {
+          "type": "golden_acorn",
+          "value": 5
+        }
+      ],
+      "chapters": [
+        {
+          "id": "side_necromancer_cleared_1",
+          "text": "地下霊廟の主を倒し、禁書の封印は砕けた。\n\n死者をただ眠らせず、影で縛り、群れのためにもう一度立たせる術。その危うい知識が、ゴブリンたちの手に渡った。"
+        },
+        {
+          "id": "side_necromancer_cleared_2",
+          "text": "マルクは禁書を訓練所へ運ばせた。\n\nこれからは、死者と影を扱う術を学んだゴブリンを育てられる。ゴブリンネクロマンサーは、倒れた者すら戦力に変える新しい兵科となる。\n\n禁書の最後の頁には、北方の古い文字で署名が残されていた。読める者は、まだ群れにいない。"
+        }
+      ]
+    }
+  ]
+}

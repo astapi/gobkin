@@ -1,0 +1,232 @@
+{
+  "createdAt": "2026-06-05T01:30:38.582Z",
+  "scenario": "forest_outskirts",
+  "level": 8,
+  "config": {
+    "generations": 4,
+    "population": 12,
+    "iterations": 4,
+    "validationIterations": 40,
+    "seed": 38,
+    "cleric": "optional",
+    "jobs": [],
+    "variants": [],
+    "maxUnlockRank": 1,
+    "maxDropRank": 1,
+    "allowRare": false,
+    "availability": null
+  },
+  "insights": {
+    "winningCandidateCount": 2,
+    "frequentJobs": [],
+    "frequentVariants": [],
+    "frequentEquipment": [
+      [
+        "armor_leather_vest",
+        7
+      ],
+      [
+        "hidden_dagger",
+        4
+      ],
+      [
+        "claw_steel",
+        3
+      ],
+      [
+        "claw_beast",
+        3
+      ],
+      [
+        "gauntlet_cloth_gloves",
+        3
+      ],
+      [
+        "armor_tattered_cloth",
+        2
+      ],
+      [
+        "gauntlet_copper",
+        2
+      ],
+      [
+        "wand_apprentice",
+        2
+      ],
+      [
+        "rod_rod",
+        2
+      ],
+      [
+        "claw_copper",
+        1
+      ],
+      [
+        "armor_armor",
+        1
+      ],
+      [
+        "sword_cypress_stick",
+        1
+      ],
+      [
+        "bow_short",
+        1
+      ],
+      [
+        "gauntlet_leather",
+        1
+      ],
+      [
+        "robe_robe",
+        1
+      ],
+      [
+        "rod_wooden",
+        1
+      ],
+      [
+        "wand_twig",
+        1
+      ]
+    ]
+  },
+  "candidates": [
+    {
+      "result": {
+        "wins": 40,
+        "iterations": 40,
+        "winRate": 1,
+        "avgRoundsPerBattle": 1.0034423407917383,
+        "equipmentCost": 835,
+        "score": 999998.9965568242
+      },
+      "genome": {
+        "members": [
+          {
+            "job": null,
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "armor_tattered_cloth",
+              "gauntlet_copper",
+              "armor_leather_vest"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "wand_apprentice",
+              "claw_copper",
+              "claw_steel"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "hidden_dagger",
+              "claw_beast",
+              "rod_rod"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "armor_leather_vest",
+              "armor_leather_vest",
+              "armor_armor"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "sword_cypress_stick",
+              "bow_short",
+              "gauntlet_leather"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "hidden_dagger",
+              "gauntlet_cloth_gloves",
+              "claw_beast"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "result": {
+        "wins": 40,
+        "iterations": 40,
+        "winRate": 1,
+        "avgRoundsPerBattle": 1.003616636528029,
+        "equipmentCost": 985,
+        "score": 999998.9963823785
+      },
+      "genome": {
+        "members": [
+          {
+            "job": null,
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "claw_steel",
+              "hidden_dagger",
+              "robe_robe"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "hidden_dagger",
+              "rod_wooden",
+              "rod_rod"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "wand_apprentice",
+              "gauntlet_cloth_gloves",
+              "claw_steel"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "armor_leather_vest",
+              "armor_leather_vest",
+              "wand_twig"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "armor_tattered_cloth",
+              "gauntlet_copper",
+              "armor_leather_vest"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "armor_leather_vest",
+              "gauntlet_cloth_gloves",
+              "claw_beast"
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

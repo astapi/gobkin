@@ -1,0 +1,437 @@
+{
+  "enemies": [
+    {
+      "id": "NCM001",
+      "name": "影骨兵",
+      "attackType": "melee",
+      "raceTags": [
+        "undead"
+      ],
+      "level": 64,
+      "hp": 2550,
+      "atk": 105,
+      "def": 48,
+      "attackCount": 2,
+      "accuracy": 1125,
+      "evasion": 395,
+      "gold": 528,
+      "magicDef": 48,
+      "baseAttributes": {
+        "power": 23,
+        "wisdom": 23,
+        "spirit": 10,
+        "vitality": 20,
+        "agility": 35,
+        "luck": 15
+      }
+    },
+    {
+      "id": "NCM002",
+      "name": "魂縛りの亡者",
+      "attackType": "melee",
+      "raceTags": [
+        "undead"
+      ],
+      "level": 64,
+      "hp": 2380,
+      "atk": 87,
+      "def": 42,
+      "attackCount": 1,
+      "accuracy": 1114,
+      "evasion": 344,
+      "gold": 496,
+      "magicDef": 42,
+      "baseAttributes": {
+        "power": 18,
+        "wisdom": 18,
+        "spirit": 10,
+        "vitality": 18,
+        "agility": 28,
+        "luck": 13
+      }
+    },
+    {
+      "id": "NCM003",
+      "name": "黒衣の怨霊",
+      "attackType": "melee",
+      "raceTags": [
+        "undead"
+      ],
+      "level": 65,
+      "hp": 2010,
+      "atk": 124,
+      "magicAtk": 109,
+      "def": 30,
+      "attackCount": 1,
+      "accuracy": 1170,
+      "evasion": 491,
+      "gold": 592,
+      "magicDef": 36,
+      "baseAttributes": {
+        "power": 25,
+        "wisdom": 23,
+        "spirit": 8,
+        "vitality": 13,
+        "agility": 45,
+        "luck": 20
+      }
+    },
+    {
+      "id": "NCM004",
+      "name": "墓所の骨弓兵",
+      "attackType": "range",
+      "raceTags": [
+        "undead"
+      ],
+      "level": 65,
+      "hp": 2440,
+      "atk": 136,
+      "def": 42,
+      "attackCount": 2,
+      "accuracy": 1204,
+      "evasion": 468,
+      "gold": 608,
+      "magicDef": 48,
+      "baseAttributes": {
+        "power": 28,
+        "wisdom": 28,
+        "spirit": 10,
+        "vitality": 18,
+        "agility": 43,
+        "luck": 18
+      }
+    },
+    {
+      "id": "NCM005",
+      "name": "禁術の屍鬼",
+      "attackType": "melee",
+      "raceTags": [
+        "undead"
+      ],
+      "level": 66,
+      "hp": 3400,
+      "atk": 167,
+      "def": 66,
+      "attackCount": 2,
+      "accuracy": 1215,
+      "evasion": 384,
+      "gold": 656,
+      "magicDef": 60,
+      "baseAttributes": {
+        "power": 35,
+        "wisdom": 35,
+        "spirit": 13,
+        "vitality": 28,
+        "agility": 30,
+        "luck": 15
+      }
+    },
+    {
+      "id": "B_NECROMANCER_ARCHON",
+      "name": "霊廟の主モルデュス",
+      "attackType": "melee",
+      "raceTags": [
+        "undead"
+      ],
+      "level": 70,
+      "hp": 7090,
+      "atk": 186,
+      "magicAtk": 134,
+      "def": 84,
+      "attackCount": 3,
+      "accuracy": 1429,
+      "evasion": 439,
+      "isBoss": true,
+      "gold": 3200,
+      "magicDef": 96,
+      "baseAttributes": {
+        "power": 38,
+        "wisdom": 28,
+        "spirit": 20,
+        "vitality": 35,
+        "agility": 25,
+        "luck": 23
+      }
+    }
+  ],
+  "patterns": [
+    {
+      "id": "NECROMANCER_CRYPT_1_DG1_001",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "NCM001",
+          "NCM001"
+        ]
+      ]
+    },
+    {
+      "id": "NECROMANCER_CRYPT_1_DG1_002",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "NCM002"
+        ],
+        [
+          "NCM001",
+          "NCM001"
+        ]
+      ]
+    },
+    {
+      "id": "NECROMANCER_CRYPT_1_DG1_003",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "NCM001",
+          "NCM002"
+        ],
+        [
+          "NCM003"
+        ]
+      ]
+    },
+    {
+      "id": "NECROMANCER_CRYPT_1_DG1_004",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "NCM002",
+          "NCM002"
+        ],
+        [
+          "NCM003"
+        ]
+      ]
+    },
+    {
+      "id": "NECROMANCER_CRYPT_2_DG2_001",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "NCM001",
+          "NCM003"
+        ],
+        [
+          "NCM004"
+        ]
+      ]
+    },
+    {
+      "id": "NECROMANCER_CRYPT_2_DG2_002",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "NCM003",
+          "NCM003"
+        ],
+        [
+          "NCM004"
+        ]
+      ]
+    },
+    {
+      "id": "NECROMANCER_CRYPT_2_DG2_003",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "NCM005"
+        ],
+        [
+          "NCM004",
+          "NCM003"
+        ]
+      ]
+    },
+    {
+      "id": "NECROMANCER_CRYPT_2_DG2_004",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "NCM005",
+          "NCM001"
+        ],
+        [
+          "NCM004",
+          "NCM003"
+        ]
+      ]
+    },
+    {
+      "id": "NECROMANCER_CRYPT_3_DG3_001",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "NCM004",
+          "NCM004"
+        ],
+        [
+          "NCM003"
+        ]
+      ]
+    },
+    {
+      "id": "NECROMANCER_CRYPT_3_DG3_002",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "NCM005"
+        ],
+        [
+          "NCM004",
+          "NCM003"
+        ]
+      ]
+    },
+    {
+      "id": "NECROMANCER_CRYPT_3_DG3_003",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "NCM005",
+          "NCM004"
+        ],
+        [
+          "NCM003",
+          "NCM004"
+        ]
+      ]
+    },
+    {
+      "id": "NECROMANCER_CRYPT_3_BOSS",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "B_NECROMANCER_ARCHON"
+        ],
+        [
+          "NCM005",
+          "NCM004"
+        ]
+      ],
+      "isBoss": true
+    },
+    {
+      "id": "NECROMANCER_CRYPT_1_DG1_002_F1_BOSS",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "NCM002"
+        ],
+        [
+          "NCM001",
+          "NCM001"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "NECROMANCER_CRYPT_1_DG1_003_F2_BOSS",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "NCM001",
+          "NCM002"
+        ],
+        [
+          "NCM003"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "NECROMANCER_CRYPT_2_DG2_002_F3_BOSS",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "NCM003",
+          "NCM003"
+        ],
+        [
+          "NCM004"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "NECROMANCER_CRYPT_2_DG2_004_F4_BOSS",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "NCM005",
+          "NCM001"
+        ],
+        [
+          "NCM004",
+          "NCM003"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "NECROMANCER_CRYPT_3_DG3_002_F5_BOSS",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "NCM005"
+        ],
+        [
+          "NCM004",
+          "NCM003"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "NECROMANCER_CRYPT_3_DG3_003_F6_BOSS",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "NCM005",
+          "NCM004"
+        ],
+        [
+          "NCM003",
+          "NCM004"
+        ]
+      ],
+      "isFloorBoss": true
+    }
+  ]
+}

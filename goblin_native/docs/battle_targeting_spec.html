@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>戦闘 命中・回避・ターゲット選定 仕様書</title>
+<style>
+  :root {
+    --bg: #fafaf6;
+    --ink: #1a1a1a;
+    --muted: #5b6068;
+    --line: #d8d4c4;
+    --accent: #b8463c;
+    --accent2: #2f6a48;
+    --accent3: #3a5da6;
+    --accent4: #8a5cb8;
+    --warn: #d48f1f;
+    --code-bg: #f1ede0;
+    --card: #fffdf6;
+    --negative: #c66860;
+    --positive: #2f6a48;
+    --neutral: #888;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    margin: 0;
+    line-height: 1.7;
+  }
+  .container {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 40px 28px 80px;
+  }
+  h1 {
+    font-size: 28px;
+    margin: 0 0 8px;
+    padding-bottom: 14px;
+    border-bottom: 3px solid var(--accent);
+  }
+  h2 {
+    font-size: 22px;
+    margin: 48px 0 16px;
+    padding: 8px 14px;
+    background: var(--accent);
+    color: #fff;
+    border-radius: 4px;
+  }
+  h3 {
+    font-size: 17px;
+    margin: 28px 0 10px;
+    padding-left: 12px;
+    border-left: 4px solid var(--accent2);
+  }
+  h4 {
+    font-size: 15px;
+    margin: 18px 0 8px;
+    color: var(--muted);
+  }
+  .lead {
+    color: var(--muted);
+    margin-bottom: 32px;
+  }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 18px 22px;
+    margin: 14px 0;
+  }
+  code, .formula {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    background: var(--code-bg);
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 0.94em;
+  }
+  .formula-block {
+    display: block;
+    padding: 14px 16px;
+    margin: 12px 0;
+    background: var(--code-bg);
+    border-left: 4px solid var(--accent);
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 14px;
+    white-space: pre;
+    overflow-x: auto;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0;
+    font-size: 14px;
+  }
+  th, td {
+    padding: 8px 12px;
+    border: 1px solid var(--line);
+    text-align: left;
+  }
+  th {
+    background: #ece8d6;
+    font-weight: 600;
+  }
+  td.num { text-align: right; font-variant-numeric: tabular-nums; }
+  td.center { text-align: center; }
+  .row-tank { background: #fbe9e7; }
+  .row-second { background: #fff7e8; }
+  .row-mid { background: #f4f4ef; }
+  .row-rear { background: #e7ebf7; }
+
+  ul.notes { padding-left: 20px; }
+  ul.notes li { margin: 4px 0; }
+
+  .pill {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    margin-right: 6px;
+  }
+  .pill-tank { background: #fbe6cf; color: var(--accent); }
+  .pill-info { background: #e7ebf7; color: var(--accent3); }
+  .pill-warn { background: #fbe6cf; color: var(--warn); }
+
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  @media (max-width: 720px) {
+    .grid-2 { grid-template-columns: 1fr; }
+  }
+
+  /* Bar chart */
+  .bar-row {
+    display: grid;
+    grid-template-columns: 90px 1fr 80px;
+    align-items: center;
+    gap: 10px;
+    margin: 6px 0;
+    font-size: 13px;
+  }
+  .bar-track {
+    background: #ede8d4;
+    border-radius: 3px;
+    height: 22px;
+    overflow: hidden;
+    position: relative;
+  }
+  .bar-fill {
+    height: 100%;
+    background: var(--accent2);
+    transition: width 0.3s;
+  }
+  .bar-fill.tank { background: var(--accent); }
+  .bar-fill.second { background: var(--warn); }
+  .bar-fill.mid { background: var(--accent2); }
+  .bar-fill.rear { background: var(--accent3); }
+
+  /* SVG container */
+  .svg-wrap {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 16px;
+    margin: 16px 0;
+    overflow-x: auto;
+  }
+
+  .toc {
+    background: var(--code-bg);
+    border-left: 4px solid var(--accent2);
+    padding: 14px 22px;
+    margin: 22px 0 36px;
+    border-radius: 4px;
+  }
+  .toc ol { margin: 6px 0; padding-left: 22px; }
+  .toc a { color: var(--accent); text-decoration: none; }
+  .toc a:hover { text-decoration: underline; }
+
+  .note-callout {
+    background: #fff7e8;
+    border-left: 4px solid var(--warn);
+    padding: 12px 16px;
+    margin: 14px 0;
+    border-radius: 0 4px 4px 0;
+  }
+  .note-callout.info {
+    background: #eef2fb;
+    border-left-color: var(--accent3);
+  }
+  .note-callout.danger {
+    background: #fbe9e7;
+    border-left-color: var(--negative);
+  }
+
+  /* Roulette diagram */
+  .roulette {
+    display: flex;
+    height: 56px;
+    border-radius: 6px;
+    overflow: hidden;
+    margin: 12px 0;
+    font-size: 12px;
+    font-weight: 600;
+    color: #fff;
+    box-shadow: 0 1px 0 rgba(0,0,0,0.05);
+  }
+  .roulette-seg {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 0 4px;
+    line-height: 1.1;
+  }
+
+  /* Battle line (party formation) */
+  .formation {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 6px;
+    margin: 12px 0;
+  }
+  .formation-cell {
+    background: #fff;
+    border: 2px solid var(--line);
+    border-radius: 8px;
+    padding: 10px 6px;
+    text-align: center;
+    font-size: 12px;
+    position: relative;
+  }
+  .formation-cell .row-num {
+    font-size: 11px;
+    color: var(--muted);
+    margin-bottom: 4px;
+  }
+  .formation-cell .prob {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--accent);
+  }
+  .formation-cell.f1 { border-color: var(--accent); background: #fbe9e7; }
+  .formation-cell.f2 { border-color: var(--warn); background: #fff7e8; }
+  .formation-cell.f3 { border-color: var(--accent2); background: #e8f3ec; }
+  .formation-cell.f3 .prob,
+  .formation-cell.f4 .prob,
+  .formation-cell.f5 .prob,
+  .formation-cell.f6 .prob { color: var(--accent2); font-size: 15px; }
+  .formation-cell.f4 { border-color: var(--accent2); background: #f0f7f2; }
+  .formation-cell.f5,
+  .formation-cell.f6 { border-color: var(--accent3); background: #eef2fb; }
+  .formation-cell.f5 .prob,
+  .formation-cell.f6 .prob { color: var(--accent3); font-size: 14px; }
+
+  .source-ref {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 4px;
+    font-style: italic;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>戦闘 命中・回避・ターゲット選定 仕様書</h1>
+<p class="lead">通常攻撃まわりの命中判定、ダメージ補正、隊列ターゲット選定の現行ロジックを一式まとめた仕様書です。実装は <code>src/core/services/BattleSystem.ts</code> を正とします。</p>
+
+<div class="toc">
+  <strong>目次</strong>
+  <ol>
+    <li><a href="#flow">1. 1回の通常攻撃の流れ</a></li>
+    <li><a href="#hit">2. 命中判定</a></li>
+    <li><a href="#damage-mod">3. ダメージの攻撃回数補正</a></li>
+    <li><a href="#target">4. ターゲット選定（隊列・スロット）</a></li>
+    <li><a href="#example">5. 計算例</a></li>
+    <li><a href="#summary">6. まとめ</a></li>
+  </ol>
+</div>
+
+<!-- ============================ -->
+<h2 id="flow">1. 1回の通常攻撃の流れ</h2>
+
+<p>攻撃ユニットの<strong>攻撃回数</strong>分だけループし、各ループで以下を実行します。</p>
+
+<ol>
+  <li><strong>生存敵リストの取得</strong>（直前に攻撃した敵も再度候補に含まれる）</li>
+  <li><strong>ターゲット選定</strong> — 列＋スロットの重み付きルーレット抽選</li>
+  <li><strong>命中判定</strong> — 命中精度・回避・残HP・攻撃番号から算出</li>
+  <li><strong>ダメージ計算</strong> — 命中HIT番号によりダメージ減衰を適用</li>
+</ol>
+
+<div class="note-callout info">
+  <strong>注意:</strong> ターゲットが変わっても「攻撃番号 <code>atkIdx + 1</code>」は累計でカウントされ、命中精度・ダメージの補正は引き継がれます。違う敵を狙っても1回目扱いには戻りません。
+</div>
+
+<p class="source-ref">参照: <code>BattleSystem.ts:656-731</code> <code>executeBasicAttack</code></p>
+
+<!-- ============================ -->
+<h2 id="hit">2. 命中判定</h2>
+
+<h3>2.1 計算式</h3>
+
+<div class="formula-block">hitRate = clamp(
+    rand × (attacker.accuracy × accMod − defender.evasion × hpMod),
+    5,
+    95
+)
+isHit = (rng() × 100) &lt; hitRate</div>
+
+<p>各要素の定義:</p>
+<table>
+  <thead>
+    <tr><th>要素</th><th>意味</th><th>定義</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>rand</code></td>
+      <td>乱数係数</td>
+      <td><code>0.95 + rng() × 0.1</code> （0.95〜1.05）</td>
+    </tr>
+    <tr>
+      <td><code>accMod</code></td>
+      <td>攻撃番号による命中精度補正</td>
+      <td>1回目=1.0、2回目以降=<code>0.6 × 0.9^(n−2)</code></td>
+    </tr>
+    <tr>
+      <td><code>hpMod</code></td>
+      <td>残HP補正（回避側）</td>
+      <td><code>0.5 × (1 + 残HP / 最大HP)</code> （満血1.0／瀕死0.505）</td>
+    </tr>
+    <tr>
+      <td>クランプ</td>
+      <td>命中率の上下限</td>
+      <td>最小5% / 最大95%</td>
+    </tr>
+  </tbody>
+</table>
+<p class="source-ref">参照: <code>BattleSystem.ts:613</code> <code>calculateHitRate</code>, <code>BattleSystem.ts:199</code> <code>getAccuracyModifier</code></p>
+
+<h3>2.2 攻撃回数による命中精度補正の推移</h3>
+
+<table>
+  <thead>
+    <tr><th>攻撃番号 n</th><th>accMod</th><th class="num">減衰率</th></tr>
+  </thead>
+  <tbody>
+    <tr><td class="center">1</td><td class="center">1.000</td><td class="num">100.0%</td></tr>
+    <tr><td class="center">2</td><td class="center">0.600</td><td class="num">60.0%</td></tr>
+    <tr><td class="center">3</td><td class="center">0.540</td><td class="num">54.0%</td></tr>
+    <tr><td class="center">4</td><td class="center">0.486</td><td class="num">48.6%</td></tr>
+    <tr><td class="center">5</td><td class="center">0.437</td><td class="num">43.7%</td></tr>
+    <tr><td class="center">6</td><td class="center">0.394</td><td class="num">39.4%</td></tr>
+    <tr><td class="center">7</td><td class="center">0.354</td><td class="num">35.4%</td></tr>
+    <tr><td class="center">10</td><td class="center">0.258</td><td class="num">25.8%</td></tr>
+    <tr><td class="center">15</td><td class="center">0.153</td><td class="num">15.3%</td></tr>
+    <tr><td class="center">20</td><td class="center">0.090</td><td class="num">9.0%</td></tr>
+  </tbody>
+</table>
+
+<h3>2.3 残HP補正（回避側のバフ）</h3>
+
+<p>敵HPが多いほど回避が機能し、削るほど回避が無力化されます。</p>
+<table>
+  <thead>
+    <tr><th>残HP比率</th><th>hpMod</th><th>回避有効度</th></tr>
+  </thead>
+  <tbody>
+    <tr><td class="center">100%（満血）</td><td class="center">1.000</td><td class="num">100%</td></tr>
+    <tr><td class="center">75%</td><td class="center">0.875</td><td class="num">87.5%</td></tr>
+    <tr><td class="center">50%</td><td class="center">0.750</td><td class="num">75.0%</td></tr>
+    <tr><td class="center">25%</td><td class="center">0.625</td><td class="num">62.5%</td></tr>
+    <tr><td class="center">1%（瀕死）</td><td class="center">0.505</td><td class="num">50.5%</td></tr>
+  </tbody>
+</table>
+
+<h3>2.4 命中率の可視化</h3>
+
+<p>命中精度 = 1000、回避 = 100、満血の敵に攻撃したときの命中率カーブ。</p>
+
+<div class="svg-wrap">
+<svg width="100%" viewBox="0 0 700 320" xmlns="http://www.w3.org/2000/svg">
+  <!-- axes -->
+  <line x1="60" y1="20" x2="60" y2="270" stroke="#888" stroke-width="1.5"/>
+  <line x1="60" y1="270" x2="680" y2="270" stroke="#888" stroke-width="1.5"/>
+
+  <!-- y-axis labels (0,25,50,75,95,100) -->
+  <g font-family="monospace" font-size="11" fill="#5b6068">
+    <text x="40" y="24" text-anchor="end">100%</text>
+    <text x="40" y="36" text-anchor="end">95%</text>
+    <text x="40" y="86" text-anchor="end">75%</text>
+    <text x="40" y="148" text-anchor="end">50%</text>
+    <text x="40" y="210" text-anchor="end">25%</text>
+    <text x="40" y="263" text-anchor="end">5%</text>
+    <text x="40" y="275" text-anchor="end">0%</text>
+  </g>
+
+  <!-- gridlines -->
+  <g stroke="#e8e3d0" stroke-dasharray="3 3">
+    <line x1="60" y1="36" x2="680" y2="36"/>
+    <line x1="60" y1="86" x2="680" y2="86"/>
+    <line x1="60" y1="148" x2="680" y2="148"/>
+    <line x1="60" y1="210" x2="680" y2="210"/>
+    <line x1="60" y1="263" x2="680" y2="263"/>
+  </g>
+
+  <!-- clamp zone shading (95% area) -->
+  <rect x="60" y="20" width="620" height="16" fill="#fbe6cf" opacity="0.5"/>
+  <text x="666" y="32" font-size="10" fill="#d48f1f" text-anchor="end">95%上限</text>
+
+  <!-- x-axis labels (attack number 1-20) -->
+  <g font-family="monospace" font-size="11" fill="#5b6068" text-anchor="middle">
+    <text x="90" y="288">1</text>
+    <text x="120" y="288">2</text>
+    <text x="150" y="288">3</text>
+    <text x="180" y="288">4</text>
+    <text x="210" y="288">5</text>
+    <text x="240" y="288">6</text>
+    <text x="270" y="288">7</text>
+    <text x="300" y="288">8</text>
+    <text x="330" y="288">9</text>
+    <text x="360" y="288">10</text>
+    <text x="390" y="288">11</text>
+    <text x="420" y="288">12</text>
+    <text x="450" y="288">13</text>
+    <text x="480" y="288">14</text>
+    <text x="510" y="288">15</text>
+    <text x="540" y="288">16</text>
+    <text x="570" y="288">17</text>
+    <text x="600" y="288">18</text>
+    <text x="630" y="288">19</text>
+    <text x="660" y="288">20</text>
+    <text x="370" y="308" font-size="12" text-anchor="middle">攻撃番号</text>
+  </g>
+
+  <!-- 命中率カーブ: y = 270 - clamp(基礎値, 5, 95) * 2.5 (5%=257.5, 95%=32.5) -->
+  <!-- 命中率を縦軸スケール: 0%=270, 100%=20 → y = 270 - hitRate*2.5 -->
+  <!-- 1: 900→95, 2: 500→95, 3: 440→95, 4: 386→95, 5: 337→95, 6: 294→95, 7: 254→95, 8: 218→95, 9: 187→95, 10: 158→95, 11: 132→95, 12: 109→95, 13: 88, 14: 69, 15: 53, 16: 37, 17: 24, 18: 11, 19: 0→5, 20: 0→5 -->
+  <polyline fill="none" stroke="#b8463c" stroke-width="2.5"
+    points="90,32.5 120,32.5 150,32.5 180,32.5 210,32.5 240,32.5 270,32.5 300,32.5 330,32.5 360,32.5 390,32.5 420,32.5 450,50 480,97.5 510,137.5 540,177.5 570,210 600,242.5 630,257.5 660,257.5"/>
+
+  <!-- circles -->
+  <g fill="#b8463c">
+    <circle cx="90" cy="32.5" r="4"/>
+    <circle cx="120" cy="32.5" r="4"/>
+    <circle cx="150" cy="32.5" r="4"/>
+    <circle cx="180" cy="32.5" r="4"/>
+    <circle cx="210" cy="32.5" r="4"/>
+    <circle cx="240" cy="32.5" r="4"/>
+    <circle cx="270" cy="32.5" r="4"/>
+    <circle cx="300" cy="32.5" r="4"/>
+    <circle cx="330" cy="32.5" r="4"/>
+    <circle cx="360" cy="32.5" r="4"/>
+    <circle cx="390" cy="32.5" r="4"/>
+    <circle cx="420" cy="32.5" r="4"/>
+    <circle cx="450" cy="50" r="4"/>
+    <circle cx="480" cy="97.5" r="4"/>
+    <circle cx="510" cy="137.5" r="4"/>
+    <circle cx="540" cy="177.5" r="4"/>
+    <circle cx="570" cy="210" r="4"/>
+    <circle cx="600" cy="242.5" r="4"/>
+    <circle cx="630" cy="257.5" r="4"/>
+    <circle cx="660" cy="257.5" r="4"/>
+  </g>
+
+  <!-- legend -->
+  <g font-family="sans-serif" font-size="12">
+    <rect x="500" y="20" width="14" height="3" fill="#b8463c"/>
+    <text x="520" y="25" fill="#1a1a1a">命中精度1000 vs 回避100（満血）</text>
+  </g>
+</svg>
+</div>
+
+<p>命中精度と回避の差が <strong>100以上</strong> あるとクランプで95%に張り付き、攻撃回数補正が無効化されます（1回目・満血敵）。攻撃番号が大きくなるにつれ補正が効いて減衰しますが、この例では13発目までは95%に張り付きます。</p>
+
+<div class="note-callout danger">
+  <strong>違和感の正体:</strong> 高難度では命中精度が回避を大きく上回るため、攻撃回数を増やしても上限95%に貼り付いて全弾命中に近くなります。回避を高くするか、命中精度の上限を抑える設計バランスが必要です。
+</div>
+
+<!-- ============================ -->
+<h2 id="damage-mod">3. ダメージの攻撃回数補正</h2>
+
+<p>ダメージは「<strong>命中HIT番号</strong>」（ミスを含めない命中ヒットの累計番号）で減衰します。1〜2発目は満タン、3発目以降は0.9倍ずつ減衰。</p>
+
+<div class="formula-block">dmgMod = (HIT番号 ≤ 2) ? 1.0 : 0.9^(HIT番号 − 2)</div>
+
+<table>
+  <thead>
+    <tr><th>HIT番号</th><th>dmgMod</th><th class="num">威力</th></tr>
+  </thead>
+  <tbody>
+    <tr><td class="center">1</td><td class="center">1.000</td><td class="num">100.0%</td></tr>
+    <tr><td class="center">2</td><td class="center">1.000</td><td class="num">100.0%</td></tr>
+    <tr><td class="center">3</td><td class="center">0.900</td><td class="num">90.0%</td></tr>
+    <tr><td class="center">5</td><td class="center">0.729</td><td class="num">72.9%</td></tr>
+    <tr><td class="center">10</td><td class="center">0.430</td><td class="num">43.0%</td></tr>
+    <tr><td class="center">15</td><td class="center">0.254</td><td class="num">25.4%</td></tr>
+    <tr><td class="center">20</td><td class="center">0.150</td><td class="num">15.0%</td></tr>
+  </tbody>
+</table>
+
+<p class="source-ref">参照: <code>BattleSystem.ts:190</code> <code>getDamageModifier</code>、<code>BattleSystem.ts:686-700</code> 命中HIT番号 <code>landedHitNumber</code> ベースで計算</p>
+
+<!-- ============================ -->
+<h2 id="target">4. ターゲット選定（隊列・スロット）</h2>
+
+<h3>4.1 抽選の手順</h3>
+<ol>
+  <li>生存ユニットを「列」でグループ化</li>
+  <li>列を前詰めしてインデックス0,1,2…に振り直す</li>
+  <li>列のインデックスごとに重みを計算 → <strong>重み付きルーレット抽選</strong>で列を選ぶ</li>
+  <li>選んだ列に複数いれば、列内スロットも同じ重みでルーレット抽選</li>
+</ol>
+<p class="source-ref">参照: <code>BattleSystem.ts:228</code> <code>selectTarget</code>, <code>BattleSystem.ts:217</code> <code>getRowWeight</code></p>
+
+<h3>4.2 列の重み（最新仕様）</h3>
+
+<div class="formula-block">row 0 (タンク列) → 13/12  ≒ 1.0833
+row 1 (2列目)   → 1/3    ≒ 0.3333
+row n ≥ 2       → 0.5^(n+1)  （最後2列は同率にクランプ）</div>
+
+<p>列1（最前列タンク）と列2を特別重みで強化し、後列にはほぼ攻撃が届かない設計です。</p>
+
+<h3>4.3 6列フル時の確率分布</h3>
+
+<div class="formation">
+  <div class="formation-cell f1">
+    <div class="row-num">列1（最前列）</div>
+    <div class="prob">65.0%</div>
+    <div style="font-size:11px;color:var(--muted)">タンク</div>
+  </div>
+  <div class="formation-cell f2">
+    <div class="row-num">列2</div>
+    <div class="prob">20.0%</div>
+  </div>
+  <div class="formation-cell f3">
+    <div class="row-num">列3</div>
+    <div class="prob">7.5%</div>
+  </div>
+  <div class="formation-cell f4">
+    <div class="row-num">列4</div>
+    <div class="prob">3.75%</div>
+  </div>
+  <div class="formation-cell f5">
+    <div class="row-num">列5</div>
+    <div class="prob">1.875%</div>
+  </div>
+  <div class="formation-cell f6">
+    <div class="row-num">列6（最後列）</div>
+    <div class="prob">1.875%</div>
+  </div>
+</div>
+
+<div class="bar-row">
+  <div>列1</div>
+  <div class="bar-track"><div class="bar-fill tank" style="width:100%"></div></div>
+  <div>65.0%</div>
+</div>
+<div class="bar-row">
+  <div>列2</div>
+  <div class="bar-track"><div class="bar-fill second" style="width:30.8%"></div></div>
+  <div>20.0%</div>
+</div>
+<div class="bar-row">
+  <div>列3</div>
+  <div class="bar-track"><div class="bar-fill mid" style="width:11.5%"></div></div>
+  <div>7.5%</div>
+</div>
+<div class="bar-row">
+  <div>列4</div>
+  <div class="bar-track"><div class="bar-fill mid" style="width:5.8%"></div></div>
+  <div>3.75%</div>
+</div>
+<div class="bar-row">
+  <div>列5</div>
+  <div class="bar-track"><div class="bar-fill rear" style="width:2.9%"></div></div>
+  <div>1.875%</div>
+</div>
+<div class="bar-row">
+  <div>列6</div>
+  <div class="bar-track"><div class="bar-fill rear" style="width:2.9%"></div></div>
+  <div>1.875%</div>
+</div>
+
+<h3>4.4 重み付きルーレットの仕組み</h3>
+
+<p>各列の重みを「線分の長さ」として横一列に並べ、[0, 合計重み) の乱数を引いて落ちた位置の列が選ばれます。</p>
+
+<div class="roulette" title="6列フル時のルーレット">
+  <div class="roulette-seg" style="background:#b8463c; width:65%">列1 65%</div>
+  <div class="roulette-seg" style="background:#d48f1f; width:20%">列2 20%</div>
+  <div class="roulette-seg" style="background:#2f6a48; width:7.5%">列3</div>
+  <div class="roulette-seg" style="background:#3a8a5c; width:3.75%">列4</div>
+  <div class="roulette-seg" style="background:#3a5da6; width:1.875%">5</div>
+  <div class="roulette-seg" style="background:#5b78c2; width:1.875%">6</div>
+</div>
+
+<h3>4.5 列数による分布変化</h3>
+
+<p>生存列が減ると前詰めされ、再計算されます。列1は基本65%が維持されます。</p>
+
+<table>
+  <thead>
+    <tr><th>列構成</th><th class="num">列1</th><th class="num">列2</th><th class="num">列3</th><th class="num">列4</th><th class="num">列5</th><th class="num">列6</th></tr>
+  </thead>
+  <tbody>
+    <tr class="row-tank"><td class="center">6列</td><td class="num">65.0%</td><td class="num">20.0%</td><td class="num">7.5%</td><td class="num">3.75%</td><td class="num">1.875%</td><td class="num">1.875%</td></tr>
+    <tr><td class="center">5列</td><td class="num">65.0%</td><td class="num">20.0%</td><td class="num">7.5%</td><td class="num">3.75%</td><td class="num">3.75%</td><td class="num">—</td></tr>
+    <tr><td class="center">4列</td><td class="num">65.0%</td><td class="num">20.0%</td><td class="num">7.5%</td><td class="num">7.5%</td><td class="num">—</td><td class="num">—</td></tr>
+    <tr><td class="center">3列</td><td class="num">65.0%</td><td class="num">20.0%</td><td class="num">15.0%</td><td class="num">—</td><td class="num">—</td><td class="num">—</td></tr>
+    <tr><td class="center">2列</td><td class="num">76.5%</td><td class="num">23.5%</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">—</td></tr>
+    <tr><td class="center">1列</td><td class="num">100%</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">—</td></tr>
+  </tbody>
+</table>
+
+<div class="note-callout info">
+  <strong>2列構成では列1の確率が76.5%に上昇</strong>します。これはタンクのみが先頭に立つ状況で、より集中的に被弾するイメージです。
+</div>
+
+<h3>4.6 列内スロットの抽選</h3>
+
+<p>選ばれた列に複数ユニットがいる場合、列内でも同じ重み式で抽選します（<code>rowSlot</code> 順にインデックス0,1,2…として）。</p>
+
+<table>
+  <thead>
+    <tr><th>列内人数</th><th class="num">スロット0</th><th class="num">スロット1</th><th class="num">スロット2</th></tr>
+  </thead>
+  <tbody>
+    <tr><td class="center">2</td><td class="num">76.5%</td><td class="num">23.5%</td><td class="num">—</td></tr>
+    <tr><td class="center">3</td><td class="num">65.0%</td><td class="num">20.0%</td><td class="num">15.0%</td></tr>
+  </tbody>
+</table>
+
+<h3>4.7 重要な性質</h3>
+
+<ul class="notes">
+  <li><span class="pill pill-info">独立抽選</span> 攻撃ごとに毎回独立してターゲットを選び直すため、<strong>同じ敵が連続で選ばれる</strong>こともあります（除外なし）。</li>
+  <li><span class="pill pill-info">前詰め</span> 列の欠番は詰めて再計算するため、列1（タンク）が倒れると元・列2が新「列1」となり65%を吸い込みます。</li>
+  <li><span class="pill pill-warn">最後2列同率</span> 列数によって最後の2列は同じ重みになります（囲まれた状態を表現）。</li>
+  <li><span class="pill pill-tank">2列攻撃スキル</span> <code>twoColumnAttack</code> を持つ攻撃者は、メインターゲットの後ろの列にも追加攻撃します（命中判定は独立）。</li>
+</ul>
+
+<!-- ============================ -->
+<h2 id="example">5. 計算例</h2>
+
+<h3>5.1 命中精度439・攻撃回数3 vs 回避69（満血）</h3>
+
+<table>
+  <thead>
+    <tr><th>攻撃</th><th class="num">accMod</th><th class="num">439×accMod − 69×1.0</th><th class="num">命中率</th></tr>
+  </thead>
+  <tbody>
+    <tr><td class="center">1</td><td class="num">1.000</td><td class="num">370.0</td><td class="num">95%</td></tr>
+    <tr><td class="center">2</td><td class="num">0.600</td><td class="num">194.4</td><td class="num">95%</td></tr>
+    <tr><td class="center">3</td><td class="num">0.540</td><td class="num">168.1</td><td class="num">95%</td></tr>
+  </tbody>
+</table>
+<p>→ 3発全弾命中する確率: <code>0.95³ ≈ 85.7%</code></p>
+
+<h3>5.2 命中精度1129・攻撃回数21 vs 回避69×6体（満血想定）</h3>
+
+<table>
+  <thead>
+    <tr><th>攻撃</th><th class="num">accMod</th><th class="num">基礎値</th><th class="num">命中率</th></tr>
+  </thead>
+  <tbody>
+    <tr><td class="center">1</td><td class="num">1.000</td><td class="num">1060.0</td><td class="num">95%</td></tr>
+    <tr><td class="center">5</td><td class="num">0.437</td><td class="num">424.8</td><td class="num">95%</td></tr>
+    <tr><td class="center">10</td><td class="num">0.258</td><td class="num">222.6</td><td class="num">95%</td></tr>
+    <tr><td class="center">15</td><td class="num">0.153</td><td class="num">103.2</td><td class="num">95%</td></tr>
+    <tr><td class="center">16</td><td class="num">0.137</td><td class="num">86.0</td><td class="num">約86%</td></tr>
+    <tr><td class="center">18</td><td class="num">0.111</td><td class="num">56.5</td><td class="num">約57%</td></tr>
+    <tr><td class="center">21</td><td class="num">0.081</td><td class="num">22.5</td><td class="num">約23%</td></tr>
+  </tbody>
+</table>
+<p>→ 期待命中数: 約 <strong>17.4 / 21</strong>（命中率約83%）。敵HPが減れば <code>hpMod</code> が下がるためさらに高くなります。</p>
+
+<h3>5.3 6体に対するターゲット分散</h3>
+
+<p>21発が下記分布で散らばります（毎回独立抽選）:</p>
+
+<div class="bar-row"><div>列1（タンク）</div><div class="bar-track"><div class="bar-fill tank" style="width:100%"></div></div><div>13.65発</div></div>
+<div class="bar-row"><div>列2</div><div class="bar-track"><div class="bar-fill second" style="width:30.8%"></div></div><div>4.2発</div></div>
+<div class="bar-row"><div>列3</div><div class="bar-track"><div class="bar-fill mid" style="width:11.5%"></div></div><div>1.58発</div></div>
+<div class="bar-row"><div>列4</div><div class="bar-track"><div class="bar-fill mid" style="width:5.8%"></div></div><div>0.79発</div></div>
+<div class="bar-row"><div>列5</div><div class="bar-track"><div class="bar-fill rear" style="width:2.9%"></div></div><div>0.39発</div></div>
+<div class="bar-row"><div>列6</div><div class="bar-track"><div class="bar-fill rear" style="width:2.9%"></div></div><div>0.39発</div></div>
+
+<p>タンクが約14発を引き受ける計算です。後列2列は合計0.8発程度しか被弾しません。</p>
+
+<!-- ============================ -->
+<h2 id="summary">6. まとめ</h2>
+
+<div class="card">
+  <h4>命中判定</h4>
+  <ul class="notes">
+    <li>命中率は <code>rand × (accuracy × accMod − evasion × hpMod)</code> を <strong>5%〜95%</strong> にクランプ。</li>
+    <li>攻撃番号が増えるほど <code>accMod</code> が減衰（1.0 → 0.6 → 0.54 → …）。</li>
+    <li>敵の残HPが少ないほど <code>hpMod</code> が下がり、回避が無力化される。</li>
+    <li>命中精度と回避の差が大きすぎると上限95%に張り付き、攻撃回数補正が事実上無効化される（高難度バランス上の注意点）。</li>
+  </ul>
+</div>
+
+<div class="card">
+  <h4>ダメージ補正</h4>
+  <ul class="notes">
+    <li>命中HIT番号（ミスを除外したカウント）でダメージ減衰を適用。</li>
+    <li>1〜2発目は100%、3発目以降は <code>0.9^(n−2)</code>。</li>
+  </ul>
+</div>
+
+<div class="card">
+  <h4>ターゲット選定</h4>
+  <ul class="notes">
+    <li>列1=65%・列2=20% に集中させたタンク有利な分布。</li>
+    <li>列3以降は <code>0.5^(n+1)</code> で急減衰、後列は被弾ほぼなし。</li>
+    <li>列が減ると前詰めで再計算 → 列1の重みは引き続き有効。</li>
+    <li>攻撃ごとに独立抽選で、同じ敵が連続して選ばれることもある。</li>
+  </ul>
+</div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,160 @@
+{
+  "createdAt": "2026-06-05T01:30:29.951Z",
+  "scenario": "forest_outskirts",
+  "level": 1,
+  "config": {
+    "generations": 4,
+    "population": 12,
+    "iterations": 4,
+    "validationIterations": 40,
+    "seed": 31,
+    "cleric": "optional",
+    "jobs": [],
+    "variants": [],
+    "maxUnlockRank": 1,
+    "maxDropRank": 1,
+    "allowRare": false,
+    "availability": null
+  },
+  "insights": {
+    "winningCandidateCount": 0,
+    "frequentJobs": [],
+    "frequentVariants": [],
+    "frequentEquipment": [
+      [
+        "claw_iron",
+        4
+      ],
+      [
+        "bow_long",
+        3
+      ],
+      [
+        "wand_wand",
+        2
+      ],
+      [
+        "claw_steel",
+        2
+      ],
+      [
+        "hidden_dagger",
+        1
+      ]
+    ]
+  },
+  "candidates": [
+    {
+      "result": {
+        "wins": 0,
+        "iterations": 40,
+        "winRate": 0,
+        "avgRoundsPerBattle": 1.3767123287671232,
+        "equipmentCost": 2420,
+        "score": -1.3767147487671232
+      },
+      "genome": {
+        "members": [
+          {
+            "job": null,
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "wand_wand"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "claw_iron"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "bow_long"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "claw_iron"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "claw_steel"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "bow_long"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "result": {
+        "wins": 0,
+        "iterations": 40,
+        "winRate": 0,
+        "avgRoundsPerBattle": 1.3864406779661016,
+        "equipmentCost": 1520,
+        "score": -1.3864421979661017
+      },
+      "genome": {
+        "members": [
+          {
+            "job": null,
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "claw_iron"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "claw_steel"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "wand_wand"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "claw_iron"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "bow_long"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "hidden_dagger"
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

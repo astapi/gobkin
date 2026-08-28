@@ -1,0 +1,630 @@
+{
+  "enemies": [
+    {
+      "id": "DGR001",
+      "name": "墓兵",
+      "attackType": "melee",
+      "raceTags": [
+        "undead"
+      ],
+      "level": 140,
+      "hp": 7570,
+      "atk": 887,
+      "def": 616,
+      "attackCount": 2,
+      "accuracy": 820,
+      "evasion": 528,
+      "gold": 145,
+      "magicDef": 1243,
+      "baseAttributes": {
+        "power": 9,
+        "wisdom": 9,
+        "spirit": 4,
+        "vitality": 8,
+        "agility": 14,
+        "luck": 6
+      }
+    },
+    {
+      "id": "DGR002",
+      "name": "墓荒らしの亡者",
+      "attackType": "melee",
+      "raceTags": [
+        "undead"
+      ],
+      "level": 141,
+      "hp": 6680,
+      "atk": 694,
+      "def": 543,
+      "attackCount": 1,
+      "accuracy": 822,
+      "evasion": 478,
+      "gold": 136,
+      "magicDef": 1095,
+      "baseAttributes": {
+        "power": 7,
+        "wisdom": 7,
+        "spirit": 4,
+        "vitality": 7,
+        "agility": 11,
+        "luck": 5
+      }
+    },
+    {
+      "id": "DGR003",
+      "name": "嘆きの霊",
+      "attackType": "melee",
+      "raceTags": [
+        "undead"
+      ],
+      "level": 143,
+      "hp": 4790,
+      "atk": 999,
+      "magicAtk": 2581,
+      "def": 392,
+      "attackCount": 1,
+      "accuracy": 826,
+      "evasion": 617,
+      "gold": 160,
+      "magicDef": 913,
+      "baseAttributes": {
+        "power": 10,
+        "wisdom": 9,
+        "spirit": 3,
+        "vitality": 5,
+        "agility": 18,
+        "luck": 8
+      }
+    },
+    {
+      "id": "DGR004",
+      "name": "墓守の骨弓兵",
+      "attackType": "range",
+      "raceTags": [
+        "undead"
+      ],
+      "level": 145,
+      "hp": 6810,
+      "atk": 1111,
+      "def": 553,
+      "attackCount": 2,
+      "accuracy": 830,
+      "evasion": 596,
+      "gold": 167,
+      "magicDef": 1234,
+      "baseAttributes": {
+        "power": 11,
+        "wisdom": 11,
+        "spirit": 4,
+        "vitality": 7,
+        "agility": 17,
+        "luck": 7
+      }
+    },
+    {
+      "id": "DGR005",
+      "name": "墓喰らいの屍鬼",
+      "attackType": "melee",
+      "raceTags": [
+        "undead"
+      ],
+      "level": 148,
+      "hp": 10840,
+      "atk": 1438,
+      "def": 882,
+      "attackCount": 2,
+      "accuracy": 836,
+      "evasion": 522,
+      "gold": 177,
+      "magicDef": 1520,
+      "baseAttributes": {
+        "power": 14,
+        "wisdom": 14,
+        "spirit": 5,
+        "vitality": 11,
+        "agility": 12,
+        "luck": 6
+      }
+    },
+    {
+      "id": "B_GRAVE_WARDEN",
+      "name": "霊廟の墓守将",
+      "attackType": "melee",
+      "raceTags": [
+        "undead"
+      ],
+      "level": 170,
+      "hp": 13070,
+      "atk": 1114,
+      "magicAtk": 3145,
+      "def": 1039,
+      "attackCount": 3,
+      "accuracy": 905,
+      "evasion": 620,
+      "isBoss": true,
+      "gold": 861,
+      "magicDef": 2391,
+      "baseAttributes": {
+        "power": 15,
+        "wisdom": 11,
+        "spirit": 8,
+        "vitality": 14,
+        "agility": 10,
+        "luck": 9
+      }
+    },
+    {
+      "id": "DGR006",
+      "name": "怨嗟の亡霊",
+      "attackType": "melee",
+      "raceTags": [
+        "undead"
+      ],
+      "level": 144,
+      "hp": 7750,
+      "atk": 1308,
+      "def": 630,
+      "attackCount": 1,
+      "accuracy": 828,
+      "evasion": 485,
+      "gold": 194,
+      "magicDef": 661,
+      "baseAttributes": {
+        "power": 13,
+        "wisdom": 15,
+        "spirit": 6,
+        "vitality": 8,
+        "agility": 9,
+        "luck": 7
+      },
+      "skills": [
+        {
+          "id": "grant_fireball",
+          "name": "ファイヤーボール",
+          "grantsSpellId": "fireball"
+        },
+        {
+          "id": "grant_magic_arrow",
+          "name": "マジックアロー",
+          "grantsSpellId": "magic_arrow"
+        }
+      ]
+    }
+  ],
+  "patterns": [
+    {
+      "id": "DG1_F1_A",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "DGR001",
+          "DGR001"
+        ],
+        [
+          "DGR002"
+        ]
+      ]
+    },
+    {
+      "id": "DG1_F1_B",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "DGR001",
+          "DGR001",
+          "DGR001"
+        ],
+        [
+          "DGR002"
+        ]
+      ]
+    },
+    {
+      "id": "DG1_F1_C",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "DGR001",
+          "DGR001"
+        ],
+        [
+          "DGR002",
+          "DGR002"
+        ]
+      ]
+    },
+    {
+      "id": "DG1_F1_BOSS",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "DGR001",
+          "DGR001",
+          "DGR001"
+        ],
+        [
+          "DGR002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "DG1_F2_A",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "DGR001",
+          "DGR002"
+        ],
+        [
+          "DGR006",
+          "DGR001"
+        ]
+      ]
+    },
+    {
+      "id": "DG1_F2_B",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "DGR001",
+          "DGR002",
+          "DGR001"
+        ],
+        [
+          "DGR006",
+          "DGR001"
+        ]
+      ]
+    },
+    {
+      "id": "DG1_F2_C",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "DGR001",
+          "DGR002"
+        ],
+        [
+          "DGR006",
+          "DGR001",
+          "DGR006"
+        ]
+      ]
+    },
+    {
+      "id": "DG1_F2_BOSS",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "DGR001",
+          "DGR002",
+          "DGR001"
+        ],
+        [
+          "DGR006",
+          "DGR001"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "DG1_F3_A",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "DGR003",
+          "DGR004"
+        ],
+        [
+          "DGR006",
+          "DGR002"
+        ]
+      ]
+    },
+    {
+      "id": "DG1_F3_B",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "DGR003",
+          "DGR004",
+          "DGR003"
+        ],
+        [
+          "DGR006",
+          "DGR002"
+        ]
+      ]
+    },
+    {
+      "id": "DG1_F3_C",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "DGR003",
+          "DGR004"
+        ],
+        [
+          "DGR006",
+          "DGR002",
+          "DGR006"
+        ]
+      ]
+    },
+    {
+      "id": "DG1_F3_BOSS",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "DGR003",
+          "DGR004",
+          "DGR003"
+        ],
+        [
+          "DGR006",
+          "DGR002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "DG1_F4_A",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "DGR005",
+          "DGR004"
+        ],
+        [
+          "DGR003",
+          "DGR006",
+          "DGR004"
+        ]
+      ]
+    },
+    {
+      "id": "DG1_F4_B",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "DGR005",
+          "DGR004",
+          "DGR005"
+        ],
+        [
+          "DGR003",
+          "DGR006",
+          "DGR004"
+        ]
+      ]
+    },
+    {
+      "id": "DG1_F4_C",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "DGR005",
+          "DGR004"
+        ],
+        [
+          "DGR003",
+          "DGR006",
+          "DGR004",
+          "DGR003"
+        ]
+      ]
+    },
+    {
+      "id": "DG1_F4_BOSS",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "DGR005",
+          "DGR004",
+          "DGR005"
+        ],
+        [
+          "DGR003",
+          "DGR006",
+          "DGR004"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "DG1_F5_A",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "DGR005",
+          "DGR004"
+        ],
+        [
+          "DGR006",
+          "DGR004",
+          "DGR006"
+        ]
+      ]
+    },
+    {
+      "id": "DG1_F5_B",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "DGR005",
+          "DGR004",
+          "DGR005"
+        ],
+        [
+          "DGR006",
+          "DGR004",
+          "DGR006"
+        ]
+      ]
+    },
+    {
+      "id": "DG1_F5_C",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "DGR005",
+          "DGR004"
+        ],
+        [
+          "DGR006",
+          "DGR004",
+          "DGR006",
+          "DGR006"
+        ]
+      ]
+    },
+    {
+      "id": "DG1_F5_BOSS",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "DGR005",
+          "DGR004",
+          "DGR005"
+        ],
+        [
+          "DGR006",
+          "DGR004",
+          "DGR006"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "DG1_F6_A",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "DGR005",
+          "DGR005"
+        ],
+        [
+          "DGR004",
+          "DGR006",
+          "DGR003"
+        ]
+      ]
+    },
+    {
+      "id": "DG1_F6_B",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "DGR005",
+          "DGR005",
+          "DGR005"
+        ],
+        [
+          "DGR004",
+          "DGR006",
+          "DGR003"
+        ]
+      ]
+    },
+    {
+      "id": "DG1_F6_C",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "DGR005",
+          "DGR005"
+        ],
+        [
+          "DGR004",
+          "DGR006",
+          "DGR003",
+          "DGR004"
+        ]
+      ]
+    },
+    {
+      "id": "DG1_F6_BOSS",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "DGR005",
+          "DGR005",
+          "DGR005"
+        ],
+        [
+          "DGR004",
+          "DGR006",
+          "DGR003"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "DG1_FINAL_BOSS",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "B_GRAVE_WARDEN"
+        ],
+        [
+          "DGR005",
+          "DGR006",
+          "DGR004",
+          "DGR006"
+        ]
+      ],
+      "isBoss": true
+    }
+  ]
+}

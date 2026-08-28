@@ -1,0 +1,579 @@
+{
+  "enemies": [
+    {
+      "id": "ORC002",
+      "name": "オーク兵",
+      "attackType": "melee",
+      "raceTags": [
+        "orc"
+      ],
+      "level": 27,
+      "hp": 1050,
+      "atk": 148,
+      "def": 99,
+      "attackCount": 2,
+      "accuracy": 690,
+      "evasion": 88,
+      "gold": 44,
+      "magicDef": 55,
+      "baseAttributes": {
+        "power": 22,
+        "wisdom": 8,
+        "spirit": 6,
+        "vitality": 20,
+        "agility": 12,
+        "luck": 5
+      }
+    },
+    {
+      "id": "ORC005",
+      "name": "オークブルート",
+      "attackType": "melee",
+      "raceTags": [
+        "orc"
+      ],
+      "level": 29,
+      "hp": 1560,
+      "atk": 192,
+      "def": 146,
+      "attackCount": 2,
+      "accuracy": 685,
+      "evasion": 83,
+      "gold": 58,
+      "magicDef": 72,
+      "physicalResistancePercent": 8,
+      "baseAttributes": {
+        "power": 27,
+        "wisdom": 10,
+        "spirit": 7,
+        "vitality": 28,
+        "agility": 9,
+        "luck": 4
+      }
+    },
+    {
+      "id": "GOB_SOLDIER",
+      "name": "配下ゴブリン兵",
+      "attackType": "melee",
+      "raceTags": [
+        "goblin"
+      ],
+      "level": 26,
+      "hp": 500,
+      "atk": 100,
+      "def": 50,
+      "attackCount": 2,
+      "accuracy": 705,
+      "evasion": 85,
+      "gold": 30,
+      "magicDef": 46,
+      "baseAttributes": {
+        "power": 19,
+        "wisdom": 9,
+        "spirit": 6,
+        "vitality": 13,
+        "agility": 18,
+        "luck": 8
+      }
+    },
+    {
+      "id": "GOB_MAGE",
+      "name": "ゴブリンメイジ",
+      "attackType": "melee",
+      "raceTags": [
+        "goblin"
+      ],
+      "level": 27,
+      "hp": 540,
+      "atk": 54,
+      "magicAtk": 129,
+      "def": 55,
+      "attackCount": 1,
+      "accuracy": 680,
+      "evasion": 76,
+      "gold": 68,
+      "magicDef": 100,
+      "baseAttributes": {
+        "power": 10,
+        "wisdom": 23,
+        "spirit": 14,
+        "vitality": 14,
+        "agility": 12,
+        "luck": 8
+      },
+      "skills": [
+        {
+          "id": "grant_fireball",
+          "name": "ファイヤーボール",
+          "grantsSpellId": "fireball"
+        },
+        {
+          "id": "grant_magic_arrow",
+          "name": "マジックアロー",
+          "grantsSpellId": "magic_arrow"
+        }
+      ]
+    },
+    {
+      "id": "GOB_CLERIC",
+      "name": "ゴブリンクレリック",
+      "attackType": "melee",
+      "raceTags": [
+        "goblin"
+      ],
+      "level": 27,
+      "hp": 660,
+      "atk": 54,
+      "def": 68,
+      "magicHeal": 62,
+      "attackCount": 1,
+      "accuracy": 690,
+      "evasion": 74,
+      "gold": 66,
+      "magicDef": 105,
+      "baseAttributes": {
+        "power": 10,
+        "wisdom": 17,
+        "spirit": 19,
+        "vitality": 17,
+        "agility": 11,
+        "luck": 8
+      },
+      "skills": [
+        {
+          "id": "recovery_magic_lv6",
+          "recoveryMagicLevel": 6
+        }
+      ]
+    },
+    {
+      "id": "B_ORC",
+      "name": "オーク遠征隊長",
+      "attackType": "melee",
+      "raceTags": [
+        "orc"
+      ],
+      "level": 44,
+      "hp": 4020,
+      "atk": 254,
+      "def": 225,
+      "attackCount": 2,
+      "accuracy": 770,
+      "evasion": 151,
+      "isBoss": true,
+      "gold": 300,
+      "factorDrops": [
+        {
+          "factorId": "orc",
+          "probability": 0.015
+        }
+      ],
+      "magicDef": 100,
+      "physicalResistancePercent": 10,
+      "baseAttributes": {
+        "power": 35,
+        "wisdom": 12,
+        "spirit": 10,
+        "vitality": 34,
+        "agility": 12,
+        "luck": 6
+      }
+    }
+  ],
+  "patterns": [
+    {
+      "id": "OC_01_001",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "ORC002",
+          "ORC002"
+        ],
+        [
+          "GOB_SOLDIER",
+          "GOB_SOLDIER"
+        ]
+      ]
+    },
+    {
+      "id": "OC_01_002",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "ORC002"
+        ],
+        [
+          "GOB_SOLDIER",
+          "GOB_SOLDIER",
+          "GOB_SOLDIER"
+        ]
+      ]
+    },
+    {
+      "id": "OC_01_003",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "ORC002",
+          "ORC002"
+        ],
+        [
+          "GOB_SOLDIER"
+        ]
+      ]
+    },
+    {
+      "id": "OC_F1_BOSS",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "ORC005"
+        ],
+        [
+          "ORC002",
+          "GOB_SOLDIER"
+        ],
+        [
+          "GOB_SOLDIER"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "OC_02_001",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "ORC005",
+          "ORC002"
+        ],
+        [
+          "GOB_SOLDIER",
+          "GOB_SOLDIER"
+        ]
+      ]
+    },
+    {
+      "id": "OC_02_002",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "ORC002",
+          "ORC002"
+        ],
+        [
+          "GOB_SOLDIER",
+          "GOB_SOLDIER"
+        ]
+      ]
+    },
+    {
+      "id": "OC_02_003",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "ORC005"
+        ],
+        [
+          "GOB_SOLDIER",
+          "GOB_SOLDIER",
+          "GOB_SOLDIER"
+        ]
+      ]
+    },
+    {
+      "id": "OC_F2_BOSS",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "ORC005",
+          "ORC002"
+        ],
+        [
+          "GOB_SOLDIER",
+          "GOB_SOLDIER"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "OC_03_001",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "ORC005",
+          "ORC002"
+        ],
+        [
+          "GOB_MAGE"
+        ]
+      ]
+    },
+    {
+      "id": "OC_03_002",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "ORC002",
+          "ORC002"
+        ],
+        [
+          "GOB_MAGE",
+          "GOB_SOLDIER"
+        ]
+      ]
+    },
+    {
+      "id": "OC_03_003",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "ORC005"
+        ],
+        [
+          "GOB_SOLDIER",
+          "GOB_MAGE"
+        ]
+      ]
+    },
+    {
+      "id": "OC_F3_BOSS",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "ORC005",
+          "ORC002"
+        ],
+        [
+          "GOB_MAGE",
+          "GOB_SOLDIER"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "OC_04_001",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "ORC005",
+          "ORC002"
+        ],
+        [
+          "GOB_MAGE",
+          "GOB_MAGE"
+        ]
+      ]
+    },
+    {
+      "id": "OC_04_002",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "ORC005",
+          "ORC005"
+        ],
+        [
+          "GOB_MAGE",
+          "GOB_SOLDIER"
+        ]
+      ]
+    },
+    {
+      "id": "OC_04_003",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "ORC002",
+          "ORC002",
+          "ORC002"
+        ],
+        [
+          "GOB_MAGE"
+        ]
+      ]
+    },
+    {
+      "id": "OC_F4_BOSS",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "ORC005",
+          "ORC002"
+        ],
+        [
+          "GOB_MAGE",
+          "GOB_MAGE"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "OC_05_001",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "ORC005",
+          "ORC002"
+        ],
+        [
+          "GOB_MAGE",
+          "GOB_CLERIC"
+        ]
+      ]
+    },
+    {
+      "id": "OC_05_002",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "ORC005",
+          "ORC005"
+        ],
+        [
+          "GOB_CLERIC",
+          "GOB_MAGE"
+        ]
+      ]
+    },
+    {
+      "id": "OC_05_003",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "ORC002",
+          "ORC002"
+        ],
+        [
+          "GOB_MAGE",
+          "GOB_CLERIC"
+        ]
+      ]
+    },
+    {
+      "id": "OC_F5_BOSS",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "ORC005",
+          "ORC002"
+        ],
+        [
+          "GOB_MAGE",
+          "GOB_CLERIC"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "OC_06_001",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "ORC005",
+          "ORC002"
+        ],
+        [
+          "GOB_MAGE",
+          "GOB_CLERIC"
+        ]
+      ]
+    },
+    {
+      "id": "OC_06_002",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "ORC005",
+          "ORC005"
+        ],
+        [
+          "GOB_MAGE",
+          "GOB_MAGE",
+          "GOB_CLERIC"
+        ]
+      ]
+    },
+    {
+      "id": "OC_06_003",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "ORC005",
+          "ORC002",
+          "ORC002"
+        ],
+        [
+          "GOB_CLERIC"
+        ]
+      ]
+    },
+    {
+      "id": "OC_FINAL",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "B_ORC",
+          "ORC005"
+        ],
+        [
+          "ORC002"
+        ],
+        [
+          "GOB_MAGE",
+          "GOB_CLERIC"
+        ]
+      ],
+      "isFloorBoss": true,
+      "isBoss": true
+    }
+  ]
+}

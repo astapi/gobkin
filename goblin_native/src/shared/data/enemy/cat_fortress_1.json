@@ -1,0 +1,355 @@
+{
+  "enemies": [
+    {
+      "id": "CAT001",
+      "name": "影爪の斥候",
+      "attackType": "melee",
+      "raceTags": [
+        "cat",
+        "beast"
+      ],
+      "level": 70,
+      "hp": 3470,
+      "atk": 220,
+      "def": 84,
+      "magicDef": 90,
+      "attackCount": 3,
+      "accuracy": 980,
+      "evasion": 577,
+      "criticalRate": 0.12,
+      "gold": 520,
+      "skills": [
+        {
+          "id": "action_order_150",
+          "actionOrderMultiplier": 1.5
+        },
+        {
+          "id": "evasion_up_40",
+          "statBonuses": {
+            "evasion": 40
+          }
+        }
+      ],
+      "baseAttributes": {
+        "power": 30,
+        "wisdom": 24,
+        "spirit": 18,
+        "vitality": 22,
+        "agility": 38,
+        "luck": 24
+      }
+    },
+    {
+      "id": "CAT002",
+      "name": "月牙の双刃兵",
+      "attackType": "melee",
+      "raceTags": [
+        "cat",
+        "beast"
+      ],
+      "level": 76,
+      "hp": 4310,
+      "atk": 265,
+      "def": 96,
+      "magicDef": 92,
+      "attackCount": 4,
+      "accuracy": 1030,
+      "evasion": 697,
+      "criticalRate": 0.15,
+      "gold": 610,
+      "skills": [
+        {
+          "id": "critical_rate_up_10",
+          "criticalRateBonusPercent": 10
+        }
+      ],
+      "baseAttributes": {
+        "power": 35,
+        "wisdom": 24,
+        "spirit": 18,
+        "vitality": 25,
+        "agility": 40,
+        "luck": 28
+      }
+    },
+    {
+      "id": "B_CAT_SHADOWLORD",
+      "name": "月影の遺跡主ネコマタ",
+      "attackType": "melee",
+      "raceTags": [
+        "cat",
+        "beast"
+      ],
+      "level": 100,
+      "hp": 15180,
+      "atk": 520,
+      "magicAtk": 410,
+      "def": 180,
+      "magicDef": 170,
+      "attackCount": 5,
+      "accuracy": 1320,
+      "evasion": 1172,
+      "criticalRate": 0.2,
+      "isBoss": true,
+      "gold": 2800,
+      "factorDrops": [
+        {
+          "factorId": "shadow",
+          "probability": 0.015
+        }
+      ],
+      "skills": [
+        {
+          "id": "action_order_150",
+          "actionOrderMultiplier": 1.5
+        },
+        {
+          "id": "attack_count_up_2",
+          "statBonuses": {
+            "attackCount": 2
+          }
+        },
+        {
+          "id": "critical_rate_up_10",
+          "criticalRateBonusPercent": 10
+        }
+      ],
+      "baseAttributes": {
+        "power": 52,
+        "wisdom": 38,
+        "spirit": 28,
+        "vitality": 42,
+        "agility": 48,
+        "luck": 34
+      }
+    }
+  ],
+  "patterns": [
+    {
+      "id": "CF1_001",
+      "floors": [
+        1,
+        2,
+        3
+      ],
+      "enemies": [
+        [
+          "CAT001",
+          "CAT001",
+          "CAT002"
+        ],
+        [
+          "CAT002",
+          "CAT001"
+        ]
+      ]
+    },
+    {
+      "id": "CF1_002",
+      "floors": [
+        1,
+        2,
+        3
+      ],
+      "enemies": [
+        [
+          "CAT001",
+          "CAT002"
+        ],
+        [
+          "CAT002",
+          "CAT001",
+          "CAT001"
+        ]
+      ]
+    },
+    {
+      "id": "CF1_003",
+      "floors": [
+        4,
+        5
+      ],
+      "enemies": [
+        [
+          "CAT002",
+          "CAT002"
+        ],
+        [
+          "CAT002",
+          "CAT001",
+          "CAT001"
+        ]
+      ]
+    },
+    {
+      "id": "CF1_004",
+      "floors": [
+        4,
+        5
+      ],
+      "enemies": [
+        [
+          "CAT002",
+          "CAT001",
+          "CAT001"
+        ],
+        [
+          "CAT001",
+          "CAT002"
+        ]
+      ]
+    },
+    {
+      "id": "CF1_005",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "CAT002",
+          "CAT002"
+        ],
+        [
+          "CAT002",
+          "CAT001"
+        ],
+        [
+          "CAT001",
+          "CAT001"
+        ]
+      ]
+    },
+    {
+      "id": "BOSS",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "B_CAT_SHADOWLORD"
+        ],
+        [
+          "CAT002",
+          "CAT002"
+        ],
+        [
+          "CAT002",
+          "CAT001",
+          "CAT001"
+        ]
+      ],
+      "isBoss": true
+    },
+    {
+      "id": "CF1_001_F1_BOSS",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "CAT001",
+          "CAT001",
+          "CAT002"
+        ],
+        [
+          "CAT002",
+          "CAT001"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "CF1_001_F2_BOSS",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "CAT001",
+          "CAT001",
+          "CAT002"
+        ],
+        [
+          "CAT002",
+          "CAT001"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "CF1_001_F3_BOSS",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "CAT001",
+          "CAT001",
+          "CAT002"
+        ],
+        [
+          "CAT002",
+          "CAT001"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "CF1_003_F4_BOSS",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "CAT002",
+          "CAT002"
+        ],
+        [
+          "CAT002",
+          "CAT001",
+          "CAT001"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "CF1_003_F5_BOSS",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "CAT002",
+          "CAT002"
+        ],
+        [
+          "CAT002",
+          "CAT001",
+          "CAT001"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "CF1_005_F6_BOSS",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "CAT002",
+          "CAT002"
+        ],
+        [
+          "CAT002",
+          "CAT001"
+        ],
+        [
+          "CAT001",
+          "CAT001"
+        ]
+      ],
+      "isFloorBoss": true
+    }
+  ]
+}

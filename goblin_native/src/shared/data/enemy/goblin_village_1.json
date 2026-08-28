@@ -1,0 +1,732 @@
+{
+  "enemies": [
+    {
+      "id": "GOB001",
+      "name": "ゴブリン雑兵",
+      "attackType": "melee",
+      "raceTags": [
+        "goblin"
+      ],
+      "level": 8,
+      "hp": 86,
+      "atk": 20,
+      "def": 22,
+      "attackCount": 2,
+      "accuracy": 262,
+      "evasion": 33,
+      "gold": 6,
+      "magicDef": 11,
+      "baseAttributes": {
+        "power": 10,
+        "wisdom": 10,
+        "spirit": 10,
+        "vitality": 10,
+        "agility": 10,
+        "luck": 10
+      }
+    },
+    {
+      "id": "GOB002",
+      "name": "ゴブリンシーフ",
+      "attackType": "melee",
+      "raceTags": [
+        "goblin"
+      ],
+      "level": 8,
+      "hp": 72,
+      "atk": 20,
+      "def": 19,
+      "attackCount": 2,
+      "accuracy": 280,
+      "evasion": 37,
+      "gold": 10,
+      "magicDef": 10,
+      "baseAttributes": {
+        "power": 10,
+        "wisdom": 10,
+        "spirit": 10,
+        "vitality": 8,
+        "agility": 12,
+        "luck": 12
+      }
+    },
+    {
+      "id": "GOB003",
+      "name": "ゴブリンウォリアー",
+      "attackType": "melee",
+      "raceTags": [
+        "goblin"
+      ],
+      "level": 9,
+      "hp": 110,
+      "atk": 24,
+      "def": 30,
+      "attackCount": 2,
+      "accuracy": 289,
+      "evasion": 37,
+      "gold": 12,
+      "magicDef": 14,
+      "baseAttributes": {
+        "power": 10,
+        "wisdom": 10,
+        "spirit": 10,
+        "vitality": 13,
+        "agility": 10,
+        "luck": 10
+      }
+    },
+    {
+      "id": "GOB004",
+      "name": "ゴブリンメイジ",
+      "attackType": "melee",
+      "raceTags": [
+        "goblin"
+      ],
+      "level": 9,
+      "hp": 74,
+      "atk": 16,
+      "magicAtk": 17,
+      "def": 17,
+      "attackCount": 2,
+      "accuracy": 289,
+      "evasion": 37,
+      "gold": 15,
+      "magicDef": 18,
+      "baseAttributes": {
+        "power": 10,
+        "wisdom": 12,
+        "spirit": 10,
+        "vitality": 8,
+        "agility": 10,
+        "luck": 10
+      },
+      "skills": [
+        {
+          "id": "fireball",
+          "name": "ファイヤーボール",
+          "grantsSpellId": "fireball"
+        }
+      ]
+    },
+    {
+      "id": "GOB005",
+      "name": "ゴブリンガード",
+      "attackType": "melee",
+      "raceTags": [
+        "goblin"
+      ],
+      "level": 10,
+      "hp": 124,
+      "atk": 21,
+      "def": 38,
+      "attackCount": 2,
+      "accuracy": 297,
+      "evasion": 37,
+      "gold": 18,
+      "magicDef": 39,
+      "baseAttributes": {
+        "power": 10,
+        "wisdom": 10,
+        "spirit": 10,
+        "vitality": 15,
+        "agility": 8,
+        "luck": 8
+      }
+    },
+    {
+      "id": "GOB006",
+      "name": "ゴブリンアーチャー",
+      "attackType": "range",
+      "raceTags": [
+        "goblin"
+      ],
+      "level": 9,
+      "hp": 78,
+      "atk": 23,
+      "def": 17,
+      "attackCount": 2,
+      "accuracy": 315,
+      "evasion": 41,
+      "gold": 14,
+      "magicDef": 13,
+      "baseAttributes": {
+        "power": 10,
+        "wisdom": 10,
+        "spirit": 10,
+        "vitality": 9,
+        "agility": 13,
+        "luck": 11
+      }
+    },
+    {
+      "id": "GOB007",
+      "name": "ゴブリンシャーマン",
+      "attackType": "melee",
+      "raceTags": [
+        "goblin"
+      ],
+      "level": 10,
+      "hp": 77,
+      "atk": 13,
+      "magicAtk": 18,
+      "def": 19,
+      "attackCount": 1,
+      "accuracy": 306,
+      "evasion": 41,
+      "gold": 20,
+      "magicDef": 27,
+      "baseAttributes": {
+        "power": 8,
+        "wisdom": 14,
+        "spirit": 12,
+        "vitality": 9,
+        "agility": 10,
+        "luck": 10
+      },
+      "skills": [
+        {
+          "id": "fireball",
+          "name": "ファイヤーボール",
+          "grantsSpellId": "fireball"
+        }
+      ]
+    },
+    {
+      "id": "B_HOB",
+      "name": "ホブゴブリン・ガズ",
+      "attackType": "melee",
+      "raceTags": [
+        "goblin",
+        "hobgoblin"
+      ],
+      "level": 18,
+      "hp": 224,
+      "atk": 28,
+      "def": 39,
+      "attackCount": 2,
+      "accuracy": 348,
+      "evasion": 50,
+      "isBoss": true,
+      "gold": 90,
+      "factorDrops": [
+        {
+          "factorId": "hobgoblin",
+          "probability": 0.015
+        }
+      ],
+      "magicDef": 30,
+      "baseAttributes": {
+        "power": 12,
+        "wisdom": 8,
+        "spirit": 6,
+        "vitality": 12,
+        "agility": 8,
+        "luck": 6
+      },
+      "skills": [
+        {
+          "id": "inspire_150",
+          "name": "鼓舞",
+          "rearAllyDamageMultiplier": 1.5
+        },
+        {
+          "id": "survive_lethal_hp1",
+          "name": "気合い",
+          "surviveLethalDamageAtHp1": true
+        }
+      ]
+    }
+  ],
+  "patterns": [
+    {
+      "id": "GV1_F1_PATROL",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "GOB001",
+          "GOB001",
+          "GOB001"
+        ],
+        [
+          "GOB002"
+        ]
+      ]
+    },
+    {
+      "id": "GV1_F1_THIEVES",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "GOB001",
+          "GOB001"
+        ],
+        [
+          "GOB002",
+          "GOB002"
+        ]
+      ]
+    },
+    {
+      "id": "GV1_F1_MOB",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "GOB001",
+          "GOB001",
+          "GOB001",
+          "GOB001"
+        ],
+        [
+          "GOB002",
+          "GOB002"
+        ]
+      ]
+    },
+    {
+      "id": "GV1_F1_GUARD_POST",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "GOB001",
+          "GOB001",
+          "GOB001",
+          "GOB001"
+        ],
+        [
+          "GOB002",
+          "GOB002",
+          "GOB002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "GV1_F2_ARCHERS",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "GOB001",
+          "GOB001",
+          "GOB003"
+        ],
+        [
+          "GOB002"
+        ],
+        [
+          "GOB006",
+          "GOB006"
+        ]
+      ]
+    },
+    {
+      "id": "GV1_F2_SKIRMISH",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "GOB001",
+          "GOB003"
+        ],
+        [
+          "GOB002"
+        ],
+        [
+          "GOB006",
+          "GOB006"
+        ]
+      ]
+    },
+    {
+      "id": "GV1_F2_AMBUSH",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "GOB001",
+          "GOB001",
+          "GOB003"
+        ],
+        [
+          "GOB002"
+        ],
+        [
+          "GOB006",
+          "GOB006"
+        ]
+      ]
+    },
+    {
+      "id": "GV1_F2_WATCHTOWER",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "GOB001",
+          "GOB001",
+          "GOB003"
+        ],
+        [
+          "GOB002"
+        ],
+        [
+          "GOB006",
+          "GOB006",
+          "GOB006"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "GV1_F3_BARRACKS",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "GOB001",
+          "GOB003",
+          "GOB003"
+        ],
+        [
+          "GOB004"
+        ],
+        [
+          "GOB006"
+        ]
+      ]
+    },
+    {
+      "id": "GV1_F3_WAR_PARTY",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "GOB003",
+          "GOB003"
+        ],
+        [
+          "GOB002"
+        ],
+        [
+          "GOB004",
+          "GOB006"
+        ]
+      ]
+    },
+    {
+      "id": "GV1_F3_MAGE_SUPPORT",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "GOB001",
+          "GOB003",
+          "GOB003"
+        ],
+        [
+          "GOB004",
+          "GOB004"
+        ],
+        [
+          "GOB006"
+        ]
+      ]
+    },
+    {
+      "id": "GV1_F3_CAPTAIN_SQUAD",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "GOB003",
+          "GOB003",
+          "GOB003"
+        ],
+        [
+          "GOB004",
+          "GOB004"
+        ],
+        [
+          "GOB006"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "GV1_F4_SHIELD_WALL",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "GOB005",
+          "GOB003"
+        ],
+        [
+          "GOB004"
+        ],
+        [
+          "GOB006",
+          "GOB006"
+        ]
+      ]
+    },
+    {
+      "id": "GV1_F4_RITUAL_GUARD",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "GOB005",
+          "GOB003",
+          "GOB003"
+        ],
+        [
+          "GOB007",
+          "GOB004"
+        ]
+      ]
+    },
+    {
+      "id": "GV1_F4_CROSS_FIRE",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "GOB005",
+          "GOB003"
+        ],
+        [
+          "GOB007"
+        ],
+        [
+          "GOB006",
+          "GOB006"
+        ]
+      ]
+    },
+    {
+      "id": "GV1_F4_ELITE_GUARD",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "GOB005",
+          "GOB005",
+          "GOB003"
+        ],
+        [
+          "GOB007",
+          "GOB004"
+        ],
+        [
+          "GOB006"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "GV1_F5_INNER_RING",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "GOB005",
+          "GOB005"
+        ],
+        [
+          "GOB003",
+          "GOB004"
+        ],
+        [
+          "GOB006"
+        ]
+      ]
+    },
+    {
+      "id": "GV1_F5_SHAMAN_CIRCLE",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "GOB005",
+          "GOB003",
+          "GOB003"
+        ],
+        [
+          "GOB007",
+          "GOB007"
+        ]
+      ]
+    },
+    {
+      "id": "GV1_F5_WAR_COUNCIL",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "GOB005",
+          "GOB005",
+          "GOB003"
+        ],
+        [
+          "GOB004",
+          "GOB007"
+        ],
+        [
+          "GOB006"
+        ]
+      ]
+    },
+    {
+      "id": "GV1_F5_CHIEFTAINS_GUARD",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "GOB005",
+          "GOB005",
+          "GOB003"
+        ],
+        [
+          "GOB007",
+          "GOB007",
+          "GOB004"
+        ],
+        [
+          "GOB006"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "GV1_F6_THRONE_ENTRY",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "GOB005",
+          "GOB005",
+          "GOB003"
+        ],
+        [
+          "GOB007",
+          "GOB004"
+        ],
+        [
+          "GOB006"
+        ]
+      ]
+    },
+    {
+      "id": "GV1_F6_LAST_DEFENSE",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "GOB005",
+          "GOB005",
+          "GOB003",
+          "GOB003"
+        ],
+        [
+          "GOB007"
+        ],
+        [
+          "GOB006"
+        ]
+      ]
+    },
+    {
+      "id": "GV1_F6_HOB_ESCORT",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "GOB005",
+          "GOB005",
+          "GOB003"
+        ],
+        [
+          "GOB007",
+          "GOB007"
+        ],
+        [
+          "GOB006"
+        ]
+      ]
+    },
+    {
+      "id": "GV1_F6_HONOR_GUARD",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "GOB005",
+          "GOB005",
+          "GOB003",
+          "GOB003"
+        ],
+        [
+          "GOB007",
+          "GOB007"
+        ],
+        [
+          "GOB006"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "GV1_FINAL_HOBGOBLIN",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "GOB005",
+          "GOB005"
+        ],
+        [
+          "GOB003",
+          "B_HOB"
+        ],
+        [
+          "GOB007",
+          "GOB004"
+        ],
+        [
+          "GOB006"
+        ]
+      ],
+      "isBoss": true
+    }
+  ]
+}

@@ -1,0 +1,875 @@
+{
+  "enemies": [
+    {
+      "id": "ELF001",
+      "name": "森の斥候",
+      "attackType": "melee",
+      "raceTags": [
+        "elf"
+      ],
+      "level": 38,
+      "hp": 760,
+      "atk": 139,
+      "def": 74,
+      "attackCount": 1,
+      "accuracy": 616,
+      "evasion": 119,
+      "gold": 92,
+      "magicDef": 78,
+      "baseAttributes": {
+        "power": 6,
+        "wisdom": 6,
+        "spirit": 3,
+        "vitality": 4,
+        "agility": 12,
+        "luck": 6
+      }
+    },
+    {
+      "id": "ELF002",
+      "name": "森の射手",
+      "attackType": "range",
+      "raceTags": [
+        "elf"
+      ],
+      "level": 39,
+      "hp": 810,
+      "atk": 193,
+      "def": 74,
+      "attackCount": 1,
+      "accuracy": 618,
+      "evasion": 119,
+      "gold": 99,
+      "magicDef": 54,
+      "baseAttributes": {
+        "power": 8,
+        "wisdom": 8,
+        "spirit": 2,
+        "vitality": 4,
+        "agility": 11,
+        "luck": 6
+      }
+    },
+    {
+      "id": "ELF003",
+      "name": "精霊使い",
+      "attackType": "melee",
+      "raceTags": [
+        "elf"
+      ],
+      "level": 40,
+      "hp": 1030,
+      "atk": 197,
+      "def": 98,
+      "attackCount": 1,
+      "accuracy": 620,
+      "evasion": 116,
+      "gold": 106,
+      "magicDef": 83,
+      "baseAttributes": {
+        "power": 8,
+        "wisdom": 8,
+        "spirit": 3,
+        "vitality": 5,
+        "agility": 9,
+        "luck": 6
+      }
+    },
+    {
+      "id": "ELF004",
+      "name": "月の衛士",
+      "attackType": "melee",
+      "raceTags": [
+        "elf"
+      ],
+      "level": 41,
+      "hp": 1700,
+      "atk": 152,
+      "def": 158,
+      "attackCount": 1,
+      "accuracy": 622,
+      "evasion": 125,
+      "gold": 103,
+      "magicDef": 137,
+      "baseAttributes": {
+        "power": 6,
+        "wisdom": 6,
+        "spirit": 5,
+        "vitality": 8,
+        "agility": 10,
+        "luck": 7
+      }
+    },
+    {
+      "id": "ELF005",
+      "name": "古樹の戦士",
+      "attackType": "melee",
+      "raceTags": [
+        "elf",
+        "treant"
+      ],
+      "level": 42,
+      "hp": 2200,
+      "atk": 184,
+      "def": 203,
+      "attackCount": 1,
+      "accuracy": 624,
+      "evasion": 111,
+      "gold": 110,
+      "magicDef": 171,
+      "baseAttributes": {
+        "power": 7,
+        "wisdom": 7,
+        "spirit": 6,
+        "vitality": 10,
+        "agility": 6,
+        "luck": 6
+      }
+    },
+    {
+      "id": "B_FORESTGUARD",
+      "name": "エルフの長シェンナ",
+      "attackType": "melee",
+      "raceTags": [
+        "elf"
+      ],
+      "level": 50,
+      "hp": 3130,
+      "atk": 255,
+      "def": 274,
+      "attackCount": 2,
+      "accuracy": 725,
+      "evasion": 168,
+      "isBoss": true,
+      "gold": 531,
+      "factorDrops": [
+        {
+          "factorId": "elf",
+          "probability": 0.015
+        }
+      ],
+      "magicDef": 247,
+      "baseAttributes": {
+        "power": 13,
+        "wisdom": 13,
+        "spirit": 9,
+        "vitality": 14,
+        "agility": 12,
+        "luck": 8
+      }
+    }
+  ],
+  "patterns": [
+    {
+      "id": "ELF_FOREST_1_EF1_001",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "ELF001",
+          "ELF001"
+        ]
+      ]
+    },
+    {
+      "id": "ELF_FOREST_1_EF1_002",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "ELF001",
+          "ELF002"
+        ],
+        [
+          "ELF001"
+        ]
+      ]
+    },
+    {
+      "id": "ELF_FOREST_1_EF1_003",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "ELF001",
+          "ELF002"
+        ],
+        [
+          "ELF001",
+          "ELF002"
+        ]
+      ]
+    },
+    {
+      "id": "ELF_FOREST_1_EF1_004",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "ELF002",
+          "ELF001",
+          "ELF002"
+        ],
+        [
+          "ELF001",
+          "ELF001"
+        ]
+      ]
+    },
+    {
+      "id": "ELF_FOREST_1_EF1_005",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "ELF001",
+          "ELF002",
+          "ELF001"
+        ],
+        [
+          "ELF002",
+          "ELF001"
+        ],
+        [
+          "ELF001",
+          "ELF002"
+        ]
+      ]
+    },
+    {
+      "id": "ELF_FOREST_1_EF1_006",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "ELF001",
+          "ELF002",
+          "ELF001"
+        ]
+      ]
+    },
+    {
+      "id": "ELF_FOREST_1_EF1_007",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "ELF002",
+          "ELF001"
+        ],
+        [
+          "ELF001",
+          "ELF002"
+        ]
+      ]
+    },
+    {
+      "id": "ELF_FOREST_1_EF1_008",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "ELF001",
+          "ELF002",
+          "ELF001"
+        ],
+        [
+          "ELF002",
+          "ELF001"
+        ]
+      ]
+    },
+    {
+      "id": "ELF_FOREST_1_EF1_009",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "ELF002",
+          "ELF001",
+          "ELF002"
+        ],
+        [
+          "ELF001",
+          "ELF002"
+        ],
+        [
+          "ELF001"
+        ]
+      ]
+    },
+    {
+      "id": "ELF_FOREST_1_EF1_010",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "ELF002",
+          "ELF001",
+          "ELF002"
+        ],
+        [
+          "ELF001",
+          "ELF002",
+          "ELF001"
+        ],
+        [
+          "ELF001"
+        ]
+      ]
+    },
+    {
+      "id": "ELF_FOREST_2_EF2_001",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "ELF001",
+          "ELF002",
+          "ELF001"
+        ]
+      ]
+    },
+    {
+      "id": "ELF_FOREST_2_EF2_002",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "ELF002",
+          "ELF003"
+        ],
+        [
+          "ELF001",
+          "ELF002"
+        ]
+      ]
+    },
+    {
+      "id": "ELF_FOREST_2_EF2_003",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "ELF003",
+          "ELF001"
+        ],
+        [
+          "ELF002",
+          "ELF001",
+          "ELF002"
+        ]
+      ]
+    },
+    {
+      "id": "ELF_FOREST_2_EF2_004",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "ELF004",
+          "ELF002",
+          "ELF003"
+        ],
+        [
+          "ELF001",
+          "ELF002"
+        ],
+        [
+          "ELF003"
+        ]
+      ]
+    },
+    {
+      "id": "ELF_FOREST_2_EF2_005",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "ELF003",
+          "ELF001",
+          "ELF002"
+        ],
+        [
+          "ELF004",
+          "ELF001",
+          "ELF002"
+        ],
+        [
+          "ELF003",
+          "ELF002"
+        ]
+      ]
+    },
+    {
+      "id": "ELF_FOREST_2_EF2_006",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "ELF003",
+          "ELF002",
+          "ELF001"
+        ],
+        [
+          "ELF004",
+          "ELF002"
+        ]
+      ]
+    },
+    {
+      "id": "ELF_FOREST_2_EF2_007",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "ELF004",
+          "ELF002",
+          "ELF003"
+        ],
+        [
+          "ELF001",
+          "ELF002"
+        ],
+        [
+          "ELF003"
+        ]
+      ]
+    },
+    {
+      "id": "ELF_FOREST_2_EF2_008",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "ELF004",
+          "ELF003",
+          "ELF002"
+        ],
+        [
+          "ELF001",
+          "ELF003",
+          "ELF002"
+        ]
+      ]
+    },
+    {
+      "id": "ELF_FOREST_2_EF2_009",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "ELF003",
+          "ELF004",
+          "ELF002"
+        ],
+        [
+          "ELF001",
+          "ELF003",
+          "ELF002"
+        ],
+        [
+          "ELF004"
+        ]
+      ]
+    },
+    {
+      "id": "ELF_FOREST_2_EF2_010",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "ELF004",
+          "ELF003",
+          "ELF002"
+        ],
+        [
+          "ELF001",
+          "ELF003",
+          "ELF002"
+        ],
+        [
+          "ELF004",
+          "ELF001"
+        ]
+      ]
+    },
+    {
+      "id": "ELF_FOREST_3_EF3_001",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "ELF003",
+          "ELF004"
+        ],
+        [
+          "ELF005"
+        ]
+      ]
+    },
+    {
+      "id": "ELF_FOREST_3_EF3_002",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "ELF005",
+          "ELF003",
+          "ELF004"
+        ],
+        [
+          "ELF003"
+        ]
+      ]
+    },
+    {
+      "id": "ELF_FOREST_3_EF3_003",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "ELF005",
+          "ELF004"
+        ],
+        [
+          "ELF003",
+          "ELF005"
+        ],
+        [
+          "ELF004"
+        ]
+      ]
+    },
+    {
+      "id": "ELF_FOREST_3_EF3_004",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "ELF005",
+          "ELF003",
+          "ELF004"
+        ],
+        [
+          "ELF005",
+          "ELF003"
+        ],
+        [
+          "ELF004",
+          "ELF005"
+        ]
+      ]
+    },
+    {
+      "id": "ELF_FOREST_3_EF3_005",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "ELF005",
+          "ELF004",
+          "ELF003"
+        ],
+        [
+          "ELF005",
+          "ELF003",
+          "ELF004"
+        ],
+        [
+          "ELF004",
+          "ELF005"
+        ]
+      ]
+    },
+    {
+      "id": "ELF_FOREST_3_EF3_006",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "ELF005",
+          "ELF004",
+          "ELF003"
+        ],
+        [
+          "ELF005",
+          "ELF004"
+        ]
+      ]
+    },
+    {
+      "id": "ELF_FOREST_3_EF3_007",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "ELF005",
+          "ELF004",
+          "ELF003"
+        ],
+        [
+          "ELF005",
+          "ELF004"
+        ],
+        [
+          "ELF003"
+        ]
+      ]
+    },
+    {
+      "id": "ELF_FOREST_3_EF3_008",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "ELF005",
+          "ELF003",
+          "ELF004"
+        ],
+        [
+          "ELF005",
+          "ELF004"
+        ],
+        [
+          "ELF003",
+          "ELF005"
+        ]
+      ]
+    },
+    {
+      "id": "ELF_FOREST_3_EF3_009",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "ELF005",
+          "ELF004",
+          "ELF005"
+        ],
+        [
+          "ELF003",
+          "ELF004",
+          "ELF005"
+        ],
+        [
+          "ELF003",
+          "ELF004"
+        ]
+      ]
+    },
+    {
+      "id": "ELF_FOREST_3_EF3_010",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "ELF005",
+          "ELF003",
+          "ELF005"
+        ],
+        [
+          "ELF004",
+          "ELF005",
+          "ELF003"
+        ],
+        [
+          "ELF004",
+          "ELF005"
+        ]
+      ]
+    },
+    {
+      "id": "ELF_FOREST_3_BOSS",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "B_FORESTGUARD",
+          "ELF005",
+          "ELF004"
+        ],
+        [
+          "ELF003",
+          "ELF005",
+          "ELF004"
+        ],
+        [
+          "ELF005",
+          "ELF003"
+        ],
+        [
+          "ELF004"
+        ]
+      ],
+      "isBoss": true
+    },
+    {
+      "id": "ELF_FOREST_1_EF1_005_F1_BOSS",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "ELF001",
+          "ELF002",
+          "ELF001"
+        ],
+        [
+          "ELF002",
+          "ELF001"
+        ],
+        [
+          "ELF001",
+          "ELF002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "ELF_FOREST_1_EF1_010_F2_BOSS",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "ELF002",
+          "ELF001",
+          "ELF002"
+        ],
+        [
+          "ELF001",
+          "ELF002",
+          "ELF001"
+        ],
+        [
+          "ELF001"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "ELF_FOREST_2_EF2_005_F3_BOSS",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "ELF003",
+          "ELF001",
+          "ELF002"
+        ],
+        [
+          "ELF004",
+          "ELF001",
+          "ELF002"
+        ],
+        [
+          "ELF003",
+          "ELF002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "ELF_FOREST_2_EF2_010_F4_BOSS",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "ELF004",
+          "ELF003",
+          "ELF002"
+        ],
+        [
+          "ELF001",
+          "ELF003",
+          "ELF002"
+        ],
+        [
+          "ELF004",
+          "ELF001"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "ELF_FOREST_3_EF3_005_F5_BOSS",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "ELF005",
+          "ELF004",
+          "ELF003"
+        ],
+        [
+          "ELF005",
+          "ELF003",
+          "ELF004"
+        ],
+        [
+          "ELF004",
+          "ELF005"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "ELF_FOREST_3_EF3_010_F6_BOSS",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "ELF005",
+          "ELF003",
+          "ELF005"
+        ],
+        [
+          "ELF004",
+          "ELF005",
+          "ELF003"
+        ],
+        [
+          "ELF004",
+          "ELF005"
+        ]
+      ],
+      "isFloorBoss": true
+    }
+  ]
+}

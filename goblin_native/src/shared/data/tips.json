@@ -1,0 +1,54 @@
+{
+  "tips": [
+    {
+      "id": "factor_from_enemy",
+      "text": "ゴブリンたちは特定の敵から因子を獲得する可能性がある",
+      "enabled": true
+    },
+    {
+      "id": "tip_1",
+      "text": "ゴブリンは因子を引き継いで産まれてくることがある",
+      "enabled": true
+    },
+    {
+      "id": "tip_2",
+      "text": "因子を引き継ぐと因子由来の亜種になることがある",
+      "enabled": true
+    },
+    {
+      "id": "tip_3",
+      "text": "ゴブリンは固有スキルを持って産まれることがある",
+      "enabled": true
+    },
+    {
+      "id": "tip_4",
+      "text": "ゴブリンは因子による固有スキルを引き継ぐことがある",
+      "enabled": true
+    },
+    {
+      "id": "tip_5",
+      "text": "武器には近距離、遠距離武器がある",
+      "enabled": true
+    },
+    {
+      "id": "tip_6",
+      "text": "隊列によってダメージ補正がある",
+      "enabled": true
+    },
+    {
+      "id": "tip_7",
+      "text": "隊列が前に行くほど狙われやすい",
+      "enabled": true
+    },
+    {
+      "id": "tip_8",
+      "text": "拠点の「群れを増やす」で新しいゴブリンが産まれる",
+      "enabled": true
+    },
+    {
+      "id": "tip_9",
+      "text": "ストーリーは読まなくてもいいが読むと報酬が貰える",
+      "enabled": true
+    }
+  ]
+}

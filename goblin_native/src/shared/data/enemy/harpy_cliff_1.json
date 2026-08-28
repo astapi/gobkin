@@ -1,0 +1,515 @@
+{
+  "enemies": [
+    {
+      "id": "HRP001",
+      "name": "ハーピィ",
+      "attackType": "melee",
+      "raceTags": [
+        "harpy"
+      ],
+      "level": 112,
+      "hp": 8390,
+      "atk": 1380,
+      "def": 684,
+      "attackCount": 2,
+      "accuracy": 764,
+      "evasion": 693,
+      "gold": 140,
+      "magicDef": 1208,
+      "baseAttributes": {
+        "power": 11,
+        "wisdom": 11,
+        "spirit": 5,
+        "vitality": 7,
+        "agility": 24,
+        "luck": 12
+      }
+    },
+    {
+      "id": "HRP002",
+      "name": "風切りハーピィ",
+      "attackType": "melee",
+      "raceTags": [
+        "harpy"
+      ],
+      "level": 116,
+      "hp": 9850,
+      "atk": 1544,
+      "def": 803,
+      "attackCount": 2,
+      "accuracy": 772,
+      "evasion": 761,
+      "gold": 151,
+      "magicDef": 1334,
+      "baseAttributes": {
+        "power": 12,
+        "wisdom": 12,
+        "spirit": 5,
+        "vitality": 8,
+        "agility": 27,
+        "luck": 13
+      }
+    },
+    {
+      "id": "B_HARPY_MATRIARCH",
+      "name": "女王エーリア",
+      "attackType": "melee",
+      "raceTags": [
+        "harpy"
+      ],
+      "level": 140,
+      "hp": 11830,
+      "atk": 1148,
+      "def": 944,
+      "attackCount": 3,
+      "accuracy": 860,
+      "evasion": 940,
+      "isBoss": true,
+      "gold": 725,
+      "magicDef": 496,
+      "baseAttributes": {
+        "power": 17,
+        "wisdom": 17,
+        "spirit": 8,
+        "vitality": 14,
+        "agility": 30,
+        "luck": 15
+      }
+    }
+  ],
+  "patterns": [
+    {
+      "id": "HC1_F1_A",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "HRP001",
+          "HRP001"
+        ],
+        [
+          "HRP002"
+        ]
+      ]
+    },
+    {
+      "id": "HC1_F1_B",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "HRP001",
+          "HRP001",
+          "HRP001"
+        ],
+        [
+          "HRP002"
+        ]
+      ]
+    },
+    {
+      "id": "HC1_F1_C",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "HRP001",
+          "HRP001"
+        ],
+        [
+          "HRP002",
+          "HRP002"
+        ]
+      ]
+    },
+    {
+      "id": "HC1_F1_BOSS",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "HRP001",
+          "HRP001",
+          "HRP001"
+        ],
+        [
+          "HRP002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "HC1_F2_A",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "HRP002",
+          "HRP001"
+        ],
+        [
+          "HRP001",
+          "HRP002"
+        ]
+      ]
+    },
+    {
+      "id": "HC1_F2_B",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "HRP002",
+          "HRP001",
+          "HRP002"
+        ],
+        [
+          "HRP001",
+          "HRP002"
+        ]
+      ]
+    },
+    {
+      "id": "HC1_F2_C",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "HRP002",
+          "HRP001"
+        ],
+        [
+          "HRP001",
+          "HRP002",
+          "HRP001"
+        ]
+      ]
+    },
+    {
+      "id": "HC1_F2_BOSS",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "HRP002",
+          "HRP001",
+          "HRP002"
+        ],
+        [
+          "HRP001",
+          "HRP002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "HC1_F3_A",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "HRP002",
+          "HRP002"
+        ],
+        [
+          "HRP001",
+          "HRP001"
+        ]
+      ]
+    },
+    {
+      "id": "HC1_F3_B",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "HRP002",
+          "HRP002",
+          "HRP002"
+        ],
+        [
+          "HRP001",
+          "HRP001"
+        ]
+      ]
+    },
+    {
+      "id": "HC1_F3_C",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "HRP002",
+          "HRP002"
+        ],
+        [
+          "HRP001",
+          "HRP001",
+          "HRP001"
+        ]
+      ]
+    },
+    {
+      "id": "HC1_F3_BOSS",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "HRP002",
+          "HRP002",
+          "HRP002"
+        ],
+        [
+          "HRP001",
+          "HRP001"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "HC1_F4_A",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "HRP002",
+          "HRP001"
+        ],
+        [
+          "HRP002",
+          "HRP001",
+          "HRP001"
+        ]
+      ]
+    },
+    {
+      "id": "HC1_F4_B",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "HRP002",
+          "HRP001",
+          "HRP002"
+        ],
+        [
+          "HRP002",
+          "HRP001",
+          "HRP001"
+        ]
+      ]
+    },
+    {
+      "id": "HC1_F4_C",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "HRP002",
+          "HRP001"
+        ],
+        [
+          "HRP002",
+          "HRP001",
+          "HRP001",
+          "HRP002"
+        ]
+      ]
+    },
+    {
+      "id": "HC1_F4_BOSS",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "HRP002",
+          "HRP001",
+          "HRP002"
+        ],
+        [
+          "HRP002",
+          "HRP001",
+          "HRP001"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "HC1_F5_A",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "HRP002",
+          "HRP002"
+        ],
+        [
+          "HRP002",
+          "HRP001",
+          "HRP001"
+        ]
+      ]
+    },
+    {
+      "id": "HC1_F5_B",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "HRP002",
+          "HRP002",
+          "HRP002"
+        ],
+        [
+          "HRP002",
+          "HRP001",
+          "HRP001"
+        ]
+      ]
+    },
+    {
+      "id": "HC1_F5_C",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "HRP002",
+          "HRP002"
+        ],
+        [
+          "HRP002",
+          "HRP001",
+          "HRP001",
+          "HRP002"
+        ]
+      ]
+    },
+    {
+      "id": "HC1_F5_BOSS",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "HRP002",
+          "HRP002",
+          "HRP002"
+        ],
+        [
+          "HRP002",
+          "HRP001",
+          "HRP001"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "HC1_F6_A",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "HRP002",
+          "HRP002"
+        ],
+        [
+          "HRP002",
+          "HRP002",
+          "HRP001"
+        ]
+      ]
+    },
+    {
+      "id": "HC1_F6_B",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "HRP002",
+          "HRP002",
+          "HRP002"
+        ],
+        [
+          "HRP002",
+          "HRP002",
+          "HRP001"
+        ]
+      ]
+    },
+    {
+      "id": "HC1_F6_C",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "HRP002",
+          "HRP002"
+        ],
+        [
+          "HRP002",
+          "HRP002",
+          "HRP001",
+          "HRP002"
+        ]
+      ]
+    },
+    {
+      "id": "HC1_F6_BOSS",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "HRP002",
+          "HRP002",
+          "HRP002"
+        ],
+        [
+          "HRP002",
+          "HRP002",
+          "HRP001"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "HC1_FINAL_BOSS",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "B_HARPY_MATRIARCH"
+        ],
+        [
+          "HRP002",
+          "HRP002",
+          "HRP001"
+        ]
+      ],
+      "isBoss": true
+    }
+  ]
+}

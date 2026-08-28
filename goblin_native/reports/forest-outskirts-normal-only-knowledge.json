@@ -1,0 +1,1557 @@
+{
+  "version": 1,
+  "runs": [
+    {
+      "createdAt": "2026-06-05T01:30:29.951Z",
+      "scenario": "forest_outskirts",
+      "level": 1,
+      "config": {
+        "generations": 4,
+        "population": 12,
+        "iterations": 4,
+        "validationIterations": 40,
+        "seed": 31,
+        "cleric": "optional",
+        "jobs": [],
+        "variants": [],
+        "maxUnlockRank": 1,
+        "maxDropRank": 1,
+        "allowRare": false,
+        "availability": null
+      },
+      "insights": {
+        "winningCandidateCount": 0,
+        "frequentJobs": [],
+        "frequentVariants": [],
+        "frequentEquipment": [
+          [
+            "claw_iron",
+            4
+          ],
+          [
+            "bow_long",
+            3
+          ],
+          [
+            "wand_wand",
+            2
+          ],
+          [
+            "claw_steel",
+            2
+          ],
+          [
+            "hidden_dagger",
+            1
+          ]
+        ]
+      },
+      "candidates": [
+        {
+          "result": {
+            "wins": 0,
+            "iterations": 40,
+            "winRate": 0,
+            "avgRoundsPerBattle": 1.3767123287671232,
+            "equipmentCost": 2420,
+            "score": -1.3767147487671232
+          },
+          "genome": {
+            "members": [
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "wand_wand"
+                ]
+              },
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "claw_iron"
+                ]
+              },
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "bow_long"
+                ]
+              },
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "claw_iron"
+                ]
+              },
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "claw_steel"
+                ]
+              },
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "bow_long"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "result": {
+            "wins": 0,
+            "iterations": 40,
+            "winRate": 0,
+            "avgRoundsPerBattle": 1.3864406779661016,
+            "equipmentCost": 1520,
+            "score": -1.3864421979661017
+          },
+          "genome": {
+            "members": [
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "claw_iron"
+                ]
+              },
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "claw_steel"
+                ]
+              },
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "wand_wand"
+                ]
+              },
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "claw_iron"
+                ]
+              },
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "bow_long"
+                ]
+              },
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "hidden_dagger"
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "createdAt": "2026-06-05T01:30:31.088Z",
+      "scenario": "forest_outskirts",
+      "level": 2,
+      "config": {
+        "generations": 4,
+        "population": 12,
+        "iterations": 4,
+        "validationIterations": 40,
+        "seed": 32,
+        "cleric": "optional",
+        "jobs": [],
+        "variants": [],
+        "maxUnlockRank": 1,
+        "maxDropRank": 1,
+        "allowRare": false,
+        "availability": null
+      },
+      "insights": {
+        "winningCandidateCount": 0,
+        "frequentJobs": [],
+        "frequentVariants": [],
+        "frequentEquipment": [
+          [
+            "gauntlet_leather",
+            2
+          ],
+          [
+            "hidden_dagger",
+            2
+          ],
+          [
+            "sword_long",
+            2
+          ],
+          [
+            "claw_steel",
+            2
+          ],
+          [
+            "bow_short",
+            2
+          ],
+          [
+            "gauntlet_gauntlet",
+            2
+          ]
+        ]
+      },
+      "candidates": [
+        {
+          "result": {
+            "wins": 0,
+            "iterations": 40,
+            "winRate": 0,
+            "avgRoundsPerBattle": 1.4258241758241759,
+            "equipmentCost": 2355,
+            "score": -1.4258265308241758
+          },
+          "genome": {
+            "members": [
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "gauntlet_leather"
+                ]
+              },
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "hidden_dagger"
+                ]
+              },
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "sword_long"
+                ]
+              },
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "claw_steel"
+                ]
+              },
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "bow_short"
+                ]
+              },
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "gauntlet_gauntlet"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "result": {
+            "wins": 0,
+            "iterations": 40,
+            "winRate": 0,
+            "avgRoundsPerBattle": 1.4387464387464388,
+            "equipmentCost": 2355,
+            "score": -1.4387487937464387
+          },
+          "genome": {
+            "members": [
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "gauntlet_leather"
+                ]
+              },
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "hidden_dagger"
+                ]
+              },
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "sword_long"
+                ]
+              },
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "claw_steel"
+                ]
+              },
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "gauntlet_gauntlet"
+                ]
+              },
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "bow_short"
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "createdAt": "2026-06-05T01:30:32.299Z",
+      "scenario": "forest_outskirts",
+      "level": 3,
+      "config": {
+        "generations": 4,
+        "population": 12,
+        "iterations": 4,
+        "validationIterations": 40,
+        "seed": 33,
+        "cleric": "optional",
+        "jobs": [],
+        "variants": [],
+        "maxUnlockRank": 1,
+        "maxDropRank": 1,
+        "allowRare": false,
+        "availability": null
+      },
+      "insights": {
+        "winningCandidateCount": 2,
+        "frequentJobs": [],
+        "frequentVariants": [],
+        "frequentEquipment": [
+          [
+            "bow_long",
+            8
+          ],
+          [
+            "gauntlet_gauntlet",
+            8
+          ],
+          [
+            "armor_armor",
+            2
+          ],
+          [
+            "armor_fur_vest",
+            2
+          ],
+          [
+            "sword_long",
+            1
+          ],
+          [
+            "shield_wooden",
+            1
+          ],
+          [
+            "claw_steel",
+            1
+          ],
+          [
+            "sword_broad",
+            1
+          ]
+        ]
+      },
+      "candidates": [
+        {
+          "result": {
+            "wins": 39,
+            "iterations": 40,
+            "winRate": 0.975,
+            "avgRoundsPerBattle": 1.0229681978798586,
+            "equipmentCost": 12330,
+            "score": 974998.9770194722
+          },
+          "genome": {
+            "members": [
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "armor_armor",
+                  "armor_fur_vest"
+                ]
+              },
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "sword_long",
+                  "armor_armor"
+                ]
+              },
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "bow_long",
+                  "gauntlet_gauntlet"
+                ]
+              },
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "bow_long",
+                  "gauntlet_gauntlet"
+                ]
+              },
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "bow_long",
+                  "gauntlet_gauntlet"
+                ]
+              },
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "bow_long",
+                  "gauntlet_gauntlet"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "result": {
+            "wins": 35,
+            "iterations": 40,
+            "winRate": 0.875,
+            "avgRoundsPerBattle": 1.0447227191413238,
+            "equipmentCost": 12220,
+            "score": 874998.9552650609
+          },
+          "genome": {
+            "members": [
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "shield_wooden",
+                  "armor_fur_vest"
+                ]
+              },
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "claw_steel",
+                  "sword_broad"
+                ]
+              },
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "bow_long",
+                  "gauntlet_gauntlet"
+                ]
+              },
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "bow_long",
+                  "gauntlet_gauntlet"
+                ]
+              },
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "bow_long",
+                  "gauntlet_gauntlet"
+                ]
+              },
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "bow_long",
+                  "gauntlet_gauntlet"
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "createdAt": "2026-06-05T01:30:33.533Z",
+      "scenario": "forest_outskirts",
+      "level": 4,
+      "config": {
+        "generations": 4,
+        "population": 12,
+        "iterations": 4,
+        "validationIterations": 40,
+        "seed": 34,
+        "cleric": "optional",
+        "jobs": [],
+        "variants": [],
+        "maxUnlockRank": 1,
+        "maxDropRank": 1,
+        "allowRare": false,
+        "availability": null
+      },
+      "insights": {
+        "winningCandidateCount": 2,
+        "frequentJobs": [],
+        "frequentVariants": [],
+        "frequentEquipment": [
+          [
+            "bow_long",
+            8
+          ],
+          [
+            "gauntlet_gauntlet",
+            8
+          ],
+          [
+            "armor_armor",
+            3
+          ],
+          [
+            "sword_long",
+            2
+          ],
+          [
+            "claw_steel",
+            1
+          ],
+          [
+            "armor_fur_vest",
+            1
+          ],
+          [
+            "bow_short",
+            1
+          ]
+        ]
+      },
+      "candidates": [
+        {
+          "result": {
+            "wins": 40,
+            "iterations": 40,
+            "winRate": 1,
+            "avgRoundsPerBattle": 1.003350083752094,
+            "equipmentCost": 12330,
+            "score": 999998.9966375863
+          },
+          "genome": {
+            "members": [
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "claw_steel",
+                  "armor_fur_vest"
+                ]
+              },
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "sword_long",
+                  "armor_armor"
+                ]
+              },
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "bow_long",
+                  "gauntlet_gauntlet"
+                ]
+              },
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "bow_long",
+                  "gauntlet_gauntlet"
+                ]
+              },
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "bow_long",
+                  "gauntlet_gauntlet"
+                ]
+              },
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "bow_long",
+                  "gauntlet_gauntlet"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "result": {
+            "wins": 40,
+            "iterations": 40,
+            "winRate": 1,
+            "avgRoundsPerBattle": 1.0053571428571428,
+            "equipmentCost": 12340,
+            "score": 999998.9946305171
+          },
+          "genome": {
+            "members": [
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "armor_armor",
+                  "bow_short"
+                ]
+              },
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "sword_long",
+                  "armor_armor"
+                ]
+              },
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "bow_long",
+                  "gauntlet_gauntlet"
+                ]
+              },
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "bow_long",
+                  "gauntlet_gauntlet"
+                ]
+              },
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "bow_long",
+                  "gauntlet_gauntlet"
+                ]
+              },
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "bow_long",
+                  "gauntlet_gauntlet"
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "createdAt": "2026-06-05T01:30:34.757Z",
+      "scenario": "forest_outskirts",
+      "level": 5,
+      "config": {
+        "generations": 4,
+        "population": 12,
+        "iterations": 4,
+        "validationIterations": 40,
+        "seed": 35,
+        "cleric": "optional",
+        "jobs": [],
+        "variants": [],
+        "maxUnlockRank": 1,
+        "maxDropRank": 1,
+        "allowRare": false,
+        "availability": null
+      },
+      "insights": {
+        "winningCandidateCount": 2,
+        "frequentJobs": [],
+        "frequentVariants": [],
+        "frequentEquipment": [
+          [
+            "bow_long",
+            8
+          ],
+          [
+            "gauntlet_gauntlet",
+            8
+          ],
+          [
+            "armor_armor",
+            3
+          ],
+          [
+            "armor_fur_vest",
+            3
+          ],
+          [
+            "wand_apprentice",
+            1
+          ],
+          [
+            "claw_copper",
+            1
+          ]
+        ]
+      },
+      "candidates": [
+        {
+          "result": {
+            "wins": 40,
+            "iterations": 40,
+            "winRate": 1,
+            "avgRoundsPerBattle": 1,
+            "equipmentCost": 12190,
+            "score": 999998.99998781
+          },
+          "genome": {
+            "members": [
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "armor_armor",
+                  "armor_fur_vest"
+                ]
+              },
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "wand_apprentice",
+                  "claw_copper"
+                ]
+              },
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "bow_long",
+                  "gauntlet_gauntlet"
+                ]
+              },
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "bow_long",
+                  "gauntlet_gauntlet"
+                ]
+              },
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "bow_long",
+                  "gauntlet_gauntlet"
+                ]
+              },
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "bow_long",
+                  "gauntlet_gauntlet"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "result": {
+            "wins": 40,
+            "iterations": 40,
+            "winRate": 1,
+            "avgRoundsPerBattle": 1.0017825311942958,
+            "equipmentCost": 12260,
+            "score": 999998.9982052088
+          },
+          "genome": {
+            "members": [
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "armor_armor",
+                  "armor_fur_vest"
+                ]
+              },
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "armor_armor",
+                  "armor_fur_vest"
+                ]
+              },
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "bow_long",
+                  "gauntlet_gauntlet"
+                ]
+              },
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "bow_long",
+                  "gauntlet_gauntlet"
+                ]
+              },
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "bow_long",
+                  "gauntlet_gauntlet"
+                ]
+              },
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "bow_long",
+                  "gauntlet_gauntlet"
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "createdAt": "2026-06-05T01:30:36.000Z",
+      "scenario": "forest_outskirts",
+      "level": 6,
+      "config": {
+        "generations": 4,
+        "population": 12,
+        "iterations": 4,
+        "validationIterations": 40,
+        "seed": 36,
+        "cleric": "optional",
+        "jobs": [],
+        "variants": [],
+        "maxUnlockRank": 1,
+        "maxDropRank": 1,
+        "allowRare": false,
+        "availability": null
+      },
+      "insights": {
+        "winningCandidateCount": 2,
+        "frequentJobs": [],
+        "frequentVariants": [],
+        "frequentEquipment": [
+          [
+            "sword_club",
+            5
+          ],
+          [
+            "claw_iron",
+            4
+          ],
+          [
+            "bow_long",
+            4
+          ],
+          [
+            "gauntlet_copper",
+            4
+          ],
+          [
+            "armor_tattered_cloth",
+            3
+          ],
+          [
+            "gauntlet_gauntlet",
+            3
+          ],
+          [
+            "claw_steel",
+            2
+          ],
+          [
+            "sword_copper",
+            2
+          ],
+          [
+            "hidden_dagger",
+            2
+          ],
+          [
+            "bow_slingshot",
+            2
+          ],
+          [
+            "sword_broad",
+            2
+          ],
+          [
+            "shield_shield",
+            1
+          ],
+          [
+            "sword_long",
+            1
+          ],
+          [
+            "wand_wand",
+            1
+          ]
+        ]
+      },
+      "candidates": [
+        {
+          "result": {
+            "wins": 40,
+            "iterations": 40,
+            "winRate": 1,
+            "avgRoundsPerBattle": 1,
+            "equipmentCost": 5665,
+            "score": 999998.999994335
+          },
+          "genome": {
+            "members": [
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "claw_iron",
+                  "sword_club",
+                  "shield_shield"
+                ]
+              },
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "claw_steel",
+                  "sword_copper",
+                  "hidden_dagger"
+                ]
+              },
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "bow_long",
+                  "sword_long",
+                  "gauntlet_copper"
+                ]
+              },
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "bow_slingshot",
+                  "armor_tattered_cloth",
+                  "sword_club"
+                ]
+              },
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "bow_long",
+                  "claw_iron",
+                  "gauntlet_copper"
+                ]
+              },
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "bow_long",
+                  "gauntlet_gauntlet",
+                  "gauntlet_copper"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "result": {
+            "wins": 40,
+            "iterations": 40,
+            "winRate": 1,
+            "avgRoundsPerBattle": 1,
+            "equipmentCost": 5765,
+            "score": 999998.999994235
+          },
+          "genome": {
+            "members": [
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "claw_iron",
+                  "sword_club",
+                  "sword_broad"
+                ]
+              },
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "claw_iron",
+                  "sword_club",
+                  "sword_broad"
+                ]
+              },
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "wand_wand",
+                  "gauntlet_gauntlet",
+                  "gauntlet_copper"
+                ]
+              },
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "bow_long",
+                  "gauntlet_gauntlet",
+                  "armor_tattered_cloth"
+                ]
+              },
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "bow_slingshot",
+                  "armor_tattered_cloth",
+                  "sword_club"
+                ]
+              },
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "claw_steel",
+                  "sword_copper",
+                  "hidden_dagger"
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "createdAt": "2026-06-05T01:30:37.276Z",
+      "scenario": "forest_outskirts",
+      "level": 7,
+      "config": {
+        "generations": 4,
+        "population": 12,
+        "iterations": 4,
+        "validationIterations": 40,
+        "seed": 37,
+        "cleric": "optional",
+        "jobs": [],
+        "variants": [],
+        "maxUnlockRank": 1,
+        "maxDropRank": 1,
+        "allowRare": false,
+        "availability": null
+      },
+      "insights": {
+        "winningCandidateCount": 2,
+        "frequentJobs": [],
+        "frequentVariants": [],
+        "frequentEquipment": [
+          [
+            "gauntlet_copper",
+            7
+          ],
+          [
+            "sword_cypress_stick",
+            4
+          ],
+          [
+            "claw_steel",
+            3
+          ],
+          [
+            "bow_long",
+            3
+          ],
+          [
+            "armor_armor",
+            2
+          ],
+          [
+            "armor_leather_vest",
+            2
+          ],
+          [
+            "wand_twig",
+            2
+          ],
+          [
+            "hidden_dagger",
+            2
+          ],
+          [
+            "gauntlet_gauntlet",
+            2
+          ],
+          [
+            "armor_fur_vest",
+            1
+          ],
+          [
+            "claw_iron",
+            1
+          ],
+          [
+            "sword_long",
+            1
+          ],
+          [
+            "sword_club",
+            1
+          ],
+          [
+            "wand_apprentice",
+            1
+          ],
+          [
+            "shield_pot_lid",
+            1
+          ],
+          [
+            "rod_rod",
+            1
+          ],
+          [
+            "sword_copper",
+            1
+          ],
+          [
+            "gauntlet_cloth_gloves",
+            1
+          ]
+        ]
+      },
+      "candidates": [
+        {
+          "result": {
+            "wins": 40,
+            "iterations": 40,
+            "winRate": 1,
+            "avgRoundsPerBattle": 1,
+            "equipmentCost": 3755,
+            "score": 999998.999996245
+          },
+          "genome": {
+            "members": [
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "armor_armor",
+                  "armor_fur_vest",
+                  "armor_leather_vest"
+                ]
+              },
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "claw_iron",
+                  "sword_long",
+                  "sword_club"
+                ]
+              },
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "wand_twig",
+                  "claw_steel",
+                  "gauntlet_copper"
+                ]
+              },
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "bow_long",
+                  "sword_cypress_stick",
+                  "gauntlet_copper"
+                ]
+              },
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "sword_cypress_stick",
+                  "claw_steel",
+                  "hidden_dagger"
+                ]
+              },
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "wand_apprentice",
+                  "gauntlet_gauntlet",
+                  "gauntlet_copper"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "result": {
+            "wins": 40,
+            "iterations": 40,
+            "winRate": 1,
+            "avgRoundsPerBattle": 1,
+            "equipmentCost": 4690,
+            "score": 999998.99999531
+          },
+          "genome": {
+            "members": [
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "armor_armor",
+                  "shield_pot_lid",
+                  "armor_leather_vest"
+                ]
+              },
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "rod_rod",
+                  "sword_copper",
+                  "gauntlet_copper"
+                ]
+              },
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "wand_twig",
+                  "gauntlet_cloth_gloves",
+                  "gauntlet_copper"
+                ]
+              },
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "bow_long",
+                  "sword_cypress_stick",
+                  "gauntlet_copper"
+                ]
+              },
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "sword_cypress_stick",
+                  "claw_steel",
+                  "hidden_dagger"
+                ]
+              },
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "bow_long",
+                  "gauntlet_gauntlet",
+                  "gauntlet_copper"
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "createdAt": "2026-06-05T01:30:38.582Z",
+      "scenario": "forest_outskirts",
+      "level": 8,
+      "config": {
+        "generations": 4,
+        "population": 12,
+        "iterations": 4,
+        "validationIterations": 40,
+        "seed": 38,
+        "cleric": "optional",
+        "jobs": [],
+        "variants": [],
+        "maxUnlockRank": 1,
+        "maxDropRank": 1,
+        "allowRare": false,
+        "availability": null
+      },
+      "insights": {
+        "winningCandidateCount": 2,
+        "frequentJobs": [],
+        "frequentVariants": [],
+        "frequentEquipment": [
+          [
+            "armor_leather_vest",
+            7
+          ],
+          [
+            "hidden_dagger",
+            4
+          ],
+          [
+            "claw_steel",
+            3
+          ],
+          [
+            "claw_beast",
+            3
+          ],
+          [
+            "gauntlet_cloth_gloves",
+            3
+          ],
+          [
+            "armor_tattered_cloth",
+            2
+          ],
+          [
+            "gauntlet_copper",
+            2
+          ],
+          [
+            "wand_apprentice",
+            2
+          ],
+          [
+            "rod_rod",
+            2
+          ],
+          [
+            "claw_copper",
+            1
+          ],
+          [
+            "armor_armor",
+            1
+          ],
+          [
+            "sword_cypress_stick",
+            1
+          ],
+          [
+            "bow_short",
+            1
+          ],
+          [
+            "gauntlet_leather",
+            1
+          ],
+          [
+            "robe_robe",
+            1
+          ],
+          [
+            "rod_wooden",
+            1
+          ],
+          [
+            "wand_twig",
+            1
+          ]
+        ]
+      },
+      "candidates": [
+        {
+          "result": {
+            "wins": 40,
+            "iterations": 40,
+            "winRate": 1,
+            "avgRoundsPerBattle": 1.0034423407917383,
+            "equipmentCost": 835,
+            "score": 999998.9965568242
+          },
+          "genome": {
+            "members": [
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "armor_tattered_cloth",
+                  "gauntlet_copper",
+                  "armor_leather_vest"
+                ]
+              },
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "wand_apprentice",
+                  "claw_copper",
+                  "claw_steel"
+                ]
+              },
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "hidden_dagger",
+                  "claw_beast",
+                  "rod_rod"
+                ]
+              },
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "armor_leather_vest",
+                  "armor_leather_vest",
+                  "armor_armor"
+                ]
+              },
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "sword_cypress_stick",
+                  "bow_short",
+                  "gauntlet_leather"
+                ]
+              },
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "hidden_dagger",
+                  "gauntlet_cloth_gloves",
+                  "claw_beast"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "result": {
+            "wins": 40,
+            "iterations": 40,
+            "winRate": 1,
+            "avgRoundsPerBattle": 1.003616636528029,
+            "equipmentCost": 985,
+            "score": 999998.9963823785
+          },
+          "genome": {
+            "members": [
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "claw_steel",
+                  "hidden_dagger",
+                  "robe_robe"
+                ]
+              },
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "hidden_dagger",
+                  "rod_wooden",
+                  "rod_rod"
+                ]
+              },
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "wand_apprentice",
+                  "gauntlet_cloth_gloves",
+                  "claw_steel"
+                ]
+              },
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "armor_leather_vest",
+                  "armor_leather_vest",
+                  "wand_twig"
+                ]
+              },
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "armor_tattered_cloth",
+                  "gauntlet_copper",
+                  "armor_leather_vest"
+                ]
+              },
+              {
+                "job": null,
+                "variantFactorId": null,
+                "equipmentTemplateIds": [
+                  "armor_leather_vest",
+                  "gauntlet_cloth_gloves",
+                  "claw_beast"
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

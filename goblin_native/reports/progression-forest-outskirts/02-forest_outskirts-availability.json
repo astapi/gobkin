@@ -1,0 +1,686 @@
+{
+  "version": 1,
+  "createdAt": "2026-06-05T01:29:36.197Z",
+  "state": {
+    "clearedDungeons": [
+      "slime_cave",
+      "forest_outskirts"
+    ],
+    "maxTierByDungeon": {
+      "slime_cave": 0,
+      "forest_outskirts": 0
+    }
+  },
+  "baseRank": 1,
+  "unlockedAreaIds": [
+    "slime_cave",
+    "forest_outskirts",
+    "goblin_village_1"
+  ],
+  "farmableAreas": [
+    {
+      "areaId": "slime_cave",
+      "name": "スライムの洞窟",
+      "cleared": true,
+      "maxTier": 0
+    },
+    {
+      "areaId": "forest_outskirts",
+      "name": "周辺の森",
+      "cleared": true,
+      "maxTier": 0
+    }
+  ],
+  "maxNormalDropRank": 1,
+  "counts": {
+    "equipment": 34,
+    "rareEquipment": 2,
+    "factors": 2
+  },
+  "availableEquipment": [
+    {
+      "templateId": "armor_armor",
+      "name": "アーマー",
+      "category": "armor",
+      "rank": 1,
+      "unlockRank": 1,
+      "isRare": false,
+      "sources": [
+        {
+          "type": "shop",
+          "baseRank": 1
+        },
+        {
+          "type": "normalDropRank",
+          "maxNormalDropRank": 1
+        }
+      ]
+    },
+    {
+      "templateId": "armor_fur_vest",
+      "name": "毛皮のベスト",
+      "category": "armor",
+      "rank": 0,
+      "unlockRank": 1,
+      "isRare": false,
+      "sources": [
+        {
+          "type": "shop",
+          "baseRank": 1
+        },
+        {
+          "type": "normalDropRank",
+          "maxNormalDropRank": 1
+        }
+      ]
+    },
+    {
+      "templateId": "armor_leather_vest",
+      "name": "かわのベスト",
+      "category": "armor",
+      "rank": 0,
+      "unlockRank": 1,
+      "isRare": false,
+      "sources": [
+        {
+          "type": "shop",
+          "baseRank": 1
+        },
+        {
+          "type": "normalDropRank",
+          "maxNormalDropRank": 1
+        }
+      ]
+    },
+    {
+      "templateId": "armor_tattered_cloth",
+      "name": "ボロぬの",
+      "category": "armor",
+      "rank": 0,
+      "unlockRank": 1,
+      "isRare": false,
+      "sources": [
+        {
+          "type": "shop",
+          "baseRank": 1
+        },
+        {
+          "type": "normalDropRank",
+          "maxNormalDropRank": 1
+        }
+      ]
+    },
+    {
+      "templateId": "bow_long",
+      "name": "ロングボウ",
+      "category": "weapon",
+      "subCategory": "bow",
+      "rank": 1,
+      "unlockRank": 1,
+      "isRare": false,
+      "sources": [
+        {
+          "type": "shop",
+          "baseRank": 1
+        },
+        {
+          "type": "normalDropRank",
+          "maxNormalDropRank": 1
+        }
+      ]
+    },
+    {
+      "templateId": "bow_short",
+      "name": "ショートボウ",
+      "category": "weapon",
+      "subCategory": "bow",
+      "rank": 0,
+      "unlockRank": 1,
+      "isRare": false,
+      "sources": [
+        {
+          "type": "shop",
+          "baseRank": 1
+        },
+        {
+          "type": "normalDropRank",
+          "maxNormalDropRank": 1
+        }
+      ]
+    },
+    {
+      "templateId": "bow_slingshot",
+      "name": "スリングショット",
+      "category": "weapon",
+      "subCategory": "bow",
+      "rank": 0,
+      "unlockRank": 1,
+      "isRare": false,
+      "sources": [
+        {
+          "type": "shop",
+          "baseRank": 1
+        },
+        {
+          "type": "normalDropRank",
+          "maxNormalDropRank": 1
+        }
+      ]
+    },
+    {
+      "templateId": "claw_beast",
+      "name": "ウルフの爪",
+      "category": "weapon",
+      "subCategory": "claw",
+      "rank": 0,
+      "unlockRank": 1,
+      "isRare": false,
+      "sources": [
+        {
+          "type": "shop",
+          "baseRank": 1
+        },
+        {
+          "type": "normalDropRank",
+          "maxNormalDropRank": 1
+        }
+      ]
+    },
+    {
+      "templateId": "claw_copper",
+      "name": "どうのツメ",
+      "category": "weapon",
+      "subCategory": "claw",
+      "rank": 0,
+      "unlockRank": 1,
+      "isRare": false,
+      "sources": [
+        {
+          "type": "shop",
+          "baseRank": 1
+        },
+        {
+          "type": "normalDropRank",
+          "maxNormalDropRank": 1
+        }
+      ]
+    },
+    {
+      "templateId": "claw_iron",
+      "name": "てつのツメ",
+      "category": "weapon",
+      "subCategory": "claw",
+      "rank": 0,
+      "unlockRank": 1,
+      "isRare": false,
+      "sources": [
+        {
+          "type": "shop",
+          "baseRank": 1
+        },
+        {
+          "type": "normalDropRank",
+          "maxNormalDropRank": 1
+        }
+      ]
+    },
+    {
+      "templateId": "claw_sharp",
+      "name": "トゲ",
+      "category": "weapon",
+      "subCategory": "claw",
+      "rank": 0,
+      "unlockRank": 1,
+      "isRare": false,
+      "sources": [
+        {
+          "type": "shop",
+          "baseRank": 1
+        },
+        {
+          "type": "normalDropRank",
+          "maxNormalDropRank": 1
+        }
+      ]
+    },
+    {
+      "templateId": "claw_steel",
+      "name": "はがねのツメ",
+      "category": "weapon",
+      "subCategory": "claw",
+      "rank": 1,
+      "unlockRank": 1,
+      "isRare": false,
+      "sources": [
+        {
+          "type": "shop",
+          "baseRank": 1
+        },
+        {
+          "type": "normalDropRank",
+          "maxNormalDropRank": 1
+        }
+      ]
+    },
+    {
+      "templateId": "gauntlet_cloth_gloves",
+      "name": "ぬのの手袋",
+      "category": "gauntlet",
+      "rank": 0,
+      "unlockRank": 1,
+      "isRare": false,
+      "sources": [
+        {
+          "type": "shop",
+          "baseRank": 1
+        },
+        {
+          "type": "normalDropRank",
+          "maxNormalDropRank": 1
+        }
+      ]
+    },
+    {
+      "templateId": "gauntlet_copper",
+      "name": "どうの小手",
+      "category": "gauntlet",
+      "rank": 0,
+      "unlockRank": 1,
+      "isRare": false,
+      "sources": [
+        {
+          "type": "shop",
+          "baseRank": 1
+        },
+        {
+          "type": "normalDropRank",
+          "maxNormalDropRank": 1
+        }
+      ]
+    },
+    {
+      "templateId": "gauntlet_gauntlet",
+      "name": "ガントレット",
+      "category": "gauntlet",
+      "rank": 1,
+      "unlockRank": 1,
+      "isRare": false,
+      "sources": [
+        {
+          "type": "shop",
+          "baseRank": 1
+        },
+        {
+          "type": "normalDropRank",
+          "maxNormalDropRank": 1
+        }
+      ]
+    },
+    {
+      "templateId": "gauntlet_leather",
+      "name": "かわの小手",
+      "category": "gauntlet",
+      "rank": 0,
+      "unlockRank": 1,
+      "isRare": false,
+      "sources": [
+        {
+          "type": "shop",
+          "baseRank": 1
+        },
+        {
+          "type": "normalDropRank",
+          "maxNormalDropRank": 1
+        }
+      ]
+    },
+    {
+      "templateId": "hidden_dagger",
+      "name": "ダガー",
+      "category": "weapon",
+      "subCategory": "hidden",
+      "rank": 1,
+      "unlockRank": 1,
+      "isRare": false,
+      "sources": [
+        {
+          "type": "shop",
+          "baseRank": 1
+        },
+        {
+          "type": "normalDropRank",
+          "maxNormalDropRank": 1
+        }
+      ]
+    },
+    {
+      "templateId": "robe_robe",
+      "name": "ローブ",
+      "category": "robe",
+      "rank": 1,
+      "unlockRank": 1,
+      "isRare": false,
+      "sources": [
+        {
+          "type": "shop",
+          "baseRank": 1
+        },
+        {
+          "type": "normalDropRank",
+          "maxNormalDropRank": 1
+        }
+      ]
+    },
+    {
+      "templateId": "rod_acolyte",
+      "name": "見習いのロッド",
+      "category": "rod",
+      "rank": 0,
+      "unlockRank": 1,
+      "isRare": false,
+      "sources": [
+        {
+          "type": "shop",
+          "baseRank": 1
+        },
+        {
+          "type": "normalDropRank",
+          "maxNormalDropRank": 1
+        }
+      ]
+    },
+    {
+      "templateId": "rod_rod",
+      "name": "ロッド",
+      "category": "rod",
+      "rank": 1,
+      "unlockRank": 1,
+      "isRare": false,
+      "sources": [
+        {
+          "type": "shop",
+          "baseRank": 1
+        },
+        {
+          "type": "normalDropRank",
+          "maxNormalDropRank": 1
+        }
+      ]
+    },
+    {
+      "templateId": "rod_wooden",
+      "name": "木のロッド",
+      "category": "rod",
+      "rank": 0,
+      "unlockRank": 1,
+      "isRare": false,
+      "sources": [
+        {
+          "type": "shop",
+          "baseRank": 1
+        },
+        {
+          "type": "normalDropRank",
+          "maxNormalDropRank": 1
+        }
+      ]
+    },
+    {
+      "templateId": "shield_pot_lid",
+      "name": "なべのフタ",
+      "category": "shield",
+      "rank": 0,
+      "unlockRank": 1,
+      "isRare": false,
+      "sources": [
+        {
+          "type": "shop",
+          "baseRank": 1
+        },
+        {
+          "type": "normalDropRank",
+          "maxNormalDropRank": 1
+        }
+      ]
+    },
+    {
+      "templateId": "shield_shield",
+      "name": "シールド",
+      "category": "shield",
+      "rank": 1,
+      "unlockRank": 1,
+      "isRare": false,
+      "sources": [
+        {
+          "type": "shop",
+          "baseRank": 1
+        },
+        {
+          "type": "normalDropRank",
+          "maxNormalDropRank": 1
+        }
+      ]
+    },
+    {
+      "templateId": "shield_wooden",
+      "name": "木の盾",
+      "category": "shield",
+      "rank": 0,
+      "unlockRank": 1,
+      "isRare": false,
+      "sources": [
+        {
+          "type": "shop",
+          "baseRank": 1
+        },
+        {
+          "type": "normalDropRank",
+          "maxNormalDropRank": 1
+        }
+      ]
+    },
+    {
+      "templateId": "sword_broad",
+      "name": "ブロードソード",
+      "category": "weapon",
+      "subCategory": "sword",
+      "rank": 0,
+      "unlockRank": 1,
+      "isRare": false,
+      "sources": [
+        {
+          "type": "shop",
+          "baseRank": 1
+        },
+        {
+          "type": "normalDropRank",
+          "maxNormalDropRank": 1
+        }
+      ]
+    },
+    {
+      "templateId": "sword_club",
+      "name": "こんぼう",
+      "category": "weapon",
+      "subCategory": "sword",
+      "rank": 0,
+      "unlockRank": 1,
+      "isRare": false,
+      "sources": [
+        {
+          "type": "shop",
+          "baseRank": 1
+        },
+        {
+          "type": "normalDropRank",
+          "maxNormalDropRank": 1
+        }
+      ]
+    },
+    {
+      "templateId": "sword_copper",
+      "name": "銅の剣",
+      "category": "weapon",
+      "subCategory": "sword",
+      "rank": 0,
+      "unlockRank": 1,
+      "isRare": false,
+      "sources": [
+        {
+          "type": "shop",
+          "baseRank": 1
+        },
+        {
+          "type": "normalDropRank",
+          "maxNormalDropRank": 1
+        }
+      ]
+    },
+    {
+      "templateId": "sword_cypress_stick",
+      "name": "ひのきの棒",
+      "category": "weapon",
+      "subCategory": "sword",
+      "rank": 0,
+      "unlockRank": 1,
+      "isRare": false,
+      "sources": [
+        {
+          "type": "shop",
+          "baseRank": 1
+        },
+        {
+          "type": "normalDropRank",
+          "maxNormalDropRank": 1
+        }
+      ]
+    },
+    {
+      "templateId": "sword_long",
+      "name": "ロングソード",
+      "category": "weapon",
+      "subCategory": "sword",
+      "rank": 1,
+      "unlockRank": 1,
+      "isRare": false,
+      "sources": [
+        {
+          "type": "shop",
+          "baseRank": 1
+        },
+        {
+          "type": "normalDropRank",
+          "maxNormalDropRank": 1
+        }
+      ]
+    },
+    {
+      "templateId": "wand_apprentice",
+      "name": "見習いの杖",
+      "category": "wand",
+      "rank": 0,
+      "unlockRank": 1,
+      "isRare": false,
+      "sources": [
+        {
+          "type": "shop",
+          "baseRank": 1
+        },
+        {
+          "type": "normalDropRank",
+          "maxNormalDropRank": 1
+        }
+      ]
+    },
+    {
+      "templateId": "wand_twig",
+      "name": "枝の杖",
+      "category": "wand",
+      "rank": 0,
+      "unlockRank": 1,
+      "isRare": false,
+      "sources": [
+        {
+          "type": "shop",
+          "baseRank": 1
+        },
+        {
+          "type": "normalDropRank",
+          "maxNormalDropRank": 1
+        }
+      ]
+    },
+    {
+      "templateId": "wand_wand",
+      "name": "ワンド",
+      "category": "wand",
+      "rank": 1,
+      "unlockRank": 1,
+      "isRare": false,
+      "sources": [
+        {
+          "type": "shop",
+          "baseRank": 1
+        },
+        {
+          "type": "normalDropRank",
+          "maxNormalDropRank": 1
+        }
+      ]
+    },
+    {
+      "templateId": "accessory_luck_medal",
+      "name": "ラッキーメダル",
+      "category": "accessory",
+      "isRare": true,
+      "sources": [
+        {
+          "type": "rareDrop",
+          "areaId": "slime_cave",
+          "tier": 0,
+          "enemyId": "B_SLIME"
+        }
+      ]
+    },
+    {
+      "templateId": "accessory_split_core",
+      "name": "分裂核",
+      "category": "accessory",
+      "isRare": true,
+      "sources": [
+        {
+          "type": "rareDrop",
+          "areaId": "slime_cave",
+          "tier": 0,
+          "enemyId": "S001"
+        }
+      ]
+    }
+  ],
+  "availableFactors": [
+    {
+      "factorId": "slime",
+      "sources": [
+        {
+          "type": "factorDrop",
+          "areaId": "slime_cave",
+          "tier": 0,
+          "enemyId": "B_SLIME",
+          "probability": 0.015
+        }
+      ]
+    },
+    {
+      "factorId": "wolf",
+      "sources": [
+        {
+          "type": "factorDrop",
+          "areaId": "forest_outskirts",
+          "tier": 0,
+          "enemyId": "B001",
+          "probability": 0.015
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,241 @@
+{
+  "enemies": [
+    {
+      "id": "VIL001",
+      "name": "民兵",
+      "attackType": "melee",
+      "raceTags": [
+        "human"
+      ],
+      "level": 28,
+      "hp": 880,
+      "atk": 136,
+      "def": 85,
+      "magicDef": 50,
+      "attackCount": 2,
+      "accuracy": 700,
+      "evasion": 89,
+      "gold": 60,
+      "baseAttributes": {
+        "power": 21,
+        "wisdom": 10,
+        "spirit": 7,
+        "vitality": 18,
+        "agility": 13,
+        "luck": 6
+      }
+    },
+    {
+      "id": "VIL002",
+      "name": "村守備兵",
+      "attackType": "melee",
+      "raceTags": [
+        "human"
+      ],
+      "level": 30,
+      "hp": 1480,
+      "atk": 136,
+      "def": 140,
+      "magicDef": 115,
+      "attackCount": 2,
+      "accuracy": 690,
+      "evasion": 84,
+      "gold": 76,
+      "baseAttributes": {
+        "power": 20,
+        "wisdom": 11,
+        "spirit": 14,
+        "vitality": 28,
+        "agility": 9,
+        "luck": 6
+      }
+    },
+    {
+      "id": "VIL003",
+      "name": "猟師",
+      "attackType": "range",
+      "raceTags": [
+        "human"
+      ],
+      "level": 29,
+      "hp": 720,
+      "atk": 126,
+      "def": 69,
+      "magicDef": 52,
+      "attackCount": 4,
+      "accuracy": 770,
+      "evasion": 108,
+      "gold": 84,
+      "skills": [
+        {
+          "id": "preemptive_strike",
+          "name": "先制攻撃",
+          "actionOrderMultiplier": 2
+        }
+      ],
+      "baseAttributes": {
+        "power": 19,
+        "wisdom": 12,
+        "spirit": 8,
+        "vitality": 14,
+        "agility": 18,
+        "luck": 8
+      }
+    },
+    {
+      "id": "B_CANNON",
+      "name": "防衛砲台",
+      "attackType": "range",
+      "raceTags": [
+        "construct"
+      ],
+      "level": 33,
+      "hp": 2940,
+      "atk": 422,
+      "def": 165,
+      "magicDef": 42,
+      "attackCount": 1,
+      "accuracy": 650,
+      "evasion": 76,
+      "isBoss": true,
+      "gold": 250,
+      "baseAttributes": {
+        "power": 70,
+        "wisdom": 70,
+        "spirit": 10,
+        "vitality": 30,
+        "agility": 2,
+        "luck": 1
+      }
+    }
+  ],
+  "patterns": [
+    {
+      "id": "HV_01_001",
+      "floors": [1],
+      "enemies": [["VIL001", "VIL001"], ["VIL003"]]
+    },
+    {
+      "id": "HV_01_002",
+      "floors": [1],
+      "enemies": [["VIL001", "VIL001", "VIL001"], ["VIL003"]]
+    },
+    {
+      "id": "HV_01_003",
+      "floors": [1],
+      "enemies": [["VIL001", "VIL001"], ["VIL001"], ["VIL003"]]
+    },
+    {
+      "id": "HV_F1_BOSS",
+      "floors": [1],
+      "enemies": [["VIL001", "VIL001"], ["VIL001"], ["VIL003", "VIL003"]],
+      "isFloorBoss": true
+    },
+    {
+      "id": "HV_02_001",
+      "floors": [2],
+      "enemies": [["VIL001", "VIL001"], ["VIL001"], ["VIL003"]]
+    },
+    {
+      "id": "HV_02_002",
+      "floors": [2],
+      "enemies": [["VIL002", "VIL001"], ["VIL003"]]
+    },
+    {
+      "id": "HV_02_003",
+      "floors": [2],
+      "enemies": [["VIL001", "VIL001", "VIL001"], ["VIL003", "VIL003"]]
+    },
+    {
+      "id": "HV_F2_BOSS",
+      "floors": [2],
+      "enemies": [["VIL002", "VIL001"], ["VIL001"], ["VIL003", "VIL003"]],
+      "isFloorBoss": true
+    },
+    {
+      "id": "HV_03_001",
+      "floors": [3],
+      "enemies": [["VIL002", "VIL001"], ["VIL003", "VIL003"]]
+    },
+    {
+      "id": "HV_03_002",
+      "floors": [3],
+      "enemies": [["VIL002", "VIL002"], ["VIL001"], ["VIL003"]]
+    },
+    {
+      "id": "HV_03_003",
+      "floors": [3],
+      "enemies": [["VIL002", "VIL001", "VIL001"], ["VIL003"]]
+    },
+    {
+      "id": "HV_F3_BOSS",
+      "floors": [3],
+      "enemies": [["VIL002", "VIL002"], ["VIL001"], ["VIL003", "VIL003"]],
+      "isFloorBoss": true
+    },
+    {
+      "id": "HV_04_001",
+      "floors": [4],
+      "enemies": [["VIL002", "VIL002"], ["VIL001"], ["VIL003", "VIL003"]]
+    },
+    {
+      "id": "HV_04_002",
+      "floors": [4],
+      "enemies": [["VIL002", "VIL001", "VIL001"], ["VIL003", "VIL003"]]
+    },
+    {
+      "id": "HV_04_003",
+      "floors": [4],
+      "enemies": [["VIL002", "VIL002", "VIL001"], ["VIL003"]]
+    },
+    {
+      "id": "HV_F4_BOSS",
+      "floors": [4],
+      "enemies": [["VIL002", "VIL002"], ["VIL001", "VIL001"], ["VIL003", "VIL003"]],
+      "isFloorBoss": true
+    },
+    {
+      "id": "HV_05_001",
+      "floors": [5],
+      "enemies": [["VIL002", "VIL002"], ["VIL001"], ["B_CANNON"]]
+    },
+    {
+      "id": "HV_05_002",
+      "floors": [5],
+      "enemies": [["VIL002", "VIL002", "VIL001"], ["VIL003", "VIL003"]]
+    },
+    {
+      "id": "HV_05_003",
+      "floors": [5],
+      "enemies": [["VIL002", "VIL001"], ["VIL003", "VIL003"], ["VIL003"]]
+    },
+    {
+      "id": "HV_F5_BOSS",
+      "floors": [5],
+      "enemies": [["VIL002", "VIL002"], ["VIL001"], ["B_CANNON"], ["VIL003", "VIL003"]],
+      "isFloorBoss": true
+    },
+    {
+      "id": "HV_06_001",
+      "floors": [6],
+      "enemies": [["VIL002", "VIL002"], ["VIL001"], ["B_CANNON"], ["VIL003"]]
+    },
+    {
+      "id": "HV_06_002",
+      "floors": [6],
+      "enemies": [["VIL002", "VIL002", "VIL001"], ["VIL003", "VIL003"]]
+    },
+    {
+      "id": "HV_06_003",
+      "floors": [6],
+      "enemies": [["VIL002", "VIL001"], ["B_CANNON"], ["VIL003", "VIL003"]]
+    },
+    {
+      "id": "HV_FINAL",
+      "floors": [6],
+      "enemies": [["VIL002", "VIL002"], ["B_CANNON", "B_CANNON"], ["VIL003", "VIL003"]],
+      "isFloorBoss": true,
+      "isBoss": true
+    }
+  ]
+}

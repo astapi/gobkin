@@ -1,0 +1,165 @@
+{
+  "$schema": "balance-reference-scenario-v1",
+  "areaId": "undead_ruins_1",
+  "description": "忘れられた廃墟。古井戸の地下水路クリア後を想定し、guard/warrior/thief/mage と rank2 通常装備でLv18攻略を目標にしたシナリオ。クレリックは未解放。",
+  "iterations": 200,
+  "levelRange": {
+    "min": 14,
+    "max": 24,
+    "step": 1
+  },
+  "equipmentFilter": {
+    "maxUnlockRank": 2,
+    "maxDropRank": 2
+  },
+  "loadouts": [
+    {
+      "name": "A_job_rank2_balanced",
+      "description": "Lv18基準のrank2装備PT。前衛2枚と弓シーフ2、メイジ1でアンデッドの高耐久・後衛攻撃・魔法に対応する。",
+      "party": [
+        {
+          "name": "スライムガード",
+          "variantFactorId": "slime",
+          "job": "guard",
+          "equipmentTemplateIds": [
+            "armor_mithril",
+            "shield_mithril",
+            "sword_mithril",
+            "gauntlet_mithril",
+            "armor_armor",
+            "shield_shield"
+          ]
+        },
+        {
+          "name": "ホブウォリアー",
+          "variantFactorId": "hobgoblin",
+          "job": "warrior",
+          "equipmentTemplateIds": [
+            "sword_mithril",
+            "armor_mithril",
+            "shield_mithril",
+            "gauntlet_mithril",
+            "sword_long"
+          ]
+        },
+        {
+          "name": "通常ウォリアー",
+          "job": "warrior",
+          "equipmentTemplateIds": [
+            "sword_mithril",
+            "armor_mithril",
+            "shield_mithril",
+            "gauntlet_mithril",
+            "sword_long"
+          ]
+        },
+        {
+          "name": "ウルフシーフ",
+          "variantFactorId": "wolf",
+          "job": "thief",
+          "equipmentTemplateIds": [
+            "bow_mithril",
+            "gauntlet_mithril",
+            "armor_mithril",
+            "hidden_mithril_dagger",
+            "bow_long"
+          ]
+        },
+        {
+          "name": "通常シーフ",
+          "job": "thief",
+          "equipmentTemplateIds": [
+            "bow_mithril",
+            "gauntlet_mithril",
+            "armor_mithril",
+            "hidden_mithril_dagger",
+            "bow_long"
+          ]
+        },
+        {
+          "name": "通常メイジ",
+          "job": "mage",
+          "equipmentTemplateIds": [
+            "wand_mithril",
+            "robe_mithril",
+            "gauntlet_mithril",
+            "armor_mithril",
+            "wand_wand"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "B_rear_unarmored",
+      "description": "前衛3体は基準装備、後衛3体は武器・手甲だけを装備し、防具なし後衛の被ダメージを確認する。",
+      "party": [
+        {
+          "name": "スライムガード",
+          "variantFactorId": "slime",
+          "job": "guard",
+          "equipmentTemplateIds": [
+            "armor_mithril",
+            "shield_mithril",
+            "sword_mithril",
+            "gauntlet_mithril",
+            "armor_armor",
+            "shield_shield"
+          ]
+        },
+        {
+          "name": "ホブウォリアー",
+          "variantFactorId": "hobgoblin",
+          "job": "warrior",
+          "equipmentTemplateIds": [
+            "sword_mithril",
+            "armor_mithril",
+            "shield_mithril",
+            "gauntlet_mithril",
+            "sword_long"
+          ]
+        },
+        {
+          "name": "通常ウォリアー",
+          "job": "warrior",
+          "equipmentTemplateIds": [
+            "sword_mithril",
+            "armor_mithril",
+            "shield_mithril",
+            "gauntlet_mithril",
+            "sword_long"
+          ]
+        },
+        {
+          "name": "ウルフシーフ",
+          "variantFactorId": "wolf",
+          "job": "thief",
+          "equipmentTemplateIds": [
+            "bow_mithril",
+            "gauntlet_mithril",
+            "hidden_mithril_dagger",
+            "bow_long"
+          ]
+        },
+        {
+          "name": "通常シーフ",
+          "job": "thief",
+          "equipmentTemplateIds": [
+            "bow_mithril",
+            "gauntlet_mithril",
+            "hidden_mithril_dagger",
+            "bow_long"
+          ]
+        },
+        {
+          "name": "通常メイジ",
+          "job": "mage",
+          "equipmentTemplateIds": [
+            "wand_mithril",
+            "gauntlet_mithril",
+            "wand_wand"
+          ]
+        }
+      ]
+    }
+  ]
+}

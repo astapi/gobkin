@@ -1,0 +1,355 @@
+{
+  "createdAt": "2026-06-05T01:37:11.742Z",
+  "scenario": "forest_outskirts",
+  "level": 13,
+  "config": {
+    "generations": 5,
+    "population": 14,
+    "iterations": 4,
+    "validationIterations": 40,
+    "seed": 13008,
+    "cleric": "optional",
+    "jobs": [],
+    "variants": [
+      "slime"
+    ],
+    "maxUnlockRank": 1,
+    "maxDropRank": 1,
+    "allowRare": false,
+    "availability": "/Users/astapi/projects/goblinKingdom/goblin_native/reports/progression-goblin-village-1-check/01-slime_cave-availability.json"
+  },
+  "insights": {
+    "winningCandidateCount": 3,
+    "frequentJobs": [],
+    "frequentVariants": [
+      [
+        "slime",
+        6
+      ]
+    ],
+    "frequentEquipment": [
+      [
+        "shield_shield",
+        13
+      ],
+      [
+        "armor_armor",
+        10
+      ],
+      [
+        "armor_fur_vest",
+        9
+      ],
+      [
+        "armor_leather_vest",
+        8
+      ],
+      [
+        "sword_long",
+        7
+      ],
+      [
+        "bow_long",
+        5
+      ],
+      [
+        "gauntlet_copper",
+        5
+      ],
+      [
+        "armor_tattered_cloth",
+        3
+      ],
+      [
+        "claw_sharp",
+        3
+      ],
+      [
+        "gauntlet_leather",
+        3
+      ],
+      [
+        "rod_acolyte",
+        3
+      ],
+      [
+        "claw_iron",
+        3
+      ],
+      [
+        "shield_wooden",
+        3
+      ],
+      [
+        "hidden_dagger",
+        2
+      ],
+      [
+        "wand_wand",
+        2
+      ],
+      [
+        "sword_broad",
+        2
+      ],
+      [
+        "shield_pot_lid",
+        2
+      ],
+      [
+        "claw_copper",
+        2
+      ],
+      [
+        "gauntlet_gauntlet",
+        2
+      ],
+      [
+        "gauntlet_cloth_gloves",
+        2
+      ]
+    ]
+  },
+  "candidates": [
+    {
+      "result": {
+        "wins": 40,
+        "iterations": 40,
+        "winRate": 1,
+        "avgRoundsPerBattle": 1,
+        "equipmentCost": 2630,
+        "score": 999998.99999737
+      },
+      "genome": {
+        "members": [
+          {
+            "job": null,
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "armor_armor",
+              "armor_fur_vest",
+              "armor_leather_vest",
+              "armor_tattered_cloth",
+              "shield_shield"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "slime",
+            "equipmentTemplateIds": [
+              "bow_long",
+              "claw_sharp",
+              "gauntlet_copper",
+              "gauntlet_leather",
+              "rod_acolyte"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "sword_long",
+              "armor_armor",
+              "shield_shield",
+              "claw_iron",
+              "shield_wooden"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "sword_long",
+              "armor_armor",
+              "shield_shield",
+              "armor_fur_vest",
+              "armor_leather_vest"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "sword_long",
+              "armor_armor",
+              "shield_shield",
+              "armor_fur_vest",
+              "armor_leather_vest"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "sword_long",
+              "hidden_dagger",
+              "shield_shield",
+              "armor_fur_vest",
+              "armor_leather_vest"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "result": {
+        "wins": 40,
+        "iterations": 40,
+        "winRate": 1,
+        "avgRoundsPerBattle": 1,
+        "equipmentCost": 5420,
+        "score": 999998.99999458
+      },
+      "genome": {
+        "members": [
+          {
+            "job": null,
+            "variantFactorId": "slime",
+            "equipmentTemplateIds": [
+              "wand_wand",
+              "sword_broad",
+              "armor_armor",
+              "shield_pot_lid",
+              "claw_copper"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "sword_long",
+              "armor_fur_vest",
+              "shield_shield",
+              "armor_fur_vest",
+              "armor_leather_vest"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "sword_long",
+              "armor_armor",
+              "shield_shield",
+              "claw_iron",
+              "shield_wooden"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "armor_armor",
+              "armor_fur_vest",
+              "armor_leather_vest",
+              "armor_tattered_cloth",
+              "shield_shield"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "slime",
+            "equipmentTemplateIds": [
+              "bow_long",
+              "gauntlet_gauntlet",
+              "gauntlet_copper",
+              "gauntlet_leather",
+              "gauntlet_cloth_gloves"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "slime",
+            "equipmentTemplateIds": [
+              "bow_long",
+              "claw_sharp",
+              "gauntlet_copper",
+              "shield_shield",
+              "rod_acolyte"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "result": {
+        "wins": 40,
+        "iterations": 40,
+        "winRate": 1,
+        "avgRoundsPerBattle": 1,
+        "equipmentCost": 5490,
+        "score": 999998.99999451
+      },
+      "genome": {
+        "members": [
+          {
+            "job": null,
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "armor_armor",
+              "armor_fur_vest",
+              "armor_leather_vest",
+              "armor_tattered_cloth",
+              "shield_shield"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "claw_steel",
+              "hidden_dagger",
+              "shield_shield",
+              "armor_fur_vest",
+              "armor_leather_vest"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "sword_long",
+              "armor_armor",
+              "shield_shield",
+              "claw_iron",
+              "shield_wooden"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "slime",
+            "equipmentTemplateIds": [
+              "wand_wand",
+              "sword_broad",
+              "armor_armor",
+              "shield_pot_lid",
+              "claw_copper"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "bow_long",
+              "gauntlet_gauntlet",
+              "gauntlet_copper",
+              "gauntlet_leather",
+              "gauntlet_cloth_gloves"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "slime",
+            "equipmentTemplateIds": [
+              "bow_long",
+              "claw_sharp",
+              "gauntlet_copper",
+              "shield_shield",
+              "rod_acolyte"
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

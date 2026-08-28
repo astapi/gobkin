@@ -1,0 +1,100 @@
+{
+  "enemies": [
+    {
+      "id": "S001",
+      "name": "スライム",
+      "attackType": "melee",
+      "raceTags": [
+        "slime"
+      ],
+      "level": 1,
+      "hp": 4,
+      "atk": 2,
+      "def": 1,
+      "attackCount": 1,
+      "accuracy": 70,
+      "evasion": 5,
+      "gold": 1,
+      "magicDef": 0,
+      "baseAttributes": {
+        "power": 1,
+        "wisdom": 1,
+        "spirit": 1,
+        "vitality": 1,
+        "agility": 6,
+        "luck": 2
+      }
+    },
+    {
+      "id": "B_SLIME",
+      "name": "ボススライム",
+      "attackType": "melee",
+      "raceTags": [
+        "slime"
+      ],
+      "level": 3,
+      "hp": 20,
+      "atk": 3,
+      "def": 2,
+      "attackCount": 1,
+      "accuracy": 100,
+      "evasion": 12,
+      "isBoss": true,
+      "gold": 5,
+      "factorDrops": [
+        {
+          "factorId": "slime",
+          "probability": 0.015
+        }
+      ],
+      "magicDef": 1,
+      "baseAttributes": {
+        "power": 1,
+        "wisdom": 1,
+        "spirit": 1,
+        "vitality": 1,
+        "agility": 8,
+        "luck": 3
+      }
+    }
+  ],
+  "patterns": [
+    {
+      "id": "SP001",
+      "floors": [
+        1,
+        2
+      ],
+      "enemies": [
+        [
+          "S001"
+        ]
+      ]
+    },
+    {
+      "id": "SP002",
+      "floors": [
+        1,
+        2
+      ],
+      "enemies": [
+        [
+          "S001",
+          "S001"
+        ]
+      ]
+    },
+    {
+      "id": "SBOSS",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "B_SLIME"
+        ]
+      ],
+      "isBoss": true
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "id": "wolf_grassland_1",
+  "name": "ウルフ草原",
+  "areaLevel": 30,
+  "floors": 6,
+  "baseDurationSec": 11760,
+  "description": "辺境の村の西に広がる草原。大型ウルフの群れを屈服させ、騎獣と機動戦力を手に入れろ。",
+  "encounter": {
+    "eventIntervalSec": 392,
+    "eventWeights": {
+      "exploring": 60,
+      "goldTreasure": 10,
+      "battle": 30
+    }
+  },
+  "unlockNext": "lizardman_swamp_1"
+}

@@ -1,0 +1,277 @@
+# バランスシミュレーション & 検証ガイド
+
+このドキュメントは、ゴブリンキングダムのゲームバランスを**数値で測り、調整し、回帰を防ぐ**ための道具立てと前提知識をまとめたものです。今後のバランス調整で同じ検証を再現できるように、手順・前提・過去に踏んだ罠まで残しています。
+
+> 対象読者: バランス調整を行う開発者。まず「1. 設計思想」と「2. 前提知識」を読んでから測定に入ってください。前提を外すと簡単に誤った結論が出ます(実際に2回間違えました → 「7. 過去に踏んだ罠」)。
+
+---
+
+## 1. 設計思想 — 何を測るのか
+
+このゲームは **「レベルを上げて殴るだけでは勝てない」** ことを目指しています。種族(亜種)特性・隊列・ジョブ・装備スキルのシナジーを理解して初めてクリアできる、戦略依存のバランスです。
+
+したがって、バランスの良し悪しを **「クリアに必要なレベル」だけで判断してはいけません**。裸で殴った場合の必要レベルは、あなたのゲームシステムを全部無視した数字にすぎないからです。本当に見るべきは:
+
+- **戦略プレミアム** = 同じレベルで「戦略を理解したプレイヤー」と「装備は買うが仕組みを知らないプレイヤー」の勝率差。これが大きいほど「戦略が決定的=設計意図が効いている」。
+- **壁の性質** = そのエリアが「レベルを上げないと無理な壁(過剰調整)」なのか「編成を理解すれば低レベルで越えられる壁(良い設計)」なのか。
+
+---
+
+## 2. 前提知識 — 測る前に必ず押さえる
+
+### 2.1 ジョブ・種族の解放進行(最重要)
+
+**「そのエリアに挑む時点で、実際に何が使えるか」を厳密に守ること。** 後から解放される強いジョブを序盤の攻略に使えば、当たり前にクリアできてしまい測定が無意味になります。
+
+| 要素 | 解放条件 | 実データの根拠 |
+|---|---|---|
+| ジョブ訓練そのもの(guard/thief/mage/warrior) | 拠点ランク2 = **ゴブリン集落(goblin_village_1)クリア** | `BaseRankSystem.ts` `BASE_RANK_CONFIGS` rank2、`GOBLIN_TRAINING_UNLOCK_RANK=2` |
+| クレリック(cleric) | **街道(road_1)クリア** | `goblinJobs.ts` cleric.`unlockRequiresClearedArea='road_1'` |
+| ライダー(rider) | **ウルフ草原(wolf_grassland_1)クリア**(ストーリー `story_after_wolf_grassland`) | `goblinJobs.ts` rider + `story/stories.json` の `dungeon_cleared: wolf_grassland_1` |
+| ネクロマンサー(necromancer) | **課金**ダンジョン `necromancer_crypt_1` の購入+クリア(本編ルート外) | entitlement `necromancer_side_story` → `side_necromancer_cleared` |
+
+拠点ランクはダンジョン制圧で上がります(rank2=ゴブリン集落 / rank3=辺境の村 / rank4=オークの砦 / rank5=辺境の城 …。全量は `BASE_RANK_CONFIGS` を参照)。
+
+### 2.2 ジョブと亜種は排他
+
+`canTrainGoblin = isPureGoblin && !job`。**訓練できるのは純ゴブリンのみ**。亜種(ハーピィ等)はジョブを持てません。よって各パーティメンバーは「ジョブ持ち純ゴブリン」**または**「亜種」のどちらかで、両立しません。この「訓練ゴブリンで固めるか、繁殖亜種を混ぜるか」自体が戦略判断です。
+
+### 2.3 マップは分岐DAG。分岐は「意図された強化寄り道」
+
+エリアの解放は一本道ではなく分岐する有向グラフ(DAG)です。**この分岐構造は設計意図です。**
+
+- 例: **オークの砦(orc_fortress_1)は解放直後にはクリア不可能な難易度に設定されている。** プレイヤーは分岐ルート(ウルフ草原→リザードマンの沼砦)で**ライダーやリザードマン因子を取得して戦力を上げてから**オークの砦に挑む、という想定。
+- つまり分岐は寄り道ではなく「本線の壁を越えるための強化フェーズ」。
+
+**シミュレータ上の重要な注意:** 可用性判定は「解放グラフの祖先集合(そのエリアに到達するまでに**必ず**クリア済みのダンジョン)」で行っています。これは **「保証される最小解放」= 下限** を測るモデルです。上記のように**意図的な寄り道で戦力を得てから挑む壁**については、祖先モデルは寄り道分の戦力(rider・特定因子)を数え落とします。
+
+→ **意図的寄り道ゲートの壁を測るときは、寄り道で得られる要素(rider・当該因子)を明示的に「解放済み」として与えて測ること**(「6.2 寄り道ゲートの壁の測り方」参照)。祖先モデルのデフォルト値は「寄り道を一切しない最悪ケース」を意味します。
+
+### 2.4 areaLevel ラベルは実難易度と乖離している(信用しない)
+
+`allArea.json` の `areaLevel` は実際の難易度と噛み合っていません(例: 王都決戦は表示 160〜180 だが、Tier0 の敵は低レベルパーティで倒せる)。誕生時の＋値は継承元とランダム個体から算出するため `areaLevel` の影響を受けません。**難易度の基準にはシミュレータの実測値を使い、areaLevel は参考程度に**。
+
+### 2.5 亜種入手は繁殖(2段ガチャ)。容易度で近似
+
+亜種は「①先行エリアのボスから対応因子をドロップ入手 → ②繁殖で子に因子が遺伝し亜種化」の2段で入手します。シミュレータは世代シミュレーションはせず、期待手数から `easy/moderate/hard/unavailable` の容易度で近似します(`breedingPool.js`)。ハーピィ/ホビット/ミノタウロス/ヴァンパイア/ドラゴンの5亜種は現状ドロップ源が無く `unavailable`(別途の既知課題)。
+
+---
+
+## 3. 指標の定義
+
+| 指標 | 定義 | 何が分かるか |
+|---|---|---|
+| **progressScore** | 勝率 + 0.3×到達フロア率 + 0.2×敵撃破率 + 0.1×正規化敗北生存ラウンド の合成スカラー | 勝率0%の壁でも「あと一歩か/全く歯が立たないか」が数値で動く。装備1個の変更が1つの数字に出る |
+| **敗北生存ラウンド** | 敗北した戦闘の平均 combat.rounds | 「平均2ターン全滅→3ターン全滅」の進捗。装備・隊列変更の手応え |
+| **敵撃破率** | Σ撃破数 / Σ敵数(敗北戦闘含む) | 全滅でも「3体中2体は倒せた」の前進 |
+| **floor必要Lv** | 裸ペルソナが Tier0 で成功率80%に達する最低レベル | システムを無視した場合の下限難易度 |
+| **strategist必要Lv (L\*)** | 戦略ペルソナが Tier0 で成功率80%に達する最低レベル | 戦略を尽くした場合の難易度 |
+| **戦略プレミアム** | (L\* での strategist 成功率) − (L\* での median 成功率) | 戦略知識の価値。高いほど「知らないと勝てない=良い設計」 |
+
+**壁の分類:**
+- **戦略の壁(良い)**: floor必要Lvは高いが L\* は低い(=編成を理解すれば低レベルで越えられる)。プレミアムが高い。
+- **レベルの壁(過剰調整の疑い)**: L\* 自体が高い(=最適編成でも高レベル必須)。
+- **空洞(簡単すぎ)**: floor必要Lv からして低い。プレミアムも低ければ戦略不要。
+
+---
+
+## 4. ペルソナ — 何を「プレイヤー」とみなすか
+
+| ペルソナ | 構成 | 役割 |
+|---|---|---|
+| **floor** | 裸・純ゴブリン・ジョブなし・デフォルト隊列・＋値最低 | 下限(システム全無視) |
+| **median** | 中位装備のみ・ジョブなし・亜種なし・デフォルト隊列 | 「装備は買うが仕組みを知らない」初心者ベースライン。戦略プレミアムの基準 |
+| **ceiling** | 入手可能装備+隊列を最適化(純ゴブリン、ジョブ・亜種なし) | 装備・隊列だけを極めた場合 |
+| **strategist** | 入手可能なジョブ・亜種・装備・隊列を**解放制限下で**山登り最適化(ジョブ⊕亜種の排他順守) | 戦略を尽くしたプレイヤー。L\* と戦略プレミアムの主役 |
+
+いずれも決定論(同一入力→同一パーティ)。乱数は遠征シードのみ(common random numbers でビルド間比較のブレを消す)。
+
+---
+
+## 5. ツールと実行方法
+
+### 5.1 ファイル構成(`scripts/balance/`)
+
+```
+headless/
+  index.js          CLIエントリ。npm run balance:sim
+  runtime.js        .ts をオンザフライ変換 + @/* 解決 + RN/Expoモック
+  personas.js       floor/median/ceiling/strategist ペルソナと山登り探索
+  metrics.js        リプレイ→メトリクス。progressScore と WEIGHTS 定数
+  report.js         テーブル/CSV/ペルソナ比較表の整形
+  obtainablePool.js deriveObtainablePool(areaId): 到達時点の入手可能装備
+  breedingPool.js   deriveBreedingPool(areaId): 到達時点の入手可能亜種(容易度付き)
+  strategistLayer.js getAvailableJobs / JOB_ROLE / buildStrategistParty(ジョブ・隊列・装備シナジー)
+strategyPremium.js  戦略プレミアム + 壁分類の測定(out/strategyPremium.csv, out/wallClassification.csv)
+analyzeThresholds.js floor必要Lv曲線の測定(out/thresholds.csv)
+exportStrategistBuilds.js 戦略ペルソナが探索したビルドを out/strategist-builds.json に保存
+out/                測定結果CSVの出力先
+```
+
+整合性テスト(回帰防止): `src/shared/data/__tests__/masterDataIntegrity.*.test.ts`(unlock / references / factors / rewardBalance)。
+
+### 5.2 シミュレータ実行(`npm run balance:sim`)
+
+```bash
+# 床/中央値/天井/戦略 を並べて比較(1エリア)
+npm run balance:sim -- --areas orc_camp_1 --tiers 0..3 --seeds 100 --persona floor,median,ceiling,strategist
+
+# 全エリアを戦略ペルソナで、CSV出力
+npm run balance:sim -- --seeds 100 --persona strategist --format csv --out scripts/balance/out/sweep.csv
+
+# レベル固定
+npm run balance:sim -- --areas orc_fortress_1 --level 45 --persona strategist
+```
+
+主なCLIフラグ:
+
+| フラグ | 意味 | 既定 |
+|---|---|---|
+| `--areas a,b,c` | 対象エリア(カンマ区切り) | 全エリア(進行順) |
+| `--tiers 0..3` または `0,1,2` | 対象Tier | 0..選択可能上限 |
+| `--seeds N` | 遠征シード数(1..N の固定列) | 100 |
+| `--level L` | パーティレベル固定 | エリアの areaLevel |
+| `--persona ...` | floor / median / ceiling / strategist(カンマ区切り可) | — |
+| `--party-size N` | 編成人数 | 編成上限(6) |
+| `--return-policy` | 帰還ポリシー | never(最後まで進捗測定) |
+| `--format table\|csv` / `--out path` | 出力形式 / 保存先 | table |
+
+### 5.3 戦略プレミアム / 必要Lv測定
+
+```bash
+node scripts/balance/strategyPremium.js   # → out/strategyPremium.csv, out/wallClassification.csv
+node scripts/balance/analyzeThresholds.js # → out/thresholds.csv(floor必要Lv曲線)
+```
+
+### 5.35 戦略ビルドの保存と再現(`exportStrategistBuilds.js`)
+
+戦略ペルソナの探索結果はプロセス内キャッシュにしか残らないため、「どんなPTで測ったのか」が
+後から追えなかった。本スクリプトは隊列・ジョブ・亜種・装備を JSON に書き出して記録する。
+
+```bash
+node scripts/balance/exportStrategistBuilds.js --all              # 全エリア(重い)
+node scripts/balance/exportStrategistBuilds.js spider_forest_1    # 単体
+node scripts/balance/exportStrategistBuilds.js --tier 3 --level 120 vampire_castle_1
+```
+
+- 出力: `scripts/balance/out/strategist-builds.json`(git 管理下。`git diff` でビルド変化をレビューできる)
+- `--level` は探索レベル。既定 3 は `measureArea.js` がグリッド下端から探索する挙動の再現
+  (高Tierの実力を見るなら `probeOptimalBuild.js` と同様に高レベルを明示する)
+- 保存形式は `members[].loadout`(最適化スロット分)＋ `equipmentTail`(残り枠の充填候補)。
+  任意レベルの装備は `optimized + tail` を `calculateSlotCount(level)` 枠まで詰めて復元する
+- **tools/studio のシミュレーション画面がこの JSON を読み、同じPTで実行できる**
+  (PTセレクタの `[戦略] <areaId> Tier<n>`)。組み立ては `tools/studio/src/lib/strategistParty.ts` が
+  `strategistLayer.js` の buildStrategistGoblin と同一手順で行う。片方を変えたら両方直すこと
+- 移植のズレは `verifyStrategistBuilds.js` で検出できる。studio の TS を実際に読み込んで実行し、
+  シミュレータが同じ build から組むPTと effectiveStats / skills まで突き合わせる:
+
+  ```bash
+  node scripts/balance/verifyStrategistBuilds.js                  # 既定6レベルで全ビルド検証
+  node scripts/balance/verifyStrategistBuilds.js --levels 3,50,120
+  ```
+
+  strategistLayer.js か strategistParty.ts を触ったら必ず実行すること(不一致なら差分を列挙して exit 1)
+
+### 5.4 整合性テスト(回帰防止)
+
+```bash
+npx jest src/shared/data/__tests__/masterDataIntegrity
+```
+
+- **unlock**: 解放グラフの到達可能性(永久に解放されないエリアを検知)。既知の到達不能は例外リストで許容。
+- **references**: 因子ID・装備テンプレ・付与スキル・エリア↔敵DBの参照整合(参照切れ検知)。
+- **factors**: 因子の入手可能性(入手源なし因子を検知)。
+- **rewardBalance**: 報酬効率(gold×フロア÷時間)の進行逆転をラチェット検知。既知の逆転は例外リスト化。
+
+例外リストは「既知だが保留中」の問題を明示する仕組みです。**新しい違反を追加すると落ち、既知の問題を直すと(例外リストが古くなって)落ちる**ので、直した箇所が回帰で保護されます。
+
+### 5.5 敵ステータスの算出基準(HP/ATK/DEF/EVA は Lv・能力値から導出)
+
+敵の HP/ATK/DEF/回避 は**手打ちの任意値ではなく、Lv と baseAttributes(体力/力/敏捷/運)から算出する**のが基準です。算出式は [`src/shared/utils/enemyStats.ts`](/Users/astapi/projects/goblinKingdom/goblin_native/src/shared/utils/enemyStats.ts)(`tools/studio` の敵エディタが「算出値を各ステータスへ適用」ボタンで利用)。
+
+**HPを上げたいなら Lv か vitality を、ATKを上げたいなら Lv か power を上げる**。ステータス欄を直接いじらず、根拠となる Lv・能力値を動かすこと。
+
+ただし `enemyStats.ts` の**絶対スケールは現行の実データと乖離している**(実データは式出力の約1.5〜2倍、命中に至っては約4〜5倍)。そこで**「算出式 × 標準倍率」**を基準値とする。標準倍率は再設計の基準エリアである**街道(road_1)通常敵の実効中央値**:
+
+| ステータス | 通常敵の倍率 | ボスの倍率 | 導出元 |
+|---|---|---|---|
+| HP | ×1.0 | ×1.6 | `calculateEnemyBaseHp`(vitality, Lv) |
+| ATK | ×1.6 | ×1.0 | `calculateEnemyBaseAtk`(power, Lv) |
+| DEF | ×1.25 | ×1.0 | `calculateEnemyBaseDef`(vitality, Lv) |
+| EVA | ×1.0 | ×1.0 | `calculateEnemyBaseEvasion`(agility, luck, Lv) |
+
+- HPは味方と同じく、体力をレベルで最大+10まで成長させてから算出する。従来の通常敵`×1.6`はこの成長補正と重複するため廃止し、忘れられた廃墟以降は通常敵`×1.0`、ボス`×1.6`を最低基準としてボスの耐久倍率を高くする。序盤エリアは進行バランスを維持するため、既存JSONのHPを据え置く。
+- 長期戦を意図する最終ボスは個別倍率を使う。オークの砦ボスは`×6.0`、討伐隊ボスは`×5.0`とし、適正戦力で最終ボス戦8〜20ターンを目標にする。通常戦は標準HPを維持する。
+- EVAは味方と同じ「敏捷・運の平均×レベル帯係数」で算出し、能力値も味方と同じくレベルで最大+10まで成長させる。敵は装備で回避を補強できないため、最終値へ一律`×1.2`を掛ける。実データは算出値へ統一し、手打ち値を残さない。
+- **accuracy は算出式に沿わせない**。実データは全エリアで命中を約650〜780の帯に手動設定しており、術者も近接と同程度。式だと術者だけ極端に低命中になり不自然なので、**役割別の帯(近接~690 / 遠隔~760 / 術者~685、ボスは+75程度)で手動設定**する。
+- **magicDef / magicAtk / magicHeal / attackCount** も式の対象外(手動)。
+- 種族判定: orc→beast / goblin→goblin / human→human / construct→demon_race(`detectEnemyHpSpecies`)。HP係数は goblin0.8 / beast1.1 / human1.0 / demon_race1.3。
+
+補助ツール(`scripts/balance/`):
+- `statFormula.js <area...>` : 各敵の現在値 vs 算出式出力を比較
+- `statMultipliers.js <area...>` : 実データから実効倍率(中央値)を測定
+- `deriveStats.js <area...>` : Lv・能力値から「算出式×標準倍率」で HP/ATK/DEF/EVA を導出
+- `measureArea.js <area...>` / `probeArea.js <levels> <area...>` : 単エリアの必要Lv・細粒度成功率を測定
+
+**手順**: 敵の Lv・能力値を決める → `deriveStats.js` で導出値を得る → JSON に反映(accuracy等は帯で手動) → `measureArea.js`/`probeArea.js` で必要Lvを測り、進行順で単調増加かを確認 → ずれていれば Lv・能力値を動かして再導出。
+
+---
+
+## 6. バランス調整の標準手順
+
+### 6.1 基本ループ
+
+1. **調整前に測る**: 対象エリアで `strategyPremium.js` or `balance:sim --persona strategist` を実行しベースラインを記録。
+2. **データを変える**: 敵JSON(`src/shared/data/enemy/*.json`)・エリア定義・スキル等を調整。
+3. **測り直す**: 同じコマンドを再実行し、L\*・戦略プレミアム・progressScore の差分を見る。
+4. **整合性テストを通す**: `npx jest masterDataIntegrity` + `npm test`。報酬逆転などを直したら例外リストを更新。
+5. **決定論を確認**: 同一引数で2回実行し一致することを確認(揺れていたら乱数リークのバグ)。
+
+### 6.2 寄り道ゲートの壁の測り方(重要)
+
+オークの砦のように「分岐で強化してから挑む」意図の壁は、祖先モデルの既定値(寄り道なし)では過小評価されます。この場合は**寄り道で得られる要素を明示的に与えて**測ってください:
+
+- ジョブ: `strategistLayer.js` の `getAvailableJobs` に「そのエリアで寄り道済みなら +rider」を許す経路を通す(現状は祖先ベースなので、寄り道前提エリアを列挙した override テーブルを設けるのが望ましい)。
+- 因子/亜種: `deriveBreedingPool` の閾値 or 対象エリアの入手可能因子に寄り道分を加える。
+
+そして「寄り道なし(下限)」と「寄り道あり(意図された想定)」の両方を測り、**「寄り道なしでは越えられず、寄り道ありなら越えられる」ことを確認する**のが、この設計が意図どおり機能しているかの検証になります。
+
+> TODO(基盤の改善余地): 寄り道ゲートを一級市民として扱えるよう、エリアごとに「意図された前提クリア(prerequisite detours)」を宣言できる仕組みを `strategistLayer` に追加すると、この測定が自動化できます。
+
+---
+
+## 7. 過去に踏んだ罠(繰り返さないための教訓)
+
+このツールで**実際に2回、誤った結論を出しました**。同じ轍を踏まないために残します。
+
+- **罠1: 裸パーティで測ってしまった。** 単一種族・ジョブなし・デフォルト隊列・装備なしで「必要レベル」を測り、「中盤に壁・終盤が空洞」と結論。→ システムを全無視した数字で、戦略依存のこのゲームの評価にならない。**必ず strategist ペルソナで測る。**
+- **罠2: 解放前のジョブを使ってしまった。** ジョブ可用性を areaLevel から近似し、ストーリー解放を「全解放」と理想化した結果、**ウルフ草原クリア後のライダーや課金のネクロマンサーを序盤エリアで使用**。「後から使える強職で当たり前にクリア」しただけ。→ 可用性は「2.1 解放進行」で厳密にゲートする。
+- **罠3: 祖先モデルが意図的寄り道を数え落とす。** 「ライダーが本線で到達不能=死にジョブ」と誤結論。実際はオークの砦の壁を越えるための**意図された強化寄り道**(rider/リザードマン因子)だった。→ 「6.2 寄り道ゲートの壁の測り方」で寄り道込みで測る。
+
+いずれも「前提を外すと、もっともらしいが間違った結論が出る」という同じ教訓です。**結論を出す前に、測定が正しい前提(可用性・寄り道)に立っているかを必ず確認する。**
+
+---
+
+## 8. 現時点の診断スナップショット
+
+> 測定条件: Tier0 / 成功率80%閾値 / 解放進行を厳密にゲート(寄り道なしの下限)。探索予算は実用重視で小さめ。
+
+主要な所見:
+
+- **過剰調整の「レベルの壁」は無い**: 全本編エリアが最適編成で概ね Lv40 以下でクリア可能。
+- **戦略プレミアムがほぼ全域で90〜100%**: 装備を揃えても仕組みを知らない median は成功率0%、戦略ペルソナはほぼ100%。→ 「戦略が決定的」という設計目標は数値上機能している。
+- **中盤の壁(オークの砦・討伐隊防衛戦・沼砦)は「戦略の壁」**: 裸だと floor Lv150〜180 だが、その時点で使える職(クレリック入り基本職)なら L\*25〜30 で踏破可能。※オークの砦は寄り道(rider/因子)前提の設計なので、寄り道込みで測るとさらに緩和されるはず(6.2)。
+- **正解の「型」が1つに収束**: エリアが変わっても「前列に壁役+後列に術者/回復」という配置の型が最良。エリア別の弱点(属性偏重・単体高火力・状態異常等)を持たせると、多様な型を要求できる。
+- **areaLevel ラベルの乖離 + 終盤 Tier0 の弱さ**: 王都系(表示160〜180)が L\*8〜10。ラベル振り直しと終盤敵の強化が課題。
+- **亜種の存在意義が薄い**: ジョブが亜種を上回り、亜種はジョブ未解放の最序盤でしか選ばれない。亜種専用の役割付与が課題。
+
+最新の数値は `scripts/balance/out/strategyPremium.csv` / `wallClassification.csv` / `thresholds.csv` を参照。
+
+---
+
+## 9. 既知の限界
+
+- **探索予算は小さめ**: strategist の山登りは実用重視の予算。個々のエリアでさらに良い型が存在する可能性はあるが、「単一の型が全域で通る」という結論は変わらない。予算を上げるには `--strat-*`(strategyPremium.js 内)や `--ceiling-*` フラグを調整。
+- **寄り道ゲートは手動**: 「6.2」のとおり、意図的な強化寄り道の前提は現状まだ自動化されていない。宣言的な prerequisite 機構の追加が改善余地。
+- **繁殖は容易度近似**: 世代シミュレーションはしていない。亜種入手の実コストは近似値。
+- **areaLevel 依存の残存**: 誕生＋値は areaLevel 非依存。残る表示・装備報酬などへの影響を個別に確認する。

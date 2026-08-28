@@ -1,0 +1,520 @@
+{
+  "enemies": [
+    {
+      "id": "VMP001",
+      "name": "吸血鬼の従者",
+      "attackType": "melee",
+      "raceTags": [
+        "vampire",
+        "undead"
+      ],
+      "level": 148,
+      "hp": 28540,
+      "atk": 3677,
+      "def": 2301,
+      "attackCount": 2,
+      "accuracy": 836,
+      "evasion": 902,
+      "gold": 224,
+      "magicDef": 2659,
+      "baseAttributes": {
+        "power": 15,
+        "wisdom": 15,
+        "spirit": 9,
+        "vitality": 12,
+        "agility": 20,
+        "luck": 11
+      }
+    },
+    {
+      "id": "VMP002",
+      "name": "夜会の魔術師",
+      "attackType": "melee",
+      "raceTags": [
+        "vampire",
+        "undead"
+      ],
+      "level": 154,
+      "hp": 24790,
+      "atk": 3311,
+      "magicAtk": 5657,
+      "def": 1989,
+      "attackCount": 1,
+      "accuracy": 848,
+      "evasion": 882,
+      "gold": 245,
+      "magicDef": 2989,
+      "baseAttributes": {
+        "power": 13,
+        "wisdom": 18,
+        "spirit": 10,
+        "vitality": 10,
+        "agility": 18,
+        "luck": 10
+      }
+    },
+    {
+      "id": "B_VAMPIRE_LORD",
+      "name": "夜公ルドヴィク",
+      "attackType": "melee",
+      "raceTags": [
+        "vampire",
+        "undead"
+      ],
+      "level": 178,
+      "hp": 47320,
+      "atk": 3921,
+      "magicAtk": 6846,
+      "def": 3734,
+      "attackCount": 2,
+      "accuracy": 917,
+      "evasion": 1228,
+      "isBoss": true,
+      "gold": 1037,
+      "magicDef": 3724,
+      "baseAttributes": {
+        "power": 21,
+        "wisdom": 22,
+        "spirit": 12,
+        "vitality": 20,
+        "agility": 24,
+        "luck": 13
+      }
+    }
+  ],
+  "patterns": [
+    {
+      "id": "VC1_F1_A",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "VMP001",
+          "VMP001"
+        ],
+        [
+          "VMP002"
+        ]
+      ]
+    },
+    {
+      "id": "VC1_F1_B",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "VMP001",
+          "VMP001",
+          "VMP001"
+        ],
+        [
+          "VMP002"
+        ]
+      ]
+    },
+    {
+      "id": "VC1_F1_C",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "VMP001",
+          "VMP001"
+        ],
+        [
+          "VMP002",
+          "VMP002"
+        ]
+      ]
+    },
+    {
+      "id": "VC1_F1_BOSS",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "VMP001",
+          "VMP001",
+          "VMP001"
+        ],
+        [
+          "VMP002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "VC1_F2_A",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "VMP002",
+          "VMP001"
+        ],
+        [
+          "VMP001",
+          "VMP002"
+        ]
+      ]
+    },
+    {
+      "id": "VC1_F2_B",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "VMP002",
+          "VMP001",
+          "VMP002"
+        ],
+        [
+          "VMP001",
+          "VMP002"
+        ]
+      ]
+    },
+    {
+      "id": "VC1_F2_C",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "VMP002",
+          "VMP001"
+        ],
+        [
+          "VMP001",
+          "VMP002",
+          "VMP001"
+        ]
+      ]
+    },
+    {
+      "id": "VC1_F2_BOSS",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "VMP002",
+          "VMP001",
+          "VMP002"
+        ],
+        [
+          "VMP001",
+          "VMP002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "VC1_F3_A",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "VMP002",
+          "VMP002"
+        ],
+        [
+          "VMP001",
+          "VMP001"
+        ]
+      ]
+    },
+    {
+      "id": "VC1_F3_B",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "VMP002",
+          "VMP002",
+          "VMP002"
+        ],
+        [
+          "VMP001",
+          "VMP001"
+        ]
+      ]
+    },
+    {
+      "id": "VC1_F3_C",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "VMP002",
+          "VMP002"
+        ],
+        [
+          "VMP001",
+          "VMP001",
+          "VMP001"
+        ]
+      ]
+    },
+    {
+      "id": "VC1_F3_BOSS",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "VMP002",
+          "VMP002",
+          "VMP002"
+        ],
+        [
+          "VMP001",
+          "VMP001"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "VC1_F4_A",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "VMP002",
+          "VMP001"
+        ],
+        [
+          "VMP002",
+          "VMP001",
+          "VMP001"
+        ]
+      ]
+    },
+    {
+      "id": "VC1_F4_B",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "VMP002",
+          "VMP001",
+          "VMP002"
+        ],
+        [
+          "VMP002",
+          "VMP001",
+          "VMP001"
+        ]
+      ]
+    },
+    {
+      "id": "VC1_F4_C",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "VMP002",
+          "VMP001"
+        ],
+        [
+          "VMP002",
+          "VMP001",
+          "VMP001",
+          "VMP002"
+        ]
+      ]
+    },
+    {
+      "id": "VC1_F4_BOSS",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "VMP002",
+          "VMP001",
+          "VMP002"
+        ],
+        [
+          "VMP002",
+          "VMP001",
+          "VMP001"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "VC1_F5_A",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "VMP002",
+          "VMP002"
+        ],
+        [
+          "VMP001",
+          "VMP002",
+          "VMP001"
+        ]
+      ]
+    },
+    {
+      "id": "VC1_F5_B",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "VMP002",
+          "VMP002",
+          "VMP002"
+        ],
+        [
+          "VMP001",
+          "VMP002",
+          "VMP001"
+        ]
+      ]
+    },
+    {
+      "id": "VC1_F5_C",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "VMP002",
+          "VMP002"
+        ],
+        [
+          "VMP001",
+          "VMP002",
+          "VMP001",
+          "VMP001"
+        ]
+      ]
+    },
+    {
+      "id": "VC1_F5_BOSS",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "VMP002",
+          "VMP002",
+          "VMP002"
+        ],
+        [
+          "VMP001",
+          "VMP002",
+          "VMP001"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "VC1_F6_A",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "VMP002",
+          "VMP002"
+        ],
+        [
+          "VMP002",
+          "VMP001",
+          "VMP001"
+        ]
+      ]
+    },
+    {
+      "id": "VC1_F6_B",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "VMP002",
+          "VMP002",
+          "VMP002"
+        ],
+        [
+          "VMP002",
+          "VMP001",
+          "VMP001"
+        ]
+      ]
+    },
+    {
+      "id": "VC1_F6_C",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "VMP002",
+          "VMP002"
+        ],
+        [
+          "VMP002",
+          "VMP001",
+          "VMP001",
+          "VMP002"
+        ]
+      ]
+    },
+    {
+      "id": "VC1_F6_BOSS",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "VMP002",
+          "VMP002",
+          "VMP002"
+        ],
+        [
+          "VMP002",
+          "VMP001",
+          "VMP001"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "VC1_FINAL_BOSS",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "B_VAMPIRE_LORD"
+        ],
+        [
+          "VMP002",
+          "VMP001",
+          "VMP001"
+        ]
+      ],
+      "isBoss": true
+    }
+  ]
+}

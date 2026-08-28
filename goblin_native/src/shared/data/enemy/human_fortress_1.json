@@ -1,0 +1,768 @@
+{
+  "enemies": [
+    {
+      "id": "FRT001",
+      "name": "騎士",
+      "attackType": "melee",
+      "raceTags": [
+        "human"
+      ],
+      "level": 104,
+      "hp": 8700,
+      "atk": 706,
+      "def": 714,
+      "attackCount": 1,
+      "accuracy": 748,
+      "evasion": 366,
+      "gold": 137,
+      "magicDef": 1106,
+      "baseAttributes": {
+        "power": 10,
+        "wisdom": 10,
+        "spirit": 10,
+        "vitality": 13,
+        "agility": 7,
+        "luck": 7
+      }
+    },
+    {
+      "id": "FRT002",
+      "name": "宮廷魔術師",
+      "attackType": "melee",
+      "raceTags": [
+        "human"
+      ],
+      "level": 106,
+      "hp": 4740,
+      "atk": 925,
+      "def": 389,
+      "attackCount": 1,
+      "accuracy": 752,
+      "evasion": 403,
+      "gold": 147,
+      "magicDef": 583,
+      "baseAttributes": {
+        "power": 13,
+        "wisdom": 13,
+        "spirit": 5,
+        "vitality": 7,
+        "agility": 9,
+        "luck": 8
+      }
+    },
+    {
+      "id": "FRT003",
+      "name": "重装騎兵",
+      "attackType": "melee",
+      "raceTags": [
+        "human"
+      ],
+      "level": 110,
+      "hp": 11130,
+      "atk": 804,
+      "def": 913,
+      "attackCount": 1,
+      "accuracy": 760,
+      "evasion": 346,
+      "gold": 154,
+      "magicDef": 1326,
+      "baseAttributes": {
+        "power": 11,
+        "wisdom": 11,
+        "spirit": 12,
+        "vitality": 16,
+        "agility": 4,
+        "luck": 7
+      }
+    },
+    {
+      "id": "FRT004",
+      "name": "攻城兵器操手",
+      "attackType": "melee",
+      "raceTags": [
+        "human"
+      ],
+      "level": 108,
+      "hp": 6190,
+      "atk": 1011,
+      "def": 508,
+      "attackCount": 1,
+      "accuracy": 756,
+      "evasion": 320,
+      "gold": 144,
+      "magicDef": 760,
+      "baseAttributes": {
+        "power": 14,
+        "wisdom": 14,
+        "spirit": 7,
+        "vitality": 9,
+        "agility": 3,
+        "luck": 6
+      }
+    },
+    {
+      "id": "FRT005",
+      "name": "精鋭近衛兵",
+      "attackType": "melee",
+      "raceTags": [
+        "human"
+      ],
+      "level": 114,
+      "hp": 10700,
+      "atk": 898,
+      "def": 876,
+      "attackCount": 1,
+      "accuracy": 768,
+      "evasion": 412,
+      "gold": 166,
+      "magicDef": 1201,
+      "baseAttributes": {
+        "power": 12,
+        "wisdom": 12,
+        "spirit": 11,
+        "vitality": 15,
+        "agility": 8,
+        "luck": 8
+      }
+    },
+    {
+      "id": "B_COMMANDER",
+      "name": "辺境伯グレアム",
+      "attackType": "melee",
+      "raceTags": [
+        "human"
+      ],
+      "level": 132,
+      "hp": 12870,
+      "atk": 931,
+      "def": 1034,
+      "attackCount": 3,
+      "accuracy": 848,
+      "evasion": 494,
+      "isBoss": true,
+      "gold": 788,
+      "magicDef": 1654,
+      "baseAttributes": {
+        "power": 18,
+        "wisdom": 18,
+        "spirit": 15,
+        "vitality": 20,
+        "agility": 10,
+        "luck": 9
+      }
+    }
+  ],
+  "patterns": [
+    {
+      "id": "HF1_F1_A",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "FRT001",
+          "FRT001"
+        ],
+        [
+          "FRT002"
+        ]
+      ]
+    },
+    {
+      "id": "HF1_F1_B",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "FRT001",
+          "FRT001",
+          "FRT001"
+        ],
+        [
+          "FRT002"
+        ]
+      ]
+    },
+    {
+      "id": "HF1_F1_C",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "FRT001",
+          "FRT001"
+        ],
+        [
+          "FRT002",
+          "FRT002"
+        ]
+      ]
+    },
+    {
+      "id": "HF1_F1_BOSS",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "FRT001",
+          "FRT001",
+          "FRT001"
+        ],
+        [
+          "FRT002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "HF1_F2_A",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "FRT001",
+          "FRT003"
+        ],
+        [
+          "FRT002",
+          "FRT004"
+        ]
+      ]
+    },
+    {
+      "id": "HF1_F2_B",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "FRT001",
+          "FRT003",
+          "FRT001"
+        ],
+        [
+          "FRT002",
+          "FRT004"
+        ]
+      ]
+    },
+    {
+      "id": "HF1_F2_C",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "FRT001",
+          "FRT003"
+        ],
+        [
+          "FRT002",
+          "FRT004",
+          "FRT002"
+        ]
+      ]
+    },
+    {
+      "id": "HF1_F2_BOSS",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "FRT001",
+          "FRT003",
+          "FRT001"
+        ],
+        [
+          "FRT002",
+          "FRT004"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "HF1_F3_A",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "FRT003",
+          "FRT001"
+        ],
+        [
+          "FRT004",
+          "FRT002",
+          "FRT001"
+        ]
+      ]
+    },
+    {
+      "id": "HF1_F3_B",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "FRT003",
+          "FRT001",
+          "FRT003"
+        ],
+        [
+          "FRT004",
+          "FRT002",
+          "FRT001"
+        ]
+      ]
+    },
+    {
+      "id": "HF1_F3_C",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "FRT003",
+          "FRT001"
+        ],
+        [
+          "FRT004",
+          "FRT002",
+          "FRT001",
+          "FRT004"
+        ]
+      ]
+    },
+    {
+      "id": "HF1_F3_BOSS",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "FRT003",
+          "FRT001",
+          "FRT003"
+        ],
+        [
+          "FRT004",
+          "FRT002",
+          "FRT001"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "HF1_F4_A",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "FRT003",
+          "FRT003"
+        ],
+        [
+          "FRT004",
+          "FRT002",
+          "FRT001"
+        ]
+      ]
+    },
+    {
+      "id": "HF1_F4_B",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "FRT003",
+          "FRT003",
+          "FRT003"
+        ],
+        [
+          "FRT004",
+          "FRT002",
+          "FRT001"
+        ]
+      ]
+    },
+    {
+      "id": "HF1_F4_C",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "FRT003",
+          "FRT003"
+        ],
+        [
+          "FRT004",
+          "FRT002",
+          "FRT001",
+          "FRT004"
+        ]
+      ]
+    },
+    {
+      "id": "HF1_F4_BOSS",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "FRT003",
+          "FRT003",
+          "FRT003"
+        ],
+        [
+          "FRT004",
+          "FRT002",
+          "FRT001"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "HF1_F5_A",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "FRT005",
+          "FRT003"
+        ],
+        [
+          "FRT004",
+          "FRT002",
+          "FRT001",
+          "FRT003"
+        ]
+      ]
+    },
+    {
+      "id": "HF1_F5_B",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "FRT005",
+          "FRT003",
+          "FRT005"
+        ],
+        [
+          "FRT004",
+          "FRT002",
+          "FRT001",
+          "FRT003"
+        ]
+      ]
+    },
+    {
+      "id": "HF1_F5_C",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "FRT005",
+          "FRT003"
+        ],
+        [
+          "FRT004",
+          "FRT002",
+          "FRT001",
+          "FRT003",
+          "FRT004"
+        ]
+      ]
+    },
+    {
+      "id": "HF1_F5_BOSS",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "FRT005",
+          "FRT003",
+          "FRT005"
+        ],
+        [
+          "FRT004",
+          "FRT002",
+          "FRT001",
+          "FRT003"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "HF1_F6_A",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "FRT005",
+          "FRT005"
+        ],
+        [
+          "FRT003",
+          "FRT004",
+          "FRT002",
+          "FRT001"
+        ]
+      ]
+    },
+    {
+      "id": "HF1_F6_B",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "FRT005",
+          "FRT005",
+          "FRT005"
+        ],
+        [
+          "FRT003",
+          "FRT004",
+          "FRT002",
+          "FRT001"
+        ]
+      ]
+    },
+    {
+      "id": "HF1_F6_C",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "FRT005",
+          "FRT005"
+        ],
+        [
+          "FRT003",
+          "FRT004",
+          "FRT002",
+          "FRT001",
+          "FRT003"
+        ]
+      ]
+    },
+    {
+      "id": "HF1_F6_BOSS",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "FRT005",
+          "FRT005",
+          "FRT005"
+        ],
+        [
+          "FRT003",
+          "FRT004",
+          "FRT002",
+          "FRT001"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "HF1_F7_A",
+      "floors": [
+        7
+      ],
+      "enemies": [
+        [
+          "FRT005",
+          "FRT003",
+          "FRT005"
+        ],
+        [
+          "FRT004",
+          "FRT002",
+          "FRT001",
+          "FRT003"
+        ]
+      ]
+    },
+    {
+      "id": "HF1_F7_B",
+      "floors": [
+        7
+      ],
+      "enemies": [
+        [
+          "FRT005",
+          "FRT003",
+          "FRT005",
+          "FRT005"
+        ],
+        [
+          "FRT004",
+          "FRT002",
+          "FRT001",
+          "FRT003"
+        ]
+      ]
+    },
+    {
+      "id": "HF1_F7_C",
+      "floors": [
+        7
+      ],
+      "enemies": [
+        [
+          "FRT005",
+          "FRT003",
+          "FRT005"
+        ],
+        [
+          "FRT004",
+          "FRT002",
+          "FRT001",
+          "FRT003",
+          "FRT004"
+        ]
+      ]
+    },
+    {
+      "id": "HF1_F7_BOSS",
+      "floors": [
+        7
+      ],
+      "enemies": [
+        [
+          "FRT005",
+          "FRT003",
+          "FRT005",
+          "FRT005"
+        ],
+        [
+          "FRT004",
+          "FRT002",
+          "FRT001",
+          "FRT003"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "HF1_F8_A",
+      "floors": [
+        8
+      ],
+      "enemies": [
+        [
+          "FRT005",
+          "FRT005",
+          "FRT003"
+        ],
+        [
+          "FRT004",
+          "FRT002",
+          "FRT001",
+          "FRT003",
+          "FRT005"
+        ]
+      ]
+    },
+    {
+      "id": "HF1_F8_B",
+      "floors": [
+        8
+      ],
+      "enemies": [
+        [
+          "FRT005",
+          "FRT005",
+          "FRT003",
+          "FRT005"
+        ],
+        [
+          "FRT004",
+          "FRT002",
+          "FRT001",
+          "FRT003",
+          "FRT005"
+        ]
+      ]
+    },
+    {
+      "id": "HF1_F8_C",
+      "floors": [
+        8
+      ],
+      "enemies": [
+        [
+          "FRT005",
+          "FRT005",
+          "FRT003"
+        ],
+        [
+          "FRT004",
+          "FRT002",
+          "FRT001",
+          "FRT003",
+          "FRT005",
+          "FRT004"
+        ]
+      ]
+    },
+    {
+      "id": "HF1_F8_BOSS",
+      "floors": [
+        8
+      ],
+      "enemies": [
+        [
+          "FRT005",
+          "FRT005",
+          "FRT003",
+          "FRT005"
+        ],
+        [
+          "FRT004",
+          "FRT002",
+          "FRT001",
+          "FRT003",
+          "FRT005"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "HF1_FINAL_BOSS",
+      "floors": [
+        8
+      ],
+      "enemies": [
+        [
+          "B_COMMANDER"
+        ],
+        [
+          "FRT005",
+          "FRT003",
+          "FRT004",
+          "FRT002",
+          "FRT001"
+        ]
+      ],
+      "isBoss": true
+    }
+  ]
+}

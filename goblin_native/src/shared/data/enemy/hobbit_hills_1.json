@@ -1,0 +1,254 @@
+{
+  "enemies": [
+    {
+      "id": "HBT001",
+      "name": "ホビット斥候",
+      "attackType": "melee",
+      "raceTags": [
+        "hobbit"
+      ],
+      "level": 30,
+      "hp": 810,
+      "atk": 88,
+      "def": 81,
+      "attackCount": 1,
+      "accuracy": 600,
+      "evasion": 115,
+      "gold": 86,
+      "magicDef": 64,
+      "baseAttributes": {
+        "power": 6,
+        "wisdom": 6,
+        "spirit": 4,
+        "vitality": 7,
+        "agility": 18,
+        "luck": 10
+      }
+    },
+    {
+      "id": "HBT002",
+      "name": "ホビット投石手",
+      "attackType": "melee",
+      "raceTags": [
+        "hobbit"
+      ],
+      "level": 32,
+      "hp": 770,
+      "atk": 125,
+      "def": 75,
+      "attackCount": 1,
+      "accuracy": 604,
+      "evasion": 116,
+      "gold": 93,
+      "magicDef": 68,
+      "baseAttributes": {
+        "power": 8,
+        "wisdom": 8,
+        "spirit": 4,
+        "vitality": 6,
+        "agility": 16,
+        "luck": 9
+      }
+    },
+    {
+      "id": "HBT003",
+      "name": "ホビット村長",
+      "attackType": "melee",
+      "raceTags": [
+        "hobbit"
+      ],
+      "level": 40,
+      "hp": 1880,
+      "atk": 224,
+      "def": 175,
+      "attackCount": 2,
+      "accuracy": 620,
+      "evasion": 162,
+      "gold": 438,
+      "magicDef": 133,
+      "baseAttributes": {
+        "power": 11,
+        "wisdom": 11,
+        "spirit": 6,
+        "vitality": 11,
+        "agility": 18,
+        "luck": 11
+      }
+    }
+  ],
+  "patterns": [
+    {
+      "id": "HH1_001",
+      "floors": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "enemies": [
+        [
+          "HBT001",
+          "HBT001"
+        ],
+        [
+          "HBT002"
+        ]
+      ]
+    },
+    {
+      "id": "HH1_002",
+      "floors": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "enemies": [
+        [
+          "HBT002",
+          "HBT001"
+        ],
+        [
+          "HBT001",
+          "HBT002"
+        ]
+      ]
+    },
+    {
+      "id": "HH1_003",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "HBT002",
+          "HBT002"
+        ],
+        [
+          "HBT001",
+          "HBT001"
+        ]
+      ]
+    },
+    {
+      "id": "BOSS",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "HBT003"
+        ],
+        [
+          "HBT002",
+          "HBT001"
+        ]
+      ],
+      "isBoss": true
+    },
+    {
+      "id": "HH1_002_F1_BOSS",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "HBT002",
+          "HBT001"
+        ],
+        [
+          "HBT001",
+          "HBT002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "HH1_002_F2_BOSS",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "HBT002",
+          "HBT001"
+        ],
+        [
+          "HBT001",
+          "HBT002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "HH1_002_F3_BOSS",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "HBT002",
+          "HBT001"
+        ],
+        [
+          "HBT001",
+          "HBT002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "HH1_002_F4_BOSS",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "HBT002",
+          "HBT001"
+        ],
+        [
+          "HBT001",
+          "HBT002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "HH1_002_F5_BOSS",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "HBT002",
+          "HBT001"
+        ],
+        [
+          "HBT001",
+          "HBT002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "HH1_003_F6_BOSS",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "HBT002",
+          "HBT002"
+        ],
+        [
+          "HBT001",
+          "HBT001"
+        ]
+      ],
+      "isFloorBoss": true
+    }
+  ]
+}

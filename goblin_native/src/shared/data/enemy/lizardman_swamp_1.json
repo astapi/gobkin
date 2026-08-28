@@ -1,0 +1,752 @@
+{
+  "enemies": [
+    {
+      "id": "LIZ001",
+      "name": "リザードマン",
+      "attackType": "melee",
+      "raceTags": [
+        "lizardman"
+      ],
+      "level": 44,
+      "hp": 1830,
+      "atk": 293,
+      "def": 145,
+      "magicDef": 40,
+      "attackCount": 6,
+      "accuracy": 640,
+      "evasion": 163,
+      "gold": 38,
+      "skills": [
+        {
+          "id": "physical_reduction_10",
+          "physicalDamageReductionPercent": 10
+        },
+        {
+          "id": "two_column_attack",
+          "twoColumnAttack": true
+        }
+      ],
+      "baseAttributes": {
+        "power": 18,
+        "wisdom": 18,
+        "spirit": 7,
+        "vitality": 22,
+        "agility": 16,
+        "luck": 5
+      }
+    },
+    {
+      "id": "LIZ002",
+      "name": "アサシンリザード",
+      "attackType": "melee",
+      "raceTags": [
+        "lizardman"
+      ],
+      "level": 44,
+      "hp": 1600,
+      "atk": 220,
+      "def": 119,
+      "magicDef": 22,
+      "attackCount": 6,
+      "accuracy": 660,
+      "evasion": 182,
+      "gold": 41,
+      "skills": [
+        {
+          "id": "physical_reduction_10",
+          "physicalDamageReductionPercent": 10
+        }
+      ],
+      "baseAttributes": {
+        "power": 18,
+        "wisdom": 18,
+        "spirit": 4,
+        "vitality": 18,
+        "agility": 20,
+        "luck": 6
+      }
+    },
+    {
+      "id": "B_SWAMPKING",
+      "name": "沼王ザール",
+      "attackType": "melee",
+      "raceTags": [
+        "lizardman"
+      ],
+      "level": 55,
+      "hp": 4460,
+      "atk": 481,
+      "def": 227,
+      "magicDef": 62,
+      "attackCount": 8,
+      "accuracy": 680,
+      "evasion": 177,
+      "isBoss": true,
+      "gold": 220,
+      "skills": [
+        {
+          "id": "physical_reduction_10",
+          "physicalDamageReductionPercent": 10
+        },
+        {
+          "id": "rear_guard",
+          "protectRearAllyNormalAttackMultiplier": 0.6666666666666666
+        },
+        {
+          "id": "physical_reduction_5",
+          "physicalDamageReductionPercent": 5
+        },
+        {
+          "id": "physical_damage_30",
+          "physicalDamagePercent": 30
+        }
+      ],
+      "baseAttributes": {
+        "power": 23,
+        "wisdom": 23,
+        "spirit": 11,
+        "vitality": 27,
+        "agility": 10,
+        "luck": 5
+      },
+      "factorDrops": [
+        {
+          "factorId": "lizardman",
+          "probability": 0.015
+        }
+      ]
+    }
+  ],
+  "patterns": [
+    {
+      "id": "LIZARDMAN_SWAMP_1_LS1_001",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "LIZ001",
+          "LIZ001"
+        ],
+        [
+          "LIZ001",
+          "LIZ001",
+          "LIZ001"
+        ]
+      ]
+    },
+    {
+      "id": "LIZARDMAN_SWAMP_1_LS1_001_2",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "LIZ001",
+          "LIZ001"
+        ],
+        [
+          "LIZ001",
+          "LIZ001",
+          "LIZ001"
+        ]
+      ]
+    },
+    {
+      "id": "LIZARDMAN_SWAMP_1_LS1_002",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "LIZ001",
+          "LIZ001",
+          "LIZ001"
+        ],
+        [
+          "LIZ001",
+          "LIZ001",
+          "LIZ001",
+          "LIZ001"
+        ]
+      ]
+    },
+    {
+      "id": "LIZARDMAN_SWAMP_1_LS1_002_2",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "LIZ001",
+          "LIZ001",
+          "LIZ001"
+        ],
+        [
+          "LIZ001",
+          "LIZ001",
+          "LIZ001",
+          "LIZ001"
+        ]
+      ]
+    },
+    {
+      "id": "LIZARDMAN_SWAMP_2_LS2_001",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "LIZ001",
+          "LIZ001"
+        ],
+        [
+          "LIZ002",
+          "LIZ002",
+          "LIZ002"
+        ],
+        [
+          "LIZ002"
+        ]
+      ]
+    },
+    {
+      "id": "LIZARDMAN_SWAMP_2_LS2_002",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "LIZ001",
+          "LIZ001"
+        ],
+        [
+          "LIZ002",
+          "LIZ002"
+        ],
+        [
+          "LIZ002",
+          "LIZ002"
+        ]
+      ]
+    },
+    {
+      "id": "LIZARDMAN_SWAMP_2_LS2_003",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "LIZ001",
+          "LIZ001",
+          "LIZ001"
+        ],
+        [
+          "LIZ002",
+          "LIZ002"
+        ],
+        [
+          "LIZ002",
+          "LIZ002"
+        ]
+      ]
+    },
+    {
+      "id": "LIZARDMAN_SWAMP_2_LS2_004",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "LIZ001",
+          "LIZ001"
+        ],
+        [
+          "LIZ002",
+          "LIZ002"
+        ],
+        [
+          "LIZ002",
+          "LIZ002",
+          "LIZ002"
+        ]
+      ]
+    },
+    {
+      "id": "LIZARDMAN_SWAMP_2_LS2_005",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "LIZ001",
+          "LIZ001"
+        ],
+        [
+          "LIZ002",
+          "LIZ002"
+        ],
+        [
+          "LIZ002",
+          "LIZ002"
+        ]
+      ]
+    },
+    {
+      "id": "LIZARDMAN_SWAMP_2_LS2_006",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "LIZ001",
+          "LIZ001",
+          "LIZ001"
+        ],
+        [
+          "LIZ002",
+          "LIZ002"
+        ],
+        [
+          "LIZ002",
+          "LIZ002",
+          "LIZ002"
+        ]
+      ]
+    },
+    {
+      "id": "LIZARDMAN_SWAMP_2_LS2_007",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "LIZ001",
+          "LIZ001",
+          "LIZ001"
+        ],
+        [
+          "LIZ002",
+          "LIZ002"
+        ],
+        [
+          "LIZ002",
+          "LIZ002"
+        ]
+      ]
+    },
+    {
+      "id": "LIZARDMAN_SWAMP_2_LS2_008",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "LIZ001",
+          "LIZ001",
+          "LIZ001"
+        ],
+        [
+          "LIZ002",
+          "LIZ002",
+          "LIZ002"
+        ],
+        [
+          "LIZ002",
+          "LIZ002"
+        ]
+      ]
+    },
+    {
+      "id": "LIZARDMAN_SWAMP_2_LS2_009",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "LIZ001",
+          "LIZ001"
+        ],
+        [
+          "LIZ001"
+        ],
+        [
+          "LIZ002",
+          "LIZ002",
+          "LIZ002"
+        ],
+        [
+          "LIZ002",
+          "LIZ002"
+        ]
+      ]
+    },
+    {
+      "id": "LIZARDMAN_SWAMP_2_LS2_010",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "LIZ001",
+          "LIZ001",
+          "LIZ001"
+        ],
+        [
+          "LIZ002",
+          "LIZ002",
+          "LIZ002"
+        ],
+        [
+          "LIZ002",
+          "LIZ002",
+          "LIZ002"
+        ]
+      ]
+    },
+    {
+      "id": "LIZARDMAN_SWAMP_3_LS3_001",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "LIZ001",
+          "LIZ002",
+          "LIZ002"
+        ]
+      ]
+    },
+    {
+      "id": "LIZARDMAN_SWAMP_3_LS3_002",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "LIZ002",
+          "LIZ002"
+        ],
+        [
+          "LIZ001",
+          "LIZ002",
+          "LIZ002"
+        ]
+      ]
+    },
+    {
+      "id": "LIZARDMAN_SWAMP_3_LS3_003",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "LIZ001",
+          "LIZ002",
+          "LIZ002"
+        ],
+        [
+          "LIZ002",
+          "LIZ001",
+          "LIZ002"
+        ]
+      ]
+    },
+    {
+      "id": "LIZARDMAN_SWAMP_3_LS3_004",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "LIZ002",
+          "LIZ001",
+          "LIZ002"
+        ],
+        [
+          "LIZ001",
+          "LIZ002"
+        ],
+        [
+          "LIZ002",
+          "LIZ002"
+        ]
+      ]
+    },
+    {
+      "id": "LIZARDMAN_SWAMP_3_LS3_005",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "LIZ001",
+          "LIZ002",
+          "LIZ002"
+        ],
+        [
+          "LIZ002",
+          "LIZ001"
+        ],
+        [
+          "LIZ002",
+          "LIZ001",
+          "LIZ002"
+        ]
+      ]
+    },
+    {
+      "id": "LIZARDMAN_SWAMP_3_LS3_006",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "LIZ001",
+          "LIZ002"
+        ],
+        [
+          "LIZ002",
+          "LIZ001"
+        ]
+      ]
+    },
+    {
+      "id": "LIZARDMAN_SWAMP_3_LS3_007",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "LIZ002",
+          "LIZ002",
+          "LIZ001"
+        ],
+        [
+          "LIZ001",
+          "LIZ002"
+        ]
+      ]
+    },
+    {
+      "id": "LIZARDMAN_SWAMP_3_LS3_008",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "LIZ001",
+          "LIZ002",
+          "LIZ002"
+        ],
+        [
+          "LIZ002",
+          "LIZ001",
+          "LIZ002"
+        ]
+      ]
+    },
+    {
+      "id": "LIZARDMAN_SWAMP_3_LS3_009",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "LIZ001",
+          "LIZ002",
+          "LIZ002"
+        ],
+        [
+          "LIZ002",
+          "LIZ002"
+        ],
+        [
+          "LIZ001",
+          "LIZ002"
+        ]
+      ]
+    },
+    {
+      "id": "LIZARDMAN_SWAMP_3_LS3_010",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "LIZ002",
+          "LIZ002",
+          "LIZ001"
+        ],
+        [
+          "LIZ001",
+          "LIZ002",
+          "LIZ002"
+        ],
+        [
+          "LIZ002",
+          "LIZ001",
+          "LIZ002"
+        ]
+      ]
+    },
+    {
+      "id": "LIZARDMAN_SWAMP_3_BOSS",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "B_SWAMPKING",
+          "LIZ001",
+          "LIZ002"
+        ],
+        [
+          "LIZ002",
+          "LIZ001",
+          "LIZ002"
+        ],
+        [
+          "LIZ002",
+          "LIZ002",
+          "LIZ001"
+        ]
+      ],
+      "isBoss": true
+    },
+    {
+      "id": "LIZARDMAN_SWAMP_1_LS1_002_F1_BOSS",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "LIZ001",
+          "LIZ001",
+          "LIZ001"
+        ],
+        [
+          "LIZ001",
+          "LIZ001",
+          "LIZ001",
+          "LIZ001"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "LIZARDMAN_SWAMP_1_LS1_002_2_F2_BOSS",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "LIZ001",
+          "LIZ001",
+          "LIZ001"
+        ],
+        [
+          "LIZ001",
+          "LIZ001",
+          "LIZ001",
+          "LIZ001"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "LIZARDMAN_SWAMP_2_LS2_006_F3_BOSS",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "LIZ001",
+          "LIZ001",
+          "LIZ001"
+        ],
+        [
+          "LIZ002",
+          "LIZ002"
+        ],
+        [
+          "LIZ002",
+          "LIZ002",
+          "LIZ002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "LIZARDMAN_SWAMP_2_LS2_010_F4_BOSS",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "LIZ001",
+          "LIZ001",
+          "LIZ001"
+        ],
+        [
+          "LIZ002",
+          "LIZ002",
+          "LIZ002"
+        ],
+        [
+          "LIZ002",
+          "LIZ002",
+          "LIZ002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "LIZARDMAN_SWAMP_3_LS3_005_F5_BOSS",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "LIZ001",
+          "LIZ002",
+          "LIZ002"
+        ],
+        [
+          "LIZ002",
+          "LIZ001"
+        ],
+        [
+          "LIZ002",
+          "LIZ001",
+          "LIZ002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "LIZARDMAN_SWAMP_3_LS3_010_F6_BOSS",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "LIZ002",
+          "LIZ002",
+          "LIZ001"
+        ],
+        [
+          "LIZ001",
+          "LIZ002",
+          "LIZ002"
+        ],
+        [
+          "LIZ002",
+          "LIZ001",
+          "LIZ002"
+        ]
+      ],
+      "isFloorBoss": true
+    }
+  ]
+}

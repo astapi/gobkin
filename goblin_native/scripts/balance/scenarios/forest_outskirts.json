@@ -1,0 +1,263 @@
+{
+  "$schema": "balance-reference-scenario-v1",
+  "areaId": "forest_outskirts",
+  "description": "周辺の森。スライム洞窟クリア後に到達する6階構成。Rank1通常装備、ジョブなし、スライム亜種を候補にして、森全踏破に必要なレベル帯と隊列を確認する。",
+  "iterations": 100,
+  "levelRange": {
+    "min": 1,
+    "max": 20,
+    "step": 1
+  },
+  "equipmentFilter": {
+    "maxUnlockRank": 1,
+    "maxDropRank": 1
+  },
+  "loadouts": [
+    {
+      "name": "A_balanced_rank1",
+      "description": "1列目にスライム亜種の防御役、2列目に通常前衛、3〜6列目に弓/小手の後衛火力を置くRank1基本構成。",
+      "party": [
+        {
+          "name": "スライム盾",
+          "variantFactorId": "slime",
+          "equipmentTemplateIds": [
+            "armor_armor",
+            "armor_fur_vest",
+            "armor_leather_vest",
+            "armor_tattered_cloth",
+            "shield_shield",
+            "shield_wooden",
+            "sword_long",
+            "gauntlet_gauntlet"
+          ]
+        },
+        {
+          "name": "通常前衛",
+          "equipmentTemplateIds": [
+            "sword_long",
+            "armor_armor",
+            "shield_shield",
+            "armor_fur_vest",
+            "armor_leather_vest",
+            "sword_broad",
+            "gauntlet_gauntlet",
+            "shield_wooden"
+          ]
+        },
+        {
+          "name": "通常弓1",
+          "equipmentTemplateIds": [
+            "bow_long",
+            "gauntlet_gauntlet",
+            "gauntlet_copper",
+            "gauntlet_leather",
+            "gauntlet_cloth_gloves",
+            "armor_fur_vest",
+            "armor_leather_vest",
+            "armor_tattered_cloth"
+          ]
+        },
+        {
+          "name": "通常弓2",
+          "equipmentTemplateIds": [
+            "bow_long",
+            "gauntlet_gauntlet",
+            "gauntlet_copper",
+            "gauntlet_leather",
+            "gauntlet_cloth_gloves",
+            "armor_fur_vest",
+            "armor_leather_vest",
+            "armor_tattered_cloth"
+          ]
+        },
+        {
+          "name": "通常弓3",
+          "equipmentTemplateIds": [
+            "bow_long",
+            "gauntlet_gauntlet",
+            "gauntlet_copper",
+            "gauntlet_leather",
+            "gauntlet_cloth_gloves",
+            "armor_fur_vest",
+            "armor_leather_vest",
+            "armor_tattered_cloth"
+          ]
+        },
+        {
+          "name": "通常弓4",
+          "equipmentTemplateIds": [
+            "bow_long",
+            "gauntlet_gauntlet",
+            "gauntlet_copper",
+            "gauntlet_leather",
+            "gauntlet_cloth_gloves",
+            "armor_fur_vest",
+            "armor_leather_vest",
+            "armor_tattered_cloth"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "B_no_slime_variant",
+      "description": "スライム亜種なし。全員通常ゴブリンでRank1装備だけを使う構成。",
+      "party": [
+        {
+          "name": "通常盾",
+          "equipmentTemplateIds": [
+            "armor_armor",
+            "armor_fur_vest",
+            "armor_leather_vest",
+            "armor_tattered_cloth",
+            "shield_shield",
+            "shield_wooden",
+            "sword_long",
+            "gauntlet_gauntlet"
+          ]
+        },
+        {
+          "name": "通常前衛",
+          "equipmentTemplateIds": [
+            "sword_long",
+            "armor_armor",
+            "shield_shield",
+            "armor_fur_vest",
+            "armor_leather_vest",
+            "sword_broad",
+            "gauntlet_gauntlet",
+            "shield_wooden"
+          ]
+        },
+        {
+          "name": "通常弓1",
+          "equipmentTemplateIds": [
+            "bow_long",
+            "gauntlet_gauntlet",
+            "gauntlet_copper",
+            "gauntlet_leather",
+            "armor_fur_vest",
+            "armor_leather_vest"
+          ]
+        },
+        {
+          "name": "通常弓2",
+          "equipmentTemplateIds": [
+            "bow_long",
+            "gauntlet_gauntlet",
+            "gauntlet_copper",
+            "gauntlet_leather",
+            "armor_fur_vest",
+            "armor_leather_vest"
+          ]
+        },
+        {
+          "name": "通常弓3",
+          "equipmentTemplateIds": [
+            "bow_long",
+            "gauntlet_gauntlet",
+            "gauntlet_copper",
+            "gauntlet_leather",
+            "armor_fur_vest",
+            "armor_leather_vest"
+          ]
+        },
+        {
+          "name": "通常弓4",
+          "equipmentTemplateIds": [
+            "bow_long",
+            "gauntlet_gauntlet",
+            "gauntlet_copper",
+            "gauntlet_leather",
+            "armor_fur_vest",
+            "armor_leather_vest"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "C_misformation",
+      "description": "Aと同じ装備だが隊列を反転し、低耐久の弓役を前に出す。隊列差を測るための失敗寄り構成。",
+      "party": [
+        {
+          "name": "通常弓1",
+          "equipmentTemplateIds": [
+            "bow_long",
+            "gauntlet_gauntlet",
+            "gauntlet_copper",
+            "gauntlet_leather",
+            "gauntlet_cloth_gloves",
+            "armor_fur_vest",
+            "armor_leather_vest",
+            "armor_tattered_cloth"
+          ]
+        },
+        {
+          "name": "通常弓2",
+          "equipmentTemplateIds": [
+            "bow_long",
+            "gauntlet_gauntlet",
+            "gauntlet_copper",
+            "gauntlet_leather",
+            "gauntlet_cloth_gloves",
+            "armor_fur_vest",
+            "armor_leather_vest",
+            "armor_tattered_cloth"
+          ]
+        },
+        {
+          "name": "通常弓3",
+          "equipmentTemplateIds": [
+            "bow_long",
+            "gauntlet_gauntlet",
+            "gauntlet_copper",
+            "gauntlet_leather",
+            "gauntlet_cloth_gloves",
+            "armor_fur_vest",
+            "armor_leather_vest",
+            "armor_tattered_cloth"
+          ]
+        },
+        {
+          "name": "通常弓4",
+          "equipmentTemplateIds": [
+            "bow_long",
+            "gauntlet_gauntlet",
+            "gauntlet_copper",
+            "gauntlet_leather",
+            "gauntlet_cloth_gloves",
+            "armor_fur_vest",
+            "armor_leather_vest",
+            "armor_tattered_cloth"
+          ]
+        },
+        {
+          "name": "通常前衛",
+          "equipmentTemplateIds": [
+            "sword_long",
+            "armor_armor",
+            "shield_shield",
+            "armor_fur_vest",
+            "armor_leather_vest",
+            "sword_broad",
+            "gauntlet_gauntlet",
+            "shield_wooden"
+          ]
+        },
+        {
+          "name": "スライム盾",
+          "variantFactorId": "slime",
+          "equipmentTemplateIds": [
+            "armor_armor",
+            "armor_fur_vest",
+            "armor_leather_vest",
+            "armor_tattered_cloth",
+            "shield_shield",
+            "shield_wooden",
+            "sword_long",
+            "gauntlet_gauntlet"
+          ]
+        }
+      ]
+    }
+  ]
+}

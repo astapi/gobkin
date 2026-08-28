@@ -1,0 +1,254 @@
+import type { RaceDict } from '../../core/services/DamageCalculator';
+import type { CharacterSkill } from '../types/CharacterSkill';
+import { getCharacterSkills } from './skillCatalog';
+
+export const races: RaceDict = {
+  beast: {
+    label: "魔獣"
+  },
+  bat: {
+    label: "コウモリ",
+    implies: [
+      "beast"
+    ]
+  },
+  construct: {
+    label: "構築物",
+    implies: [
+      "demon_race"
+    ]
+  },
+  dragon: {
+    label: "ドラゴン",
+    physicalResistancePercent: 50,
+    penetrationResistancePercent: 50,
+    criticalResistancePercent: 50,
+    magicResistancePercent: 50
+  },
+  dwarf: {
+    label: "ドワーフ",
+    implies: [
+      "human"
+    ],
+    physicalResistancePercent: 20,
+    penetrationResistancePercent: 20,
+    criticalResistancePercent: 20,
+    magicResistancePercent: 0
+  },
+  elf: {
+    label: "エルフ",
+    implies: [
+      "human"
+    ],
+    physicalResistancePercent: 5,
+    penetrationResistancePercent: 5,
+    criticalResistancePercent: 1,
+    magicResistancePercent: 30
+  },
+  harpy: {
+    label: "ハーピー",
+    implies: [
+      "beast"
+    ],
+    magicResistancePercent: 20
+  },
+  hobbit: {
+    label: "ホビット",
+    implies: [
+      "human"
+    ],
+    physicalResistancePercent: 0,
+    penetrationResistancePercent: 20,
+    criticalResistancePercent: 10,
+    magicResistancePercent: 10
+  },
+  hobgoblin: {
+    label: "ホブゴブリン",
+    implies: [
+      "beast"
+    ]
+  },
+  goblin: {
+    label: "ゴブリン",
+    implies: [
+      "beast"
+    ],
+    skillIds: [
+      "goblin_pack_tactics"
+    ]
+  },
+  founder: {
+    label: "始祖ゴブリン",
+    implies: [
+      "goblin"
+    ],
+    skillIds: [
+      "exp_bonus_40"
+    ]
+  },
+  elder: {
+    label: "古強者ゴブリン",
+    implies: [
+      "goblin"
+    ]
+  },
+  gale: {
+    label: "疾風ゴブリン",
+    implies: [
+      "goblin"
+    ]
+  },
+  human: {
+    label: "人間",
+    physicalResistancePercent: 0,
+    penetrationResistancePercent: 0,
+    criticalResistancePercent: 0,
+    magicResistancePercent: 0
+  },
+  insect: {
+    label: "虫",
+    implies: [
+      "beast"
+    ]
+  },
+  lizardman: {
+    label: "リザードマン",
+    implies: [
+      "beast",
+      "dragon"
+    ]
+  },
+  minotaur: {
+    label: "ミノタウロス",
+    implies: [
+      "beast"
+    ]
+  },
+  orc: {
+    label: "オーク",
+    implies: [
+      "beast"
+    ]
+  },
+  skeleton: {
+    label: "スケルトン",
+    implies: [
+      "undead"
+    ]
+  },
+  slime: {
+    label: "スライム",
+    implies: [
+      "beast"
+    ]
+  },
+  cat: {
+    label: "猫獣人",
+    implies: [
+      "beast"
+    ]
+  },
+  spider: {
+    label: "スパイダー",
+    implies: [
+      "beast"
+    ]
+  },
+  treant: {
+    label: "トレント",
+    implies: [
+      "beast"
+    ]
+  },
+  troll: {
+    label: "トロル",
+    implies: [
+      "beast"
+    ]
+  },
+  shadow: {
+    label: "影種",
+    implies: [
+      "beast"
+    ]
+  },
+  undead: {
+    label: "アンデッド"
+  },
+  vampire: {
+    label: "ヴァンパイア",
+    implies: [
+      "demon_race"
+    ]
+  },
+  wolf: {
+    label: "狼",
+    implies: [
+      "beast"
+    ]
+  },
+  demon_race: {
+    label: "魔族"
+  }
+};
+
+export type RaceResistanceSet = {
+  physicalResistancePercent: number
+  penetrationResistancePercent: number
+  criticalResistancePercent: number
+  magicResistancePercent: number
+}
+
+const ZERO_RACE_RESISTANCE: RaceResistanceSet = {
+  physicalResistancePercent: 0,
+  penetrationResistancePercent: 0,
+  criticalResistancePercent: 0,
+  magicResistancePercent: 0,
+}
+
+export function getRaceResistanceTotals(raceTags: readonly string[]): RaceResistanceSet {
+  return raceTags.reduce<RaceResistanceSet>(
+    (acc, raceTag) => {
+      const race = races[raceTag]
+      if (!race) return acc
+      return {
+        physicalResistancePercent: acc.physicalResistancePercent + (race.physicalResistancePercent ?? 0),
+        penetrationResistancePercent: acc.penetrationResistancePercent + (race.penetrationResistancePercent ?? 0),
+        criticalResistancePercent: acc.criticalResistancePercent + (race.criticalResistancePercent ?? 0),
+        magicResistancePercent: acc.magicResistancePercent + (race.magicResistancePercent ?? 0),
+      }
+    },
+    { ...ZERO_RACE_RESISTANCE },
+  )
+}
+
+export function getRaceSkillIds(raceTags: readonly string[]): string[] {
+  const uniqueSkillIds = new Set<string>()
+  const visitedRaceTags = new Set<string>()
+
+  const visit = (raceTag: string) => {
+    if (visitedRaceTags.has(raceTag)) return
+    visitedRaceTags.add(raceTag)
+
+    const race = races[raceTag]
+    if (!race) return
+
+    for (const skillId of race.skillIds ?? []) {
+      uniqueSkillIds.add(skillId)
+    }
+
+    for (const implied of race.implies ?? []) {
+      visit(implied)
+    }
+  }
+
+  for (const raceTag of raceTags) {
+    visit(raceTag)
+  }
+
+  return [...uniqueSkillIds]
+}
+
+export function getRaceSkills(raceTags: readonly string[]): CharacterSkill[] {
+  return getCharacterSkills(getRaceSkillIds(raceTags))
+}

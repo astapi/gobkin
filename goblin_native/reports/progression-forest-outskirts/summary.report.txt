@@ -1,0 +1,20 @@
+progression forest_outskirts
+createdAt 2026-06-05T01:30:01.855Z
+levelMode scenario-max
+levelSweep 1:16:1
+
+step 1 slime_cave
+  equipment 34 rare 2
+  newRare accessory_luck_medal,accessory_split_core
+  challenge -
+
+step 2 forest_outskirts
+  equipment 34 rare 2
+  newRare -
+  challenge level 1
+  clear80 1 clear95 1 winRate 100.0%
+  usedRare accessory_split_core
+  jobs -
+  variants slime
+  topEquipment claw_steel:6,sword_broad:4,bow_long:4,accessory_split_core:2,claw_sharp:1,hidden_dagger:1
+

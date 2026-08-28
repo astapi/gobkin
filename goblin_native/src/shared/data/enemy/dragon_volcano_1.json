@@ -1,0 +1,542 @@
+{
+  "enemies": [
+    {
+      "id": "DRG001",
+      "name": "火蜥蜴",
+      "attackType": "melee",
+      "raceTags": [
+        "dragon"
+      ],
+      "level": 214,
+      "hp": 12030,
+      "atk": 1319,
+      "def": 967,
+      "attackCount": 1,
+      "accuracy": 968,
+      "evasion": 878,
+      "gold": 286,
+      "magicDef": 885,
+      "baseAttributes": {
+        "power": 16,
+        "wisdom": 16,
+        "spirit": 9,
+        "vitality": 15,
+        "agility": 16,
+        "luck": 8
+      }
+    },
+    {
+      "id": "DRG002",
+      "name": "ワイバーン",
+      "attackType": "melee",
+      "raceTags": [
+        "dragon"
+      ],
+      "level": 222,
+      "hp": 13640,
+      "atk": 1486,
+      "def": 1095,
+      "attackCount": 2,
+      "accuracy": 984,
+      "evasion": 1037,
+      "gold": 328,
+      "magicDef": 941,
+      "baseAttributes": {
+        "power": 18,
+        "wisdom": 18,
+        "spirit": 9,
+        "vitality": 17,
+        "agility": 22,
+        "luck": 10
+      }
+    },
+    {
+      "id": "DRG003",
+      "name": "ドラゴン幼体",
+      "attackType": "melee",
+      "raceTags": [
+        "dragon"
+      ],
+      "level": 230,
+      "hp": 16840,
+      "atk": 1731,
+      "def": 1352,
+      "attackCount": 2,
+      "accuracy": 990,
+      "evasion": 938,
+      "gold": 397,
+      "magicDef": 1119,
+      "baseAttributes": {
+        "power": 21,
+        "wisdom": 21,
+        "spirit": 11,
+        "vitality": 21,
+        "agility": 18,
+        "luck": 9
+      }
+    },
+    {
+      "id": "B_FLAME_DRAGON",
+      "name": "古竜イグナール",
+      "attackType": "melee",
+      "raceTags": [
+        "dragon"
+      ],
+      "level": 264,
+      "hp": 20190,
+      "atk": 1341,
+      "def": 1494,
+      "attackCount": 3,
+      "accuracy": 1046,
+      "evasion": 1017,
+      "criticalRate": 0.12,
+      "isBoss": true,
+      "gold": 1516,
+      "magicDef": 1395,
+      "baseAttributes": {
+        "power": 26,
+        "wisdom": 26,
+        "spirit": 14,
+        "vitality": 29,
+        "agility": 20,
+        "luck": 11
+      }
+    }
+  ],
+  "patterns": [
+    {
+      "id": "DV1_F1_A",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "DRG001",
+          "DRG001"
+        ],
+        [
+          "DRG002"
+        ]
+      ]
+    },
+    {
+      "id": "DV1_F1_B",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "DRG001",
+          "DRG001",
+          "DRG001"
+        ],
+        [
+          "DRG002"
+        ]
+      ]
+    },
+    {
+      "id": "DV1_F1_C",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "DRG001",
+          "DRG001"
+        ],
+        [
+          "DRG002",
+          "DRG002"
+        ]
+      ]
+    },
+    {
+      "id": "DV1_F1_BOSS",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "DRG001",
+          "DRG001",
+          "DRG001"
+        ],
+        [
+          "DRG002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "DV1_F2_A",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "DRG002",
+          "DRG001"
+        ],
+        [
+          "DRG001",
+          "DRG002"
+        ]
+      ]
+    },
+    {
+      "id": "DV1_F2_B",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "DRG002",
+          "DRG001",
+          "DRG002"
+        ],
+        [
+          "DRG001",
+          "DRG002"
+        ]
+      ]
+    },
+    {
+      "id": "DV1_F2_C",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "DRG002",
+          "DRG001"
+        ],
+        [
+          "DRG001",
+          "DRG002",
+          "DRG001"
+        ]
+      ]
+    },
+    {
+      "id": "DV1_F2_BOSS",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "DRG002",
+          "DRG001",
+          "DRG002"
+        ],
+        [
+          "DRG001",
+          "DRG002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "DV1_F3_A",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "DRG002",
+          "DRG002"
+        ],
+        [
+          "DRG003",
+          "DRG001"
+        ]
+      ]
+    },
+    {
+      "id": "DV1_F3_B",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "DRG002",
+          "DRG002",
+          "DRG002"
+        ],
+        [
+          "DRG003",
+          "DRG001"
+        ]
+      ]
+    },
+    {
+      "id": "DV1_F3_C",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "DRG002",
+          "DRG002"
+        ],
+        [
+          "DRG003",
+          "DRG001",
+          "DRG003"
+        ]
+      ]
+    },
+    {
+      "id": "DV1_F3_BOSS",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "DRG002",
+          "DRG002",
+          "DRG002"
+        ],
+        [
+          "DRG003",
+          "DRG001"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "DV1_F4_A",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "DRG003",
+          "DRG001"
+        ],
+        [
+          "DRG002",
+          "DRG002",
+          "DRG001"
+        ]
+      ]
+    },
+    {
+      "id": "DV1_F4_B",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "DRG003",
+          "DRG001",
+          "DRG003"
+        ],
+        [
+          "DRG002",
+          "DRG002",
+          "DRG001"
+        ]
+      ]
+    },
+    {
+      "id": "DV1_F4_C",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "DRG003",
+          "DRG001"
+        ],
+        [
+          "DRG002",
+          "DRG002",
+          "DRG001",
+          "DRG002"
+        ]
+      ]
+    },
+    {
+      "id": "DV1_F4_BOSS",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "DRG003",
+          "DRG001",
+          "DRG003"
+        ],
+        [
+          "DRG002",
+          "DRG002",
+          "DRG001"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "DV1_F5_A",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "DRG003",
+          "DRG002"
+        ],
+        [
+          "DRG003",
+          "DRG002",
+          "DRG001"
+        ]
+      ]
+    },
+    {
+      "id": "DV1_F5_B",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "DRG003",
+          "DRG002",
+          "DRG003"
+        ],
+        [
+          "DRG003",
+          "DRG002",
+          "DRG001"
+        ]
+      ]
+    },
+    {
+      "id": "DV1_F5_C",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "DRG003",
+          "DRG002"
+        ],
+        [
+          "DRG003",
+          "DRG002",
+          "DRG001",
+          "DRG003"
+        ]
+      ]
+    },
+    {
+      "id": "DV1_F5_BOSS",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "DRG003",
+          "DRG002",
+          "DRG003"
+        ],
+        [
+          "DRG003",
+          "DRG002",
+          "DRG001"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "DV1_F6_A",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "DRG003",
+          "DRG003"
+        ],
+        [
+          "DRG002",
+          "DRG002",
+          "DRG001"
+        ]
+      ]
+    },
+    {
+      "id": "DV1_F6_B",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "DRG003",
+          "DRG003",
+          "DRG003"
+        ],
+        [
+          "DRG002",
+          "DRG002",
+          "DRG001"
+        ]
+      ]
+    },
+    {
+      "id": "DV1_F6_C",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "DRG003",
+          "DRG003"
+        ],
+        [
+          "DRG002",
+          "DRG002",
+          "DRG001",
+          "DRG002"
+        ]
+      ]
+    },
+    {
+      "id": "DV1_F6_BOSS",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "DRG003",
+          "DRG003",
+          "DRG003"
+        ],
+        [
+          "DRG002",
+          "DRG002",
+          "DRG001"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "DV1_FINAL_BOSS",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "B_FLAME_DRAGON"
+        ],
+        [
+          "DRG003",
+          "DRG002",
+          "DRG001",
+          "DRG001"
+        ]
+      ],
+      "isBoss": true
+    }
+  ]
+}

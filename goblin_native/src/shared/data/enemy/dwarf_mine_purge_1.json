@@ -1,0 +1,570 @@
+{
+  "enemies": [
+    {
+      "id": "DMP001",
+      "name": "岩喰い虫",
+      "attackType": "melee",
+      "raceTags": [
+        "insect"
+      ],
+      "level": 40,
+      "hp": 1270,
+      "atk": 135,
+      "def": 115,
+      "attackCount": 2,
+      "accuracy": 620,
+      "evasion": 136,
+      "gold": 70,
+      "magicDef": 55,
+      "baseAttributes": {
+        "power": 11,
+        "wisdom": 8,
+        "spirit": 4,
+        "vitality": 12,
+        "agility": 12,
+        "luck": 6
+      }
+    },
+    {
+      "id": "DMP002",
+      "name": "坑道大蜘蛛",
+      "attackType": "melee",
+      "raceTags": [
+        "insect"
+      ],
+      "level": 42,
+      "hp": 1020,
+      "atk": 131,
+      "def": 93,
+      "attackCount": 3,
+      "accuracy": 624,
+      "evasion": 173,
+      "gold": 74,
+      "magicDef": 57,
+      "baseAttributes": {
+        "power": 10,
+        "wisdom": 8,
+        "spirit": 4,
+        "vitality": 9,
+        "agility": 18,
+        "luck": 8
+      }
+    },
+    {
+      "id": "DMP003",
+      "name": "洞穴大コウモリ",
+      "attackType": "melee",
+      "raceTags": [
+        "beast"
+      ],
+      "level": 41,
+      "hp": 990,
+      "atk": 127,
+      "def": 89,
+      "attackCount": 3,
+      "accuracy": 622,
+      "evasion": 169,
+      "gold": 72,
+      "magicDef": 55,
+      "baseAttributes": {
+        "power": 10,
+        "wisdom": 8,
+        "spirit": 4,
+        "vitality": 9,
+        "agility": 18,
+        "luck": 8
+      }
+    },
+    {
+      "id": "DMP004",
+      "name": "坑道百足",
+      "attackType": "melee",
+      "raceTags": [
+        "insect"
+      ],
+      "level": 44,
+      "hp": 1440,
+      "atk": 152,
+      "def": 128,
+      "attackCount": 2,
+      "accuracy": 628,
+      "evasion": 151,
+      "gold": 77,
+      "magicDef": 59,
+      "baseAttributes": {
+        "power": 11,
+        "wisdom": 8,
+        "spirit": 4,
+        "vitality": 12,
+        "agility": 12,
+        "luck": 6
+      }
+    },
+    {
+      "id": "B_DEEP_CRAWLER",
+      "name": "深部の大百足",
+      "attackType": "melee",
+      "raceTags": [
+        "insect"
+      ],
+      "level": 54,
+      "hp": 3300,
+      "atk": 172,
+      "def": 194,
+      "attackCount": 3,
+      "accuracy": 731,
+      "evasion": 198,
+      "gold": 386,
+      "magicDef": 120,
+      "baseAttributes": {
+        "power": 16,
+        "wisdom": 10,
+        "spirit": 8,
+        "vitality": 18,
+        "agility": 12,
+        "luck": 8
+      },
+      "isBoss": true
+    }
+  ],
+  "patterns": [
+    {
+      "id": "DP1_F1_A",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "DMP001",
+          "DMP001"
+        ],
+        [
+          "DMP003"
+        ]
+      ]
+    },
+    {
+      "id": "DP1_F1_B",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "DMP001",
+          "DMP001",
+          "DMP001"
+        ],
+        [
+          "DMP003"
+        ]
+      ]
+    },
+    {
+      "id": "DP1_F1_C",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "DMP001",
+          "DMP001"
+        ],
+        [
+          "DMP003",
+          "DMP003"
+        ]
+      ]
+    },
+    {
+      "id": "DP1_F1_BOSS",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "DMP001",
+          "DMP001",
+          "DMP001"
+        ],
+        [
+          "DMP003"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "DP1_F2_A",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "DMP001",
+          "DMP002"
+        ],
+        [
+          "DMP003",
+          "DMP001"
+        ]
+      ]
+    },
+    {
+      "id": "DP1_F2_B",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "DMP001",
+          "DMP002",
+          "DMP001"
+        ],
+        [
+          "DMP003",
+          "DMP001"
+        ]
+      ]
+    },
+    {
+      "id": "DP1_F2_C",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "DMP001",
+          "DMP002"
+        ],
+        [
+          "DMP003",
+          "DMP001",
+          "DMP003"
+        ]
+      ]
+    },
+    {
+      "id": "DP1_F2_BOSS",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "DMP001",
+          "DMP002",
+          "DMP001"
+        ],
+        [
+          "DMP003",
+          "DMP001"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "DP1_F3_A",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "DMP002",
+          "DMP002"
+        ],
+        [
+          "DMP003",
+          "DMP003"
+        ]
+      ]
+    },
+    {
+      "id": "DP1_F3_B",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "DMP002",
+          "DMP002",
+          "DMP002"
+        ],
+        [
+          "DMP003",
+          "DMP003"
+        ]
+      ]
+    },
+    {
+      "id": "DP1_F3_C",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "DMP002",
+          "DMP002"
+        ],
+        [
+          "DMP003",
+          "DMP003",
+          "DMP003"
+        ]
+      ]
+    },
+    {
+      "id": "DP1_F3_BOSS",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "DMP002",
+          "DMP002",
+          "DMP002"
+        ],
+        [
+          "DMP003",
+          "DMP003"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "DP1_F4_A",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "DMP004",
+          "DMP001"
+        ],
+        [
+          "DMP002",
+          "DMP003",
+          "DMP001"
+        ]
+      ]
+    },
+    {
+      "id": "DP1_F4_B",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "DMP004",
+          "DMP001",
+          "DMP004"
+        ],
+        [
+          "DMP002",
+          "DMP003",
+          "DMP001"
+        ]
+      ]
+    },
+    {
+      "id": "DP1_F4_C",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "DMP004",
+          "DMP001"
+        ],
+        [
+          "DMP002",
+          "DMP003",
+          "DMP001",
+          "DMP002"
+        ]
+      ]
+    },
+    {
+      "id": "DP1_F4_BOSS",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "DMP004",
+          "DMP001",
+          "DMP004"
+        ],
+        [
+          "DMP002",
+          "DMP003",
+          "DMP001"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "DP1_F5_A",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "DMP004",
+          "DMP004"
+        ],
+        [
+          "DMP002",
+          "DMP003",
+          "DMP003"
+        ]
+      ]
+    },
+    {
+      "id": "DP1_F5_B",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "DMP004",
+          "DMP004",
+          "DMP004"
+        ],
+        [
+          "DMP002",
+          "DMP003",
+          "DMP003"
+        ]
+      ]
+    },
+    {
+      "id": "DP1_F5_C",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "DMP004",
+          "DMP004"
+        ],
+        [
+          "DMP002",
+          "DMP003",
+          "DMP003",
+          "DMP002"
+        ]
+      ]
+    },
+    {
+      "id": "DP1_F5_BOSS",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "DMP004",
+          "DMP004",
+          "DMP004"
+        ],
+        [
+          "DMP002",
+          "DMP003",
+          "DMP003"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "DP1_F6_A",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "DMP004",
+          "DMP004",
+          "DMP002"
+        ],
+        [
+          "DMP003",
+          "DMP002",
+          "DMP001"
+        ]
+      ]
+    },
+    {
+      "id": "DP1_F6_B",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "DMP004",
+          "DMP004",
+          "DMP002",
+          "DMP004"
+        ],
+        [
+          "DMP003",
+          "DMP002",
+          "DMP001"
+        ]
+      ]
+    },
+    {
+      "id": "DP1_F6_C",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "DMP004",
+          "DMP004",
+          "DMP002"
+        ],
+        [
+          "DMP003",
+          "DMP002",
+          "DMP001",
+          "DMP003"
+        ]
+      ]
+    },
+    {
+      "id": "DP1_F6_BOSS",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "DMP004",
+          "DMP004",
+          "DMP002",
+          "DMP004"
+        ],
+        [
+          "DMP003",
+          "DMP002",
+          "DMP001"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "DP1_FINAL_BOSS",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "B_DEEP_CRAWLER"
+        ],
+        [
+          "DMP004",
+          "DMP004",
+          "DMP002",
+          "DMP003"
+        ]
+      ],
+      "isBoss": true
+    }
+  ]
+}

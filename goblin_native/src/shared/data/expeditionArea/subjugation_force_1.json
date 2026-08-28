@@ -1,0 +1,17 @@
+{
+  "id": "subjugation_force_1",
+  "name": "vs討伐隊防衛戦",
+  "areaLevel": 68,
+  "floors": 8,
+  "baseDurationSec": 17520,
+  "description": "周辺種族を従えた脅威に対し、辺境城から先遣隊が接近。正規兵と弓兵中心の部隊を迎撃せよ。 討伐隊の本隊が到着。騎士・魔術師・クレリックを含む正規編成で攻勢が激化する。 辺境城騎士団長が自ら前線に立つ。精鋭部隊との最終決戦。撃退せよ。",
+  "encounter": {
+    "eventIntervalSec": 438,
+    "eventWeights": {
+      "exploring": 60,
+      "goldTreasure": 10,
+      "battle": 30
+    }
+  },
+  "unlockNext": "human_fortress_1"
+}

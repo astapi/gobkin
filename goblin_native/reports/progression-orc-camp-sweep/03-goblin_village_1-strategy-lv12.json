@@ -1,0 +1,352 @@
+{
+  "createdAt": "2026-06-04T06:44:19.271Z",
+  "scenario": "goblin_village_1",
+  "level": 12,
+  "config": {
+    "generations": 10,
+    "population": 30,
+    "iterations": 8,
+    "validationIterations": 100,
+    "seed": 12003,
+    "cleric": "optional",
+    "jobs": [],
+    "variants": [
+      "slime",
+      "wolf"
+    ],
+    "maxUnlockRank": 1,
+    "maxDropRank": 1,
+    "allowRare": false,
+    "availability": "/Users/astapi/projects/goblinKingdom/goblin_native/reports/progression-orc-camp-sweep/02-forest_outskirts-availability.json"
+  },
+  "insights": {
+    "winningCandidateCount": 3,
+    "frequentJobs": [],
+    "frequentVariants": [
+      [
+        "wolf",
+        9
+      ],
+      [
+        "slime",
+        4
+      ]
+    ],
+    "frequentEquipment": [
+      [
+        "armor_tattered_cloth",
+        15
+      ],
+      [
+        "rod_wooden",
+        13
+      ],
+      [
+        "shield_wooden",
+        10
+      ],
+      [
+        "rod_acolyte",
+        10
+      ],
+      [
+        "wand_apprentice",
+        9
+      ],
+      [
+        "gauntlet_copper",
+        8
+      ],
+      [
+        "gauntlet_leather",
+        7
+      ],
+      [
+        "hidden_dagger",
+        4
+      ],
+      [
+        "wand_twig",
+        3
+      ],
+      [
+        "claw_sharp",
+        3
+      ],
+      [
+        "armor_fur_vest",
+        1
+      ],
+      [
+        "claw_iron",
+        1
+      ],
+      [
+        "claw_copper",
+        1
+      ],
+      [
+        "shield_shield",
+        1
+      ],
+      [
+        "claw_steel",
+        1
+      ],
+      [
+        "sword_copper",
+        1
+      ],
+      [
+        "sword_broad",
+        1
+      ],
+      [
+        "sword_long",
+        1
+      ]
+    ]
+  },
+  "candidates": [
+    {
+      "result": {
+        "wins": 100,
+        "iterations": 100,
+        "winRate": 1,
+        "avgRoundsPerBattle": 1,
+        "equipmentCost": 680,
+        "score": 999998.99999932
+      },
+      "genome": {
+        "members": [
+          {
+            "job": null,
+            "variantFactorId": "wolf",
+            "equipmentTemplateIds": [
+              "gauntlet_leather",
+              "armor_tattered_cloth",
+              "gauntlet_copper",
+              "armor_tattered_cloth",
+              "armor_fur_vest"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "wolf",
+            "equipmentTemplateIds": [
+              "shield_wooden",
+              "armor_tattered_cloth",
+              "rod_wooden",
+              "wand_apprentice",
+              "rod_acolyte"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "shield_wooden",
+              "armor_tattered_cloth",
+              "rod_wooden",
+              "wand_apprentice",
+              "rod_acolyte"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "wand_twig",
+              "claw_iron",
+              "gauntlet_leather",
+              "claw_sharp",
+              "gauntlet_copper"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "wolf",
+            "equipmentTemplateIds": [
+              "shield_wooden",
+              "armor_tattered_cloth",
+              "rod_wooden",
+              "wand_apprentice",
+              "rod_acolyte"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "wolf",
+            "equipmentTemplateIds": [
+              "gauntlet_leather",
+              "rod_wooden",
+              "gauntlet_copper",
+              "armor_tattered_cloth",
+              "hidden_dagger"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "result": {
+        "wins": 100,
+        "iterations": 100,
+        "winRate": 1,
+        "avgRoundsPerBattle": 1,
+        "equipmentCost": 760,
+        "score": 999998.99999924
+      },
+      "genome": {
+        "members": [
+          {
+            "job": null,
+            "variantFactorId": "slime",
+            "equipmentTemplateIds": [
+              "gauntlet_leather",
+              "rod_wooden",
+              "gauntlet_copper",
+              "armor_tattered_cloth",
+              "hidden_dagger"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "wolf",
+            "equipmentTemplateIds": [
+              "shield_wooden",
+              "armor_tattered_cloth",
+              "rod_wooden",
+              "wand_apprentice",
+              "rod_acolyte"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "shield_wooden",
+              "armor_tattered_cloth",
+              "rod_wooden",
+              "wand_apprentice",
+              "rod_acolyte"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "slime",
+            "equipmentTemplateIds": [
+              "wand_twig",
+              "rod_wooden",
+              "claw_copper",
+              "claw_sharp",
+              "gauntlet_copper"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "wolf",
+            "equipmentTemplateIds": [
+              "gauntlet_leather",
+              "rod_wooden",
+              "gauntlet_copper",
+              "armor_tattered_cloth",
+              "hidden_dagger"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "wolf",
+            "equipmentTemplateIds": [
+              "shield_wooden",
+              "armor_tattered_cloth",
+              "rod_wooden",
+              "wand_apprentice",
+              "rod_acolyte"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "result": {
+        "wins": 100,
+        "iterations": 100,
+        "winRate": 1,
+        "avgRoundsPerBattle": 1.0006988120195668,
+        "equipmentCost": 910,
+        "score": 999998.9993002779
+      },
+      "genome": {
+        "members": [
+          {
+            "job": null,
+            "variantFactorId": "slime",
+            "equipmentTemplateIds": [
+              "gauntlet_leather",
+              "rod_wooden",
+              "gauntlet_copper",
+              "armor_tattered_cloth",
+              "hidden_dagger"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "shield_wooden",
+              "armor_tattered_cloth",
+              "shield_shield",
+              "wand_apprentice",
+              "rod_acolyte"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "wolf",
+            "equipmentTemplateIds": [
+              "claw_steel",
+              "shield_wooden",
+              "sword_copper",
+              "sword_broad",
+              "sword_long"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "slime",
+            "equipmentTemplateIds": [
+              "wand_twig",
+              "rod_wooden",
+              "gauntlet_leather",
+              "claw_sharp",
+              "gauntlet_copper"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "shield_wooden",
+              "armor_tattered_cloth",
+              "rod_acolyte",
+              "wand_apprentice",
+              "rod_acolyte"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "wolf",
+            "equipmentTemplateIds": [
+              "shield_wooden",
+              "armor_tattered_cloth",
+              "rod_wooden",
+              "wand_apprentice",
+              "rod_acolyte"
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

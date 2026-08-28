@@ -1,0 +1,17 @@
+{
+  "id": "forest_edge_village",
+  "name": "森外れの廃村",
+  "areaLevel": 9,
+  "floors": 6,
+  "baseDurationSec": 2700,
+  "description": "ゴブリン集落の外に残された、人間の古い開拓村。朽ちた畑と家屋の奥に、廃村の地下へ続く古井戸が口を開けている。",
+  "encounter": {
+    "eventIntervalSec": 90,
+    "eventWeights": {
+      "exploring": 60,
+      "goldTreasure": 10,
+      "battle": 30
+    }
+  },
+  "unlockNext": "old_well_waterway"
+}

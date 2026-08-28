@@ -1,0 +1,30 @@
+progression goblin_village_1
+createdAt 2026-06-05T01:38:35.002Z
+levelMode scenario-max
+levelSweep 1:25:1
+
+step 1 slime_cave
+  equipment 34 rare 2
+  newRare accessory_luck_medal,accessory_split_core
+  challenge -
+
+step 2 forest_outskirts
+  equipment 34 rare 2
+  newRare -
+  challenge level 1
+  clear80 1 clear95 1 winRate 100.0%
+  usedRare -
+  jobs -
+  variants slime
+  topEquipment gauntlet_gauntlet:4,bow_long:4,claw_iron:3,sword_long:2,claw_copper:2,claw_steel:1
+
+step 3 goblin_village_1
+  equipment 53 rare 3
+  newRare accessory_human_slayer
+  challenge level 4
+  clear80 4 clear95 4 winRate 100.0%
+  usedRare accessory_luck_medal
+  jobs -
+  variants slime,wolf
+  topEquipment hidden_dagger:8,rod_rod:4,claw_iron:3,gauntlet_copper:3,wand_wand:3,rod_acolyte:3
+

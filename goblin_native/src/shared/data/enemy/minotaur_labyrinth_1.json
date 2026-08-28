@@ -1,0 +1,505 @@
+{
+  "enemies": [
+    {
+      "id": "MNT001",
+      "name": "ミノタウロス若兵",
+      "attackType": "melee",
+      "raceTags": [
+        "minotaur"
+      ],
+      "level": 112,
+      "hp": 13250,
+      "atk": 1488,
+      "def": 1084,
+      "attackCount": 1,
+      "accuracy": 764,
+      "evasion": 421,
+      "gold": 166,
+      "magicDef": 774,
+      "baseAttributes": {
+        "power": 15,
+        "wisdom": 15,
+        "spirit": 6,
+        "vitality": 14,
+        "agility": 8,
+        "luck": 6
+      }
+    },
+    {
+      "id": "MNT002",
+      "name": "ミノタウロス斧兵",
+      "attackType": "melee",
+      "raceTags": [
+        "minotaur"
+      ],
+      "level": 118,
+      "hp": 15740,
+      "atk": 1742,
+      "def": 1283,
+      "attackCount": 1,
+      "accuracy": 776,
+      "evasion": 423,
+      "criticalRate": 0.08,
+      "gold": 186,
+      "magicDef": 882,
+      "baseAttributes": {
+        "power": 17,
+        "wisdom": 17,
+        "spirit": 7,
+        "vitality": 16,
+        "agility": 7,
+        "luck": 6
+      }
+    },
+    {
+      "id": "B_LABYRINTH_KEEPER",
+      "name": "迷宮の主アステリオン",
+      "attackType": "melee",
+      "raceTags": [
+        "minotaur"
+      ],
+      "level": 140,
+      "hp": 18990,
+      "atk": 1518,
+      "def": 1518,
+      "attackCount": 2,
+      "accuracy": 860,
+      "evasion": 521,
+      "criticalRate": 0.1,
+      "isBoss": true,
+      "gold": 816,
+      "magicDef": 1170,
+      "baseAttributes": {
+        "power": 21,
+        "wisdom": 21,
+        "spirit": 9,
+        "vitality": 21,
+        "agility": 9,
+        "luck": 7
+      }
+    }
+  ],
+  "patterns": [
+    {
+      "id": "ML1_F1_A",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "MNT001"
+        ],
+        [
+          "MNT002"
+        ]
+      ]
+    },
+    {
+      "id": "ML1_F1_B",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "MNT001"
+        ],
+        [
+          "MNT002"
+        ]
+      ]
+    },
+    {
+      "id": "ML1_F1_C",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "MNT001"
+        ],
+        [
+          "MNT002",
+          "MNT002"
+        ]
+      ]
+    },
+    {
+      "id": "ML1_F1_BOSS",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "MNT001"
+        ],
+        [
+          "MNT002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "ML1_F2_A",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "MNT002"
+        ],
+        [
+          "MNT001",
+          "MNT001"
+        ]
+      ]
+    },
+    {
+      "id": "ML1_F2_B",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "MNT002"
+        ],
+        [
+          "MNT001",
+          "MNT001"
+        ]
+      ]
+    },
+    {
+      "id": "ML1_F2_C",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "MNT002"
+        ],
+        [
+          "MNT001",
+          "MNT001",
+          "MNT001"
+        ]
+      ]
+    },
+    {
+      "id": "ML1_F2_BOSS",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "MNT002"
+        ],
+        [
+          "MNT001",
+          "MNT001"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "ML1_F3_A",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "MNT002",
+          "MNT001"
+        ],
+        [
+          "MNT002",
+          "MNT001"
+        ]
+      ]
+    },
+    {
+      "id": "ML1_F3_B",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "MNT002",
+          "MNT001",
+          "MNT002"
+        ],
+        [
+          "MNT002",
+          "MNT001"
+        ]
+      ]
+    },
+    {
+      "id": "ML1_F3_C",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "MNT002",
+          "MNT001"
+        ],
+        [
+          "MNT002",
+          "MNT001",
+          "MNT002"
+        ]
+      ]
+    },
+    {
+      "id": "ML1_F3_BOSS",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "MNT002",
+          "MNT001",
+          "MNT002"
+        ],
+        [
+          "MNT002",
+          "MNT001"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "ML1_F4_A",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "MNT002",
+          "MNT002"
+        ],
+        [
+          "MNT001",
+          "MNT001",
+          "MNT002"
+        ]
+      ]
+    },
+    {
+      "id": "ML1_F4_B",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "MNT002",
+          "MNT002",
+          "MNT002"
+        ],
+        [
+          "MNT001",
+          "MNT001",
+          "MNT002"
+        ]
+      ]
+    },
+    {
+      "id": "ML1_F4_C",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "MNT002",
+          "MNT002"
+        ],
+        [
+          "MNT001",
+          "MNT001",
+          "MNT002",
+          "MNT001"
+        ]
+      ]
+    },
+    {
+      "id": "ML1_F4_BOSS",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "MNT002",
+          "MNT002",
+          "MNT002"
+        ],
+        [
+          "MNT001",
+          "MNT001",
+          "MNT002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "ML1_F5_A",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "MNT002",
+          "MNT002"
+        ],
+        [
+          "MNT002",
+          "MNT001",
+          "MNT001"
+        ]
+      ]
+    },
+    {
+      "id": "ML1_F5_B",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "MNT002",
+          "MNT002",
+          "MNT002"
+        ],
+        [
+          "MNT002",
+          "MNT001",
+          "MNT001"
+        ]
+      ]
+    },
+    {
+      "id": "ML1_F5_C",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "MNT002",
+          "MNT002"
+        ],
+        [
+          "MNT002",
+          "MNT001",
+          "MNT001",
+          "MNT002"
+        ]
+      ]
+    },
+    {
+      "id": "ML1_F5_BOSS",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "MNT002",
+          "MNT002",
+          "MNT002"
+        ],
+        [
+          "MNT002",
+          "MNT001",
+          "MNT001"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "ML1_F6_A",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "MNT002",
+          "MNT002"
+        ],
+        [
+          "MNT002",
+          "MNT002",
+          "MNT001"
+        ]
+      ]
+    },
+    {
+      "id": "ML1_F6_B",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "MNT002",
+          "MNT002",
+          "MNT002"
+        ],
+        [
+          "MNT002",
+          "MNT002",
+          "MNT001"
+        ]
+      ]
+    },
+    {
+      "id": "ML1_F6_C",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "MNT002",
+          "MNT002"
+        ],
+        [
+          "MNT002",
+          "MNT002",
+          "MNT001",
+          "MNT002"
+        ]
+      ]
+    },
+    {
+      "id": "ML1_F6_BOSS",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "MNT002",
+          "MNT002",
+          "MNT002"
+        ],
+        [
+          "MNT002",
+          "MNT002",
+          "MNT001"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "ML1_FINAL_BOSS",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "B_LABYRINTH_KEEPER"
+        ],
+        [
+          "MNT002",
+          "MNT002",
+          "MNT001"
+        ]
+      ],
+      "isBoss": true
+    }
+  ]
+}

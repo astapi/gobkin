@@ -1,0 +1,347 @@
+{
+  "createdAt": "2026-06-04T06:47:12.203Z",
+  "scenario": "orc_camp_1",
+  "level": 11,
+  "config": {
+    "generations": 10,
+    "population": 30,
+    "iterations": 8,
+    "validationIterations": 100,
+    "seed": 11009,
+    "cleric": "required",
+    "jobs": [
+      "guard",
+      "warrior",
+      "thief",
+      "mage",
+      "cleric"
+    ],
+    "variants": [
+      "hobgoblin",
+      "slime",
+      "undead",
+      "wolf"
+    ],
+    "maxUnlockRank": 2,
+    "maxDropRank": 2,
+    "allowRare": false,
+    "availability": "/Users/astapi/projects/goblinKingdom/goblin_native/reports/progression-orc-camp-sweep/08-road_1-availability.json"
+  },
+  "insights": {
+    "winningCandidateCount": 3,
+    "frequentJobs": [
+      [
+        "warrior",
+        3
+      ],
+      [
+        "cleric",
+        3
+      ]
+    ],
+    "frequentVariants": [
+      [
+        "hobgoblin",
+        6
+      ],
+      [
+        "wolf",
+        6
+      ]
+    ],
+    "frequentEquipment": [
+      [
+        "gauntlet_royal",
+        9
+      ],
+      [
+        "claw_sharp",
+        7
+      ],
+      [
+        "hidden_mithril_dagger",
+        6
+      ],
+      [
+        "bow_royal",
+        6
+      ],
+      [
+        "bow_short",
+        6
+      ],
+      [
+        "wand_twig",
+        5
+      ],
+      [
+        "gauntlet_leather",
+        4
+      ],
+      [
+        "claw_steel",
+        3
+      ],
+      [
+        "sword_royal",
+        3
+      ],
+      [
+        "claw_mithril",
+        3
+      ],
+      [
+        "robe_mithril",
+        3
+      ],
+      [
+        "sword_copper",
+        3
+      ],
+      [
+        "armor_tattered_cloth",
+        3
+      ],
+      [
+        "hidden_royal_dagger",
+        3
+      ],
+      [
+        "gauntlet_cloth_gloves",
+        3
+      ],
+      [
+        "rod_rod",
+        3
+      ],
+      [
+        "claw_iron",
+        2
+      ]
+    ]
+  },
+  "candidates": [
+    {
+      "result": {
+        "wins": 100,
+        "iterations": 100,
+        "winRate": 1,
+        "avgRoundsPerBattle": 1,
+        "equipmentCost": 207970,
+        "score": 999998.99979203
+      },
+      "genome": {
+        "members": [
+          {
+            "job": null,
+            "variantFactorId": "hobgoblin",
+            "equipmentTemplateIds": [
+              "claw_steel",
+              "sword_royal",
+              "claw_sharp",
+              "claw_mithril"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "hobgoblin",
+            "equipmentTemplateIds": [
+              "gauntlet_leather",
+              "gauntlet_royal",
+              "robe_mithril",
+              "hidden_mithril_dagger"
+            ]
+          },
+          {
+            "job": "warrior",
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "sword_copper",
+              "hidden_mithril_dagger",
+              "wand_twig",
+              "armor_tattered_cloth"
+            ]
+          },
+          {
+            "job": "cleric",
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "hidden_royal_dagger",
+              "gauntlet_leather",
+              "claw_sharp",
+              "wand_twig"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "wolf",
+            "equipmentTemplateIds": [
+              "bow_royal",
+              "gauntlet_cloth_gloves",
+              "bow_short",
+              "gauntlet_royal"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "wolf",
+            "equipmentTemplateIds": [
+              "bow_royal",
+              "rod_rod",
+              "bow_short",
+              "gauntlet_royal"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "result": {
+        "wins": 100,
+        "iterations": 100,
+        "winRate": 1,
+        "avgRoundsPerBattle": 1,
+        "equipmentCost": 208015,
+        "score": 999998.999791985
+      },
+      "genome": {
+        "members": [
+          {
+            "job": null,
+            "variantFactorId": "hobgoblin",
+            "equipmentTemplateIds": [
+              "claw_steel",
+              "sword_royal",
+              "claw_sharp",
+              "claw_mithril"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "hobgoblin",
+            "equipmentTemplateIds": [
+              "gauntlet_leather",
+              "gauntlet_royal",
+              "robe_mithril",
+              "hidden_mithril_dagger"
+            ]
+          },
+          {
+            "job": "warrior",
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "sword_copper",
+              "hidden_mithril_dagger",
+              "wand_twig",
+              "armor_tattered_cloth"
+            ]
+          },
+          {
+            "job": "cleric",
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "hidden_royal_dagger",
+              "claw_iron",
+              "claw_sharp",
+              "wand_twig"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "wolf",
+            "equipmentTemplateIds": [
+              "bow_royal",
+              "gauntlet_cloth_gloves",
+              "bow_short",
+              "gauntlet_royal"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "wolf",
+            "equipmentTemplateIds": [
+              "bow_royal",
+              "rod_rod",
+              "bow_short",
+              "gauntlet_royal"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "result": {
+        "wins": 100,
+        "iterations": 100,
+        "winRate": 1,
+        "avgRoundsPerBattle": 1,
+        "equipmentCost": 208015,
+        "score": 999998.999791985
+      },
+      "genome": {
+        "members": [
+          {
+            "job": null,
+            "variantFactorId": "hobgoblin",
+            "equipmentTemplateIds": [
+              "claw_steel",
+              "sword_royal",
+              "claw_sharp",
+              "claw_mithril"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "hobgoblin",
+            "equipmentTemplateIds": [
+              "gauntlet_leather",
+              "gauntlet_royal",
+              "robe_mithril",
+              "hidden_mithril_dagger"
+            ]
+          },
+          {
+            "job": "warrior",
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "sword_copper",
+              "hidden_mithril_dagger",
+              "wand_twig",
+              "armor_tattered_cloth"
+            ]
+          },
+          {
+            "job": "cleric",
+            "variantFactorId": null,
+            "equipmentTemplateIds": [
+              "hidden_royal_dagger",
+              "claw_iron",
+              "claw_sharp",
+              "claw_sharp"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "wolf",
+            "equipmentTemplateIds": [
+              "bow_royal",
+              "gauntlet_cloth_gloves",
+              "bow_short",
+              "gauntlet_royal"
+            ]
+          },
+          {
+            "job": null,
+            "variantFactorId": "wolf",
+            "equipmentTemplateIds": [
+              "bow_royal",
+              "rod_rod",
+              "bow_short",
+              "gauntlet_royal"
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

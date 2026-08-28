@@ -1,0 +1,780 @@
+{
+  "enemies": [
+    {
+      "id": "ROY001",
+      "name": "近衛騎士",
+      "attackType": "melee",
+      "raceTags": [
+        "human"
+      ],
+      "level": 242,
+      "hp": 33150,
+      "atk": 2554,
+      "def": 2660,
+      "attackCount": 1,
+      "accuracy": 990,
+      "evasion": 738,
+      "gold": 238,
+      "magicDef": 9600,
+      "baseAttributes": {
+        "power": 12,
+        "wisdom": 12,
+        "spirit": 12,
+        "vitality": 16,
+        "agility": 9,
+        "luck": 8
+      }
+    },
+    {
+      "id": "ROY002",
+      "name": "大魔導師",
+      "attackType": "melee",
+      "raceTags": [
+        "human"
+      ],
+      "level": 248,
+      "hp": 18620,
+      "atk": 3194,
+      "def": 1495,
+      "attackCount": 1,
+      "accuracy": 990,
+      "evasion": 778,
+      "gold": 258,
+      "magicDef": 5216,
+      "baseAttributes": {
+        "power": 15,
+        "wisdom": 15,
+        "spirit": 7,
+        "vitality": 9,
+        "agility": 10,
+        "luck": 9
+      }
+    },
+    {
+      "id": "ROY003",
+      "name": "聖騎士",
+      "attackType": "melee",
+      "raceTags": [
+        "human"
+      ],
+      "level": 254,
+      "hp": 39360,
+      "atk": 2982,
+      "def": 3160,
+      "attackCount": 1,
+      "accuracy": 990,
+      "evasion": 718,
+      "gold": 269,
+      "magicDef": 10912,
+      "baseAttributes": {
+        "power": 14,
+        "wisdom": 14,
+        "spirit": 14,
+        "vitality": 19,
+        "agility": 7,
+        "luck": 9
+      }
+    },
+    {
+      "id": "ROY004",
+      "name": "王国禁衛隊",
+      "attackType": "melee",
+      "raceTags": [
+        "human"
+      ],
+      "level": 258,
+      "hp": 37250,
+      "atk": 2982,
+      "def": 2995,
+      "attackCount": 2,
+      "accuracy": 990,
+      "evasion": 738,
+      "gold": 291,
+      "magicDef": 10176,
+      "baseAttributes": {
+        "power": 14,
+        "wisdom": 14,
+        "spirit": 14,
+        "vitality": 18,
+        "agility": 8,
+        "luck": 9
+      }
+    },
+    {
+      "id": "ROY005",
+      "name": "勇者",
+      "attackType": "melee",
+      "raceTags": [
+        "human"
+      ],
+      "level": 264,
+      "hp": 35200,
+      "atk": 3616,
+      "def": 2825,
+      "attackCount": 2,
+      "accuracy": 990,
+      "evasion": 838,
+      "gold": 339,
+      "magicDef": 9568,
+      "baseAttributes": {
+        "power": 17,
+        "wisdom": 17,
+        "spirit": 13,
+        "vitality": 17,
+        "agility": 12,
+        "luck": 10
+      }
+    },
+    {
+      "id": "B_KING",
+      "name": "勇者アレン",
+      "attackType": "melee",
+      "raceTags": [
+        "human"
+      ],
+      "level": 300,
+      "hp": 40400,
+      "atk": 2792,
+      "def": 3192,
+      "attackCount": 3,
+      "accuracy": 1050,
+      "evasion": 818,
+      "isBoss": true,
+      "gold": 1203,
+      "magicDef": 13344,
+      "baseAttributes": {
+        "power": 21,
+        "wisdom": 21,
+        "spirit": 18,
+        "vitality": 24,
+        "agility": 11,
+        "luck": 10
+      }
+    }
+  ],
+  "patterns": [
+    {
+      "id": "RC3_F1_A",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "ROY005",
+          "ROY003"
+        ],
+        [
+          "ROY004",
+          "ROY003"
+        ]
+      ]
+    },
+    {
+      "id": "RC3_F1_B",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "ROY005",
+          "ROY003",
+          "ROY005"
+        ],
+        [
+          "ROY004",
+          "ROY003"
+        ]
+      ]
+    },
+    {
+      "id": "RC3_F1_C",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "ROY005",
+          "ROY003"
+        ],
+        [
+          "ROY004",
+          "ROY003",
+          "ROY004"
+        ]
+      ]
+    },
+    {
+      "id": "RC3_F1_BOSS",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "ROY005",
+          "ROY003",
+          "ROY005"
+        ],
+        [
+          "ROY004",
+          "ROY003"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "RC3_F2_A",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "ROY004",
+          "ROY005"
+        ],
+        [
+          "ROY003",
+          "ROY004",
+          "ROY003"
+        ]
+      ]
+    },
+    {
+      "id": "RC3_F2_B",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "ROY004",
+          "ROY005",
+          "ROY004"
+        ],
+        [
+          "ROY003",
+          "ROY004",
+          "ROY003"
+        ]
+      ]
+    },
+    {
+      "id": "RC3_F2_C",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "ROY004",
+          "ROY005"
+        ],
+        [
+          "ROY003",
+          "ROY004",
+          "ROY003",
+          "ROY003"
+        ]
+      ]
+    },
+    {
+      "id": "RC3_F2_BOSS",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "ROY004",
+          "ROY005",
+          "ROY004"
+        ],
+        [
+          "ROY003",
+          "ROY004",
+          "ROY003"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "RC3_F3_A",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "ROY005",
+          "ROY003"
+        ],
+        [
+          "ROY004",
+          "ROY005",
+          "ROY003"
+        ]
+      ]
+    },
+    {
+      "id": "RC3_F3_B",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "ROY005",
+          "ROY003",
+          "ROY005"
+        ],
+        [
+          "ROY004",
+          "ROY005",
+          "ROY003"
+        ]
+      ]
+    },
+    {
+      "id": "RC3_F3_C",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "ROY005",
+          "ROY003"
+        ],
+        [
+          "ROY004",
+          "ROY005",
+          "ROY003",
+          "ROY004"
+        ]
+      ]
+    },
+    {
+      "id": "RC3_F3_BOSS",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "ROY005",
+          "ROY003",
+          "ROY005"
+        ],
+        [
+          "ROY004",
+          "ROY005",
+          "ROY003"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "RC3_F4_A",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "ROY004",
+          "ROY005"
+        ],
+        [
+          "ROY003",
+          "ROY004",
+          "ROY005",
+          "ROY003"
+        ]
+      ]
+    },
+    {
+      "id": "RC3_F4_B",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "ROY004",
+          "ROY005",
+          "ROY004"
+        ],
+        [
+          "ROY003",
+          "ROY004",
+          "ROY005",
+          "ROY003"
+        ]
+      ]
+    },
+    {
+      "id": "RC3_F4_C",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "ROY004",
+          "ROY005"
+        ],
+        [
+          "ROY003",
+          "ROY004",
+          "ROY005",
+          "ROY003",
+          "ROY003"
+        ]
+      ]
+    },
+    {
+      "id": "RC3_F4_BOSS",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "ROY004",
+          "ROY005",
+          "ROY004"
+        ],
+        [
+          "ROY003",
+          "ROY004",
+          "ROY005",
+          "ROY003"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "RC3_F5_A",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "ROY005",
+          "ROY005"
+        ],
+        [
+          "ROY003",
+          "ROY004",
+          "ROY003",
+          "ROY005"
+        ]
+      ]
+    },
+    {
+      "id": "RC3_F5_B",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "ROY005",
+          "ROY005",
+          "ROY005"
+        ],
+        [
+          "ROY003",
+          "ROY004",
+          "ROY003",
+          "ROY005"
+        ]
+      ]
+    },
+    {
+      "id": "RC3_F5_C",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "ROY005",
+          "ROY005"
+        ],
+        [
+          "ROY003",
+          "ROY004",
+          "ROY003",
+          "ROY005",
+          "ROY003"
+        ]
+      ]
+    },
+    {
+      "id": "RC3_F5_BOSS",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "ROY005",
+          "ROY005",
+          "ROY005"
+        ],
+        [
+          "ROY003",
+          "ROY004",
+          "ROY003",
+          "ROY005"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "RC3_F6_A",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "ROY005",
+          "ROY004"
+        ],
+        [
+          "ROY005",
+          "ROY003",
+          "ROY004",
+          "ROY003"
+        ]
+      ]
+    },
+    {
+      "id": "RC3_F6_B",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "ROY005",
+          "ROY004",
+          "ROY005"
+        ],
+        [
+          "ROY005",
+          "ROY003",
+          "ROY004",
+          "ROY003"
+        ]
+      ]
+    },
+    {
+      "id": "RC3_F6_C",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "ROY005",
+          "ROY004"
+        ],
+        [
+          "ROY005",
+          "ROY003",
+          "ROY004",
+          "ROY003",
+          "ROY005"
+        ]
+      ]
+    },
+    {
+      "id": "RC3_F6_BOSS",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "ROY005",
+          "ROY004",
+          "ROY005"
+        ],
+        [
+          "ROY005",
+          "ROY003",
+          "ROY004",
+          "ROY003"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "RC3_F7_A",
+      "floors": [
+        7
+      ],
+      "enemies": [
+        [
+          "ROY005",
+          "ROY005",
+          "ROY003"
+        ],
+        [
+          "ROY004",
+          "ROY003",
+          "ROY005",
+          "ROY004"
+        ]
+      ]
+    },
+    {
+      "id": "RC3_F7_B",
+      "floors": [
+        7
+      ],
+      "enemies": [
+        [
+          "ROY005",
+          "ROY005",
+          "ROY003",
+          "ROY005"
+        ],
+        [
+          "ROY004",
+          "ROY003",
+          "ROY005",
+          "ROY004"
+        ]
+      ]
+    },
+    {
+      "id": "RC3_F7_C",
+      "floors": [
+        7
+      ],
+      "enemies": [
+        [
+          "ROY005",
+          "ROY005",
+          "ROY003"
+        ],
+        [
+          "ROY004",
+          "ROY003",
+          "ROY005",
+          "ROY004",
+          "ROY004"
+        ]
+      ]
+    },
+    {
+      "id": "RC3_F7_BOSS",
+      "floors": [
+        7
+      ],
+      "enemies": [
+        [
+          "ROY005",
+          "ROY005",
+          "ROY003",
+          "ROY005"
+        ],
+        [
+          "ROY004",
+          "ROY003",
+          "ROY005",
+          "ROY004"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "RC3_F8_A",
+      "floors": [
+        8
+      ],
+      "enemies": [
+        [
+          "ROY005",
+          "ROY005",
+          "ROY004"
+        ],
+        [
+          "ROY003",
+          "ROY003",
+          "ROY005",
+          "ROY004",
+          "ROY003"
+        ]
+      ]
+    },
+    {
+      "id": "RC3_F8_B",
+      "floors": [
+        8
+      ],
+      "enemies": [
+        [
+          "ROY005",
+          "ROY005",
+          "ROY004",
+          "ROY005"
+        ],
+        [
+          "ROY003",
+          "ROY003",
+          "ROY005",
+          "ROY004",
+          "ROY003"
+        ]
+      ]
+    },
+    {
+      "id": "RC3_F8_C",
+      "floors": [
+        8
+      ],
+      "enemies": [
+        [
+          "ROY005",
+          "ROY005",
+          "ROY004"
+        ],
+        [
+          "ROY003",
+          "ROY003",
+          "ROY005",
+          "ROY004",
+          "ROY003",
+          "ROY003"
+        ]
+      ]
+    },
+    {
+      "id": "RC3_F8_BOSS",
+      "floors": [
+        8
+      ],
+      "enemies": [
+        [
+          "ROY005",
+          "ROY005",
+          "ROY004",
+          "ROY005"
+        ],
+        [
+          "ROY003",
+          "ROY003",
+          "ROY005",
+          "ROY004",
+          "ROY003"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "RC3_FINAL_BOSS",
+      "floors": [
+        8
+      ],
+      "enemies": [
+        [
+          "B_KING"
+        ],
+        [
+          "ROY005",
+          "ROY005",
+          "ROY004",
+          "ROY003",
+          "ROY003"
+        ]
+      ],
+      "isBoss": true
+    }
+  ]
+}

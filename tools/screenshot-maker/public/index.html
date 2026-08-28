@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=1280, initial-scale=1" />
+<title>ストア用スクリーンショット メーカー</title>
+<link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar__left">
+    <strong>Store Screenshot Maker</strong>
+    <span class="topbar__hint">画像をクリック / ドラッグで配置 → ハンドルで拡縮・回転</span>
+  </div>
+  <div class="topbar__right">
+    <label class="btn">
+      背景を読み込む
+      <input id="bgUpload" type="file" accept="image/*" hidden />
+    </label>
+    <select id="bgPreset" title="プロジェクト直下の画像から背景を選ぶ">
+      <option value="">— 背景プリセット —</option>
+    </select>
+    <label class="btn">
+      PC画像を追加
+      <input id="localUpload" type="file" accept="image/*" multiple hidden />
+    </label>
+    <button id="processBtn" class="btn" title="スクショの上下カット＋角丸加工">スクショ加工</button>
+    <button id="resetBtn" class="btn btn--ghost" title="配置を全てリセット">リセット</button>
+    <button id="exportBtn" class="btn btn--primary">PNG書き出し</button>
+    <button id="saveBtn" class="btn btn--primary" title="output/ ディレクトリに保存">サーバ保存</button>
+  </div>
+</header>
+
+<div id="processModal" class="modal" hidden>
+  <div class="modal__backdrop" data-close></div>
+  <div class="modal__panel">
+    <header class="modal__header">
+      <strong>スクリーンショット加工</strong>
+      <button class="modal__close btn btn--ghost" data-close aria-label="閉じる">×</button>
+    </header>
+    <div class="modal__body">
+      <div class="proc-controls">
+        <label class="btn">
+          画像を選択
+          <input id="procFile" type="file" accept="image/*" hidden />
+        </label>
+        <select id="procPreset" title="デバイス別カットプリセット">
+          <option value="auto">プリセット: 自動 (iPhone ステータスバー)</option>
+          <option value="sim-150-40-100">シミュレータ (上150/下40/角丸100)</option>
+          <option value="iphone-island">iPhone (Dynamic Island, 3x)</option>
+          <option value="iphone-notch">iPhone (ノッチ, 3x)</option>
+          <option value="iphone-classic">iPhone (Touch ID, 2x)</option>
+          <option value="custom">手動指定</option>
+        </select>
+        <label class="proc-field">
+          <span>上カット (px)</span>
+          <input id="procTop" type="number" value="180" min="0" />
+        </label>
+        <label class="proc-field">
+          <span>下カット (px)</span>
+          <input id="procBottom" type="number" value="0" min="0" />
+        </label>
+        <label class="proc-field">
+          <span>左カット (px)</span>
+          <input id="procLeft" type="number" value="0" min="0" />
+        </label>
+        <label class="proc-field">
+          <span>右カット (px)</span>
+          <input id="procRight" type="number" value="0" min="0" />
+        </label>
+        <label class="proc-field">
+          <span>角丸 (px)</span>
+          <input id="procRadius" type="number" value="60" min="0" />
+        </label>
+        <div class="proc-meta" id="procMeta">画像未選択</div>
+      </div>
+      <div class="proc-preview">
+        <canvas id="procCanvas"></canvas>
+      </div>
+    </div>
+    <footer class="modal__footer">
+      <button id="procAddLayer" class="btn btn--primary" disabled>レイヤーに追加</button>
+      <button id="procDownload" class="btn" disabled>PNGダウンロード</button>
+      <button id="procSaveServer" class="btn" disabled title="output/ に保存">サーバ保存</button>
+    </footer>
+  </div>
+</div>
+
+<main class="layout">
+  <aside class="sidebar">
+    <div class="sidebar__search">
+      <input id="assetSearch" type="search" placeholder="アセットを検索 (例: goblin)" />
+    </div>
+    <div id="assetTree" class="asset-tree"></div>
+  </aside>
+
+  <section class="stage-wrap">
+    <div class="stage-toolbar">
+      <span>キャンバスサイズ:</span>
+      <input id="canvasW" type="number" value="850" min="100" max="4000" />
+      <span>×</span>
+      <input id="canvasH" type="number" value="1850" min="100" max="4000" />
+      <button id="applySize" class="btn btn--sm">適用</button>
+      <span class="divider"></span>
+      <span>表示倍率:</span>
+      <input id="zoom" type="range" min="20" max="120" value="50" />
+      <span id="zoomLabel">50%</span>
+      <span class="divider"></span>
+      <span id="selectedInfo" class="selected-info">未選択</span>
+    </div>
+    <div class="stage-scroll" id="stageScroll">
+      <div id="stage" class="stage">
+        <img id="bgImage" class="stage__bg" alt="background" />
+        <div id="layers" class="stage__layers"></div>
+      </div>
+    </div>
+    <div class="status-bar">
+      <span>選択中の操作: 移動=ドラッグ / 拡縮=四隅ハンドル(縦横比固定・Shiftで解除) / 単軸=四辺ハンドル / 回転=上の◯ハンドル / 削除=Delete / 複製=Ctrl+D / 前面=]/背面=[ / 反転=H</span>
+    </div>
+  </section>
+</main>
+
+<script src="/app.js"></script>
+</body>
+</html>

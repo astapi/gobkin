@@ -1,0 +1,8483 @@
+{
+  "version": "1.6.6",
+  "templates": [
+    {
+      "_comment": "===== 武器:剣 (melee) ====="
+    },
+    {
+      "id": "sword_cypress_stick",
+      "name": "ひのきの棒",
+      "category": "weapon",
+      "subCategory": "sword",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 2
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 8
+        }
+      ],
+      "range": "melee",
+      "price": 5,
+      "unlockRank": 1,
+      "rank": 0
+    },
+    {
+      "id": "sword_club",
+      "name": "こんぼう",
+      "category": "weapon",
+      "subCategory": "sword",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 5
+        },
+        {
+          "stat": "def_flat",
+          "value": 1
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 16
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": -0.1
+        }
+      ],
+      "range": "melee",
+      "price": 15,
+      "unlockRank": 1,
+      "rank": 0
+    },
+    {
+      "id": "sword_copper",
+      "name": "銅の剣",
+      "category": "weapon",
+      "subCategory": "sword",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 8
+        },
+        {
+          "stat": "def_flat",
+          "value": 2
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 24
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": -0.2
+        }
+      ],
+      "grantedSkillIds": [
+        "def_to_hp_1"
+      ],
+      "range": "melee",
+      "price": 30,
+      "unlockRank": 1,
+      "rank": 0
+    },
+    {
+      "id": "sword_broad",
+      "name": "ブロードソード",
+      "category": "weapon",
+      "subCategory": "sword",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 12
+        },
+        {
+          "stat": "def_flat",
+          "value": 3
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 32
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": -0.2
+        }
+      ],
+      "grantedSkillIds": [
+        "def_to_hp_2"
+      ],
+      "range": "melee",
+      "price": 60,
+      "unlockRank": 1,
+      "rank": 0
+    },
+    {
+      "id": "sword_long",
+      "name": "ロングソード",
+      "category": "weapon",
+      "subCategory": "sword",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 16
+        },
+        {
+          "stat": "def_flat",
+          "value": 4
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 48
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": -0.2
+        }
+      ],
+      "grantedSkillIds": [
+        "def_to_hp_3"
+      ],
+      "range": "melee",
+      "price": 100,
+      "unlockRank": 1,
+      "rank": 1
+    },
+    {
+      "id": "sword_mithril",
+      "name": "ミスリルソード",
+      "category": "weapon",
+      "subCategory": "sword",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 24
+        },
+        {
+          "stat": "def_flat",
+          "value": 6
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 72
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": -0.2
+        }
+      ],
+      "grantedSkillIds": [
+        "def_to_hp_4"
+      ],
+      "range": "melee",
+      "price": 500,
+      "unlockRank": 2,
+      "rank": 2
+    },
+    {
+      "id": "sword_royal",
+      "name": "ロイヤルソード",
+      "category": "weapon",
+      "subCategory": "sword",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 32
+        },
+        {
+          "stat": "def_flat",
+          "value": 8
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 96
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": -0.2
+        }
+      ],
+      "grantedSkillIds": [
+        "def_to_hp_5"
+      ],
+      "range": "melee",
+      "price": 2500,
+      "unlockRank": 2,
+      "rank": 3
+    },
+    {
+      "id": "sword_kaiser",
+      "name": "カイザーソード",
+      "category": "weapon",
+      "subCategory": "sword",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 48
+        },
+        {
+          "stat": "def_flat",
+          "value": 10
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 144
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": -0.2
+        }
+      ],
+      "grantedSkillIds": [
+        "def_to_hp_6"
+      ],
+      "range": "melee",
+      "price": 12500,
+      "unlockRank": 3,
+      "rank": 4
+    },
+    {
+      "id": "sword_ancient",
+      "name": "エンシェントソード",
+      "category": "weapon",
+      "subCategory": "sword",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 64
+        },
+        {
+          "stat": "def_flat",
+          "value": 12
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 192
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": -0.2
+        }
+      ],
+      "grantedSkillIds": [
+        "def_to_hp_7"
+      ],
+      "range": "melee",
+      "price": 60000,
+      "unlockRank": 5,
+      "rank": 5
+    },
+    {
+      "id": "sword_dragon",
+      "name": "ドラゴンソード",
+      "category": "weapon",
+      "subCategory": "sword",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 96
+        },
+        {
+          "stat": "def_flat",
+          "value": 24
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 288
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": -0.4
+        }
+      ],
+      "grantedSkillIds": [
+        "def_to_hp_8"
+      ],
+      "range": "melee",
+      "price": 240000,
+      "rank": 6
+    },
+    {
+      "id": "sword_adamant",
+      "name": "アダマントソード",
+      "category": "weapon",
+      "subCategory": "sword",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 128
+        },
+        {
+          "stat": "def_flat",
+          "value": 36
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 384
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": -0.6
+        }
+      ],
+      "grantedSkillIds": [
+        "def_to_hp_9"
+      ],
+      "range": "melee",
+      "price": 720000,
+      "rank": 7
+    },
+    {
+      "_comment": "===== 武器:爪 (melee) ====="
+    },
+    {
+      "id": "claw_sharp",
+      "name": "トゲ",
+      "category": "weapon",
+      "subCategory": "claw",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 1
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 16
+        }
+      ],
+      "grantedSkillIds": [
+        "attack_count_up_1"
+      ],
+      "range": "melee",
+      "price": 5,
+      "unlockRank": 1,
+      "rank": 0
+    },
+    {
+      "id": "claw_beast",
+      "name": "ウルフの爪",
+      "category": "weapon",
+      "subCategory": "claw",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 3
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 24
+        }
+      ],
+      "grantedSkillIds": [
+        "attack_count_up_2"
+      ],
+      "range": "melee",
+      "price": 15,
+      "unlockRank": 1,
+      "rank": 0
+    },
+    {
+      "id": "claw_copper",
+      "name": "どうのツメ",
+      "category": "weapon",
+      "subCategory": "claw",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 5
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 32
+        }
+      ],
+      "grantedSkillIds": [
+        "attack_count_up_3"
+      ],
+      "range": "melee",
+      "price": 30,
+      "unlockRank": 1,
+      "rank": 0
+    },
+    {
+      "id": "claw_iron",
+      "name": "てつのツメ",
+      "category": "weapon",
+      "subCategory": "claw",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 7
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 40
+        }
+      ],
+      "grantedSkillIds": [
+        "attack_count_up_4"
+      ],
+      "range": "melee",
+      "price": 60,
+      "unlockRank": 1,
+      "rank": 0
+    },
+    {
+      "id": "claw_steel",
+      "name": "はがねのツメ",
+      "category": "weapon",
+      "subCategory": "claw",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 10
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 56
+        }
+      ],
+      "grantedSkillIds": [
+        "attack_count_up_5"
+      ],
+      "range": "melee",
+      "price": 100,
+      "unlockRank": 1,
+      "rank": 1
+    },
+    {
+      "id": "claw_mithril",
+      "name": "ミスリルクロー",
+      "category": "weapon",
+      "subCategory": "claw",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 14
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 80
+        }
+      ],
+      "grantedSkillIds": [
+        "attack_count_up_6"
+      ],
+      "range": "melee",
+      "price": 500,
+      "unlockRank": 2,
+      "rank": 2
+    },
+    {
+      "id": "claw_royal",
+      "name": "ロイヤルクロー",
+      "category": "weapon",
+      "subCategory": "claw",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 18
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 104
+        }
+      ],
+      "grantedSkillIds": [
+        "attack_count_up_7"
+      ],
+      "range": "melee",
+      "price": 2500,
+      "unlockRank": 2,
+      "rank": 3
+    },
+    {
+      "id": "claw_kaiser",
+      "name": "カイザークロー",
+      "category": "weapon",
+      "subCategory": "claw",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 26
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 152
+        }
+      ],
+      "grantedSkillIds": [
+        "attack_count_up_8"
+      ],
+      "range": "melee",
+      "price": 12500,
+      "unlockRank": 3,
+      "rank": 4
+    },
+    {
+      "id": "claw_ancient",
+      "name": "エンシェントクロー",
+      "category": "weapon",
+      "subCategory": "claw",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 34
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 208
+        }
+      ],
+      "grantedSkillIds": [
+        "attack_count_up_9"
+      ],
+      "range": "melee",
+      "price": 60000,
+      "unlockRank": 5,
+      "rank": 5
+    },
+    {
+      "id": "claw_dragon",
+      "name": "ドラゴンクロー",
+      "category": "weapon",
+      "subCategory": "claw",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 48
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 304
+        }
+      ],
+      "grantedSkillIds": [
+        "attack_count_up_10"
+      ],
+      "range": "melee",
+      "price": 240000,
+      "rank": 6
+    },
+    {
+      "id": "claw_adamant",
+      "name": "アダマントクロー",
+      "category": "weapon",
+      "subCategory": "claw",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 64
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 400
+        }
+      ],
+      "grantedSkillIds": [
+        "attack_count_up_11"
+      ],
+      "range": "melee",
+      "price": 720000,
+      "rank": 7
+    },
+    {
+      "_comment": "===== 武器:弓 (ranged) ====="
+    },
+    {
+      "id": "bow_slingshot",
+      "name": "スリングショット",
+      "category": "weapon",
+      "subCategory": "bow",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 3
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 16
+        }
+      ],
+      "range": "ranged",
+      "price": 10,
+      "unlockRank": 1,
+      "rank": 0
+    },
+    {
+      "id": "bow_short",
+      "name": "ショートボウ",
+      "category": "weapon",
+      "subCategory": "bow",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 6
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 32
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": -0.1
+        }
+      ],
+      "range": "ranged",
+      "price": 40,
+      "unlockRank": 1,
+      "rank": 0
+    },
+    {
+      "id": "bow_long",
+      "name": "ロングボウ",
+      "category": "weapon",
+      "subCategory": "bow",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 20
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 94
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": -0.6
+        },
+        {
+          "stat": "evasion_flat",
+          "value": -8
+        }
+      ],
+      "grantedSkillIds": [
+        "critical_damage_bonus_6"
+      ],
+      "range": "ranged",
+      "price": 1000,
+      "unlockRank": 1,
+      "rank": 1
+    },
+    {
+      "id": "bow_mithril",
+      "name": "ミスリルボウ",
+      "category": "weapon",
+      "subCategory": "bow",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 30
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 146
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": -0.6
+        },
+        {
+          "stat": "evasion_flat",
+          "value": -12
+        }
+      ],
+      "grantedSkillIds": [
+        "critical_damage_bonus_7"
+      ],
+      "range": "ranged",
+      "price": 5000,
+      "unlockRank": 2,
+      "rank": 2
+    },
+    {
+      "id": "bow_royal",
+      "name": "ロイヤルボウ",
+      "category": "weapon",
+      "subCategory": "bow",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 45
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 198
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": -0.6
+        },
+        {
+          "stat": "evasion_flat",
+          "value": -16
+        }
+      ],
+      "grantedSkillIds": [
+        "critical_damage_bonus_8"
+      ],
+      "range": "ranged",
+      "price": 25000,
+      "unlockRank": 2,
+      "rank": 3
+    },
+    {
+      "id": "bow_kaiser",
+      "name": "カイザーボウ",
+      "category": "weapon",
+      "subCategory": "bow",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 60
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 282
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": -0.6
+        },
+        {
+          "stat": "evasion_flat",
+          "value": -24
+        }
+      ],
+      "grantedSkillIds": [
+        "critical_damage_bonus_9"
+      ],
+      "range": "ranged",
+      "price": 125000,
+      "unlockRank": 3,
+      "rank": 4
+    },
+    {
+      "id": "bow_ancient",
+      "name": "エンシェントボウ",
+      "category": "weapon",
+      "subCategory": "bow",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 90
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 366
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": -0.6
+        },
+        {
+          "stat": "evasion_flat",
+          "value": -32
+        }
+      ],
+      "grantedSkillIds": [
+        "critical_damage_bonus_10"
+      ],
+      "range": "ranged",
+      "price": 500000,
+      "unlockRank": 5,
+      "rank": 5
+    },
+    {
+      "id": "bow_dragon",
+      "name": "ドラゴンボウ",
+      "category": "weapon",
+      "subCategory": "bow",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 120
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 450
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": -0.6
+        },
+        {
+          "stat": "evasion_flat",
+          "value": -40
+        }
+      ],
+      "grantedSkillIds": [
+        "critical_damage_bonus_11"
+      ],
+      "range": "ranged",
+      "price": 1500000,
+      "rank": 6
+    },
+    {
+      "id": "bow_adamant",
+      "name": "アダマントボウ",
+      "category": "weapon",
+      "subCategory": "bow",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 160
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 550
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": -0.6
+        },
+        {
+          "stat": "evasion_flat",
+          "value": -50
+        }
+      ],
+      "grantedSkillIds": [
+        "critical_damage_bonus_12"
+      ],
+      "range": "ranged",
+      "price": 3000000,
+      "rank": 7
+    },
+    {
+      "_comment": "===== 武器:暗器 (melee) ====="
+    },
+    {
+      "id": "hidden_dagger",
+      "name": "ダガー",
+      "category": "weapon",
+      "subCategory": "hidden",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 9
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 64
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": 0.2
+        },
+        {
+          "stat": "evasion_flat",
+          "value": 4
+        }
+      ],
+      "grantedSkillIds": [
+        "additional_damage_6"
+      ],
+      "range": "melee",
+      "price": 100,
+      "rank": 1,
+      "unlockRank": 1
+    },
+    {
+      "id": "hidden_mithril_dagger",
+      "name": "ミスリルダガー",
+      "category": "weapon",
+      "subCategory": "hidden",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 14
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 96
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": 0.2
+        },
+        {
+          "stat": "evasion_flat",
+          "value": 6
+        }
+      ],
+      "grantedSkillIds": [
+        "additional_damage_7"
+      ],
+      "range": "melee",
+      "price": 500,
+      "rank": 2,
+      "unlockRank": 2
+    },
+    {
+      "id": "hidden_royal_dagger",
+      "name": "ロイヤルダガー",
+      "category": "weapon",
+      "subCategory": "hidden",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 20
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 128
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": 0.2
+        },
+        {
+          "stat": "evasion_flat",
+          "value": 8
+        }
+      ],
+      "grantedSkillIds": [
+        "additional_damage_8"
+      ],
+      "range": "melee",
+      "price": 2500,
+      "rank": 3,
+      "unlockRank": 2
+    },
+    {
+      "id": "hidden_kaiser_dagger",
+      "name": "カイザーダガー",
+      "category": "weapon",
+      "subCategory": "hidden",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 28
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 184
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": 0.3
+        },
+        {
+          "stat": "evasion_flat",
+          "value": 12
+        }
+      ],
+      "grantedSkillIds": [
+        "additional_damage_9"
+      ],
+      "range": "melee",
+      "price": 12500,
+      "rank": 4,
+      "unlockRank": 3
+    },
+    {
+      "id": "hidden_ancient_dagger",
+      "name": "エンシェントダガー",
+      "category": "weapon",
+      "subCategory": "hidden",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 42
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 240
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": 0.3
+        },
+        {
+          "stat": "evasion_flat",
+          "value": 16
+        }
+      ],
+      "grantedSkillIds": [
+        "additional_damage_10"
+      ],
+      "range": "melee",
+      "price": 50000,
+      "rank": 5,
+      "unlockRank": 5
+    },
+    {
+      "id": "hidden_dragon_dagger",
+      "name": "ドラゴンダガー",
+      "category": "weapon",
+      "subCategory": "hidden",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 56
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 300
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": 0.4
+        },
+        {
+          "stat": "evasion_flat",
+          "value": 20
+        }
+      ],
+      "grantedSkillIds": [
+        "additional_damage_11"
+      ],
+      "range": "melee",
+      "price": 150000,
+      "rank": 6
+    },
+    {
+      "id": "hidden_adamant_dagger",
+      "name": "アダマントダガー",
+      "category": "weapon",
+      "subCategory": "hidden",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 72
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 370
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": 0.4
+        },
+        {
+          "stat": "evasion_flat",
+          "value": 24
+        }
+      ],
+      "grantedSkillIds": [
+        "additional_damage_12"
+      ],
+      "range": "melee",
+      "price": 300000,
+      "rank": 7
+    },
+    {
+      "_comment": "===== 武器:暗器 (ranged rare) ====="
+    },
+    {
+      "id": "hidden_throwing_knife",
+      "name": "投げナイフ",
+      "category": "weapon",
+      "subCategory": "hidden",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 7
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 90
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": 0.2
+        }
+      ],
+      "grantedSkillIds": [
+        "additional_damage_6"
+      ],
+      "range": "ranged",
+      "price": 12500,
+      "isRare": true
+    },
+    {
+      "id": "hidden_poison_knife",
+      "name": "毒投げナイフ",
+      "category": "weapon",
+      "subCategory": "hidden",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 10
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 130
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": 0.2
+        }
+      ],
+      "grantedSkillIds": [
+        "additional_damage_7"
+      ],
+      "range": "ranged",
+      "price": 0,
+      "isRare": true
+    },
+    {
+      "id": "hidden_shuriken",
+      "name": "手裏剣",
+      "category": "weapon",
+      "subCategory": "hidden",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 14
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 170
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": 0.3
+        },
+        {
+          "stat": "evasion_flat",
+          "value": 4
+        }
+      ],
+      "grantedSkillIds": [
+        "additional_damage_8"
+      ],
+      "range": "ranged",
+      "price": 50000,
+      "isRare": true
+    },
+    {
+      "id": "hidden_cross_shuriken",
+      "name": "十字手裏剣",
+      "category": "weapon",
+      "subCategory": "hidden",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 20
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 230
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": 0.3
+        },
+        {
+          "stat": "evasion_flat",
+          "value": 6
+        }
+      ],
+      "grantedSkillIds": [
+        "additional_damage_9"
+      ],
+      "range": "ranged",
+      "price": 125000,
+      "isRare": true
+    },
+    {
+      "id": "hidden_kunai",
+      "name": "くない",
+      "category": "weapon",
+      "subCategory": "hidden",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 24
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 210
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": 0.3
+        },
+        {
+          "stat": "evasion_flat",
+          "value": 4
+        }
+      ],
+      "grantedSkillIds": [
+        "additional_damage_9"
+      ],
+      "range": "ranged",
+      "price": 125000,
+      "isRare": true
+    },
+    {
+      "id": "hidden_cursed_needle",
+      "name": "呪いの針",
+      "category": "weapon",
+      "subCategory": "hidden",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 18
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 300
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": 0.4
+        },
+        {
+          "stat": "evasion_flat",
+          "value": 8
+        }
+      ],
+      "grantedSkillIds": [
+        "additional_damage_10"
+      ],
+      "range": "ranged",
+      "price": 500000,
+      "isRare": true
+    },
+    {
+      "id": "hidden_shadow_needle",
+      "name": "影縫い針",
+      "category": "weapon",
+      "subCategory": "hidden",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 26
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 380
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": 0.4
+        },
+        {
+          "stat": "evasion_flat",
+          "value": 10
+        }
+      ],
+      "grantedSkillIds": [
+        "additional_damage_11"
+      ],
+      "range": "ranged",
+      "price": 1500000,
+      "isRare": true
+    },
+    {
+      "id": "hidden_fuma_shuriken",
+      "name": "風魔手裏剣",
+      "category": "weapon",
+      "subCategory": "hidden",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 48
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 460
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": 0.4
+        },
+        {
+          "stat": "evasion_flat",
+          "value": 8
+        }
+      ],
+      "grantedSkillIds": [
+        "additional_damage_12"
+      ],
+      "range": "ranged",
+      "price": 3000000,
+      "isRare": true
+    },
+    {
+      "_comment": "===== 防具:鎧 (armor) ====="
+    },
+    {
+      "id": "armor_tattered_cloth",
+      "name": "ボロぬの",
+      "category": "armor",
+      "statBonuses": [
+        {
+          "stat": "def_flat",
+          "value": 2
+        },
+        {
+          "stat": "hp_flat",
+          "value": 5
+        }
+      ],
+      "grantedSkillIds": [
+        "physical_reduction_1"
+      ],
+      "price": 5,
+      "unlockRank": 1,
+      "rank": 0
+    },
+    {
+      "id": "armor_leather_vest",
+      "name": "かわのベスト",
+      "category": "armor",
+      "statBonuses": [
+        {
+          "stat": "def_flat",
+          "value": 3
+        },
+        {
+          "stat": "hp_flat",
+          "value": 8
+        }
+      ],
+      "grantedSkillIds": [
+        "physical_reduction_2"
+      ],
+      "price": 15,
+      "unlockRank": 1,
+      "rank": 0
+    },
+    {
+      "id": "armor_fur_vest",
+      "name": "毛皮のベスト",
+      "category": "armor",
+      "statBonuses": [
+        {
+          "stat": "def_flat",
+          "value": 4
+        },
+        {
+          "stat": "hp_flat",
+          "value": 10
+        }
+      ],
+      "grantedSkillIds": [
+        "physical_reduction_3"
+      ],
+      "price": 30,
+      "unlockRank": 1,
+      "rank": 0
+    },
+    {
+      "id": "armor_armor",
+      "name": "アーマー",
+      "category": "armor",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -3
+        },
+        {
+          "stat": "def_flat",
+          "value": 10
+        },
+        {
+          "stat": "hp_flat",
+          "value": 15
+        }
+      ],
+      "grantedSkillIds": [
+        "physical_reduction_6"
+      ],
+      "price": 100,
+      "unlockRank": 1,
+      "rank": 1
+    },
+    {
+      "id": "armor_mithril",
+      "name": "ミスリルアーマー",
+      "category": "armor",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -3
+        },
+        {
+          "stat": "def_flat",
+          "value": 15
+        },
+        {
+          "stat": "hp_flat",
+          "value": 22
+        }
+      ],
+      "grantedSkillIds": [
+        "physical_reduction_7"
+      ],
+      "price": 500,
+      "unlockRank": 2,
+      "rank": 2
+    },
+    {
+      "id": "armor_royal",
+      "name": "ロイヤルアーマー",
+      "category": "armor",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -3
+        },
+        {
+          "stat": "def_flat",
+          "value": 20
+        },
+        {
+          "stat": "hp_flat",
+          "value": 30
+        }
+      ],
+      "grantedSkillIds": [
+        "physical_reduction_8"
+      ],
+      "price": 2500,
+      "unlockRank": 2,
+      "rank": 3
+    },
+    {
+      "id": "armor_kaiser",
+      "name": "カイザーアーマー",
+      "category": "armor",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -3
+        },
+        {
+          "stat": "def_flat",
+          "value": 30
+        },
+        {
+          "stat": "hp_flat",
+          "value": 40
+        }
+      ],
+      "grantedSkillIds": [
+        "physical_reduction_9"
+      ],
+      "price": 12500,
+      "unlockRank": 3,
+      "rank": 4
+    },
+    {
+      "id": "armor_ancient",
+      "name": "エンシェントアーマー",
+      "category": "armor",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -3
+        },
+        {
+          "stat": "def_flat",
+          "value": 40
+        },
+        {
+          "stat": "hp_flat",
+          "value": 60
+        }
+      ],
+      "grantedSkillIds": [
+        "physical_reduction_10"
+      ],
+      "price": 60000,
+      "unlockRank": 5,
+      "rank": 5
+    },
+    {
+      "id": "armor_dragon",
+      "name": "ドラゴンアーマー",
+      "category": "armor",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -3
+        },
+        {
+          "stat": "def_flat",
+          "value": 60
+        },
+        {
+          "stat": "hp_flat",
+          "value": 80
+        }
+      ],
+      "grantedSkillIds": [
+        "physical_reduction_11"
+      ],
+      "price": 240000,
+      "rank": 6
+    },
+    {
+      "id": "armor_adamant",
+      "name": "アダマントアーマー",
+      "category": "armor",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -3
+        },
+        {
+          "stat": "def_flat",
+          "value": 80
+        },
+        {
+          "stat": "hp_flat",
+          "value": 120
+        }
+      ],
+      "grantedSkillIds": [
+        "physical_reduction_12"
+      ],
+      "price": 720000,
+      "rank": 7
+    },
+    {
+      "_comment": "===== 防具:ローブ (robe) ====="
+    },
+    {
+      "id": "robe_robe",
+      "name": "ローブ",
+      "category": "robe",
+      "statBonuses": [
+        {
+          "stat": "magic_def_flat",
+          "value": 16
+        }
+      ],
+      "grantedSkillIds": [
+        "magic_resistant_4_5",
+        "magic_reduction_6",
+        "hp_multiplier_6"
+      ],
+      "price": 200,
+      "unlockRank": 1,
+      "rank": 1
+    },
+    {
+      "id": "robe_mithril",
+      "name": "ミスリルローブ",
+      "category": "robe",
+      "statBonuses": [
+        {
+          "stat": "magic_def_flat",
+          "value": 24
+        }
+      ],
+      "grantedSkillIds": [
+        "magic_resistant_4_5",
+        "magic_reduction_7",
+        "hp_multiplier_7"
+      ],
+      "price": 1000,
+      "rank": 2
+    },
+    {
+      "id": "robe_royal",
+      "name": "ロイヤルローブ",
+      "category": "robe",
+      "statBonuses": [
+        {
+          "stat": "magic_def_flat",
+          "value": 32
+        }
+      ],
+      "grantedSkillIds": [
+        "magic_resistant_4_5",
+        "magic_reduction_8",
+        "hp_multiplier_8"
+      ],
+      "price": 5000,
+      "rank": 3
+    },
+    {
+      "id": "robe_kaiser",
+      "name": "カイザーローブ",
+      "category": "robe",
+      "statBonuses": [
+        {
+          "stat": "magic_def_flat",
+          "value": 48
+        }
+      ],
+      "grantedSkillIds": [
+        "magic_resistant_4_5",
+        "magic_reduction_9",
+        "hp_multiplier_9"
+      ],
+      "price": 25000,
+      "unlockRank": 3,
+      "rank": 4
+    },
+    {
+      "id": "robe_ancient",
+      "name": "エンシェントローブ",
+      "category": "robe",
+      "statBonuses": [
+        {
+          "stat": "magic_def_flat",
+          "value": 64
+        }
+      ],
+      "grantedSkillIds": [
+        "magic_resistant_4_5",
+        "magic_reduction_10",
+        "hp_multiplier_10"
+      ],
+      "price": 125000,
+      "unlockRank": 5,
+      "rank": 5
+    },
+    {
+      "id": "robe_dragon",
+      "name": "ドラゴンローブ",
+      "category": "robe",
+      "statBonuses": [
+        {
+          "stat": "magic_def_flat",
+          "value": 96
+        }
+      ],
+      "grantedSkillIds": [
+        "magic_resistant_4_5",
+        "magic_reduction_11",
+        "hp_multiplier_11"
+      ],
+      "price": 500000,
+      "rank": 6
+    },
+    {
+      "id": "robe_adamant",
+      "name": "アダマントローブ",
+      "category": "robe",
+      "statBonuses": [
+        {
+          "stat": "magic_def_flat",
+          "value": 128
+        }
+      ],
+      "grantedSkillIds": [
+        "magic_resistant_4_5",
+        "magic_reduction_12",
+        "hp_multiplier_12"
+      ],
+      "price": 1500000,
+      "rank": 7
+    },
+    {
+      "_comment": "===== 防具:盾 (shield) ====="
+    },
+    {
+      "id": "shield_pot_lid",
+      "name": "なべのフタ",
+      "category": "shield",
+      "statBonuses": [
+        {
+          "stat": "def_flat",
+          "value": 2
+        },
+        {
+          "stat": "evasion_flat",
+          "value": 2
+        }
+      ],
+      "price": 5,
+      "unlockRank": 1,
+      "rank": 0
+    },
+    {
+      "id": "shield_wooden",
+      "name": "木の盾",
+      "category": "shield",
+      "statBonuses": [
+        {
+          "stat": "def_flat",
+          "value": 5
+        },
+        {
+          "stat": "evasion_flat",
+          "value": 5
+        },
+        {
+          "stat": "magic_def_flat",
+          "value": 2
+        }
+      ],
+      "price": 30,
+      "unlockRank": 1,
+      "rank": 0
+    },
+    {
+      "id": "shield_shield",
+      "name": "シールド",
+      "category": "shield",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -2
+        },
+        {
+          "stat": "def_flat",
+          "value": 8
+        },
+        {
+          "stat": "evasion_flat",
+          "value": 12
+        },
+        {
+          "stat": "magic_def_flat",
+          "value": 8
+        }
+      ],
+      "grantedSkillIds": [
+        "breath_damage_4_5",
+        "evasion_up_20",
+        "breath_reduction_6"
+      ],
+      "price": 80,
+      "unlockRank": 1,
+      "rank": 1
+    },
+    {
+      "id": "shield_mithril",
+      "name": "ミスリルシールド",
+      "category": "shield",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -2
+        },
+        {
+          "stat": "def_flat",
+          "value": 12
+        },
+        {
+          "stat": "evasion_flat",
+          "value": 16
+        },
+        {
+          "stat": "magic_def_flat",
+          "value": 12
+        }
+      ],
+      "grantedSkillIds": [
+        "breath_damage_4_5",
+        "evasion_up_30",
+        "breath_reduction_7"
+      ],
+      "price": 400,
+      "unlockRank": 2,
+      "rank": 2
+    },
+    {
+      "id": "shield_royal",
+      "name": "ロイヤルシールド",
+      "category": "shield",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -2
+        },
+        {
+          "stat": "def_flat",
+          "value": 16
+        },
+        {
+          "stat": "evasion_flat",
+          "value": 20
+        },
+        {
+          "stat": "magic_def_flat",
+          "value": 16
+        }
+      ],
+      "grantedSkillIds": [
+        "breath_damage_4_5",
+        "evasion_up_40",
+        "breath_reduction_8"
+      ],
+      "price": 2000,
+      "unlockRank": 2,
+      "rank": 3
+    },
+    {
+      "id": "shield_kaiser",
+      "name": "カイザーシールド",
+      "category": "shield",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -2
+        },
+        {
+          "stat": "def_flat",
+          "value": 20
+        },
+        {
+          "stat": "evasion_flat",
+          "value": 24
+        },
+        {
+          "stat": "magic_def_flat",
+          "value": 20
+        }
+      ],
+      "grantedSkillIds": [
+        "breath_damage_4_5",
+        "evasion_up_50",
+        "breath_reduction_9"
+      ],
+      "price": 10000,
+      "unlockRank": 3,
+      "rank": 4
+    },
+    {
+      "id": "shield_ancient",
+      "name": "エンシェントシールド",
+      "category": "shield",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -2
+        },
+        {
+          "stat": "def_flat",
+          "value": 28
+        },
+        {
+          "stat": "evasion_flat",
+          "value": 36
+        },
+        {
+          "stat": "magic_def_flat",
+          "value": 28
+        }
+      ],
+      "grantedSkillIds": [
+        "breath_damage_4_5",
+        "evasion_up_60",
+        "breath_reduction_10"
+      ],
+      "price": 50000,
+      "unlockRank": 5,
+      "rank": 5
+    },
+    {
+      "id": "shield_dragon",
+      "name": "ドラゴンシールド",
+      "category": "shield",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -2
+        },
+        {
+          "stat": "def_flat",
+          "value": 36
+        },
+        {
+          "stat": "evasion_flat",
+          "value": 50
+        },
+        {
+          "stat": "magic_def_flat",
+          "value": 36
+        }
+      ],
+      "grantedSkillIds": [
+        "breath_damage_4_5",
+        "evasion_up_70",
+        "breath_reduction_11"
+      ],
+      "price": 200000,
+      "rank": 6
+    },
+    {
+      "id": "shield_adamant",
+      "name": "アダマントシールド",
+      "category": "shield",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -2
+        },
+        {
+          "stat": "def_flat",
+          "value": 48
+        },
+        {
+          "stat": "evasion_flat",
+          "value": 75
+        },
+        {
+          "stat": "magic_def_flat",
+          "value": 48
+        }
+      ],
+      "grantedSkillIds": [
+        "breath_damage_4_5",
+        "evasion_up_80",
+        "breath_reduction_12"
+      ],
+      "price": 600000,
+      "rank": 7
+    },
+    {
+      "_comment": "===== 防具:大盾 (large_shield) ====="
+    },
+    {
+      "id": "large_shield_iron_wall",
+      "name": "アイアンウォール",
+      "category": "large_shield",
+      "statBonuses": [
+        {
+          "stat": "def_flat",
+          "value": 30
+        },
+        {
+          "stat": "evasion_flat",
+          "value": -14
+        },
+        {
+          "stat": "magic_def_flat",
+          "value": 8
+        }
+      ],
+      "grantedSkillIds": [
+        "ranged_attack_reduction_18",
+        "rare_guardian",
+        "ward_physical_2"
+      ],
+      "price": 25000,
+      "isRare": true
+    },
+    {
+      "id": "large_shield_fortress",
+      "name": "城塞の大盾",
+      "category": "large_shield",
+      "statBonuses": [
+        {
+          "stat": "def_flat",
+          "value": 48
+        },
+        {
+          "stat": "evasion_flat",
+          "value": -24
+        },
+        {
+          "stat": "magic_def_flat",
+          "value": 16
+        }
+      ],
+      "grantedSkillIds": [
+        "ranged_attack_reduction_18",
+        "rare_guardian",
+        "ward_physical_2"
+      ],
+      "price": 50000,
+      "isRare": true
+    },
+    {
+      "id": "large_shield_dragon_scale",
+      "name": "竜鱗の大盾",
+      "category": "large_shield",
+      "statBonuses": [
+        {
+          "stat": "def_flat",
+          "value": 72
+        },
+        {
+          "stat": "evasion_flat",
+          "value": -36
+        },
+        {
+          "stat": "magic_def_flat",
+          "value": 28
+        }
+      ],
+      "grantedSkillIds": [
+        "ranged_attack_reduction_22",
+        "rare_guardian",
+        "base_vitality_up_5"
+      ],
+      "price": 100000,
+      "isRare": true
+    },
+    {
+      "id": "large_shield_adamant_wall",
+      "name": "アダマントウォール",
+      "category": "large_shield",
+      "statBonuses": [
+        {
+          "stat": "def_flat",
+          "value": 100
+        },
+        {
+          "stat": "evasion_flat",
+          "value": -56
+        },
+        {
+          "stat": "magic_def_flat",
+          "value": 42
+        }
+      ],
+      "grantedSkillIds": [
+        "ranged_attack_reduction_22",
+        "rare_guardian",
+        "bulwark_stance_30"
+      ],
+      "price": 600000,
+      "isRare": true
+    },
+    {
+      "_comment": "===== 防具:小手 (gauntlet) ====="
+    },
+    {
+      "id": "gauntlet_cloth_gloves",
+      "name": "ぬのの手袋",
+      "category": "gauntlet",
+      "statBonuses": [
+        {
+          "stat": "accuracy_flat",
+          "value": 10
+        },
+        {
+          "stat": "critical_rate_percent",
+          "value": 3
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": 0.8
+        }
+      ],
+      "grantedSkillIds": [
+        "attack_count_up_1",
+        "critical_rate_up_10"
+      ],
+      "price": 5,
+      "unlockRank": 1,
+      "rank": 0
+    },
+    {
+      "id": "gauntlet_leather",
+      "name": "かわの小手",
+      "category": "gauntlet",
+      "statBonuses": [
+        {
+          "stat": "accuracy_flat",
+          "value": 20
+        },
+        {
+          "stat": "critical_rate_percent",
+          "value": 3
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": 0.5
+        }
+      ],
+      "grantedSkillIds": [
+        "attack_count_up_2",
+        "critical_rate_up_10"
+      ],
+      "price": 15,
+      "unlockRank": 1,
+      "rank": 0
+    },
+    {
+      "id": "gauntlet_copper",
+      "name": "どうの小手",
+      "category": "gauntlet",
+      "statBonuses": [
+        {
+          "stat": "accuracy_flat",
+          "value": 30
+        },
+        {
+          "stat": "critical_rate_percent",
+          "value": 3
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": 0.5
+        }
+      ],
+      "grantedSkillIds": [
+        "attack_count_up_3",
+        "critical_rate_up_10"
+      ],
+      "price": 30,
+      "unlockRank": 1,
+      "rank": 0
+    },
+    {
+      "id": "gauntlet_gauntlet",
+      "name": "ガントレット",
+      "category": "gauntlet",
+      "statBonuses": [
+        {
+          "stat": "accuracy_flat",
+          "value": 40
+        },
+        {
+          "stat": "critical_rate_percent",
+          "value": 3
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": 0.5
+        }
+      ],
+      "grantedSkillIds": [
+        "attack_count_up_4",
+        "critical_rate_up_10"
+      ],
+      "price": 2000,
+      "unlockRank": 1,
+      "rank": 1
+    },
+    {
+      "id": "gauntlet_mithril",
+      "name": "ミスリルガントレット",
+      "category": "gauntlet",
+      "statBonuses": [
+        {
+          "stat": "accuracy_flat",
+          "value": 50
+        },
+        {
+          "stat": "critical_rate_percent",
+          "value": 3
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": 0.4
+        }
+      ],
+      "grantedSkillIds": [
+        "attack_count_up_5",
+        "critical_rate_up_10"
+      ],
+      "price": 10000,
+      "unlockRank": 2,
+      "rank": 2
+    },
+    {
+      "id": "gauntlet_royal",
+      "name": "ロイヤルガントレット",
+      "category": "gauntlet",
+      "statBonuses": [
+        {
+          "stat": "accuracy_flat",
+          "value": 60
+        },
+        {
+          "stat": "critical_rate_percent",
+          "value": 3
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": 0.3
+        }
+      ],
+      "grantedSkillIds": [
+        "attack_count_up_6",
+        "critical_rate_up_10"
+      ],
+      "price": 50000,
+      "unlockRank": 2,
+      "rank": 3
+    },
+    {
+      "id": "gauntlet_kaiser",
+      "name": "カイザーガントレット",
+      "category": "gauntlet",
+      "statBonuses": [
+        {
+          "stat": "accuracy_flat",
+          "value": 70
+        },
+        {
+          "stat": "critical_rate_percent",
+          "value": 3
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": 0.2
+        }
+      ],
+      "grantedSkillIds": [
+        "attack_count_up_7",
+        "critical_rate_up_10"
+      ],
+      "price": 250000,
+      "unlockRank": 3,
+      "rank": 4
+    },
+    {
+      "id": "gauntlet_ancient",
+      "name": "エンシェントガントレット",
+      "category": "gauntlet",
+      "statBonuses": [
+        {
+          "stat": "accuracy_flat",
+          "value": 80
+        },
+        {
+          "stat": "critical_rate_percent",
+          "value": 3
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": 0.2
+        }
+      ],
+      "grantedSkillIds": [
+        "attack_count_up_8",
+        "critical_rate_up_10"
+      ],
+      "price": 1250000,
+      "unlockRank": 5,
+      "rank": 5
+    },
+    {
+      "id": "gauntlet_dragon",
+      "name": "ドラゴンガントレット",
+      "category": "gauntlet",
+      "statBonuses": [
+        {
+          "stat": "accuracy_flat",
+          "value": 90
+        },
+        {
+          "stat": "critical_rate_percent",
+          "value": 3
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": 0.1
+        }
+      ],
+      "grantedSkillIds": [
+        "attack_count_up_9",
+        "critical_rate_up_10"
+      ],
+      "price": 2500000,
+      "rank": 6
+    },
+    {
+      "id": "gauntlet_adamant",
+      "name": "アダマントガントレット",
+      "category": "gauntlet",
+      "statBonuses": [
+        {
+          "stat": "accuracy_flat",
+          "value": 100
+        },
+        {
+          "stat": "critical_rate_percent",
+          "value": 3
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": 0.1
+        }
+      ],
+      "grantedSkillIds": [
+        "attack_count_up_10",
+        "critical_rate_up_10"
+      ],
+      "price": 5000000,
+      "rank": 7
+    },
+    {
+      "_comment": "===== 魔具:ワンド (wand) ====="
+    },
+    {
+      "id": "wand_twig",
+      "name": "枝の杖",
+      "category": "wand",
+      "statBonuses": [
+        {
+          "stat": "magic_atk_flat",
+          "value": 5
+        }
+      ],
+      "price": 5,
+      "unlockRank": 1,
+      "rank": 0
+    },
+    {
+      "id": "wand_apprentice",
+      "name": "見習いの杖",
+      "category": "wand",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -2
+        },
+        {
+          "stat": "magic_atk_flat",
+          "value": 10
+        }
+      ],
+      "price": 30,
+      "unlockRank": 1,
+      "rank": 0
+    },
+    {
+      "id": "wand_wand",
+      "name": "ワンド",
+      "category": "wand",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -4
+        },
+        {
+          "stat": "magic_atk_flat",
+          "value": 20
+        }
+      ],
+      "grantedSkillIds": [
+        "spell_damage_10"
+      ],
+      "price": 200,
+      "unlockRank": 1,
+      "rank": 1
+    },
+    {
+      "id": "wand_mithril",
+      "name": "ミスリルワンド",
+      "category": "wand",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -4
+        },
+        {
+          "stat": "magic_atk_flat",
+          "value": 30
+        }
+      ],
+      "grantedSkillIds": [
+        "spell_damage_11"
+      ],
+      "price": 1000,
+      "unlockRank": 2,
+      "rank": 2
+    },
+    {
+      "id": "wand_royal",
+      "name": "ロイヤルワンド",
+      "category": "wand",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -4
+        },
+        {
+          "stat": "magic_atk_flat",
+          "value": 40
+        }
+      ],
+      "grantedSkillIds": [
+        "spell_damage_12"
+      ],
+      "price": 5000,
+      "unlockRank": 2,
+      "rank": 3
+    },
+    {
+      "id": "wand_kaiser",
+      "name": "カイザーワンド",
+      "category": "wand",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -4
+        },
+        {
+          "stat": "magic_atk_flat",
+          "value": 50
+        }
+      ],
+      "grantedSkillIds": [
+        "spell_damage_13"
+      ],
+      "price": 25000,
+      "unlockRank": 3,
+      "rank": 4
+    },
+    {
+      "id": "wand_ancient",
+      "name": "エンシェントワンド",
+      "category": "wand",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -4
+        },
+        {
+          "stat": "magic_atk_flat",
+          "value": 60
+        }
+      ],
+      "grantedSkillIds": [
+        "spell_damage_14"
+      ],
+      "price": 125000,
+      "unlockRank": 5,
+      "rank": 5
+    },
+    {
+      "id": "wand_dragon",
+      "name": "ドラゴンワンド",
+      "category": "wand",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -4
+        },
+        {
+          "stat": "magic_atk_flat",
+          "value": 80
+        }
+      ],
+      "grantedSkillIds": [
+        "spell_damage_15"
+      ],
+      "price": 500000,
+      "rank": 6
+    },
+    {
+      "id": "wand_adamant",
+      "name": "アダマントワンド",
+      "category": "wand",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -4
+        },
+        {
+          "stat": "magic_atk_flat",
+          "value": 110
+        }
+      ],
+      "grantedSkillIds": [
+        "spell_damage_16"
+      ],
+      "price": 1500000,
+      "rank": 7
+    },
+    {
+      "_comment": "===== 魔具:ロッド (rod) ====="
+    },
+    {
+      "id": "rod_acolyte",
+      "name": "見習いのロッド",
+      "category": "rod",
+      "statBonuses": [
+        {
+          "stat": "magicHeal_flat",
+          "value": 5
+        }
+      ],
+      "price": 5,
+      "unlockRank": 1,
+      "rank": 0
+    },
+    {
+      "id": "rod_wooden",
+      "name": "木のロッド",
+      "category": "rod",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -1
+        },
+        {
+          "stat": "magicHeal_flat",
+          "value": 10
+        }
+      ],
+      "price": 30,
+      "unlockRank": 1,
+      "rank": 0
+    },
+    {
+      "id": "rod_rod",
+      "name": "ロッド",
+      "category": "rod",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -2
+        },
+        {
+          "stat": "magicHeal_flat",
+          "value": 20
+        }
+      ],
+      "grantedSkillIds": [
+        "magic_heal_to_hp_6"
+      ],
+      "price": 200,
+      "unlockRank": 1,
+      "rank": 1
+    },
+    {
+      "id": "rod_mithril",
+      "name": "ミスリルロッド",
+      "category": "rod",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -2
+        },
+        {
+          "stat": "magicHeal_flat",
+          "value": 30
+        }
+      ],
+      "grantedSkillIds": [
+        "magic_heal_to_hp_7"
+      ],
+      "price": 1000,
+      "unlockRank": 2,
+      "rank": 2
+    },
+    {
+      "id": "rod_royal",
+      "name": "ロイヤルロッド",
+      "category": "rod",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -2
+        },
+        {
+          "stat": "magicHeal_flat",
+          "value": 45
+        }
+      ],
+      "grantedSkillIds": [
+        "magic_heal_to_hp_8"
+      ],
+      "price": 5000,
+      "unlockRank": 2,
+      "rank": 3
+    },
+    {
+      "id": "rod_kaiser",
+      "name": "カイザーロッド",
+      "category": "rod",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -2
+        },
+        {
+          "stat": "magicHeal_flat",
+          "value": 60
+        }
+      ],
+      "grantedSkillIds": [
+        "magic_heal_to_hp_9"
+      ],
+      "price": 25000,
+      "unlockRank": 3,
+      "rank": 4
+    },
+    {
+      "id": "rod_ancient",
+      "name": "エンシェントロッド",
+      "category": "rod",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -2
+        },
+        {
+          "stat": "magicHeal_flat",
+          "value": 120
+        }
+      ],
+      "grantedSkillIds": [
+        "magic_heal_to_hp_10"
+      ],
+      "price": 125000,
+      "unlockRank": 5,
+      "rank": 5
+    },
+    {
+      "id": "rod_dragon",
+      "name": "ドラゴンロッド",
+      "category": "rod",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -2
+        },
+        {
+          "stat": "magicHeal_flat",
+          "value": 180
+        }
+      ],
+      "grantedSkillIds": [
+        "magic_heal_to_hp_11"
+      ],
+      "price": 500000,
+      "rank": 6
+    },
+    {
+      "id": "rod_adamant",
+      "name": "アダマントロッド",
+      "category": "rod",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -2
+        },
+        {
+          "stat": "magicHeal_flat",
+          "value": 240
+        }
+      ],
+      "grantedSkillIds": [
+        "magic_heal_to_hp_12"
+      ],
+      "price": 1500000,
+      "rank": 7
+    },
+    {
+      "id": "rod_shield_rod",
+      "name": "シールドロッド",
+      "category": "rod",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -2
+        },
+        {
+          "stat": "magicHeal_flat",
+          "value": 60
+        }
+      ],
+      "grantedSkillIds": [
+        "grant_shield_barrier"
+      ],
+      "price": 25000,
+      "isRare": true
+    },
+    {
+      "id": "rod_barrier_rod",
+      "name": "バリアロッド",
+      "category": "rod",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -2
+        },
+        {
+          "stat": "magicHeal_flat",
+          "value": 60
+        }
+      ],
+      "grantedSkillIds": [
+        "grant_magic_barrier"
+      ],
+      "price": 25000,
+      "isRare": true
+    },
+    {
+      "id": "wand_bakuen",
+      "name": "爆炎の杖",
+      "category": "wand",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -4
+        },
+        {
+          "stat": "magic_atk_flat",
+          "value": 50
+        }
+      ],
+      "grantedSkillIds": [
+        "grant_fireball",
+        "fireball_twice",
+        "fireball_damage_120"
+      ],
+      "price": 25000,
+      "isRare": true
+    },
+    {
+      "_comment": "===== 武器:剣 (rare) ====="
+    },
+    {
+      "id": "sword_aegis_blade",
+      "name": "アイギスブレード",
+      "category": "weapon",
+      "subCategory": "sword",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 20
+        },
+        {
+          "stat": "def_flat",
+          "value": 8
+        },
+        {
+          "stat": "hp_flat",
+          "value": 20
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 64
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": -0.1
+        }
+      ],
+      "grantedSkillIds": [
+        "talent_def_150"
+      ],
+      "range": "melee",
+      "price": 25000,
+      "isRare": true
+    },
+    {
+      "id": "sword_blood_sword",
+      "name": "ブラッドソード",
+      "category": "weapon",
+      "subCategory": "sword",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 18
+        },
+        {
+          "stat": "def_flat",
+          "value": 4
+        },
+        {
+          "stat": "hp_flat",
+          "value": 80
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 64
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": -0.1
+        }
+      ],
+      "grantedSkillIds": [
+        "talent_hp_150"
+      ],
+      "range": "melee",
+      "price": 25000,
+      "isRare": true
+    },
+    {
+      "id": "sword_hawkeye_blade",
+      "name": "ホークアイブレード",
+      "category": "weapon",
+      "subCategory": "sword",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 18
+        },
+        {
+          "stat": "def_flat",
+          "value": 4
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 160
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": -0.1
+        }
+      ],
+      "grantedSkillIds": [
+        "talent_accuracy_150"
+      ],
+      "range": "melee",
+      "price": 25000,
+      "isRare": true
+    },
+    {
+      "id": "sword_mirage_edge",
+      "name": "ミラージュエッジ",
+      "category": "weapon",
+      "subCategory": "sword",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 16
+        },
+        {
+          "stat": "def_flat",
+          "value": 3
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 64
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": 0
+        },
+        {
+          "stat": "evasion_flat",
+          "value": 24
+        }
+      ],
+      "grantedSkillIds": [
+        "talent_evasion_150"
+      ],
+      "range": "melee",
+      "price": 25000,
+      "isRare": true
+    },
+    {
+      "id": "sword_crimson_edge",
+      "name": "クリムゾンエッジ",
+      "category": "weapon",
+      "subCategory": "sword",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 22
+        },
+        {
+          "stat": "def_flat",
+          "value": 3
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 64
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": -0.2
+        },
+        {
+          "stat": "critical_rate_percent",
+          "value": 6
+        }
+      ],
+      "grantedSkillIds": [
+        "talent_criticalRate_150"
+      ],
+      "range": "melee",
+      "price": 25000,
+      "isRare": true
+    },
+    {
+      "id": "sword_beast_killer",
+      "name": "ビーストキラー",
+      "category": "weapon",
+      "subCategory": "sword",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 20
+        },
+        {
+          "stat": "def_flat",
+          "value": 4
+        },
+        {
+          "stat": "hp_flat",
+          "value": 20
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 64
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": -0.1
+        }
+      ],
+      "grantedSkillIds": [
+        "def_to_hp_6",
+        "beast_slayer_1_5",
+        "lifesteal_5"
+      ],
+      "range": "melee",
+      "price": 25000,
+      "isRare": true
+    },
+    {
+      "id": "sword_undead_killer",
+      "name": "アンデッドキラー",
+      "category": "weapon",
+      "subCategory": "sword",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 20
+        },
+        {
+          "stat": "def_flat",
+          "value": 6
+        },
+        {
+          "stat": "hp_flat",
+          "value": 20
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 64
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": -0.1
+        }
+      ],
+      "grantedSkillIds": [
+        "def_to_hp_5",
+        "undead_slayer_1_5",
+        "base_power_up_3"
+      ],
+      "range": "melee",
+      "price": 25000,
+      "isRare": true
+    },
+    {
+      "id": "sword_dragon_killer",
+      "name": "ドラゴンキラー",
+      "category": "weapon",
+      "subCategory": "sword",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 28
+        },
+        {
+          "stat": "def_flat",
+          "value": 8
+        },
+        {
+          "stat": "hp_flat",
+          "value": 30
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 72
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": -0.2
+        }
+      ],
+      "grantedSkillIds": [
+        "def_to_hp_7",
+        "dragon_slayer_2_0",
+        "action_order_200"
+      ],
+      "range": "melee",
+      "price": 50000,
+      "isRare": true
+    },
+    {
+      "id": "sword_human_killer",
+      "name": "ヒューマンキラー",
+      "category": "weapon",
+      "subCategory": "sword",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 22
+        },
+        {
+          "stat": "def_flat",
+          "value": 4
+        },
+        {
+          "stat": "hp_flat",
+          "value": 20
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 80
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": -0.1
+        }
+      ],
+      "grantedSkillIds": [
+        "def_to_hp_7",
+        "human_slayer_2_0",
+        "base_vitality_up_5"
+      ],
+      "range": "melee",
+      "price": 25000,
+      "isRare": true
+    },
+    {
+      "id": "bow_beast_killer",
+      "name": "滅魔弓",
+      "category": "weapon",
+      "subCategory": "bow",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 24
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 128
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": -0.4
+        },
+        {
+          "stat": "evasion_flat",
+          "value": -8
+        }
+      ],
+      "grantedSkillIds": [
+        "critical_damage_bonus_9",
+        "pursuit_30",
+        "beast_slayer_1_5"
+      ],
+      "range": "ranged",
+      "price": 25000,
+      "isRare": true
+    },
+    {
+      "id": "bow_undead_killer",
+      "name": "天使の弓",
+      "category": "weapon",
+      "subCategory": "bow",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 24
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 136
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": -0.4
+        },
+        {
+          "stat": "evasion_flat",
+          "value": -8
+        }
+      ],
+      "grantedSkillIds": [
+        "critical_damage_bonus_7",
+        "base_agility_up_3",
+        "undead_slayer_1_5"
+      ],
+      "range": "ranged",
+      "price": 25000,
+      "isRare": true
+    },
+    {
+      "id": "bow_dragon_killer",
+      "name": "竜殺しの弓",
+      "category": "weapon",
+      "subCategory": "bow",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 36
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 160
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": -0.5
+        },
+        {
+          "stat": "evasion_flat",
+          "value": -12
+        }
+      ],
+      "grantedSkillIds": [
+        "critical_damage_bonus_11",
+        "lifesteal_8",
+        "dragon_slayer_2_0"
+      ],
+      "range": "ranged",
+      "price": 50000,
+      "isRare": true
+    },
+    {
+      "id": "bow_human_killer",
+      "name": "アサシンボウ",
+      "category": "weapon",
+      "subCategory": "bow",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 28
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 152
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": -0.4
+        },
+        {
+          "stat": "evasion_flat",
+          "value": -8
+        }
+      ],
+      "grantedSkillIds": [
+        "critical_damage_bonus_7",
+        "deadeye_200",
+        "human_slayer_1_5"
+      ],
+      "range": "ranged",
+      "price": 25000,
+      "isRare": true
+    },
+    {
+      "id": "accessory_split_core",
+      "name": "分裂核",
+      "category": "accessory",
+      "statBonuses": [],
+      "price": 12500,
+      "isRare": true,
+      "grantedSkillIds": [
+        "hp_regen_flat_10"
+      ]
+    },
+    {
+      "id": "accessory_greater_split_core",
+      "name": "大分裂核",
+      "category": "accessory",
+      "statBonuses": [],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "hp_regen_10"
+      ]
+    },
+    {
+      "id": "accessory_luck_medal",
+      "name": "ラッキーメダル",
+      "category": "accessory",
+      "statBonuses": [
+        {
+          "stat": "def_flat",
+          "value": 3
+        }
+      ],
+      "grantedSkillIds": [
+        "exp_bonus_50"
+      ],
+      "price": 12500,
+      "isRare": true
+    },
+    {
+      "id": "accessory_factor_core",
+      "name": "因子核",
+      "category": "accessory",
+      "statBonuses": [],
+      "grantedSkillIds": [
+        "factor_drop_mult_1_5"
+      ],
+      "price": 25000,
+      "isRare": true
+    },
+    {
+      "id": "claw_beast_slayer",
+      "name": "魔獣の爪",
+      "category": "weapon",
+      "subCategory": "claw",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 5
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 20
+        }
+      ],
+      "grantedSkillIds": [
+        "def_to_hp_6",
+        "beast_slayer_1_5",
+        "battle_fervor_4"
+      ],
+      "range": "melee",
+      "price": 12500,
+      "isRare": true
+    },
+    {
+      "id": "accessory_human_slayer",
+      "name": "人間に対する殺意",
+      "category": "accessory",
+      "statBonuses": [],
+      "grantedSkillIds": [
+        "human_slayer_1_5"
+      ],
+      "price": 15000,
+      "isRare": true
+    },
+    {
+      "_comment": "===== レアドロップ仮装備 ====="
+    },
+    {
+      "id": "accessory_rare_002",
+      "name": "粘液核",
+      "category": "accessory",
+      "statBonuses": [
+        {
+          "stat": "hp_flat",
+          "value": 8
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "rare_slime_core"
+      ]
+    },
+    {
+      "id": "robe_rare_002",
+      "name": "森雫のローブ",
+      "category": "robe",
+      "statBonuses": [
+        {
+          "stat": "magic_def_flat",
+          "value": 20
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "magic_resistant_4_5",
+        "magic_reduction_5",
+        "hp_multiplier_6"
+      ]
+    },
+    {
+      "id": "wand_rare_002",
+      "name": "グリーンワンド",
+      "category": "wand",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -4
+        },
+        {
+          "stat": "magic_atk_flat",
+          "value": 36
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "spell_damage_12",
+        "base_wisdom_up_3"
+      ]
+    },
+    {
+      "id": "hidden_rare_001",
+      "name": "スティレット",
+      "category": "weapon",
+      "subCategory": "hidden",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 16
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 112
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": 0.2
+        },
+        {
+          "stat": "evasion_flat",
+          "value": 7
+        }
+      ],
+      "range": "melee",
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "additional_damage_1",
+        "additional_damage_3",
+        "rare_ambush"
+      ]
+    },
+    {
+      "id": "accessory_rare_003",
+      "name": "すばしこい尻尾",
+      "category": "accessory",
+      "statBonuses": [
+        {
+          "stat": "hp_flat",
+          "value": 14
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "base_agility_up_2",
+        "light_footed_4_5"
+      ]
+    },
+    {
+      "id": "armor_rare_001",
+      "name": "ラットベスト",
+      "category": "armor",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -3
+        },
+        {
+          "stat": "def_flat",
+          "value": 18
+        },
+        {
+          "stat": "hp_flat",
+          "value": 30
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "physical_reduction_9",
+        "pierce_guard_30",
+        "attack_resistant_4_5"
+      ]
+    },
+    {
+      "id": "hidden_rare_002",
+      "name": "吸血針",
+      "category": "weapon",
+      "subCategory": "hidden",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 11
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 80
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": 0.2
+        },
+        {
+          "stat": "evasion_flat",
+          "value": 5
+        }
+      ],
+      "range": "melee",
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "additional_damage_1",
+        "additional_damage_2",
+        "hp_regen_flat_10"
+      ]
+    },
+    {
+      "id": "robe_rare_003",
+      "name": "夜羽の外套",
+      "category": "robe",
+      "statBonuses": [
+        {
+          "stat": "magic_def_flat",
+          "value": 24
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "magic_resistant_4_5",
+        "magic_reduction_6",
+        "evasion_up_20"
+      ]
+    },
+    {
+      "id": "accessory_rare_004",
+      "name": "コウモリの耳飾り",
+      "category": "accessory",
+      "statBonuses": [
+        {
+          "stat": "hp_flat",
+          "value": 26
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "beast_slayer_1_5",
+        "physical_damage_20",
+        "base_luck_up_3"
+      ]
+    },
+    {
+      "id": "hidden_rare_003",
+      "name": "トゲ手裏剣",
+      "category": "weapon",
+      "subCategory": "hidden",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 11
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 80
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": 0.2
+        },
+        {
+          "stat": "evasion_flat",
+          "value": 7
+        }
+      ],
+      "range": "melee",
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "additional_damage_2",
+        "additional_damage_3",
+        "evasion_up_20"
+      ]
+    },
+    {
+      "id": "shield_rare_002",
+      "name": "スパイクバックラー",
+      "category": "shield",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -2
+        },
+        {
+          "stat": "def_flat",
+          "value": 14
+        },
+        {
+          "stat": "evasion_flat",
+          "value": 18
+        },
+        {
+          "stat": "magic_def_flat",
+          "value": 14
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "physical_reduction_3",
+        "breath_reduction_6",
+        "evasion_up_20"
+      ]
+    },
+    {
+      "id": "accessory_rare_005",
+      "name": "反撃の針玉",
+      "category": "accessory",
+      "statBonuses": [
+        {
+          "stat": "hp_flat",
+          "value": 26
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "beast_slayer_1_5",
+        "physical_damage_20",
+        "base_power_up_3"
+      ]
+    },
+    {
+      "id": "sword_rare_001",
+      "name": "ファングサーベル",
+      "category": "weapon",
+      "subCategory": "sword",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 20
+        },
+        {
+          "stat": "def_flat",
+          "value": 5
+        },
+        {
+          "stat": "hp_flat",
+          "value": 12
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 56
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": -0.2
+        }
+      ],
+      "range": "melee",
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "beast_slayer_1_5",
+        "additional_damage_2"
+      ]
+    },
+    {
+      "id": "armor_rare_002",
+      "name": "ウルフベスト",
+      "category": "armor",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -3
+        },
+        {
+          "stat": "def_flat",
+          "value": 18
+        },
+        {
+          "stat": "hp_flat",
+          "value": 30
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "physical_reduction_7",
+        "base_vitality_up_2"
+      ]
+    },
+    {
+      "id": "accessory_rare_006",
+      "name": "月吠えの首輪",
+      "category": "accessory",
+      "statBonuses": [
+        {
+          "stat": "hp_flat",
+          "value": 26
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "beast_slayer_1_5",
+        "physical_damage_20",
+        "base_agility_up_3"
+      ]
+    },
+    {
+      "id": "sword_rare_002",
+      "name": "グレイファング",
+      "category": "weapon",
+      "subCategory": "sword",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 22
+        },
+        {
+          "stat": "def_flat",
+          "value": 6
+        },
+        {
+          "stat": "hp_flat",
+          "value": 16
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 56
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": -0.2
+        }
+      ],
+      "range": "melee",
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "beast_slayer_1_2",
+        "def_to_hp_3",
+        "hp_multiplier_5"
+      ]
+    },
+    {
+      "id": "armor_rare_003",
+      "name": "灰狼の毛皮鎧",
+      "category": "armor",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -3
+        },
+        {
+          "stat": "def_flat",
+          "value": 18
+        },
+        {
+          "stat": "hp_flat",
+          "value": 30
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "physical_reduction_7",
+        "attack_resistant_4_5"
+      ]
+    },
+    {
+      "id": "accessory_rare_007",
+      "name": "灰月の首輪",
+      "category": "accessory",
+      "statBonuses": [
+        {
+          "stat": "hp_flat",
+          "value": 26
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "beast_slayer_1_5",
+        "physical_damage_20",
+        "base_wisdom_up_3"
+      ]
+    },
+    {
+      "id": "sword_rare_003",
+      "name": "グラディウス",
+      "category": "weapon",
+      "subCategory": "sword",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 20
+        },
+        {
+          "stat": "def_flat",
+          "value": 5
+        },
+        {
+          "stat": "hp_flat",
+          "value": 12
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 56
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": -0.2
+        }
+      ],
+      "range": "melee",
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "physical_damage_10",
+        "def_to_hp_2"
+      ]
+    },
+    {
+      "id": "shield_rare_003",
+      "name": "バックラー",
+      "category": "shield",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -2
+        },
+        {
+          "stat": "def_flat",
+          "value": 14
+        },
+        {
+          "stat": "evasion_flat",
+          "value": 18
+        },
+        {
+          "stat": "magic_def_flat",
+          "value": 14
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "evasion_up_30",
+        "breath_reduction_9",
+        "ward_physical_2"
+      ]
+    },
+    {
+      "id": "accessory_rare_008",
+      "name": "戦場拾いの袋",
+      "category": "accessory",
+      "statBonuses": [
+        {
+          "stat": "hp_flat",
+          "value": 26
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "party_rare_mult_1_1",
+        "action_order_200"
+      ]
+    },
+    {
+      "id": "hidden_rare_004",
+      "name": "ククリ",
+      "category": "weapon",
+      "subCategory": "hidden",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 16
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 112
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": 0.2
+        },
+        {
+          "stat": "evasion_flat",
+          "value": 7
+        }
+      ],
+      "range": "melee",
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "additional_damage_1",
+        "additional_damage_3",
+        "rare_ambush",
+        "base_luck_up_2"
+      ]
+    },
+    {
+      "id": "hidden_rare_005",
+      "name": "チャクラム",
+      "category": "weapon",
+      "subCategory": "hidden",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 32
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 212
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": 0.3
+        },
+        {
+          "stat": "evasion_flat",
+          "value": 14
+        }
+      ],
+      "range": "melee",
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "additional_damage_2",
+        "additional_damage_6",
+        "rare_ambush",
+        "base_agility_up_3",
+        "human_slayer_1_5"
+      ]
+    },
+    {
+      "id": "accessory_rare_009",
+      "name": "盗人の指輪",
+      "category": "accessory",
+      "statBonuses": [
+        {
+          "stat": "hp_flat",
+          "value": 26
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "party_rare_mult_1_1",
+        "base_power_up_5"
+      ]
+    },
+    {
+      "id": "sword_rare_004",
+      "name": "ファルシオン",
+      "category": "weapon",
+      "subCategory": "sword",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 22
+        },
+        {
+          "stat": "def_flat",
+          "value": 5
+        },
+        {
+          "stat": "hp_flat",
+          "value": 12
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 56
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": -0.4
+        }
+      ],
+      "range": "melee",
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "physical_damage_20",
+        "def_to_hp_2"
+      ]
+    },
+    {
+      "id": "armor_rare_004",
+      "name": "ブリガンダイン",
+      "category": "armor",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -3
+        },
+        {
+          "stat": "def_flat",
+          "value": 24
+        },
+        {
+          "stat": "hp_flat",
+          "value": 40
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "physical_reduction_9",
+        "crit_guard_30"
+      ]
+    },
+    {
+      "id": "accessory_rare_010",
+      "name": "戦吠えの牙飾り",
+      "category": "accessory",
+      "statBonuses": [
+        {
+          "stat": "hp_flat",
+          "value": 26
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "party_rare_mult_1_1",
+        "base_agility_up_5"
+      ]
+    },
+    {
+      "id": "wand_rare_003",
+      "name": "見習いワンド",
+      "category": "wand",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -4
+        },
+        {
+          "stat": "magic_atk_flat",
+          "value": 24
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "spell_damage_10",
+        "base_wisdom_up_2"
+      ]
+    },
+    {
+      "id": "robe_rare_004",
+      "name": "メイジローブ",
+      "category": "robe",
+      "statBonuses": [
+        {
+          "stat": "magic_def_flat",
+          "value": 28
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "magic_resistant_4_5",
+        "magic_reduction_14",
+        "hp_multiplier_8",
+        "base_wisdom_up_3"
+      ]
+    },
+    {
+      "id": "rod_rare_002",
+      "name": "呪文泥棒のロッド",
+      "category": "rod",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -2
+        },
+        {
+          "stat": "magicHeal_flat",
+          "value": 54
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "magic_heal_to_hp_11",
+        "grant_magic_barrier",
+        "party_heal_regen_20"
+      ]
+    },
+    {
+      "id": "shield_rare_004",
+      "name": "ラウンドシールド",
+      "category": "shield",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -2
+        },
+        {
+          "stat": "def_flat",
+          "value": 10
+        },
+        {
+          "stat": "evasion_flat",
+          "value": 14
+        },
+        {
+          "stat": "magic_def_flat",
+          "value": 10
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "physical_reduction_3",
+        "breath_reduction_7",
+        "evasion_up_20"
+      ]
+    },
+    {
+      "id": "armor_rare_005",
+      "name": "ガードキュイラス",
+      "category": "armor",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -3
+        },
+        {
+          "stat": "def_flat",
+          "value": 18
+        },
+        {
+          "stat": "hp_flat",
+          "value": 30
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "physical_reduction_9",
+        "pierce_guard_30"
+      ]
+    },
+    {
+      "id": "large_shield_rare_001",
+      "name": "タワーシールド",
+      "category": "large_shield",
+      "statBonuses": [
+        {
+          "stat": "def_flat",
+          "value": 58
+        },
+        {
+          "stat": "evasion_flat",
+          "value": -20
+        },
+        {
+          "stat": "magic_def_flat",
+          "value": 20
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "ranged_attack_reduction_22",
+        "rare_guardian",
+        "ward_physical_3"
+      ]
+    },
+    {
+      "id": "bow_rare_001",
+      "name": "小鬼の弓",
+      "category": "weapon",
+      "subCategory": "bow",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 24
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 108
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": -0.6
+        },
+        {
+          "stat": "evasion_flat",
+          "value": -8
+        }
+      ],
+      "range": "ranged",
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "critical_damage_bonus_6",
+        "additional_damage_1"
+      ]
+    },
+    {
+      "id": "bow_rare_002",
+      "name": "狩猟弓",
+      "category": "weapon",
+      "subCategory": "bow",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 36
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 168
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": -0.6
+        },
+        {
+          "stat": "evasion_flat",
+          "value": -12
+        }
+      ],
+      "range": "ranged",
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "critical_damage_bonus_7",
+        "deadeye_200",
+        "human_slayer_1_5"
+      ]
+    },
+    {
+      "id": "accessory_rare_011",
+      "name": "狙い羽根",
+      "category": "accessory",
+      "statBonuses": [
+        {
+          "stat": "hp_flat",
+          "value": 26
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "light_footed_4_5",
+        "base_wisdom_up_5"
+      ]
+    },
+    {
+      "id": "rod_rare_003",
+      "name": "祈祷ロッド",
+      "category": "rod",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -2
+        },
+        {
+          "stat": "magicHeal_flat",
+          "value": 24
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "magic_heal_to_hp_6",
+        "grant_heal"
+      ]
+    },
+    {
+      "id": "robe_rare_005",
+      "name": "祭祀ローブ",
+      "category": "robe",
+      "statBonuses": [
+        {
+          "stat": "magic_def_flat",
+          "value": 28
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "magic_resistant_4_5",
+        "magic_reduction_14",
+        "hp_multiplier_8",
+        "party_heal_regen_10"
+      ]
+    },
+    {
+      "id": "accessory_rare_012",
+      "name": "祖霊の首飾り",
+      "category": "accessory",
+      "statBonuses": [
+        {
+          "stat": "hp_flat",
+          "value": 26
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "party_rare_mult_1_1",
+        "base_spirit_up_5"
+      ]
+    },
+    {
+      "id": "sword_rare_005",
+      "name": "ホブゴブリンの剣",
+      "category": "weapon",
+      "subCategory": "sword",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 14
+        },
+        {
+          "stat": "def_flat",
+          "value": 4
+        },
+        {
+          "stat": "hp_flat",
+          "value": 8
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 40
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": -0.2
+        }
+      ],
+      "range": "melee",
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "def_to_hp_2"
+      ]
+    },
+    {
+      "id": "armor_rare_006",
+      "name": "ホブゴブリンの戦鎧",
+      "category": "armor",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -3
+        },
+        {
+          "stat": "def_flat",
+          "value": 5
+        },
+        {
+          "stat": "hp_flat",
+          "value": 12
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "physical_reduction_5"
+      ]
+    },
+    {
+      "id": "shield_rare_005",
+      "name": "族長の盾",
+      "category": "shield",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -2
+        },
+        {
+          "stat": "def_flat",
+          "value": 6
+        },
+        {
+          "stat": "evasion_flat",
+          "value": 7
+        },
+        {
+          "stat": "magic_def_flat",
+          "value": 3
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "breath_damage_4_5",
+        "evasion_up_20",
+        "breath_reduction_6",
+        "rare_guardian"
+      ]
+    },
+    {
+      "id": "accessory_rare_013",
+      "name": "族長の戦冠",
+      "category": "accessory",
+      "statBonuses": [
+        {
+          "stat": "hp_flat",
+          "value": 8
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "party_title_mult_1_1"
+      ]
+    },
+    {
+      "id": "hidden_rare_006",
+      "name": "腐牙のククリ",
+      "category": "weapon",
+      "subCategory": "hidden",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 11
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 80
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": 0.2
+        },
+        {
+          "stat": "evasion_flat",
+          "value": 5
+        }
+      ],
+      "range": "melee",
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "additional_damage_2",
+        "additional_damage_6",
+        "rare_ambush",
+        "base_luck_up_3",
+        "undead_slayer_1_5"
+      ]
+    },
+    {
+      "id": "armor_rare_007",
+      "name": "腐犬のベスト",
+      "category": "armor",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -3
+        },
+        {
+          "stat": "def_flat",
+          "value": 18
+        },
+        {
+          "stat": "hp_flat",
+          "value": 30
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "physical_reduction_11",
+        "crit_guard_30",
+        "attack_resistant_4_5"
+      ]
+    },
+    {
+      "id": "accessory_rare_014",
+      "name": "腐犬の首輪",
+      "category": "accessory",
+      "statBonuses": [
+        {
+          "stat": "hp_flat",
+          "value": 26
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "undead_slayer_2_0",
+        "physical_damage_50",
+        "spell_siphon_30"
+      ]
+    },
+    {
+      "id": "hidden_rare_007",
+      "name": "黒羽の針",
+      "category": "weapon",
+      "subCategory": "hidden",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 11
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 80
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": 0.2
+        },
+        {
+          "stat": "evasion_flat",
+          "value": 5
+        }
+      ],
+      "range": "melee",
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "additional_damage_2",
+        "additional_damage_6",
+        "rare_ambush",
+        "base_power_up_3",
+        "undead_slayer_1_5"
+      ]
+    },
+    {
+      "id": "robe_rare_006",
+      "name": "黒羽の外套",
+      "category": "robe",
+      "statBonuses": [
+        {
+          "stat": "magic_def_flat",
+          "value": 28
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "magic_resistant_4_5",
+        "magic_reduction_18",
+        "hp_multiplier_10",
+        "ward_magic_2",
+        "rare_spell_echo"
+      ]
+    },
+    {
+      "id": "accessory_rare_015",
+      "name": "死報の羽飾り",
+      "category": "accessory",
+      "statBonuses": [
+        {
+          "stat": "hp_flat",
+          "value": 26
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "undead_slayer_2_0",
+        "physical_damage_50",
+        "action_order_200"
+      ]
+    },
+    {
+      "id": "sword_rare_006",
+      "name": "錆びた剣",
+      "category": "weapon",
+      "subCategory": "sword",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 20
+        },
+        {
+          "stat": "def_flat",
+          "value": 5
+        },
+        {
+          "stat": "hp_flat",
+          "value": 12
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 56
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": -0.2
+        }
+      ],
+      "range": "melee",
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "def_to_hp_5",
+        "undead_slayer_1_5",
+        "base_vitality_up_3"
+      ]
+    },
+    {
+      "id": "robe_rare_007",
+      "name": "亡者の外套",
+      "category": "robe",
+      "statBonuses": [
+        {
+          "stat": "magic_def_flat",
+          "value": 28
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "magic_resistant_4_5",
+        "magic_reduction_18",
+        "hp_multiplier_10",
+        "mana_surge_4",
+        "rare_spell_echo"
+      ]
+    },
+    {
+      "id": "accessory_rare_016",
+      "name": "彷徨いの指輪",
+      "category": "accessory",
+      "statBonuses": [
+        {
+          "stat": "hp_flat",
+          "value": 26
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "undead_slayer_2_0",
+        "physical_damage_50",
+        "war_cry_1_3"
+      ]
+    },
+    {
+      "id": "shield_rare_006",
+      "name": "腐肉の盾",
+      "category": "shield",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -2
+        },
+        {
+          "stat": "def_flat",
+          "value": 10
+        },
+        {
+          "stat": "evasion_flat",
+          "value": 14
+        },
+        {
+          "stat": "magic_def_flat",
+          "value": 10
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "evasion_up_30",
+        "breath_reduction_9",
+        "ward_physical_2"
+      ]
+    },
+    {
+      "id": "armor_rare_008",
+      "name": "腐敗の鎧",
+      "category": "armor",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -3
+        },
+        {
+          "stat": "def_flat",
+          "value": 18
+        },
+        {
+          "stat": "hp_flat",
+          "value": 30
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "physical_reduction_11",
+        "base_power_up_4"
+      ]
+    },
+    {
+      "id": "accessory_rare_017",
+      "name": "腐王の心臓片",
+      "category": "accessory",
+      "statBonuses": [
+        {
+          "stat": "hp_flat",
+          "value": 26
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "undead_slayer_2_0",
+        "physical_damage_50",
+        "lifesteal_12"
+      ]
+    },
+    {
+      "id": "wand_rare_004",
+      "name": "霊灯ワンド",
+      "category": "wand",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -4
+        },
+        {
+          "stat": "magic_atk_flat",
+          "value": 24
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "spell_damage_12",
+        "grant_magic_arrow",
+        "base_luck_up_3"
+      ]
+    },
+    {
+      "id": "robe_rare_008",
+      "name": "霞のローブ",
+      "category": "robe",
+      "statBonuses": [
+        {
+          "stat": "magic_def_flat",
+          "value": 28
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "magic_resistant_4_5",
+        "magic_reduction_18",
+        "hp_multiplier_10",
+        "base_luck_up_4",
+        "rare_spell_echo"
+      ]
+    },
+    {
+      "id": "accessory_rare_018",
+      "name": "怨声の指輪",
+      "category": "accessory",
+      "statBonuses": [
+        {
+          "stat": "hp_flat",
+          "value": 26
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "undead_slayer_2_0",
+        "physical_damage_50",
+        "pursuit_30"
+      ]
+    },
+    {
+      "id": "rod_rare_004",
+      "name": "怨霊のロッド",
+      "category": "rod",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -2
+        },
+        {
+          "stat": "magicHeal_flat",
+          "value": 36
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "magic_heal_to_hp_9",
+        "grant_magic_barrier",
+        "party_heal_regen_10",
+        "rare_spell_echo"
+      ]
+    },
+    {
+      "id": "robe_rare_009",
+      "name": "廃村の喪服",
+      "category": "robe",
+      "statBonuses": [
+        {
+          "stat": "magic_def_flat",
+          "value": 28
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "magic_resistant_4_5",
+        "magic_reduction_14",
+        "hp_multiplier_8",
+        "base_luck_up_3",
+        "rare_spell_echo"
+      ]
+    },
+    {
+      "id": "accessory_rare_019",
+      "name": "怨霊の涙",
+      "category": "accessory",
+      "statBonuses": [
+        {
+          "stat": "hp_flat",
+          "value": 26
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "rare_last_stand",
+        "undead_slayer_1_5"
+      ]
+    },
+    {
+      "id": "wand_rare_005",
+      "name": "滅び村のワンド",
+      "category": "wand",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -4
+        },
+        {
+          "stat": "magic_atk_flat",
+          "value": 60
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "spell_damage_20",
+        "grant_magic_arrow",
+        "frost_nova_t4",
+        "rare_spell_echo"
+      ]
+    },
+    {
+      "id": "hidden_rare_008",
+      "name": "錆びナイフ",
+      "category": "weapon",
+      "subCategory": "hidden",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 11
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 80
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": 0.2
+        },
+        {
+          "stat": "evasion_flat",
+          "value": 5
+        }
+      ],
+      "range": "melee",
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "additional_damage_2",
+        "additional_damage_6",
+        "rare_ambush",
+        "base_spirit_up_3",
+        "beast_slayer_1_5"
+      ]
+    },
+    {
+      "id": "accessory_rare_020",
+      "name": "濡れ鼠の尾",
+      "category": "accessory",
+      "statBonuses": [
+        {
+          "stat": "hp_flat",
+          "value": 20
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "beast_slayer_2_0",
+        "physical_damage_40",
+        "war_cry_1_2"
+      ]
+    },
+    {
+      "id": "armor_rare_009",
+      "name": "下水走りのベスト",
+      "category": "armor",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -3
+        },
+        {
+          "stat": "def_flat",
+          "value": 24
+        },
+        {
+          "stat": "hp_flat",
+          "value": 40
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "physical_reduction_14",
+        "crit_guard_50",
+        "attack_resistant_4_5"
+      ]
+    },
+    {
+      "id": "accessory_rare_021",
+      "name": "水膜核",
+      "category": "accessory",
+      "statBonuses": [
+        {
+          "stat": "hp_flat",
+          "value": 14
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "rare_slime_core",
+        "base_spirit_up_3"
+      ]
+    },
+    {
+      "id": "robe_rare_010",
+      "name": "アクアローブ",
+      "category": "robe",
+      "statBonuses": [
+        {
+          "stat": "magic_def_flat",
+          "value": 28
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "magic_resistant_4_5",
+        "magic_reduction_22",
+        "hp_multiplier_12",
+        "ward_magic_3"
+      ]
+    },
+    {
+      "id": "wand_rare_006",
+      "name": "清濁のワンド",
+      "category": "wand",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -4
+        },
+        {
+          "stat": "magic_atk_flat",
+          "value": 48
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "spell_damage_20",
+        "grant_magic_arrow",
+        "mana_surge_6"
+      ]
+    },
+    {
+      "id": "sword_rare_007",
+      "name": "錆骨の剣",
+      "category": "weapon",
+      "subCategory": "sword",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 20
+        },
+        {
+          "stat": "def_flat",
+          "value": 5
+        },
+        {
+          "stat": "hp_flat",
+          "value": 12
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 56
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": -0.2
+        }
+      ],
+      "range": "melee",
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "def_to_hp_5",
+        "undead_slayer_1_5",
+        "base_luck_up_3"
+      ]
+    },
+    {
+      "id": "shield_rare_007",
+      "name": "錆盾",
+      "category": "shield",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -2
+        },
+        {
+          "stat": "def_flat",
+          "value": 14
+        },
+        {
+          "stat": "evasion_flat",
+          "value": 18
+        },
+        {
+          "stat": "magic_def_flat",
+          "value": 14
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "evasion_up_50",
+        "breath_reduction_11",
+        "ward_physical_3"
+      ]
+    },
+    {
+      "id": "armor_rare_010",
+      "name": "古兵の鎧",
+      "category": "armor",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -3
+        },
+        {
+          "stat": "def_flat",
+          "value": 24
+        },
+        {
+          "stat": "hp_flat",
+          "value": 40
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "physical_reduction_14",
+        "bulwark_stance_30"
+      ]
+    },
+    {
+      "id": "hidden_rare_009",
+      "name": "毒牙の針",
+      "category": "weapon",
+      "subCategory": "hidden",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 11
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 80
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": 0.2
+        },
+        {
+          "stat": "evasion_flat",
+          "value": 5
+        }
+      ],
+      "range": "melee",
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "additional_damage_2",
+        "additional_damage_6",
+        "rare_ambush",
+        "base_vitality_up_3",
+        "beast_slayer_1_5"
+      ]
+    },
+    {
+      "id": "armor_rare_011",
+      "name": "水蛇の鱗鎧",
+      "category": "armor",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -3
+        },
+        {
+          "stat": "def_flat",
+          "value": 18
+        },
+        {
+          "stat": "hp_flat",
+          "value": 30
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "physical_reduction_12",
+        "pierce_guard_50",
+        "attack_resistant_4_5"
+      ]
+    },
+    {
+      "id": "accessory_rare_022",
+      "name": "輪締めの首飾り",
+      "category": "accessory",
+      "statBonuses": [
+        {
+          "stat": "hp_flat",
+          "value": 26
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "beast_slayer_2_0",
+        "physical_damage_50",
+        "pursuit_30"
+      ]
+    },
+    {
+      "id": "robe_rare_011",
+      "name": "濡れた外套",
+      "category": "robe",
+      "statBonuses": [
+        {
+          "stat": "magic_def_flat",
+          "value": 20
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "magic_resistant_4_5",
+        "magic_reduction_14",
+        "hp_multiplier_8",
+        "base_vitality_up_3",
+        "rare_spell_echo"
+      ]
+    },
+    {
+      "id": "accessory_rare_023",
+      "name": "溺者の鎖",
+      "category": "accessory",
+      "statBonuses": [
+        {
+          "stat": "hp_flat",
+          "value": 20
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "undead_slayer_2_0",
+        "physical_damage_40",
+        "lifesteal_8"
+      ]
+    },
+    {
+      "id": "rod_rare_005",
+      "name": "沈水ロッド",
+      "category": "rod",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -2
+        },
+        {
+          "stat": "magicHeal_flat",
+          "value": 54
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "magic_heal_to_hp_12",
+        "grant_heal",
+        "spell_siphon_30"
+      ]
+    },
+    {
+      "id": "accessory_rare_024",
+      "name": "汚泥核",
+      "category": "accessory",
+      "statBonuses": [
+        {
+          "stat": "hp_flat",
+          "value": 14
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "rare_slime_core",
+        "base_vitality_up_3"
+      ]
+    },
+    {
+      "id": "robe_rare_012",
+      "name": "泥濘ローブ",
+      "category": "robe",
+      "statBonuses": [
+        {
+          "stat": "magic_def_flat",
+          "value": 28
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "magic_resistant_4_5",
+        "magic_reduction_22",
+        "hp_multiplier_12",
+        "mystic_stance_30"
+      ]
+    },
+    {
+      "id": "wand_rare_007",
+      "name": "ポイズンワンド",
+      "category": "wand",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -4
+        },
+        {
+          "stat": "magic_atk_flat",
+          "value": 48
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "spell_damage_20",
+        "grant_fireball",
+        "mystic_stance_30"
+      ]
+    },
+    {
+      "id": "sword_rare_008",
+      "name": "水門兵の剣",
+      "category": "weapon",
+      "subCategory": "sword",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 40
+        },
+        {
+          "stat": "def_flat",
+          "value": 10
+        },
+        {
+          "stat": "hp_flat",
+          "value": 26
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 110
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": -0.2
+        }
+      ],
+      "range": "melee",
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "def_to_hp_5",
+        "undead_slayer_1_5",
+        "base_agility_up_3",
+        "rare_guardian"
+      ]
+    },
+    {
+      "id": "shield_rare_008",
+      "name": "水門兵の盾",
+      "category": "shield",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -2
+        },
+        {
+          "stat": "def_flat",
+          "value": 18
+        },
+        {
+          "stat": "evasion_flat",
+          "value": 24
+        },
+        {
+          "stat": "magic_def_flat",
+          "value": 18
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "evasion_up_30",
+        "breath_reduction_9",
+        "base_power_up_3",
+        "rare_guardian"
+      ]
+    },
+    {
+      "id": "armor_rare_012",
+      "name": "水門兵の鎧",
+      "category": "armor",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -3
+        },
+        {
+          "stat": "def_flat",
+          "value": 36
+        },
+        {
+          "stat": "hp_flat",
+          "value": 55
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "physical_reduction_12",
+        "crit_guard_50",
+        "rare_guardian"
+      ]
+    },
+    {
+      "id": "accessory_rare_025",
+      "name": "古水門の鍵",
+      "category": "accessory",
+      "statBonuses": [
+        {
+          "stat": "hp_flat",
+          "value": 38
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "undead_slayer_2_0",
+        "physical_damage_50",
+        "battle_fervor_6",
+        "hp_degen_5"
+      ]
+    },
+    {
+      "id": "sword_rare_009",
+      "name": "ボーンソード",
+      "category": "weapon",
+      "subCategory": "sword",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 20
+        },
+        {
+          "stat": "def_flat",
+          "value": 5
+        },
+        {
+          "stat": "hp_flat",
+          "value": 12
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 56
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": -0.2
+        }
+      ],
+      "range": "melee",
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "def_to_hp_5",
+        "undead_slayer_1_5",
+        "base_spirit_up_3"
+      ]
+    },
+    {
+      "id": "shield_rare_009",
+      "name": "ボーンシールド",
+      "category": "shield",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -2
+        },
+        {
+          "stat": "def_flat",
+          "value": 14
+        },
+        {
+          "stat": "evasion_flat",
+          "value": 18
+        },
+        {
+          "stat": "magic_def_flat",
+          "value": 14
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "evasion_up_50",
+        "breath_reduction_11",
+        "crit_guard_50"
+      ]
+    },
+    {
+      "id": "accessory_rare_026",
+      "name": "白骨兵の勲章",
+      "category": "accessory",
+      "statBonuses": [
+        {
+          "stat": "hp_flat",
+          "value": 26
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "undead_slayer_2_0",
+        "physical_damage_50",
+        "battle_fervor_6",
+        "hp_degen_5"
+      ]
+    },
+    {
+      "id": "armor_rare_013",
+      "name": "腐乱の鎧",
+      "category": "armor",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -3
+        },
+        {
+          "stat": "def_flat",
+          "value": 12
+        },
+        {
+          "stat": "hp_flat",
+          "value": 20
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "physical_reduction_9",
+        "crit_guard_30"
+      ]
+    },
+    {
+      "id": "accessory_rare_027",
+      "name": "悪臭の護符",
+      "category": "accessory",
+      "statBonuses": [
+        {
+          "stat": "hp_flat",
+          "value": 20
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "rare_last_stand",
+        "undead_slayer_2_0"
+      ]
+    },
+    {
+      "id": "accessory_rare_028",
+      "name": "再生肉",
+      "category": "accessory",
+      "statBonuses": [
+        {
+          "stat": "hp_flat",
+          "value": 26
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "undead_slayer_2_0",
+        "physical_damage_50",
+        "hp_regen_10"
+      ]
+    },
+    {
+      "id": "robe_rare_013",
+      "name": "霊布のローブ",
+      "category": "robe",
+      "statBonuses": [
+        {
+          "stat": "magic_def_flat",
+          "value": 20
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "magic_resistant_4_5",
+        "magic_reduction_14",
+        "hp_multiplier_8",
+        "base_agility_up_3",
+        "rare_spell_echo"
+      ]
+    },
+    {
+      "id": "wand_rare_008",
+      "name": "ファントムワンド",
+      "category": "wand",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -4
+        },
+        {
+          "stat": "magic_atk_flat",
+          "value": 36
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "spell_damage_16",
+        "grant_magic_arrow",
+        "mana_surge_6"
+      ]
+    },
+    {
+      "id": "accessory_rare_029",
+      "name": "透明な指輪",
+      "category": "accessory",
+      "statBonuses": [
+        {
+          "stat": "hp_flat",
+          "value": 26
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "undead_slayer_2_0",
+        "physical_damage_50",
+        "base_vitality_up_6"
+      ]
+    },
+    {
+      "id": "bow_rare_003",
+      "name": "ボーンボウ",
+      "category": "weapon",
+      "subCategory": "bow",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 24
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 108
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": -0.6
+        },
+        {
+          "stat": "evasion_flat",
+          "value": -8
+        }
+      ],
+      "range": "ranged",
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "critical_damage_bonus_7",
+        "deadeye_200",
+        "undead_slayer_1_5"
+      ]
+    },
+    {
+      "id": "bow_rare_004",
+      "name": "霊骨の弓",
+      "category": "weapon",
+      "subCategory": "bow",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 36
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 168
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": -0.6
+        },
+        {
+          "stat": "evasion_flat",
+          "value": -12
+        }
+      ],
+      "range": "ranged",
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "critical_damage_bonus_10",
+        "battle_fervor_6",
+        "undead_slayer_2_0"
+      ]
+    },
+    {
+      "id": "accessory_rare_030",
+      "name": "死角の矢羽",
+      "category": "accessory",
+      "statBonuses": [
+        {
+          "stat": "hp_flat",
+          "value": 26
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "undead_slayer_2_0",
+        "physical_damage_50",
+        "base_luck_up_6"
+      ]
+    },
+    {
+      "id": "hidden_rare_010",
+      "name": "屍鬼の爪",
+      "category": "weapon",
+      "subCategory": "hidden",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 11
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 80
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": 0.2
+        },
+        {
+          "stat": "evasion_flat",
+          "value": 5
+        }
+      ],
+      "range": "melee",
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "additional_damage_2",
+        "additional_damage_6",
+        "rare_ambush",
+        "base_wisdom_up_3",
+        "undead_slayer_1_5"
+      ]
+    },
+    {
+      "id": "armor_rare_014",
+      "name": "墓喰いの鎧",
+      "category": "armor",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -3
+        },
+        {
+          "stat": "def_flat",
+          "value": 18
+        },
+        {
+          "stat": "hp_flat",
+          "value": 30
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "physical_reduction_12",
+        "bulwark_stance_30"
+      ]
+    },
+    {
+      "id": "accessory_rare_031",
+      "name": "飢えた牙飾り",
+      "category": "accessory",
+      "statBonuses": [
+        {
+          "stat": "hp_flat",
+          "value": 26
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "undead_slayer_2_0",
+        "physical_damage_50",
+        "base_power_up_6"
+      ]
+    },
+    {
+      "id": "shield_rare_010",
+      "name": "墓守の盾",
+      "category": "shield",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -2
+        },
+        {
+          "stat": "def_flat",
+          "value": 14
+        },
+        {
+          "stat": "evasion_flat",
+          "value": 18
+        },
+        {
+          "stat": "magic_def_flat",
+          "value": 14
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "evasion_up_30",
+        "breath_reduction_9",
+        "base_luck_up_3"
+      ]
+    },
+    {
+      "id": "armor_rare_015",
+      "name": "番兵の鎧",
+      "category": "armor",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -3
+        },
+        {
+          "stat": "def_flat",
+          "value": 24
+        },
+        {
+          "stat": "hp_flat",
+          "value": 40
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "physical_reduction_12",
+        "pierce_guard_50"
+      ]
+    },
+    {
+      "id": "sword_rare_010",
+      "name": "墓守の剣",
+      "category": "weapon",
+      "subCategory": "sword",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 56
+        },
+        {
+          "stat": "def_flat",
+          "value": 13
+        },
+        {
+          "stat": "hp_flat",
+          "value": 36
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 160
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": -0.2
+        }
+      ],
+      "range": "melee",
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "def_to_hp_8",
+        "undead_slayer_2_0",
+        "battle_fervor_6"
+      ]
+    },
+    {
+      "id": "rod_rare_006",
+      "name": "死霊術師のロッド",
+      "category": "rod",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -2
+        },
+        {
+          "stat": "magicHeal_flat",
+          "value": 54
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "magic_heal_to_hp_9",
+        "grant_magic_barrier",
+        "base_wisdom_up_3",
+        "rare_spell_echo"
+      ]
+    },
+    {
+      "id": "robe_rare_014",
+      "name": "黒骨のローブ",
+      "category": "robe",
+      "statBonuses": [
+        {
+          "stat": "magic_def_flat",
+          "value": 38
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "magic_resistant_4_5",
+        "magic_reduction_14",
+        "hp_multiplier_8",
+        "base_power_up_3",
+        "rare_spell_echo"
+      ]
+    },
+    {
+      "id": "wand_rare_009",
+      "name": "屍術ワンド",
+      "category": "wand",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -4
+        },
+        {
+          "stat": "magic_atk_flat",
+          "value": 60
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "spell_damage_16",
+        "grant_magic_arrow",
+        "mana_surge_6",
+        "rare_spell_echo"
+      ]
+    },
+    {
+      "id": "accessory_rare_032",
+      "name": "不死者の指輪",
+      "category": "accessory",
+      "statBonuses": [
+        {
+          "stat": "hp_flat",
+          "value": 38
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "rare_last_stand",
+        "undead_slayer_2_0"
+      ]
+    },
+    {
+      "id": "hidden_rare_011",
+      "name": "ナイフ",
+      "category": "weapon",
+      "subCategory": "hidden",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 16
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 112
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": 0.2
+        },
+        {
+          "stat": "evasion_flat",
+          "value": 7
+        }
+      ],
+      "range": "melee",
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "additional_damage_2",
+        "additional_damage_6",
+        "rare_ambush",
+        "base_power_up_3",
+        "human_slayer_1_5"
+      ]
+    },
+    {
+      "id": "armor_rare_016",
+      "name": "レザーベスト",
+      "category": "armor",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -3
+        },
+        {
+          "stat": "def_flat",
+          "value": 24
+        },
+        {
+          "stat": "hp_flat",
+          "value": 40
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "physical_reduction_12",
+        "crit_guard_50"
+      ]
+    },
+    {
+      "id": "accessory_rare_033",
+      "name": "裏道の鍵",
+      "category": "accessory",
+      "statBonuses": [
+        {
+          "stat": "hp_flat",
+          "value": 32
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "human_slayer_2_0",
+        "physical_damage_50",
+        "action_order_200"
+      ]
+    },
+    {
+      "id": "bow_rare_005",
+      "name": "待ち伏せの弓",
+      "category": "weapon",
+      "subCategory": "bow",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 36
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 168
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": -0.6
+        },
+        {
+          "stat": "evasion_flat",
+          "value": -12
+        }
+      ],
+      "range": "ranged",
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "critical_damage_bonus_7",
+        "base_vitality_up_3",
+        "human_slayer_1_5"
+      ]
+    },
+    {
+      "id": "bow_rare_006",
+      "name": "コンポジットボウ",
+      "category": "weapon",
+      "subCategory": "bow",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 52
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 228
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": -0.6
+        },
+        {
+          "stat": "evasion_flat",
+          "value": -16
+        }
+      ],
+      "range": "ranged",
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "critical_damage_bonus_10",
+        "pursuit_30",
+        "human_slayer_2_0"
+      ]
+    },
+    {
+      "id": "accessory_rare_034",
+      "name": "急所狙いの矢羽",
+      "category": "accessory",
+      "statBonuses": [
+        {
+          "stat": "hp_flat",
+          "value": 32
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "human_slayer_2_0",
+        "physical_damage_50",
+        "base_vitality_up_6"
+      ]
+    },
+    {
+      "id": "accessory_rare_035",
+      "name": "気配消しの布",
+      "category": "accessory",
+      "statBonuses": [
+        {
+          "stat": "hp_flat",
+          "value": 26
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "human_slayer_2_0",
+        "physical_damage_40",
+        "base_spirit_up_5"
+      ]
+    },
+    {
+      "id": "hidden_rare_012",
+      "name": "影針",
+      "category": "weapon",
+      "subCategory": "hidden",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 32
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 212
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": 0.3
+        },
+        {
+          "stat": "evasion_flat",
+          "value": 14
+        }
+      ],
+      "range": "melee",
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "additional_damage_3",
+        "additional_damage_12",
+        "rare_ambush",
+        "lifesteal_12",
+        "human_slayer_2_0"
+      ]
+    },
+    {
+      "id": "sword_rare_011",
+      "name": "カトラス",
+      "category": "weapon",
+      "subCategory": "sword",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 30
+        },
+        {
+          "stat": "def_flat",
+          "value": 7
+        },
+        {
+          "stat": "hp_flat",
+          "value": 18
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 84
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": -0.2
+        }
+      ],
+      "range": "melee",
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "def_to_hp_5",
+        "human_slayer_1_5",
+        "base_wisdom_up_3"
+      ]
+    },
+    {
+      "id": "armor_rare_017",
+      "name": "傭兵のキュイラス",
+      "category": "armor",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -3
+        },
+        {
+          "stat": "def_flat",
+          "value": 24
+        },
+        {
+          "stat": "hp_flat",
+          "value": 40
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "physical_reduction_12",
+        "base_wisdom_up_5"
+      ]
+    },
+    {
+      "id": "shield_rare_011",
+      "name": "傭兵のバックラー",
+      "category": "shield",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -2
+        },
+        {
+          "stat": "def_flat",
+          "value": 24
+        },
+        {
+          "stat": "evasion_flat",
+          "value": 30
+        },
+        {
+          "stat": "magic_def_flat",
+          "value": 24
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "evasion_up_60",
+        "breath_reduction_12",
+        "ward_physical_3"
+      ]
+    },
+    {
+      "id": "wand_rare_010",
+      "name": "隠し火のワンド",
+      "category": "wand",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -4
+        },
+        {
+          "stat": "magic_atk_flat",
+          "value": 36
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "spell_damage_12",
+        "grant_fireball",
+        "base_spirit_up_3"
+      ]
+    },
+    {
+      "id": "robe_rare_015",
+      "name": "盗術師のローブ",
+      "category": "robe",
+      "statBonuses": [
+        {
+          "stat": "magic_def_flat",
+          "value": 38
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "magic_resistant_4_5",
+        "magic_reduction_22",
+        "hp_multiplier_12",
+        "ward_magic_3",
+        "rare_spell_echo"
+      ]
+    },
+    {
+      "id": "rod_rare_007",
+      "name": "奪魔のロッド",
+      "category": "rod",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -2
+        },
+        {
+          "stat": "magicHeal_flat",
+          "value": 72
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "magic_heal_to_hp_12",
+        "grant_magic_barrier",
+        "spell_siphon_30"
+      ]
+    },
+    {
+      "id": "hidden_rare_013",
+      "name": "赤傷のククリ",
+      "category": "weapon",
+      "subCategory": "hidden",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 11
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 80
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": 0.2
+        },
+        {
+          "stat": "evasion_flat",
+          "value": 5
+        }
+      ],
+      "range": "melee",
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "additional_damage_2",
+        "additional_damage_6",
+        "rare_ambush"
+      ]
+    },
+    {
+      "id": "accessory_rare_036",
+      "name": "盗賊王の指輪",
+      "category": "accessory",
+      "statBonuses": [
+        {
+          "stat": "hp_flat",
+          "value": 8
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "party_rare_mult_1_05",
+        "human_slayer_1_2"
+      ]
+    },
+    {
+      "id": "armor_rare_018",
+      "name": "赤傷のブリガンダイン",
+      "category": "armor",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -3
+        },
+        {
+          "stat": "def_flat",
+          "value": 5
+        },
+        {
+          "stat": "hp_flat",
+          "value": 12
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "physical_reduction_5"
+      ]
+    },
+    {
+      "id": "sword_rare_012",
+      "name": "ガルドのカトラス",
+      "category": "weapon",
+      "subCategory": "sword",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 14
+        },
+        {
+          "stat": "def_flat",
+          "value": 4
+        },
+        {
+          "stat": "hp_flat",
+          "value": 8
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 40
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": -0.2
+        }
+      ],
+      "range": "melee",
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "def_to_hp_2",
+        "human_slayer_1_2",
+        "rare_guardian"
+      ]
+    },
+    {
+      "id": "sword_rare_013",
+      "name": "ファングブレード",
+      "category": "weapon",
+      "subCategory": "sword",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 30
+        },
+        {
+          "stat": "def_flat",
+          "value": 7
+        },
+        {
+          "stat": "hp_flat",
+          "value": 18
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 84
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": -0.2
+        }
+      ],
+      "range": "melee",
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "def_to_hp_5",
+        "beast_slayer_1_5",
+        "base_luck_up_3"
+      ]
+    },
+    {
+      "id": "armor_rare_019",
+      "name": "街道狼の毛皮鎧",
+      "category": "armor",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -3
+        },
+        {
+          "stat": "def_flat",
+          "value": 24
+        },
+        {
+          "stat": "hp_flat",
+          "value": 40
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "physical_reduction_12",
+        "base_spirit_up_5",
+        "attack_resistant_4_5"
+      ]
+    },
+    {
+      "id": "accessory_rare_037",
+      "name": "追跡の首輪",
+      "category": "accessory",
+      "statBonuses": [
+        {
+          "stat": "hp_flat",
+          "value": 32
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "beast_slayer_2_0",
+        "physical_damage_50",
+        "base_luck_up_6"
+      ]
+    },
+    {
+      "id": "hidden_rare_014",
+      "name": "毒牙針",
+      "category": "weapon",
+      "subCategory": "hidden",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 16
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 112
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": 0.2
+        },
+        {
+          "stat": "evasion_flat",
+          "value": 7
+        }
+      ],
+      "range": "melee",
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "additional_damage_2",
+        "additional_damage_6",
+        "rare_ambush",
+        "base_spirit_up_3",
+        "beast_slayer_1_5"
+      ]
+    },
+    {
+      "id": "armor_rare_020",
+      "name": "大蛇のスケイル",
+      "category": "armor",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -3
+        },
+        {
+          "stat": "def_flat",
+          "value": 24
+        },
+        {
+          "stat": "hp_flat",
+          "value": 40
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "physical_reduction_12",
+        "base_luck_up_5",
+        "attack_resistant_4_5"
+      ]
+    },
+    {
+      "id": "accessory_rare_038",
+      "name": "絡み牙の指輪",
+      "category": "accessory",
+      "statBonuses": [
+        {
+          "stat": "hp_flat",
+          "value": 32
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "beast_slayer_2_0",
+        "physical_damage_50",
+        "base_power_up_6"
+      ]
+    },
+    {
+      "id": "hidden_rare_015",
+      "name": "スコーピオンニードル",
+      "category": "weapon",
+      "subCategory": "hidden",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 16
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 112
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": 0.2
+        },
+        {
+          "stat": "evasion_flat",
+          "value": 7
+        }
+      ],
+      "range": "melee",
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "additional_damage_2",
+        "additional_damage_6",
+        "rare_ambush",
+        "base_vitality_up_3",
+        "beast_slayer_1_5"
+      ]
+    },
+    {
+      "id": "shield_rare_012",
+      "name": "甲殻の盾",
+      "category": "shield",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -2
+        },
+        {
+          "stat": "def_flat",
+          "value": 18
+        },
+        {
+          "stat": "evasion_flat",
+          "value": 24
+        },
+        {
+          "stat": "magic_def_flat",
+          "value": 18
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "evasion_up_50",
+        "breath_reduction_11",
+        "ward_physical_3"
+      ]
+    },
+    {
+      "id": "accessory_rare_039",
+      "name": "猛毒尾の腕輪",
+      "category": "accessory",
+      "statBonuses": [
+        {
+          "stat": "hp_flat",
+          "value": 32
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "beast_slayer_2_0",
+        "physical_damage_50",
+        "base_agility_up_6"
+      ]
+    },
+    {
+      "id": "sword_rare_014",
+      "name": "護衛のサーベル",
+      "category": "weapon",
+      "subCategory": "sword",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 40
+        },
+        {
+          "stat": "def_flat",
+          "value": 10
+        },
+        {
+          "stat": "hp_flat",
+          "value": 26
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 110
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": -0.2
+        }
+      ],
+      "range": "melee",
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "def_to_hp_5",
+        "human_slayer_1_5",
+        "base_agility_up_3",
+        "rare_guardian"
+      ]
+    },
+    {
+      "id": "shield_rare_013",
+      "name": "カイトシールド",
+      "category": "shield",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -2
+        },
+        {
+          "stat": "def_flat",
+          "value": 34
+        },
+        {
+          "stat": "evasion_flat",
+          "value": 42
+        },
+        {
+          "stat": "magic_def_flat",
+          "value": 34
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "evasion_up_50",
+        "breath_reduction_11",
+        "base_luck_up_5"
+      ]
+    },
+    {
+      "id": "armor_rare_021",
+      "name": "護衛兵のキュイラス",
+      "category": "armor",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -3
+        },
+        {
+          "stat": "def_flat",
+          "value": 36
+        },
+        {
+          "stat": "hp_flat",
+          "value": 55
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "physical_reduction_14",
+        "pierce_guard_50"
+      ]
+    },
+    {
+      "id": "bow_rare_007",
+      "name": "護送の戦弓",
+      "category": "weapon",
+      "subCategory": "bow",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 36
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 168
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": -0.6
+        },
+        {
+          "stat": "evasion_flat",
+          "value": -12
+        }
+      ],
+      "range": "ranged",
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "critical_damage_bonus_7",
+        "base_spirit_up_3",
+        "human_slayer_1_5"
+      ]
+    },
+    {
+      "id": "bow_rare_008",
+      "name": "護衛の戦弓",
+      "category": "weapon",
+      "subCategory": "bow",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 52
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 228
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": -0.6
+        },
+        {
+          "stat": "evasion_flat",
+          "value": -16
+        }
+      ],
+      "range": "ranged",
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "critical_damage_bonus_10",
+        "battle_fervor_6",
+        "human_slayer_2_0"
+      ]
+    },
+    {
+      "id": "accessory_rare_040",
+      "name": "遠見の矢羽",
+      "category": "accessory",
+      "statBonuses": [
+        {
+          "stat": "hp_flat",
+          "value": 32
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "human_slayer_2_0",
+        "physical_damage_50",
+        "deadeye_200"
+      ]
+    },
+    {
+      "id": "wand_rare_011",
+      "name": "護衛術師のワンド",
+      "category": "wand",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -4
+        },
+        {
+          "stat": "magic_atk_flat",
+          "value": 36
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "spell_damage_12",
+        "base_power_up_3"
+      ]
+    },
+    {
+      "id": "robe_rare_016",
+      "name": "結界ローブ",
+      "category": "robe",
+      "statBonuses": [
+        {
+          "stat": "magic_def_flat",
+          "value": 38
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "magic_resistant_4_5",
+        "magic_reduction_22",
+        "hp_multiplier_12",
+        "base_vitality_up_5"
+      ]
+    },
+    {
+      "id": "rod_rare_008",
+      "name": "商隊ロッド",
+      "category": "rod",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -2
+        },
+        {
+          "stat": "magicHeal_flat",
+          "value": 72
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "magic_heal_to_hp_12",
+        "grant_magic_barrier",
+        "party_heal_regen_20"
+      ]
+    },
+    {
+      "id": "accessory_rare_041",
+      "name": "商人の金印",
+      "category": "accessory",
+      "statBonuses": [
+        {
+          "stat": "hp_flat",
+          "value": 26
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "rare_merchant_luck",
+        "base_agility_up_3"
+      ]
+    },
+    {
+      "id": "accessory_rare_042",
+      "name": "黄金天秤",
+      "category": "accessory",
+      "statBonuses": [
+        {
+          "stat": "hp_flat",
+          "value": 26
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "rare_merchant_luck",
+        "base_wisdom_up_3"
+      ]
+    },
+    {
+      "id": "robe_rare_017",
+      "name": "豪商の外套",
+      "category": "robe",
+      "statBonuses": [
+        {
+          "stat": "magic_def_flat",
+          "value": 56
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "magic_resistant_4_5",
+        "magic_reduction_22",
+        "hp_multiplier_12",
+        "base_agility_up_5",
+        "rare_spell_echo"
+      ]
+    },
+    {
+      "id": "accessory_rare_043",
+      "name": "隠し金庫の鍵",
+      "category": "accessory",
+      "statBonuses": [
+        {
+          "stat": "hp_flat",
+          "value": 38
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "rare_merchant_luck",
+        "base_vitality_up_6"
+      ]
+    },
+    {
+      "id": "large_shield_rare_002",
+      "name": "鉄壁の大盾",
+      "category": "large_shield",
+      "statBonuses": [
+        {
+          "stat": "def_flat",
+          "value": 58
+        },
+        {
+          "stat": "evasion_flat",
+          "value": -20
+        },
+        {
+          "stat": "magic_def_flat",
+          "value": 20
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "ranged_attack_reduction_18",
+        "rare_guardian",
+        "base_power_up_3"
+      ]
+    },
+    {
+      "id": "armor_rare_022",
+      "name": "重装キュイラス",
+      "category": "armor",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -3
+        },
+        {
+          "stat": "def_flat",
+          "value": 24
+        },
+        {
+          "stat": "hp_flat",
+          "value": 40
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "physical_reduction_9",
+        "base_agility_up_3",
+        "rare_guardian"
+      ]
+    },
+    {
+      "id": "accessory_rare_044",
+      "name": "身代わりの護符",
+      "category": "accessory",
+      "statBonuses": [
+        {
+          "stat": "hp_flat",
+          "value": 32
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "rare_last_stand",
+        "human_slayer_2_0"
+      ]
+    },
+    {
+      "id": "shield_rare_014",
+      "name": "王都護衛の盾",
+      "category": "shield",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -2
+        },
+        {
+          "stat": "def_flat",
+          "value": 34
+        },
+        {
+          "stat": "evasion_flat",
+          "value": 42
+        },
+        {
+          "stat": "magic_def_flat",
+          "value": 34
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "evasion_up_60",
+        "breath_reduction_12",
+        "ward_physical_3",
+        "rare_guardian"
+      ]
+    },
+    {
+      "id": "armor_rare_023",
+      "name": "戦商隊の鎧",
+      "category": "armor",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -3
+        },
+        {
+          "stat": "def_flat",
+          "value": 24
+        },
+        {
+          "stat": "hp_flat",
+          "value": 40
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "physical_reduction_9",
+        "base_wisdom_up_3",
+        "rare_guardian"
+      ]
+    },
+    {
+      "id": "shield_rare_015",
+      "name": "反撃のバックラー",
+      "category": "shield",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -2
+        },
+        {
+          "stat": "def_flat",
+          "value": 24
+        },
+        {
+          "stat": "evasion_flat",
+          "value": 30
+        },
+        {
+          "stat": "magic_def_flat",
+          "value": 24
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "evasion_up_50",
+        "breath_reduction_11",
+        "base_agility_up_5",
+        "rare_counter"
+      ]
+    },
+    {
+      "id": "sword_rare_015",
+      "name": "戦商隊のファルシオン",
+      "category": "weapon",
+      "subCategory": "sword",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 72
+        },
+        {
+          "stat": "def_flat",
+          "value": 16
+        },
+        {
+          "stat": "hp_flat",
+          "value": 48
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 220
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": -0.2
+        }
+      ],
+      "range": "melee",
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "def_to_hp_8",
+        "human_slayer_2_0",
+        "lifesteal_12",
+        "rare_guardian"
+      ]
+    },
+    {
+      "id": "wand_rare_012",
+      "name": "護衛魔導ワンド",
+      "category": "wand",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -4
+        },
+        {
+          "stat": "magic_atk_flat",
+          "value": 48
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "spell_damage_12",
+        "grant_fireball",
+        "base_agility_up_3",
+        "rare_spell_echo"
+      ]
+    },
+    {
+      "id": "robe_rare_018",
+      "name": "魔導兵のローブ",
+      "category": "robe",
+      "statBonuses": [
+        {
+          "stat": "magic_def_flat",
+          "value": 38
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "magic_resistant_4_5",
+        "magic_reduction_14",
+        "hp_multiplier_8",
+        "base_luck_up_3",
+        "rare_spell_echo"
+      ]
+    },
+    {
+      "id": "rod_rare_009",
+      "name": "連唱ロッド",
+      "category": "rod",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -2
+        },
+        {
+          "stat": "magicHeal_flat",
+          "value": 72
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "magic_heal_to_hp_11",
+        "grant_magic_barrier",
+        "party_heal_regen_20",
+        "rare_spell_echo"
+      ]
+    },
+    {
+      "id": "wand_rare_013",
+      "name": "王都術師のワンド",
+      "category": "wand",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -4
+        },
+        {
+          "stat": "magic_atk_flat",
+          "value": 72
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "spell_damage_20",
+        "base_power_up_6",
+        "rare_spell_echo"
+      ]
+    },
+    {
+      "id": "rod_rare_010",
+      "name": "癒しのロッド",
+      "category": "rod",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -2
+        },
+        {
+          "stat": "magicHeal_flat",
+          "value": 54
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "magic_heal_to_hp_9",
+        "grant_party_heal",
+        "base_luck_up_3",
+        "rare_spell_echo"
+      ]
+    },
+    {
+      "id": "robe_rare_019",
+      "name": "護衛僧の法衣",
+      "category": "robe",
+      "statBonuses": [
+        {
+          "stat": "magic_def_flat",
+          "value": 38
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "magic_resistant_4_5",
+        "magic_reduction_14",
+        "hp_multiplier_8",
+        "base_vitality_up_3",
+        "rare_spell_echo"
+      ]
+    },
+    {
+      "id": "accessory_rare_045",
+      "name": "白銀の聖印",
+      "category": "accessory",
+      "statBonuses": [
+        {
+          "stat": "hp_flat",
+          "value": 32
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "human_slayer_2_0",
+        "physical_damage_40",
+        "base_luck_up_5"
+      ]
+    },
+    {
+      "id": "rod_rare_011",
+      "name": "聖杯ロッド",
+      "category": "rod",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -2
+        },
+        {
+          "stat": "magicHeal_flat",
+          "value": 135
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "magic_heal_to_hp_12",
+        "grant_party_heal",
+        "base_vitality_up_6",
+        "rare_spell_echo"
+      ]
+    },
+    {
+      "id": "sword_rare_016",
+      "name": "オークの曲刀",
+      "category": "weapon",
+      "subCategory": "sword",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 20
+        },
+        {
+          "stat": "def_flat",
+          "value": 5
+        },
+        {
+          "stat": "hp_flat",
+          "value": 12
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 56
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": -0.2
+        }
+      ],
+      "range": "melee",
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "def_to_hp_5",
+        "physical_damage_20",
+        "base_spirit_up_3"
+      ]
+    },
+    {
+      "id": "armor_rare_024",
+      "name": "オークメイル",
+      "category": "armor",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -3
+        },
+        {
+          "stat": "def_flat",
+          "value": 18
+        },
+        {
+          "stat": "hp_flat",
+          "value": 30
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "physical_reduction_12",
+        "base_agility_up_5"
+      ]
+    },
+    {
+      "id": "shield_rare_016",
+      "name": "オークの丸盾",
+      "category": "shield",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -2
+        },
+        {
+          "stat": "def_flat",
+          "value": 18
+        },
+        {
+          "stat": "evasion_flat",
+          "value": 24
+        },
+        {
+          "stat": "magic_def_flat",
+          "value": 18
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "evasion_up_60",
+        "breath_reduction_12",
+        "base_power_up_6"
+      ]
+    },
+    {
+      "id": "sword_rare_017",
+      "name": "ブルートブレード",
+      "category": "weapon",
+      "subCategory": "sword",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 20
+        },
+        {
+          "stat": "def_flat",
+          "value": 5
+        },
+        {
+          "stat": "hp_flat",
+          "value": 12
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 56
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": -0.2
+        }
+      ],
+      "range": "melee",
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "def_to_hp_5",
+        "physical_damage_20",
+        "base_wisdom_up_3"
+      ]
+    },
+    {
+      "id": "armor_rare_025",
+      "name": "暴れ鎧",
+      "category": "armor",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -3
+        },
+        {
+          "stat": "def_flat",
+          "value": 18
+        },
+        {
+          "stat": "hp_flat",
+          "value": 30
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "physical_reduction_12",
+        "base_wisdom_up_5"
+      ]
+    },
+    {
+      "id": "accessory_rare_046",
+      "name": "怪力の牙飾り",
+      "category": "accessory",
+      "statBonuses": [
+        {
+          "stat": "hp_flat",
+          "value": 26
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "party_rare_mult_1_1",
+        "base_luck_up_6"
+      ]
+    },
+    {
+      "id": "sword_rare_018",
+      "name": "遠征隊長の戦斧",
+      "category": "weapon",
+      "subCategory": "sword",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 30
+        },
+        {
+          "stat": "def_flat",
+          "value": 7
+        },
+        {
+          "stat": "hp_flat",
+          "value": 18
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 84
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": -0.2
+        }
+      ],
+      "range": "melee",
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "def_to_hp_5",
+        "physical_damage_20",
+        "base_power_up_3",
+        "rare_guardian"
+      ]
+    },
+    {
+      "id": "armor_rare_026",
+      "name": "隊長のラメラー",
+      "category": "armor",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -3
+        },
+        {
+          "stat": "def_flat",
+          "value": 18
+        },
+        {
+          "stat": "hp_flat",
+          "value": 30
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "physical_reduction_9",
+        "base_spirit_up_3",
+        "rare_guardian"
+      ]
+    },
+    {
+      "id": "accessory_rare_047",
+      "name": "オーク軍旗",
+      "category": "accessory",
+      "statBonuses": [
+        {
+          "stat": "hp_flat",
+          "value": 26
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "party_title_mult_1_1",
+        "base_power_up_5"
+      ]
+    },
+    {
+      "id": "sword_rare_019",
+      "name": "荒野将の曲刀",
+      "category": "weapon",
+      "subCategory": "sword",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 56
+        },
+        {
+          "stat": "def_flat",
+          "value": 13
+        },
+        {
+          "stat": "hp_flat",
+          "value": 36
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 160
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": -0.2
+        }
+      ],
+      "range": "melee",
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "def_to_hp_8",
+        "physical_damage_50",
+        "base_luck_up_6",
+        "rare_guardian"
+      ]
+    },
+    {
+      "id": "spear_rare_001",
+      "name": "鍬槍",
+      "category": "weapon",
+      "subCategory": "spear",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 33
+        },
+        {
+          "stat": "def_flat",
+          "value": 6
+        },
+        {
+          "stat": "hp_flat",
+          "value": 14
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 76
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": -0.3
+        }
+      ],
+      "range": "melee",
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "def_to_hp_6",
+        "human_slayer_1_5",
+        "mighty_blow_180"
+      ]
+    },
+    {
+      "id": "shield_rare_017",
+      "name": "木のバックラー",
+      "category": "shield",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -2
+        },
+        {
+          "stat": "def_flat",
+          "value": 18
+        },
+        {
+          "stat": "evasion_flat",
+          "value": 24
+        },
+        {
+          "stat": "magic_def_flat",
+          "value": 18
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "evasion_up_50",
+        "breath_reduction_11",
+        "base_wisdom_up_5"
+      ]
+    },
+    {
+      "id": "armor_rare_027",
+      "name": "民兵のベスト",
+      "category": "armor",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -3
+        },
+        {
+          "stat": "def_flat",
+          "value": 36
+        },
+        {
+          "stat": "hp_flat",
+          "value": 55
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "physical_reduction_14",
+        "crit_guard_50"
+      ]
+    },
+    {
+      "id": "sword_rare_020",
+      "name": "守備兵の剣",
+      "category": "weapon",
+      "subCategory": "sword",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 30
+        },
+        {
+          "stat": "def_flat",
+          "value": 7
+        },
+        {
+          "stat": "hp_flat",
+          "value": 18
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 84
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": -0.2
+        }
+      ],
+      "range": "melee",
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "def_to_hp_6",
+        "human_slayer_1_5",
+        "battle_fervor_4"
+      ]
+    },
+    {
+      "id": "shield_rare_018",
+      "name": "村守りの盾",
+      "category": "shield",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -2
+        },
+        {
+          "stat": "def_flat",
+          "value": 18
+        },
+        {
+          "stat": "evasion_flat",
+          "value": 24
+        },
+        {
+          "stat": "magic_def_flat",
+          "value": 18
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "evasion_up_50",
+        "breath_reduction_11",
+        "base_power_up_5"
+      ]
+    },
+    {
+      "id": "armor_rare_028",
+      "name": "防柵の鎧",
+      "category": "armor",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -3
+        },
+        {
+          "stat": "def_flat",
+          "value": 36
+        },
+        {
+          "stat": "hp_flat",
+          "value": 55
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "physical_reduction_14",
+        "base_agility_up_6"
+      ]
+    },
+    {
+      "id": "hidden_rare_016",
+      "name": "罠師のナイフ",
+      "category": "weapon",
+      "subCategory": "hidden",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 23
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 148
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": 0.2
+        },
+        {
+          "stat": "evasion_flat",
+          "value": 10
+        }
+      ],
+      "range": "melee",
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "additional_damage_3",
+        "additional_damage_10",
+        "rare_ambush",
+        "pursuit_30",
+        "human_slayer_2_0"
+      ]
+    },
+    {
+      "id": "accessory_rare_048",
+      "name": "猟師の牙笛",
+      "category": "accessory",
+      "statBonuses": [
+        {
+          "stat": "hp_flat",
+          "value": 32
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "human_slayer_2_0",
+        "physical_damage_50",
+        "base_power_up_6"
+      ]
+    },
+    {
+      "id": "accessory_rare_049",
+      "name": "砲台の照準器",
+      "category": "accessory",
+      "statBonuses": [
+        {
+          "stat": "hp_flat",
+          "value": 20
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "party_rare_mult_1_05",
+        "base_power_up_4"
+      ]
+    },
+    {
+      "id": "shield_rare_019",
+      "name": "砲塔シールド",
+      "category": "shield",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -2
+        },
+        {
+          "stat": "def_flat",
+          "value": 14
+        },
+        {
+          "stat": "evasion_flat",
+          "value": 18
+        },
+        {
+          "stat": "magic_def_flat",
+          "value": 14
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "evasion_up_40",
+        "breath_reduction_10",
+        "ward_physical_2",
+        "rare_guardian"
+      ]
+    },
+    {
+      "id": "accessory_rare_050",
+      "name": "轟音の火薬袋",
+      "category": "accessory",
+      "statBonuses": [
+        {
+          "stat": "hp_flat",
+          "value": 26
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "party_rare_mult_1_1",
+        "base_wisdom_up_5"
+      ]
+    },
+    {
+      "id": "rod_rare_012",
+      "name": "城砲職人のロッド",
+      "category": "rod",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -2
+        },
+        {
+          "stat": "magicHeal_flat",
+          "value": 72
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "magic_heal_to_hp_12",
+        "grant_magic_barrier",
+        "base_power_up_6",
+        "rare_spell_echo"
+      ]
+    },
+    {
+      "id": "sword_rare_021",
+      "name": "ダイアファング",
+      "category": "weapon",
+      "subCategory": "sword",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 40
+        },
+        {
+          "stat": "def_flat",
+          "value": 10
+        },
+        {
+          "stat": "hp_flat",
+          "value": 26
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 110
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": -0.2
+        }
+      ],
+      "range": "melee",
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "def_to_hp_6",
+        "beast_slayer_1_5",
+        "base_luck_up_4"
+      ]
+    },
+    {
+      "id": "armor_rare_029",
+      "name": "草原狼の毛皮鎧",
+      "category": "armor",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -3
+        },
+        {
+          "stat": "def_flat",
+          "value": 36
+        },
+        {
+          "stat": "hp_flat",
+          "value": 55
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "physical_reduction_14",
+        "pierce_guard_50",
+        "attack_resistant_4_5"
+      ]
+    },
+    {
+      "id": "accessory_rare_051",
+      "name": "草原駆けの首輪",
+      "category": "accessory",
+      "statBonuses": [
+        {
+          "stat": "hp_flat",
+          "value": 38
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "beast_slayer_2_0",
+        "physical_damage_50",
+        "war_cry_1_3"
+      ]
+    },
+    {
+      "id": "sword_rare_022",
+      "name": "群狼王の牙剣",
+      "category": "weapon",
+      "subCategory": "sword",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 40
+        },
+        {
+          "stat": "def_flat",
+          "value": 10
+        },
+        {
+          "stat": "hp_flat",
+          "value": 26
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 110
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": -0.2
+        }
+      ],
+      "range": "melee",
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "def_to_hp_6",
+        "beast_slayer_1_5",
+        "base_agility_up_4",
+        "rare_guardian"
+      ]
+    },
+    {
+      "id": "armor_rare_030",
+      "name": "草原王の毛皮鎧",
+      "category": "armor",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -3
+        },
+        {
+          "stat": "def_flat",
+          "value": 24
+        },
+        {
+          "stat": "hp_flat",
+          "value": 40
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "physical_reduction_11",
+        "base_spirit_up_4",
+        "attack_resistant_4_5",
+        "rare_guardian"
+      ]
+    },
+    {
+      "id": "accessory_rare_052",
+      "name": "遠吠えの王冠",
+      "category": "accessory",
+      "statBonuses": [
+        {
+          "stat": "hp_flat",
+          "value": 32
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "beast_slayer_2_0",
+        "physical_damage_50",
+        "lifesteal_12"
+      ]
+    },
+    {
+      "id": "accessory_rare_053",
+      "name": "蒼月の獣核",
+      "category": "accessory",
+      "statBonuses": [
+        {
+          "stat": "hp_flat",
+          "value": 38
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "beast_slayer_2_0",
+        "physical_damage_50",
+        "base_vitality_up_6"
+      ]
+    },
+    {
+      "id": "sword_rare_023",
+      "name": "正規兵のグラディウス",
+      "category": "weapon",
+      "subCategory": "sword",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 56
+        },
+        {
+          "stat": "def_flat",
+          "value": 13
+        },
+        {
+          "stat": "hp_flat",
+          "value": 36
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 160
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": -0.2
+        }
+      ],
+      "range": "melee",
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "def_to_hp_7",
+        "human_slayer_2_0",
+        "base_luck_up_5"
+      ]
+    },
+    {
+      "id": "shield_rare_020",
+      "name": "正規兵の盾",
+      "category": "shield",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -2
+        },
+        {
+          "stat": "def_flat",
+          "value": 34
+        },
+        {
+          "stat": "evasion_flat",
+          "value": 42
+        },
+        {
+          "stat": "magic_def_flat",
+          "value": 34
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "evasion_up_60",
+        "breath_reduction_12",
+        "base_luck_up_6"
+      ]
+    },
+    {
+      "id": "armor_rare_031",
+      "name": "王国兵の鎧",
+      "category": "armor",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -3
+        },
+        {
+          "stat": "def_flat",
+          "value": 70
+        },
+        {
+          "stat": "hp_flat",
+          "value": 100
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "physical_reduction_14",
+        "base_spirit_up_6"
+      ]
+    },
+    {
+      "id": "wand_rare_014",
+      "name": "王国魔導ワンド",
+      "category": "wand",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -4
+        },
+        {
+          "stat": "magic_atk_flat",
+          "value": 60
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "spell_damage_16",
+        "grant_fireball",
+        "base_spirit_up_5"
+      ]
+    },
+    {
+      "id": "robe_rare_020",
+      "name": "辺境術師のローブ",
+      "category": "robe",
+      "statBonuses": [
+        {
+          "stat": "magic_def_flat",
+          "value": 72
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "magic_resistant_4_5",
+        "magic_reduction_26",
+        "hp_multiplier_13",
+        "ward_magic_3",
+        "rare_spell_echo"
+      ]
+    },
+    {
+      "id": "rod_rare_013",
+      "name": "火線ロッド",
+      "category": "rod",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -2
+        },
+        {
+          "stat": "magicHeal_flat",
+          "value": 200
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "magic_heal_to_hp_12",
+        "grant_magic_barrier",
+        "base_agility_up_6"
+      ]
+    },
+    {
+      "id": "bow_rare_009",
+      "name": "制圧の戦弓",
+      "category": "weapon",
+      "subCategory": "bow",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 70
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 324
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": -0.6
+        },
+        {
+          "stat": "evasion_flat",
+          "value": -24
+        }
+      ],
+      "range": "ranged",
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "critical_damage_bonus_10",
+        "lifesteal_8",
+        "human_slayer_2_0"
+      ]
+    },
+    {
+      "id": "armor_rare_032",
+      "name": "弓兵の軽鎧",
+      "category": "armor",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -3
+        },
+        {
+          "stat": "def_flat",
+          "value": 48
+        },
+        {
+          "stat": "hp_flat",
+          "value": 75
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "physical_reduction_14",
+        "base_luck_up_6"
+      ]
+    },
+    {
+      "id": "accessory_rare_054",
+      "name": "王国狙撃章",
+      "category": "accessory",
+      "statBonuses": [
+        {
+          "stat": "hp_flat",
+          "value": 44
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "human_slayer_2_0",
+        "physical_damage_50",
+        "base_luck_up_6"
+      ]
+    },
+    {
+      "id": "rod_rare_014",
+      "name": "従軍僧のロッド",
+      "category": "rod",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -2
+        },
+        {
+          "stat": "magicHeal_flat",
+          "value": 72
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "magic_heal_to_hp_11",
+        "grant_party_heal",
+        "base_luck_up_5"
+      ]
+    },
+    {
+      "id": "robe_rare_021",
+      "name": "白銀の法衣",
+      "category": "robe",
+      "statBonuses": [
+        {
+          "stat": "magic_def_flat",
+          "value": 72
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "magic_resistant_4_5",
+        "magic_reduction_26",
+        "hp_multiplier_13",
+        "base_spirit_up_6"
+      ]
+    },
+    {
+      "id": "accessory_rare_055",
+      "name": "戦場祈祷の聖印",
+      "category": "accessory",
+      "statBonuses": [
+        {
+          "stat": "hp_flat",
+          "value": 44
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "human_slayer_2_0",
+        "physical_damage_50",
+        "base_power_up_6"
+      ]
+    },
+    {
+      "id": "sword_rare_024",
+      "name": "レイピア",
+      "category": "weapon",
+      "subCategory": "sword",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 56
+        },
+        {
+          "stat": "def_flat",
+          "value": 13
+        },
+        {
+          "stat": "hp_flat",
+          "value": 36
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 160
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": -0.2
+        }
+      ],
+      "range": "melee",
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "def_to_hp_7",
+        "human_slayer_2_0",
+        "base_agility_up_5"
+      ]
+    },
+    {
+      "id": "armor_rare_033",
+      "name": "騎士のキュイラス",
+      "category": "armor",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -3
+        },
+        {
+          "stat": "def_flat",
+          "value": 70
+        },
+        {
+          "stat": "hp_flat",
+          "value": 100
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "physical_reduction_14",
+        "base_agility_up_6"
+      ]
+    },
+    {
+      "id": "sword_rare_025",
+      "name": "騎士団長の剣",
+      "category": "weapon",
+      "subCategory": "sword",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 56
+        },
+        {
+          "stat": "def_flat",
+          "value": 13
+        },
+        {
+          "stat": "hp_flat",
+          "value": 36
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 160
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": -0.2
+        }
+      ],
+      "range": "melee",
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "def_to_hp_7",
+        "human_slayer_2_0",
+        "base_spirit_up_5",
+        "rare_guardian"
+      ]
+    },
+    {
+      "id": "shield_rare_021",
+      "name": "騎士団長の盾",
+      "category": "shield",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -2
+        },
+        {
+          "stat": "def_flat",
+          "value": 24
+        },
+        {
+          "stat": "evasion_flat",
+          "value": 30
+        },
+        {
+          "stat": "magic_def_flat",
+          "value": 24
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "evasion_up_50",
+        "breath_reduction_11",
+        "base_luck_up_5",
+        "rare_guardian"
+      ]
+    },
+    {
+      "id": "armor_rare_034",
+      "name": "騎士団長の鎧",
+      "category": "armor",
+      "statBonuses": [
+        {
+          "stat": "critical_rate_percent",
+          "value": -3
+        },
+        {
+          "stat": "def_flat",
+          "value": 48
+        },
+        {
+          "stat": "hp_flat",
+          "value": 75
+        }
+      ],
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "physical_reduction_14",
+        "base_wisdom_up_6",
+        "rare_guardian"
+      ]
+    },
+    {
+      "id": "sword_rare_026",
+      "name": "辺境守護のレイピア",
+      "category": "weapon",
+      "subCategory": "sword",
+      "statBonuses": [
+        {
+          "stat": "atk_flat",
+          "value": 110
+        },
+        {
+          "stat": "def_flat",
+          "value": 28
+        },
+        {
+          "stat": "hp_flat",
+          "value": 84
+        },
+        {
+          "stat": "accuracy_flat",
+          "value": 320
+        },
+        {
+          "stat": "attackCount_flat",
+          "value": -0.4
+        }
+      ],
+      "range": "melee",
+      "price": 25000,
+      "isRare": true,
+      "grantedSkillIds": [
+        "def_to_hp_8",
+        "human_slayer_2_0",
+        "base_agility_up_6",
+        "rare_guardian"
+      ]
+    }
+  ]
+}

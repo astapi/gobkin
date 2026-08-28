@@ -1,0 +1,557 @@
+{
+  "enemies": [
+    {
+      "id": "FEV001",
+      "name": "ゾンビドッグ",
+      "attackType": "melee",
+      "raceTags": [
+        "beast",
+        "undead"
+      ],
+      "level": 13,
+      "hp": 581,
+      "atk": 75,
+      "def": 67,
+      "attackCount": 2,
+      "accuracy": 520,
+      "evasion": 57,
+      "gold": 12,
+      "magicDef": 27,
+      "baseAttributes": {
+        "power": 11,
+        "wisdom": 6,
+        "spirit": 4,
+        "vitality": 10,
+        "agility": 14,
+        "luck": 5
+      }
+    },
+    {
+      "id": "FEV002",
+      "name": "ゾンビカラス",
+      "attackType": "range",
+      "raceTags": [
+        "beast",
+        "undead"
+      ],
+      "level": 13,
+      "hp": 460,
+      "atk": 70,
+      "def": 51,
+      "attackCount": 2,
+      "accuracy": 562,
+      "evasion": 63,
+      "gold": 11,
+      "magicDef": 22,
+      "baseAttributes": {
+        "power": 9,
+        "wisdom": 7,
+        "spirit": 4,
+        "vitality": 7,
+        "agility": 16,
+        "luck": 7
+      }
+    },
+    {
+      "id": "FEV003",
+      "name": "さまよう亡者",
+      "attackType": "melee",
+      "raceTags": [
+        "undead",
+        "human"
+      ],
+      "level": 14,
+      "hp": 799,
+      "atk": 84,
+      "def": 93,
+      "attackCount": 1,
+      "accuracy": 505,
+      "evasion": 43,
+      "gold": 16,
+      "magicDef": 42,
+      "baseAttributes": {
+        "power": 11,
+        "wisdom": 8,
+        "spirit": 4,
+        "vitality": 14,
+        "agility": 6,
+        "luck": 4
+      }
+    },
+    {
+      "id": "FEV004",
+      "name": "腐敗ゾンビ",
+      "attackType": "melee",
+      "raceTags": [
+        "undead",
+        "human"
+      ],
+      "level": 15,
+      "hp": 1143,
+      "atk": 107,
+      "def": 138,
+      "attackCount": 1,
+      "accuracy": 534,
+      "evasion": 44,
+      "gold": 22,
+      "magicDef": 63,
+      "baseAttributes": {
+        "power": 13,
+        "wisdom": 8,
+        "spirit": 6,
+        "vitality": 17,
+        "agility": 5,
+        "luck": 4
+      }
+    },
+    {
+      "id": "FEV005",
+      "name": "廃村の亡霊",
+      "attackType": "melee",
+      "raceTags": [
+        "undead"
+      ],
+      "level": 15,
+      "hp": 691,
+      "atk": 52,
+      "magicAtk": 85,
+      "def": 69,
+      "attackCount": 1,
+      "accuracy": 548,
+      "evasion": 57,
+      "gold": 24,
+      "magicDef": 100,
+      "baseAttributes": {
+        "power": 7,
+        "wisdom": 15,
+        "spirit": 13,
+        "vitality": 9,
+        "agility": 10,
+        "luck": 8
+      },
+      "skills": [
+        {
+          "id": "fireball",
+          "name": "ファイヤーボール",
+          "grantsSpellId": "fireball"
+        }
+      ]
+    },
+    {
+      "id": "B_FEV_WRAITH",
+      "name": "廃村の怨霊",
+      "attackType": "melee",
+      "raceTags": [
+        "undead"
+      ],
+      "level": 28,
+      "hp": 1935,
+      "atk": 125,
+      "magicAtk": 93,
+      "def": 128,
+      "attackCount": 2,
+      "accuracy": 630,
+      "evasion": 87,
+      "gold": 95,
+      "magicDef": 111,
+      "baseAttributes": {
+        "power": 14,
+        "wisdom": 16,
+        "spirit": 14,
+        "vitality": 17,
+        "agility": 10,
+        "luck": 8
+      },
+      "skills": [
+        {
+          "id": "fireball",
+          "name": "ファイヤーボール",
+          "grantsSpellId": "fireball"
+        }
+      ],
+      "isBoss": true,
+      "factorDrops": [
+        {
+          "factorId": "undead",
+          "probability": 0.006
+        }
+      ]
+    }
+  ],
+  "patterns": [
+    {
+      "id": "FEV_01_001",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "FEV001",
+          "FEV001"
+        ]
+      ]
+    },
+    {
+      "id": "FEV_01_002",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "FEV003"
+        ],
+        [
+          "FEV002"
+        ]
+      ]
+    },
+    {
+      "id": "FEV_01_003",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "FEV001"
+        ],
+        [
+          "FEV002",
+          "FEV002"
+        ]
+      ]
+    },
+    {
+      "id": "FEV_F1_BOSS",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "FEV003",
+          "FEV001"
+        ],
+        [
+          "FEV002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "FEV_02_001",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "FEV003",
+          "FEV001"
+        ],
+        [
+          "FEV002"
+        ]
+      ]
+    },
+    {
+      "id": "FEV_02_002",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "FEV004"
+        ],
+        [
+          "FEV002",
+          "FEV002"
+        ]
+      ]
+    },
+    {
+      "id": "FEV_02_003",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "FEV001",
+          "FEV001"
+        ],
+        [
+          "FEV005"
+        ]
+      ]
+    },
+    {
+      "id": "FEV_F2_BOSS",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "FEV004",
+          "FEV003"
+        ],
+        [
+          "FEV002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "FEV_03_001",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "FEV004"
+        ],
+        [
+          "FEV005"
+        ]
+      ]
+    },
+    {
+      "id": "FEV_03_002",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "FEV003",
+          "FEV003"
+        ],
+        [
+          "FEV002",
+          "FEV002"
+        ]
+      ]
+    },
+    {
+      "id": "FEV_03_003",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "FEV004",
+          "FEV001"
+        ],
+        [
+          "FEV005"
+        ]
+      ]
+    },
+    {
+      "id": "FEV_F3_BOSS",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "FEV004",
+          "FEV003"
+        ],
+        [
+          "FEV005",
+          "FEV002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "FEV_04_001",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "FEV004",
+          "FEV003"
+        ],
+        [
+          "FEV005"
+        ]
+      ]
+    },
+    {
+      "id": "FEV_04_002",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "FEV004",
+          "FEV004"
+        ],
+        [
+          "FEV002"
+        ]
+      ]
+    },
+    {
+      "id": "FEV_04_003",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "FEV003"
+        ],
+        [
+          "FEV005",
+          "FEV005"
+        ]
+      ]
+    },
+    {
+      "id": "FEV_F4_BOSS",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "FEV004",
+          "FEV004"
+        ],
+        [
+          "FEV005",
+          "FEV002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "FEV_05_001",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "FEV004",
+          "FEV004"
+        ],
+        [
+          "FEV005"
+        ]
+      ]
+    },
+    {
+      "id": "FEV_05_002",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "FEV004",
+          "FEV003"
+        ],
+        [
+          "FEV005",
+          "FEV005"
+        ]
+      ]
+    },
+    {
+      "id": "FEV_05_003",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "FEV003",
+          "FEV003"
+        ],
+        [
+          "FEV002",
+          "FEV005",
+          "FEV002"
+        ]
+      ]
+    },
+    {
+      "id": "FEV_F5_BOSS",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "FEV004",
+          "FEV004",
+          "FEV003"
+        ],
+        [
+          "FEV005",
+          "FEV005"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "FEV_06_001",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "FEV004",
+          "FEV004"
+        ],
+        [
+          "FEV005",
+          "FEV005"
+        ]
+      ]
+    },
+    {
+      "id": "FEV_06_002",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "FEV004",
+          "FEV003",
+          "FEV004"
+        ],
+        [
+          "FEV005"
+        ]
+      ]
+    },
+    {
+      "id": "FEV_06_003",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "FEV003",
+          "FEV004"
+        ],
+        [
+          "FEV002",
+          "FEV005",
+          "FEV002"
+        ]
+      ]
+    },
+    {
+      "id": "FEV_FINAL",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "B_FEV_WRAITH"
+        ],
+        [
+          "FEV005",
+          "FEV005"
+        ]
+      ],
+      "isFloorBoss": true,
+      "isBoss": true
+    }
+  ]
+}

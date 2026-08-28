@@ -1,0 +1,16 @@
+{
+  "id": "cat_fortress_1",
+  "name": "猫獣人の影遺跡",
+  "areaLevel": 70,
+  "floors": 6,
+  "baseDurationSec": 42000,
+  "description": "朽ちた遺跡を住処にした猫系獣人の巣。素早い連撃と奇襲を得意とする暗殺兵が回廊を駆け、最奥では百戦錬磨の遺跡主が待つ。撃破できれば影の因子を奪える可能性がある。",
+  "encounter": {
+    "eventIntervalSec": 1400,
+    "eventWeights": {
+      "exploring": 60,
+      "goldTreasure": 10,
+      "battle": 30
+    }
+  }
+}

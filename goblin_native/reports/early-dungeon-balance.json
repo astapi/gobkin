@@ -1,0 +1,931 @@
+{
+  "version": 1,
+  "createdAt": "2026-06-05T00:57:00.600Z",
+  "areas": [
+    {
+      "areaId": "slime_cave",
+      "name": "スライムの洞窟",
+      "areaLevel": 1,
+      "floors": 2,
+      "baseDurationSec": 30,
+      "eventIntervalSec": 3,
+      "expectedRandomBattles": 3,
+      "enemyCount": 2,
+      "patternCount": 3,
+      "regularPatternCount": 2,
+      "floorBossPatternCount": 0,
+      "bossPatternCount": 1,
+      "enemies": [
+        {
+          "id": "S001",
+          "name": "スライム",
+          "level": 1,
+          "hp": 4,
+          "atk": 2,
+          "attackCount": 1,
+          "attackPressure": 2,
+          "def": 1,
+          "magicDef": 0,
+          "accuracy": 70,
+          "evasion": 9,
+          "jsonExp": 1,
+          "runtimeExp": 2,
+          "gold": 1,
+          "isBoss": false,
+          "tags": [
+            "slime"
+          ],
+          "skillIds": []
+        },
+        {
+          "id": "B_SLIME",
+          "name": "ボススライム",
+          "level": 3,
+          "hp": 20,
+          "atk": 3,
+          "attackCount": 1,
+          "attackPressure": 3,
+          "def": 2,
+          "magicDef": 1,
+          "accuracy": 100,
+          "evasion": 11,
+          "jsonExp": 5,
+          "runtimeExp": 29,
+          "gold": 5,
+          "isBoss": true,
+          "tags": [
+            "slime"
+          ],
+          "skillIds": []
+        }
+      ],
+      "patterns": [
+        {
+          "id": "SP001",
+          "floors": [
+            1,
+            2
+          ],
+          "rows": 1,
+          "count": 1,
+          "enemyIds": [
+            "S001"
+          ],
+          "isBoss": false,
+          "isFloorBoss": false,
+          "totalHp": 4,
+          "totalAttackPressure": 2,
+          "maxDef": 1,
+          "maxMagicDef": 0,
+          "maxAccuracy": 70,
+          "maxEvasion": 9,
+          "runtimeExp": 2,
+          "jsonExp": 1,
+          "gold": 1
+        },
+        {
+          "id": "SP002",
+          "floors": [
+            1,
+            2
+          ],
+          "rows": 1,
+          "count": 2,
+          "enemyIds": [
+            "S001",
+            "S001"
+          ],
+          "isBoss": false,
+          "isFloorBoss": false,
+          "totalHp": 8,
+          "totalAttackPressure": 4,
+          "maxDef": 1,
+          "maxMagicDef": 0,
+          "maxAccuracy": 70,
+          "maxEvasion": 9,
+          "runtimeExp": 4,
+          "jsonExp": 2,
+          "gold": 2
+        },
+        {
+          "id": "SBOSS",
+          "floors": [
+            2
+          ],
+          "rows": 1,
+          "count": 1,
+          "enemyIds": [
+            "B_SLIME"
+          ],
+          "isBoss": true,
+          "isFloorBoss": false,
+          "totalHp": 20,
+          "totalAttackPressure": 3,
+          "maxDef": 2,
+          "maxMagicDef": 1,
+          "maxAccuracy": 100,
+          "maxEvasion": 11,
+          "runtimeExp": 29,
+          "jsonExp": 5,
+          "gold": 5
+        }
+      ],
+      "summary": {
+        "avgEnemyLevel": 2,
+        "maxEnemyLevel": 3,
+        "avgEnemyHp": 12,
+        "avgRegularPatternHp": 6,
+        "medRegularPatternHp": 6,
+        "maxRegularPatternHp": 8,
+        "avgRegularAttackPressure": 3,
+        "medRegularAttackPressure": 3,
+        "maxRegularAttackPressure": 4,
+        "avgRegularRuntimeExp": 3,
+        "estimatedRandomExpPerClear": 9,
+        "bossRuntimeExp": 29,
+        "bossHp": 20,
+        "bossAttackPressure": 3
+      },
+      "diffFromPrevious": null
+    },
+    {
+      "areaId": "forest_outskirts",
+      "name": "周辺の森",
+      "areaLevel": 2,
+      "floors": 6,
+      "baseDurationSec": 360,
+      "eventIntervalSec": 12,
+      "expectedRandomBattles": 9,
+      "enemyCount": 6,
+      "patternCount": 25,
+      "regularPatternCount": 18,
+      "floorBossPatternCount": 6,
+      "bossPatternCount": 1,
+      "enemies": [
+        {
+          "id": "E001",
+          "name": "森スライム",
+          "level": 2,
+          "hp": 7,
+          "atk": 3,
+          "attackCount": 1,
+          "attackPressure": 3,
+          "def": 1,
+          "magicDef": 1,
+          "accuracy": 120,
+          "evasion": 8,
+          "jsonExp": 2,
+          "runtimeExp": 4,
+          "gold": 1,
+          "isBoss": false,
+          "tags": [
+            "slime"
+          ],
+          "skillIds": []
+        },
+        {
+          "id": "E002",
+          "name": "森ネズミ",
+          "level": 3,
+          "hp": 12,
+          "atk": 7,
+          "attackCount": 1,
+          "attackPressure": 7,
+          "def": 2,
+          "magicDef": 1,
+          "accuracy": 185,
+          "evasion": 11,
+          "jsonExp": 3,
+          "runtimeExp": 5,
+          "gold": 3,
+          "isBoss": false,
+          "tags": [
+            "beast"
+          ],
+          "skillIds": []
+        },
+        {
+          "id": "E003",
+          "name": "森コウモリ",
+          "level": 4,
+          "hp": 18,
+          "atk": 9,
+          "attackCount": 1,
+          "attackPressure": 9,
+          "def": 3,
+          "magicDef": 4,
+          "accuracy": 220,
+          "evasion": 18,
+          "jsonExp": 5,
+          "runtimeExp": 7,
+          "gold": 4,
+          "isBoss": false,
+          "tags": [
+            "bat"
+          ],
+          "skillIds": []
+        },
+        {
+          "id": "E004",
+          "name": "トゲリス",
+          "level": 5,
+          "hp": 26,
+          "atk": 13,
+          "attackCount": 1,
+          "attackPressure": 13,
+          "def": 6,
+          "magicDef": 7,
+          "accuracy": 235,
+          "evasion": 13,
+          "jsonExp": 7,
+          "runtimeExp": 9,
+          "gold": 6,
+          "isBoss": false,
+          "tags": [
+            "beast"
+          ],
+          "skillIds": []
+        },
+        {
+          "id": "E005",
+          "name": "若ウルフ",
+          "level": 6,
+          "hp": 42,
+          "atk": 15,
+          "attackCount": 1,
+          "attackPressure": 15,
+          "def": 8,
+          "magicDef": 9,
+          "accuracy": 250,
+          "evasion": 16,
+          "jsonExp": 10,
+          "runtimeExp": 11,
+          "gold": 9,
+          "isBoss": false,
+          "tags": [
+            "wolf"
+          ],
+          "skillIds": []
+        },
+        {
+          "id": "B001",
+          "name": "グレイウルフ",
+          "level": 8,
+          "hp": 100,
+          "atk": 18,
+          "attackCount": 2,
+          "attackPressure": 36,
+          "def": 10,
+          "magicDef": 12,
+          "accuracy": 270,
+          "evasion": 16,
+          "jsonExp": 25,
+          "runtimeExp": 14,
+          "gold": 22,
+          "isBoss": false,
+          "tags": [
+            "wolf"
+          ],
+          "skillIds": []
+        }
+      ],
+      "patterns": [
+        {
+          "id": "FO_1F_001",
+          "floors": [
+            1
+          ],
+          "rows": 1,
+          "count": 1,
+          "enemyIds": [
+            "E001"
+          ],
+          "isBoss": false,
+          "isFloorBoss": false,
+          "totalHp": 7,
+          "totalAttackPressure": 3,
+          "maxDef": 1,
+          "maxMagicDef": 1,
+          "maxAccuracy": 120,
+          "maxEvasion": 8,
+          "runtimeExp": 4,
+          "jsonExp": 2,
+          "gold": 1
+        },
+        {
+          "id": "FO_1F_002",
+          "floors": [
+            1
+          ],
+          "rows": 1,
+          "count": 2,
+          "enemyIds": [
+            "E001",
+            "E001"
+          ],
+          "isBoss": false,
+          "isFloorBoss": false,
+          "totalHp": 14,
+          "totalAttackPressure": 6,
+          "maxDef": 1,
+          "maxMagicDef": 1,
+          "maxAccuracy": 120,
+          "maxEvasion": 8,
+          "runtimeExp": 8,
+          "jsonExp": 4,
+          "gold": 2
+        },
+        {
+          "id": "FO_1F_003",
+          "floors": [
+            1
+          ],
+          "rows": 1,
+          "count": 1,
+          "enemyIds": [
+            "E002"
+          ],
+          "isBoss": false,
+          "isFloorBoss": false,
+          "totalHp": 12,
+          "totalAttackPressure": 7,
+          "maxDef": 2,
+          "maxMagicDef": 1,
+          "maxAccuracy": 185,
+          "maxEvasion": 11,
+          "runtimeExp": 5,
+          "jsonExp": 3,
+          "gold": 3
+        },
+        {
+          "id": "FO_1F_END",
+          "floors": [
+            1
+          ],
+          "rows": 1,
+          "count": 2,
+          "enemyIds": [
+            "E001",
+            "E002"
+          ],
+          "isBoss": false,
+          "isFloorBoss": true,
+          "totalHp": 19,
+          "totalAttackPressure": 10,
+          "maxDef": 2,
+          "maxMagicDef": 1,
+          "maxAccuracy": 185,
+          "maxEvasion": 11,
+          "runtimeExp": 9,
+          "jsonExp": 5,
+          "gold": 4
+        },
+        {
+          "id": "FO_2F_001",
+          "floors": [
+            2
+          ],
+          "rows": 1,
+          "count": 2,
+          "enemyIds": [
+            "E002",
+            "E002"
+          ],
+          "isBoss": false,
+          "isFloorBoss": false,
+          "totalHp": 24,
+          "totalAttackPressure": 14,
+          "maxDef": 2,
+          "maxMagicDef": 1,
+          "maxAccuracy": 185,
+          "maxEvasion": 11,
+          "runtimeExp": 10,
+          "jsonExp": 6,
+          "gold": 6
+        },
+        {
+          "id": "FO_2F_002",
+          "floors": [
+            2
+          ],
+          "rows": 1,
+          "count": 2,
+          "enemyIds": [
+            "E003",
+            "E003"
+          ],
+          "isBoss": false,
+          "isFloorBoss": false,
+          "totalHp": 36,
+          "totalAttackPressure": 18,
+          "maxDef": 3,
+          "maxMagicDef": 4,
+          "maxAccuracy": 220,
+          "maxEvasion": 18,
+          "runtimeExp": 14,
+          "jsonExp": 10,
+          "gold": 8
+        },
+        {
+          "id": "FO_2F_003",
+          "floors": [
+            2
+          ],
+          "rows": 2,
+          "count": 3,
+          "enemyIds": [
+            "E002",
+            "E003",
+            "E002"
+          ],
+          "isBoss": false,
+          "isFloorBoss": false,
+          "totalHp": 42,
+          "totalAttackPressure": 23,
+          "maxDef": 3,
+          "maxMagicDef": 4,
+          "maxAccuracy": 220,
+          "maxEvasion": 18,
+          "runtimeExp": 17,
+          "jsonExp": 11,
+          "gold": 10
+        },
+        {
+          "id": "FO_2F_END",
+          "floors": [
+            2
+          ],
+          "rows": 2,
+          "count": 4,
+          "enemyIds": [
+            "E003",
+            "E003",
+            "E002",
+            "E002"
+          ],
+          "isBoss": false,
+          "isFloorBoss": true,
+          "totalHp": 60,
+          "totalAttackPressure": 32,
+          "maxDef": 3,
+          "maxMagicDef": 4,
+          "maxAccuracy": 220,
+          "maxEvasion": 18,
+          "runtimeExp": 24,
+          "jsonExp": 16,
+          "gold": 14
+        },
+        {
+          "id": "FO_3F_001",
+          "floors": [
+            3
+          ],
+          "rows": 2,
+          "count": 3,
+          "enemyIds": [
+            "E003",
+            "E003",
+            "E002"
+          ],
+          "isBoss": false,
+          "isFloorBoss": false,
+          "totalHp": 48,
+          "totalAttackPressure": 25,
+          "maxDef": 3,
+          "maxMagicDef": 4,
+          "maxAccuracy": 220,
+          "maxEvasion": 18,
+          "runtimeExp": 19,
+          "jsonExp": 13,
+          "gold": 11
+        },
+        {
+          "id": "FO_3F_002",
+          "floors": [
+            3
+          ],
+          "rows": 2,
+          "count": 3,
+          "enemyIds": [
+            "E004",
+            "E002",
+            "E002"
+          ],
+          "isBoss": false,
+          "isFloorBoss": false,
+          "totalHp": 50,
+          "totalAttackPressure": 27,
+          "maxDef": 6,
+          "maxMagicDef": 7,
+          "maxAccuracy": 235,
+          "maxEvasion": 13,
+          "runtimeExp": 19,
+          "jsonExp": 13,
+          "gold": 12
+        },
+        {
+          "id": "FO_3F_003",
+          "floors": [
+            3
+          ],
+          "rows": 2,
+          "count": 3,
+          "enemyIds": [
+            "E004",
+            "E003",
+            "E003"
+          ],
+          "isBoss": false,
+          "isFloorBoss": false,
+          "totalHp": 62,
+          "totalAttackPressure": 31,
+          "maxDef": 6,
+          "maxMagicDef": 7,
+          "maxAccuracy": 235,
+          "maxEvasion": 18,
+          "runtimeExp": 23,
+          "jsonExp": 17,
+          "gold": 14
+        },
+        {
+          "id": "FO_3F_END",
+          "floors": [
+            3
+          ],
+          "rows": 2,
+          "count": 3,
+          "enemyIds": [
+            "E004",
+            "E004",
+            "E003"
+          ],
+          "isBoss": false,
+          "isFloorBoss": true,
+          "totalHp": 70,
+          "totalAttackPressure": 35,
+          "maxDef": 6,
+          "maxMagicDef": 7,
+          "maxAccuracy": 235,
+          "maxEvasion": 18,
+          "runtimeExp": 25,
+          "jsonExp": 19,
+          "gold": 16
+        },
+        {
+          "id": "FO_4F_001",
+          "floors": [
+            4
+          ],
+          "rows": 2,
+          "count": 4,
+          "enemyIds": [
+            "E004",
+            "E004",
+            "E003",
+            "E003"
+          ],
+          "isBoss": false,
+          "isFloorBoss": false,
+          "totalHp": 88,
+          "totalAttackPressure": 44,
+          "maxDef": 6,
+          "maxMagicDef": 7,
+          "maxAccuracy": 235,
+          "maxEvasion": 18,
+          "runtimeExp": 32,
+          "jsonExp": 24,
+          "gold": 20
+        },
+        {
+          "id": "FO_4F_002",
+          "floors": [
+            4
+          ],
+          "rows": 2,
+          "count": 3,
+          "enemyIds": [
+            "E005",
+            "E003",
+            "E003"
+          ],
+          "isBoss": false,
+          "isFloorBoss": false,
+          "totalHp": 78,
+          "totalAttackPressure": 33,
+          "maxDef": 8,
+          "maxMagicDef": 9,
+          "maxAccuracy": 250,
+          "maxEvasion": 18,
+          "runtimeExp": 25,
+          "jsonExp": 20,
+          "gold": 17
+        },
+        {
+          "id": "FO_4F_003",
+          "floors": [
+            4
+          ],
+          "rows": 2,
+          "count": 4,
+          "enemyIds": [
+            "E005",
+            "E004",
+            "E002",
+            "E002"
+          ],
+          "isBoss": false,
+          "isFloorBoss": false,
+          "totalHp": 92,
+          "totalAttackPressure": 42,
+          "maxDef": 8,
+          "maxMagicDef": 9,
+          "maxAccuracy": 250,
+          "maxEvasion": 16,
+          "runtimeExp": 30,
+          "jsonExp": 23,
+          "gold": 21
+        },
+        {
+          "id": "FO_4F_END",
+          "floors": [
+            4
+          ],
+          "rows": 2,
+          "count": 4,
+          "enemyIds": [
+            "E005",
+            "E004",
+            "E003",
+            "E003"
+          ],
+          "isBoss": false,
+          "isFloorBoss": true,
+          "totalHp": 104,
+          "totalAttackPressure": 46,
+          "maxDef": 8,
+          "maxMagicDef": 9,
+          "maxAccuracy": 250,
+          "maxEvasion": 18,
+          "runtimeExp": 34,
+          "jsonExp": 27,
+          "gold": 23
+        },
+        {
+          "id": "FO_5F_001",
+          "floors": [
+            5
+          ],
+          "rows": 2,
+          "count": 3,
+          "enemyIds": [
+            "E005",
+            "E005",
+            "E004"
+          ],
+          "isBoss": false,
+          "isFloorBoss": false,
+          "totalHp": 110,
+          "totalAttackPressure": 43,
+          "maxDef": 8,
+          "maxMagicDef": 9,
+          "maxAccuracy": 250,
+          "maxEvasion": 16,
+          "runtimeExp": 31,
+          "jsonExp": 27,
+          "gold": 24
+        },
+        {
+          "id": "FO_5F_002",
+          "floors": [
+            5
+          ],
+          "rows": 2,
+          "count": 4,
+          "enemyIds": [
+            "E005",
+            "E004",
+            "E004",
+            "E003"
+          ],
+          "isBoss": false,
+          "isFloorBoss": false,
+          "totalHp": 112,
+          "totalAttackPressure": 50,
+          "maxDef": 8,
+          "maxMagicDef": 9,
+          "maxAccuracy": 250,
+          "maxEvasion": 18,
+          "runtimeExp": 36,
+          "jsonExp": 29,
+          "gold": 25
+        },
+        {
+          "id": "FO_5F_003",
+          "floors": [
+            5
+          ],
+          "rows": 2,
+          "count": 4,
+          "enemyIds": [
+            "E005",
+            "E005",
+            "E004",
+            "E004"
+          ],
+          "isBoss": false,
+          "isFloorBoss": false,
+          "totalHp": 136,
+          "totalAttackPressure": 56,
+          "maxDef": 8,
+          "maxMagicDef": 9,
+          "maxAccuracy": 250,
+          "maxEvasion": 16,
+          "runtimeExp": 40,
+          "jsonExp": 34,
+          "gold": 30
+        },
+        {
+          "id": "FO_5F_END",
+          "floors": [
+            5
+          ],
+          "rows": 2,
+          "count": 5,
+          "enemyIds": [
+            "E005",
+            "E005",
+            "E004",
+            "E004",
+            "E003"
+          ],
+          "isBoss": false,
+          "isFloorBoss": true,
+          "totalHp": 154,
+          "totalAttackPressure": 65,
+          "maxDef": 8,
+          "maxMagicDef": 9,
+          "maxAccuracy": 250,
+          "maxEvasion": 18,
+          "runtimeExp": 47,
+          "jsonExp": 39,
+          "gold": 34
+        },
+        {
+          "id": "FO_6F_001",
+          "floors": [
+            6
+          ],
+          "rows": 2,
+          "count": 4,
+          "enemyIds": [
+            "E005",
+            "E005",
+            "E004",
+            "E004"
+          ],
+          "isBoss": false,
+          "isFloorBoss": false,
+          "totalHp": 136,
+          "totalAttackPressure": 56,
+          "maxDef": 8,
+          "maxMagicDef": 9,
+          "maxAccuracy": 250,
+          "maxEvasion": 16,
+          "runtimeExp": 40,
+          "jsonExp": 34,
+          "gold": 30
+        },
+        {
+          "id": "FO_6F_002",
+          "floors": [
+            6
+          ],
+          "rows": 2,
+          "count": 5,
+          "enemyIds": [
+            "E005",
+            "E005",
+            "E004",
+            "E003",
+            "E003"
+          ],
+          "isBoss": false,
+          "isFloorBoss": false,
+          "totalHp": 146,
+          "totalAttackPressure": 61,
+          "maxDef": 8,
+          "maxMagicDef": 9,
+          "maxAccuracy": 250,
+          "maxEvasion": 18,
+          "runtimeExp": 45,
+          "jsonExp": 37,
+          "gold": 32
+        },
+        {
+          "id": "FO_6F_003",
+          "floors": [
+            6
+          ],
+          "rows": 2,
+          "count": 5,
+          "enemyIds": [
+            "E005",
+            "E005",
+            "E005",
+            "E004",
+            "E004"
+          ],
+          "isBoss": false,
+          "isFloorBoss": false,
+          "totalHp": 178,
+          "totalAttackPressure": 71,
+          "maxDef": 8,
+          "maxMagicDef": 9,
+          "maxAccuracy": 250,
+          "maxEvasion": 16,
+          "runtimeExp": 51,
+          "jsonExp": 44,
+          "gold": 39
+        },
+        {
+          "id": "FO_6F_END",
+          "floors": [
+            6
+          ],
+          "rows": 2,
+          "count": 6,
+          "enemyIds": [
+            "E005",
+            "E005",
+            "E005",
+            "E004",
+            "E004",
+            "E004"
+          ],
+          "isBoss": false,
+          "isFloorBoss": true,
+          "totalHp": 204,
+          "totalAttackPressure": 84,
+          "maxDef": 8,
+          "maxMagicDef": 9,
+          "maxAccuracy": 250,
+          "maxEvasion": 16,
+          "runtimeExp": 60,
+          "jsonExp": 51,
+          "gold": 45
+        },
+        {
+          "id": "BOSS",
+          "floors": [
+            6
+          ],
+          "rows": 3,
+          "count": 5,
+          "enemyIds": [
+            "E005",
+            "E005",
+            "B001",
+            "E004",
+            "E004"
+          ],
+          "isBoss": true,
+          "isFloorBoss": false,
+          "totalHp": 236,
+          "totalAttackPressure": 92,
+          "maxDef": 10,
+          "maxMagicDef": 12,
+          "maxAccuracy": 270,
+          "maxEvasion": 16,
+          "runtimeExp": 54,
+          "jsonExp": 59,
+          "gold": 52
+        }
+      ],
+      "summary": {
+        "avgEnemyLevel": 4.7,
+        "maxEnemyLevel": 8,
+        "avgEnemyHp": 34.2,
+        "avgRegularPatternHp": 76.2,
+        "medRegularPatternHp": 70,
+        "maxRegularPatternHp": 178,
+        "avgRegularAttackPressure": 33.9,
+        "medRegularAttackPressure": 32,
+        "maxRegularAttackPressure": 71,
+        "avgRegularRuntimeExp": 24.9,
+        "estimatedRandomExpPerClear": 224.5,
+        "bossRuntimeExp": 54,
+        "bossHp": 236,
+        "bossAttackPressure": 92
+      },
+      "diffFromPrevious": {
+        "areaLevelDelta": 1,
+        "avgPatternHpRatio": 12.7,
+        "avgAttackPressureRatio": 11.3,
+        "avgRuntimeExpRatio": 8.3,
+        "estimatedRandomExpRatio": 24.94,
+        "bossHpRatio": 11.8,
+        "bossExpRatio": 1.86
+      }
+    }
+  ]
+}

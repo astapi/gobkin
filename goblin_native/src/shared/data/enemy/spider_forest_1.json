@@ -1,0 +1,534 @@
+{
+  "enemies": [
+    {
+      "id": "SPF001",
+      "name": "巣糸蜘蛛",
+      "attackType": "melee",
+      "raceTags": [
+        "insect"
+      ],
+      "level": 100,
+      "hp": 4200,
+      "atk": 553,
+      "def": 344,
+      "attackCount": 2,
+      "accuracy": 740,
+      "evasion": 586,
+      "gold": 134,
+      "magicDef": 119,
+      "baseAttributes": {
+        "power": 10,
+        "wisdom": 10,
+        "spirit": 5,
+        "vitality": 8,
+        "agility": 20,
+        "luck": 11
+      }
+    },
+    {
+      "id": "SPF002",
+      "name": "毒牙蜘蛛",
+      "attackType": "melee",
+      "raceTags": [
+        "insect"
+      ],
+      "level": 103,
+      "hp": 4840,
+      "atk": 674,
+      "def": 396,
+      "attackCount": 2,
+      "accuracy": 746,
+      "evasion": 621,
+      "gold": 143,
+      "magicDef": 128,
+      "baseAttributes": {
+        "power": 12,
+        "wisdom": 12,
+        "spirit": 5,
+        "vitality": 9,
+        "agility": 22,
+        "luck": 11
+      }
+    },
+    {
+      "id": "SPF003",
+      "name": "アラクネ",
+      "attackType": "melee",
+      "raceTags": [
+        "spider"
+      ],
+      "level": 106,
+      "hp": 5470,
+      "atk": 746,
+      "magicAtk": 191,
+      "def": 448,
+      "attackCount": 3,
+      "accuracy": 752,
+      "evasion": 668,
+      "gold": 158,
+      "magicDef": 153,
+      "baseAttributes": {
+        "power": 13,
+        "wisdom": 8,
+        "spirit": 6,
+        "vitality": 10,
+        "agility": 24,
+        "luck": 12
+      }
+    },
+    {
+      "id": "B_ARACHNE",
+      "name": "女王アラーネ",
+      "attackType": "melee",
+      "raceTags": [
+        "spider"
+      ],
+      "level": 126,
+      "hp": 8590,
+      "atk": 644,
+      "magicAtk": 259,
+      "def": 605,
+      "attackCount": 3,
+      "accuracy": 839,
+      "evasion": 832,
+      "isBoss": true,
+      "gold": 720,
+      "magicDef": 221,
+      "baseAttributes": {
+        "power": 16,
+        "wisdom": 10,
+        "spirit": 9,
+        "vitality": 15,
+        "agility": 28,
+        "luck": 14
+      }
+    }
+  ],
+  "patterns": [
+    {
+      "id": "SF1_F1_A",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "SPF001",
+          "SPF001"
+        ],
+        [
+          "SPF002"
+        ]
+      ]
+    },
+    {
+      "id": "SF1_F1_B",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "SPF001",
+          "SPF001",
+          "SPF001"
+        ],
+        [
+          "SPF002"
+        ]
+      ]
+    },
+    {
+      "id": "SF1_F1_C",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "SPF001",
+          "SPF001"
+        ],
+        [
+          "SPF002",
+          "SPF002"
+        ]
+      ]
+    },
+    {
+      "id": "SF1_F1_BOSS",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "SPF001",
+          "SPF001",
+          "SPF001"
+        ],
+        [
+          "SPF002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "SF1_F2_A",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "SPF002",
+          "SPF001"
+        ],
+        [
+          "SPF001",
+          "SPF001"
+        ]
+      ]
+    },
+    {
+      "id": "SF1_F2_B",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "SPF002",
+          "SPF001",
+          "SPF002"
+        ],
+        [
+          "SPF001",
+          "SPF001"
+        ]
+      ]
+    },
+    {
+      "id": "SF1_F2_C",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "SPF002",
+          "SPF001"
+        ],
+        [
+          "SPF001",
+          "SPF001",
+          "SPF001"
+        ]
+      ]
+    },
+    {
+      "id": "SF1_F2_BOSS",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "SPF002",
+          "SPF001",
+          "SPF002"
+        ],
+        [
+          "SPF001",
+          "SPF001"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "SF1_F3_A",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "SPF002",
+          "SPF002"
+        ],
+        [
+          "SPF003"
+        ]
+      ]
+    },
+    {
+      "id": "SF1_F3_B",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "SPF002",
+          "SPF002",
+          "SPF002"
+        ],
+        [
+          "SPF003"
+        ]
+      ]
+    },
+    {
+      "id": "SF1_F3_C",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "SPF002",
+          "SPF002"
+        ],
+        [
+          "SPF003",
+          "SPF003"
+        ]
+      ]
+    },
+    {
+      "id": "SF1_F3_BOSS",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "SPF002",
+          "SPF002",
+          "SPF002"
+        ],
+        [
+          "SPF003"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "SF1_F4_A",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "SPF003",
+          "SPF001"
+        ],
+        [
+          "SPF002",
+          "SPF001"
+        ]
+      ]
+    },
+    {
+      "id": "SF1_F4_B",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "SPF003",
+          "SPF001",
+          "SPF003"
+        ],
+        [
+          "SPF002",
+          "SPF001"
+        ]
+      ]
+    },
+    {
+      "id": "SF1_F4_C",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "SPF003",
+          "SPF001"
+        ],
+        [
+          "SPF002",
+          "SPF001",
+          "SPF002"
+        ]
+      ]
+    },
+    {
+      "id": "SF1_F4_BOSS",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "SPF003",
+          "SPF001",
+          "SPF003"
+        ],
+        [
+          "SPF002",
+          "SPF001"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "SF1_F5_A",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "SPF003",
+          "SPF002"
+        ],
+        [
+          "SPF002",
+          "SPF001",
+          "SPF001"
+        ]
+      ]
+    },
+    {
+      "id": "SF1_F5_B",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "SPF003",
+          "SPF002",
+          "SPF003"
+        ],
+        [
+          "SPF002",
+          "SPF001",
+          "SPF001"
+        ]
+      ]
+    },
+    {
+      "id": "SF1_F5_C",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "SPF003",
+          "SPF002"
+        ],
+        [
+          "SPF002",
+          "SPF001",
+          "SPF001",
+          "SPF002"
+        ]
+      ]
+    },
+    {
+      "id": "SF1_F5_BOSS",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "SPF003",
+          "SPF002",
+          "SPF003"
+        ],
+        [
+          "SPF002",
+          "SPF001",
+          "SPF001"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "SF1_F6_A",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "SPF003",
+          "SPF003"
+        ],
+        [
+          "SPF002",
+          "SPF002",
+          "SPF001"
+        ]
+      ]
+    },
+    {
+      "id": "SF1_F6_B",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "SPF003",
+          "SPF003",
+          "SPF003"
+        ],
+        [
+          "SPF002",
+          "SPF002",
+          "SPF001"
+        ]
+      ]
+    },
+    {
+      "id": "SF1_F6_C",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "SPF003",
+          "SPF003"
+        ],
+        [
+          "SPF002",
+          "SPF002",
+          "SPF001",
+          "SPF002"
+        ]
+      ]
+    },
+    {
+      "id": "SF1_F6_BOSS",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "SPF003",
+          "SPF003",
+          "SPF003"
+        ],
+        [
+          "SPF002",
+          "SPF002",
+          "SPF001"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "SF1_FINAL_BOSS",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "B_ARACHNE"
+        ],
+        [
+          "SPF003",
+          "SPF002",
+          "SPF001"
+        ]
+      ],
+      "isBoss": true
+    }
+  ]
+}

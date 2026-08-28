@@ -1,0 +1,684 @@
+{
+  "enemies": [
+    {
+      "id": "ORF001",
+      "name": "オーク重装兵",
+      "attackType": "melee",
+      "raceTags": [
+        "orc"
+      ],
+      "level": 45,
+      "hp": 1880,
+      "atk": 294,
+      "def": 149,
+      "magicDef": 50,
+      "attackCount": 5,
+      "accuracy": 560,
+      "evasion": 134,
+      "gold": 50,
+      "skills": [
+        {
+          "id": "physical_reduction_10",
+          "physicalDamageReductionPercent": 10
+        },
+        {
+          "id": "counter_attack",
+          "physicalCounterAttack": {
+            "attackCountMultiplier": 0.3,
+            "criticalRateMultiplier": 0.5
+          }
+        }
+      ],
+      "baseAttributes": {
+        "power": 18,
+        "wisdom": 18,
+        "spirit": 9,
+        "vitality": 22,
+        "agility": 8,
+        "luck": 5
+      }
+    },
+    {
+      "id": "ORF002",
+      "name": "オーク弓兵",
+      "attackType": "range",
+      "raceTags": [
+        "orc"
+      ],
+      "level": 45,
+      "hp": 1650,
+      "atk": 200,
+      "def": 122,
+      "magicDef": 20,
+      "attackCount": 4,
+      "accuracy": 560,
+      "evasion": 154,
+      "gold": 37,
+      "skills": [
+        {
+          "id": "physical_reduction_10",
+          "physicalDamageReductionPercent": 10
+        }
+      ],
+      "baseAttributes": {
+        "power": 18,
+        "wisdom": 18,
+        "spirit": 4,
+        "vitality": 18,
+        "agility": 12,
+        "luck": 6
+      }
+    },
+    {
+      "id": "ORF003",
+      "name": "トロル",
+      "attackType": "melee",
+      "raceTags": [
+        "troll"
+      ],
+      "level": 47,
+      "hp": 1990,
+      "atk": 308,
+      "def": 156,
+      "magicDef": 53,
+      "attackCount": 5,
+      "accuracy": 560,
+      "evasion": 141,
+      "gold": 53,
+      "skills": [
+        {
+          "id": "physical_reduction_10",
+          "physicalDamageReductionPercent": 10
+        },
+        {
+          "id": "physical_reduction_5",
+          "physicalDamageReductionPercent": 5
+        }
+      ],
+      "baseAttributes": {
+        "power": 18,
+        "wisdom": 18,
+        "spirit": 9,
+        "vitality": 22,
+        "agility": 8,
+        "luck": 5
+      }
+    },
+    {
+      "id": "B_ORC_FORTRESS",
+      "name": "オークの長ドルガ",
+      "attackType": "melee",
+      "raceTags": [
+        "orc"
+      ],
+      "level": 65,
+      "hp": 21300,
+      "atk": 473,
+      "def": 283,
+      "magicDef": 61,
+      "attackCount": 7,
+      "accuracy": 640,
+      "evasion": 214,
+      "isBoss": true,
+      "gold": 216,
+      "skills": [
+        {
+          "id": "physical_reduction_10",
+          "physicalDamageReductionPercent": 10
+        },
+        {
+          "id": "counter_attack",
+          "physicalCounterAttack": {
+            "attackCountMultiplier": 0.3,
+            "criticalRateMultiplier": 0.5
+          }
+        }
+      ],
+      "baseAttributes": {
+        "power": 23,
+        "wisdom": 23,
+        "spirit": 11,
+        "vitality": 27,
+        "agility": 9,
+        "luck": 5
+      }
+    }
+  ],
+  "patterns": [
+    {
+      "id": "OF1_001",
+      "floors": [
+        1,
+        2,
+        3
+      ],
+      "enemies": [
+        [
+          "ORF001",
+          "ORF001"
+        ],
+        [
+          "ORF002",
+          "ORF002"
+        ],
+        [
+          "ORF002",
+          "ORF002"
+        ]
+      ]
+    },
+    {
+      "id": "OF1_002",
+      "floors": [
+        1,
+        2,
+        3
+      ],
+      "enemies": [
+        [
+          "ORF001",
+          "ORF001"
+        ],
+        [
+          "ORF001"
+        ],
+        [
+          "ORF002",
+          "ORF002"
+        ],
+        [
+          "ORF002",
+          "ORF002"
+        ]
+      ]
+    },
+    {
+      "id": "OF1_003",
+      "floors": [
+        1,
+        2,
+        3
+      ],
+      "enemies": [
+        [
+          "ORF001",
+          "ORF001"
+        ],
+        [
+          "ORF002",
+          "ORF002",
+          "ORF002"
+        ],
+        [
+          "ORF002",
+          "ORF002"
+        ]
+      ]
+    },
+    {
+      "id": "OF1_004",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "ORF003"
+        ],
+        [
+          "ORF001",
+          "ORF001"
+        ],
+        [
+          "ORF002",
+          "ORF002"
+        ],
+        [
+          "ORF002",
+          "ORF002"
+        ]
+      ]
+    },
+    {
+      "id": "OF1_005",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "ORF003",
+          "ORF001"
+        ],
+        [
+          "ORF001",
+          "ORF001"
+        ],
+        [
+          "ORF002",
+          "ORF002"
+        ],
+        [
+          "ORF002",
+          "ORF002"
+        ]
+      ]
+    },
+    {
+      "id": "OF1_006",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "ORF003"
+        ],
+        [
+          "ORF001",
+          "ORF001",
+          "ORF001"
+        ],
+        [
+          "ORF002",
+          "ORF002"
+        ],
+        [
+          "ORF002",
+          "ORF002"
+        ]
+      ]
+    },
+    {
+      "id": "OF1_007",
+      "floors": [
+        5,
+        6
+      ],
+      "enemies": [
+        [
+          "ORF003",
+          "ORF003"
+        ],
+        [
+          "ORF001",
+          "ORF001"
+        ],
+        [
+          "ORF002",
+          "ORF002"
+        ],
+        [
+          "ORF002",
+          "ORF002"
+        ]
+      ]
+    },
+    {
+      "id": "OF1_008",
+      "floors": [
+        5,
+        6
+      ],
+      "enemies": [
+        [
+          "ORF003"
+        ],
+        [
+          "ORF001",
+          "ORF001"
+        ],
+        [
+          "ORF001"
+        ],
+        [
+          "ORF002",
+          "ORF002"
+        ],
+        [
+          "ORF002",
+          "ORF002"
+        ]
+      ]
+    },
+    {
+      "id": "OF1_009",
+      "floors": [
+        7
+      ],
+      "enemies": [
+        [
+          "ORF003",
+          "ORF003"
+        ],
+        [
+          "ORF001",
+          "ORF001"
+        ],
+        [
+          "ORF001"
+        ],
+        [
+          "ORF002",
+          "ORF002"
+        ],
+        [
+          "ORF002",
+          "ORF002"
+        ]
+      ]
+    },
+    {
+      "id": "OF1_010",
+      "floors": [
+        7
+      ],
+      "enemies": [
+        [
+          "ORF003",
+          "ORF001"
+        ],
+        [
+          "ORF003"
+        ],
+        [
+          "ORF001",
+          "ORF001"
+        ],
+        [
+          "ORF002",
+          "ORF002"
+        ],
+        [
+          "ORF002",
+          "ORF002"
+        ]
+      ]
+    },
+    {
+      "id": "OF1_011",
+      "floors": [
+        8
+      ],
+      "enemies": [
+        [
+          "ORF003",
+          "ORF003"
+        ],
+        [
+          "ORF001",
+          "ORF001"
+        ],
+        [
+          "ORF001",
+          "ORF002"
+        ],
+        [
+          "ORF002",
+          "ORF002"
+        ],
+        [
+          "ORF002",
+          "ORF002"
+        ]
+      ]
+    },
+    {
+      "id": "OF1_012",
+      "floors": [
+        8
+      ],
+      "enemies": [
+        [
+          "ORF003",
+          "ORF001"
+        ],
+        [
+          "ORF003",
+          "ORF001"
+        ],
+        [
+          "ORF001",
+          "ORF001"
+        ],
+        [
+          "ORF002",
+          "ORF002"
+        ],
+        [
+          "ORF002",
+          "ORF002"
+        ]
+      ]
+    },
+    {
+      "id": "BOSS",
+      "floors": [
+        8
+      ],
+      "isBoss": true,
+      "enemies": [
+        [
+          "B_ORC_FORTRESS"
+        ],
+        [
+          "ORF003",
+          "ORF003"
+        ],
+        [
+          "ORF001",
+          "ORF001"
+        ],
+        [
+          "ORF002",
+          "ORF002"
+        ],
+        [
+          "ORF002",
+          "ORF002"
+        ]
+      ]
+    },
+    {
+      "id": "OF1_002_F1_BOSS",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "ORF001",
+          "ORF001"
+        ],
+        [
+          "ORF001"
+        ],
+        [
+          "ORF002",
+          "ORF002"
+        ],
+        [
+          "ORF002",
+          "ORF002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "OF1_002_F2_BOSS",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "ORF001",
+          "ORF001"
+        ],
+        [
+          "ORF001"
+        ],
+        [
+          "ORF002",
+          "ORF002"
+        ],
+        [
+          "ORF002",
+          "ORF002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "OF1_002_F3_BOSS",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "ORF001",
+          "ORF001"
+        ],
+        [
+          "ORF001"
+        ],
+        [
+          "ORF002",
+          "ORF002"
+        ],
+        [
+          "ORF002",
+          "ORF002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "OF1_005_F4_BOSS",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "ORF003",
+          "ORF001"
+        ],
+        [
+          "ORF001",
+          "ORF001"
+        ],
+        [
+          "ORF002",
+          "ORF002"
+        ],
+        [
+          "ORF002",
+          "ORF002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "OF1_007_F5_BOSS",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "ORF003",
+          "ORF003"
+        ],
+        [
+          "ORF001",
+          "ORF001"
+        ],
+        [
+          "ORF002",
+          "ORF002"
+        ],
+        [
+          "ORF002",
+          "ORF002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "OF1_007_F6_BOSS",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "ORF003",
+          "ORF003"
+        ],
+        [
+          "ORF001",
+          "ORF001"
+        ],
+        [
+          "ORF002",
+          "ORF002"
+        ],
+        [
+          "ORF002",
+          "ORF002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "OF1_009_F7_BOSS",
+      "floors": [
+        7
+      ],
+      "enemies": [
+        [
+          "ORF003",
+          "ORF003"
+        ],
+        [
+          "ORF001",
+          "ORF001"
+        ],
+        [
+          "ORF001"
+        ],
+        [
+          "ORF002",
+          "ORF002"
+        ],
+        [
+          "ORF002",
+          "ORF002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "OF1_012_F8_BOSS",
+      "floors": [
+        8
+      ],
+      "enemies": [
+        [
+          "ORF003",
+          "ORF001"
+        ],
+        [
+          "ORF003",
+          "ORF001"
+        ],
+        [
+          "ORF001",
+          "ORF001"
+        ],
+        [
+          "ORF002",
+          "ORF002"
+        ],
+        [
+          "ORF002",
+          "ORF002"
+        ]
+      ],
+      "isFloorBoss": true
+    }
+  ]
+}

@@ -1,0 +1,584 @@
+{
+  "enemies": [
+    {
+      "id": "TRL001",
+      "name": "トロル",
+      "attackType": "melee",
+      "raceTags": [
+        "troll"
+      ],
+      "level": 96,
+      "hp": 6200,
+      "atk": 742,
+      "def": 508,
+      "attackCount": 1,
+      "accuracy": 732,
+      "evasion": 327,
+      "gold": 155,
+      "magicDef": 1203,
+      "baseAttributes": {
+        "power": 8,
+        "wisdom": 8,
+        "spirit": 4,
+        "vitality": 7,
+        "agility": 4,
+        "luck": 6
+      }
+    },
+    {
+      "id": "TRL002",
+      "name": "洞窟トロル",
+      "attackType": "melee",
+      "raceTags": [
+        "troll"
+      ],
+      "level": 100,
+      "hp": 8400,
+      "atk": 881,
+      "def": 688,
+      "attackCount": 1,
+      "accuracy": 740,
+      "evasion": 333,
+      "gold": 173,
+      "magicDef": 1536,
+      "baseAttributes": {
+        "power": 9,
+        "wisdom": 9,
+        "spirit": 6,
+        "vitality": 9,
+        "agility": 3,
+        "luck": 6
+      }
+    },
+    {
+      "id": "TRL003",
+      "name": "投石トロル",
+      "attackType": "melee",
+      "raceTags": [
+        "troll"
+      ],
+      "level": 102,
+      "hp": 5680,
+      "atk": 1091,
+      "def": 464,
+      "attackCount": 1,
+      "accuracy": 744,
+      "evasion": 361,
+      "gold": 181,
+      "magicDef": 973,
+      "baseAttributes": {
+        "power": 11,
+        "wisdom": 11,
+        "spirit": 4,
+        "vitality": 6,
+        "agility": 5,
+        "luck": 6
+      }
+    },
+    {
+      "id": "TRL004",
+      "name": "巨大トロル",
+      "attackType": "melee",
+      "raceTags": [
+        "troll"
+      ],
+      "level": 106,
+      "hp": 10700,
+      "atk": 1019,
+      "def": 876,
+      "attackCount": 1,
+      "accuracy": 752,
+      "evasion": 346,
+      "gold": 193,
+      "magicDef": 1779,
+      "baseAttributes": {
+        "power": 10,
+        "wisdom": 10,
+        "spirit": 7,
+        "vitality": 11,
+        "agility": 3,
+        "luck": 6
+      }
+    },
+    {
+      "id": "TRL005",
+      "name": "トロルシャーマン",
+      "attackType": "melee",
+      "raceTags": [
+        "troll"
+      ],
+      "level": 104,
+      "hp": 6710,
+      "atk": 906,
+      "def": 552,
+      "attackCount": 1,
+      "accuracy": 748,
+      "evasion": 401,
+      "gold": 177,
+      "magicDef": 1178,
+      "baseAttributes": {
+        "power": 9,
+        "wisdom": 9,
+        "spirit": 4,
+        "vitality": 7,
+        "agility": 7,
+        "luck": 7
+      }
+    },
+    {
+      "id": "B_TYRANT",
+      "name": "暴君ゴズド",
+      "attackType": "melee",
+      "raceTags": [
+        "troll"
+      ],
+      "level": 124,
+      "hp": 15020,
+      "atk": 1133,
+      "def": 1203,
+      "attackCount": 2,
+      "accuracy": 836,
+      "evasion": 451,
+      "isBoss": true,
+      "gold": 974,
+      "factorDrops": [
+        {
+          "factorId": "troll",
+          "probability": 0.015
+        }
+      ],
+      "magicDef": 2867,
+      "baseAttributes": {
+        "power": 16,
+        "wisdom": 16,
+        "spirit": 10,
+        "vitality": 17,
+        "agility": 6,
+        "luck": 8
+      }
+    }
+  ],
+  "patterns": [
+    {
+      "id": "TC1_F1_A",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "TRL001"
+        ],
+        [
+          "TRL005"
+        ]
+      ]
+    },
+    {
+      "id": "TC1_F1_B",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "TRL001"
+        ],
+        [
+          "TRL005"
+        ]
+      ]
+    },
+    {
+      "id": "TC1_F1_C",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "TRL001"
+        ],
+        [
+          "TRL005",
+          "TRL005"
+        ]
+      ]
+    },
+    {
+      "id": "TC1_F1_BOSS",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "TRL001"
+        ],
+        [
+          "TRL005"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "TC1_F2_A",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "TRL002"
+        ],
+        [
+          "TRL001",
+          "TRL005"
+        ]
+      ]
+    },
+    {
+      "id": "TC1_F2_B",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "TRL002"
+        ],
+        [
+          "TRL001",
+          "TRL005"
+        ]
+      ]
+    },
+    {
+      "id": "TC1_F2_C",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "TRL002"
+        ],
+        [
+          "TRL001",
+          "TRL005",
+          "TRL001"
+        ]
+      ]
+    },
+    {
+      "id": "TC1_F2_BOSS",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "TRL002"
+        ],
+        [
+          "TRL001",
+          "TRL005"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "TC1_F3_A",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "TRL002",
+          "TRL003"
+        ],
+        [
+          "TRL005",
+          "TRL001"
+        ]
+      ]
+    },
+    {
+      "id": "TC1_F3_B",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "TRL002",
+          "TRL003",
+          "TRL002"
+        ],
+        [
+          "TRL005",
+          "TRL001"
+        ]
+      ]
+    },
+    {
+      "id": "TC1_F3_C",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "TRL002",
+          "TRL003"
+        ],
+        [
+          "TRL005",
+          "TRL001",
+          "TRL005"
+        ]
+      ]
+    },
+    {
+      "id": "TC1_F3_BOSS",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "TRL002",
+          "TRL003",
+          "TRL002"
+        ],
+        [
+          "TRL005",
+          "TRL001"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "TC1_F4_A",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "TRL004",
+          "TRL003"
+        ],
+        [
+          "TRL005",
+          "TRL002",
+          "TRL001"
+        ]
+      ]
+    },
+    {
+      "id": "TC1_F4_B",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "TRL004",
+          "TRL003",
+          "TRL004"
+        ],
+        [
+          "TRL005",
+          "TRL002",
+          "TRL001"
+        ]
+      ]
+    },
+    {
+      "id": "TC1_F4_C",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "TRL004",
+          "TRL003"
+        ],
+        [
+          "TRL005",
+          "TRL002",
+          "TRL001",
+          "TRL005"
+        ]
+      ]
+    },
+    {
+      "id": "TC1_F4_BOSS",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "TRL004",
+          "TRL003",
+          "TRL004"
+        ],
+        [
+          "TRL005",
+          "TRL002",
+          "TRL001"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "TC1_F5_A",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "TRL004",
+          "TRL003"
+        ],
+        [
+          "TRL005",
+          "TRL004",
+          "TRL002"
+        ]
+      ]
+    },
+    {
+      "id": "TC1_F5_B",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "TRL004",
+          "TRL003",
+          "TRL004"
+        ],
+        [
+          "TRL005",
+          "TRL004",
+          "TRL002"
+        ]
+      ]
+    },
+    {
+      "id": "TC1_F5_C",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "TRL004",
+          "TRL003"
+        ],
+        [
+          "TRL005",
+          "TRL004",
+          "TRL002",
+          "TRL005"
+        ]
+      ]
+    },
+    {
+      "id": "TC1_F5_BOSS",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "TRL004",
+          "TRL003",
+          "TRL004"
+        ],
+        [
+          "TRL005",
+          "TRL004",
+          "TRL002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "TC1_F6_A",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "TRL004",
+          "TRL004"
+        ],
+        [
+          "TRL005",
+          "TRL003",
+          "TRL002"
+        ]
+      ]
+    },
+    {
+      "id": "TC1_F6_B",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "TRL004",
+          "TRL004",
+          "TRL004"
+        ],
+        [
+          "TRL005",
+          "TRL003",
+          "TRL002"
+        ]
+      ]
+    },
+    {
+      "id": "TC1_F6_C",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "TRL004",
+          "TRL004"
+        ],
+        [
+          "TRL005",
+          "TRL003",
+          "TRL002",
+          "TRL005"
+        ]
+      ]
+    },
+    {
+      "id": "TC1_F6_BOSS",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "TRL004",
+          "TRL004",
+          "TRL004"
+        ],
+        [
+          "TRL005",
+          "TRL003",
+          "TRL002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "TC1_FINAL_BOSS",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "B_TYRANT"
+        ],
+        [
+          "TRL004",
+          "TRL005",
+          "TRL003"
+        ]
+      ],
+      "isBoss": true
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "id": "royal_capital_1",
+  "name": "王都決戦・城門",
+  "areaLevel": 190,
+  "floors": 8,
+  "baseDurationSec": 52800,
+  "description": "王都の城門を突破する。近衛騎士と大魔導師が立ちはだかる。",
+  "encounter": {
+    "eventIntervalSec": 1320,
+    "eventWeights": {
+      "exploring": 60,
+      "goldTreasure": 10,
+      "battle": 30
+    }
+  },
+  "unlockNext": "royal_capital_2"
+}

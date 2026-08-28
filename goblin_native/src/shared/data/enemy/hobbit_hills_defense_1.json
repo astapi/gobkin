@@ -1,0 +1,605 @@
+{
+  "enemies": [
+    {
+      "id": "HHD001",
+      "name": "取り立て人足",
+      "attackType": "melee",
+      "raceTags": [
+        "human"
+      ],
+      "level": 36,
+      "hp": 1160,
+      "atk": 123,
+      "def": 112,
+      "attackCount": 2,
+      "accuracy": 612,
+      "evasion": 100,
+      "gold": 66,
+      "magicDef": 89,
+      "baseAttributes": {
+        "power": 12,
+        "wisdom": 10,
+        "spirit": 8,
+        "vitality": 14,
+        "agility": 8,
+        "luck": 6
+      },
+      "skills": [
+        {
+          "id": "physical_reduction_10",
+          "physicalDamageReductionPercent": 10
+        }
+      ]
+    },
+    {
+      "id": "HHD002",
+      "name": "雇われ山賊",
+      "attackType": "melee",
+      "raceTags": [
+        "human"
+      ],
+      "level": 38,
+      "hp": 890,
+      "atk": 129,
+      "def": 85,
+      "attackCount": 3,
+      "accuracy": 616,
+      "evasion": 140,
+      "gold": 70,
+      "magicDef": 71,
+      "baseAttributes": {
+        "power": 12,
+        "wisdom": 12,
+        "spirit": 6,
+        "vitality": 10,
+        "agility": 16,
+        "luck": 9
+      },
+      "skills": [
+        {
+          "id": "physical_reduction_10",
+          "physicalDamageReductionPercent": 10
+        }
+      ]
+    },
+    {
+      "id": "HHD003",
+      "name": "徴税官の護衛兵",
+      "attackType": "melee",
+      "raceTags": [
+        "human"
+      ],
+      "level": 40,
+      "hp": 1620,
+      "atk": 150,
+      "def": 153,
+      "attackCount": 2,
+      "accuracy": 620,
+      "evasion": 106,
+      "gold": 73,
+      "magicDef": 150,
+      "baseAttributes": {
+        "power": 13,
+        "wisdom": 11,
+        "spirit": 12,
+        "vitality": 17,
+        "agility": 5,
+        "luck": 7
+      },
+      "skills": [
+        {
+          "id": "physical_reduction_10",
+          "physicalDamageReductionPercent": 10
+        }
+      ]
+    },
+    {
+      "id": "HHD004",
+      "name": "従軍書記",
+      "attackType": "melee",
+      "raceTags": [
+        "human"
+      ],
+      "level": 38,
+      "hp": 980,
+      "atk": 87,
+      "def": 93,
+      "attackCount": 1,
+      "accuracy": 616,
+      "evasion": 103,
+      "gold": 70,
+      "magicDef": 166,
+      "baseAttributes": {
+        "power": 8,
+        "wisdom": 14,
+        "spirit": 14,
+        "vitality": 11,
+        "agility": 7,
+        "luck": 6
+      },
+      "magicHeal": 180,
+      "skills": [
+        {
+          "id": "physical_reduction_10",
+          "physicalDamageReductionPercent": 10
+        },
+        {
+          "id": "recovery_magic_lv7",
+          "recoveryMagicLevel": 7
+        }
+      ]
+    },
+    {
+      "id": "B_TAXMAN",
+      "name": "王国徴税官",
+      "attackType": "melee",
+      "raceTags": [
+        "human"
+      ],
+      "level": 48,
+      "hp": 2780,
+      "atk": 157,
+      "def": 174,
+      "attackCount": 3,
+      "accuracy": 722,
+      "evasion": 153,
+      "gold": 359,
+      "magicDef": 171,
+      "baseAttributes": {
+        "power": 18,
+        "wisdom": 16,
+        "spirit": 14,
+        "vitality": 20,
+        "agility": 10,
+        "luck": 8
+      },
+      "isBoss": true,
+      "skills": [
+        {
+          "id": "physical_reduction_10",
+          "physicalDamageReductionPercent": 10
+        }
+      ]
+    }
+  ],
+  "patterns": [
+    {
+      "id": "HH1_F1_A",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "HHD001",
+          "HHD001"
+        ],
+        [
+          "HHD002"
+        ]
+      ]
+    },
+    {
+      "id": "HH1_F1_B",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "HHD001",
+          "HHD001",
+          "HHD001"
+        ],
+        [
+          "HHD002"
+        ]
+      ]
+    },
+    {
+      "id": "HH1_F1_C",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "HHD001",
+          "HHD001"
+        ],
+        [
+          "HHD002",
+          "HHD002"
+        ]
+      ]
+    },
+    {
+      "id": "HH1_F1_BOSS",
+      "floors": [
+        1
+      ],
+      "enemies": [
+        [
+          "HHD001",
+          "HHD001",
+          "HHD001"
+        ],
+        [
+          "HHD002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "HH1_F2_A",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "HHD001",
+          "HHD002"
+        ],
+        [
+          "HHD002",
+          "HHD004"
+        ]
+      ]
+    },
+    {
+      "id": "HH1_F2_B",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "HHD001",
+          "HHD002",
+          "HHD001"
+        ],
+        [
+          "HHD002",
+          "HHD004"
+        ]
+      ]
+    },
+    {
+      "id": "HH1_F2_C",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "HHD001",
+          "HHD002"
+        ],
+        [
+          "HHD002",
+          "HHD004",
+          "HHD002"
+        ]
+      ]
+    },
+    {
+      "id": "HH1_F2_BOSS",
+      "floors": [
+        2
+      ],
+      "enemies": [
+        [
+          "HHD001",
+          "HHD002",
+          "HHD001"
+        ],
+        [
+          "HHD002",
+          "HHD004"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "HH1_F3_A",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "HHD003",
+          "HHD001"
+        ],
+        [
+          "HHD002",
+          "HHD002"
+        ]
+      ]
+    },
+    {
+      "id": "HH1_F3_B",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "HHD003",
+          "HHD001",
+          "HHD003"
+        ],
+        [
+          "HHD002",
+          "HHD002"
+        ]
+      ]
+    },
+    {
+      "id": "HH1_F3_C",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "HHD003",
+          "HHD001"
+        ],
+        [
+          "HHD002",
+          "HHD002",
+          "HHD002"
+        ]
+      ]
+    },
+    {
+      "id": "HH1_F3_BOSS",
+      "floors": [
+        3
+      ],
+      "enemies": [
+        [
+          "HHD003",
+          "HHD001",
+          "HHD003"
+        ],
+        [
+          "HHD002",
+          "HHD002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "HH1_F4_A",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "HHD003",
+          "HHD001"
+        ],
+        [
+          "HHD002",
+          "HHD004",
+          "HHD001"
+        ]
+      ]
+    },
+    {
+      "id": "HH1_F4_B",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "HHD003",
+          "HHD001",
+          "HHD003"
+        ],
+        [
+          "HHD002",
+          "HHD004",
+          "HHD001"
+        ]
+      ]
+    },
+    {
+      "id": "HH1_F4_C",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "HHD003",
+          "HHD001"
+        ],
+        [
+          "HHD002",
+          "HHD004",
+          "HHD001",
+          "HHD002"
+        ]
+      ]
+    },
+    {
+      "id": "HH1_F4_BOSS",
+      "floors": [
+        4
+      ],
+      "enemies": [
+        [
+          "HHD003",
+          "HHD001",
+          "HHD003"
+        ],
+        [
+          "HHD002",
+          "HHD004",
+          "HHD001"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "HH1_F5_A",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "HHD003",
+          "HHD003"
+        ],
+        [
+          "HHD002",
+          "HHD004",
+          "HHD002"
+        ]
+      ]
+    },
+    {
+      "id": "HH1_F5_B",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "HHD003",
+          "HHD003",
+          "HHD003"
+        ],
+        [
+          "HHD002",
+          "HHD004",
+          "HHD002"
+        ]
+      ]
+    },
+    {
+      "id": "HH1_F5_C",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "HHD003",
+          "HHD003"
+        ],
+        [
+          "HHD002",
+          "HHD004",
+          "HHD002",
+          "HHD002"
+        ]
+      ]
+    },
+    {
+      "id": "HH1_F5_BOSS",
+      "floors": [
+        5
+      ],
+      "enemies": [
+        [
+          "HHD003",
+          "HHD003",
+          "HHD003"
+        ],
+        [
+          "HHD002",
+          "HHD004",
+          "HHD002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "HH1_F6_A",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "HHD003",
+          "HHD003",
+          "HHD001"
+        ],
+        [
+          "HHD002",
+          "HHD004",
+          "HHD002"
+        ]
+      ]
+    },
+    {
+      "id": "HH1_F6_B",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "HHD003",
+          "HHD003",
+          "HHD001",
+          "HHD003"
+        ],
+        [
+          "HHD002",
+          "HHD004",
+          "HHD002"
+        ]
+      ]
+    },
+    {
+      "id": "HH1_F6_C",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "HHD003",
+          "HHD003",
+          "HHD001"
+        ],
+        [
+          "HHD002",
+          "HHD004",
+          "HHD002",
+          "HHD002"
+        ]
+      ]
+    },
+    {
+      "id": "HH1_F6_BOSS",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "HHD003",
+          "HHD003",
+          "HHD001",
+          "HHD003"
+        ],
+        [
+          "HHD002",
+          "HHD004",
+          "HHD002"
+        ]
+      ],
+      "isFloorBoss": true
+    },
+    {
+      "id": "HH1_FINAL_BOSS",
+      "floors": [
+        6
+      ],
+      "enemies": [
+        [
+          "B_TAXMAN"
+        ],
+        [
+          "HHD003",
+          "HHD003",
+          "HHD002",
+          "HHD004"
+        ]
+      ],
+      "isBoss": true
+    }
+  ]
+}

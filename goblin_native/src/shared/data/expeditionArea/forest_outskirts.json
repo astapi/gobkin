@@ -1,0 +1,17 @@
+{
+  "id": "forest_outskirts",
+  "name": "周辺の森",
+  "areaLevel": 2,
+  "floors": 6,
+  "baseDurationSec": 360,
+  "description": "明るい森、弱い獣や小鬼が出現",
+  "encounter": {
+    "eventIntervalSec": 12,
+    "eventWeights": {
+      "exploring": 60,
+      "goldTreasure": 10,
+      "battle": 30
+    }
+  },
+  "unlockNext": "goblin_village_1"
+}

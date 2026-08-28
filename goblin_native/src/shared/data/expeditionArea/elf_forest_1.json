@@ -1,0 +1,17 @@
+{
+  "id": "elf_forest_1",
+  "name": "エルフの隠れ里",
+  "areaLevel": 45,
+  "floors": 6,
+  "baseDurationSec": 21120,
+  "description": "隠れ里の外縁。森の斥候と射手が素早い攻撃を仕掛けてくる。 里の内部。精霊使いや月の衛士が守りを固めている。 里の中枢。古樹の戦士に守られた森の番人が最後の壁として立ちはだかる。魔法の力を手に入れろ。",
+  "encounter": {
+    "eventIntervalSec": 704,
+    "eventWeights": {
+      "exploring": 60,
+      "goldTreasure": 10,
+      "battle": 30
+    }
+  },
+  "unlockNext": "lizardman_swamp_1"
+}
