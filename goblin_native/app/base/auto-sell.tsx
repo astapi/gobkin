@@ -535,6 +535,9 @@ function FilterChip({
       style={[styles.filterChip, selected && styles.filterChipSelected]}
       onPress={onPress}
     >
+      <View style={[styles.filterCheckbox, selected && styles.filterCheckboxSelected]}>
+        {selected ? <Text style={styles.filterCheckboxMark}>✓</Text> : null}
+      </View>
       <Text style={[styles.filterChipText, selected && styles.filterChipTextSelected]}>{label}</Text>
     </TouchableOpacity>
   )
@@ -579,8 +582,11 @@ const styles = StyleSheet.create({
   filterTitle: { color: '#1F2937', fontSize: 13, fontWeight: '700' },
   filterHint: { color: '#9CA3AF', fontSize: 10 },
   chipRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 7 },
-  filterChip: { paddingHorizontal: 11, paddingVertical: 8, borderRadius: 16, backgroundColor: '#F3F4F6', borderWidth: 1, borderColor: '#D1D5DB' },
+  filterChip: { flexDirection: 'row', alignItems: 'center', gap: 5, paddingHorizontal: 11, paddingVertical: 8, borderRadius: 16, backgroundColor: '#F3F4F6', borderWidth: 1, borderColor: '#D1D5DB' },
   filterChipSelected: { backgroundColor: '#DBEAFE', borderColor: '#2563EB' },
+  filterCheckbox: { width: 14, height: 14, alignItems: 'center', justifyContent: 'center', borderRadius: 3, borderWidth: 1.5, borderColor: '#9CA3AF', backgroundColor: '#FFFFFF' },
+  filterCheckboxSelected: { borderColor: '#2563EB', backgroundColor: '#2563EB' },
+  filterCheckboxMark: { color: '#FFFFFF', fontSize: 10, fontWeight: '900', lineHeight: 12 },
   filterChipText: { color: '#4B5563', fontSize: 12 },
   filterChipTextSelected: { color: '#1D4ED8', fontWeight: '700' },
   removeRuleButton: { marginTop: 6, paddingVertical: 12, alignItems: 'center', borderRadius: 8, borderWidth: 1, borderColor: '#FCA5A5', backgroundColor: '#FEF2F2' },

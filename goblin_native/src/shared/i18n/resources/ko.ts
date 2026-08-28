@@ -230,7 +230,7 @@ const ko = {
       prefixTierCondition: 'prefix Tier',
       suffixCondition: 'suffix MOD',
       suffixTierCondition: 'suffix Tier',
-      unselectedAny: '미선택 시 제한 없음',
+      unselectedAny: '복수 선택 가능·미선택 시 제한 없음',
       noTitle: '칭호 없음',
       noMod: 'MOD 없음',
       ruleRequiredTitle: '보관 조건이 없습니다',
@@ -324,6 +324,7 @@ const ko = {
       category: '카테고리',
       equipmentTitle: '칭호',
       all: '전체',
+      multiSelectHint: '복수 선택 가능',
       noTitle: '칭호 없음',
       clear: '필터 초기화',
       apply: '적용',
@@ -1042,6 +1043,7 @@ const ko = {
       party_heal: '파티 힐',
     },
     title: {
+      // 廃止済み称号（既存データ互換用）
       worst: '최악의 ',
       stinky: '냄새나는 ',
       none: '',

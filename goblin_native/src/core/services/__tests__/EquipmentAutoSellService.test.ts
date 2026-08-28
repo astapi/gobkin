@@ -116,47 +116,88 @@ describe('EquipmentAutoSellService', () => {
       { version: 1, policies: {} },
       {
         templateIds: ['sword_club'],
-        titleIds: ['stinky'],
-        modCount: 1,
+        titleIds: ['masterwork'],
+        modCounts: [1],
       },
     )
 
     expect(EquipmentAutoSellService.shouldAutoSell({
       templateId: 'sword_club',
-      titleId: 'stinky',
+      titleId: 'masterwork',
       prefixMod: { id: 'power', tier: 5 },
     }, settings)).toBe(true)
     expect(EquipmentAutoSellService.shouldAutoSell({
       templateId: 'sword_club',
-      titleId: 'masterwork',
+      titleId: 'magical',
       prefixMod: { id: 'power', tier: 5 },
     }, settings)).toBe(false)
     expect(EquipmentAutoSellService.shouldAutoSell({
       templateId: 'sword_club',
-      titleId: 'stinky',
+      titleId: 'masterwork',
       prefixMod: { id: 'power', tier: 5 },
       suffixMod: { id: 'vitality', tier: 5 },
     }, settings)).toBe(false)
     expect(EquipmentAutoSellService.shouldAutoSell({
       templateId: 'sword_long',
-      titleId: 'stinky',
+      titleId: 'masterwork',
       prefixMod: { id: 'power', tier: 5 },
     }, settings)).toBe(false)
+  })
+
+  it('一括売却フィルターのMOD数は複数選択できる', () => {
+    const settings = EquipmentAutoSellService.addBulkSellFilter(
+      { version: 1, policies: {} },
+      {
+        templateIds: ['sword_club'],
+        titleIds: [],
+        modCounts: [1, 2],
+      },
+    )
+
+    expect(EquipmentAutoSellService.shouldAutoSell({
+      templateId: 'sword_club',
+      prefixMod: { id: 'power', tier: 5 },
+    }, settings)).toBe(true)
+    expect(EquipmentAutoSellService.shouldAutoSell({
+      templateId: 'sword_club',
+      prefixMod: { id: 'power', tier: 5 },
+      suffixMod: { id: 'vitality', tier: 5 },
+    }, settings)).toBe(true)
+    // MOD なしは選択外なので売らない
+    expect(EquipmentAutoSellService.shouldAutoSell({
+      templateId: 'sword_club',
+    }, settings)).toBe(false)
+  })
+
+  it('旧形式の modCount を保存済み設定から modCounts へ移行する', () => {
+    const settings = EquipmentAutoSellService.normalizeSettings({
+      version: 1,
+      policies: {},
+      bulkSellFilters: [
+        { templateIds: ['sword_club'], titleIds: [], modCount: 2 },
+        { templateIds: ['sword_long'], titleIds: [], modCount: 'all' },
+      ],
+    })
+
+    expect(settings.bulkSellFilters).toEqual([
+      { templateIds: ['sword_club'], titleIds: [], modCounts: [2] },
+      { templateIds: ['sword_long'], titleIds: [], modCounts: [] },
+    ])
   })
 
   it('同じ一括売却フィルターを重複追加しない', () => {
     const filter = {
       templateIds: ['sword_club'],
-      titleIds: ['stinky'] as const,
-      modCount: 'all' as const,
+      titleIds: ['masterwork'] as const,
+      modCounts: [] as const,
     }
     const once = EquipmentAutoSellService.addBulkSellFilter(
       { version: 1, policies: {} },
-      { ...filter, titleIds: [...filter.titleIds] },
+      { ...filter, titleIds: [...filter.titleIds], modCounts: [...filter.modCounts] },
     )
     const twice = EquipmentAutoSellService.addBulkSellFilter(
       once,
-      { ...filter, titleIds: [...filter.titleIds] },
+      { ...filter, titleIds: [...filter.titleIds], modCounts: [...filter.modCounts] },
     )
 
     expect(twice.bulkSellFilters).toHaveLength(1)

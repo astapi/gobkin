@@ -80,6 +80,8 @@ export interface EquipmentModDef {
 }
 
 export type EquipmentAutoSellMode = 'keep_all' | 'sell_all' | 'rules'
+/** 装備に付いているMODの数（prefix / suffix の有無で 0〜2）。 */
+export type EquipmentModCount = 0 | 1 | 2
 export type EquipmentAutoSellModId = EquipmentModId | 'none'
 
 /**
@@ -104,11 +106,12 @@ export interface EquipmentAutoSellPolicy {
 /**
  * 倉庫の一括売却から追加した自動売却条件。
  * 名前・カテゴリは保存時点で templateIds に解決し、称号とMOD数は今後のドロップにも適用する。
+ * titleIds / modCounts は空配列なら不問、複数指定はORで判定する。
  */
 export interface EquipmentAutoSellBulkFilter {
   templateIds: string[]
   titleIds: EquipmentTitleId[]
-  modCount: 'all' | 1 | 2
+  modCounts: EquipmentModCount[]
 }
 
 export interface EquipmentAutoSellSettings {

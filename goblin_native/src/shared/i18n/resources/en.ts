@@ -231,7 +231,7 @@ const en = {
       prefixTierCondition: 'Prefix Tier',
       suffixCondition: 'Suffix Mod',
       suffixTierCondition: 'Suffix Tier',
-      unselectedAny: 'Any if unselected',
+      unselectedAny: 'Multi-select; any if unselected',
       noTitle: 'No Title',
       noMod: 'No Mod',
       ruleRequiredTitle: 'No Keep Rule',
@@ -325,6 +325,7 @@ const en = {
       category: 'Category',
       equipmentTitle: 'Title',
       all: 'All',
+      multiSelectHint: 'Multiple choices allowed',
       noTitle: 'No Title',
       clear: 'Clear Filters',
       apply: 'Apply',
@@ -1051,6 +1052,7 @@ const en = {
       party_heal: 'Party Heal',
     },
     title: {
+      // 廃止済み称号（既存データ互換用）
       worst: 'Wretched ',
       stinky: 'Stinky ',
       none: '',

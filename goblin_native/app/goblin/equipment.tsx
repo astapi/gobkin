@@ -958,7 +958,6 @@ export default function EquipmentScreenPage() {
       <EquipmentInventoryFilterSheet
         visible={isFilterSheetVisible}
         value={selectedInventoryFilter}
-        targets={groupedInventory}
         onApply={handleApplyInventoryFilter}
         onClose={() => setIsFilterSheetVisible(false)}
       />

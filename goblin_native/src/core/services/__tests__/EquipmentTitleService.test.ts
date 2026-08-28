@@ -68,9 +68,7 @@ describe('EquipmentTitleService', () => {
 
       // 設計値（±許容範囲）
       const expectations: Array<{ id: string; expected: number; tolerance: number }> = [
-        { id: 'worst', expected: 0.28571, tolerance: 0.015 },
-        { id: 'stinky', expected: 0.37986, tolerance: 0.015 },
-        { id: 'masterwork', expected: 0.28571, tolerance: 0.015 },
+        { id: 'masterwork', expected: 0.95129, tolerance: 0.015 },
         { id: 'magical', expected: 0.03657, tolerance: 0.01 },
         { id: 'imbued', expected: 0.00914, tolerance: 0.005 },
       ]
@@ -129,6 +127,15 @@ describe('EquipmentTitleService', () => {
       expect(rankT5).toBeGreaterThan(rankT3)
     })
 
+    it('マイナス称号（worst / stinky）は抽選されない', () => {
+      const rng = createSeededRng(20240601)
+      for (let i = 0; i < 20000; i++) {
+        const result = EquipmentTitleService.rollTitle(99, ALL_LUCK_ROLL, 0, rng)
+        expect(result.titleId).not.toBe('worst')
+        expect(result.titleId).not.toBe('stinky')
+      }
+    })
+
     it('Tier 5 ではほぼ確実に masterwork 以上が採用される', () => {
       const rng = createSeededRng(424242)
       const iterations = 2000
@@ -140,8 +147,8 @@ describe('EquipmentTitleService', () => {
         if (def.rank >= 3) highOrAbove++ // masterwork(3) 以上
       }
 
-      // worst/stinky のみが 25 連続で出る確率は約 9.6e-6 なので、ほぼ 100%
-      expect(highOrAbove / iterations).toBeGreaterThan(0.98)
+      // マイナス称号を廃止したため、称号が付けば必ず masterwork 以上になる
+      expect(highOrAbove / iterations).toBe(1)
     })
 
     it('Tier 5 では Tier 0 比で broken が大幅に増える', () => {
@@ -193,7 +200,7 @@ describe('EquipmentTitleService', () => {
   describe('getTitleDef', () => {
     it('全称号IDの定義を取得できる', () => {
       const ids: EquipmentTitleId[] = [
-        'worst', 'stinky', 'none', 'masterwork', 'magical',
+        'none', 'masterwork', 'magical',
         'imbued', 'legendary', 'terrifying', 'broken',
       ]
       for (const id of ids) {
@@ -201,6 +208,11 @@ describe('EquipmentTitleService', () => {
         expect(def).toBeDefined()
         expect(def!.id).toBe(id)
       }
+    })
+
+    it('廃止済みのマイナス称号は定義を持たない', () => {
+      expect(EquipmentTitleService.getTitleDef('worst')).toBeUndefined()
+      expect(EquipmentTitleService.getTitleDef('stinky')).toBeUndefined()
     })
 
     it('各称号の補正倍率が正しく設定されている', () => {
@@ -220,9 +232,9 @@ describe('EquipmentTitleService', () => {
       expect(broken.rank).toBe(8)
       expect(broken.rollWeight).toBe(14)
 
-      const worst = EquipmentTitleService.getTitleDef('worst')!
-      expect(worst.rank).toBe(1)
-      expect(worst.rollWeight).toBe(28571)
+      const masterwork = EquipmentTitleService.getTitleDef('masterwork')!
+      expect(masterwork.rank).toBe(3)
+      expect(masterwork.rollWeight).toBe(95128)
 
       const none = EquipmentTitleService.getTitleDef('none')!
       expect(none.rollWeight).toBe(0) // 抽選対象外

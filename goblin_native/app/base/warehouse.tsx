@@ -617,7 +617,6 @@ export default function WarehouseScreen() {
       <EquipmentInventoryFilterSheet
         visible={filterVisible}
         value={selectedFilter}
-        targets={variantGroups}
         onApply={handleApplyFilter}
         onClose={() => setFilterVisible(false)}
       />

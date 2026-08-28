@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
   Modal,
   Pressable,
@@ -10,15 +10,14 @@ import {
 } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useTranslation } from 'react-i18next'
-import type { EquipmentCategory, EquipmentTitleId } from '@/shared/types'
+import type { EquipmentCategory, EquipmentModCount, EquipmentTitleId } from '@/shared/types'
 import { getEquipmentTitleLabel } from '@/shared/i18n/entityLocalization'
 import {
   DEFAULT_EQUIPMENT_INVENTORY_FILTER,
-  getAvailableEquipmentCategories,
-  getAvailableEquipmentTitleIds,
+  EQUIPMENT_CATEGORY_FILTER_ORDER,
+  EQUIPMENT_MOD_COUNT_FILTER_OPTIONS,
+  EQUIPMENT_TITLE_FILTER_ORDER,
   type EquipmentInventoryFilter,
-  type EquipmentInventoryFilterTarget,
-  type EquipmentModCountFilter,
 } from '@/shared/utils/equipmentInventoryFilter'
 
 const CATEGORY_LABEL_KEYS: Record<EquipmentCategory, string> = {
@@ -36,7 +35,6 @@ const CATEGORY_LABEL_KEYS: Record<EquipmentCategory, string> = {
 interface EquipmentInventoryFilterSheetProps {
   visible: boolean
   value: EquipmentInventoryFilter
-  targets: EquipmentInventoryFilterTarget[]
   onApply: (filter: EquipmentInventoryFilter) => void
   onClose: () => void
 }
@@ -44,35 +42,27 @@ interface EquipmentInventoryFilterSheetProps {
 export function EquipmentInventoryFilterSheet({
   visible,
   value,
-  targets,
   onApply,
   onClose,
 }: EquipmentInventoryFilterSheetProps) {
   const { t } = useTranslation()
   const insets = useSafeAreaInsets()
   const [draft, setDraft] = useState<EquipmentInventoryFilter>(value)
-  const categories = useMemo(() => getAvailableEquipmentCategories(targets), [targets])
-  const titleIds = useMemo(() => getAvailableEquipmentTitleIds(targets), [targets])
 
   useEffect(() => {
     if (visible) setDraft(value)
   }, [value, visible])
 
-  const selectModCount = (modCount: EquipmentModCountFilter) => {
-    setDraft((current) => ({ ...current, modCount }))
+  const toggleModCount = (modCount: EquipmentModCount) => {
+    setDraft((current) => ({ ...current, modCounts: toggleValue(current.modCounts, modCount) }))
   }
 
-  const selectCategory = (category: EquipmentInventoryFilter['category']) => {
-    setDraft((current) => ({ ...current, category }))
+  const toggleCategory = (category: EquipmentCategory) => {
+    setDraft((current) => ({ ...current, categories: toggleValue(current.categories, category) }))
   }
 
   const toggleTitle = (titleId: EquipmentTitleId) => {
-    setDraft((current) => ({
-      ...current,
-      titleIds: current.titleIds.includes(titleId)
-        ? current.titleIds.filter((selectedTitleId) => selectedTitleId !== titleId)
-        : [...current.titleIds, titleId],
-    }))
+    setDraft((current) => ({ ...current, titleIds: toggleValue(current.titleIds, titleId) }))
   }
 
   const getTitleLabel = (titleId: EquipmentTitleId): string => {
@@ -123,58 +113,65 @@ export function EquipmentInventoryFilterSheet({
               />
             </View>
 
-            <FilterSection title={t('ui.equipmentInventoryFilter.modCount')}>
-              <FilterChip
+            <FilterSection
+              title={t('ui.equipmentInventoryFilter.modCount')}
+              hint={t('ui.equipmentInventoryFilter.multiSelectHint')}
+            >
+              <AllChip
                 testID="equipment-filter-mod-all"
                 label={t('ui.equipmentInventoryFilter.all')}
-                selected={draft.modCount === 'all'}
-                onPress={() => selectModCount('all')}
+                selected={draft.modCounts.length === 0}
+                onPress={() => setDraft((current) => ({ ...current, modCounts: [] }))}
               />
-              {([1, 2] as const).map((count) => (
+              {EQUIPMENT_MOD_COUNT_FILTER_OPTIONS.map((count) => (
                 <FilterChip
                   key={count}
                   testID={`equipment-filter-mod-${count}`}
                   label={t('ui.equipmentInventoryFilter.modCountValue', { count })}
-                  selected={draft.modCount === count}
-                  onPress={() => selectModCount(count)}
+                  selected={draft.modCounts.includes(count)}
+                  onPress={() => toggleModCount(count)}
                 />
               ))}
             </FilterSection>
 
-            <FilterSection title={t('ui.equipmentInventoryFilter.category')}>
-              <FilterChip
+            <FilterSection
+              title={t('ui.equipmentInventoryFilter.category')}
+              hint={t('ui.equipmentInventoryFilter.multiSelectHint')}
+            >
+              <AllChip
                 testID="equipment-filter-category-all"
                 label={t('ui.equipmentInventoryFilter.all')}
-                selected={draft.category === 'all'}
-                onPress={() => selectCategory('all')}
+                selected={draft.categories.length === 0}
+                onPress={() => setDraft((current) => ({ ...current, categories: [] }))}
               />
-              {categories.map((category) => (
+              {EQUIPMENT_CATEGORY_FILTER_ORDER.map((category) => (
                 <FilterChip
                   key={category}
                   testID={`equipment-filter-category-${category}`}
                   label={t(CATEGORY_LABEL_KEYS[category])}
-                  selected={draft.category === category}
-                  onPress={() => selectCategory(category)}
+                  selected={draft.categories.includes(category)}
+                  onPress={() => toggleCategory(category)}
                 />
               ))}
             </FilterSection>
 
-            <FilterSection title={t('ui.equipmentInventoryFilter.equipmentTitle')}>
-              <FilterChip
+            <FilterSection
+              title={t('ui.equipmentInventoryFilter.equipmentTitle')}
+              hint={t('ui.equipmentInventoryFilter.multiSelectHint')}
+            >
+              <AllChip
                 testID="equipment-filter-title-all"
                 label={t('ui.equipmentInventoryFilter.all')}
                 selected={draft.titleIds.length === 0}
                 onPress={() => setDraft((current) => ({ ...current, titleIds: [] }))}
-                accessibilityRole="checkbox"
               />
-              {titleIds.map((titleId) => (
+              {EQUIPMENT_TITLE_FILTER_ORDER.map((titleId) => (
                 <FilterChip
                   key={titleId}
                   testID={`equipment-filter-title-${titleId}`}
                   label={getTitleLabel(titleId)}
                   selected={draft.titleIds.includes(titleId)}
                   onPress={() => toggleTitle(titleId)}
-                  accessibilityRole="checkbox"
                 />
               ))}
             </FilterSection>
@@ -206,38 +203,83 @@ export function EquipmentInventoryFilterSheet({
   )
 }
 
-function FilterSection({ title, children }: { title: string; children: React.ReactNode }) {
+function toggleValue<T>(values: T[], value: T): T[] {
+  return values.includes(value)
+    ? values.filter((item) => item !== value)
+    : [...values, value]
+}
+
+function FilterSection({
+  title,
+  hint,
+  children,
+}: {
+  title: string
+  hint?: string
+  children: React.ReactNode
+}) {
   return (
     <View style={styles.section}>
-      <Text style={styles.sectionTitle}>{title}</Text>
+      <View style={styles.sectionHeading}>
+        <Text style={styles.sectionTitle}>{title}</Text>
+        {hint ? <Text style={styles.sectionHint}>{hint}</Text> : null}
+      </View>
       <View style={styles.chipGrid}>{children}</View>
     </View>
   )
 }
 
+/** 複数選択できることが分かるように、チェックボックス付きのチップにする。 */
 function FilterChip({
   testID,
   label,
   selected,
   onPress,
-  accessibilityRole = 'radio',
 }: {
   testID: string
   label: string
   selected: boolean
   onPress: () => void
-  accessibilityRole?: 'radio' | 'checkbox'
 }) {
   return (
     <Pressable
       testID={testID}
-      accessibilityRole={accessibilityRole}
+      accessibilityRole="checkbox"
       accessibilityLabel={label}
       accessibilityState={{ checked: selected }}
       style={[styles.chip, selected && styles.chipSelected]}
       onPress={onPress}
     >
+      <View style={[styles.checkbox, selected && styles.checkboxSelected]}>
+        {selected ? <Text style={styles.checkboxMark}>✓</Text> : null}
+      </View>
       <Text style={[styles.chipText, selected && styles.chipTextSelected]}>{label}</Text>
+    </Pressable>
+  )
+}
+
+/** 選択をすべて解除して「すべて」に戻すチップ。 */
+function AllChip({
+  testID,
+  label,
+  selected,
+  onPress,
+}: {
+  testID: string
+  label: string
+  selected: boolean
+  onPress: () => void
+}) {
+  return (
+    <Pressable
+      testID={testID}
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      accessibilityState={{ selected }}
+      style={[styles.chip, styles.allChip, selected && styles.allChipSelected]}
+      onPress={onPress}
+    >
+      <Text style={[styles.chipText, selected && styles.allChipTextSelected]}>{label}</Text>
     </Pressable>
   )
 }
@@ -286,10 +328,21 @@ const styles = StyleSheet.create({
   section: {
     gap: 8,
   },
+  sectionHeading: {
+    flexDirection: 'row',
+    alignItems: 'baseline',
+    justifyContent: 'space-between',
+    gap: 8,
+  },
   sectionTitle: {
     color: '#374151',
     fontSize: 13,
     fontWeight: '800',
+  },
+  sectionHint: {
+    color: '#6B7280',
+    fontSize: 11,
+    fontWeight: '700',
   },
   nameInput: {
     height: 44,
@@ -308,7 +361,10 @@ const styles = StyleSheet.create({
   },
   chip: {
     minWidth: 68,
+    flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
     backgroundColor: '#F9FAFB',
     borderColor: '#E5E7EB',
     borderRadius: 999,
@@ -319,6 +375,37 @@ const styles = StyleSheet.create({
   chipSelected: {
     backgroundColor: '#1F2937',
     borderColor: '#1F2937',
+  },
+  checkbox: {
+    width: 16,
+    height: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#FFFFFF',
+    borderColor: '#9CA3AF',
+    borderRadius: 4,
+    borderWidth: 1.5,
+  },
+  checkboxSelected: {
+    backgroundColor: '#FFFFFF',
+    borderColor: '#FFFFFF',
+  },
+  checkboxMark: {
+    color: '#1F2937',
+    fontSize: 11,
+    fontWeight: '900',
+    lineHeight: 13,
+  },
+  allChip: {
+    borderStyle: 'dashed',
+  },
+  allChipSelected: {
+    backgroundColor: '#E5E7EB',
+    borderColor: '#9CA3AF',
+    borderStyle: 'solid',
+  },
+  allChipTextSelected: {
+    color: '#1F2937',
   },
   chipText: {
     color: '#374151',

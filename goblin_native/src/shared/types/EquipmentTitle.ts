@@ -1,9 +1,12 @@
 /**
  * 装備の称号ID
+ *
+ * worst / stinky は廃止済みの称号。新規ドロップでは付与されないが、
+ * 既存セーブデータの表示・整合のために ID と表示名だけ残している。
  */
 export type EquipmentTitleId =
-  | 'worst'      // 最低な
-  | 'stinky'     // 臭い
+  | 'worst'      // 最低な（廃止済み・既存データ互換用）
+  | 'stinky'     // 臭い（廃止済み・既存データ互換用）
   | 'none'       // 称号なし
   | 'masterwork' // 名工の
   | 'magical'    // 魔性の

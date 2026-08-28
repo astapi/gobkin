@@ -232,7 +232,7 @@ const ja = {
       prefixTierCondition: 'prefix Tier',
       suffixCondition: 'suffix MOD',
       suffixTierCondition: 'suffix Tier',
-      unselectedAny: '未選択なら不問',
+      unselectedAny: '複数選択可・未選択なら不問',
       noTitle: '称号なし',
       noMod: 'MODなし',
       ruleRequiredTitle: '残す条件がありません',
@@ -326,6 +326,7 @@ const ja = {
       category: 'カテゴリ',
       equipmentTitle: '称号',
       all: 'すべて',
+      multiSelectHint: '複数選択できます',
       noTitle: '称号なし',
       clear: '条件をクリア',
       apply: '適用',
@@ -1216,6 +1217,7 @@ const ja = {
       party_heal: 'パーティヒール',
     },
     title: {
+      // 廃止済み称号（既存データ互換用）
       worst: '最低な',
       stinky: '臭い',
       none: '',

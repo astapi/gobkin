@@ -73,7 +73,7 @@ export async function promptEquipmentBulkAutoSell(
   const bulkFilter: EquipmentAutoSellBulkFilter = {
     templateIds: [...new Set(soldEquipment.map(equipment => equipment.templateId))],
     titleIds: [...filter.titleIds],
-    modCount: filter.modCount,
+    modCounts: [...filter.modCounts],
   }
   if (bulkFilter.templateIds.length === 0) return
 
