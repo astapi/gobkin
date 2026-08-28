@@ -88,6 +88,9 @@ agent-device find id base-menu-warehouse click --session goblin-ui
 | 拠点メニュー | `base-menu-grow-group`、`base-menu-warehouse`、`base-menu-healing`、`base-menu-upgrade`、`base-menu-training`、`base-menu-equipment-shop` |
 | 倉庫のベース装備 | `warehouse-equipment-group-{templateId}` |
 | 倉庫の装備個体 | `warehouse-equipment-variant-{equipmentId}` |
+| 倉庫の装備売却 | `warehouse-equipment-detail-sell` |
+| 倉庫の絞り込み結果を一括売却 | `warehouse-bulk-sell` |
+| 装備商店の売却グループ | `shop-sell-equipment-group-{templateId}` |
 | 装備変更のベース装備 | `equipment-group-{templateId}` |
 | 所持／装備中の個体 | `inventory-equipment-{equipmentId}`、`equipped-item-{equipmentId}` |
 | 共通装備フィルター | `equipment-inventory-filter-button`、`equipment-filter-*` |
@@ -109,6 +112,14 @@ rg -n 'testID=' app src/presentation --glob '*.tsx'
 
 ```bash
 agent-device find id warehouse-equipment-group-sword_long click --session goblin-ui
+agent-device snapshot -i -c --raw --session goblin-ui
+```
+
+装備商店の売却タブも同じ二段表示です。
+
+```bash
+agent-device find id shop-mode-sell click --session goblin-ui
+agent-device find id shop-sell-equipment-group-sword_long click --session goblin-ui
 agent-device snapshot -i -c --raw --session goblin-ui
 ```
 

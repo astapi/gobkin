@@ -1,6 +1,7 @@
 import { memo, useCallback, useMemo, useState } from 'react'
 import {
   ActivityIndicator,
+  Alert,
   FlatList,
   Modal,
   Pressable,
@@ -20,7 +21,13 @@ import type {
 } from '@/shared/types'
 import { EquipmentModService } from '@/core/services/EquipmentModService'
 import { EquipmentService } from '@/core/services/EquipmentService'
+import { EquipmentSaleService } from '@/core/services/EquipmentSaleService'
 import { equipmentRepository } from '@/presentation/di/repositories'
+import { useBaseStore } from '@/presentation/stores/useBaseStore'
+import {
+  promptEquipmentAutoSell,
+  promptEquipmentBulkAutoSell,
+} from '@/presentation/utils/promptEquipmentAutoSell'
 import {
   describeCharacterSkill,
   getCharacterSkillDescription,
@@ -262,11 +269,16 @@ const EquipmentRow = memo(function EquipmentRow({
 
 function ItemDetail({
   equipment,
+  processing,
   onClose,
+  onSell,
 }: {
   equipment: EquipmentInstance | null
+  processing: boolean
   onClose: () => void
+  onSell: (equipment: EquipmentInstance) => void
 }) {
+  const { t } = useTranslation()
   if (!equipment) return null
 
   const template = getEquipmentTemplate(equipment.templateId)
@@ -312,15 +324,32 @@ function ItemDetail({
               </View>
             ) : null}
           </ScrollView>
-          <Pressable
-            testID="warehouse-equipment-detail-close"
-            accessibilityRole="button"
-            accessibilityLabel="閉じる"
-            style={styles.detailCloseButton}
-            onPress={onClose}
-          >
-            <Text style={styles.detailCloseButtonText}>閉じる</Text>
-          </Pressable>
+          <View style={styles.detailActions}>
+            <Pressable
+              testID="warehouse-equipment-detail-sell"
+              accessibilityRole="button"
+              accessibilityLabel={t('ui.shop.sellTab')}
+              accessibilityState={{ disabled: processing, busy: processing }}
+              style={[styles.detailSellButton, processing && styles.detailButtonDisabled]}
+              disabled={processing}
+              onPress={() => onSell(equipment)}
+            >
+              <Text style={styles.detailSellButtonText}>
+                {processing
+                  ? t('ui.shop.processing')
+                  : t('ui.shop.sellPrice', { price: EquipmentSaleService.getSellPrice(equipment) })}
+              </Text>
+            </Pressable>
+            <Pressable
+              testID="warehouse-equipment-detail-close"
+              accessibilityRole="button"
+              accessibilityLabel={t('ui.common.close')}
+              style={styles.detailCloseButton}
+              onPress={onClose}
+            >
+              <Text style={styles.detailCloseButtonText}>{t('ui.common.close')}</Text>
+            </Pressable>
+          </View>
         </View>
       </View>
     </Modal>
@@ -330,6 +359,7 @@ function ItemDetail({
 export default function WarehouseScreen() {
   const { t } = useTranslation()
   const insets = useSafeAreaInsets()
+  const addGold = useBaseStore((state) => state.addGold)
   const [items, setItems] = useState<EquipmentInstance[]>([])
   const [loading, setLoading] = useState(true)
   const [loadFailed, setLoadFailed] = useState(false)
@@ -338,6 +368,7 @@ export default function WarehouseScreen() {
   )
   const [filterVisible, setFilterVisible] = useState(false)
   const [selectedItem, setSelectedItem] = useState<EquipmentInstance | null>(null)
+  const [processingId, setProcessingId] = useState<string | null>(null)
   const [expandedTemplateIds, setExpandedTemplateIds] = useState<Set<string>>(new Set())
 
   const loadItems = useCallback(async () => {
@@ -371,6 +402,23 @@ export default function WarehouseScreen() {
     [baseGroups, expandedTemplateIds],
   )
   const activeFilterCount = getEquipmentInventoryFilterActiveCount(selectedFilter)
+  const bulkSellItems = useMemo(() => {
+    if (activeFilterCount === 0) return []
+    return items.filter((equipment) => {
+      const template = getEquipmentTemplate(equipment.templateId)
+      return template !== undefined && matchesEquipmentInventoryFilter(
+        { equipment, template },
+        selectedFilter,
+      )
+    })
+  }, [activeFilterCount, items, selectedFilter])
+  const bulkSellPrice = useMemo(
+    () => bulkSellItems.reduce(
+      (total, equipment) => total + EquipmentSaleService.getSellPrice(equipment),
+      0,
+    ),
+    [bulkSellItems],
+  )
 
   const handleApplyFilter = useCallback((filter: EquipmentInventoryFilter) => {
     setSelectedFilter(filter)
@@ -385,6 +433,82 @@ export default function WarehouseScreen() {
       return next
     })
   }, [])
+
+  const sellItem = useCallback((equipment: EquipmentInstance) => {
+    const template = getEquipmentTemplate(equipment.templateId)
+    if (!template) return
+    const price = EquipmentSaleService.getSellPrice(equipment)
+    const name = getEquipmentDisplayName(equipment, template)
+
+    Alert.alert(
+      t('ui.shop.sellConfirmTitle'),
+      t('ui.shop.sellConfirmBody', { name, price }),
+      [
+        { text: t('ui.common.cancel'), style: 'cancel' },
+        {
+          text: t('ui.shop.sellAction'),
+          style: 'destructive',
+          onPress: () => {
+            void (async () => {
+              try {
+                setProcessingId(equipment.id)
+                await equipmentRepository.delete(equipment.id)
+                await addGold(price)
+                setItems((current) => current.filter((item) => item.id !== equipment.id))
+                setSelectedItem(null)
+                await promptEquipmentAutoSell(equipment, template, t)
+              } catch (error) {
+                console.error('[Warehouse] Failed to sell equipment', error)
+                Alert.alert(t('ui.warehouse.sellFailureTitle'), t('ui.shop.sellFailureBody'))
+              } finally {
+                setProcessingId(null)
+              }
+            })()
+          },
+        },
+      ],
+    )
+  }, [addGold, t])
+
+  const sellFilteredItems = useCallback(() => {
+    if (bulkSellItems.length === 0) return
+    const equipmentToSell = [...bulkSellItems]
+    const soldIds = new Set(equipmentToSell.map(equipment => equipment.id))
+
+    Alert.alert(
+      t('ui.warehouse.bulkSellConfirmTitle'),
+      t('ui.warehouse.bulkSellConfirmBody', {
+        count: equipmentToSell.length,
+        price: bulkSellPrice,
+      }),
+      [
+        { text: t('ui.common.cancel'), style: 'cancel' },
+        {
+          text: t('ui.warehouse.bulkSellAction'),
+          style: 'destructive',
+          onPress: () => {
+            void (async () => {
+              try {
+                setProcessingId('bulk')
+                await equipmentRepository.deleteMany([...soldIds])
+                const goldAdded = await addGold(bulkSellPrice)
+                if (!goldAdded) throw new Error('Base state is not initialized')
+                setItems(current => current.filter(item => !soldIds.has(item.id)))
+                setSelectedItem(null)
+                await promptEquipmentBulkAutoSell(equipmentToSell, selectedFilter, t)
+              } catch (error) {
+                console.error('[Warehouse] Failed to bulk sell equipment', error)
+                Alert.alert(t('ui.warehouse.sellFailureTitle'), t('ui.shop.sellFailureBody'))
+                await loadItems()
+              } finally {
+                setProcessingId(null)
+              }
+            })()
+          },
+        },
+      ],
+    )
+  }, [addGold, bulkSellItems, bulkSellPrice, loadItems, selectedFilter, t])
 
   const renderItem = useCallback(({ item }: { item: InventoryListEntry }) => {
     if (item.type === 'category') {
@@ -432,6 +556,32 @@ export default function WarehouseScreen() {
               <Text style={styles.screenTitle}>{t('ui.warehouse.title')}</Text>
               <Text style={styles.itemCount}>{t('ui.warehouse.itemCount', { count: items.length })}</Text>
             </View>
+            {activeFilterCount > 0 ? (
+              <Pressable
+                testID="warehouse-bulk-sell"
+                accessibilityRole="button"
+                accessibilityLabel={t('ui.warehouse.bulkSellButton', {
+                  count: bulkSellItems.length,
+                  price: bulkSellPrice,
+                })}
+                accessibilityState={{ disabled: bulkSellItems.length === 0, busy: processingId === 'bulk' }}
+                style={[
+                  styles.bulkSellButton,
+                  (bulkSellItems.length === 0 || processingId === 'bulk') && styles.bulkSellButtonDisabled,
+                ]}
+                disabled={bulkSellItems.length === 0 || processingId === 'bulk'}
+                onPress={sellFilteredItems}
+              >
+                <Text style={styles.bulkSellButtonText}>
+                  {processingId === 'bulk'
+                    ? t('ui.shop.processing')
+                    : t('ui.warehouse.bulkSellButton', {
+                      count: bulkSellItems.length,
+                      price: bulkSellPrice,
+                    })}
+                </Text>
+              </Pressable>
+            ) : null}
           </View>
         )}
         ListEmptyComponent={(
@@ -472,7 +622,12 @@ export default function WarehouseScreen() {
         onClose={() => setFilterVisible(false)}
       />
 
-      <ItemDetail equipment={selectedItem} onClose={() => setSelectedItem(null)} />
+      <ItemDetail
+        equipment={selectedItem}
+        processing={selectedItem !== null && processingId === selectedItem.id}
+        onClose={() => setSelectedItem(null)}
+        onSell={sellItem}
+      />
     </SafeAreaView>
   )
 }
@@ -501,6 +656,22 @@ const styles = StyleSheet.create({
   },
   listHeader: {
     marginBottom: 10,
+  },
+  bulkSellButton: {
+    alignItems: 'center',
+    marginTop: 12,
+    paddingHorizontal: 14,
+    paddingVertical: 11,
+    backgroundColor: '#B91C1C',
+    borderRadius: 9,
+  },
+  bulkSellButtonDisabled: {
+    opacity: 0.5,
+  },
+  bulkSellButtonText: {
+    color: '#FFFFFF',
+    fontSize: 13,
+    fontWeight: '800',
   },
   screenTitle: {
     color: '#1F2937',
@@ -674,7 +845,30 @@ const styles = StyleSheet.create({
     fontSize: 12,
     lineHeight: 16,
   },
+  detailActions: {
+    flexDirection: 'row',
+    gap: 8,
+    paddingTop: 12,
+    borderTopColor: '#E5E7EB',
+    borderTopWidth: 1,
+  },
+  detailSellButton: {
+    flex: 1,
+    alignItems: 'center',
+    backgroundColor: '#374151',
+    borderRadius: 8,
+    paddingVertical: 11,
+  },
+  detailButtonDisabled: {
+    opacity: 0.58,
+  },
+  detailSellButtonText: {
+    color: '#FFFFFF',
+    fontSize: 14,
+    fontWeight: '700',
+  },
   detailCloseButton: {
+    flex: 1,
     alignItems: 'center',
     backgroundColor: '#E5E7EB',
     borderRadius: 8,

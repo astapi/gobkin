@@ -78,6 +78,16 @@ export class SQLiteEquipmentRepository implements IEquipmentRepository {
     await db.runAsync('DELETE FROM equipment WHERE id = ?', [id])
   }
 
+  async deleteMany(ids: string[]): Promise<void> {
+    if (ids.length === 0) return
+    const db = await getDatabase()
+    await db.withTransactionAsync(async () => {
+      for (const id of ids) {
+        await db.runAsync('DELETE FROM equipment WHERE id = ?', [id])
+      }
+    })
+  }
+
   private rowToEquipment(row: EquipmentRow): EquipmentInstance {
     const titleId = row.title_id as EquipmentInstance['titleId']
     return {

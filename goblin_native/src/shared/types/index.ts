@@ -46,6 +46,7 @@ export type {
   EquipmentAutoSellModId,
   EquipmentAutoSellKeepRule,
   EquipmentAutoSellPolicy,
+  EquipmentAutoSellBulkFilter,
   EquipmentAutoSellSettings,
   EquipmentTemplate,
   EquipmentInstance,

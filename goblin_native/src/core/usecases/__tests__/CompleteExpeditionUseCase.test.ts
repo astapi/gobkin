@@ -167,6 +167,7 @@ function createMockEquipmentRepository(equipment: EquipmentInstance[]): IEquipme
     )),
     save: jest.fn(async (item: EquipmentInstance) => { store.set(item.id, { ...item }) }),
     delete: jest.fn(async (id: string) => { store.delete(id) }),
+    deleteMany: jest.fn(async (ids: string[]) => { ids.forEach(id => store.delete(id)) }),
   }
 }
 
