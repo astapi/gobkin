@@ -24,7 +24,9 @@ import { rollTreasureDrops } from './TreasureDropRoller'
 import { normalizePartyRewardMultipliers, getDungeonTierAreaLevel } from '../../shared/types'
 import {
   getGoldBonusPercentFromSkills,
+  getGoldMultiplierFromSkills,
   getPartyRareMultiplierFromSkills,
+  getPartyTitleBonusPercentFromSkills,
   getPartyTitleMultiplierFromSkills,
 } from '../../shared/data/characterSkills'
 import { getGoblinBaseAttributesAtLevel } from '../../shared/utils/goblinHp'
@@ -161,9 +163,14 @@ export class ExpeditionEngine {
       (max, member) => Math.max(max, getGoldBonusPercentFromSkills(member.skills)),
       0,
     )
+    const partyGoldMultiplier = partyState.reduce(
+      (product, member) => product * getGoldMultiplierFromSkills(member.skills),
+      1,
+    )
     const totalGoldMultiplier =
       effectiveRewardMultipliers.gold *
       (1 + partyGoldBonusPercent / 100) *
+      partyGoldMultiplier *
       goldMultiplierBoost
     const averageBattleGold = this.calculateAverageBattleGold(enemyDatabase.patterns, enemyDatabase.enemies, tier)
 
@@ -213,6 +220,7 @@ export class ExpeditionEngine {
               effectiveRewardMultipliers,
               rareDropMultiplierBoost,
               titleMultiplierBoost,
+              titleBonusPercent: partySkillRewardMultipliers.titleBonusPercent,
               expMultiplierBoost,
               returnPolicy: request.returnPolicy,
               events,
@@ -259,6 +267,7 @@ export class ExpeditionEngine {
               effectiveRewardMultipliers,
               rareDropMultiplierBoost,
               titleMultiplierBoost,
+              titleBonusPercent: partySkillRewardMultipliers.titleBonusPercent,
               expMultiplierBoost,
               returnPolicy: request.returnPolicy,
               events,
@@ -329,7 +338,8 @@ export class ExpeditionEngine {
             rareDropMultiplierBoost,
             titleMultiplierBoost,
             tier,
-            this.rng
+            this.rng,
+            partySkillRewardMultipliers.titleBonusPercent,
           )
           if (bossTreasure.length > 0) {
             events.push({
@@ -379,7 +389,14 @@ export class ExpeditionEngine {
       })
     }
 
-    const summary = this.calculateRewardSummary(events, partyState, effectiveRewardMultipliers, partyGoldBonusPercent, goldMultiplierBoost)
+    const summary = this.calculateRewardSummary(
+      events,
+      partyState,
+      effectiveRewardMultipliers,
+      partyGoldBonusPercent,
+      goldMultiplierBoost,
+      partyGoldMultiplier,
+    )
 
     return {
       meta: {
@@ -411,7 +428,8 @@ export class ExpeditionEngine {
       // HP0の負傷者は治療されるまで0のまま、それ以外は出発時に最大HPで開始する
       const effectiveStats = getEffectiveStats(goblin)
       const currentHP = goblin.currentHp === 0 ? 0 : effectiveStats.hp
-      const baseAttributes = getGoblinBaseAttributesAtLevel(goblin, goblin.level)
+      const baseAttributes = goblin.effectiveBaseAttributes
+        ?? getGoblinBaseAttributesAtLevel(goblin, goblin.level)
       return {
         id: goblin.id.toString(),
         name: goblin.name,
@@ -444,13 +462,18 @@ export class ExpeditionEngine {
     })
   }
 
-  private getPartySkillRewardMultipliers(party: Goblin[]): Pick<PartyRewardMultipliers, 'rare' | 'title'> {
+  private getPartySkillRewardMultipliers(party: Goblin[]): {
+    rare: number
+    title: number
+    titleBonusPercent: number
+  } {
     return party.reduce(
       (multipliers, goblin) => ({
         rare: multipliers.rare * getPartyRareMultiplierFromSkills(goblin.skills),
         title: multipliers.title * getPartyTitleMultiplierFromSkills(goblin.skills),
+        titleBonusPercent: multipliers.titleBonusPercent + getPartyTitleBonusPercentFromSkills(goblin.skills),
       }),
-      { rare: 1, title: 1 },
+      { rare: 1, title: 1, titleBonusPercent: 0 },
     )
   }
 
@@ -703,6 +726,7 @@ export class ExpeditionEngine {
     effectiveRewardMultipliers: PartyRewardMultipliers
     rareDropMultiplierBoost: number
     titleMultiplierBoost: number
+    titleBonusPercent: number
     expMultiplierBoost: number
     returnPolicy: ExpeditionRequest['returnPolicy']
     events: TimelineEvent[]
@@ -710,7 +734,7 @@ export class ExpeditionEngine {
     const {
       partyState, enemyDatabase, area, currentFloor, currentTime, tier, isFloorEnd,
       droppedTemplateIds, partyLuckAverage, effectiveRewardMultipliers,
-      rareDropMultiplierBoost, titleMultiplierBoost, expMultiplierBoost, returnPolicy, events,
+      rareDropMultiplierBoost, titleMultiplierBoost, titleBonusPercent, expMultiplierBoost, returnPolicy, events,
     } = params
 
     const pattern = this.selectEnemyPattern(enemyDatabase!.patterns, currentFloor, tier, false, isFloorEnd)
@@ -744,7 +768,8 @@ export class ExpeditionEngine {
         rareDropMultiplierBoost,
         titleMultiplierBoost,
         tier,
-        this.rng
+        this.rng,
+        titleBonusPercent,
       )
       if (treasureDrops.length > 0) {
         events.push({
@@ -823,9 +848,11 @@ export class ExpeditionEngine {
     rewardMultipliers?: PartyRewardMultipliers,
     goldBonusPercent: number = 0,
     goldMultiplierBoost: number = 1,
+    goldSkillMultiplier: number = 1,
   ): RewardSummary {
     const { gold: goldMultiplier } = normalizePartyRewardMultipliers(rewardMultipliers)
     const skillGoldMultiplier = 1 + goldBonusPercent / 100
+    const effectiveGoldSkillMultiplier = goldSkillMultiplier > 0 ? goldSkillMultiplier : 1
     const effectiveGoldBoost = goldMultiplierBoost > 0 ? goldMultiplierBoost : 1
     let xpGained = 0
     let baseGoldGained = 0
@@ -863,8 +890,10 @@ export class ExpeditionEngine {
       successReasons.has(event.reason)
     )
 
-    const goldGained = Math.floor(baseGoldGained * goldMultiplier * skillGoldMultiplier * effectiveGoldBoost) + flatGoldGained
-    const totalGoldMultiplier = goldMultiplier * skillGoldMultiplier * effectiveGoldBoost
+    const goldGained = Math.floor(
+      baseGoldGained * goldMultiplier * skillGoldMultiplier * effectiveGoldSkillMultiplier * effectiveGoldBoost,
+    ) + flatGoldGained
+    const totalGoldMultiplier = goldMultiplier * skillGoldMultiplier * effectiveGoldSkillMultiplier * effectiveGoldBoost
 
     return {
       success,

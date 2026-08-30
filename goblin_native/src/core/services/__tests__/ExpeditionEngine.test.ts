@@ -128,6 +128,30 @@ describe('ExpeditionEngine reward multipliers', () => {
     expect(boosted.goldMultiplier).toBeCloseTo(2.0)
   })
 
+  it('装備スキル由来のgoldMultiplierを他のGold補正へ乗算する', () => {
+    const engine = new ExpeditionEngine(1)
+    const events: TimelineEvent[] = [{
+      type: 'battle',
+      at: 10,
+      floor: 1,
+      enemy: { id: 'e1', name: '敵1', lvl: 1, count: 1, gold: 100 },
+      combat: { rounds: 1, outcome: 'win', allyHPDelta: [0], enemyDefeated: 1 },
+      xp: 5,
+    }]
+
+    const summary = (engine as any).calculateRewardSummary(
+      events,
+      [],
+      { ...DEFAULT_PARTY_REWARD_MULTIPLIERS, gold: 1.5 },
+      10,
+      2,
+      1.1,
+    )
+
+    expect(summary.goldGained).toBe(363)
+    expect(summary.goldMultiplier).toBeCloseTo(3.63)
+  })
+
   it('財宝Goldは計算済みGoldとして報酬に加算する', () => {
     const engine = new ExpeditionEngine(1)
     const events: TimelineEvent[] = [

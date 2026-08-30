@@ -1,4 +1,4 @@
-import type { Goblin, GoblinStats, EquipmentInstance } from '../types'
+import type { Goblin, GoblinBaseAttributes, GoblinStats, EquipmentInstance } from '../types'
 import { GoblinStatCalculator } from '@/core/services/GoblinStatCalculator'
 import { EquipmentService } from '@/core/services/EquipmentService'
 import { calculateGoblinDerivedStats, getGoblinBaseAttributes } from './goblinHp'
@@ -12,6 +12,18 @@ export function calculateGoblinEffectiveStats(
   const equipmentBonuses = EquipmentService.calculateEquipmentBonuses(equippedItems)
   const equipmentSkills = EquipmentService.collectGrantedSkills(equippedItems)
   return GoblinStatCalculator.calculate({
+    ...goblin,
+    skills: [...goblin.skills, ...equipmentSkills],
+  }, equipmentBonuses)
+}
+
+export function calculateGoblinEffectiveBaseAttributes(
+  goblin: Goblin,
+  equippedItems: EquipmentInstance[] = [],
+): GoblinBaseAttributes {
+  const equipmentBonuses = EquipmentService.calculateEquipmentBonuses(equippedItems)
+  const equipmentSkills = EquipmentService.collectGrantedSkills(equippedItems)
+  return GoblinStatCalculator.calculateEffectiveBaseAttributes({
     ...goblin,
     skills: [...goblin.skills, ...equipmentSkills],
   }, equipmentBonuses)

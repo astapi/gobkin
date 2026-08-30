@@ -222,7 +222,7 @@ describe('EquipmentAutoSellService', () => {
           mode: 'rules',
           keepRules: [{
             titleIds: ['broken'],
-            prefixModIds: [],
+            prefixModIds: ['vitality'],
             prefixTiers: [1],
             suffixModIds: [],
             suffixTiers: [],

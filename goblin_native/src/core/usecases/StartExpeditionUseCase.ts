@@ -6,7 +6,10 @@ import type {
   Party,
 } from '../../shared/types'
 import { normalizePartyRewardMultipliers } from '../../shared/types'
-import { calculateGoblinEffectiveStats } from '../../shared/utils/goblinStats'
+import {
+  calculateGoblinEffectiveBaseAttributes,
+  calculateGoblinEffectiveStats,
+} from '../../shared/utils/goblinStats'
 import { EquipmentService } from '../services/EquipmentService'
 import { PartyEntity } from '../domain'
 import type { IGoblinRepository, IPartyRepository, IEquipmentRepository } from '../repositories'
@@ -82,9 +85,14 @@ export class StartExpeditionUseCase {
         { ...goblin, skills: mergedSkills },
         equippedItems,
       )
+      const effectiveBaseAttributes = calculateGoblinEffectiveBaseAttributes(
+        { ...goblin, skills: mergedSkills },
+        equippedItems,
+      )
       return {
         ...goblin,
         skills: mergedSkills,
+        effectiveBaseAttributes,
         effectiveStats,
         // 遠征開始時はHP0を含む全員を復活・全回復する。
         currentHp: effectiveStats.hp,

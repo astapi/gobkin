@@ -23,7 +23,7 @@ import {
 import { EQUIPMENT_TITLE_DEFS } from '@/shared/data/equipmentTitleConfig'
 import { EQUIPMENT_MOD_DEFS } from '@/shared/data/equipmentModConfig'
 import { getEquipmentTemplates } from '@/shared/data/equipmentPoolLoader'
-import { getEquipmentLabel, getEquipmentTitleLabel, getStatLabel } from '@/shared/i18n/entityLocalization'
+import { getEquipmentLabel, getEquipmentModLabel, getEquipmentTitleLabel } from '@/shared/i18n/entityLocalization'
 import type {
   EquipmentAutoSellKeepRule,
   EquipmentAutoSellModId,
@@ -405,7 +405,7 @@ export default function EquipmentAutoSellScreen() {
                   <FilterChip
                     key={definition.id}
                     testID={`auto-sell-prefix-${definition.id}`}
-                    label={getStatLabel(definition.stat)}
+                    label={getEquipmentModLabel(definition.id)}
                     selected={activeRule.prefixModIds.includes(definition.id)}
                     onPress={() => updateActiveRule('prefixModIds', values => (
                       toggleValue(values, definition.id as EquipmentAutoSellModId)
@@ -433,7 +433,7 @@ export default function EquipmentAutoSellScreen() {
                   <FilterChip
                     key={definition.id}
                     testID={`auto-sell-suffix-${definition.id}`}
-                    label={getStatLabel(definition.stat)}
+                    label={getEquipmentModLabel(definition.id)}
                     selected={activeRule.suffixModIds.includes(definition.id)}
                     onPress={() => updateActiveRule('suffixModIds', values => (
                       toggleValue(values, definition.id as EquipmentAutoSellModId)

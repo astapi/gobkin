@@ -10,7 +10,7 @@ const ROLLABLE_TOTAL_WEIGHT = ROLLABLE_TITLE_DEFS.reduce((sum, def) => sum + def
  * 装備の称号を抽選するサービス
  *
  * 抽選フロー:
- *   1. 付与判定: `運乱数 > 100 - effectiveTitleMultiplier × 30` を満たせば称号あり
+ *   1. 付与判定: `運乱数 > 100 - (effectiveTitleMultiplier × 30 + titleBonusPercent)` を満たせば称号あり
  *   2. あり判定の場合のみ、Tier 別の判定回数だけ rollWeight でテーブル抽選し、
  *      その中で rank が最も高い称号を採用する
  */
@@ -21,6 +21,7 @@ export class EquipmentTitleService {
    * @param luckRoll 運乱数（LuckRoller.rollLuckValue で得た値）
    * @param tier ダンジョン Tier（判定回数に使用）
    * @param rng 乱数生成関数（0〜1）
+   * @param titleBonusPercent 称号付与率への加算（パーセントポイント）
    * @returns 称号インスタンス（称号なしの場合も返す）
    */
   static rollTitle(
@@ -28,9 +29,10 @@ export class EquipmentTitleService {
     luckRoll: number,
     tier: DungeonTier,
     rng: () => number,
+    titleBonusPercent: number = 0,
   ): EquipmentTitleInstance {
     const m = titleMultiplier > 0 ? titleMultiplier : 1
-    const threshold = 100 - m * 30
+    const threshold = 100 - (m * 30 + Math.max(0, titleBonusPercent))
 
     // 1) 付与判定
     if (!(luckRoll > threshold)) {

@@ -49,6 +49,10 @@ export function getStatLabel(stat: string): string {
   return translateWithFallback(`entities.stat.${stat}`, stat)
 }
 
+export function getEquipmentModLabel(modId: string): string {
+  return translateWithFallback(`entities.equipmentMod.${modId}`, modId)
+}
+
 export function getReturnPolicyLabel(policy: string): string {
   return translateWithFallback(`entities.returnPolicy.${policy}`, policy)
 }

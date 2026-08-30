@@ -34,7 +34,7 @@ const DEFAULT_STATS: GoblinStats = {
   criticalRate: 0,
 }
 
-function getSimulationDurationSec(areaId: string, tier: DungeonTier | undefined): number | undefined {
+export function getSimulationDurationSec(areaId: string, tier: DungeonTier | undefined): number | undefined {
   const area = AREA_DURATION_META.find((entry) => entry.id === areaId)
   if (!area || area.exploration_time_sec_first === undefined) return undefined
   return computeDungeonExplorationTime(

@@ -334,7 +334,9 @@ function ShopItemDetail({
   const name = selected.mode === 'buy'
     ? getEquipmentLabel(template)
     : getEquipmentDisplayName(selected.group.equipment, template)
-  const skills = template.grantedSkills ?? []
+  const skills = selected.mode === 'buy'
+    ? template.grantedSkills ?? []
+    : EquipmentService.collectGrantedSkills([selected.group.equipment])
   const bonuses = selected.mode === 'buy'
     ? template.statBonuses
     : EquipmentService.calculateEquipmentBonuses([selected.group.equipment])

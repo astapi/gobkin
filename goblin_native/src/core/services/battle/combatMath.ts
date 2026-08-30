@@ -5,6 +5,10 @@ import type { BattleUnit } from './types'
 const ACTION_ORDER_RANDOM_MIN = 0.21
 const ACTION_ORDER_RANDOM_MAX = 1.0
 
+export const HIGH_ATTRIBUTE_THRESHOLD = 20
+export const HIGH_ATTRIBUTE_POWER_RATE = 1.04
+export const HIGH_ATTRIBUTE_RESISTANCE_RATE = 0.96
+
 export function getActionOrderRandomFactor(rng: () => number): number {
   return ACTION_ORDER_RANDOM_MIN + rng() * (ACTION_ORDER_RANDOM_MAX - ACTION_ORDER_RANDOM_MIN)
 }
@@ -12,6 +16,21 @@ export function getActionOrderRandomFactor(rng: () => number): number {
 export function getActionOrderValue(agility: number, actionOrderMultiplier: number, randomB: number): number {
   const normalizedAgility = Math.max(1, agility)
   return normalizedAgility * normalizedAgility * actionOrderMultiplier * randomB
+}
+
+function getHighAttributeExcess(attribute: number | undefined): number {
+  const normalizedAttribute = attribute ?? 0
+  return Math.max(0, normalizedAttribute - HIGH_ATTRIBUTE_THRESHOLD)
+}
+
+/** 力・知恵が21以上のときに既存威力へ別枠乗算する係数。 */
+export function getHighAttributePowerMultiplier(attribute: number | undefined): number {
+  return Math.pow(HIGH_ATTRIBUTE_POWER_RATE, getHighAttributeExcess(attribute))
+}
+
+/** 体力・精神が21以上のときに既存被ダメージへ別枠乗算する係数。 */
+export function getHighAttributeResistanceMultiplier(attribute: number | undefined): number {
+  return Math.pow(HIGH_ATTRIBUTE_RESISTANCE_RATE, getHighAttributeExcess(attribute))
 }
 
 /**

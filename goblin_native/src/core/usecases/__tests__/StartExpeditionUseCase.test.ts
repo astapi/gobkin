@@ -142,4 +142,33 @@ describe('StartExpeditionUseCase', () => {
     expect(meta.departingGoblins[0].effectiveStats?.atk).toBe(140)
     expect(meta.departingGoblins[0].currentHp).toBe(meta.departingGoblins[0].effectiveStats?.hp)
   })
+
+  it('遠征開始時に装備MOD込みの実効能力値を保存する', async () => {
+    const goblin = createTestGoblin({
+      baseAttributes: { power: 20, wisdom: 20, spirit: 20, vitality: 20, agility: 20, luck: 20 },
+    })
+    const equipment: EquipmentInstance[] = [{
+      id: 'eq-mod',
+      templateId: 'sword_cypress_stick',
+      slotIndex: 0,
+      goblinId: 1,
+      prefixMod: { id: 'power', tier: 9 },
+      suffixMod: { id: 'vitality', tier: 10 },
+    }]
+    const useCase = new StartExpeditionUseCase(
+      createPartyRepository(createTestParty()),
+      createGoblinRepository(goblin),
+      createEquipmentRepository(equipment),
+    )
+
+    const meta = await useCase.execute({
+      partyId: '1',
+      areaId: 'road_1',
+      returnPolicy: 'never',
+      clientVersion: 'test',
+    })
+
+    expect(meta.departingGoblins[0].effectiveBaseAttributes?.power).toBe(21)
+    expect(meta.departingGoblins[0].effectiveBaseAttributes?.vitality).toBe(21)
+  })
 })

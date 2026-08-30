@@ -91,12 +91,35 @@ export function getUniqueSkillsById(skills: CharacterSkill[]): CharacterSkill[] 
   const seen = new Set<string>()
 
   return skills.filter((skill) => {
+    if (skill.isEquipmentModEffect) {
+      return true
+    }
     if (seen.has(skill.id)) {
       return false
     }
     seen.add(skill.id)
     return true
   })
+}
+
+function getMultiplierWithAdditiveEquipmentMods(
+  skills: CharacterSkill[],
+  getMultiplier: (skill: CharacterSkill) => number | undefined,
+): number {
+  let skillMultiplier = 1
+  let modBonus = 0
+
+  for (const skill of getUniqueSkillsById(skills)) {
+    const multiplier = getMultiplier(skill)
+    if (multiplier === undefined) continue
+    if (skill.isEquipmentModEffect) {
+      modBonus += multiplier - 1
+    } else {
+      skillMultiplier *= multiplier
+    }
+  }
+
+  return skillMultiplier * (1 + modBonus)
 }
 
 export function describeCharacterSkill(skill: CharacterSkill): string {
@@ -256,7 +279,7 @@ export function describeCharacterSkill(skill: CharacterSkill): string {
   }
 
   if (skill.expMultiplier !== undefined) {
-    return i18n.t('battle.expMultiplier', { value: skill.expMultiplier.toFixed(1) })
+    return i18n.t('battle.expMultiplier', { value: skill.expMultiplier.toFixed(2) })
   }
 
   if (skill.factorDropBonusPercent !== undefined) {
@@ -271,8 +294,16 @@ export function describeCharacterSkill(skill: CharacterSkill): string {
     return i18n.t('battle.goldBonus', { value: skill.goldBonusPercent })
   }
 
+  if (skill.goldMultiplier !== undefined) {
+    return i18n.t('battle.goldMultiplier', { value: skill.goldMultiplier.toFixed(2) })
+  }
+
   if (skill.partyRareMultiplier !== undefined) {
     return i18n.t('battle.partyRareMultiplier', { value: skill.partyRareMultiplier.toFixed(2) })
+  }
+
+  if (skill.partyTitleBonusPercent !== undefined) {
+    return i18n.t('battle.partyTitleBonus', { value: skill.partyTitleBonusPercent })
   }
 
   if (skill.partyTitleMultiplier !== undefined) {
@@ -395,6 +426,10 @@ function getListedSkillEffectDescriptions(skill: CharacterSkill): string[] {
     descriptions.push(i18n.t('battle.partyRareMultiplier', { value: skill.partyRareMultiplier.toFixed(2) }))
   }
 
+  if (skill.partyTitleBonusPercent !== undefined) {
+    descriptions.push(i18n.t('battle.partyTitleBonus', { value: skill.partyTitleBonusPercent }))
+  }
+
   if (skill.partyTitleMultiplier !== undefined) {
     descriptions.push(i18n.t('battle.partyTitleMultiplier', { value: skill.partyTitleMultiplier.toFixed(2) }))
   }
@@ -442,16 +477,25 @@ export function getSkillBaseAttributeBonuses(
 }
 
 export function getSkillStatMultipliers(skills: CharacterSkill[]): Partial<Record<keyof GoblinStats, number>> {
-  const multipliers: Partial<Record<keyof GoblinStats, number>> = {}
+  const skillMultipliers: Partial<Record<keyof GoblinStats, number>> = {}
+  const modBonuses: Partial<Record<keyof GoblinStats, number>> = {}
 
   for (const skill of getUniqueSkillsById(skills)) {
     for (const [key, value] of Object.entries(skill.statMultipliers ?? {})) {
       if (value === undefined) continue
       const statKey = key as keyof GoblinStats
-      multipliers[statKey] = (multipliers[statKey] ?? 1) * value
+      if (skill.isEquipmentModEffect) {
+        modBonuses[statKey] = (modBonuses[statKey] ?? 0) + value - 1
+      } else {
+        skillMultipliers[statKey] = (skillMultipliers[statKey] ?? 1) * value
+      }
     }
   }
 
+  const multipliers: Partial<Record<keyof GoblinStats, number>> = { ...skillMultipliers }
+  for (const statKey of Object.keys(modBonuses) as Array<keyof GoblinStats>) {
+    multipliers[statKey] = (skillMultipliers[statKey] ?? 1) * (1 + (modBonuses[statKey] ?? 0))
+  }
   return multipliers
 }
 
@@ -729,10 +773,7 @@ export function getExpBonusPercentFromSkills(skills: CharacterSkill[]): number {
 }
 
 export function getExpMultiplierFromSkills(skills: CharacterSkill[]): number {
-  return getUniqueSkillsById(skills).reduce(
-    (product, skill) => product * (skill.expMultiplier ?? 1),
-    1,
-  )
+  return getMultiplierWithAdditiveEquipmentMods(skills, skill => skill.expMultiplier)
 }
 
 export function getFactorDropBonusPercentFromSkills(skills: CharacterSkill[]): number {
@@ -756,6 +797,10 @@ export function getGoldBonusPercentFromSkills(skills: CharacterSkill[]): number 
   )
 }
 
+export function getGoldMultiplierFromSkills(skills: CharacterSkill[]): number {
+  return getMultiplierWithAdditiveEquipmentMods(skills, skill => skill.goldMultiplier)
+}
+
 export function getPartyRareMultiplierFromSkills(skills: CharacterSkill[]): number {
   return getUniqueSkillsById(skills).reduce(
     (product, skill) => product * (skill.partyRareMultiplier ?? 1),
@@ -764,9 +809,13 @@ export function getPartyRareMultiplierFromSkills(skills: CharacterSkill[]): numb
 }
 
 export function getPartyTitleMultiplierFromSkills(skills: CharacterSkill[]): number {
+  return getMultiplierWithAdditiveEquipmentMods(skills, skill => skill.partyTitleMultiplier)
+}
+
+export function getPartyTitleBonusPercentFromSkills(skills: CharacterSkill[]): number {
   return getUniqueSkillsById(skills).reduce(
-    (product, skill) => product * (skill.partyTitleMultiplier ?? 1),
-    1,
+    (sum, skill) => sum + (skill.partyTitleBonusPercent ?? 0),
+    0,
   )
 }
 

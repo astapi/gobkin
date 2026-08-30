@@ -63,6 +63,29 @@ export type EquipmentModId =
   | 'vitality'
   | 'agility'
   | 'luck'
+  | 'hp'
+  | 'attack'
+  | 'defense'
+  | 'accuracy'
+  | 'evasion'
+  | 'hp_multiplier'
+  | 'physical_damage'
+  | 'spell_damage'
+  | 'exp_bonus'
+  | 'exp_multiplier'
+  | 'title_bonus'
+  | 'title_multiplier'
+  | 'gold_multiplier'
+
+export type EquipmentModSkillEffect =
+  | 'hp_multiplier'
+  | 'physical_damage'
+  | 'spell_damage'
+  | 'exp_bonus'
+  | 'exp_multiplier'
+  | 'title_bonus'
+  | 'title_multiplier'
+  | 'gold_multiplier'
 
 /** PoE形式。T1が最高、T10が最低。 */
 export type EquipmentModTier = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10
@@ -76,7 +99,18 @@ export interface EquipmentModRoll {
 export interface EquipmentModDef {
   id: EquipmentModId
   slot: EquipmentModSlot
-  stat: EquipmentStat
+  /** 旧セーブ値の読み込みだけを許可する過去のslot。新規抽選には使わない。 */
+  legacySlots?: readonly EquipmentModSlot[]
+  /** 同じslot内での抽選ウェイト。 */
+  weight: number
+  /** 新規ドロップで抽選可能なTier。未指定ならT1〜T10。 */
+  rollTiers?: readonly EquipmentModTier[]
+  /** MOD固有のTier値。旧保存Tierを含む全Tierを定義する。 */
+  tierValues?: Readonly<Record<EquipmentModTier, number>>
+  /** 実数値MODの場合に指定する。 */
+  stat?: EquipmentStat
+  /** 倍率・報酬MODの場合に指定する。 */
+  skillEffect?: EquipmentModSkillEffect
 }
 
 export type EquipmentAutoSellMode = 'keep_all' | 'sell_all' | 'rules'

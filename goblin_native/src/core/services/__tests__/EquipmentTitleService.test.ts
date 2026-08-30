@@ -19,6 +19,14 @@ const NEVER_LUCK_ROLL = 0  // 付与判定を必ず外す
 
 describe('EquipmentTitleService', () => {
   describe('rollTitle - 付与判定（運乱数 > 100 - x*30）', () => {
+    it('称号付与率の加算を倍率とは別に適用する', () => {
+      const withoutBonus = EquipmentTitleService.rollTitle(1, 65, 0, () => 0)
+      const withBonus = EquipmentTitleService.rollTitle(1, 65, 0, () => 0, 10)
+
+      expect(withoutBonus.titleId).toBe('none')
+      expect(withBonus.titleId).not.toBe('none')
+    })
+
     it('運乱数が閾値以下のときは none を返す', () => {
       const rng = createSeededRng(1)
       // multiplier=1 → threshold=70

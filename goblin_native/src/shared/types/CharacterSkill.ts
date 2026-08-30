@@ -27,6 +27,8 @@ export type TurnStartAoeMagic = {
 
 export interface CharacterSkill {
   id: string
+  /** 装備MOD由来の効果。通常スキルのID重複排除対象外とし、倍率の増加分を加算する。 */
+  isEquipmentModEffect?: boolean
   descriptionKey?: string
   baseAttributeBonuses?: Partial<Record<keyof GoblinBaseAttributes, number>>
   statBonuses?: Partial<Record<keyof GoblinStats, number>>
@@ -70,7 +72,10 @@ export interface CharacterSkill {
   factorDropBonusPercent?: number
   factorDropMultiplier?: number
   goldBonusPercent?: number
+  goldMultiplier?: number
   partyRareMultiplier?: number
+  /** 称号が付く確率への加算（パーセントポイント）。 */
+  partyTitleBonusPercent?: number
   partyTitleMultiplier?: number
   partyMagicDamageMultiplier?: number
   expeditionTimeMultiplier?: number

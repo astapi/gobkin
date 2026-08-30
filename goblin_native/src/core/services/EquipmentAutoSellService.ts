@@ -34,7 +34,8 @@ function normalizeModIds(value: unknown, slot: 'prefix' | 'suffix'): EquipmentAu
   return [...new Set(value.filter((item): item is EquipmentAutoSellModId => {
     if (item === 'none') return true
     if (typeof item !== 'string') return false
-    return getEquipmentModDef(item as EquipmentModId)?.slot === slot
+    const definition = getEquipmentModDef(item as EquipmentModId)
+    return definition?.slot === slot || definition?.legacySlots?.includes(slot) === true
   }))]
 }
 
