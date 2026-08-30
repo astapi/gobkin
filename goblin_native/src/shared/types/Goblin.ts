@@ -39,9 +39,11 @@ export type Goblin = {
   stats: GoblinStats  // 基本ステータス（レベルアップで増加）
   currentHp?: number  // 現在HP。未設定または1以上なら遠征開始時に最大HPまで回復、0なら負傷扱い
   baseAttributes?: GoblinBaseAttributes  // 基本能力値（力、知恵、精神、体力、敏捷、運）
+  effectiveBaseAttributes?: GoblinBaseAttributes  // 装備MOD・スキル込みの実効能力値（遠征スナップショット用）
   effectiveStats?: GoblinStats  // 実効ステータス（stats + 因子適用後）、未設定時はGoblinStatCalculatorで計算
   factors?: string[]  // 獲得した因子IDの配列
   variantFactorId?: string  // 亜種として生まれた因子ID
+  individualValue?: number  // 個体値（未設定時は各生成処理の既定値を使用）
   plusValue?: number  // 血統の＋値。未定義の場合は0として扱う
   skills: CharacterSkill[]  // パッシブスキル一覧
   spells?: LearnedSpell[]  // 習得した呪文リスト

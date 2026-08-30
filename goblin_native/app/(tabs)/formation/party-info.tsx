@@ -119,12 +119,28 @@ function getPartySkillEntries(goblin: Goblin, skills: CharacterSkill[]): PartySk
         valueText: formatMultiplier(skill.partyTitleMultiplier),
       })
     }
+    if (skill.partyTitleBonusPercent !== undefined) {
+      entries.push({
+        category: 'title',
+        goblin,
+        skill,
+        valueText: formatBonusPercent(skill.partyTitleBonusPercent),
+      })
+    }
     if (skill.goldBonusPercent !== undefined) {
       entries.push({
         category: 'gold',
         goblin,
         skill,
         valueText: formatBonusPercent(skill.goldBonusPercent),
+      })
+    }
+    if (skill.goldMultiplier !== undefined) {
+      entries.push({
+        category: 'gold',
+        goblin,
+        skill,
+        valueText: formatMultiplier(skill.goldMultiplier),
       })
     }
 

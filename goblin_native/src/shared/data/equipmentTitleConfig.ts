@@ -8,28 +8,12 @@ import type { EquipmentTitleDef } from '../types/EquipmentTitle'
  *   2. 付与する場合のみ、Tier 別の判定回数だけ rollWeight に基づき抽選し、rank が最も高い称号を採用
  *
  * - rollWeight は「称号付き」の中での重み（合計 99999 = 約100%）
- * - rank は称号の優劣順（broken が最高、worst が最低）
+ * - rank は称号の優劣順（broken が最高、masterwork が最低）
  * - 'none' は付与判定で別経路扱いになるため rollWeight=0、rank=0 とする
+ * - マイナス称号（worst / stinky）は廃止済み。その分の重みは masterwork に吸収させ、
+ *   magical 以上の出現率は廃止前と同じに保っている
  */
 export const EQUIPMENT_TITLE_DEFS: EquipmentTitleDef[] = [
-  {
-    id: 'worst',
-    name: '最低な',
-    plusMultiplier: 0.50,
-    minusMultiplier: 2.00,
-    priceMultiplier: 0.50,
-    rollWeight: 28571,
-    rank: 1,
-  },
-  {
-    id: 'stinky',
-    name: '臭い',
-    plusMultiplier: 0.80,
-    minusMultiplier: 1.25,
-    priceMultiplier: 0.80,
-    rollWeight: 37986,
-    rank: 2,
-  },
   {
     id: 'none',
     name: '',
@@ -45,7 +29,7 @@ export const EQUIPMENT_TITLE_DEFS: EquipmentTitleDef[] = [
     plusMultiplier: 1.33,
     minusMultiplier: 0.75,
     priceMultiplier: 2.00,
-    rollWeight: 28571,
+    rollWeight: 95128,
     rank: 3,
   },
   {

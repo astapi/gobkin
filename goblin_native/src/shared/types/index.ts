@@ -42,6 +42,7 @@ export type {
   EquipmentModTier,
   EquipmentModRoll,
   EquipmentModDef,
+  EquipmentModCount,
   EquipmentAutoSellMode,
   EquipmentAutoSellModId,
   EquipmentAutoSellKeepRule,

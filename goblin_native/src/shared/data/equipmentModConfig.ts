@@ -5,17 +5,66 @@ import type {
   EquipmentModTier,
 } from '../types/Equipment'
 
+const FLAT_STAT_WEIGHT = 100
+const BASE_ATTRIBUTE_WEIGHT = 20
+const EFFECT_WEIGHT = 60
+const REWARD_MULTIPLIER_WEIGHT = 30
+const TITLE_BONUS_WEIGHT = 5
+const TITLE_MULTIPLIER_WEIGHT = 3
+const BASE_ATTRIBUTE_ROLL_TIERS = [3, 4, 5] as const
+const BASE_ATTRIBUTE_TIER_VALUES: Readonly<Record<EquipmentModTier, number>> = {
+  1: 3,
+  2: 3,
+  3: 3,
+  4: 2,
+  5: 1,
+  6: 1,
+  7: 1,
+  8: 1,
+  9: 1,
+  10: 1,
+}
+
+const baseAttributeMod = (
+  id: Extract<EquipmentModId, 'power' | 'wisdom' | 'spirit' | 'vitality' | 'agility' | 'luck'>,
+  stat: Extract<EquipmentModDef['stat'], `${string}_flat`>,
+  legacySlots?: readonly EquipmentModSlot[],
+): EquipmentModDef => ({
+  id,
+  slot: 'prefix',
+  legacySlots,
+  stat,
+  weight: BASE_ATTRIBUTE_WEIGHT,
+  rollTiers: BASE_ATTRIBUTE_ROLL_TIERS,
+  tierValues: BASE_ATTRIBUTE_TIER_VALUES,
+})
+
 /**
- * prefixは攻撃寄り、suffixは防御・機動寄りの基本能力MOD。
- * MOD値は全種類共通で T10=+1 から T1=+10。
+ * 実数値系をprefix、倍率・報酬系をsuffixとして抽選する。
+ * 既存のsuffix基本能力MODは新規抽選をprefixへ移し、旧保存値だけ互換読込する。
+ * 基本能力MODは T5=+1 / T4=+2 / T3=+3 のみ新規抽選する。
+ * その他は T10=1 から T1=10。倍率系は 1 + 値/100 として扱う。
  */
 export const EQUIPMENT_MOD_DEFS: readonly EquipmentModDef[] = [
-  { id: 'power', slot: 'prefix', stat: 'power_flat' },
-  { id: 'wisdom', slot: 'prefix', stat: 'wisdom_flat' },
-  { id: 'spirit', slot: 'prefix', stat: 'spirit_flat' },
-  { id: 'vitality', slot: 'suffix', stat: 'vitality_flat' },
-  { id: 'agility', slot: 'suffix', stat: 'agility_flat' },
-  { id: 'luck', slot: 'suffix', stat: 'luck_flat' },
+  baseAttributeMod('power', 'power_flat'),
+  baseAttributeMod('wisdom', 'wisdom_flat'),
+  baseAttributeMod('spirit', 'spirit_flat'),
+  baseAttributeMod('vitality', 'vitality_flat', ['suffix']),
+  baseAttributeMod('agility', 'agility_flat', ['suffix']),
+  baseAttributeMod('luck', 'luck_flat', ['suffix']),
+  { id: 'attack', slot: 'prefix', stat: 'atk_flat', weight: FLAT_STAT_WEIGHT },
+  { id: 'defense', slot: 'prefix', stat: 'def_flat', weight: FLAT_STAT_WEIGHT },
+  { id: 'accuracy', slot: 'prefix', stat: 'accuracy_flat', weight: FLAT_STAT_WEIGHT },
+  { id: 'evasion', slot: 'prefix', stat: 'evasion_flat', weight: FLAT_STAT_WEIGHT },
+  { id: 'hp', slot: 'prefix', stat: 'hp_flat', weight: FLAT_STAT_WEIGHT },
+  { id: 'hp_multiplier', slot: 'suffix', skillEffect: 'hp_multiplier', weight: EFFECT_WEIGHT },
+  { id: 'physical_damage', slot: 'suffix', skillEffect: 'physical_damage', weight: EFFECT_WEIGHT },
+  { id: 'spell_damage', slot: 'suffix', skillEffect: 'spell_damage', weight: EFFECT_WEIGHT },
+  { id: 'exp_bonus', slot: 'suffix', skillEffect: 'exp_bonus', weight: EFFECT_WEIGHT },
+  { id: 'exp_multiplier', slot: 'suffix', skillEffect: 'exp_multiplier', weight: REWARD_MULTIPLIER_WEIGHT },
+  { id: 'title_bonus', slot: 'suffix', skillEffect: 'title_bonus', weight: TITLE_BONUS_WEIGHT },
+  { id: 'title_multiplier', slot: 'suffix', skillEffect: 'title_multiplier', weight: TITLE_MULTIPLIER_WEIGHT },
+  { id: 'gold_multiplier', slot: 'suffix', skillEffect: 'gold_multiplier', weight: REWARD_MULTIPLIER_WEIGHT },
 ]
 
 export const EQUIPMENT_MOD_TIER_VALUES: Readonly<Record<EquipmentModTier, number>> = {

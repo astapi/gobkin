@@ -204,27 +204,39 @@ export class EquipmentService {
 
   static collectGrantedSkills(equipped: EquipmentInstance[]): CharacterSkill[] {
     const skills: CharacterSkill[] = []
+    const penaltyMultipliers = this.getEquipmentPenaltyMultipliers(equipped)
 
     for (const eq of equipped) {
       const template = getEquipmentTemplate(eq.templateId)
-      if (!template?.grantedSkills) continue
+      if (!template) continue
 
-      for (const skill of template.grantedSkills) {
-        skills.push(this.scaleGrantedSkillByTitle(skill, eq))
+      skills.push(...this.collectTemplateGrantedSkills(eq))
+
+      const penaltyMultiplier = penaltyMultipliers.get(eq.templateId) ?? 1
+      for (const mod of [eq.prefixMod, eq.suffixMod]) {
+        if (!mod) continue
+        const skill = EquipmentModService.toGrantedSkill(mod, eq.id, penaltyMultiplier)
+        if (skill) skills.push(skill)
       }
     }
 
     return skills
   }
 
+  private static collectTemplateGrantedSkills(equipment: EquipmentInstance): CharacterSkill[] {
+    const template = getEquipmentTemplate(equipment.templateId)
+    return (template?.grantedSkills ?? []).map(skill => this.scaleGrantedSkillByTitle(skill, equipment))
+  }
+
   private static addGrantedSkills(goblin: Goblin, equipment: EquipmentInstance): void {
-    for (const skill of this.collectGrantedSkills([equipment])) {
+    // MODスキルは装備一覧全体から都度生成する。goblin.skillsへ複製すると重複装備ペナルティ前の値が残る。
+    for (const skill of this.collectTemplateGrantedSkills(equipment)) {
       goblin.skills.push(skill)
     }
   }
 
   private static removeGrantedSkills(goblin: Goblin, equipment: EquipmentInstance): void {
-    for (const grantedSkill of this.collectGrantedSkills([equipment])) {
+    for (const grantedSkill of this.collectTemplateGrantedSkills(equipment)) {
       const index = goblin.skills.findIndex((skill) => this.isSameSkill(skill, grantedSkill))
       if (index >= 0) {
         goblin.skills.splice(index, 1)

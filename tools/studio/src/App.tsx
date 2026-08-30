@@ -15,6 +15,7 @@ import { ProgressionReportsPage } from './pages/ProgressionReportsPage'
 import { TipsPage } from './pages/TipsPage'
 import { RareDropsPage } from './pages/RareDropsPage'
 import { RareItemsPage } from './pages/RareItemsPage'
+import { DropSimulationPage } from './pages/DropSimulationPage'
 import { PartyStoreProvider } from './stores/partyStore'
 
 export function App() {
@@ -37,6 +38,7 @@ export function App() {
             <Link to="/skills">Skill</Link>
             <Link to="/party">PT編成</Link>
             <Link to="/simulate">シミュレーション</Link>
+            <Link to="/drop-simulation">ドロップ試算</Link>
             <Link to="/balance-reference">バランス基準</Link>
             <Link to="/progression-reports">進行レポート</Link>
           </nav>
@@ -57,6 +59,7 @@ export function App() {
             <Route path="/skills" element={<SkillCatalogPage />} />
             <Route path="/party" element={<PartyPage />} />
             <Route path="/simulate" element={<SimulatePage />} />
+            <Route path="/drop-simulation" element={<DropSimulationPage />} />
             <Route path="/balance-reference" element={<BalanceReferencePage />} />
             <Route path="/progression-reports" element={<ProgressionReportsPage />} />
           </Routes>

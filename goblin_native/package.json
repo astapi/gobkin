@@ -8,6 +8,7 @@
     "ios": "expo run:ios",
     "web": "expo start --web",
     "test": "jest",
+    "motion:viewer": "node tools/motion-viewer/server.mjs",
     "ai:bridge": "node scripts/ai-bridge.mjs",
     "balance:sim": "node scripts/balance/headless/index.js",
     "sim:balance": "node scripts/simulate-dungeon-balance.js",

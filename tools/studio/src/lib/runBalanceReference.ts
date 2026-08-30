@@ -6,7 +6,9 @@ import { applySkillBonusesToEquipmentBonuses } from '@app/shared/data/characterS
 import { getGoblinVariantByFactorId } from '@app/shared/data/goblinVariants'
 import { getCharacterSkill } from '@app/shared/data/skillCatalog'
 import { getLegacyRaceName } from '@app/shared/types/Race'
-import type { Goblin, GoblinStats } from '@app/shared/types'
+import { getEffectiveStats } from '@app/shared/utils/goblinStats'
+import { getGoblinBaseAttributesAtLevel } from '@app/shared/utils/goblinHp'
+import type { Goblin, GoblinBaseAttributes, GoblinStats } from '@app/shared/types'
 
 export interface ScenarioPartyMember {
   name: string
@@ -169,6 +171,65 @@ export function buildPartyFromLoadout(
       member.variantFactorId,
     )
     return applyLoadoutEquipment(base, member.equipmentTemplateIds || [])
+  })
+}
+
+export interface PartyMemberPreview {
+  index: number
+  name: string
+  level: number
+  race: string
+  job?: string
+  variantFactorId?: string
+  /** そのレベルで解放されている装備枠数 */
+  availableSlots: number
+  /** 実際に装備された templateId（枠数まで） */
+  equippedTemplateIds: string[]
+  /** 枠数を超えて無視された templateId */
+  ignoredTemplateIds: string[]
+  baseAttributes: GoblinBaseAttributes
+  /** 装備の flat ボーナス適用後の基本ステータス */
+  stats: GoblinStats
+  /** ExpeditionEngine が戦闘で使う実効ステータス */
+  effectiveStats: GoblinStats
+  skillIds: string[]
+}
+
+/**
+ * ロードアウトを指定レベルで組んだときの味方ステータスを返す。
+ * buildPartyFromLoadout と同じ経路で組み立てるので、シミュレーション本体と一致する。
+ */
+export function describeLoadoutParty(
+  loadout: ScenarioLoadout,
+  level: number,
+): PartyMemberPreview[] {
+  return loadout.party.map((member, index) => {
+    const base = createBaseGoblin(
+      index,
+      member.name,
+      level,
+      member.job,
+      member.variantFactorId,
+    )
+    const availableSlots = EquipmentService.getAvailableSlots(base)
+    const templateIds = member.equipmentTemplateIds ?? []
+    const usedCount = Math.min(availableSlots, templateIds.length)
+    const goblin = applyLoadoutEquipment(base, templateIds)
+    return {
+      index,
+      name: goblin.name,
+      level,
+      race: goblin.race,
+      job: member.job,
+      variantFactorId: member.variantFactorId,
+      availableSlots,
+      equippedTemplateIds: templateIds.slice(0, usedCount),
+      ignoredTemplateIds: templateIds.slice(usedCount),
+      baseAttributes: getGoblinBaseAttributesAtLevel(goblin, level),
+      stats: goblin.stats,
+      effectiveStats: getEffectiveStats(goblin),
+      skillIds: (goblin.skills ?? []).map((skill) => skill.id),
+    }
   })
 }
 

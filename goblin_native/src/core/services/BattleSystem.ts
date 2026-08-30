@@ -49,6 +49,8 @@ import {
   getActionOrderRandomFactor,
   getActionOrderValue,
   getDamageModifier,
+  getHighAttributePowerMultiplier,
+  getHighAttributeResistanceMultiplier,
   getSpellBonusDamage,
 } from './battle/combatMath'
 import { getActionsPerTurn, selectTarget } from './battle/targeting'
@@ -91,6 +93,8 @@ export {
   getAccuracyModifier,
   getActionOrderValue,
   getDamageModifier,
+  getHighAttributePowerMultiplier,
+  getHighAttributeResistanceMultiplier,
   getHitRateRandomModifier,
 } from './battle/combatMath'
 export { getRowWeight, selectTarget } from './battle/targeting'
@@ -583,11 +587,13 @@ export class BattleSystem {
         const baseDamage = unit.magicAtk * aoe.powerPercent / 100
         const reductionFactor = 1 - target.damageReduction / 100
         const magicReductionFactor = 1 - target.magicDamageReduction / 100
+        const wisdomPowerFactor = getHighAttributePowerMultiplier(unit.wisdom)
+        const spiritResistanceFactor = getHighAttributeResistanceMultiplier(target.spirit)
         const magicBarrierFactor = 1 - target.magicBarrierDamageReduction / 100
         const magicProtectionFactor = getRearMagicGuardReductionFactor(target, targetGroup)
         const royalPressureFactor = this.getRoyalPressureFactor(unit, target)
         let damage = Math.max(1, Math.floor(
-          baseDamage * reductionFactor * magicReductionFactor * magicBarrierFactor * magicProtectionFactor * royalPressureFactor,
+          baseDamage * wisdomPowerFactor * reductionFactor * magicReductionFactor * spiritResistanceFactor * magicBarrierFactor * magicProtectionFactor * royalPressureFactor,
         ))
         damage = this.applyMagicWard(target, damage)
 
@@ -720,6 +726,7 @@ export class BattleSystem {
         const rowDamageMultiplier = getUnitRowDamageMultiplier(unit)
         const reductionFactor = 1 - attackTarget.damageReduction / 100
         const physicalReductionFactor = 1 - attackTarget.physicalDamageReduction / 100
+        const vitalityResistanceFactor = getHighAttributeResistanceMultiplier(attackTarget.vitality)
         const rangedAttackReductionFactor = unit.attackType === 'range'
           ? 1 - attackTarget.rangedAttackDamageReduction / 100
           : 1
@@ -727,6 +734,7 @@ export class BattleSystem {
         const protectionFactor = getRearGuardReductionFactor(attackTarget, allyUnits)
         const defendingFactor = getDefendingDamageFactor(attackTarget)
         const physicalDamageFactor = 1 + unit.physicalDamagePercent / 100
+        const powerDamageFactor = getHighAttributePowerMultiplier(unit.power ?? 0)
         // 闘志: 攻撃行動で蓄積した与ダメ増加
         const fervorFactor = 1 + (unit.fervorStackPercent ?? 0) / 100
         // 鬨の声: PT物理与ダメージ倍率
@@ -739,7 +747,7 @@ export class BattleSystem {
         const royalPressureFactor = this.getRoyalPressureFactor(unit, attackTarget)
         let damage = Math.max(
           1,
-          Math.floor((baseDamage * dmgMod * rearDamageMultiplier * rowDamageMultiplier + additionalDamage) * physicalDamageFactor * criticalDamageFactor * fervorFactor * warCryFactor * unit.physicalDamageDealtMultiplier * reductionFactor * physicalReductionFactor * rangedAttackReductionFactor * shieldBarrierReductionFactor * protectionFactor * defendingFactor * royalPressureFactor * damageMultiplier),
+          Math.floor((baseDamage * dmgMod * rearDamageMultiplier * rowDamageMultiplier + additionalDamage) * physicalDamageFactor * powerDamageFactor * criticalDamageFactor * fervorFactor * warCryFactor * unit.physicalDamageDealtMultiplier * reductionFactor * physicalReductionFactor * vitalityResistanceFactor * rangedAttackReductionFactor * shieldBarrierReductionFactor * protectionFactor * defendingFactor * royalPressureFactor * damageMultiplier),
         )
         // 物理障壁: チャージ消費で1/3に軽減
         damage = this.applyPhysicalWard(attackTarget, damage)
@@ -1187,14 +1195,16 @@ export class BattleSystem {
         const spellDamageFactor = (1 + unit.spellDamagePercent / 100)
           * getSpellDamageMultiplierFromSkills(unit.skills, spellDef.id)
           * unit.magicFieldDamageMultiplier
+          * getHighAttributePowerMultiplier(unit.wisdom)
         const spellTakenMultiplier = getSpellTakenMultiplierFromSkills(target.skills, spellDef.id)
         const reductionFactor = 1 - target.damageReduction / 100
         const magicReductionFactor = 1 - target.magicDamageReduction / 100
+        const spiritResistanceFactor = getHighAttributeResistanceMultiplier(target.spirit)
         const magicBarrierFactor = 1 - target.magicBarrierDamageReduction / 100
         const magicProtectionFactor = getRearMagicGuardReductionFactor(target, targetGroup)
         const defendingFactor = getDefendingDamageFactor(target)
         const royalPressureFactor = this.getRoyalPressureFactor(unit, target)
-        let damage = Math.max(1, Math.floor(baseDamage * rearDamageMultiplier * spellDamageFactor * spellTakenMultiplier * reductionFactor * magicReductionFactor * magicBarrierFactor * magicProtectionFactor * defendingFactor * royalPressureFactor))
+        let damage = Math.max(1, Math.floor(baseDamage * rearDamageMultiplier * spellDamageFactor * spellTakenMultiplier * reductionFactor * magicReductionFactor * spiritResistanceFactor * magicBarrierFactor * magicProtectionFactor * defendingFactor * royalPressureFactor))
         damage = this.applyMagicWard(target, damage)
 
         applyDamage(target, damage)
@@ -1231,14 +1241,16 @@ export class BattleSystem {
         const spellDamageFactor = (1 + unit.spellDamagePercent / 100)
           * getSpellDamageMultiplierFromSkills(unit.skills, spellDef.id)
           * unit.magicFieldDamageMultiplier
+          * getHighAttributePowerMultiplier(unit.wisdom)
         const spellTakenMultiplier = getSpellTakenMultiplierFromSkills(target.skills, spellDef.id)
         const reductionFactor = 1 - target.damageReduction / 100
         const magicReductionFactor = 1 - target.magicDamageReduction / 100
+        const spiritResistanceFactor = getHighAttributeResistanceMultiplier(target.spirit)
         const magicBarrierFactor = 1 - target.magicBarrierDamageReduction / 100
         const magicProtectionFactor = getRearMagicGuardReductionFactor(target, targetGroup)
         const defendingFactor = getDefendingDamageFactor(target)
         const royalPressureFactor = this.getRoyalPressureFactor(unit, target)
-        let damage = Math.max(1, Math.floor(baseDamage * rearDamageMultiplier * spellDamageFactor * spellTakenMultiplier * reductionFactor * magicReductionFactor * magicBarrierFactor * magicProtectionFactor * defendingFactor * royalPressureFactor))
+        let damage = Math.max(1, Math.floor(baseDamage * rearDamageMultiplier * spellDamageFactor * spellTakenMultiplier * reductionFactor * magicReductionFactor * spiritResistanceFactor * magicBarrierFactor * magicProtectionFactor * defendingFactor * royalPressureFactor))
         damage = this.applyMagicWard(target, damage)
 
         applyDamage(target, damage)

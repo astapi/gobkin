@@ -1,4 +1,10 @@
 import { EquipmentModService } from '../EquipmentModService'
+import { EquipmentService } from '../EquipmentService'
+import { getEquipmentModDef } from '../../../shared/data/equipmentModConfig'
+import {
+  getPhysicalDamagePercentFromSkills,
+  getSkillStatMultipliers,
+} from '../../../shared/data/characterSkills'
 
 describe('EquipmentModService', () => {
   it('敵レベルに応じて上位Tierを解禁し、Lv150でT1を抽選対象にする', () => {
@@ -45,8 +51,136 @@ describe('EquipmentModService', () => {
 
   it('prefixとsuffixの両方を付与する', () => {
     const result = EquipmentModService.rollMods(150, 0, () => 0)
-    expect(result.prefixMod).toEqual({ id: 'power', tier: 1 })
-    expect(result.suffixMod).toEqual({ id: 'vitality', tier: 1 })
+    expect(result.prefixMod).toEqual({ id: 'power', tier: 3 })
+    expect(result.suffixMod).toEqual({ id: 'hp_multiplier', tier: 1 })
+  })
+
+  it('基本能力MODはT5から解禁し、T5=+1・T4=+2・T3=+3までにする', () => {
+    expect(EquipmentModService.rollMod('prefix', 89, 0, () => 0))
+      .toEqual({ id: 'attack', tier: 6 })
+    expect(EquipmentModService.rollMod('prefix', 90, 0, () => 0))
+      .toEqual({ id: 'power', tier: 5 })
+    expect(EquipmentModService.rollMod('prefix', 105, 0, () => 0))
+      .toEqual({ id: 'power', tier: 4 })
+    expect(EquipmentModService.rollMod('prefix', 120, 0, () => 0))
+      .toEqual({ id: 'power', tier: 3 })
+
+    expect(EquipmentModService.getValue({ id: 'power', tier: 5 })).toBe(1)
+    expect(EquipmentModService.getValue({ id: 'power', tier: 4 })).toBe(2)
+    expect(EquipmentModService.getValue({ id: 'power', tier: 3 })).toBe(3)
+    // 旧セーブのT1/T10も値を1〜3に収める。
+    expect(EquipmentModService.getValue({ id: 'power', tier: 1 })).toBe(3)
+    expect(EquipmentModService.getValue({ id: 'power', tier: 10 })).toBe(1)
+  })
+
+  it('基本能力MODと称号MODの抽選ウェイトを低くする', () => {
+    expect(getEquipmentModDef('power')!.weight).toBeLessThan(getEquipmentModDef('attack')!.weight)
+    expect(getEquipmentModDef('title_bonus')!.weight).toBeLessThan(getEquipmentModDef('exp_bonus')!.weight)
+    expect(getEquipmentModDef('title_multiplier')!.weight).toBeLessThan(getEquipmentModDef('gold_multiplier')!.weight)
+  })
+
+  it('MOD種別をウェイト付きで抽選する', () => {
+    const rolls = [121 / 620, 0.99]
+    let index = 0
+    expect(EquipmentModService.rollMod('prefix', 150, 0, () => rolls[index++]))
+      .toEqual({ id: 'attack', tier: 10 })
+  })
+
+  it('実数値MODを装備ステータスへ変換する', () => {
+    expect(EquipmentModService.toStatBonus({ id: 'accuracy', tier: 1 })).toMatchObject({
+      stat: 'accuracy_flat',
+      value: 10,
+      sourceModSlot: 'prefix',
+    })
+    expect(EquipmentModService.toStatBonus({ id: 'hp', tier: 1 })).toMatchObject({
+      stat: 'hp_flat',
+      value: 10,
+      sourceModSlot: 'prefix',
+    })
+  })
+
+  it('倍率・報酬MODをTier値に応じた装備スキルへ変換する', () => {
+    expect(EquipmentModService.toGrantedSkill({ id: 'hp_multiplier', tier: 1 }, 'eq-1'))
+      .toMatchObject({ isEquipmentModEffect: true, statMultipliers: { hp: 1.1 } })
+    expect(EquipmentModService.toGrantedSkill({ id: 'physical_damage', tier: 5 }, 'eq-1'))
+      .toMatchObject({ physicalDamagePercent: 6 })
+    expect(EquipmentModService.toGrantedSkill({ id: 'exp_multiplier', tier: 10 }, 'eq-1'))
+      .toMatchObject({ expMultiplier: 1.01 })
+    expect(EquipmentModService.toGrantedSkill({ id: 'title_bonus', tier: 3 }, 'eq-1'))
+      .toMatchObject({ partyTitleBonusPercent: 8 })
+    expect(EquipmentModService.toGrantedSkill({ id: 'title_multiplier', tier: 2 }, 'eq-1'))
+      .toMatchObject({ partyTitleMultiplier: 1.09 })
+    expect(EquipmentModService.toGrantedSkill({ id: 'gold_multiplier', tier: 4 }, 'eq-1'))
+      .toMatchObject({ goldMultiplier: 1.07 })
+  })
+
+  it('同じ力+1 MODを2つ装備すると力+2として合算する', () => {
+    const bonuses = EquipmentService.calculateEquipmentBonuses([
+      {
+        id: 'eq-power-1',
+        templateId: 'sword_long',
+        slotIndex: 0,
+        goblinId: 1,
+        prefixMod: { id: 'power', tier: 5 },
+      },
+      {
+        id: 'eq-power-2',
+        templateId: 'sword_long',
+        slotIndex: 1,
+        goblinId: 1,
+        prefixMod: { id: 'power', tier: 5 },
+      },
+    ])
+
+    const powerModTotal = bonuses
+      .filter(bonus => bonus.sourceModId === 'power')
+      .reduce((sum, bonus) => sum + bonus.value, 0)
+    expect(powerModTotal).toBe(2)
+  })
+
+  it('装備MODスキルは装備インスタンスごとに別IDで収集して重複可能にする', () => {
+    const skills = EquipmentService.collectGrantedSkills([
+      {
+        id: 'eq-1',
+        templateId: 'sword_long',
+        slotIndex: 0,
+        goblinId: 1,
+        suffixMod: { id: 'physical_damage', tier: 10 },
+      },
+      {
+        id: 'eq-2',
+        templateId: 'sword_long',
+        slotIndex: 1,
+        goblinId: 1,
+        suffixMod: { id: 'physical_damage', tier: 10 },
+      },
+    ])
+
+    const modSkills = skills.filter(skill => skill.physicalDamagePercent !== undefined)
+    expect(modSkills).toHaveLength(2)
+    expect(modSkills[0].id).not.toBe(modSkills[1].id)
+    expect(getPhysicalDamagePercentFromSkills(modSkills)).toBe(2)
+  })
+
+  it('同じHP倍率MODを2つ装備すると増加率を加算する', () => {
+    const skills = EquipmentService.collectGrantedSkills([
+      {
+        id: 'eq-hp-1',
+        templateId: 'sword_long',
+        slotIndex: 0,
+        goblinId: 1,
+        suffixMod: { id: 'hp_multiplier', tier: 1 },
+      },
+      {
+        id: 'eq-hp-2',
+        templateId: 'sword_long',
+        slotIndex: 1,
+        goblinId: 1,
+        suffixMod: { id: 'hp_multiplier', tier: 1 },
+      },
+    ])
+
+    expect(getSkillStatMultipliers(skills).hp).toBeCloseTo(1.2)
   })
 
   it('テンプレート・称号・prefix・suffixが全て同じ場合だけ同一スタックにする', () => {
@@ -67,6 +201,8 @@ describe('EquipmentModService', () => {
     expect(EquipmentModService.normalizeRoll({ id: 'power', tier: 9 }, 'prefix'))
       .toEqual({ id: 'power', tier: 9 })
     expect(EquipmentModService.normalizeRoll({ id: 'power', tier: 9 }, 'suffix')).toBeUndefined()
+    expect(EquipmentModService.normalizeRoll({ id: 'vitality', tier: 9 }, 'suffix'))
+      .toEqual({ id: 'vitality', tier: 9 })
     expect(EquipmentModService.normalizeRoll({ id: 'power', tier: 0 }, 'prefix')).toBeUndefined()
   })
 })

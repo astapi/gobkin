@@ -6,6 +6,7 @@ import type {
   EquipmentAutoSellModId,
   EquipmentAutoSellPolicy,
   EquipmentAutoSellSettings,
+  EquipmentModCount,
   EquipmentModId,
   EquipmentModTier,
   EquipmentTitleId,
@@ -19,6 +20,7 @@ export const DEFAULT_EQUIPMENT_AUTO_SELL_SETTINGS: EquipmentAutoSellSettings = {
 
 const TITLE_IDS = new Set<EquipmentTitleId>(EQUIPMENT_TITLE_DEFS.map(definition => definition.id))
 const MOD_TIERS = new Set<EquipmentModTier>([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+const MOD_COUNTS = new Set<EquipmentModCount>([0, 1, 2])
 
 function normalizeTitleIds(value: unknown): EquipmentTitleId[] {
   if (!Array.isArray(value)) return []
@@ -32,7 +34,8 @@ function normalizeModIds(value: unknown, slot: 'prefix' | 'suffix'): EquipmentAu
   return [...new Set(value.filter((item): item is EquipmentAutoSellModId => {
     if (item === 'none') return true
     if (typeof item !== 'string') return false
-    return getEquipmentModDef(item as EquipmentModId)?.slot === slot
+    const definition = getEquipmentModDef(item as EquipmentModId)
+    return definition?.slot === slot || definition?.legacySlots?.includes(slot) === true
   }))]
 }
 
@@ -40,6 +43,16 @@ function normalizeTiers(value: unknown): EquipmentModTier[] {
   if (!Array.isArray(value)) return []
   return [...new Set(value.filter((item): item is EquipmentModTier => (
     typeof item === 'number' && MOD_TIERS.has(item as EquipmentModTier)
+  )))].sort((a, b) => a - b)
+}
+
+/** 旧形式の `modCount: 'all' | 1 | 2` も受け付けて配列へ寄せる。 */
+function normalizeModCounts(value: unknown, legacyValue: unknown): EquipmentModCount[] {
+  const source = Array.isArray(value)
+    ? value
+    : (legacyValue === 1 || legacyValue === 2 ? [legacyValue] : [])
+  return [...new Set(source.filter((item): item is EquipmentModCount => (
+    typeof item === 'number' && MOD_COUNTS.has(item as EquipmentModCount)
   )))].sort((a, b) => a - b)
 }
 
@@ -88,7 +101,12 @@ function normalizePolicy(value: unknown): EquipmentAutoSellPolicy | undefined {
 
 function normalizeBulkFilter(value: unknown): EquipmentAutoSellBulkFilter | undefined {
   if (!value || typeof value !== 'object') return undefined
-  const candidate = value as { templateIds?: unknown; titleIds?: unknown; modCount?: unknown }
+  const candidate = value as {
+    templateIds?: unknown
+    titleIds?: unknown
+    modCounts?: unknown
+    modCount?: unknown
+  }
   if (!Array.isArray(candidate.templateIds)) return undefined
 
   const templateIds = [...new Set(candidate.templateIds.filter((item): item is string => (
@@ -96,29 +114,25 @@ function normalizeBulkFilter(value: unknown): EquipmentAutoSellBulkFilter | unde
   )))].sort()
   if (templateIds.length === 0) return undefined
 
-  const modCount = candidate.modCount === 1 || candidate.modCount === 2
-    ? candidate.modCount
-    : 'all'
   return {
     templateIds,
     titleIds: normalizeTitleIds(candidate.titleIds),
-    modCount,
+    modCounts: normalizeModCounts(candidate.modCounts, candidate.modCount),
   }
 }
 
 function matchesBulkFilter(drop: TreasureDrop, filter: EquipmentAutoSellBulkFilter): boolean {
   if (!filter.templateIds.includes(drop.templateId)) return false
-  if (filter.titleIds.length > 0 && !filter.titleIds.includes(drop.titleId ?? 'none')) return false
-  if (filter.modCount === 'all') return true
-  const modCount = Number(Boolean(drop.prefixMod)) + Number(Boolean(drop.suffixMod))
-  return modCount === filter.modCount
+  if (!matchesSelection(filter.titleIds, drop.titleId ?? 'none')) return false
+  const modCount = (Number(Boolean(drop.prefixMod)) + Number(Boolean(drop.suffixMod))) as EquipmentModCount
+  return matchesSelection(filter.modCounts, modCount)
 }
 
 function bulkFilterKey(filter: EquipmentAutoSellBulkFilter): string {
   return JSON.stringify({
     templateIds: [...filter.templateIds].sort(),
     titleIds: [...filter.titleIds].sort(),
-    modCount: filter.modCount,
+    modCounts: [...filter.modCounts].sort((a, b) => a - b),
   })
 }
 

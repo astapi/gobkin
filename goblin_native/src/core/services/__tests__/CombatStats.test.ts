@@ -1,6 +1,15 @@
 import { GoblinBirthService } from '../GoblinBirthService'
 import { GoblinStatCalculator } from '../GoblinStatCalculator'
-import { BattleSystem, getDamageModifier, getAccuracyModifier, getHitRateRandomModifier, getRowWeight, selectTarget } from '../BattleSystem'
+import {
+  BattleSystem,
+  getDamageModifier,
+  getAccuracyModifier,
+  getHighAttributePowerMultiplier,
+  getHighAttributeResistanceMultiplier,
+  getHitRateRandomModifier,
+  getRowWeight,
+  selectTarget,
+} from '../BattleSystem'
 import { ExpeditionEngine } from '../ExpeditionEngine'
 import { getDefaultSkillsForRace } from '../../../shared/data/raceSkills'
 import { getCharacterSkill } from '../../../shared/data/skillCatalog'
@@ -151,6 +160,22 @@ describe('getDamageModifier', () => {
 
   it('10回目は0.9^8 ≈ 0.4305', () => {
     expect(getDamageModifier(10)).toBeCloseTo(Math.pow(0.9, 8), 4)
+  })
+})
+
+describe('21以上の能力値ボーナス', () => {
+  it('力・知恵は20超過分だけ威力を毎ポイント1.04倍する', () => {
+    expect(getHighAttributePowerMultiplier(20)).toBe(1)
+    expect(getHighAttributePowerMultiplier(21)).toBeCloseTo(1.04)
+    expect(getHighAttributePowerMultiplier(30)).toBeCloseTo(1.04 ** 10)
+    expect(getHighAttributePowerMultiplier(50)).toBeCloseTo(1.04 ** 30)
+  })
+
+  it('体力・精神は20超過分だけ被ダメージを毎ポイント0.96倍する', () => {
+    expect(getHighAttributeResistanceMultiplier(20)).toBe(1)
+    expect(getHighAttributeResistanceMultiplier(21)).toBeCloseTo(0.96)
+    expect(getHighAttributeResistanceMultiplier(30)).toBeCloseTo(0.96 ** 10)
+    expect(getHighAttributeResistanceMultiplier(50)).toBeCloseTo(0.96 ** 30)
   })
 })
 
@@ -644,7 +669,7 @@ describe('GoblinStatCalculator — 戦闘ステータス計算', () => {
     expect(bonuses).toEqual(expect.arrayContaining([
       expect.objectContaining({
         stat: 'power_flat',
-        value: 10,
+        value: 3,
         sourceModSlot: 'prefix',
         sourceModTier: 1,
       }),
@@ -660,6 +685,21 @@ describe('GoblinStatCalculator — 戦闘ステータス計算', () => {
 
     expect(modified.atk).toBeGreaterThan(base.atk)
     expect(modified.accuracy).toBeGreaterThan(base.accuracy)
+  })
+
+  it('実効能力値に装備MODと能力値スキルを反映する', () => {
+    const goblin = createTestGoblin({
+      level: 1,
+      baseAttributes: { power: 20, wisdom: 20, spirit: 20, vitality: 20, agility: 20, luck: 20 },
+      skills: [{ id: 'power_up', baseAttributeBonuses: { power: 2 } }],
+    })
+    const result = GoblinStatCalculator.calculateEffectiveBaseAttributes(goblin, [
+      { stat: 'power_flat', value: 3 },
+      { stat: 'vitality_flat', value: 1 },
+    ])
+
+    expect(result.power).toBe(25)
+    expect(result.vitality).toBe(21)
   })
 
   it('EquipmentServiceは称号付き装備のマイナス補正を倍率適用する', () => {
@@ -2538,15 +2578,15 @@ describe('spell charges', () => {
   it('打ち合いによる反撃にも打ち合いが発生する', () => {
     const defender = createTestGoblin({
       id: 1,
-      stats: { hp: 120, atk: 20, agility: 1, def: 10, attackCount: 10, accuracy: 999, evasion: 0, criticalRate: 0 },
-      effectiveStats: { hp: 120, atk: 20, magicAtk: 0, def: 10, magicDef: 10, attackCount: 10, accuracy: 999, evasion: 0, magicHeal: 10, criticalRate: 0 },
+      stats: { hp: 100000, atk: 20, agility: 1, def: 10, attackCount: 10, accuracy: 999, evasion: 0, criticalRate: 0 },
+      effectiveStats: { hp: 100000, atk: 20, magicAtk: 0, def: 10, magicDef: 10, attackCount: 10, accuracy: 999, evasion: 0, magicHeal: 10, criticalRate: 0 },
       baseAttributes: { power: 100, wisdom: 10, spirit: 10, vitality: 10, agility: 1, luck: 10 },
       skills: [getCharacterSkill('counter_attack')],
       battleActionPolicy: { attackRate: 0, clericMagicRate: 0, mageMagicRate: 0 },
     })
     const enemy = createTestEnemy({
       id: 'ATTACKER',
-      hp: 160,
+      hp: 100000,
       atk: 20,
       def: 10,
       attackCount: 1,
@@ -2974,6 +3014,147 @@ describe('spell charges', () => {
 
     expect(boostedDamage).toBeGreaterThanOrEqual(Math.floor(plainDamage * 1.45))
     expect(boostedDamage).toBeLessThanOrEqual(Math.ceil(plainDamage * 1.55))
+  })
+
+  it('力21以上のボーナスは既存の攻撃威力へ別枠乗算する', () => {
+    const effectiveStats = {
+      hp: 300,
+      atk: 100,
+      magicAtk: 100,
+      def: 10,
+      magicDef: 10,
+      attackCount: 1,
+      accuracy: 999,
+      evasion: 0,
+      magicHeal: 10,
+      criticalRate: 0,
+    }
+    const attributes = { power: 20, wisdom: 20, spirit: 20, vitality: 20, agility: 20, luck: 20 }
+    const createAttacker = (power: number) => createTestGoblin({
+      id: 1,
+      effectiveStats,
+      effectiveBaseAttributes: { ...attributes, power },
+      skills: [{ id: 'physical_damage_50', physicalDamagePercent: 50 }],
+    })
+    const target = createTestEnemy({
+      id: 'TARGET',
+      hp: 9999,
+      def: 1,
+      attackCount: 0,
+      evasion: 0,
+      baseAttributes: attributes,
+    })
+    const getDamage = (power: number) => new BattleSystem().executeBattle(
+      [createAttacker(power)],
+      [effectiveStats.hp],
+      [[createTestEnemy({ ...target })]],
+      () => 0.5,
+      1,
+    ).detailedLog.find(log => log.actorId === '1' && log.action === '通常攻撃')!.targets[0].totalDamage
+
+    const power20Damage = getDamage(20)
+    const power21Damage = getDamage(21)
+
+    expect(power21Damage).toBeGreaterThan(power20Damage)
+    expect(power21Damage / power20Damage).toBeCloseTo(1.04, 2)
+  })
+
+  it('体力21以上のボーナスは既存の物理耐性へ別枠乗算する', () => {
+    const attributes = { power: 20, wisdom: 20, spirit: 20, vitality: 20, agility: 20, luck: 20 }
+    const attacker = createTestGoblin({
+      id: 1,
+      effectiveStats: {
+        hp: 300,
+        atk: 100,
+        magicAtk: 100,
+        def: 10,
+        magicDef: 10,
+        attackCount: 1,
+        accuracy: 999,
+        evasion: 0,
+        magicHeal: 10,
+        criticalRate: 0,
+      },
+      effectiveBaseAttributes: attributes,
+      skills: [],
+    })
+    const getDamage = (vitality: number) => {
+      const target = createTestEnemy({
+        id: 'TARGET',
+        hp: 9999,
+        def: 1,
+        attackCount: 0,
+        evasion: 0,
+        physicalResistancePercent: 5,
+        baseAttributes: { ...attributes, vitality },
+      })
+      return new BattleSystem().executeBattle(
+        [attacker],
+        [attacker.effectiveStats!.hp],
+        [[target]],
+        () => 0.5,
+        1,
+      ).detailedLog.find(log => log.actorId === '1' && log.action === '通常攻撃')!.targets[0].totalDamage
+    }
+
+    const vitality20Damage = getDamage(20)
+    const vitality21Damage = getDamage(21)
+
+    expect(vitality21Damage).toBeLessThan(vitality20Damage)
+    expect(vitality21Damage / vitality20Damage).toBeCloseTo(0.96, 2)
+  })
+
+  it('知恵と精神の21以上ボーナスを既存の魔法威力・魔法耐性へ別枠乗算する', () => {
+    const effectiveStats = {
+      hp: 300,
+      atk: 1,
+      magicAtk: 1000,
+      def: 10,
+      magicDef: 10,
+      attackCount: 1,
+      accuracy: 999,
+      evasion: 0,
+      magicHeal: 10,
+      criticalRate: 0,
+    }
+    const attributes = { power: 20, wisdom: 20, spirit: 20, vitality: 20, agility: 20, luck: 20 }
+    const getDamage = (wisdom: number, spirit: number) => {
+      const caster = createTestGoblin({
+        id: 1,
+        level: 13,
+        spells: [{ spellId: 'magic_arrow' }],
+        skills: [{ id: 'spell_damage_20', spellDamagePercent: 20 }],
+        effectiveStats,
+        effectiveBaseAttributes: { ...attributes, wisdom },
+      })
+      const target = createTestEnemy({
+        id: 'TARGET',
+        hp: 9999,
+        def: 1,
+        magicDef: 1,
+        attackCount: 0,
+        evasion: 0,
+        magicResistancePercent: 5,
+        baseAttributes: { ...attributes, spirit },
+      })
+      return new BattleSystem().executeBattle(
+        [caster],
+        [effectiveStats.hp],
+        [[target]],
+        () => 0.5,
+        1,
+      ).detailedLog.find(log => log.actorId === '1' && log.action === 'マジックアロー')!.targets[0].totalDamage
+    }
+
+    const baseDamage = getDamage(20, 20)
+
+    const wisdom21Damage = getDamage(21, 20)
+    const spirit21Damage = getDamage(20, 21)
+
+    expect(wisdom21Damage).toBeGreaterThan(baseDamage)
+    expect(wisdom21Damage / baseDamage).toBeCloseTo(1.04, 2)
+    expect(spirit21Damage).toBeLessThan(baseDamage)
+    expect(spirit21Damage / baseDamage).toBeCloseTo(0.96, 2)
   })
 
   it('物理威力スキルは呪文ダメージを増加させない', () => {

@@ -20,12 +20,26 @@ import {
   calculateGoblinBaseMagicDef,
   calculateGoblinBaseMagicHeal,
   calculateGoblinBaseCriticalRate,
+  getGoblinBaseAttributesAtLevel,
 } from '../../shared/utils/goblinHp'
 
 /**
  * 因子・装備・スキルを適用した最終ステータスを計算するサービス
  */
 export class GoblinStatCalculator {
+  /** レベル成長・能力値スキル・装備MODを反映した実効能力値を返す。 */
+  static calculateEffectiveBaseAttributes(
+    goblin: Goblin,
+    equipmentBonuses: EquipmentStatBonus[] = [],
+  ): GoblinBaseAttributes {
+    const adjustedEquipmentBonuses = applySkillBonusesToEquipmentBonuses(goblin.skills, equipmentBonuses)
+    const equipmentBaseAttributeBonuses = this.aggregateEquipmentBaseAttributes(adjustedEquipmentBonuses)
+    return getGoblinBaseAttributesAtLevel(
+      { ...goblin, equipmentBaseAttributeBonuses },
+      goblin.level,
+    )
+  }
+
   /**
    * 基礎ステータス + 因子ボーナス + 装備効果 + スキル効果 = 最終ステータス
    * 計算順序:

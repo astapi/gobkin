@@ -387,6 +387,63 @@ code {
   margin: 0.6rem 0 0.2rem;
 }
 
+.drop-simulation-controls {
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+}
+
+.drop-runs-input,
+.drop-seed-input {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+
+.drop-simulation-result {
+  overflow: hidden;
+}
+
+.drop-dungeon-summary-table {
+  margin: 1rem 0;
+}
+
+.drop-dungeon-results {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.drop-dungeon-result {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface-muted);
+  padding: 0.75rem 0.9rem;
+}
+
+.drop-dungeon-result summary {
+  cursor: pointer;
+}
+
+.drop-item-table-wrap {
+  overflow-x: auto;
+  margin-top: 0.75rem;
+  background: var(--surface);
+  border-radius: var(--radius-sm);
+}
+
+.drop-item-table {
+  min-width: 1100px;
+}
+
+.drop-item-table tbody tr,
+.drop-dungeon-summary-table tbody tr {
+  cursor: default;
+}
+
+.drop-item-table td:nth-child(n + 6) {
+  min-width: 14rem;
+  font-size: 0.8rem;
+  line-height: 1.45;
+}
+
 .enemy-layout {
   display: grid;
   grid-template-columns: 1fr 22rem;

@@ -81,11 +81,6 @@ type SelectedShopItem =
 
 type ShopFilter =
   | {
-      type: 'all'
-      key: 'all'
-      label: string
-    }
-  | {
       type: 'weaponSubCategory'
       key: WeaponSubCategory
       label: string
@@ -96,7 +91,10 @@ type ShopFilter =
       label: string
     }
 
-const ALL_SHOP_FILTER: ShopFilter = { type: 'all', key: 'all', label: 'すべて' }
+/** 絞り込みは複数選択できる。空配列は「すべて」を意味する。 */
+function shopFilterKey(filter: ShopFilter): string {
+  return `${filter.type}-${filter.key}`
+}
 
 type InventoryGroup = {
   key: string
@@ -213,11 +211,21 @@ function getSectionLabel(template: EquipmentTemplate): string {
 }
 
 function matchesShopFilter(template: EquipmentTemplate, filter: ShopFilter): boolean {
-  if (filter.type === 'all') return true
   if (filter.type === 'weaponSubCategory') {
     return template.category === 'weapon' && template.subCategory === filter.key
   }
   return template.category === filter.key
+}
+
+/** 未選択なら全件、複数選択時はいずれかに一致すれば表示する。 */
+function matchesShopFilters(template: EquipmentTemplate, filters: ShopFilter[]): boolean {
+  return filters.length === 0 || filters.some((filter) => matchesShopFilter(template, filter))
+}
+
+function buildShopFilterSummary(filters: ShopFilter[]): string {
+  if (filters.length === 0) return 'すべて'
+  if (filters.length === 1) return filters[0].label
+  return `${filters[0].label} 他${filters.length - 1}件`
 }
 
 function buildShopFilterOptions(templates: EquipmentTemplate[]): ShopFilter[] {
@@ -229,7 +237,6 @@ function buildShopFilterOptions(templates: EquipmentTemplate[]): ShopFilter[] {
   )
 
   return [
-    ALL_SHOP_FILTER,
     ...WEAPON_SUB_CATEGORY_FILTER_ORDER
       .filter((subCategory) => weaponSubCategories.has(subCategory))
       .map((subCategory): ShopFilter => ({
@@ -327,7 +334,9 @@ function ShopItemDetail({
   const name = selected.mode === 'buy'
     ? getEquipmentLabel(template)
     : getEquipmentDisplayName(selected.group.equipment, template)
-  const skills = template.grantedSkills ?? []
+  const skills = selected.mode === 'buy'
+    ? template.grantedSkills ?? []
+    : EquipmentService.collectGrantedSkills([selected.group.equipment])
   const bonuses = selected.mode === 'buy'
     ? template.statBonuses
     : EquipmentService.calculateEquipmentBonuses([selected.group.equipment])
@@ -511,7 +520,7 @@ export default function EquipmentShopScreen() {
   const [loading, setLoading] = useState(true)
   const [processingId, setProcessingId] = useState<string | null>(null)
   const [selectedItem, setSelectedItem] = useState<SelectedShopItem | null>(null)
-  const [selectedFilter, setSelectedFilter] = useState<ShopFilter>(ALL_SHOP_FILTER)
+  const [selectedFilters, setSelectedFilters] = useState<ShopFilter[]>([])
   const [isFilterSheetVisible, setIsFilterSheetVisible] = useState(false)
   const [expandedTemplateIds, setExpandedTemplateIds] = useState<Set<string>>(new Set())
 
@@ -527,12 +536,16 @@ export default function EquipmentShopScreen() {
     [activeTemplates],
   )
   const filteredShopItems = useMemo(
-    () => shopItems.filter((template) => matchesShopFilter(template, selectedFilter)),
-    [shopItems, selectedFilter],
+    () => shopItems.filter((template) => matchesShopFilters(template, selectedFilters)),
+    [shopItems, selectedFilters],
   )
   const filteredSellGroups = useMemo(
-    () => sellGroups.filter((group) => matchesShopFilter(group.template, selectedFilter)),
-    [sellGroups, selectedFilter],
+    () => sellGroups.filter((group) => matchesShopFilters(group.template, selectedFilters)),
+    [sellGroups, selectedFilters],
+  )
+  const filterSummary = useMemo(
+    () => buildShopFilterSummary(selectedFilters),
+    [selectedFilters],
   )
   const sellBaseGroups = useMemo(
     () => groupEquipmentVariantsByTemplate(sellGroups, filteredSellGroups),
@@ -556,13 +569,12 @@ export default function EquipmentShopScreen() {
       : '条件に合うアイテムがありません'
 
   useEffect(() => {
-    const isSelectedAvailable = filterOptions.some(
-      (option) => option.type === selectedFilter.type && option.key === selectedFilter.key,
-    )
-    if (!isSelectedAvailable) {
-      setSelectedFilter(ALL_SHOP_FILTER)
-    }
-  }, [filterOptions, selectedFilter])
+    const availableKeys = new Set(filterOptions.map(shopFilterKey))
+    setSelectedFilters((current) => {
+      const next = current.filter((filter) => availableKeys.has(shopFilterKey(filter)))
+      return next.length === current.length ? current : next
+    })
+  }, [filterOptions])
 
   const refreshInventory = useCallback(async () => {
     const unequipped = await equipmentRepository.getUnequipped()
@@ -724,13 +736,13 @@ export default function EquipmentShopScreen() {
                   <TouchableOpacity
                     testID="shop-filter-open"
                     accessibilityRole="button"
-                    accessibilityLabel={`絞り込み、${selectedFilter.label}`}
+                    accessibilityLabel={`絞り込み、${filterSummary}`}
                     style={styles.inventoryFilterButton}
                     activeOpacity={0.8}
                     onPress={() => setIsFilterSheetVisible(true)}
                   >
                     <Text style={styles.inventoryFilterStatus}>
-                      {selectedFilter.label}
+                      {filterSummary}
                     </Text>
                   </TouchableOpacity>
                 </View>
@@ -814,7 +826,10 @@ export default function EquipmentShopScreen() {
           />
           <View accessibilityViewIsModal style={[styles.filterSheet, { paddingBottom: insets.bottom + 16 }]}>
             <View style={styles.filterSheetHeader}>
-              <Text style={styles.filterSheetTitle}>絞り込み</Text>
+              <View style={styles.filterSheetHeading}>
+                <Text style={styles.filterSheetTitle}>絞り込み</Text>
+                <Text style={styles.filterSheetHint}>複数選択できます</Text>
+              </View>
               <TouchableOpacity
                 testID="shop-filter-close"
                 accessibilityRole="button"
@@ -830,21 +845,49 @@ export default function EquipmentShopScreen() {
               contentContainerStyle={styles.filterOptionGrid}
               showsVerticalScrollIndicator={false}
             >
+              <TouchableOpacity
+                testID="shop-filter-all"
+                accessibilityRole="button"
+                accessibilityLabel="すべて"
+                accessibilityState={{ selected: selectedFilters.length === 0 }}
+                style={[
+                  styles.filterOption,
+                  styles.filterOptionAll,
+                  selectedFilters.length === 0 && styles.filterOptionAllSelected,
+                ]}
+                onPress={() => setSelectedFilters([])}
+              >
+                <Text
+                  style={[
+                    styles.filterOptionText,
+                    selectedFilters.length === 0 && styles.filterOptionAllTextSelected,
+                  ]}
+                >
+                  すべて
+                </Text>
+              </TouchableOpacity>
               {filterOptions.map((option) => {
-                const isSelected = option.type === selectedFilter.type && option.key === selectedFilter.key
+                const optionKey = shopFilterKey(option)
+                const isSelected = selectedFilters.some((filter) => shopFilterKey(filter) === optionKey)
                 return (
                   <TouchableOpacity
-                    key={`${option.type}-${option.key}`}
-                    testID={`shop-filter-${option.type}-${option.key}`}
-                    accessibilityRole="radio"
+                    key={optionKey}
+                    testID={`shop-filter-${optionKey}`}
+                    accessibilityRole="checkbox"
                     accessibilityLabel={option.label}
                     accessibilityState={{ checked: isSelected }}
                     style={[styles.filterOption, isSelected && styles.filterOptionSelected]}
                     onPress={() => {
-                      setSelectedFilter(option)
-                      setIsFilterSheetVisible(false)
+                      setSelectedFilters((current) => (
+                        isSelected
+                          ? current.filter((filter) => shopFilterKey(filter) !== optionKey)
+                          : [...current, option]
+                      ))
                     }}
                   >
+                    <View style={[styles.filterCheckbox, isSelected && styles.filterCheckboxSelected]}>
+                      {isSelected ? <Text style={styles.filterCheckboxMark}>✓</Text> : null}
+                    </View>
                     <Text style={[styles.filterOptionText, isSelected && styles.filterOptionTextSelected]}>
                       {option.label}
                     </Text>
@@ -1198,10 +1241,20 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginBottom: 14,
   },
+  filterSheetHeading: {
+    flexDirection: 'row',
+    alignItems: 'baseline',
+    gap: 8,
+  },
   filterSheetTitle: {
     fontSize: 17,
     fontWeight: '800',
     color: '#1F2937',
+  },
+  filterSheetHint: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#6B7280',
   },
   filterSheetClose: {
     fontSize: 14,
@@ -1218,17 +1271,51 @@ const styles = StyleSheet.create({
   },
   filterOption: {
     minWidth: 72,
+    flexDirection: 'row',
     borderRadius: 999,
     borderWidth: 1,
     borderColor: '#E5E7EB',
     backgroundColor: '#F9FAFB',
+    gap: 6,
     paddingHorizontal: 14,
     paddingVertical: 10,
     alignItems: 'center',
+    justifyContent: 'center',
   },
   filterOptionSelected: {
     borderColor: '#1F2937',
     backgroundColor: '#1F2937',
+  },
+  filterOptionAll: {
+    borderStyle: 'dashed',
+  },
+  filterOptionAllSelected: {
+    borderColor: '#9CA3AF',
+    backgroundColor: '#E5E7EB',
+    borderStyle: 'solid',
+  },
+  filterOptionAllTextSelected: {
+    color: '#1F2937',
+  },
+  filterCheckbox: {
+    width: 16,
+    height: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1.5,
+    borderColor: '#9CA3AF',
+    borderRadius: 4,
+    backgroundColor: '#FFFFFF',
+  },
+  filterCheckboxSelected: {
+    borderColor: '#FFFFFF',
+    backgroundColor: '#FFFFFF',
+  },
+  filterCheckboxMark: {
+    color: '#1F2937',
+    fontSize: 11,
+    fontWeight: '900',
+    lineHeight: 13,
   },
   filterOptionText: {
     fontSize: 14,

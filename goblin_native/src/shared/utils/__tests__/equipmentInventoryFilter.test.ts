@@ -1,8 +1,8 @@
 import type { EquipmentInstance, EquipmentTemplate } from '@/shared/types'
 import {
   DEFAULT_EQUIPMENT_INVENTORY_FILTER,
-  getAvailableEquipmentCategories,
-  getAvailableEquipmentTitleIds,
+  EQUIPMENT_CATEGORY_FILTER_ORDER,
+  EQUIPMENT_TITLE_FILTER_ORDER,
   getEquipmentInventoryFilterActiveCount,
   getEquipmentModCount,
   matchesEquipmentInventoryFilter,
@@ -52,8 +52,18 @@ describe('equipmentInventoryFilter', () => {
     expect(getEquipmentModCount(twoMods)).toBe(2)
     expect(matchesEquipmentInventoryFilter(
       { equipment: twoMods, template },
-      createFilter({ modCount: 2 }),
+      createFilter({ modCounts: [2] }),
     )).toBe(true)
+  })
+
+  it('MOD数を複数選択するとどれかに一致すれば残る', () => {
+    const noMod = { equipment: createEquipment(), template }
+    const oneMod = { equipment: createEquipment({ prefixMod: { id: 'power', tier: 5 } }), template }
+    const filter = createFilter({ modCounts: [1, 2] })
+
+    expect(matchesEquipmentInventoryFilter(oneMod, filter)).toBe(true)
+    expect(matchesEquipmentInventoryFilter(noMod, filter)).toBe(false)
+    expect(matchesEquipmentInventoryFilter(noMod, createFilter({ modCounts: [] }))).toBe(true)
   })
 
   it('カテゴリと複数称号を組み合わせて絞り込む', () => {
@@ -62,11 +72,26 @@ describe('equipmentInventoryFilter', () => {
 
     expect(matchesEquipmentInventoryFilter(
       target,
-      createFilter({ category: 'weapon', titleIds: ['masterwork', 'legendary'] }),
+      createFilter({ categories: ['weapon'], titleIds: ['masterwork', 'legendary'] }),
     )).toBe(true)
     expect(matchesEquipmentInventoryFilter(
       target,
-      createFilter({ category: 'armor', titleIds: ['masterwork', 'legendary'] }),
+      createFilter({ categories: ['armor'], titleIds: ['masterwork', 'legendary'] }),
+    )).toBe(false)
+  })
+
+  it('カテゴリを複数選択するとどれかに一致すれば残る', () => {
+    const armorTemplate: EquipmentTemplate = { ...template, id: 'filter_test_armor', category: 'armor' }
+    const filter = createFilter({ categories: ['weapon', 'armor'] })
+
+    expect(matchesEquipmentInventoryFilter({ equipment: createEquipment(), template }, filter)).toBe(true)
+    expect(matchesEquipmentInventoryFilter(
+      { equipment: createEquipment(), template: armorTemplate },
+      filter,
+    )).toBe(true)
+    expect(matchesEquipmentInventoryFilter(
+      { equipment: createEquipment(), template: { ...template, id: 'filter_test_robe', category: 'robe' } },
+      filter,
     )).toBe(false)
   })
 
@@ -77,19 +102,19 @@ describe('equipmentInventoryFilter', () => {
     )).toBe(true)
   })
 
-  it('利用可能なカテゴリ・称号と有効条件数を返す', () => {
-    const armorTemplate: EquipmentTemplate = { ...template, id: 'filter_test_armor', category: 'armor' }
-    const targets = [
-      { equipment: createEquipment(), template },
-      { equipment: createEquipment({ id: 'equipment-2', titleId: 'magical' }), template: armorTemplate },
-    ]
+  it('候補は在庫ではなく定義から作る', () => {
+    expect(EQUIPMENT_CATEGORY_FILTER_ORDER).toContain('armor')
+    expect(EQUIPMENT_CATEGORY_FILTER_ORDER).toHaveLength(9)
+    expect(EQUIPMENT_TITLE_FILTER_ORDER).toEqual([
+      'none', 'masterwork', 'magical', 'imbued', 'legendary', 'terrifying', 'broken',
+    ])
+  })
 
-    expect(getAvailableEquipmentCategories(targets)).toEqual(['weapon', 'armor'])
-    expect(getAvailableEquipmentTitleIds(targets)).toEqual(['none', 'magical'])
+  it('有効条件数を返す', () => {
     expect(getEquipmentInventoryFilterActiveCount(createFilter({
       nameQuery: 'sword',
-      modCount: 1,
-      category: 'weapon',
+      modCounts: [1, 2],
+      categories: ['weapon', 'armor'],
       titleIds: ['none', 'magical'],
     }))).toBe(4)
   })

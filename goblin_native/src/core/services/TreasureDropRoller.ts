@@ -19,6 +19,7 @@ import { rollLuckValue } from './LuckRoller'
  * @param titleMultiplierBoost 称号付与率のブースト倍率
  * @param tier ダンジョンTier
  * @param rng 乱数生成関数
+ * @param titleBonusPercent 称号付与率への加算（パーセントポイント）
  */
 export function rollTreasureDrops(
   enemies: Enemy[],
@@ -28,7 +29,8 @@ export function rollTreasureDrops(
   rareDropMultiplierBoost: number = 1,
   titleMultiplierBoost: number = 1,
   tier: DungeonTier = 0,
-  rng: () => number
+  rng: () => number,
+  titleBonusPercent: number = 0,
 ): TreasureDrop[] {
   const { title: titleMultiplier, rare: rareMultiplier } = normalizePartyRewardMultipliers(rewardMultipliers)
   const effectiveTitleMultiplier = titleMultiplier * (titleMultiplierBoost > 0 ? titleMultiplierBoost : 1)
@@ -55,7 +57,13 @@ export function rollTreasureDrops(
     const selected = candidates[index]
 
     const titleLuckRoll = rollLuckValue(partyLuckAverage, rng)
-    const title = EquipmentTitleService.rollTitle(effectiveTitleMultiplier, titleLuckRoll, tier, rng)
+    const title = EquipmentTitleService.rollTitle(
+      effectiveTitleMultiplier,
+      titleLuckRoll,
+      tier,
+      rng,
+      titleBonusPercent,
+    )
     const titleId = title.titleId !== 'none' ? title.titleId : undefined
     drops.push({
       templateId: selected.id,
@@ -86,7 +94,13 @@ export function rollTreasureDrops(
       if (!(rareThreshold < luckRoll)) continue
 
       const titleLuckRoll = rollLuckValue(partyLuckAverage, rng)
-      const title = EquipmentTitleService.rollTitle(effectiveTitleMultiplier, titleLuckRoll, tier, rng)
+      const title = EquipmentTitleService.rollTitle(
+        effectiveTitleMultiplier,
+        titleLuckRoll,
+        tier,
+        rng,
+        titleBonusPercent,
+      )
       const titleId = title.titleId !== 'none' ? title.titleId : undefined
       drops.push({
         templateId: drop.templateId,

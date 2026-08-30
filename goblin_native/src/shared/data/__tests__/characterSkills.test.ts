@@ -4,9 +4,12 @@ import {
   describeCharacterSkill,
   getAdditionalDamageFromSkills,
   getExpeditionTimeMultiplierFromSkills,
+  getExpMultiplierFromSkills,
   getFactorDropBonusPercentFromSkills,
   getFactorDropMultiplierFromSkills,
+  getGoldMultiplierFromSkills,
   getPartyRareMultiplierFromSkills,
+  getPartyTitleBonusPercentFromSkills,
   getPartyTitleMultiplierFromSkills,
   getCharacterSkillEffectDescriptions,
   getCriticalDamageBonusFromSkills,
@@ -330,10 +333,16 @@ describe('characterSkills - 物理ダメージ軽減', () => {
       { id: 'rare', partyRareMultiplier: 1.1 },
       { id: 'title', partyTitleMultiplier: 1.25 },
       { id: 'rare_2', partyRareMultiplier: 1.5 },
+      { id: 'title_bonus', partyTitleBonusPercent: 8 },
+      { id: 'title_bonus_2', partyTitleBonusPercent: 4 },
+      { id: 'gold_mult', goldMultiplier: 1.1 },
+      { id: 'gold_mult_2', goldMultiplier: 1.05 },
     ]
 
     expect(getPartyRareMultiplierFromSkills(skills)).toBeCloseTo(1.65)
     expect(getPartyTitleMultiplierFromSkills(skills)).toBeCloseTo(1.25)
+    expect(getPartyTitleBonusPercentFromSkills(skills)).toBe(12)
+    expect(getGoldMultiplierFromSkills(skills)).toBeCloseTo(1.155)
   })
 
   it('因子獲得倍率スキルを集計できる', () => {
@@ -595,6 +604,49 @@ describe('characterSkills - 物理ダメージ軽減', () => {
     ]
 
     expect(getUniqueSkillsById(skills)).toHaveLength(2)
+  })
+
+  it('装備MOD効果は同じidでも重複を維持する', () => {
+    const skills: CharacterSkill[] = [
+      { id: 'same_mod', isEquipmentModEffect: true, physicalDamagePercent: 1 },
+      { id: 'same_mod', isEquipmentModEffect: true, physicalDamagePercent: 1 },
+    ]
+
+    expect(getUniqueSkillsById(skills)).toHaveLength(2)
+    expect(getPhysicalDamagePercentFromSkills(skills)).toBe(2)
+  })
+
+  it('装備MODの倍率%は加算し、通常スキル倍率の上に乗算する', () => {
+    const skills: CharacterSkill[] = [
+      {
+        id: 'normal_skill',
+        statMultipliers: { hp: 1.5 },
+        expMultiplier: 2,
+        goldMultiplier: 2,
+        partyTitleMultiplier: 2,
+      },
+      {
+        id: 'mod_1',
+        isEquipmentModEffect: true,
+        statMultipliers: { hp: 1.1 },
+        expMultiplier: 1.1,
+        goldMultiplier: 1.1,
+        partyTitleMultiplier: 1.1,
+      },
+      {
+        id: 'mod_2',
+        isEquipmentModEffect: true,
+        statMultipliers: { hp: 1.1 },
+        expMultiplier: 1.1,
+        goldMultiplier: 1.1,
+        partyTitleMultiplier: 1.1,
+      },
+    ]
+
+    expect(getSkillStatMultipliers(skills).hp).toBeCloseTo(1.8)
+    expect(getExpMultiplierFromSkills(skills)).toBeCloseTo(2.4)
+    expect(getGoldMultiplierFromSkills(skills)).toBeCloseTo(2.4)
+    expect(getPartyTitleMultiplierFromSkills(skills)).toBeCloseTo(2.4)
   })
 
   it('物理ダメージ軽減スキルの説明文を表記ルールどおり返す', () => {

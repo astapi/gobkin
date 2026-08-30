@@ -92,7 +92,8 @@ export function createAllyUnit(
   const combatant = combatantManager.fromGoblin(goblin)
   combatant.buffs = toCombatBuffsFromSkills(skills)
   const actionOrderAgility = (goblin as Goblin & { agility?: number }).agility
-  const baseAttributes = getGoblinBaseAttributesAtLevel(goblin, goblin.level)
+  const baseAttributes = goblin.effectiveBaseAttributes
+    ?? getGoblinBaseAttributesAtLevel(goblin, goblin.level)
   // 実効ステータスを使用
   const effectiveStats = getEffectiveStats(goblin)
   const packBonusPercent =
@@ -120,6 +121,9 @@ export function createAllyUnit(
     maxHP,
     initialHP: hp,
     power: baseAttributes.power,
+    wisdom: baseAttributes.wisdom,
+    spirit: baseAttributes.spirit,
+    vitality: baseAttributes.vitality,
     agility: actionOrderAgility ?? baseAttributes.agility,
     luck: baseAttributes.luck,
     attackCount: effectiveStats.attackCount,
@@ -180,6 +184,9 @@ export function createEnemyUnit(
     maxHP: enemy.hp,
     initialHP: enemy.hp,
     power: enemy.baseAttributes.power,
+    wisdom: enemy.baseAttributes.wisdom,
+    spirit: enemy.baseAttributes.spirit,
+    vitality: enemy.baseAttributes.vitality,
     agility: enemy.baseAttributes.agility,
     luck: enemy.baseAttributes.luck,
     attackCount: enemy.attackCount,

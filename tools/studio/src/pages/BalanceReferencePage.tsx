@@ -10,6 +10,7 @@ import {
   type ScenarioMatrixResult,
   type ScenarioPartyMember,
 } from '../lib/runBalanceReference'
+import { PartyStatsPreview } from '../components/PartyStatsPreview'
 
 interface ScenarioSummary {
   scenarioId: string
@@ -76,6 +77,7 @@ export function BalanceReferencePage() {
   const [levelMax, setLevelMax] = useState<number>(25)
   const [step, setStep] = useState<number>(1)
   const [seed, setSeed] = useState<number>(1)
+  const [previewLevel, setPreviewLevel] = useState<number>(5)
 
   const [running, setRunning] = useState(false)
   const [progress, setProgress] = useState<{ done: number; total: number } | null>(null)
@@ -155,6 +157,7 @@ export function BalanceReferencePage() {
         setIterations(data.iterations ?? 150)
         setLevelMin(data.levelRange?.min ?? 5)
         setLevelMax(data.levelRange?.max ?? 25)
+        setPreviewLevel(data.levelRange?.min ?? 5)
         setStep(data.levelRange?.step ?? 1)
         setLoadError(null)
       } catch (err) {
@@ -276,6 +279,14 @@ export function BalanceReferencePage() {
         />
       )}
 
+      {scenario && (
+        <PartyStatsPreview
+          scenario={scenario}
+          level={previewLevel}
+          onLevelChange={setPreviewLevel}
+        />
+      )}
+
       <section className="card">
         <h3>実行設定</h3>
         <div
@@ -317,7 +328,7 @@ export function BalanceReferencePage() {
         {runError && <p className="save-error">実行エラー: {runError}</p>}
       </section>
 
-      {result && <ResultMatrix result={result} />}
+      {result && <ResultMatrix result={result} onSelectLevel={setPreviewLevel} />}
     </div>
   )
 }
@@ -779,7 +790,13 @@ function NumField({
   )
 }
 
-function ResultMatrix({ result }: { result: ScenarioMatrixResult }) {
+function ResultMatrix({
+  result,
+  onSelectLevel,
+}: {
+  result: ScenarioMatrixResult
+  onSelectLevel: (level: number) => void
+}) {
   const loadoutNames = useMemo(
     () => result.scenario.loadouts.map((l) => l.name),
     [result.scenario.loadouts],
@@ -791,6 +808,7 @@ function ResultMatrix({ result }: { result: ScenarioMatrixResult }) {
         対象: {result.scenario.areaId} / iterations={result.options.iterations} / Lv{' '}
         {result.options.levelMin}〜{result.options.levelMax}
       </p>
+      <p className="subtle">Lv 列をクリックすると、そのレベルの味方ステータスを上のプレビューに表示します。</p>
       <table style={{ borderCollapse: 'collapse', width: '100%' }}>
         <thead>
           <tr>
@@ -805,7 +823,13 @@ function ResultMatrix({ result }: { result: ScenarioMatrixResult }) {
         <tbody>
           {result.rows.map((row) => (
             <tr key={row.level}>
-              <th style={cellStyle}>{row.level}</th>
+              <th
+                style={{ ...cellStyle, cursor: 'pointer' }}
+                onClick={() => onSelectLevel(row.level)}
+                title="このレベルの味方ステータスを表示"
+              >
+                {row.level}
+              </th>
               {loadoutNames.map((name) => {
                 const cell = row.loadouts[name]
                 return (

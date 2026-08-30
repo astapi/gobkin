@@ -15,6 +15,16 @@ npm run dev
 
 デフォルトで http://localhost:5180 で起動する。
 
+## ドロップ周回シミュレーション
+
+上部メニューの「ドロップ試算」では、指定したダンジョンまたは全ダンジョンをX周した場合の装備ドロップを集計できる。
+検証用PTで最深部まで踏破するため戦闘勝敗には左右されず、実際の `ExpeditionEngine` を通して通常・レアドロップ、称号、Prefix、Suffixを抽選する。
+
+- 1ダンジョンあたりの周回数、Dungeon Tier、PT平均運を指定可能
+- アイテム獲得率倍率と称号付与率倍率を指定可能
+- 固定シードで再現可能
+- ダンジョン別の獲得あり周回率、1周平均、アイテム別獲得率、称号/MOD分布を表示
+
 ## バランス調整の戦略PTで測る
 
 バランスシミュレータ（`goblin_native/scripts/balance/`）の戦略ペルソナが山登り探索で組んだ
@@ -56,3 +66,4 @@ node scripts/balance/exportStrategistBuilds.js --tier 3 --level 120 vampire_cast
 - [x] Step 5: PT 編成（バックアップ JSON 読み込み対応）
 - [x] Step 6: ダンジョン別シミュレーション（ExpeditionEngine 直接実行）
 - [x] Step 7: バランス調整の戦略PT・装備でのシミュレーション実行
+- [x] Step 8: 全ダンジョン対応のドロップ周回シミュレーション

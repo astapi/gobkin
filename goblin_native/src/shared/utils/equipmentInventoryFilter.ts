@@ -1,19 +1,24 @@
 import type {
   EquipmentCategory,
   EquipmentInstance,
+  EquipmentModCount,
   EquipmentTemplate,
   EquipmentTitleId,
 } from '@/shared/types'
 import { EQUIPMENT_TITLE_DEFS } from '@/shared/data/equipmentTitleConfig'
 import { getEquipmentDisplayName } from '@/shared/i18n/entityLocalization'
 
-export type EquipmentModCountFilter = 'all' | 1 | 2
-export type EquipmentCategoryFilter = 'all' | EquipmentCategory
+/** 絞り込みで選べるMOD数。空配列は「すべて」を意味する。 */
+export const EQUIPMENT_MOD_COUNT_FILTER_OPTIONS: EquipmentModCount[] = [1, 2]
 
+/**
+ * 装備一覧の絞り込み条件。
+ * 配列項目は空なら「すべて」、複数選択時はOR判定になる。
+ */
 export interface EquipmentInventoryFilter {
   nameQuery: string
-  modCount: EquipmentModCountFilter
-  category: EquipmentCategoryFilter
+  modCounts: EquipmentModCount[]
+  categories: EquipmentCategory[]
   titleIds: EquipmentTitleId[]
 }
 
@@ -24,10 +29,14 @@ export interface EquipmentInventoryFilterTarget {
 
 export const DEFAULT_EQUIPMENT_INVENTORY_FILTER: EquipmentInventoryFilter = {
   nameQuery: '',
-  modCount: 'all',
-  category: 'all',
+  modCounts: [],
+  categories: [],
   titleIds: [],
 }
+
+/** 絞り込みで選べる称号。定義順に並べる（在庫の有無では絞らない）。 */
+export const EQUIPMENT_TITLE_FILTER_ORDER: EquipmentTitleId[] = EQUIPMENT_TITLE_DEFS
+  .map((definition) => definition.id)
 
 export const EQUIPMENT_CATEGORY_FILTER_ORDER: EquipmentCategory[] = [
   'weapon',
@@ -45,8 +54,12 @@ function normalizeSearchText(value: string): string {
   return value.normalize('NFKC').trim().toLocaleLowerCase()
 }
 
-export function getEquipmentModCount(equipment: EquipmentInstance): number {
-  return Number(Boolean(equipment.prefixMod)) + Number(Boolean(equipment.suffixMod))
+function matchesSelection<T>(selection: readonly T[], actual: T): boolean {
+  return selection.length === 0 || selection.includes(actual)
+}
+
+export function getEquipmentModCount(equipment: EquipmentInstance): EquipmentModCount {
+  return (Number(Boolean(equipment.prefixMod)) + Number(Boolean(equipment.suffixMod))) as EquipmentModCount
 }
 
 export function matchesEquipmentInventoryFilter(
@@ -61,45 +74,26 @@ export function matchesEquipmentInventoryFilter(
     if (!displayName.includes(normalizedQuery)) return false
   }
 
-  if (filter.modCount !== 'all' && getEquipmentModCount(target.equipment) !== filter.modCount) {
+  if (!matchesSelection(filter.modCounts, getEquipmentModCount(target.equipment))) {
     return false
   }
 
-  if (filter.category !== 'all' && target.template.category !== filter.category) {
+  if (!matchesSelection(filter.categories, target.template.category)) {
     return false
   }
 
-  const titleId = target.equipment.titleId ?? 'none'
-  if (filter.titleIds.length > 0 && !filter.titleIds.includes(titleId)) {
+  if (!matchesSelection(filter.titleIds, target.equipment.titleId ?? 'none')) {
     return false
   }
 
   return true
 }
 
-export function getAvailableEquipmentCategories(
-  targets: EquipmentInventoryFilterTarget[],
-): EquipmentCategory[] {
-  const available = new Set(targets.map((target) => target.template.category))
-  return EQUIPMENT_CATEGORY_FILTER_ORDER.filter((category) => available.has(category))
-}
-
-export function getAvailableEquipmentTitleIds(
-  targets: EquipmentInventoryFilterTarget[],
-): EquipmentTitleId[] {
-  const available = new Set(
-    targets.map((target) => target.equipment.titleId ?? 'none'),
-  )
-  return EQUIPMENT_TITLE_DEFS
-    .map((definition) => definition.id)
-    .filter((titleId) => available.has(titleId))
-}
-
 export function getEquipmentInventoryFilterActiveCount(
   filter: EquipmentInventoryFilter,
 ): number {
   return Number(normalizeSearchText(filter.nameQuery).length > 0)
-    + Number(filter.modCount !== 'all')
-    + Number(filter.category !== 'all')
+    + Number(filter.modCounts.length > 0)
+    + Number(filter.categories.length > 0)
     + Number(filter.titleIds.length > 0)
 }

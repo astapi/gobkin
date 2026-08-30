@@ -94,6 +94,7 @@ agent-device find id base-menu-warehouse click --session goblin-ui
 | 装備変更のベース装備 | `equipment-group-{templateId}` |
 | 所持／装備中の個体 | `inventory-equipment-{equipmentId}`、`equipped-item-{equipmentId}` |
 | 共通装備フィルター | `equipment-inventory-filter-button`、`equipment-filter-*` |
+| 装備商店の絞り込み | `shop-filter-open`、`shop-filter-all`、`shop-filter-*`、`shop-filter-close` |
 | 遠征パーティ | `party-card-{partyId}` |
 | 遠征準備 | `preparation-*` |
 | 訓練 | `training-goblin-{goblinId}`、`training-job-{jobId}`、`training-confirm` |
@@ -106,7 +107,7 @@ agent-device find id base-menu-warehouse click --session goblin-ui
 rg -n 'testID=' app src/presentation --glob '*.tsx'
 ```
 
-## 装備の折り畳みと称号の複数選択
+## 装備の折り畳みとフィルターの複数選択
 
 ベース装備行は`expanded`状態をアクセシビリティツリーへ公開します。押した後に再スナップショットし、`value`に`expanded`が含まれることを確認します。
 
@@ -123,17 +124,28 @@ agent-device find id shop-sell-equipment-group-sword_long click --session goblin
 agent-device snapshot -i -c --raw --session goblin-ui
 ```
 
-称号はチェックボックスです。複数のIDを順番に押してから適用します。選択肢は現在の在庫に存在する称号だけ表示されます。
+共通装備フィルターのMOD数・カテゴリ・称号はいずれもチェックボックスで、複数のIDを順番に押してから適用します。選択肢は現在の在庫に存在するカテゴリ・称号だけ表示されます。
 
 ```bash
 agent-device find id equipment-inventory-filter-button click --session goblin-ui
+agent-device find id equipment-filter-category-weapon click --session goblin-ui
+agent-device find id equipment-filter-category-armor click --session goblin-ui
 agent-device find id equipment-filter-title-masterwork click --session goblin-ui
 agent-device find id equipment-filter-title-imbued click --session goblin-ui
 agent-device snapshot -i -c --raw --session goblin-ui
 agent-device find id equipment-filter-apply click --session goblin-ui
 ```
 
-適用前のスナップショットで、両方の`value`が`checkbox, checked`になっていることを確認します。対象在庫に称号がなくIDが見つからない場合は、エラーを回避するためその操作を飛ばします。
+適用前のスナップショットで、押したIDの`value`が`checkbox, checked`になっていることを確認します。`equipment-filter-category-all` / `equipment-filter-mod-all` / `equipment-filter-title-all` はその区分の選択を解除して「すべて」に戻すボタンです。対象在庫に該当がなくIDが見つからない場合は、エラーを回避するためその操作を飛ばします。
+
+装備商店の絞り込みも複数選択です。`shop-filter-all`で解除し、`shop-filter-weaponSubCategory-{subCategory}` / `shop-filter-category-{category}`をチェックしてから閉じます。
+
+```bash
+agent-device find id shop-filter-open click --session goblin-ui
+agent-device find id shop-filter-weaponSubCategory-sword click --session goblin-ui
+agent-device find id shop-filter-category-armor click --session goblin-ui
+agent-device find id shop-filter-close click --session goblin-ui
+```
 
 ## よく使う操作例
 

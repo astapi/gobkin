@@ -25,6 +25,9 @@ export interface BattleUnit {
   maxHP: number
   initialHP: number
   power?: number
+  wisdom?: number
+  spirit?: number
+  vitality?: number
   agility: number
   luck: number
   attackCount: number

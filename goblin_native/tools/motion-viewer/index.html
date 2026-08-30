@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Goblin Motion Inspector</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">PIXEL MOTION QA</p>
+        <h1>Goblin Motion Inspector</h1>
+      </div>
+      <form id="set-form" class="set-loader">
+        <label for="set-path">スプライトセット</label>
+        <div class="input-row">
+          <input id="set-path" name="set" autocomplete="off" spellcheck="false" />
+          <button type="submit">読み込む</button>
+        </div>
+      </form>
+    </header>
+
+    <main>
+      <nav id="motion-tabs" class="motion-tabs" aria-label="モーション選択"></nav>
+
+      <section class="workspace">
+        <div class="stage-panel panel">
+          <div class="panel-heading">
+            <div>
+              <p class="label">LIVE PREVIEW</p>
+              <h2 id="motion-title">読み込み中…</h2>
+            </div>
+            <span id="play-state" class="status-pill">PLAY</span>
+          </div>
+
+          <div id="stage-wrap" class="stage-wrap checker">
+            <canvas id="stage" width="512" height="512" aria-label="モーションプレビュー"></canvas>
+          </div>
+
+          <div class="transport">
+            <button id="prev-frame" type="button" aria-label="前のフレーム">◀</button>
+            <button id="toggle-play" type="button" class="primary" aria-label="再生と一時停止">一時停止</button>
+            <button id="next-frame" type="button" aria-label="次のフレーム">▶</button>
+            <output id="frame-position">1 / 1</output>
+          </div>
+
+          <div class="sliders">
+            <label>
+              <span>1フレーム</span>
+              <input id="duration" type="range" min="50" max="400" step="10" value="140" />
+              <output id="duration-value">140 ms</output>
+            </label>
+            <label>
+              <span>ズーム</span>
+              <input id="zoom" type="range" min="2" max="8" step="1" value="6" />
+              <output id="zoom-value">6×</output>
+            </label>
+          </div>
+        </div>
+
+        <aside class="inspection-panel panel">
+          <div class="panel-heading compact">
+            <div>
+              <p class="label">INSPECTION</p>
+              <h2>視認レイヤー</h2>
+            </div>
+          </div>
+
+          <div class="toggle-grid">
+            <label><input id="show-guides" type="checkbox" checked /> 基準線とBBox</label>
+            <label><input id="show-onion" type="checkbox" /> 前フレーム残像</label>
+            <label><input id="show-diff" type="checkbox" /> 変化ピクセル</label>
+            <label><input id="show-silhouette" type="checkbox" /> シルエット</label>
+            <label><input id="show-semantic-markers" type="checkbox" checked /> 解剖学指摘</label>
+          </div>
+
+          <fieldset class="background-picker">
+            <legend>背景</legend>
+            <label><input type="radio" name="background" value="checker" checked /> 市松</label>
+            <label><input type="radio" name="background" value="dark" /> 暗色</label>
+            <label><input type="radio" name="background" value="light" /> 明色</label>
+            <label><input type="radio" name="background" value="magenta" /> マゼンタ</label>
+          </fieldset>
+
+          <div class="keyboard-help">
+            <p>Space: 再生　← →: コマ送り</p>
+            <p>G: 基準線　O: 残像　D: 差分</p>
+          </div>
+        </aside>
+
+        <section class="qa-panel panel">
+          <div class="panel-heading compact">
+            <div>
+              <p class="label">AUTOMATED QA</p>
+              <h2>自動検品</h2>
+            </div>
+            <span id="qa-summary" class="status-pill neutral">--</span>
+          </div>
+          <div id="qa-cards" class="qa-cards"></div>
+          <dl id="frame-stats" class="frame-stats"></dl>
+        </section>
+      </section>
+
+      <section class="filmstrip-panel panel">
+        <div class="panel-heading compact">
+          <div>
+            <p class="label">FRAME STRIP</p>
+            <h2>フレーム比較</h2>
+          </div>
+        </div>
+        <div id="filmstrip" class="filmstrip"></div>
+      </section>
+
+      <section class="anatomy-panel panel">
+        <div class="panel-heading compact">
+          <div>
+            <p class="label">ANATOMY GATE</p>
+            <h2>解剖学・装備レビュー</h2>
+          </div>
+          <span id="anatomy-summary" class="status-pill neutral">UNREVIEWED</span>
+        </div>
+        <p class="anatomy-protocol">
+          各フレームで左右それぞれの「肩→肘→手」を別々に追跡し、脚、接地足、装備の握りまで確認します。
+          腕や手の総数だけでなく、同じ肩から二重に生えていないことが合格条件です。
+        </p>
+        <div class="anatomy-criteria" aria-label="解剖学レビュー基準">
+          <span>左右の腕の接続</span>
+          <span>手足の増殖・欠損</span>
+          <span>関節の連続性</span>
+          <span>装備の握り</span>
+          <span>顔・体格の維持</span>
+          <span>接地足の固定</span>
+        </div>
+        <div id="anatomy-frames" class="anatomy-frames"></div>
+        <p id="review-source" class="review-source"></p>
+      </section>
+
+      <details class="machine-report panel">
+        <summary>Codex向け検品JSON</summary>
+        <pre id="machine-report">{}</pre>
+      </details>
+    </main>
+
+    <div id="error-banner" class="error-banner" role="alert" hidden></div>
+    <script type="module" src="/app.js"></script>
+  </body>
+</html>
